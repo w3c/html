@@ -1,0 +1,337 @@
+<section>
+<!--
+██     ██ ██     ██ ████████ ██     ██ ██              ██████  ██    ██ ██    ██ ████████    ███    ██     ██
+ ██   ██  ██     ██    ██    ███   ███ ██             ██    ██  ██  ██  ███   ██    ██      ██ ██    ██   ██
+  ██ ██   ██     ██    ██    ████ ████ ██             ██         ████   ████  ██    ██     ██   ██    ██ ██
+   ███    █████████    ██    ██ ███ ██ ██              ██████     ██    ██ ██ ██    ██    ██     ██    ███
+  ██ ██   ██     ██    ██    ██     ██ ██                   ██    ██    ██  ████    ██    █████████   ██ ██
+ ██   ██  ██     ██    ██    ██     ██ ██             ██    ██    ██    ██   ███    ██    ██     ██  ██   ██
+██     ██ ██     ██    ██    ██     ██ ████████        ██████     ██    ██    ██    ██    ██     ██ ██     ██
+-->
+
+<h2 id="xhtml">The XHTML syntax</h2>
+
+  <p class="note">
+  This section only describes the rules for XML resources. Rules for
+  <a href="#text-html"><code>text/html</code></a> resources are discussed in the section above entitled "<a href="#syntax">The HTML syntax</a>".
+  </p>
+
+  <div class="impl">
+
+<h3 id="writing-xhtml-documents">Writing XHTML documents</h3>
+
+  </div>
+
+  The syntax for using HTML with XML, whether in XHTML documents or embedded in other XML
+  documents, is defined in the XML and Namespaces in XML specifications. [[!XML]] [[!XML-NAMES]]
+
+  This specification does not define any syntax-level requirements beyond those defined for XML
+  proper.
+
+  XML documents may contain a <code>DOCTYPE</code> if desired, but this is not required
+  to conform to this specification. This specification does not define a public or system
+  identifier, nor provide a formal DTD.
+
+  <p class="note">
+  According to the XML specification, XML processors are not guaranteed to process
+  the external DTD subset referenced in the DOCTYPE. This means, for example, that using <a>entity references</a> for characters in XHTML documents
+  is unsafe if they are defined in an external file (except for <code>&amp;lt;</code>,
+  <code>&amp;gt;</code>, <code>&amp;amp;</code>, <code>&amp;quot;</code>
+  and <code>&amp;apos;</code>).
+  </p>
+
+  <div class="impl">
+
+<h3 id="parsing-xhtml-documents">Parsing XHTML documents</h3>
+
+  This section describes the relationship between XML and the DOM, with a particular emphasis on
+  how this interacts with HTML.
+
+  An <dfn>XML parser</dfn>, for the purposes of this specification, is a construct that follows
+  the rules given in the XML specification to map a string of bytes or characters into a
+  <code>Document</code> object.
+
+  <p class="note">
+  At the time of writing, no such rules actually exist.
+  </p>
+
+  An <a>XML parser</a> is either associated with a <code>Document</code> object when it is
+  created, or creates one implicitly.
+
+  This <code>Document</code> must then be populated with DOM nodes that represent the tree
+  structure of the input passed to the parser, as defined by the XML specification, the Namespaces
+  in XML specification, and the DOM specification. DOM mutation events must not fire for the
+  operations that the <a>XML parser</a> performs on the <code>Document</code>'s tree, but the
+  user agent must act as if elements and attributes were individually appended and set respectively
+  so as to trigger rules in this specification regarding what happens when an element is inserted
+  into a document or has its attributes set, and the DOM specification's requirements regarding
+  mutation observers mean that mutation observers <em>are</em> fired (unlike mutation events). [[!XML]] [[!XML-NAMES]] [[!DOM]] [[!UIEVENTS]]
+
+  Between the time an element's start tag is parsed and the time either the element's end tag is
+  parsed or the parser detects a well-formedness error, the user agent must act as if the element
+  was in a <a>stack of open elements</a>.
+
+  <p class="note">
+  This is used, e.g. by the <{object}> element to avoid instantiating plugins
+  before the <{param}> element children have been parsed.
+  </p>
+
+  This specification provides the following additional information that user agents should use
+  when retrieving an external entity: the public identifiers given in the following list all
+  correspond to <a>the URL given by this link</a>. (This
+  URL is a DTD containing the <a>entity declarations</a> for the names listed in the [[#named-character-references]] section.) [[!XML]]
+
+  <ul class="brief">
+    <li><code>-//W3C//DTD ;XHTML ;1.0 ;Transitional//EN</code></li>
+    <li><code>-//W3C//DTD ;XHTML ;1.1//EN</code></li>
+    <li><code>-//W3C//DTD ;XHTML ;1.0 ;Strict//EN</code></li>
+    <li><code>-//W3C//DTD ;XHTML ;1.0 ;Frameset//EN</code></li>
+    <li><code>-//W3C//DTD ;XHTML ;Basic ;1.0//EN</code></li>
+    <li><code>-//W3C//DTD ;XHTML ;1.1 ;plus ;MathML ;2.0//EN</code></li>
+    <li><code>-//W3C//DTD ;XHTML ;1.1 ;plus ;MathML ;2.0 ;plus ;SVG ;1.1//EN</code></li>
+    <li><code>-//W3C//DTD ;MathML ;2.0//EN</code></li>
+    <li><code>-//WAPFORUM//DTD ;XHTML ;Mobile ;1.0//EN</code></li>
+  </ul>
+
+  Furthermore, user agents should attempt to retrieve the above external entity's content when
+  one of the above public identifiers is used, and should not attempt to retrieve any other external
+  entity's content.
+
+  <p class="note">
+  This is not strictly a <a lt="willful violation">violation</a> of the XML
+  specification, but it does contradict the spirit of the XML specification's requirements. This is
+  motivated by a desire for user agents to all handle entities in an interoperable fashion without
+  requiring any network access for handling external subsets. [[!XML]]
+  </p>
+
+  XML parsers can be invoked with <dfn lt="XML scripting support disabled|XML scripting support enabled">XML scripting support enabled or disabled</dfn>. Except where otherwise specified, XML parsers are
+  invoked with <a>XML scripting support enabled</a>.
+
+  When an <a>XML parser</a> with <a>XML scripting support enabled</a>
+  creates a <{script}> element, it
+  must be marked as being <a>"parser-inserted"</a> and its <a>"non-blocking"</a> flag
+  must be unset. If the parser was originally created for the <a>XML fragment parsing
+  algorithm</a>, then the element must be marked as <a>"already started"</a> also. When the
+  element's end tag is subsequently parsed, the user agent must <a>perform a microtask checkpoint</a>, and
+  then prepare the <{script}> element. If this
+  causes there to be a <a>pending parsing-blocking script</a>, then the user agent must run
+  the following steps:
+
+  <ol>
+
+    <li>Block this instance of the <a>XML parser</a>, such that the <a>event loop</a>
+    will not run <a>tasks</a> that invoke it.</li>
+
+    <li><a>Spin the event loop</a> until the parser's <code>Document</code> <a>has no
+    style sheet that is blocking scripts</a> and the <a>pending parsing-blocking
+    script</a>'s <a>"ready to be parser-executed"</a> flag is set.</li>
+
+    <li>Unblock this instance of the <a>XML parser</a>, such that <a>tasks</a> that invoke it can again be run.</li>
+
+    <li><a>Execute</a> the <a>pending parsing-blocking
+    script</a>.</li>
+
+    <li>There is no longer a <a>pending parsing-blocking script</a>.</li>
+
+  </ol>
+
+  <p class="note">
+  Since the <a method lt="write()"><code>document.write()</code></a> API is not
+  available for <a>XML documents</a>, much of the complexity in the <a>HTML parser</a>
+  is not needed in the <a>XML parser</a>.
+  </p>
+
+  <p class="note">
+  When the <a>XML parser</a> has <a>XML scripting support disabled</a>,
+  none of this happens.
+  </p>
+
+  When an <a>XML parser</a> would append a node to a
+  <{template}> element, it must instead append it to the <{template}> element's
+  <a>template contents</a> (a <code>DocumentFragment</code> node).
+
+  <p class="note">
+  This is a <a>willful violation</a> of the XML specification; unfortunately,
+  XML is not formally extensible in the manner that is needed for <code>template</code> processing.
+  [[!XML]]
+  </p>
+
+  When an <a>XML parser</a> creates a <code>Node</code> object, its <a>node document</a>
+  must be set to the <a>node document</a> of
+  the node into which the newly created node is to be inserted.
+
+  Certain algorithms in this specification <dfn lt="feed the parser|spoon-feed the parser">spoon-feed the
+  parser</dfn> characters one string at a time. In such cases, the <a>XML parser</a> must act
+  as it would have if faced with a single string consisting of the concatenation of all those
+  characters.
+
+  When an <a>XML parser</a> reaches the end of its input, it must <a lt="stops parsing">stop
+  parsing</a>, following the same rules as the <a>HTML parser</a>. An <a>XML
+  parser</a> can also be <a>aborted</a>, which must again be done in
+  the same way as for an <a>HTML parser</a>.
+
+  For the purposes of conformance checkers, if a resource is determined to be in <a href="#xhtml">the XHTML syntax</a>, then it is an <a>XML document</a>.
+
+<h3 id="serializing-xhtml-fragments">Serializing XHTML fragments</h3>
+
+  The <dfn>XML fragment serialization algorithm</dfn> for a <code>Document</code> or
+  {{Element}} node either returns a fragment of XML that represents that node or throws an
+  exception.
+
+  For <code>Document</code>s, the algorithm must return a string in the form of a <a>document entity</a>, if none of the error cases
+  below apply.
+
+  For {{Element}}s, the algorithm must return a string in the form of an <a>internal general parsed entity</a>, if none of the
+  error cases below apply.
+
+  In both cases, the string returned must be XML namespace-well-formed and must be an isomorphic
+  serialization of all of that node's <a>relevant child nodes</a>, in <a>tree order</a>.
+  User agents may adjust prefixes and namespace declarations in the serialization (and indeed might
+  be forced to do so in some cases to obtain namespace-well-formed XML). User agents may use a
+  combination of regular text and character references to represent <code>Text</code> nodes in the
+  DOM.
+
+  A node's <dfn>relevant child nodes</dfn> are those that apply given the following rules:
+
+  <dl>
+
+    <dt>For <{template}> elements</dt>
+
+    <dd>The <a>relevant child nodes</a> are the child nodes of the <code>template</code>
+    element's <a>template contents</a>, if any.</dd>
+
+    <dt>For all other nodes</dt>
+
+    <dd>The <a>relevant child nodes</a> are the child nodes of node itself, if any.</dd>
+
+  </dl>
+
+  For {{Element}}s, if any of the elements in the serialization are in no namespace, the
+  default namespace in scope for those elements must be explicitly declared as the empty string. (This doesn't apply in the <code>Document</code> case.) [[!XML]]
+  [[!XML-NAMES]]
+
+  For the purposes of this section, an internal general parsed entity is considered XML
+  namespace-well-formed if a document consisting of an element with no namespace declarations whose
+  contents are the internal general parsed entity would itself be XML namespace-well-formed.
+
+  If any of the following error cases are found in the DOM subtree being serialized, then the
+  algorithm must throw an <code>InvalidStateError</code> exception instead of returning a
+  string:
+
+  <ul>
+
+    <li>A <code>Document</code> node with no child element nodes.</li>
+
+    <li>A <code>DocumentType</code> node that has an external subset public identifier that contains
+    characters that are not matched by the XML <code>PubidChar</code> production. [[!XML]]</li>
+
+    <li>A <code>DocumentType</code> node that has an external subset system identifier that contains
+    both a U+0022 QUOTATION MARK (") and a U+0027 APOSTROPHE (') or that contains characters that are
+    not matched by the XML <code>Char</code> production. [[!XML]]</li>
+
+    <li>A node with a  local name containing a U+003A COLON (:).</li>
+
+    <li>A node with a  local name that does not match the XML <a spec="XML" for="XML"><code>Name</code></a> production. [[!XML]]</li>
+
+    <li>An <code>Attr</code> node with no namespace whose local name is the lowercase string "<code>xmlns</code>". [[!XML-NAMES]]</li>
+
+    <li>An {{Element}} node with two or more attributes with the same local name and
+    namespace.</li>
+
+    <li>An <code>Attr</code> node, <code>Text</code> node, <code>Comment</code> node, or
+    <code>ProcessingInstruction</code> node whose data contains characters that are not matched by
+    the XML <code>Char</code> production. [[!XML]]</li>
+
+    <li>A <code>Comment</code> node whose data contains two adjacent U+002D HYPHEN-MINUS characters
+    (-) or ends with such a character.</li>
+
+    <li>A <code>ProcessingInstruction</code> node whose target name is an <a>ASCII
+    case-insensitive</a> match for the string "<code>xml</code>".</li>
+
+    <li>A <code>ProcessingInstruction</code> node whose target name contains a U+003A COLON (:).</li>
+
+    <li>A <code>ProcessingInstruction</code> node whose data contains the string "<code>?></code>".</li>
+
+  </ul>
+
+  <p class="note">
+  These are the only ways to make a DOM unserialisable. The DOM enforces all the
+  other XML constraints; for example, trying to append two elements to a <code>Document</code> node
+  will throw a <code>HierarchyRequestError</code> exception.
+  </p>
+
+<h3 id="parsing-xhtml-fragments">Parsing XHTML fragments</h3>
+
+  The <dfn>XML fragment parsing algorithm</dfn> either returns a <code>Document</code> or throws
+  a <code>SyntaxError</code> exception. Given a string <var>input</var> and a
+  context element <var>context</var>, the algorithm is as
+  follows:
+
+  <ol>
+
+    <li>
+
+    Create a new <a>XML parser</a>.
+
+    </li>
+
+    <li>
+
+    <a>Feed the
+    parser</a> just created the string corresponding to the start tag of the <var>context</var> element, declaring
+    all the namespace prefixes that are in scope on that element in the DOM, as well as declaring
+    the default namespace (if any) that is in scope on that element in the DOM.
+
+    A namespace prefix is in scope if the DOM <code>lookupNamespaceURI()</code> method
+    on the element would return a non-null value for that prefix.
+
+    The default namespace is the namespace for which the DOM <code>isDefaultNamespace()</code> method on the element would return true.
+
+    <p class="note">
+  No
+    <code>DOCTYPE</code> is passed to the parser, and therefore no external subset is
+    referenced, and therefore no entities will be recognized.
+  </p>
+
+    </li>
+
+    <li>
+
+    <a>Feed the parser</a> just created the string <var>input</var>.
+
+    </li>
+
+    <li>
+
+    <a>Feed the parser</a> just created the string corresponding to the end tag of the <var>context</var> element.
+
+    </li>
+
+    <li>
+
+    If there is an XML well-formedness or XML namespace well-formedness error, then throw a
+    <code>SyntaxError</code> exception and abort these steps.
+
+    </li>
+
+    <li>
+
+    If the root
+    element of the resulting <code>Document</code> has any sibling nodes, then throw a
+    <code>SyntaxError</code> exception and abort these steps.
+
+    </li>
+
+    <li>
+
+    Return the
+    child nodes of the root element of the resulting {{Document}}, in <a>tree
+    order</a>.
+
+    </li>
+
+  </ol>
+
+  </div>
+
+</section>

@@ -1,0 +1,2603 @@
+<section>
+<!--
+████████  ████████ ██    ██ ████████  ████████ ████████  ████ ██    ██  ██████
+██     ██ ██       ███   ██ ██     ██ ██       ██     ██  ██  ███   ██ ██    ██
+██     ██ ██       ████  ██ ██     ██ ██       ██     ██  ██  ████  ██ ██
+████████  ██████   ██ ██ ██ ██     ██ ██████   ████████   ██  ██ ██ ██ ██   ████
+██   ██   ██       ██  ████ ██     ██ ██       ██   ██    ██  ██  ████ ██    ██
+██    ██  ██       ██   ███ ██     ██ ██       ██    ██   ██  ██   ███ ██    ██
+██     ██ ████████ ██    ██ ████████  ████████ ██     ██ ████ ██    ██  ██████
+-->
+
+  <div class="impl">
+
+<h2 id="rendering">Rendering</h2>
+
+  <i>User agents are not required to present HTML documents in any particular way. However, this
+  section provides a set of suggestions for rendering HTML documents that, if followed, are likely
+  to lead to a user experience that closely resembles the experience intended by the documents'
+  authors. So as to avoid confusion regarding the normativity of this section, RFC2119 terms have
+  not been used. Instead, the term "expected" is used to indicate behavior that will lead to this
+  experience. For the purposes of conformance for user agents designated as <a>supporting the suggested default rendering</a>, the term "expected" in this
+  section has the same conformance implications as the RFC2119-defined term "must".</i>
+
+<h3 id="rendering-introduction">Introduction</h3>
+
+  In general, user agents are expected to support CSS, and many of the suggestions in this
+  section are expressed in CSS terms. User agents that use other presentation mechanisms can derive
+  their expected behavior by translating from the CSS rules given in this section.
+
+  In the absence of style-layer rules to the contrary (e.g. author style sheets), user agents are
+  expected to render an element so that it conveys to the user the meaning that the element
+  <a>represents</a>, as described by this specification.
+
+  The suggestions in this section generally assume a visual output medium with a resolution of
+  96dpi or greater, but HTML is intended to apply to multiple media (it is a
+  <i>media-independent</i> language). User agent implementors are encouraged to adapt the
+  suggestions in this section to their target media.
+
+  <hr />
+
+  An element is <dfn>being rendered</dfn> if it has any associated CSS layout boxes, SVG layout
+  boxes, or some equivalent in other styling languages.
+
+  <p class="note">
+  Just being off-screen does not mean the element is not <a>being
+  rendered</a>. The presence of the <code>hidden</code> attribute normally
+  means the element is not <a>being rendered</a>, though this might be overridden by the style
+  sheets.
+  </p>
+
+  <hr />
+
+  User agents that do not honor author-level CSS style sheets are nonetheless expected to act as
+  if they applied the CSS rules given in these sections in a manner consistent with this
+  specification and the relevant CSS and Unicode specifications. [[!CSS-2015]] [[!UNICODE]] [[!BIDI]]
+
+  <p class="note">
+  This is especially important for issues relating to the 'display', 'unicode-bidi',
+  and 'direction' properties.
+  </p>
+
+<h3 id="the-css-user-agent-style-sheet-and-presentational-hints">The CSS user agent style sheet and presentational hints</h3>
+
+  The CSS rules given in these subsections are, except where otherwise specified, expected to be
+  used as part of the user-agent level style sheet defaults for all documents that contain
+  <a>html elements</a>.
+
+  Some rules are intended for the author-level zero-specificity presentational hints part of the
+  CSS cascade; these are explicitly called out as <dfn>presentational hints</dfn>.
+
+  Some of the rules regarding left and right margins are given here as appropriate for elements
+  whose 'direction' property is ''ltr'', and are expected to be flipped around on elements whose
+  'direction' property is ''rtl''. These are marked "<dfn>LTR-specific</dfn>".
+
+  <p class="note">
+  These markings only affect the handling of attribute <em>values</em>, not
+  attribute names or element names.
+  </p>
+
+  <hr />
+
+  When the text below says that an attribute <var>attribute</var> on an element
+  <var>element</var> <dfn>maps to the pixel length property</dfn> (or properties)
+  <var>properties</var>, it means that if <var>element</var> has an attribute <var>attribute</var>
+  set, and parsing that attribute's value using the <a>rules for parsing non-negative
+  integers</a> doesn't generate an error, then the user agent is expected to use the parsed value
+  as a pixel length for a <a>presentational hint</a> for
+  <var>properties</var>.
+
+  When the text below says that an attribute <var>attribute</var> on an element
+  <var>element</var> <dfn lt="as hints for the rendering|maps to the dimension properties|maps to the dimension property">maps to the dimension property</dfn> (or properties)
+  <var>properties</var>, it means that if <var>element</var> has an attribute <var>attribute</var>
+  set, and parsing that attribute's value using the <a>rules for parsing dimension values</a>
+  doesn't generate an error, then the user agent is expected to use the parsed dimension as the
+  value for a <a>presentational hint</a> for
+  <var>properties</var>, with the value given as a pixel length if the dimension was a length, and
+  with the value given as a percentage if the dimension was a percentage.
+
+  When the text below says that an attribute <var>attribute</var> on an element
+  <var>element</var> <dfn lt="map to the dimension property (ignoring zero)|maps to the dimension property (ignoring zero)">maps to the dimension property (ignoring zero)</dfn> (or properties)
+  <var>properties</var>, it means that if <var>element</var> has an attribute <var>attribute</var>
+  set, and parsing that attribute's value using the <a>rules for parsing non-zero dimension
+  values</a> doesn't generate an error, then the user agent is expected to use the parsed
+  dimension as the value for a <a>presentational hint</a> for
+  <var>properties</var>, with the value given as a pixel length if the dimension was a length, and
+  with the value given as a percentage if the dimension was a percentage.
+
+  When a user agent is to <dfn>align descendants</dfn> of a node, the user agent is expected to
+  align only those descendants that have both their 'margin-left' and 'margin-right' properties
+  computing to a value other than <a value spec="css21" for="margin-left"><code>auto</code></a>, that are over-constrained and that have one of those two
+  margins with a used value forced to a greater value, and that do not themselves have an applicable
+  <code>align</code> attribute. When multiple elements are to <a lt="align descendants">align</a> a particular descendant, the most deeply nested such
+  element is expected to override the others. Aligned elements are expected to be aligned by having
+  the used values of their left and right margins be set accordingly.
+
+<h3 id="non-replaced-elements">Non-replaced elements</h3>
+
+<h4 id="hidden-elements">Hidden elements</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    [hidden], area, base, basefont, datalist, head, link, menu[type=context i], meta,
+    noembed, noframes, param, rp, script, source, style, template, track, title {
+      display: none;
+    }
+
+    embed[hidden] { display: inline; height: 0; width: 0; }
+
+    input[type=hidden i] { display none ! important; }
+
+    @media (scripting) {
+      noscript { display: none !important; }
+    }
+  </pre>
+
+<h4 id="the-page">The page</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    html, body { display: block; }
+  </pre>
+
+  For each property in the table below, given a <{body}> element, the first attribute
+  that exists <a>maps to the pixel length property</a> on the <{body}> element. If
+  none of the attributes for a property are found, or if the value of the attribute that was found
+  cannot be parsed successfully, then, if the <{body}> element's <a>node document</a>'s
+  <a>browsing context</a> does not have its <a>seamless browsing context flag</a> set, a
+  default value of 8px is expected to be used for that property instead.
+
+  <table>
+    <thead>
+    <tr>
+      <th>Property
+      <th>Source
+    <tbody>
+    <tr>
+      <td rowspan="3">'margin-top'
+      <td><{body}> element's <code>marginheight</code> attribute
+    <tr>
+      <td>The <{body}> element's <a>container frame element</a>'s <code>marginheight</code> attribute
+    <tr>
+      <td><{body}> element's <code>topmargin</code> attribute
+    <tbody>
+    <tr>
+      <td rowspan="3">'margin-right'
+      <td><{body}> element's <code>marginwidth</code> attribute
+    <tr>
+      <td>The <{body}> element's <a>container frame element</a>'s <code>marginwidth</code> attribute
+    <tr>
+      <td><{body}> element's <code>rightmargin</code> attribute
+    <tbody>
+    <tr>
+      <td rowspan="3">'margin-bottom'
+      <td><{body}> element's <code>marginheight</code> attribute
+    <tr>
+      <td>The <{body}> element's <a>container frame element</a>'s <code>marginheight</code> attribute
+    <tr>
+      <td><{body}> element's <code>bottommargin</code> attribute
+    <tbody>
+    <tr>
+      <td rowspan="3">'margin-left'
+      <td><{body}> element's <code>marginwidth</code> attribute
+    <tr>
+      <td>The <{body}> element's <a>container frame element</a>'s <code>marginwidth</code> attribute
+    <tr>
+      <td><{body}> element's <code>leftmargin</code> attribute
+  </table>
+
+  If the <{body}> element's <a>node document</a>'s <a>browsing context</a> is a
+  <a>nested browsing context</a>, and the <a>browsing context container</a> of that
+  <a>nested browsing context</a> is a <code>frame</code> or <{iframe}> element, then
+  the <dfn>container frame element</dfn> of the <{body}> element is that <code>frame</code>
+  or <{iframe}> element. Otherwise, there is no <a>container frame element</a>.
+
+  <p class="warning">The above requirements imply that a page can change the margins of another page
+  (including one from another <a spec="fetch">origin</a>) using, for example, an <{iframe}>. This
+  is potentially a security risk, as it might in some cases allow an attack to contrive a situation
+  in which a page is rendered not as the author intended, possibly for the purposes of phishing or
+  otherwise misleading the user.</p>
+
+  <hr />
+
+  If a {{Document}} is in a <a>nested browsing context</a>, it is expected to be
+  positioned and sized to fit inside the content box of its <a>browsing context container</a>.
+  If a <a>browsing context</a> is not <a>being rendered</a>, it is expected to have a
+  viewport with zero width and zero height.
+
+  If the {{Document}} is in a <a>nested browsing context</a>, and the
+  <a>browsing context container</a> of that <a>nested browsing context</a> is a
+  <{frame}> or <{iframe}> element, and that element has a <code>scrolling</code> attribute, and that attribute's value is an <a>ASCII
+  case-insensitive</a> match for the string "<code>off</code>", "<code>noscroll</code>", or "<code>no</code>", then the user agent is expected to
+  prevent any scroll bars from being shown for the viewport of the <<a>nested browsing context</a>, regardless of the 'overflow' property that applies to that viewport.
+
+  <hr />
+
+  When a <{body}> element has a <{common/background}>
+  attribute set to a non-empty value, the new value is expected to be <a>resolved</a> relative to the element, and if this is successful, the user agent is
+  expected to treat the attribute as a <a>presentational hint</a>
+  setting the element's 'background-image' property to the <a>resulting absolute URL</a>.
+
+  When a <{body}> element has a <{body/bgcolor}> attribute
+  set, the new value is expected to be parsed using the <a>rules for parsing a legacy color
+  value</a>, and if that does not return an error, the user agent is expected to treat the
+  attribute as a <a>presentational hint</a> setting the element's
+  'background-color' property to the resulting color.
+
+  When a <{body}> element has a <{body/text}> attribute, its
+  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and
+  if that does not return an error, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'color' property to
+  the resulting color.
+
+  When a <{body}> element has a <{body/link}> attribute, its
+  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and
+  if that does not return an error, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color' property of any
+  element in the <code>Document</code> matching the ':link' pseudo-class to the resulting color.
+
+  When a <{body}> element has a <{body/vlink}> attribute,
+  its value is expected to be parsed using the <a>rules for parsing a legacy color value</a>,
+  and if that does not return an error, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color' property of any
+  element in the <code>Document</code> matching the ':visited' pseudo-class to the resulting
+  color.
+
+  When a <{body}> element has an <{body/alink}> attribute,
+  its value is expected to be parsed using the <a>rules for parsing a legacy color value</a>,
+  and if that does not return an error, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color' property of any
+  element in the <code>Document</code> matching the ':active' pseudo-class and either the ':link'
+  pseudo-class or the ':visited' pseudo-class to the resulting color.
+
+<h4 id="non-replaced-elements-flow-content">Flow content</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    address, blockquote, center, div, figure, figcaption, footer, form, header, hr,
+    legend, listing, main, p, plaintext, pre, summary, xmp {
+      display: block;
+    }
+
+    blockquote, figure, listing, p, plaintext, pre, xmp {
+      margin-top: 1em; margin-bottom: 1em;
+    }
+
+    blockquote, figure { margin-left: 40px; margin-right: 40px; }
+
+    address { font-style: italic; }
+    listing, plaintext, pre, xmp {
+      font-family: monospace; white-space: pre;
+    }
+
+    dialog:not([open]) { display: none; }
+    dialog {
+      position: absolute;
+      left: 0; right: 0;
+      width: fit-content;
+      height: fit-content;
+      margin: auto;
+      border: solid;
+      padding: 1em;
+      background: white;
+      color: black;
+    }
+    dialog::backdrop {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: rgba(0,0,0,0.1);
+    }
+
+    /* for small devices, modal dialogs go full-screen */
+    @media screen and (max-width: 540px) {
+      dialog:modal {
+        top: 0;
+        width: auto;
+        margin: 1em;
+      }
+    }
+  </pre>
+
+  The following rules are also expected to apply, as <a>presentational hints</a>:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    pre[wrap] { white-space: pre-wrap; }
+  </pre>
+
+  In <a>quirks mode</a>, the following rules are also expected to apply:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    form { margin-bottom: 1em; }
+  </pre>
+
+  <hr />
+
+  The <{center}> element, and the <{div}> element when it has an <{div/align}> attribute whose value is an <a>ASCII
+  case-insensitive</a> match for either the string "<code>center</code>" or the string
+  "<code>middle</code>", are expected to center text within themselves, as if they had
+  their 'text-align' property set to ''center'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the center.
+
+  The <{div}> element, when it has an <{div/align}>
+  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>left</code>", is expected to left-align text within itself, as if it had its
+  'text-align' property set to ''text-align/left'' in a <a>presentational
+  hint</a>, and to <a>align descendants</a> to the left.
+
+  The <{div}> element, when it has an <{div/align}>
+  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>right</code>", is expected to right-align text within itself, as if it had its
+  'text-align' property set to ''text-align/right'' in a <a>presentational
+  hint</a>, and to <a>align descendants</a> to the right.
+
+  The <{div}> element, when it has an <{div/align}>
+  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>justify</code>", is expected to full-justify text within itself, as if it had its
+  'text-align' property set to ''text-align/justify'' in a <a>presentational
+  hint</a>, and to <a>align descendants</a> to the left.
+
+<h4 id="non-replaced-elements-phrasing-content">Phrasing content</h4>
+
+  <pre highlight="css">
+@namespace url(http://www.w3.org/1999/xhtml);
+
+  cite, dfn, em, i, var { font-style: italic; }
+  b, strong { font-weight: bolder; }
+  code, kbd, samp, tt { font-family: monospace; }
+  big { font-size: larger; }
+  small { font-size: smaller; }
+
+  sub { vertical-align: sub; }
+  sup { vertical-align: super; }
+  sub, sup { line-height: normal; font-size: smaller; }
+
+  ruby { display: ruby; }
+  rb   { display: ruby-base; white-space: nowrap; }
+  rt   {
+    display: ruby-text;
+    white-space: nowrap;
+    font-size: 50%;
+    font-variant-east-asian: ruby;
+    text-emphasis: none;
+  }
+  rbc  { display: ruby-base-container; }
+  rtc  { display: ruby-text-container; }
+  ruby, rb, rt, rbc, rtc { unicode-bidi: isolate; }
+
+  :link { color: #0000EE; }
+  :visited { color: #551A8B; }
+  :link:active, :visited:active { color: #FF0000; }
+  :link, :visited { text-decoration: underline; cursor: pointer; }
+  a:link[rel~=help], a:visited[rel~=help],
+  area:link[rel~=help], area:visited[rel~=help] { cursor: help; }
+
+  :focus { outline: auto; }
+
+  mark { background: yellow; color: black; } /* this color is just a suggestion and can be changed based on implementation feedback */
+
+  abbr[title], acronym[title] { text-decoration: dotted underline; }
+  ins, u { text-decoration: underline; }
+  del, s, strike { text-decoration: line-through; }
+  blink { text-decoration: blink; }
+
+  q::before { content: open-quote; }
+  q::after { content: close-quote; }
+
+  br { display-outside: newline; } /* this also has bidi implications */
+  nobr { white-space: nowrap; }
+  wbr { display-outside: break-opportunity; } /* this also has bidi implications */
+  nobr wbr { white-space: normal; }
+  </pre>
+
+  The following rules are also expected to apply, as
+  <a>presentational hints</a>:
+
+  <pre highlight="css">
+@namespace url(http://www.w3.org/1999/xhtml);
+
+  br[clear=left i] { clear: left; }
+  br[clear=right i] { clear: right; }
+  br[clear=all i], br[clear=both i] { clear: both; }
+  </pre>
+
+  User agents that do not support correct ruby rendering are expected to render parentheses
+  around the text of <{rt}> elements in the absence of <{rp}> elements.
+  [[!CSS3-RUBY]]
+
+  <hr />
+
+  User agents are expected to support the 'clear' property on inline elements (in order to render
+  <{br}> elements with <code>clear</code> attributes) in the manner
+  described in the non-normative note to this effect in CSS2.1.
+
+  The initial value for the 'color' property is expected to be black. The initial value for the
+  'background-color' property is expected to be ''transparent''. The canvas' background is expected to
+  be white.
+
+  <hr />
+
+  When a <{font}> element has a <code>color</code>
+  attribute, its value is expected to be parsed using the <a>rules for parsing a legacy color
+  value</a>, and if that does not return an error, the user agent is expected to treat the
+  attribute as a <a>presentational hint</a> setting the
+  element's 'color' property to the resulting color.
+
+  The <{font}> element is expected to
+  override the color of any text decoration that spans the text of the element to the used value of
+  the element's 'color' property.
+
+  When a <{font}> element has a <code>face</code>
+  attribute, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'font-family' property to the attribute's
+  value.
+
+  When a <{font}> element has a <code>size</code>
+  attribute, the user agent is expected to use the following steps, known as the <dfn>rules for
+  parsing a legacy font size</dfn>, to treat the attribute as a <a>presentational hint</a> setting the element's 'font-size' property:
+
+  <ol>
+
+    <li>Let <var>input</var> be the attribute's value.</li>
+
+    <li>Let <var>position</var> be a pointer into <var>input</var>, initially pointing at the
+    start of the string.</li>
+
+    <li><a>Skip whitespace</a>.</li>
+
+    <li>If <var>position</var> is past the end of <var>input</var>, there is no <a>presentational hint</a>. Abort these steps.</li>
+
+    <li>If the character at <var>position</var> is a U+002B PLUS SIGN character (+), then let
+    <var>mode</var> be <i>relative-plus</i>, and advance <var>position</var> to the next character.
+    Otherwise, if the character at <var>position</var> is a U+002D HYPHEN-MINUS character (-), then
+    let <var>mode</var> be <i>relative-minus</i>, and advance <var>position</var> to the next
+    character. Otherwise, let <var>mode</var> be <i>absolute</i>.</li>
+
+    <li><a>Collect a sequence of characters</a> that are <a>ASCII digits</a>, and let
+    the resulting sequence be <var>digits</var>.</li>
+
+    <li>If <var>digits</var> is the empty string, there is no <a>presentational hint</a>. Abort these steps.</li>
+
+    <li>Interpret <var>digits</var> as a base-ten integer. Let <var>value</var> be the resulting
+    number.</li>
+
+    <li>
+
+    If <var>mode</var> is <i>relative-plus</i>, then increment <var>value</var> by 3. If
+    <var>mode</var> is <i>relative-minus</i>, then let <var>value</var> be the result of subtracting
+    <var>value</var> from 3.
+
+    </li>
+
+    <li>If <var>value</var> is greater than 7, let it be 7.</li>
+
+    <li>If <var>value</var> is less than 1, let it be 1.</li>
+
+    <li>
+
+    Set 'font-size' to the keyword corresponding to the value of <var>value</var> according to
+    the following table:
+
+    <table>
+      <thead>
+      <tr>
+        <th><var>value</var>
+        <th>'font-size' keyword
+        <th>Notes
+      <tbody>
+      <tr>
+        <td>1
+        <td>x-small
+        <td>
+      <tr>
+        <td>2
+        <td>small
+        <td>
+      <tr>
+        <td>3
+        <td>medium
+        <td>
+      <tr>
+        <td>4
+        <td>large
+        <td>
+      <tr>
+        <td>5
+        <td>x-large
+        <td>
+      <tr>
+        <td>6
+        <td>xx-large
+        <td>
+      <tr>
+        <td>7
+        <td>xxx-large
+        <td><i>see below</i>
+    </table>
+
+    <small>The &quot;xxx-large&quot; value is a non-CSS value used here to
+    indicate a font size 50% larger than &quot;xx-large&quot;.</small>
+
+    </li>
+
+  </ol>
+
+<h4 id="bidirectional-text">Bidirectional text</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    [dir]:dir(ltr), bdi:dir(ltr), input[type=tel i]:dir(ltr) { direction: ltr; }
+    [dir]:dir(rtl), bdi:dir(rtl) { direction: rtl; }
+
+    address, blockquote, center, div, figure, figcaption, footer, form, header, hr,
+    legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2,
+    h3, h4, h5, h6, nav, section, table, caption, colgroup, col, thead,
+    tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output,
+    [dir=ltr i], [dir=rtl i], [dir=auto i] {
+      unicode-bidi: isolate;
+    }
+
+    bdo, bdo[dir] { unicode-bidi: isolate-override; }
+
+    input[dir=auto i]:matches([type=search i], [type=tel i], [type=url i],
+    [type=email i]), textarea[dir=auto i], pre[dir=auto i] {
+      unicode-bidi: plaintext;
+    }
+    /* see prose for input elements whose type attribute is in the Text state */
+
+    /* the rules setting the 'content' property on br and wbr elements also has bidi implications */
+  </pre>
+
+  When an <{input}> element's <code>dir</code> attribute is in the
+  <a state for="dir">auto</a> state and its <code>type</code>
+  attribute is in the <a>Text</a> state, then the user agent is
+  expected to act as if it had a user-agent-level style sheet rule setting the 'unicode-bidi'
+  property to ''plaintext''.
+
+  Input fields (i.e. <{textarea}> elements, and <{input}> elements when their
+  <code>type</code> attribute is in the <a element-state for="input">Text</a>, <a element-state for="input">Search</a>,
+  <a element-state for="input">Telephone</a>, <a element-state for="input">URL</a>,
+  or <a element-state for="input">E-mail</a> state) are expected to present an editing
+  user interface with a directionality that matches the element's 'direction' property.
+
+  When the document's character encoding is ISO-8859-8, the following rules are additionally
+  expected to apply, following those above: [[!ENCODING]]
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    address, blockquote, center, div, figure, figcaption, footer, form, header, hr,
+    legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2,
+    h3, h4, h5, h6, nav, section, table, caption, colgroup, col, thead,
+    tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, [dir=ltr i],
+    [dir=rtl i], [dir=auto i], *|* {
+      unicode-bidi: bidi-override;
+    }
+    input:not([type=submit i]):not([type=reset i]):not([type=button i]),
+    textarea, keygen {
+      unicode-bidi: normal;
+    }
+  </pre>
+
+<h4 id="quotes">Quotes</h4>
+
+  This block is automatically generated from the Unicode Common Locale Data Repository. [[!CLDR]]
+
+  User agents are expected to use either the block below (which will be regularly updated) or to
+  automatically generate their own copy directly from the source material. The language codes are
+  derived from the CLDR file names. The quotes are derived from the <code>delimiter</code>
+  blocks, with fallback handled as specified in the CLDR documentation.
+
+<pre highlight="css" class="include">
+path: includes/cldr.include
+</pre>
+
+<h4 id="sections-and-headings">Sections and headings</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    article, aside, h1, h2, h3, h4, h5, h6, nav, section {
+      display: block;
+    }
+
+    h1 { margin-top: 0.67em; margin-bottom: 0.67em; font-size: 2.00em; font-weight: bold; }
+    h2 { margin-top: 0.83em; margin-bottom: 0.83em; font-size: 1.50em; font-weight: bold; }
+    h3 { margin-top: 1.00em; margin-bottom: 1.00em; font-size: 1.17em; font-weight: bold; }
+    h4 { margin-top: 1.33em; margin-bottom: 1.33em; font-size: 1.00em; font-weight: bold; }
+    h5 { margin-top: 1.67em; margin-bottom: 1.67em; font-size: 0.83em; font-weight: bold; }
+    h6 { margin-top: 2.33em; margin-bottom: 2.33em; font-size: 0.67em; font-weight: bold; }
+  </pre>
+
+  In the following CSS block, <var>x</var> is shorthand for the following selector:
+  <code>:matches(article, aside, nav, section)</code>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    x h1 { margin-top: 0.83em; margin-bottom: 0.83em; font-size: 1.50em; }
+    x x h1 { margin-top: 1.00em; margin-bottom: 1.00em; font-size: 1.17em; }
+    x x x h1 { margin-top: 1.33em; margin-bottom: 1.33em; font-size: 1.00em; }
+    x x x x h1 { margin-top: 1.67em; margin-bottom: 1.67em; font-size: 0.83em; }
+    x x x x x h1 { margin-top: 2.33em; margin-bottom: 2.33em; font-size: 0.67em; }
+  </pre>
+
+  <p class="note">
+  The shorthand is used to keep this block at least mildly readable.
+  </p>
+
+<h4 id="lists">Lists</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    dir, dd, dl, dt, menu, ol, ul { display: block; }
+    li { display: list-item; }
+
+    dir, dl, menu, ol, ul { margin-top: 1em; margin-bottom: 1em; }
+
+    :matches(dir, dl, menu, ol, ul) :matches(dir, dl, menu, ol, ul) {
+      margin-top: 0; margin-bottom: 0;
+    }
+
+    dd { margin-left: 40px; } /* LTR-specific: use 'margin-right' for rtl elements */
+    dir, menu, ol, ul { padding-left: 40px; } /* LTR-specific: use 'padding-right' for rtl elements */
+
+    ol { list-style-type: decimal; }
+
+    dir, menu, ul {
+      list-style-type: disc;
+    }
+    :matches(dir, menu, ol, ul) :matches(dir, menu, ul) {
+      list-style-type: circle;
+    }
+    :matches(dir, menu, ol, ul) :matches(dir, menu, ol, ul) :matches(dir, menu, ul) {
+      list-style-type: square;
+    }
+  </pre>
+
+  The following rules are also expected to apply, as <a>presentational
+  hints</a>:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    ol[type=1], li[type=1] { list-style-type: decimal; }
+    ol[type=a], li[type=a] { list-style-type: lower-alpha; }
+    ol[type=A], li[type=A] { list-style-type: upper-alpha; }
+    ol[type=i], li[type=i] { list-style-type: lower-roman; }
+    ol[type=I], li[type=I] { list-style-type: upper-roman; }
+    ul[type=none i], li[type=none i] { list-style-type: none; }
+    ul[type=disc i], li[type=disc i] { list-style-type: disc; }
+    ul[type=circle i], li[type=circle i] { list-style-type: circle; }
+    ul[type=square i], li[type=square i] { list-style-type: square; }
+  </pre>
+
+  In the above stylesheet, the attribute selectors for the
+  <code>ol</code> and <{li}> elements are expected to be treated as
+  <a>case-sensitive</a>.
+
+  When rendering <{li}> elements, non-CSS user agents are expected to use the
+  <a>ordinal value</a> of the <{li}> element to render the counter in the list item
+  marker.
+
+  <p class="critical">This specification does not yet define the
+  CSS-specific rules for rendering <{li}> elements, because CSS doesn't yet provide
+  sufficient hooks for this purpose.
+
+<h4 id="tables">Tables</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    table { display: table; }
+    caption { display: table-caption; }
+    colgroup, colgroup[hidden] { display: table-column-group; }
+    col, col[hidden] { display: table-column; }
+    thead, thead[hidden] { display: table-header-group; }
+    tbody, tbody[hidden] { display: table-row-group; }
+    tfoot, tfoot[hidden] { display: table-footer-group; }
+    tr, tr[hidden] { display: table-row; }
+    td, th, td[hidden], th[hidden] { display: table-cell; }
+
+    colgroup[hidden], col[hidden], thead[hidden], tbody[hidden],
+    tfoot[hidden], tr[hidden], td[hidden], th[hidden] {
+      visibility: collapse;
+    }
+
+    table {
+      box-sizing: border-box;
+      border-spacing: 2px;
+      border-collapse: separate;
+      text-indent: initial;
+    }
+    td, th { padding: 1px; }
+    th { font-weight: bold; }
+
+    thead, tbody, tfoot, table > tr { vertical-align: middle; }
+    tr, td, th { vertical-align: inherit; }
+
+    table, td, th { border-color: gray; }
+    thead, tbody, tfoot, tr { border-color: inherit; }
+    table[rules=none i], table[rules=groups i], table[rules=rows i],
+    table[rules=cols i], table[rules=all i], table[frame=void i],
+    table[frame=above i], table[frame=below i], table[frame=hsides i],
+    table[frame=lhs i], table[frame=rhs i], table[frame=vsides i],
+    table[frame=box i], table[frame=border i],
+    table[rules=none i] > tr > td, table[rules=none i] > tr > th,
+    table[rules=groups i] > tr > td, table[rules=groups i] > tr > th,
+    table[rules=rows i] > tr > td, table[rules=rows i] > tr > th,
+    table[rules=cols i] > tr > td, table[rules=cols i] > tr > th,
+    table[rules=all i] > tr > td, table[rules=all i] > tr > th,
+    table[rules=none i] > thead > tr > td, table[rules=none i] > thead > tr > th,
+    table[rules=groups i] > thead > tr > td, table[rules=groups i] > thead > tr > th,
+    table[rules=rows i] > thead > tr > td, table[rules=rows i] > thead > tr > th,
+    table[rules=cols i] > thead > tr > td, table[rules=cols i] > thead > tr > th,
+    table[rules=all i] > thead > tr > td, table[rules=all i] > thead > tr > th,
+    table[rules=none i] > tbody > tr > td, table[rules=none i] > tbody > tr > th,
+    table[rules=groups i] > tbody > tr > td, table[rules=groups i] > tbody > tr > th,
+    table[rules=rows i] > tbody > tr > td, table[rules=rows i] > tbody > tr > th,
+    table[rules=cols i] > tbody > tr > td, table[rules=cols i] > tbody > tr > th,
+    table[rules=all i] > tbody > tr > td, table[rules=all i] > tbody > tr > th,
+    table[rules=none i] > tfoot > tr > td, table[rules=none i] > tfoot > tr > th,
+    table[rules=groups i] > tfoot > tr > td, table[rules=groups i] > tfoot > tr > th,
+    table[rules=rows i] > tfoot > tr > td, table[rules=rows i] > tfoot > tr > th,
+    table[rules=cols i] > tfoot > tr > td, table[rules=cols i] > tfoot > tr > th,
+    table[rules=all i] > tfoot > tr > td, table[rules=all i] > tfoot > tr > th {
+      border-color: black;
+    }
+  </pre>
+
+  The following rules are also expected to apply, as <a>presentational hints</a>:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    table[align=left i] { float: left; }
+    table[align=right i] { float: right; }
+    table[align=center i] { margin-left: auto; margin-right: auto; }
+    thead[align=absmiddle i], tbody[align=absmiddle i], tfoot[align=absmiddle i],
+    tr[align=absmiddle i], td[align=absmiddle i], th[align=absmiddle i] {
+      text-align: center;
+    }
+
+    caption[align=bottom i] { caption-side: bottom; }
+    p[align=left i], h1[align=left i], h2[align=left i], h3[align=left i],
+    h4[align=left i], h5[align=left i], h6[align=left i] {
+      text-align: left;
+    }
+    p[align=right i], h1[align=right i], h2[align=right i], h3[align=right i],
+    h4[align=right i], h5[align=right i], h6[align=right i] {
+      text-align: right;
+    }
+    p[align=center i], h1[align=center i], h2[align=center i], h3[align=center i],
+    h4[align=center i], h5[align=center i], h6[align=center i] {
+      text-align: center;
+    }
+    p[align=justify i], h1[align=justify i], h2[align=justify i], h3[align=justify i],
+    h4[align=justify i], h5[align=justify i], h6[align=justify i] {
+      text-align: justify;
+    }
+    thead[valign=top i], tbody[valign=top i], tfoot[valign=top i],
+    tr[valign=top i], td[valign=top i], th[valign=top i] {
+      vertical-align: top;
+    }
+    thead[valign=middle i], tbody[valign=middle i], tfoot[valign=middle i],
+    tr[valign=middle i], td[valign=middle i], th[valign=middle i] {
+      vertical-align: middle;
+    }
+    thead[valign=bottom i], tbody[valign=bottom i], tfoot[valign=bottom i],
+    tr[valign=bottom i], td[valign=bottom i], th[valign=bottom i] {
+      vertical-align: bottom;
+    }
+    thead[valign=baseline i], tbody[valign=baseline i], tfoot[valign=baseline i],
+    tr[valign=baseline i], td[valign=baseline i], th[valign=baseline i] {
+      vertical-align: baseline;
+    }
+
+    td[nowrap], th[nowrap] { white-space: nowrap; }
+
+    table[rules=none i], table[rules=groups i], table[rules=rows i],
+    table[rules=cols i], table[rules=all i] {
+    border-style: hidden;
+      border-collapse: collapse;
+    }
+    table[border] { border-style: outset; } /* only if border is not equivalent to zero */
+    table[frame=void i] { border-style: hidden; }
+    table[frame=above i] { border-style: outset hidden hidden hidden; }
+    table[frame=below i] { border-style: hidden hidden outset hidden; }
+    table[frame=hsides i] { border-style: outset hidden outset hidden; }
+    table[frame=lhs i] { border-style: hidden hidden hidden outset; }
+    table[frame=rhs i] { border-style: hidden outset hidden hidden; }
+    table[frame=vsides i] { border-style: hidden outset; }
+    table[frame=box i], table[frame=border i] { border-style: outset; }
+
+    table[border] > tr > td, table[border] > tr > th,
+    table[border] > thead > tr > td, table[border] > thead > tr > th,
+    table[border] > tbody > tr > td, table[border] > tbody > tr > th,
+    table[border] > tfoot > tr > td, table[border] > tfoot > tr > th {
+    /* only if border is not equivalent to zero */
+      border-width: 1px;
+      border-style: inset;
+    }
+    table[rules=none i] > tr > td, table[rules=none i] > tr > th,
+    table[rules=none i] > thead > tr > td, table[rules=none i] > thead > tr > th,
+    table[rules=none i] > tbody > tr > td, table[rules=none i] > tbody > tr > th,
+    table[rules=none i] > tfoot > tr > td, table[rules=none i] > tfoot > tr > th,
+    table[rules=groups i] > tr > td, table[rules=groups i] > tr > th,
+    table[rules=groups i] > thead > tr > td, table[rules=groups i] > thead > tr > th,
+    table[rules=groups i] > tbody > tr > td, table[rules=groups i] > tbody > tr > th,
+    table[rules=groups i] > tfoot > tr > td, table[rules=groups i] > tfoot > tr > th,
+    table[rules=rows i] > tr > td, table[rules=rows i] > tr > th,
+    table[rules=rows i] > thead > tr > td, table[rules=rows i] > thead > tr > th,
+    table[rules=rows i] > tbody > tr > td, table[rules=rows i] > tbody > tr > th,
+    table[rules=rows i] > tfoot > tr > td, table[rules=rows i] > tfoot > tr > th {
+      border-width: 1px;
+      border-style: none;
+    }
+    table[rules=cols i] > tr > td, table[rules=cols i] > tr > th,
+    table[rules=cols i] > thead > tr > td, table[rules=cols i] > thead > tr > th,
+    table[rules=cols i] > tbody > tr > td, table[rules=cols i] > tbody > tr > th,
+    table[rules=cols i] > tfoot > tr > td, table[rules=cols i] > tfoot > tr > th {
+      border-width: 1px;
+      border-style: none solid;
+    }
+    table[rules=all i] > tr > td, table[rules=all i] > tr > th,
+    table[rules=all i] > thead > tr > td, table[rules=all i] > thead > tr > th,
+    table[rules=all i] > tbody > tr > td, table[rules=all i] > tbody > tr > th,
+    table[rules=all i] > tfoot > tr > td, table[rules=all i] > tfoot > tr > th {
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    table[rules=groups i] > colgroup {
+      border-left-width: 1px;
+      border-left-style: solid;
+      border-right-width: 1px;
+      border-right-style: solid;
+    }
+    table[rules=groups i] > thead,
+    table[rules=groups i] > tbody,
+    table[rules=groups i] > tfoot {
+      border-top-width: 1px;
+      border-top-style: solid;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+    }
+
+    table[rules=rows i] > tr, table[rules=rows i] > thead > tr,
+    table[rules=rows i] > tbody > tr, table[rules=rows i] > tfoot > tr {
+      border-top-width: 1px;
+      border-top-style: solid;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+    }
+  </pre>
+
+  In <a>quirks mode</a>, the following rules are also expected to apply:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    table {
+      font-weight: initial;
+      font-style: initial;
+      font-variant: initial;
+      font-size: initial;
+      line-height: initial;
+      white-space: initial;
+      text-align: initial;
+    }
+  </pre>
+
+  <hr />
+
+  For the purposes of the CSS table model, the <{col}> element is expected to be treated
+  as if it was present as many times as its <code>span</code> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
+
+  For the purposes of the CSS table model, the <{colgroup}> element, if it contains no
+  <{col}> element, is expected to be treated as if it had as many such children as its
+  <code>span</code> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
+
+  For the purposes of the CSS table model, the <code>colspan</code> and
+  <code>rowspan</code> attributes on <{td}> and <{th}>
+  elements are expected to <a lt="rules for parsing non-negative integers">provide</a> the
+  <i>special knowledge</i> regarding cells spanning rows and columns.
+
+  In <a>HTML documents</a>, the following rules are also expected to apply:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    :matches(table, thead, tbody, tfoot, tr) > form {  display: none !important; }
+  </pre>
+
+  <hr />
+
+  The <{table}> element's <code>cellspacing</code>
+  attribute <a>maps to the pixel length property</a> 'border-spacing' on the element.
+
+  The <{table}> element's <code>cellpadding</code>
+  attribute <a>maps to the pixel length
+  properties</a> 'padding-top', 'padding-right', 'padding-bottom', and 'padding-left' of any
+  <code>td</code> and <{th}> elements that have corresponding <a>cells</a> in the <a>table</a> corresponding to
+  the <{table}> element.
+
+  The <{table}> element's <code>hspace</code> attribute <a>maps to the dimension properties</a> 'margin-left' and
+  'margin-right' on the <{table}> element.
+
+  The <{table}> element's <code>vspace</code> attribute <a>maps to the dimension properties</a> 'margin-top' and
+  'margin-bottom' on the <{table}> element.
+
+  The <{table}> element's <code>height</code> attribute
+  <a>maps to the dimension property (ignoring zero)</a> 'height' on the <code>table</code>
+  element.
+
+  The <{table}> element's <code>width</code> attribute
+  <a>maps to the dimension property (ignoring zero)</a> 'width' on the <code>table</code>
+  element.
+
+  The <{col}> element's <code>width</code> attribute <a>maps
+  to the dimension property (ignoring zero)</a> 'width' on the <{col}> element.
+
+  The <{tr}> element's <code>height</code> attribute <a>maps
+  to the dimension property (ignoring zero)</a> 'height' on the <{tr}> element.
+
+  The <code>td</code> and <{th}> elements' <code>height</code>
+  attributes <a>map to the dimension
+  property (ignoring zero)</a> 'height' on the element.
+
+  The <code>td</code> and <{th}> elements' <code>width</code>
+  attributes <a>map to the dimension
+  property (ignoring zero)</a> 'width' on the element.
+
+  <hr />
+
+  The <{caption}> element unless specified otherwise below, and the <{thead}>,
+  <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, and <code>th</code>
+  elements when they have an <code>align</code> attribute whose value is an <a>ASCII
+  case-insensitive</a> match for either the string "<code>center</code>" or the string
+  "<code>middle</code>", are expected to center text within themselves, as if they had
+  their 'text-align' property set to ''center'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the center.
+
+  The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
+  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an <a>ASCII case-insensitive</a> match for
+  the string "<code>left</code>", are expected to left-align text within themselves, as if
+  they had their 'text-align' property set to ''text-align/left'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the left.
+
+  The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
+  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an <a>ASCII case-insensitive</a> match for
+  the string "<code>right</code>", are expected to right-align text within themselves, as
+  if they had their 'text-align' property set to ''text-align/right'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the right.
+
+  The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
+  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an <a>ASCII case-insensitive</a> match for
+  the string "<code>justify</code>", are expected to full-justify text within themselves,
+  as if they had their 'text-align' property set to ''text-align/justify'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the left.
+
+  User agents are expected to have a rule in their user agent stylesheet that matches
+  <{th}> elements that have a parent node whose computed value for the 'text-align'
+  property is its initial value, whose declaration block consists of just a single declaration that
+  sets the 'text-align' property to the value ''center''.
+
+  <hr />
+
+  When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>,
+  <{tr}>, <{td}>, or <{th}> element has a <{common/background}> attribute set to a non-empty value, the new value is
+  expected to be <a>resolved</a> relative to the element, and if this is
+  successful, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'background-image' property to the
+  <a>resulting absolute URL</a>.
+
+  When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>,
+  <{tr}>, <{td}>, or <{th}> element has a <code>bgcolor</code>
+  attribute set, the new value is expected to be parsed using the <a>rules for parsing a legacy
+  color value</a>, and if that does not return an error, the user agent is expected to treat the
+  attribute as a <a>presentational hint</a> setting the element's
+  'background-color' property to the resulting color.
+
+  When a <{table}> element has a <code>bordercolor</code>
+  attribute, its value is expected to be parsed using the <a>rules for parsing a legacy color
+  value</a>, and if that does not return an error, the user agent is expected to treat the
+  attribute as a <a>presentational hint</a> setting the element's
+  'border-top-color', 'border-right-color', 'border-bottom-color', and 'border-left-color'
+  properties to the resulting color.
+
+  <hr />
+
+  The <{table}> element's <code>border</code> attribute <a>maps to the pixel length properties</a>
+  'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width' on the
+  element. If the attribute is present but parsing the attribute's value using the <a>rules for
+  parsing non-negative integers</a> generates an error, a default value of 1px is expected to be
+  used for that property instead.
+
+  Rules marked "<dfn>only if border is not equivalent to zero</dfn>"
+  in the CSS block above is expected to only be applied if the <code>border</code> attribute mentioned in the selectors for the rule is not
+  only present but, when parsed using the <a>rules for parsing non-negative integers</a>, is
+  also found to have a value other than zero or to generate an error.
+
+  <hr />
+
+  In <a>quirks mode</a>, a <{td}> element or a <{th}> element that has a
+  <code>nowrap</code> attribute but also has a <code>width</code> attribute whose value, when parsed using the <a>rules for
+  parsing non-zero dimension values</a>, is found to be a length (not an error or a number
+  classified as a percentage), is expected to have a <a>presentational hint</a> setting the element's 'white-space' property to ''white-space/normal'',
+  overriding the rule in the CSS block above that sets it to ''white-space/nowrap''.
+
+  <hr />
+
+  User agents are expected to render <a>sorting interface <code>th</code> elements</a> in such a manner as to indicate that
+  activating the elements will cause the table to be sorted.
+
+<h4 id="margin-collapsing-quirks">Margin collapsing quirks</h4>
+
+  A node is <dfn>substantial</dfn> if it is a text node
+  that is not <a>inter-element whitespace</a>, or if it is an element node.
+
+  A node is <dfn>blank</dfn> if it is an element that contains no
+  <a>substantial</a> nodes.
+
+  The <dfn lt="elements with default margins|element with default margins">elements with default margins</dfn>
+  are the following elements: <{blockquote}>, <{dir}>, <{dl}>,
+  <{h1}>, <{h2}>, <{h3}>, <{h4}>, <{h5}>,
+  <{h6}>, <{listing}>, <{menu}>, <{ol}>,
+  <{p}>, <{plaintext}>, <{pre}>, <{ul}>, <code>xmp</code>
+
+  In <a>quirks mode</a>, any <a>element with default margins</a> that is the child of a <{body}>, <{td}>, or
+  <{th}> element and has no <a>substantial</a>
+  previous siblings is expected to have a user-agent level style sheet rule that sets its
+  'margin-top' property to zero.
+
+  In <a>quirks mode</a>, any <a>element
+  with default margins</a> that is the child of a <{body}>, <{td}>, or
+  <{th}> element, has no <a>substantial</a>
+  previous siblings, and is <a>blank</a>, is expected to have
+  a user-agent level style sheet rule that sets its 'margin-bottom' property to zero also.
+
+  In <a>quirks mode</a>, any <a>element
+  with default margins</a> that is the child of a <{td}> or <{th}> element, has
+  no <a>substantial</a> following siblings, and is <a>blank</a>, is expected to have a user-agent level style sheet
+  rule that sets its 'margin-top' property to zero.
+
+  In <a>quirks mode</a>, any <{p}> element that is the child of a <{td}>
+  or <{th}> element and has no <a>substantial</a> following siblings, is expected to have a
+  user-agent level style sheet rule that sets its 'margin-bottom' property to zero.
+
+<h4 id="form-controls">Form controls</h4>
+
+  <pre highlight="css">
+@namespace url(http://www.w3.org/1999/xhtml);
+
+  input, select, option, optgroup, button, textarea, keygen {
+  text-indent: initial;
+  }
+
+  input:matches([type=radio i], [type=checkbox i], [type=reset i], [type=button i],
+  [type=submit i], [type=search i]), select, button {
+  box-sizing: border-box;
+  }
+  </pre>
+
+  In <a>quirks mode</a>, the following rules are also expected to apply:
+
+  <pre highlight="css">
+@namespace url(http://www.w3.org/1999/xhtml);
+
+  input:not([type=image i]), textarea { box-sizing: border-box; }
+  </pre>
+
+  Each kind of form control is also given a specific default binding, as described in subsequent
+  sections, which implements the look and feel of the control.
+
+<h4 id="the-hr-element-rendering">The <{hr}> element</h4>
+
+  <pre highlight="css">
+@namespace url(http://www.w3.org/1999/xhtml);
+
+  hr { color: gray; border-style: inset; border-width: 1px; margin: 0.5em auto; }
+  </pre>
+
+  The following rules are also expected to apply, as <a>presentational hints</a>:
+
+  <pre highlight="css">
+@namespace url(http://www.w3.org/1999/xhtml);
+
+  hr[align=left] { margin-left: 0; margin-right: auto; }
+  hr[align=right] { margin-left: auto; margin-right: 0; }
+  hr[align=center] { margin-left: auto; margin-right: auto; }
+  hr[color], hr[noshade] { border-style: solid; }
+  </pre>
+
+  If an <{hr}> element has either a <code>color</code> attribute
+  or a <code>noshade</code> attribute, and furthermore also has a <code>size</code> attribute, and parsing that attribute's value using the
+  <a>rules for parsing non-negative integers</a> doesn't generate an error, then the user
+  agent is expected to use the parsed value divided by two as a pixel length for
+  <a>presentational hints</a> for the properties 'border-top-width', 'border-right-width',
+  'border-bottom-width', and 'border-left-width' on the element.
+
+  Otherwise, if an <{hr}> element has neither a <code>color</code>
+  attribute nor a <code>noshade</code> attribute, but does have a <code>size</code> attribute, and parsing that attribute's value using the
+  <a>rules for parsing non-negative integers</a> doesn't generate an error, then: if the
+  parsed value is one, then the user agent is expected to use the attribute as a <a>presentational hint</a> setting the element's
+  'border-bottom-width' to 0; otherwise, if the parsed value is greater than one, then the user
+  agent is expected to use the parsed value minus two as a pixel length for <a>presentational
+  hints</a> for the 'height' property on the element.
+
+  The <code>width</code> attribute on an <{hr}> element <a>maps
+  to the dimension property</a> 'width' on the element.
+
+  When an <{hr}> element has a <code>color</code> attribute, its
+  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and
+  if that does not return an error, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'color' property to
+  the resulting color.
+
+<h4 id="the-fieldset-and-legend-elements">The <code>fieldset</code> and <{legend}> elements</h4>
+
+  <pre highlight="css">
+@namespace url(http://www.w3.org/1999/xhtml);
+
+  fieldset {
+  display: block;
+  margin-left: 2px; margin-right: 2px;
+  border: groove 2px ThreeDFace;
+  padding: 0.35em 0.625em 0.75em;
+  min-width: min-content;
+  }
+
+  legend {
+  padding-left: 2px; padding-right: 2px;
+  }
+  </pre>
+
+  The <{fieldset}> element is expected to establish a new block formatting context.
+
+  If the <{fieldset}> element has a child that matches the conditions in the list below,
+  then the first such child is the <{fieldset}> element's <dfn>rendered legend</dfn>:
+
+  <ul class="brief">
+
+    <li>The child is a <{legend}> element.</li>
+
+    <li>The child is not out-of-flow (e.g. not absolutely positioned or floated).</li>
+
+    <li>The child is generating a box (e.g. it is not 'display:none').</li>
+
+  </ul>
+
+  A <{fieldset}> element's <a>rendered legend</a>, if any, is expected to be
+  rendered over the top border edge of the <{fieldset}> element as a ''block'' box
+  (overriding any explicit 'display' value). In the absence of an explicit width, the box should
+  shrink-wrap. If the <{legend}> element in question has an <code>align</code> attribute, and its value is an <a>ASCII
+  case-insensitive</a> match for one of the strings in the first column of the following table,
+  then the <code>legend</code> is expected to be rendered horizontally aligned over the border edge
+  in the position given in the corresponding cell on the same row in the second column. If the
+  attribute is absent or has a value that doesn't match any of the cases in the table, then the
+  position is expected to be on the right if the 'direction' property on this element has a computed
+  value of ''rtl'', and on the left otherwise.
+
+  <table>
+    <thead>
+    <tr>
+      <th>Attribute value
+      <th>Alignment position
+    <tbody>
+    <tr>
+      <td><code>left</code>
+      <td>On the left
+    <tr>
+      <td><code>right</code>
+      <td>On the right
+    <tr>
+      <td><code>center</code>
+      <td>In the middle
+  </table>
+
+<h3 id="replaced-elements">Replaced elements</h3>
+
+<h4 id="replaced-elements-embedded-content">Embedded content</h4>
+
+  The <{embed}>, <{iframe}>, and <{video}> elements are expected to be
+  treated as <a>replaced elements</a>.
+
+  A <{canvas}> element that <a>represents</a> <a>embedded content</a> is
+  expected to be treated as a <a>replaced element</a>; the contents of such elements are the
+  element's bitmap, if any, or else a transparent black bitmap with the same <a>intrinsic
+  dimensions</a> as the element. Other <{canvas}> elements are expected to be treated
+  as ordinary elements in the rendering model.
+
+  An <{object}> element that <a>represents</a> an image, plugin, or <<a>nested browsing context</a> is expected to be treated as a <a>replaced element</a>. Other
+  <{object}> elements are expected to be treated as ordinary elements in the rendering
+  model.
+
+  An <{applet}> element that <a>represents</a> a <a>plugin</a> is expected
+  to be treated as a <a>replaced element</a>. Other <{applet}> elements are expected
+  to be treated as ordinary elements in the rendering model.
+
+  The <{audio}> element, when it is <a>exposing a user interface</a>, is expected to be treated as a
+  <a>replaced element</a> about one line high, as wide as is necessary to expose the user
+  agent's user interface features. When an <{audio}> element is not <a>exposing a user interface</a>, the user agent is expected to force
+  its 'display' property to compute to ''display/none'', irrespective of CSS rules.
+
+  Whether a <{video}> element is <a>exposing a user interface</a> is not expected to affect the size of the rendering;
+  controls are expected to be overlaid above the page content without causing any layout changes,
+  and are expected to disappear when the user does not need them.
+
+  When a <{video}> element represents a poster frame or frame of video, the poster frame
+  or frame of video is expected to be rendered at the largest size that maintains the aspect ratio
+  of that poster frame or frame of video without being taller or wider than the <{video}>
+  element itself, and is expected to be centered in the <{video}> element.
+
+  Any subtitles or captions are expected to be overlayed directly on top of their
+  <{video}> element, as defined by the relevant rendering rules; for WebVTT, those are the
+  <a>rules for updating the display of WebVTT text tracks</a>. [[WEBVTT]]
+
+  When the user agent starts <a>exposing a user
+  interface</a> for a <{video}> element, the user agent should run the <a>rules for
+  updating the text track rendering</a> of each of the <a>text
+  tracks</a> in the <{video}> element's <a>list of text tracks</a> that are <a mode for="track">showing</a> and whose <a>text track kind</a> is one of <code>subtitles</code> or <code>captions</code> (e.g., for <a>text
+  tracks</a> based on <a>WebVTT</a>, the <a>rules for updating the display of WebVTT
+  text tracks</a>). [[WEBVTT]]
+
+  <p class="note">
+  Resizing <code>video</code> and <{canvas}> elements does not interrupt
+  video playback or clear the canvas.
+  </p>
+
+  <hr />
+
+  The following CSS rules are expected to apply:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    iframe:not([seamless]) { border: 2px inset; }
+    iframe[seamless] { display: block; }
+    video { object-fit: contain; }
+  </pre>
+
+<h4 id="replaced-elements-images">Images</h4>
+
+  User agents are expected to render <{img}> elements and <{input}> elements
+  whose <code>type</code> attributes are in the <a element-state for="input">image button</a> state, according to the first applicable rules
+  from the following list:
+
+  <dl class="switch">
+
+    <dt>If the element <a>represents</a> an image</dt>
+
+    <dd>The user agent is expected to treat the element as a <a>replaced element</a> and
+    render the image according to the rules for doing so defined in CSS.</dd>
+
+    <dt>
+
+    If the element does not <a>represent</a> an image, but the element
+    already has <a>intrinsic dimensions</a> (e.g. from the <a>dimension attributes</a>
+    or CSS rules), and either:
+
+    <ul>
+
+      <li>the user agent has reason to believe that the image will become <i>available</i> and be rendered in due
+      course, or
+
+      <li>the element has no <code>alt</code> attribute, or
+
+      <li>the <code>Document</code> is in <a>quirks mode</a>
+
+    </ul>
+
+    </dt>
+
+    <dd>The user agent is expected to treat the element as a <a>replaced element</a> whose
+    content is the text that the element represents, if any, optionally alongside an icon indicating
+    that the image is being obtained (if applicable). For <{input}> elements, the element
+    is expected to appear button-like to indicate that the element is a <a>button</a>.</dd>
+
+    <dt>If the element is an <{img}> element that <a>represents</a> some text and the
+    user agent does not expect this to change</dt>
+
+    <dd>The user agent is expected to treat the element as a non-replaced phrasing element whose
+    content is the text, optionally with an icon indicating that an image is missing, so that the
+    user can request the image be displayed or investigate why it is not rendering. In non-graphical
+    contexts, such an icon should be omitted.</dd>
+
+    <dt>If the element is an <{img}> element that <a>represents</a> nothing and the
+    user agent does not expect this to change</dt>
+
+    <dd>The user agent is expected to treat the element as an empty inline element. (In the absence
+    of further styles, this will cause the element to essentially not be rendered.)</dd>
+
+    <dt>If the element is an <{input}> element that does not <a>represent</a> an image and the user agent does not expect this to change</dt>
+
+    <dd>The user agent is expected to treat the element as a <a>replaced element</a>
+    consisting of a button whose content is the element's alternative text. The <a>intrinsic
+    dimensions</a> of the button are expected to be about one line in height and whatever width
+    is necessary to render the text on one line.</dd>
+
+  </dl>
+
+  The icons mentioned above are expected to be relatively small so as not to disrupt most text
+  but be easily clickable. In a visual environment, for instance, icons could be 16 pixels by 16
+  pixels square, or 1em by 1em if the images are scalable. In an audio environment, the icon could
+  be a short bleep. The icons are intended to indicate to the user that they can be used to get to
+  whatever options the user agent provides for images, and, where appropriate, are expected to provide
+  access to the context menu that would have come up if the user interacted with the actual
+  image.
+
+  <hr />
+
+  All animated images with the same <a>absolute URL</a> and the same image data are
+  expected to be rendered synchronized to the same timeline as a group, with the timeline starting
+  at the time of the least recent addition to the group.
+
+  <p class="note">
+  In other words, when a second image with the same <a>absolute URL</a> and
+  animated image data is <a for="document">inserted into a document</a>, it jumps to the point in the animation cycle that
+  is currently being displayed by the first image.
+  </p>
+
+  When a user agent is to <dfn>restart the animation</dfn> for an <{img}> element
+  showing an animated image, all animated images with the same <a>absolute URL</a> and the
+  same image data in that <{img}> element's <a>node document</a> are expected to restart
+  their animation from the beginning.
+
+  <hr />
+
+  The following CSS rules are expected to apply when the <code>Document</code> is in <a>quirks
+  mode</a>:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    img[align=left i] { margin-right: 3px; }
+    img[align=right i] { margin-left: 3px; }
+  </pre>
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="attributes-for-embedded-content-and-images">Attributes for embedded content and images</h4>
+
+  The following CSS rules are expected to apply as <a>presentational hints</a>:
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    iframe[frameborder=0], iframe[frameborder=no i] { border: none; }
+
+    applet[align=left i], embed[align=left i], iframe[align=left i],
+    img[align=left i], input[type=image i][align=left i], object[align=left i] {
+      float: left;
+    }
+
+    applet[align=right i], embed[align=right i], iframe[align=right i],
+    img[align=right i], input[type=image i][align=right i], object[align=right i] {
+      float: right;
+    }
+
+    applet[align=top i], embed[align=top i], iframe[align=top i],
+    img[align=top i], input[type=image i][align=top i], object[align=top i] {
+      vertical-align: top;
+    }
+
+    applet[align=baseline i], embed[align=baseline i], iframe[align=baseline i],
+    img[align=baseline i], input[type=image i][align=baseline i], object[align=baseline i] {
+      vertical-align: baseline;
+    }
+
+    applet[align=texttop i], embed[align=texttop i], iframe[align=texttop i],
+    img[align=texttop i], input[type=image i][align=texttop i], object[align=texttop i] {
+      vertical-align: text-top;
+    }
+
+    applet[align=absmiddle i], embed[align=absmiddle i], iframe[align=absmiddle i],
+    img[align=absmiddle i], input[type=image i][align=absmiddle i], object[align=absmiddle i],
+    applet[align=abscenter i], embed[align=abscenter i], iframe[align=abscenter i],
+    img[align=abscenter i], input[type=image i][align=abscenter i], object[align=abscenter i] {
+      vertical-align: middle;
+    }
+
+    applet[align=bottom i], embed[align=bottom i], iframe[align=bottom i],
+    img[align=bottom i], input[type=image i][align=bottom i],
+    object[align=bottom i] {
+      vertical-align: bottom;
+    }
+  </pre>
+
+  When an <{applet}>, <{embed}>, <{iframe}>, <{img}>, or
+  <{object}> element, or an <{input}> element whose <code>type</code> attribute is in the <a element-state for="input">image button</a> state, has an <code>align</code>
+  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>center</code>" or the string "<code>middle</code>", the user agent is expected
+  to act as if the element's 'vertical-align' property was set to a value that aligns the vertical
+  middle of the element with the parent element's baseline.
+
+  The <code>hspace</code> attribute of <{applet}>, <{embed}>,
+  <{iframe}>, <{img}>, or <{object}> elements, and <code>input</code>
+  elements with a <code>type</code> attribute in the <a element-state for="input">image button</a> state, <a>maps to the dimension properties</a> 'margin-left' and 'margin-right' on the
+  element.
+
+  The <code>vspace</code> attribute of <{applet}>, <{embed}>,
+  <{iframe}>, <{img}>, or <{object}> elements, and <code>input</code>
+  elements with a <code>type</code> attribute in the <a element-state for="input">image button</a> state, <a>maps to the dimension properties</a> 'margin-top' and 'margin-bottom' on the
+  element.
+
+  When an <{img}> element, <{object}> element, or <{input}> element
+  with a <code>type</code> attribute in the <a element-state for="input">image button</a> state has a <code>border</code> attribute whose value, when parsed using the <a>rules for
+  parsing non-negative integers</a>, is found to be a number greater than zero, the user agent is
+  expected to use the parsed value for eight <a>presentational hints</a>: four setting the
+  parsed value as a pixel length for the element's 'border-top-width', 'border-right-width',
+  'border-bottom-width', and 'border-left-width' properties, and four setting the element's
+  'border-top-style', 'border-right-style', 'border-bottom-style', and 'border-left-style'
+  properties to the value ''solid''.
+
+  The <code>width</code> and <code>height</code> attributes on <{applet}>, <{embed}>,
+  <{iframe}>, <{img}>, <code>object</code> or <{video}> elements, and
+  <{input}> elements with a <code>type</code> attribute in the
+  <a element-state for="input">image button</a> state and that either represents an image
+  or that the user expects will eventually represent an image, map to the dimension properties 'width' and 'height' on the element
+  respectively.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="replaced-elements-image-maps">Image maps</h4>
+
+  Shapes on an <a>image map</a> are expected to act, for the purpose of the CSS cascade, as
+  elements independent of the original <{area}> element that happen to match the same style
+  rules but inherit from the <{img}> or <{object}> element.
+
+  For the purposes of the rendering, only the 'cursor' property is expected to have any effect on
+  the shape.
+
+  <p class="example">
+  Thus, for example, if an <{area}> element has a <{global/style}> attribute that sets the 'cursor' property to ''cursor/help'', then when the
+  user designates that shape, the cursor would change to a Help cursor.
+  </p>
+
+  <p class="example">
+  Similarly, if an <{area}> element had a CSS rule that set its 'cursor'
+  property to ''inherit'' (or if no rule setting the 'cursor' property matched the element at all),
+  the shape's cursor would be inherited from the <code>img</code> or <{object}> element of
+  the <a>image map</a>, not from the parent of the <{area}> element.
+  </p>
+
+  </div>
+
+  <div class="impl">
+
+<h3 id="bindings">Bindings</h3>
+
+<h4 id="bindings-introduction">Introduction</h4>
+
+  A number of elements have their rendering defined in terms of the 'binding' property. [[!BECSS]]
+
+  The CSS snippets below set the 'binding' property to a user-agent-defined value, represented
+  below by keywords like <{<i>button</i>}>. The rules then described for
+  these bindings are only expected to apply if the element's 'binding' property has not been
+  overridden (e.g. by the author) to have another value.
+
+  Exactly how the bindings are implemented is not specified by this specification. User agents
+  are encouraged to make their bindings set the 'appearance' CSS property appropriately to achieve
+  platform-native appearances for widgets, and are expected to implement any relevant animations,
+  etc, that are appropriate for the platform. [[!CSSUI]]
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-button-element-rendering">The <{button}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    button { binding: button; }
+  </pre>
+
+  When the <i>button</i> binding applies to a <{button}> element, the element
+  is expected to render as an ''inline-block'' box rendered as a button whose contents are the
+  contents of the element.
+
+  When the <{button}> element's <code>type</code> attribute is
+  in the <a>Menu</a> state, the user agent is expected to
+  indicate that activating the element will display a menu, e.g. by displaying a down-pointing
+  triangle after the button's label.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-details-element-rendering">The <{details}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    details { binding: details; }
+  </pre>
+
+  When the <i>details</i> binding applies to a <{details}> element, the element
+  is expected to render as a ''block'' box with its 'padding-left' property set to &quot;40px&quot; for
+  left-to-right elements (<a>LTR-specific</a>) and with its 'padding-right' property set to
+  &quot;40px&quot; for right-to-left elements. The element's shadow tree is expected to take the element's
+  first child <{summary}> element, if any, and place it in a first ''block'' box container,
+  and then take the element's remaining descendants, if any, and place them in a second ''block'' box
+  container.
+
+  The first container is expected to contain at least one line box, and that line box is expected
+  to contain a disclosure widget (typically a triangle), horizontally positioned within the left
+  padding of the <{details}> element. That widget is expected to allow the user to request
+  that the details be shown or hidden.
+
+  The second container is expected to have its 'overflow' property set to ''hidden''. When the
+  <{details}> element does not have an <code>open</code>
+  attribute, this second container is expected to be removed from the rendering.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-input-element-as-a-text-entry-widget">The <{input}> element as a text entry widget</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    input { binding: input-textfield; }
+    input[type=password i] { binding: input-password; }
+    /* later rules override this for other values of type="" */
+  </pre>
+
+  When the <i>input-textfield</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Text</a>, <a element-state for="input">Search</a>,
+  <a element-state for="input">Telephone</a>, <a element-state for="input">URL</a>,
+  or <a element-state for="input">E-mail</a> state, the element is expected to render as
+  an ''inline-block'' box rendered as a text field.
+
+  When the <i>input-password</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Password</a> state, the element is expected to render as an
+  ''inline-block'' box rendered as a text field whose contents are obscured.
+
+  If these text fields provide a text selection, then, when the user changes the current
+  selection in such a binding, the user agent is expected to <a>queue a task</a> to <a>fire
+  a simple event</a> that bubbles named <code>select</code> at the element,
+  using the <a>user interaction task source</a> as the task source.
+
+  If an <{input}> element whose <code>type</code> attribute is
+  in one of the above states has a <code>size</code> attribute, and parsing
+  that attribute's value using the <a>rules for parsing non-negative integers</a> doesn't
+  generate an error, then the user agent is expected to use the attribute as a <a>presentational hint</a> for the 'width' property on the element,
+  with the value obtained from applying the <a>converting a character width to pixels</a>
+  algorithm to the value of the attribute.
+
+  If an <{input}> element whose <code>type</code> attribute is
+  in one of the above states does <em>not</em> have a <code>size</code>
+  attribute, then the user agent is expected to act as if it had a user-agent-level style sheet rule
+  setting the 'width' property on the element to the value obtained from applying the
+  <a>converting a character width to pixels</a> algorithm to the number 20.
+
+  The <dfn>converting a character width to pixels</dfn> algorithm returns (<var>size</var>-1)&times;<var>avg</var>&nbsp;+&nbsp;<var>max</var>,
+  where <var>size</var> is the character width to convert, <var>avg</var> is the
+  average character width of the primary font for the element for which the algorithm is being run,
+  in pixels, and <var>max</var> is the maximum character width of that same font, also in
+  pixels. (The element's 'letter-spacing' property does not affect the result.)
+
+  When the <i>input-textfield</i> binding applies to an element, the 'line-height'
+  property, if it has a computed value equivalent to a value that is less than 1.0, must have a used
+  value of 1.0.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-input-element-as-domain-specific-widgets">The <{input}> element as domain-specific widgets</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    input[type=datetime i] { binding: input-datetime; }
+    input[type=date i] { binding: input-date; }
+    input[type=month i] { binding: input-month; }
+    input[type=week i] { binding: input-week; }
+    input[type=time i] { binding: input-time; }
+    input[type=datetime-local i] { binding: input-datetime-local; }
+    input[type=number i] { binding: input-number; }
+  </pre>
+
+  When the <i>input-datetime</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Date and Time</a> state, the element is expected to render as
+  an ''inline-block'' box depicting a Date and Time control.
+
+  When the <i>input-date</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Date</a> state, the element is expected to render as an
+  ''inline-block'' box depicting a Date control.
+
+  When the <i>input-month</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Month</a> state, the element is expected to render as an
+  ''inline-block'' box depicting a Month control.
+
+  When the <i>input-week</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Week</a> state, the element is expected to render as an
+  ''inline-block'' box depicting a Week control.
+
+  When the <i>input-time</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Time</a> state, the element is expected to render as an
+  ''inline-block'' box depicting a Time control.
+
+  When the <i>input-datetime-local</i> binding applies to an <{input}> element
+  whose <code>type</code> attribute is in the <a element-state for="input">Local Date and Time</a> state, the element is expected
+  to render as an ''inline-block'' box depicting a Local Date and Time control.
+
+  When the <i>input-number</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Number</a> state, the element is expected to render as an
+  ''inline-block'' box depicting a Number control.
+
+  These controls are all expected to be about one line high, and about as wide as necessary to
+  show the widest possible value.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-input-element-as-a-range-control">The <{input}> element as a range control</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    input[type=range i] { binding: input-range; }
+  </pre>
+
+  When the <i>input-range</i> binding applies to an <{input}> element whose
+  <{input/type}> attribute is in the <a>Range</a> state, the element is expected to render as an
+  ''inline-block'' box depicting a slider control.
+
+  When the control is wider than it is tall (or square), the control is expected to be a
+  horizontal slider, with the lowest value on the right if the 'direction' property on this element
+  has a computed value of ''rtl'', and on the left otherwise. When the control is taller than it is
+  wide, it is expected to be a vertical slider, with the lowest value on the bottom.
+
+  Predefined suggested values (provided by the <code>list</code>
+  attribute) are expected to be shown as tick marks on the slider, which the slider can snap to.
+
+  User agents are expected to use the used value of the 'direction' property on the element to
+  determine the direction in which the slider operates. Typically, a left-to-right (''ltr'')
+  horizontal control would have the lowest value on the left and the highest value on the right, and
+  vice versa.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-input-element-as-a-color-well">The <{input}> element as a color well</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    input[type=color i] { binding: input-color; }
+  </pre>
+
+  When the <i>input-color</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Color</a> state, the element is expected to render as an
+  ''inline-block'' box depicting a color well, which, when activated, provides the user with a color
+  picker (e.g. a color wheel or color palette) from which the color can be changed.
+
+  Predefined suggested values (provided by the <code>list</code>
+  attribute) are expected to be shown in the color picker interface, not on the color well
+  itself.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-input-element-as-a-checkbox-and-radio-button-widgets">The <{input}> element as a checkbox and radio button widgets</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    input[type=checkbox i] { binding: input-checkbox; }
+    input[type=radio i] { binding: input-radio; }
+  </pre>
+
+  When the <i>input-checkbox</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Checkbox</a> state, the element is expected to render as an
+  ''inline-block'' box containing a single checkbox control, with no label.
+
+  When the <i>input-radio</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">Radio Button</a> state, the element is expected to render as an
+  ''inline-block'' box containing a single radio button control, with no label.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-input-element-as-a-file-upload-control">The <{input}> element as a file upload control</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    input[type=file i] { binding: input-file; }
+  </pre>
+
+  When the <i>input-file</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">File Upload</a> state, the element is expected to render as an
+  ''inline-block'' box containing a span of text giving the file name(s) of the <a>selected files</a>, if any, followed by a button that,
+  when activated, provides the user with a file picker from which the selection can be changed.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-input-element-as-a-button">The <{input}> element as a button</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    input[type=submit i], input[type=reset i], input[type=button i] {
+      binding: input-button;
+    }
+  </pre>
+
+  When the <i>input-button</i> binding applies to an <{input}> element whose
+  <code>type</code> attribute is in the <a element-state for="input">submit button</a>, <a element-state for="input">Reset Button</a>, or <a element-state for="input">Button</a> state, the element is
+  expected to render as an ''inline-block'' box rendered as a button, about one line high, containing
+  the contents of the element's <code>value</code> attribute, if any, or
+  text derived from the element's <code>type</code> attribute in a
+  user-agent-defined (and probably locale-specific) fashion, if not.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-marquee-element-rendering">The <{marquee}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    marquee { binding: marquee; }
+  </pre>
+
+  When the <i>marquee</i> binding applies to a <{marquee}> element, while the
+  element is <a>turned on</a>, the element is expected to render in
+  an animated fashion according to its attributes as follows:
+
+  <dl>
+
+    <dt>If the element's <code>behavior</code> attribute is in the
+    <a state for="marquee/behavior">scroll</a> state</dt>
+
+    <dd>
+
+    Slide the contents of the element in the direction described by the <code>direction</code> attribute as defined below, such that it begins
+    off the start side of the <{marquee}>, and ends flush with the inner end side.
+
+    <p class="example">
+  For example, if the <code>direction</code>
+    attribute is <a attr-value for="marquee/direction"><code>left</code></a> (the default), then the
+    contents would start such that their left edge are off the side of the right edge of the
+    <code>marquee</code>'s content area, and the contents would then slide up to the point where the
+    left edge of the contents are flush with the left inner edge of the <code>marquee</code>'s
+    content area.
+  </p>
+
+    Once the animation has ended, the user agent is expected to <a>increment the marquee
+    current loop index</a>. If the element is still <a>turned
+    on</a> after this, then the user agent is expected to restart the animation.
+
+    </dd>
+
+    <dt>If the element's <code>behavior</code> attribute is in the
+    <a state for="marquee/behavior">slide</a> state</dt>
+
+    <dd>
+
+    Slide the contents of the element in the direction described by the <code>direction</code> attribute as defined below, such that it begins
+    off the start side of the <{marquee}>, and ends off the end side of the
+    <{marquee}>.
+
+    <p class="example">
+  For example, if the <code>direction</code>
+    attribute is <a attr-value for="marquee/direction"><code>left</code></a> (the default), then the
+    contents would start such that their left edge are off the side of the right edge of the
+    <{marquee}>'s content area, and the contents would then slide up to the point where the
+    <em>right</em> edge of the contents are flush with the left inner edge of the
+    <{marquee}'s content area.
+  </p>
+
+    Once the animation has ended, the user agent is expected to <a>increment the marquee
+    current loop index</a>. If the element is still <a>turned
+    on</a> after this, then the user agent is expected to restart the animation.
+
+    </dd>
+
+    <dt>If the element's <code>behavior</code> attribute is in the
+    <a state for="marquee/behavior">alternate</a> state</dt>
+
+    <dd>
+
+    When the <a>marquee current loop index</a> is even (or zero), slide the contents of the
+    element in the direction described by the <code>direction</code>
+    attribute as defined below, such that it begins flush with the start side of the
+    <{marquee}>, and ends flush with the end side of the <{marquee}>.
+
+    When the <a>marquee current loop index</a> is odd, slide the contents of the element in
+    the opposite direction than that described by the <code>direction</code> attribute as defined below, such that it begins
+    flush with the end side of the <{marquee}>, and ends flush with the start side of the
+    <{marquee}>.
+
+    <p class="example">
+  For example, if the <code>direction</code>
+    attribute is <a attr-value for="marquee/direction"><code>left</code></a> (the default), then the
+    contents would with their right edge flush with the right inner edge of the
+    <code>marquee</code>'s content area, and the contents would then slide up to the point where the
+    <em>left</em> edge of the contents are flush with the left inner edge of the
+    <code>marquee</code>'s content area.
+  </p>
+
+    Once the animation has ended, the user agent is expected to <a>increment the marquee
+    current loop index</a>. If the element is still <a>turned
+    on</a> after this, then the user agent is expected to continue the animation.
+
+    </dd>
+
+  </dl>
+
+  The <code>direction</code> attribute has the meanings described
+  in the following table:
+
+  <table>
+    <thead>
+    <tr>
+      <th><code>direction</code> attribute state
+      <th>Direction of animation
+      <th>Start edge
+      <th>End edge
+      <th>Opposite direction
+    <tbody>
+    <tr>
+      <td><dfn attr-value for="marquee/direction"><code>left</code></dfn>
+      <td>&larr; Right to left
+      <td>Right
+      <td>Left
+      <td>&rarr; Left to Right
+    <tr>
+      <td><dfn attr-value for="marquee/direction"><code>right</code></dfn>
+      <td>&rarr; Left to Right
+      <td>Left
+      <td>Right
+      <td>&larr; Right to left
+    <tr>
+      <td><dfn attr-value for="marquee/direction"><code>up</code></dfn>
+      <td>&uarr; Up (Bottom to Top)
+      <td>Bottom
+      <td>Top
+      <td>&darr; Down (Top to Bottom)
+    <tr>
+      <td><dfn attr-value for="marquee/direction"><code>down</code></dfn>
+      <td>&darr; Down (Top to Bottom)
+      <td>Top
+      <td>Bottom
+      <td>&uarr; Up (Bottom to Top)
+  </table>
+
+  In any case, the animation should proceed such that there is a delay given by the <a>marquee
+  scroll interval</a> between each frame, and such that the content moves at most the distance
+  given by the <a for="marquee">marquee scroll distance</a> with each frame.
+
+  When a <{marquee}> element has a <code>bgcolor</code>
+  attribute set, the value is expected to be parsed using the <a>rules for parsing a legacy color
+  value</a>, and if that does not return an error, the user agent is expected to treat the
+  attribute as a <a>presentational hint</a> setting the element's
+  'background-color' property to the resulting color.
+
+  The <code>width</code> and <code>height</code> attributes on a <{marquee}> element map to the dimension properties 'width' and 'height'
+  on the element respectively.
+
+  The <a>intrinsic height</a> of a <{marquee}> element with its <{marquee/direction}> attribute in the <a attr-value for="marquee/direction"><code>up</code></a> or <a attr-value for="marquee/direction"><code>down</code></a> states is 200 CSS pixels.
+
+  The <code>vspace</code> attribute of a <{marquee}> element
+  <a>maps to the dimension properties</a> 'margin-top'
+  and 'margin-bottom' on the element. The <code>hspace</code> attribute
+  of a <{marquee}> element <a>maps to the
+  dimension properties</a> 'margin-left' and 'margin-right' on the element.
+
+  The 'overflow' property on the <{marquee}> element is expected to be ignored; overflow
+  is expected to always be hidden.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-meter-element-rendering">The <{meter}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    meter { binding: meter; }
+  </pre>
+
+  When the <i>meter</i> binding applies to a <{meter}> element, the element is
+  expected to render as an ''display/inline-block'' box with a 'height' of &quot;1em&quot; and a 'width' of &quot;5em&quot;, a
+  'vertical-align' of &quot;-0.2em&quot;, and with its contents depicting a gauge.
+
+  When the element is wider than it is tall (or square), the depiction is expected to be of a
+  horizontal gauge, with the minimum value on the right if the 'direction' property on this element
+  has a computed value of ''rtl'', and on the left otherwise. When the element is taller than it is
+  wide, it is expected to depict a vertical gauge, with the minimum value on the bottom.
+
+  User agents are expected to use a presentation consistent with platform conventions for gauges,
+  if any.
+
+  <p class="note">
+  Requirements for what must be depicted in the gauge are included in the definition
+  of the <{meter}> element.
+  </p>
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-progress-element-rendering">The <{progress}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    progress { binding: progress; }
+  </pre>
+
+  When the <i>progress</i> binding applies to a <{progress}> element, the
+  element is expected to render as an ''display/inline-block'' box with a 'height' of &quot;1em&quot; and a 'width' of
+  &quot;10em&quot;, and a 'vertical-align' of &quot;-0.2em&quot;.
+
+  <img class="extra" src="images/sample-progress.png" alt="" width="157" height="103" />
+
+  When the
+  element is wider than it is tall, the element is expected to be depicted as a horizontal progress
+  bar, with the start on the right and the end on the left if the 'direction' property on this
+  element has a computed value of ''rtl'', and with the start on the left and the end on the right
+  otherwise. When the element is taller than it is wide, it is expected to depicted as a vertical
+  progress bar, with the lowest value on the bottom. When the element is square, it is expected to
+  be depicted as a direction-independent progress widget (e.g. a circular progress ring).
+
+  User agents are expected to use a presentation consistent with platform conventions for
+  progress bars. In particular, user agents are expected to use different presentations for
+  determinate and indeterminate progress bars. User agents are also expected to vary the
+  presentation based on the dimensions of the element.
+
+  <p class="example">
+  For example, on some platforms for showing indeterminate progress there is a
+  "spinner" progress indicator with square dimensions, which could be used when the element is
+  square, and an indeterminate progress bar, which could be used when the element is wide.
+  </p>
+
+  <p class="note">
+  Requirements for how to determine if the progress bar is determinate or
+  indeterminate, and what progress a determinate progress bar is to show, are included in the
+  definition of the <{progress}> element.
+  </p>
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-select-element-rendering">The <{select}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    select { binding: select; }
+  </pre>
+
+  When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is present, the element is expected to
+  render as a multi-select list box.
+
+  When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is absent, and the element's <a>display size</a> is greater than 1, the element is expected to
+  render as a single-select list box.
+
+  When the element renders as a list box, it is expected to render as an ''inline-block'' box whose
+  'height' is the height necessary to contain as many rows for items as given by the element's <a>display size</a>, or four rows if the attribute is absent, and
+  whose 'width' is the <a>width of the <code>select</code>'s labels</a> plus the width of a
+  scrollbar.
+
+  When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is absent, and the element's <a>display size</a> is 1, the element is expected to render as a
+  one-line drop down box whose width is the <a>width of the <code>select</code>'s
+  labels</a>.
+
+  In either case (list box or drop-down box), the element's items are expected to be the
+  element's <a>list of options</a>, with the element's
+  <{optgroup}> element children providing headers for groups of options where
+  applicable.
+
+  An <{optgroup}> element is expected to be rendered by displaying the element's <code>label</code> attribute.
+
+  An <{option}> element is expected to be rendered by displaying the element's <a>label</a>, indented under its <{optgroup}> element if it
+  has one.
+
+  The <dfn>width of the <code>select</code>'s labels</dfn> is the wider of the width necessary to
+  render the widest <{optgroup}>, and the width necessary to render the widest
+  <{option}> element in the element's <a>list of
+  options</a> (including its indent, if any).
+
+  If a <{select}> element contains a <a>placeholder label option</a>, the user
+  agent is expected to render that <code>option</code> in a manner that conveys that it is a label,
+  rather than a valid option of the control. This can include preventing the <a>placeholder label
+  option</a> from being explicitly selected by the user. When the <a>placeholder label
+  option</a>'s <a state for="option">selectedness</a> is true, the control
+  is expected to be displayed in a fashion that indicates that no valid option is currently
+  selected.
+
+  User agents are expected to render the labels in a <code>select</code> in such a manner that
+  any alignment remains consistent whether the label is being displayed as part of the page or in a
+  menu control.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-textarea-element-rendering">The <{textarea}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    textarea { binding: textarea; white-space: pre-wrap; }
+  </pre>
+
+  When the <i>textarea</i> binding applies to a <{textarea}> element, the
+  element is expected to render as an ''inline-block'' box rendered as a multiline text field. If this
+  text field provides a selection, then, when the user changes the current selection in such a
+  binding, the user agent is expected to <a>queue a task</a> to <a>fire a simple
+  event</a> that bubbles named <code>select</code> at the element, using
+  the <a>user interaction task source</a> as the task source.
+
+  If the element has a {{HTMLTextAreaElement/cols}} attribute, and parsing that
+  attribute's value using the <a>rules for parsing non-negative integers</a> doesn't generate
+  an error, then the user agent is expected to use the attribute as a <a>presentational hint</a> for the 'width' property on the element, with the value being
+  the <a>textarea effective width</a> (as defined below). Otherwise, the user agent is
+  expected to act as if it had a user-agent-level style sheet rule setting the 'width' property on
+  the element to the <a>textarea effective width</a>.
+
+  The <dfn>textarea effective width</dfn> of a <{textarea}> element is <var>size</var>&times;<var>avg</var>&nbsp;+&nbsp;<var>sbw</var>, where <var>size</var> is the element's <a>character width</a>, <var>avg</var> is the average
+  character width of the primary font of the element, in CSS pixels, and <var>sbw</var> is
+  the width of a scroll bar, in CSS pixels. (The element's 'letter-spacing' property does not affect
+  the result.)
+
+  If the element has a {{HTMLTextAreaElement/rows}} attribute, and parsing that
+  attribute's value using the <a>rules for parsing non-negative integers</a> doesn't generate
+  an error, then the user agent is expected to use the attribute as a <a>presentational hint</a> for the 'height' property on the element, with the value being
+  the <a>textarea effective height</a> (as defined below). Otherwise, the user agent is
+  expected to act as if it had a user-agent-level style sheet rule setting the 'height' property on
+  the element to the <a>textarea effective height</a>.
+
+  The <dfn>textarea effective height</dfn> of a <{textarea}> element is the height in
+  CSS pixels of the number of lines specified the element's <a>character height</a>, plus the height of a scrollbar in CSS
+  pixels.
+
+  User agents are expected to apply the 'white-space' CSS property to <{textarea}>
+  elements. For historical reasons, if the element has a <code>wrap</code> attribute whose value is an <a>ASCII
+  case-insensitive</a> match for the string "<code>off</code>", then the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'white-space'
+  property to ''pre''.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="the-keygen-element-rendering">The <{keygen}> element</h4>
+
+  <pre highlight="css">
+    @namespace url(http://www.w3.org/1999/xhtml);
+
+    keygen { binding: keygen; }
+  </pre>
+
+  When the <i>keygen</i> binding applies to a <{keygen}> element, the element
+  is expected to render as an ''inline-block'' box containing a user interface to configure the key
+  pair to be generated.
+
+  </div>
+
+  <div class="impl">
+
+<h3 id="frames-and-framesets">Frames and framesets</h3>
+
+  User agent are expected to render <{frameset}> elements as a box with the height and
+  width of the viewport, with a surface rendered according to the following layout algorithm:
+
+  <ol>
+
+    <li>
+
+    The <var>cols</var> and <var>rows</var> variables are lists of zero or more pairs consisting
+    of a number and a unit, the unit being one of <i>percentage</i>, <i>relative</i>, and
+    <i>absolute</i>.
+
+    Use the <a>rules for parsing a list of dimensions</a> to parse the value of the
+    element's <code>cols</code> attribute, if there is one.
+    Let <var>cols</var> be the result, or an empty list if there is no such attribute.
+
+    Use the <a>rules for parsing a list of dimensions</a> to parse the value of the
+    element's <code>rows</code> attribute, if there is one.
+    Let <var>rows</var> be the result, or an empty list if there is no such attribute.
+
+    </li>
+
+    <li>
+
+    For any of the entries in <var>cols</var> or <var>rows</var> that have the number zero and
+    the unit <i>relative</i>, change the entry's number to one.
+
+    </li>
+
+    <li>
+
+    If <var>cols</var> has no entries, then add a single entry consisting of the value 1 and the
+    unit <i>relative</i> to <var>cols</var>.
+
+    If <var>rows</var> has no entries, then add a single entry consisting of the value 1 and the
+    unit <i>relative</i> to <var>rows</var>.
+
+    </li>
+
+    <li>
+
+    Invoke the algorithm defined below to <a>convert a list of dimensions to a list of pixel
+    values</a> using <var>cols</var> as the input list, and the width of the surface that the
+    <code>frameset</code> is being rendered into, in CSS pixels, as the input dimension. Let
+    <var>sized cols</var> be the resulting list.
+
+    Invoke the algorithm defined below to <a>convert a list of dimensions to a list of pixel
+    values</a> using <var>rows</var> as the input list, and the height of the surface that the
+    <code>frameset</code> is being rendered into, in CSS pixels, as the input dimension. Let
+    <var>sized rows</var> be the resulting list.
+
+    </li>
+
+    <li>
+
+    Split the surface into a grid of <var>w</var>&times;<var>h</var>
+    rectangles, where <var>w</var> is the number of entries in <var>sized cols</var> and
+    <var>h</var> is the number of entries in <var>sized rows</var>.
+
+    Size the columns so that each column in the grid is as many CSS pixels wide as the
+    corresponding entry in the <var>sized cols</var> list.
+
+    Size the rows so that each row in the grid is as many CSS pixels high as the corresponding
+    entry in the <var>sized rows</var> list.
+
+    </li>
+
+    <li>
+
+    Let <var>children</var> be the list of <code>frame</code> and <{frameset}> elements
+    that are children of the <{frameset}> element for which the algorithm was invoked.
+
+    </li>
+
+    <li>
+
+    For each row of the grid of rectangles created in the previous step, from top to bottom, run
+    these substeps:
+
+    <ol>
+
+      <li>
+
+      For each rectangle in the row, from left to right, run these substeps:
+
+      <ol>
+
+        <li>
+
+        If there are any elements left in <var>children</var>, take the first element in the
+        list, and assign it to the rectangle.
+
+        If this is a <{frameset}> element, then recurse the entire <code>frameset</code>
+        layout algorithm for that <{frameset}> element, with the rectangle as the
+        surface.
+
+        Otherwise, it is a <{frame}> element; render its <<a>nested browsing context</a>, positioned and sized to fit the rectangle.
+
+        </li>
+
+        <li>
+
+        If there are any elements left in <var>children</var>, remove the first element from
+        <var>children</var>.
+
+        </li>
+
+      </ol>
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li>
+
+    If the <{frameset}> element <a>has a border</a>, draw an outer set of borders
+    around the rectangles, using the element's <a>frame border color</a>.
+
+    For each rectangle, if there is an element assigned to that rectangle, and that element
+    <a>has a border</a>, draw an inner set of borders around that rectangle, using the
+    element's <a>frame border color</a>.
+
+    For each (visible) border that does not abut a rectangle that is assigned a
+    <{frame}> element with a <code>noresize</code>
+    attribute (including rectangles in further nested <{frameset}> elements), the user
+    agent is expected to allow the user to move the border, resizing the rectangles within, keeping
+    the proportions of any nested <code>frameset</code> grids.
+
+    A <code>frameset</code> or <{frame}> element <dfn>has a border</dfn> if the
+    following algorithm returns true:
+
+    <ol>
+
+      <li>If the element has a <code>frameborder</code> attribute whose value is not the
+      empty string and whose first character is either a U+0031 DIGIT ONE (1) character, a U+0079
+      LATIN SMALL LETTER Y character (y), or a U+0059 LATIN CAPITAL LETTER Y character (Y), then
+      return true.</li>
+
+      <li>Otherwise, if the element has a <code>frameborder</code> attribute, return
+      false.</li>
+
+      <li>Otherwise, if the element has a parent element that is a <{frameset}> element,
+      then return true if <em>that</em> element <a>has a border</a>, and false if it does
+      not.</li>
+
+      <li>Otherwise, return true.</li>
+
+    </ol>
+
+    The <dfn>frame border color</dfn> of a <code>frameset</code> or <{frame}> element
+    is the color obtained from the following algorithm:
+
+    <ol>
+
+      <li>If the element has a <code>bordercolor</code> attribute, and applying the
+      <a>rules for parsing a legacy color value</a> to that attribute's value does not result
+      in an error, then return the color so obtained.</li>
+
+      <li>Otherwise, if the element has a parent element that is a <{frameset}> element,
+      then return the <a>frame border color</a> of that element.
+
+      <li>Otherwise, return gray.</li>
+
+    </ol>
+
+    </li>
+
+  </ol>
+
+  The algorithm to <dfn>convert a list of dimensions to a list of pixel values</dfn> consists of
+  the following steps:
+
+  <ol>
+
+    <li>
+
+    Let <var>input list</var> be the list of numbers and units passed to the algorithm.
+
+    Let <var>output list</var> be a list of numbers the same length as <var>input list</var>, all
+    zero.
+
+    Entries in <var>output list</var> correspond to the entries in <var>input list</var> that
+    have the same position.
+
+    </li>
+
+    <li>Let <var>input dimension</var> be the size passed to the algorithm.
+
+    <li>
+
+    Let <var>count percentage</var> be the number of entries in <var>input list</var> whose unit
+    is <i>percentage</i>.
+
+    Let <var>total percentage</var> be the sum of all the numbers in <var>input list</var> whose
+    unit is <i>percentage</i>.
+
+    Let <var>count relative</var> be the number of entries in <var>input list</var> whose unit is
+    <i>relative</i>.
+
+    Let <var>total relative</var> be the sum of all the numbers in <var>input list</var> whose
+    unit is <i>relative</i>.
+
+    Let <var>count absolute</var> be the number of entries in <var>input list</var> whose unit is
+    <i>absolute</i>.
+
+    Let <var>total absolute</var> be the sum of all the numbers in <var>input list</var> whose
+    unit is <i>absolute</i>.
+
+    Let <var>remaining space</var> be the value of <var>input dimension</var>.
+
+    </li>
+
+    <li>
+
+    If <var>total absolute</var> is greater than <var>remaining space</var>, then for each entry
+    in <var>input list</var> whose unit is <i>absolute</i>, set the corresponding value in
+    <var>output list</var> to the number of the entry in <var>input list</var> multiplied by
+    <var>remaining space</var> and divided by <var>total absolute</var>. Then, set <var>remaining
+    space</var> to zero.
+
+    Otherwise, for each entry in <var>input list</var> whose unit is <i>absolute</i>, set the
+    corresponding value in <var>output list</var> to the number of the entry in <var>input
+    list</var>. Then, decrement <var>remaining space</var> by <var>total absolute</var>.
+
+    </li>
+
+    <li>
+
+    If <var>total percentage</var> multiplied by the <var>input dimension</var> and divided by
+    100 is greater than <var>remaining space</var>, then for each entry in <var>input list</var>
+    whose unit is <i>percentage</i>, set the corresponding value in <var>output list</var> to the
+    number of the entry in <var>input list</var> multiplied by <var>remaining space</var> and
+    divided by <var>total percentage</var>. Then, set <var>remaining space</var> to zero.
+
+    Otherwise, for each entry in <var>input list</var> whose unit is <i>percentage</i>, set the
+    corresponding value in <var>output list</var> to the number of the entry in <var>input
+    list</var> multiplied by the <var>input dimension</var> and divided by 100. Then, decrement
+    <var>remaining space</var> by <var>total percentage</var> multiplied by the <var>input
+    dimension</var> and divided by 100.
+
+    </li>
+
+    <li>
+
+    For each entry in <var>input list</var> whose unit is <i>relative</i>, set the corresponding
+    value in <var>output list</var> to the number of the entry in <var>input list</var> multiplied
+    by <var>remaining space</var> and divided by <var>total relative</var>.
+
+    </li>
+
+    <li>Return <var>output list</var>.</li>
+
+  </ol>
+
+  User agents working with integer values for frame widths (as opposed to user agents that can
+  lay frames out with subpixel accuracy) are expected to distribute the remainder first to the last
+  entry whose unit is <i>relative</i>, then equally (not proportionally) to each entry whose unit is
+  <i>percentage</i>, then equally (not proportionally) to each entry whose unit is <i>absolute</i>,
+  and finally, failing all else, to the last entry.
+
+  <hr />
+
+  The contents of a <{frame}> element that does not have a <code>frameset</code> parent
+  are expected to be rendered as transparent black; the user agent is expected to not render the
+  <a>nested browsing context</a> in this case, and that <a>nested browsing context</a>
+  is expected to have a viewport with zero width and zero height.
+
+  </div>
+
+  <div class="impl">
+
+<h3 id="interactive-media">Interactive media</h3>
+
+<h4 id="links-forms-and-navigation">Links, forms, and navigation</h4>
+
+  User agents are expected to allow the user to control aspects of <a>hyperlink</a>
+  activation and [[#forms-form-submission]], such as which <a>browsing context</a> is to be
+  used for the subsequent <a>navigation</a>.
+
+  User agents are expected to allow users to discover the destination of <a>hyperlinks</a> and of <a element>forms</a> before triggering their
+  <a>navigation</a>.
+
+  User agents may allow users to <a>navigate</a> <a>browsing contexts</a> to the URLs indicated by the
+  <{cite}> attributes on <{q}>, <{blockquote}>,
+  <{ins}>, and <{del}> elements.
+
+  User agents may surface <a>hyperlinks</a> created by <code>link</code> elements in their user
+  interface.
+
+  <p class="note">
+    While <{link}> elements that create <a>hyperlinks</a> will match the ':link' or ':visited' pseudo-classes, will
+    react to clicks if visible, and so forth, this does not extend to any browser interface constructs
+    that expose those same links. Activating a link through the browser's interface, rather than in
+    the page itself, does not trigger <code>click</code> events and the like.
+  </p>
+
+<h4 id="interactive-media-the-title-attribute">The <code>title</code> attribute</h4>
+
+  User agents are expected to expose the <a>advisory information</a> of elements upon user
+  request, and to make the user aware of the presence of such information.
+
+  On interactive graphical systems where the user can use a pointing device, this could take the
+  form of a tooltip. When the user is unable to use a pointing device, then the user agent is
+  expected to make the content available in some other fashion, e.g. by making the element a
+  <i>focusable area</i> and always displaying the <a>advisory information</a> of the currently
+  <a>focused</a> element, or by showing the <a>advisory information</a> of the elements
+  under the user's finger on a touch device as the user pans around the screen.
+
+  U+000A LINE FEED (LF) characters are expected to cause line breaks in the tooltip; U+0009
+  CHARACTER TABULATION (tab) characters are expected to render as a non-zero horizontal shift that
+  lines up the next glyph with the next tab stop, with tab stops occurring at points that are
+  multiples of 8 times the width of a U+0020 SPACE character.
+
+  <div class="example">
+    For example, a visual user agent could make elements with a <code>title</code> attribute <a>focusable</a>, and could make any <a>focused</a> element with a
+    <code>title</code> attribute show its tooltip under the element while the
+    element has focus. This would allow a user to tab around the document to find all the advisory
+    text.
+  </div>
+
+  <div class="example">
+    As another example, a screen reader could provide an audio cue when reading an element with a
+    tooltip, with an associated key to read the last tooltip for which a cue was played.
+  </div>
+
+<h4 id="editing-hosts">Editing hosts</h4>
+
+  The current text editing caret (i.e. the <a>active range</a>, if it is empty and in an
+  <a>editing host</a>), if any, is expected to act like an inline
+  <a>replaced element</a> with the vertical dimensions of the caret and with zero width for
+  the purposes of the CSS rendering model.
+
+  <p class="note">
+    This means that even an empty block can have the caret inside it, and that when
+    the caret is in such an element, it prevents margins from collapsing through the element.
+  </p>
+
+<h4 id="text-rendered-in-native-user-interfaces">Text rendered in native user interfaces</h4>
+
+  User agents are expected to honor the Unicode semantics of text that is exposed in user
+  interfaces, for example supporting the bidirectional algorithm in text shown in dialogs, title
+  bars, pop-up menus, and tooltips. Text from the contents of elements is expected to be rendered in
+  a manner that honors <a>the directionality</a> of the element from which the text was
+  obtained. Text from attributes is expected to be rendered in a manner that honours the
+  <a>directionality of the attribute</a>.
+
+  <div class="example">
+    Consider the following markup, which has Hebrew text asking for a programming language, the
+    languages being text for which a left-to-right direction is important given the punctuation in
+    some of their names:
+
+    <pre highlight="html">
+      &lt;p dir="rtl" lang="he">
+      &lt;label>
+      &#x5d1;&#x5d7;&#x5e8; &#x5e9;&#x5e4;&#x5ea; &#x5ea;&#x5db;&#x5e0;&#x5d5;&#x5ea;:
+      &lt;select>
+        &lt;option dir="ltr">C++&lt;/option>
+        &lt;option dir="ltr">C#&lt;/option>
+        &lt;option dir="ltr">FreePascal&lt;/option>
+        &lt;option dir="ltr">F#&lt;/option>
+      &lt;/select>
+      &lt;/label>
+      &lt;/p>
+    </pre>
+
+    If the <{select}> element was rendered as a drop down box, a correct rendering would
+    ensure that the punctuation was the same both in the drop down, and in the box showing the
+    current selection.
+
+    <img src="images/bidizelect.png" width="206" height="105" alt="" />
+  </div>
+
+  <div class="example">
+    The directionality of attributes depends on the attribute and on the element's <code>dir</code> attribute, as the following example demonstrates. Consider this
+    markup:
+
+    <pre highlight="html">
+  &lt;table>
+  &lt;tr>
+  &lt;th abbr="(&#x05D0;" dir=ltr>A
+  &lt;th abbr="(&#x05D0;" dir=rtl>A
+  &lt;th abbr="(&#x05D0;" dir=auto>A
+  &lt;/table>
+  </pre>
+
+    If the <code>abbr</code> attributes are rendered, e.g. in a tooltip or
+    other user interface, the first will have a left parenthesis (because the direction is ''ltr''),
+    the second will have a right parenthesis (because the direction is ''rtl''), and the third will
+    have a right parenthesis (because the direction is determined <em>from the attribute value</em>
+    to be ''rtl'').
+
+    However, if instead the attribute was not a <a>directionality-capable attribute</a>, the
+    results would be different:
+
+    <pre highlight="html">
+  &lt;table>
+  &lt;tr>
+  &lt;th>A
+  &lt;th>A
+  &lt;th>A
+  &lt;/table>
+  </pre>
+
+    In this case, if the user agent were to expose the <code>data-abbr</code> attribute
+    in the user interface (e.g. in a debugging environment), the last case would be rendered with a
+    <em>left</em> parenthesis, because the direction would be determined from the element's
+    contents.
+  </div>
+
+  A string provided by a script (e.g. the argument to <code>window.alert()</code>) is expected to be treated as an independent set of one or
+  more bidirectional algorithm paragraphs when displayed, as defined by the bidirectional algorithm,
+  including, for instance, supporting the paragraph-breaking behavior of U+000A LINE FEED (LF)
+  characters. For the purposes of determining the paragraph level of such text in the bidirectional
+  algorithm, this specification does <em>not</em> provide a higher-level override of rules P2 and
+  P3. [[!BIDI]]
+
+  When necessary, authors can enforce a particular direction for a given paragraph by starting it
+  with the Unicode U+200E LEFT-TO-RIGHT MARK or U+200F RIGHT-TO-LEFT MARK characters.
+
+  <div class="example">
+    Thus, the following script:
+
+    <pre highlight="javascript">alert('\u05DC\u05DE\u05D3 HTML \u05D4\u05D9\u05D5\u05DD!')</pre>
+
+    ...would always result in a message reading
+        "<bdo lang="" dir=rtl>&#x05DC;&#x05DE;&#x05D3;&nbsp;LMTH&nbsp;&#x05D4;&#x05D9;&#x05D5;&#x05DD;!</bdo>"
+    (not "<bdo lang="" dir=ltr>&#x05D3;&#x05DE;&#x05DC;&nbsp;HTML&nbsp;&#x05DD;&#x05D5;&#x05D9;&#x05D4;!</bdo>"),
+    regardless of the language of the user agent interface or the
+    direction of the page or any of its elements.
+  </div>
+
+  <div class="example">
+    For a more complex example, consider the following script:
+
+    <pre class="bad" highlight="javascript">
+      /* Warning: this script does not handle right-to-left scripts correctly */
+      var s;
+      if (s = prompt('What is your name?')) {
+        alert(s + '! Ok, Fred, ' + s + ', and Wilma will get the car.');
+      }
+    </pre>
+
+    When the user enters "<kbd>Kitty</kbd>", the user agent would alert "<samp>Kitty! Ok, Fred,
+    Kitty, and Wilma will get the car.</samp>". However, if the user enters "<kbd dir="rtl"
+    lang="ar">&#x644;&#x627;&nbsp;&#x623;&#x641;&#x647;&#x645;</kbd>", then the bidirectional
+    algorithm will determine that the direction of the paragraph is right-to-left, and so the output
+    will be the following unintended mess: "<samp lang=""><bdo
+    dir="rtl">&#x644;&#x627;&nbsp;&#x623;&#x641;&#x647;&#x645;!&nbsp;derF&nbsp;,kO,&nbsp;&#x644;&#x627;&nbsp;&#x623;&#x641;&#x647;&#x645;,&nbsp;rac&nbsp;eht&nbsp;teg&nbsp;lliw&nbsp;amliW&nbsp;dna.</bdo></samp>"
+
+    To force an alert that starts with user-provided text (or other text of unknown
+    directionality) to render left-to-right, the string can be prefixed with a U+200E LEFT-TO-RIGHT
+    MARK character:
+
+    <pre highlight="javascript">
+      var s;
+      if (s = prompt('What is your name?')) {
+        alert('\u200E' + s + '! Ok, Fred, ' + s + ', and Wilma will get the car.');
+      }
+    </pre>
+  </div>
+
+<h3 id="print-media">Print media</h3>
+
+  User agents are expected to allow the user to request the opportunity to <dfn>obtain a physical
+  form</dfn> (or a representation of a physical form) of a {{Document}}. For example,
+  selecting the option to print a page or convert it to PDF format. [[PDF]]
+
+  When the user actually <a lt="obtain a physical form">obtains a physical form</a> (or
+  a representation of a physical form) of a {{Document}}, the user agent is expected to
+  create a new rendering of the {{Document}} for the print media.
+
+<h3 id="unstyled-xml-documents">Unstyled XML documents</h3>
+
+  HTML user agents may, in certain circumstances, find themselves rendering non-HTML documents
+  that use vocabularies for which they lack any built-in knowledge. This section provides for a way
+  for user agents to handle such documents in a somewhat useful manner.
+
+  While a {{Document}} is an <a>unstyled document</a>, the user agent is expected
+  to render <a>an unstyled document view</a>.
+
+  A {{Document}} is an <dfn>unstyled document</dfn> while it matches the following
+  conditions:
+
+  <ul>
+    <li>The {{Document}} has no author style sheets (whether referenced by HTTP headers, processing instructions, elements like <{link}>, inline elements like <{style}>, or any other mechanism).
+    <li>None of the elements in the {{Document}} have any <a>presentational hints</a>.
+    <li>None of the elements in the {{Document}} have any <a>CSS styling attributes</a>.
+    <li>None of the elements in the {{Document}} are in any of the following namespaces: <a>HTML namespace</a>, <a>SVG namespace</a>, <a>MathML namespace</a>
+    <li>The {{Document}} has no <i>focusable area</i> (e.g. from XLink) other than the viewport.
+    <li>The {{Document}} has no <a>hyperlinks</a> (e.g. from XLink).
+    <li>There exists no <a>script</a> whose <a>settings object</a> specifies this {{Document}} as the <a>responsible document</a>.
+    <li>None of the elements in the {{Document}} have any registered event listeners.
+  </ul>
+
+  <dfn>An unstyled document view</dfn> is one where the DOM is not rendered according to CSS
+  (which would, since there are no applicable styles in this context, just result in a wall of
+  text), but is instead rendered in a manner that is useful for a developer. This could consist of
+  just showing the {{Document}} object's source, maybe with syntax highlighting, or it
+  could consist of displaying just the DOM tree, or simply a message saying that the page is not a
+  styled document.
+
+  <p class="note">
+  If a {{Document}} stops being an <a>unstyled document</a>, then the
+  conditions above stop applying, and thus a user agent following these requirements will switch to
+  using the regular CSS rendering.
+  </p>
+
+</section>

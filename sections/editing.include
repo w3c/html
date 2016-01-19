@@ -1,0 +1,4205 @@
+<section>
+<!--
+████████ ████████  ████ ████████ ████ ██    ██  ██████
+██       ██     ██  ██     ██     ██  ███   ██ ██    ██
+██       ██     ██  ██     ██     ██  ████  ██ ██
+██████   ██     ██  ██     ██     ██  ██ ██ ██ ██   ████
+██       ██     ██  ██     ██     ██  ██  ████ ██    ██
+██       ██     ██  ██     ██     ██  ██   ███ ██    ██
+████████ ████████  ████    ██    ████ ██    ██  ██████
+-->
+
+<h2 id="editing">User interaction</h2>
+
+<h3 id="the-hidden-attribute">The <dfn><code>hidden</code></dfn> attribute</h3>
+
+  All <a>html elements</a> may have the <code>hidden</code> content attribute set. The
+  <code>hidden</code> attribute is a <a>boolean attribute</a>. When specified on an element, it
+  indicates that the element is not yet, or is no longer, directly relevant to the page's current
+  state, or that it is being used to declare content to be reused by other parts of the page as
+  opposed to being directly accessed by the user. <span class="impl">User agents should not render
+  elements that have the <code>hidden</code> attribute specified. This requirement may be
+  implemented indirectly through the style layer. For example, an HTML+CSS user agent could
+  implement these requirements using the rules suggested in [[#rendering]].</span>
+
+  <p class="note">
+    Because this attribute is typically implemented using CSS, it's also possible to override it
+    using CSS. For instance, a rule that applies 'display: block' to all elements will cancel the
+    effects of the <code>hidden</code> attribute. Authors therefore have to take care when writing
+    their style sheets to make sure that the attribute is still styled as expected.
+  </p>
+
+  <div class="example">
+    In the following skeletal example, the attribute is used to hide the Web game's main screen
+    until the user logs in:
+
+    <pre highlight="html">
+      &lt;h1>The Example Game&lt;/h1>
+      &lt;section>
+        &lt;h2>Login&lt;/h2>
+        &lt;form>
+        ...
+        &lt;!-- calls login() once the user's credentials have been checked -->
+        &lt;/form>
+        &lt;script>
+        function login() {
+          // switch screens
+          document.getElementById('login').hidden = true;
+          document.getElementById('game').hidden = false;
+        }
+        &lt;/script>
+      &lt;/section>
+      &lt;section hidden>
+        ...
+      &lt;/section>
+    </pre>
+  </div>
+
+  The <code>hidden</code> attribute must not be used to hide content that
+  could legitimately be shown in another presentation. For example, it is incorrect to use <code>hidden</code> to hide panels in a tabbed dialog, because the tabbed interface
+  is merely a kind of overflow presentation &mdash; one could equally well just show all the form
+  controls in one big page with a scrollbar. It is similarly incorrect to use this attribute to hide
+  content just from one presentation &mdash; if something is marked <code>hidden</code>, it is hidden from all presentations, including, for instance,
+  screen readers.
+
+  Elements that are not themselves <code>hidden</code> must not
+  <a>hyperlink</a> to elements that are <code>hidden</code>. The <code>for</code> attributes of <code>label</code> and <{output}> elements that are not
+  themselves <code>hidden</code> must similarly not refer to elements that are
+  <code>hidden</code>. In both cases, such references would cause user
+  confusion.
+
+  Elements and scripts may, however, refer to elements that are <code>hidden</code> in other contexts.
+
+  <div class="example">
+    For example, it would be incorrect to use the <{links/href}> attribute to link to a
+    section marked with the <code>hidden</code>
+    attribute. If the content is not applicable or relevant, then there
+    is no reason to link to it.
+
+    It would be fine, however, to use the ARIA <code>aria-describedby</code> attribute to
+    refer to descriptions that are themselves <code>hidden</code>. While hiding the descriptions
+    implies that they are not useful alone, they could be written in
+    such a way that they are useful in the specific context of being
+    referenced from the images that they describe.
+
+    Similarly, a <{canvas}> element with the <code>hidden</code> attribute could be used by a
+    scripted graphics engine as an off-screen buffer, and a form
+    control could refer to a hidden <{form}> element using its
+    <code>form</code> attribute.
+  </div>
+
+  Accessibility APIs are encouraged to provide a way to expose
+  structured content while marking it as hidden in the default view.
+  Such content should not be perceivable to users in the normal document
+  flow in any modality, whether using Assistive Technology (AT) or
+  mainstream User Agents.
+
+  When such features are available, User Agents may use them to
+  expose the full semantics of <code>hidden</code>
+  elements to AT when appropriate, if such content is referenced
+  indirectly by an <a spec="dom" lt="id">ID reference</a> or
+  <a>valid hash-name reference</a>. This allows ATs to access the
+  structure of these <code>hidden</code> elements
+  upon user request, while keeping the content hidden in all
+  presentations of the normal document flow. Authors who wish to prevent
+  user-initiated viewing of a <code>hidden</code>
+  element should not reference the element with such a mechanism.
+
+  Because some User Agents have flattened hidden content when
+  exposing such content to AT, authors should not reference <code>hidden</code> content which would lose essential
+  meaning when flattened.
+
+  <div class="example">
+    For example, it would be incorrect to use the <{links/href}>
+    attribute to link to a section marked with the <code>hidden</code> attribute.
+    If the content is not applicable or relevant, then there is no reason to link to it.
+
+    It would be fine, however, to use the ARIA <code>aria-describedby</code> attribute to refer to descriptions that are
+    themselves <code>hidden</code>. While hiding the descriptions implies that
+    they are not useful alone, they could be written in such a way that they are useful in the
+    specific context of being referenced from the images that they describe.
+
+    Similarly, a <{canvas}> element with the <code>hidden</code>
+    attribute could be used by a scripted graphics engine as an off-screen buffer, and a form control
+    could refer to a hidden <{form}> element using its <code>form</code> attribute.
+  </div>
+
+  Elements in a section hidden by the <code>hidden</code> attribute are still
+  active, e.g. scripts and form controls in such sections still execute and submit respectively.
+  Only their presentation to the user changes.
+
+  <div class="impl">
+    The <dfn attribute for="common"><code>hidden</code></dfn> IDL attribute must <a>reflect</a> the
+    content attribute of the same name.
+  </div>
+
+<h3 id="inert-subtrees">Inert subtrees</h3>
+
+  <p class="note">
+  This section <strong>does not</strong> define or create any content attribute
+  named "inert". This section merely defines an abstract <em>concept</em> of
+  <a>inertness</a>.
+  </p>
+
+  A node (in particular elements and text nodes) can be marked as <dfn lt="inertness|inert">inert</dfn>. When a node
+  is <a>inert</a>, then the user agent must act as if the node was absent for the purposes of
+  targeting user interaction events, may ignore the node for the purposes of text search user
+  interfaces (commonly known as "find in page"), and may prevent the user from selecting text in
+  that node. User agents should allow the user to override the restrictions on search and text
+  selection, however.
+
+  <p class="example">
+  For example, consider a page that consists of just a single <a>inert</a>
+  paragraph positioned in the middle of a <{body}>. If a user moves their pointing device
+  from the <code>body</code> over to the <a>inert</a> paragraph and clicks on the paragraph,
+  no <code>mouseover</code> event would be fired, and the <code>mousemove</code> and <code>click</code> events would
+  be fired on the <{body}> element rather than the paragraph.
+  </p>
+
+  <p class="note">
+  When a node is inert, it generally cannot be focused. Inert nodes that are <a>commands</a> will also get disabled.
+  </p>
+
+  While a <a>browsing context container</a> is marked as <a>inert</a>, its
+  <a>nested browsing context</a>'s <a>active document</a>, and all nodes in that
+  {{Document}}, must be marked as <a>inert</a>.
+
+  An entire <code>Document</code> can be marked as <dfn lt="blocked by the modal dialog|blocked by a modal dialog">blocked by a modal dialog</dfn>
+  <var>subject</var>. While a <code>Document</code> is so marked, every node that is <a>in the
+  <code>Document</code></a>, with the exception of the <var>subject</var> element and its
+  descendants, must be marked <a>inert</a>. (The elements excepted by this paragraph can
+  additionally be marked <a>inert</a> through other means; being part of a modal dialog does not
+  "protect" a node from being marked <a>inert</a>.)
+
+  Only one element at a time can mark a <code>Document</code> as being <a>blocked by a modal
+  dialog</a>. When a new <{dialog}> is made to <a>block</a> a {{Document}}, the previous element, if any, stops blocking the
+  {{Document}}.
+
+  <p class="note">
+    The <{dialog}> element's <code>showModal()</code> method makes use of this mechanism.
+  </p>
+
+<h3 id="activation">Activation</h3>
+
+  Certain elements in HTML have an <a>activation behavior</a>, which means that the user
+  can activate them. This triggers a sequence of events dependent on the activation mechanism, and
+  normally culminating in a <code>click</code> event<span class="impl">, as described below</span>.
+
+  <div class="impl">
+
+  The user agent should allow the user to manually trigger elements that have an <a>activation
+  behavior</a>, for instance using keyboard or voice input, or through mouse clicks. When the
+  user triggers an element with a defined <a>activation behavior</a> in a manner other than
+  clicking it, the default action of the interaction event must be to <a>run synthetic click
+  activation steps</a> on the element.
+
+  Each element has a <var>click in progress</var> flag, initially set to false.
+
+  When a user agent is to <dfn lt="running synthetic click activation steps|run synthetic click activation steps">run synthetic click activation steps</dfn> on an element, the user
+  agent must run the following steps:
+
+  <ol>
+
+    <li>If the element's <var>click in progress</var> flag is set to true, then abort
+    these steps.</li>
+
+    <li>Set the <var>click in progress</var> flag on the element to true.</li>
+
+    <li><a>Run pre-click activation steps</a> on the element.</li>
+
+    <li><a>Fire a <code>click</code> event</a> at the element. If the
+    <a>run synthetic click activation steps</a> algorithm was invoked because the <code>click()</code> method was invoked, then the <code>isTrusted</code> attribute must be initialized to false.</li>
+
+    <li>
+
+    If this <code>click</code> event is not canceled, <a>run post-click
+    activation steps</a> on the element.
+
+    If the event <em>is</em> canceled, the user agent must <a>run canceled activation
+    steps</a> on the element instead.
+
+    </li>
+
+    <li>Set the <var>click in progress</var> flag on the element to false.</li>
+
+  </ol>
+
+  When a pointing device is clicked, the user agent must <a>run authentic click activation
+  steps</a> instead of firing the <code>click</code>
+  event. When a user agent is to
+  <dfn>run authentic click activation steps</dfn> for a given event <var>event</var>, it must
+  follow these steps:
+
+  <ol>
+
+    <li>Let <var>target</var> be the element designated by the user (the target of <var>event</var>).</li>
+
+    <li>If <var>target</var> is a <{canvas}> element, run the canvas <code>MouseEvent</code> rerouting steps. If this changes <var>event</var>'s
+    target, then let <var>target</var> be the new target.</li>
+
+    <li>Set the <var>click in progress</var> flag on <var>target</var> to
+    true.</li>
+
+    <li>Let <var>e</var> be the <a>nearest activatable element</a> of <var>target</var> (defined below), if any.</li>
+
+    <li>If there is an element <var>e</var>, <a>run pre-click activation steps</a>
+    on it.</li>
+
+    <li>
+
+    <a>Dispatch</a> <var>event</var> (the
+    required <code>click</code> event) at <var>target</var>.
+
+    If there is an element <var>e</var> and the <code>click</code>
+    event is not canceled, <a>run post-click activation steps</a> on element <var>e</var>.
+
+    If there is an element <var>e</var> and the event <em>is</em> canceled, <a>run
+    canceled activation steps</a> on element <var>e</var>.
+
+    </li>
+
+    <li>Set the <var>click in progress</var> flag on <var>target</var> to
+    false.</li>
+
+  </ol>
+
+  <p class="note">
+    The algorithms above don't run for arbitrary synthetic events dispatched by author script. The
+    <code>click()</code> method can be used to make the <a>run synthetic click activation steps</a>
+    algorithm happen programmatically.
+  </p>
+
+  <p class="note">
+    Click-focusing behavior (e.g. the focusing of a text field when user clicks in one) typically
+    happens before the click, when the mouse button is first depressed, and is therefore not
+    discussed here.
+  </p>
+
+  Given an element <var>target</var>, the <dfn>nearest activatable element</dfn> is the element
+  returned by the following algorithm:
+
+  <ol>
+
+    <li>If <var>target</var> has a defined <a>activation behavior</a>, then return
+    <var>target</var> and abort these steps.</li>
+
+    <li>If <var>target</var> has a parent element, then set <var>target</var> to
+    that parent element and return to the first step.</li>
+
+    <li>Otherwise, there is no <a>nearest activatable element</a>.</li>
+
+  </ol>
+
+  When a user agent is to <dfn>run pre-click activation steps</dfn> on an element, it must run
+  the <dfn>pre-click activation steps</dfn> defined for that element, if any.
+
+  When a user agent is to <dfn>run canceled activation steps</dfn> on an element, it must run the
+  <dfn>canceled activation steps</dfn> defined for that element, if any.
+
+  When a user agent is to <dfn>run post-click activation steps</dfn> on an element, it must run
+  the <dfn>activation behavior</dfn> defined for that element, if any. Activation behaviors can
+  refer to the <code>click</code> event that was fired by the steps above
+  leading up to this point.
+
+  </div>
+
+  <dl class="domintro">
+    <dt><var>element</var> . <code>click</code>()</dt>
+    <dd>Acts as if the element was clicked.</dd>
+  </dl>
+
+  <div class="impl">
+    The <dfn method for="common"><code>click()</code></dfn> method must run the following steps:
+
+    1. If the element is a form control that is disabled, abort these steps.
+    2. <a>Run synthetic click activation steps</a> on the element.
+  </div>
+
+<h3 id="focus">Focus</h3>
+
+<h4 id="focus-introduction">Introduction</h4>
+
+  <em>This section is non-normative.</em>
+
+  An HTML user interface typically consists of multiple interactive widgets, such as form
+  controls, scrollable regions, links, dialog boxes, browser tabs, and so forth. These widgets form
+  a hierarchy, with some (e.g. browser tabs, dialog boxes) containing others (e.g. links, form
+  controls).
+
+  When interacting with an interface using a keyboard, key input is channeled from the system,
+  through the hierarchy of interactive widgets, to an active widget, which is said to be
+  <a>focused</a>.
+
+  <div class="example">
+    Consider an HTML application running in a browser tab running in a graphical environment.
+    Suppose this application had a page with some text fields and links, and was currently showing a
+    modal dialog, which itself had a text field and a button.
+
+    The hierarchy of focusable widgets, in this scenario, would include the browser window, which
+    would have, amongst its children, the browser tab containing the HTML application. The tab itself
+    would have as its children the various links and text fields, as well as the dialog. The dialog
+    itself would have as its children the text field and the button.
+
+    <img src="images/focus-tree.png" alt="" width="800" height="450" />
+
+    If the widget with <a>focus</a> in this example was the text field in the dialog box, then key
+    input would be channeled from the graphical system to &#x2460; the Web browser, then to &#x2461;
+    the tab, then to &#x2462; the dialog, and finally to &#x2463; the text field.
+  </div>
+
+  Keyboard <em>events</em> are always targeted at this <a>focused</a> element.
+
+<h4 id="data-model">Data model</h4>
+
+  The term <dfn lt="focusable|focusable area">focusable area</dfn> is used to refer to regions of the interface that can become
+  the target of keyboard input. Focusable areas can be elements, parts of elements, or other regions
+  managed by the user agent.
+
+  Each <a>focusable area</a> has a <dfn>DOM anchor</dfn>, which is a <code>Node</code> object
+  that represents the position of the <a>focusable area</a> in the DOM. (When the <a>focusable
+  area</a> is itself a <code>Node</code>, it is its own <a>DOM anchor</a>.) The <a>DOM anchor</a> is
+  used in some APIs as a substitute for the <a>focusable area</a> when there is no other DOM object
+  to represent the <a>focusable area</a>.
+
+  The following table describes what objects can be <a>focusable
+  areas</a>. The cells in the left column describe objects that can be <a>focusable areas</a>; the cells in the right column describe the <a>DOM
+  anchors</a> for those elements. (The cells that span both columns are non-normative examples.)
+
+  <table>
+    <thead>
+    <tr>
+      <th><a>Focusable area</a>
+      <th><a>DOM anchor</a>
+    <tr>
+      <th colspan="2">Examples
+
+    <tbody>
+    <tr>
+      <th class="data-header" headers="th-fa-area">
+      Elements that have their <a>tabindex focus flag</a> set, that are not <a>actually disabled</a>, that are not <a for="/">expressly inert</a>, and that are either <a>being
+      rendered</a> or <a>being used as relevant canvas fallback content</a>.
+      <td headers="td-fa-1 th-fa-dom-rep">
+      The element itself.
+    <tr>
+      <td headers="td-fa-1 th-fa-examples" colspan="2">
+      <p class="example">
+
+  <{iframe}>, <code>&lt;input
+      type=text></code>, sometimes <code>&lt;a href=""></code> (depending on platform
+      conventions).
+  </p>
+    <tbody>
+    <tr>
+      <th class="data-header" headers="th-fa-area">
+      The shapes of <{area}> elements in an <a>image map</a> associated with an
+      <{img}> element that is <a>being rendered</a> and is not <a for="/">expressly inert</a>.
+      <td headers="td-fa-2 th-fa-dom-rep">
+      The <{img}> element.
+    <tr>
+      <td headers="td-fa-2 th-fa-examples" colspan="2">
+      <div class="example">
+      In the following example, the <{area}> element creates two shapes, one on each
+      image. The <a>DOM anchor</a> of the first shape is the first <{img}> element, and the
+      <a>DOM anchor</a> of the second shape is the second <{img}> element.
+      <pre highlight="html">
+  &lt;map id=wallmap>&lt;area alt="Enter Door" coords="10,10,100,200" href="door.html">&lt;/map>
+  ...
+  &lt;img src="images/innerwall.jpeg" alt="There is a white wall here, with a door." usemap="#wallmap">
+  ...
+  &lt;img src="images/outerwall.jpeg" alt="There is a red wall here, with a door." usemap="#wallmap">
+  </pre>
+      </div>
+
+    <tbody>
+    <tr>
+      <th class="data-header" headers="th-fa-area">
+      The user-agent provided subwidgets of elements that are <a>being rendered</a> and are not
+      <a>actually disabled</a> or <a for="/">expressly inert</a>.
+      <td headers="td-fa-3 th-fa-dom-rep">
+      The element for which the <a>focusable area</a> is a subwidget.
+    <tr>
+      <td headers="td-fa-3 th-fa-examples" colspan=2>
+      <p class="example">The <a>controls in the user
+      interface that is exposed to the user</a> for a <{video}> element, the up and down
+      buttons in a spin-control version of <code>&lt;input
+      type=number></code>, the two range control widgets in a <code>&lt;input type=range multiple></code>, the part of a
+      <{details}> element's rendering that enabled the element to be opened or closed using
+      keyboard input.
+  </p>
+
+
+    <tbody>
+    <tr>
+      <th class="data-header" headers="th-fa-area">
+      The scrollable regions of elements that are <a>being rendered</a> and are not <a for="/">expressly inert</a>.
+      <td headers="td-fa-4 th-fa-dom-rep">
+      The element for which the box that the scrollable region scrolls was created.
+    <tr>
+      <td headers="td-fa-4 th-fa-examples" colspan="2">
+      <p class="example">
+  The CSS 'overflow' property's ''scroll'' value typically creates a scrollable
+      region.
+  </p>
+
+    <tbody>
+    <tr>
+      <th class="data-header" headers="th-fa-area">
+      The viewport of a <code>Document</code> that is in a <a>browsing context</a> and is not
+      <a>inert</a>.
+      <td headers="td-fa-5 th-fa-dom-rep">
+      The <code>Document</code> for which the viewport was created.
+    <tr>
+      <td headers="td-fa-5 th-fa-examples" colspan="2">
+      <p class="example">
+  The contents of an <{iframe}>.
+  </p>
+
+    <tbody>
+    <tr>
+      <th class="data-header" headers="th-fa-area">
+      Any other element or part of an element, especially to aid with accessibility or to better
+      match platform conventions.
+      <td headers="td-fa-6 th-fa-dom-rep">
+      The element.
+    <tr>
+      <td headers="td-fa-6 th-fa-examples" colspan="2">
+      <p class="example">
+  A user agent could make all list item bullets focusable, so that a user can
+      more easily navigate lists.
+  </p>
+      <p class="example">
+  Similarly, a user agent could make all elements with <code>title</code> attributes focusable, so that their advisory information can
+      be accessed.
+  </p>
+
+  </table>
+
+  <p class="note">
+    A <a>browsing context container</a> (e.g. an
+    <{iframe}>) is a <a>focusable area</a>, but key events routed to a <a>browsing context
+    container</a> get immediately routed to the <a>nested browsing context</a>'s <a>active
+    document</a>. Similarly, in sequential focus navigation a <a>browsing context
+    container</a> essentially acts merely as a placeholder for its <<a>nested browsing context</a>'s <a>active document</a>.
+  </p>
+
+  Each <a>focusable area</a> belongs to a <dfn>control group</dfn>. Each <a>control group</a> has
+  an <dfn>owner</dfn>. <a>Control group
+  owners</a> are <dfn lt="control group owner|control group owner objects|control group owner object">control group owner objects</dfn>. The
+  following are <a>control group owner objects</a>:
+
+  <ul class="brief">
+    <li>{{Document}} object in <a>browsing contexts</a>.</li>
+
+    <li><{dialog}> elements that have an <code>open</code>
+    attribute specified and that are <a>being rendered</a>.</li>
+  </ul>
+
+  Each <a>control group owner object</a> owns one <a>control group</a> (though that group might be
+  empty).
+
+  If the <a>DOM anchor</a> of a <a>focusable area</a> is a <a>control group owner
+  object</a>, then that <a>focusable area</a> belongs to that <a>control group owner
+  object</a>'s <a>control group</a>. Otherwise, the <a>focusable area</a> belongs to its
+  <a>DOM anchor</a>'s nearest ancestor <a>control group owner object</a>.
+
+  <div class="example">
+    Thus, a viewport always belongs to the <a>control group</a> of the <code>Document</code>
+    for which the viewport was created, an <{input}> control belongs to the <a>control
+    group</a> of its nearest ancestor <{dialog}> or {{Document}}, and an image
+    map's shapes belong to the nearest ancestor <code>dialog</code> or <code>Document</code> of the
+    <{img}> elements (not the <{area}> elements &mdash; this means one
+    <{area}> element might create multiple shapes in different <a>control groups</a>).
+  </div>
+
+  An element is <dfn>expressly inert</dfn> if it is
+  <a>inert</a> but it is not a <a>control group owner object</a> and its nearest
+  ancestor <a>control group owner object</a> is not <a>inert</a>.
+
+  One <a>focusable area</a> in each non-empty <a>control group</a> is designated the
+  <dfn lt="focused area|focused area of the control group|focused dialog|focused area of that focus group|focused area of a control group|focused dialog of a dialog group|focused dialog of its dialog group">focused area of the control group</dfn>. Which control is so designated changes over time,
+  based on algorithms in this specification. If a <a>control group</a> is empty, it has no <a>focused area</a>.
+
+  Each <a>control group owner object</a> can also act as the <dfn lt="dialog group manager|manager">manager</dfn> of a <dfn>dialog group</dfn>.
+
+  Each <{dialog}> element that has an <code>open</code>
+  attribute specified and that is <a>being rendered</a> (i.e. that is a <a>control group
+  owner object</a>) and is not <a for="dialog">expressly inert</a>
+  belongs to the <a>dialog group</a> whose <a>manager</a> is
+  the <{dialog}> element's nearest ancestor <a>control group owner object</a>.
+
+  A <code>dialog</code> is <dfn for="dialog">expressly inert</dfn> if it is
+  <a>inert</a> but its nearest ancestor <a>control group owner object</a> is not.
+
+  If no <{dialog}> element has a particular <a>control group owner object</a> as
+  its nearest ancestor <a>control group owner object</a>, then that <a>control group owner
+  object</a> has no <a>dialog group</a>.
+
+  Each <a>dialog group</a> can have a <code>dialog</code> designated as the <dfn>focused
+  dialog of the dialog group</dfn>. Which <code>dialog</code> is so designated changes over time,
+  based on algorithms in this specification.
+
+  <hr />
+
+  <a>Focusable areas</a> in <a>control groups</a>
+  are ordered relative to the <a>tree order</a> of their <a>DOM
+  anchors</a>. <a>Focusable areas</a> with the same <a>DOM anchor</a> in a
+  <a>control group</a> are ordered relative to their CSS box's relative positions in a pre-order,
+  depth-first traversal of the box tree. [[!CSS-2015]]
+
+  Elements in <a>dialog groups</a> are ordered in <a>tree
+  order</a>.
+
+  <hr />
+
+  The <dfn lt="currently focused area of the top-level browsing context|currently focused area of a top-level browsing context">currently focused area of a top-level browsing context</dfn> at any particular time is
+  the <a>focusable area</a> or <code>dialog</code> returned by this algorithm:
+
+  <ol>
+
+    <li>Let <var>candidate</var> be the <code>Document</code> of the <a>top-level
+    browsing context</a>.</li>
+
+    <li>
+
+    If <var>candidate</var> has a <a>dialog group</a> with a designated
+    <a>focused dialog of the dialog group</a>, then let <var>candidate</var> be the
+    designated <a>focused dialog of the dialog group</a>, and redo this step.
+
+    Otherwise, if <var>candidate</var> has a non-empty <a>control group</a>, and the
+    designated <a>focused area of the control group</a> is a <a>browsing context
+    container</a>, then let <var>candidate</var> be the <a>active document</a> of
+    that <a>browsing context container</a>'s <a>nested browsing context</a>, and redo
+    this step.
+
+    Otherwise, if <var>candidate</var> has a non-empty <a>control group</a>, let
+    <var>candidate</var> be the designated <a>focused area of the control
+    group</a>.
+
+    </li>
+
+    <li>Return <var>candidate</var>.</li>
+
+  </ol>
+
+  An element that is the <a>DOM anchor</a> of a <a>focusable area</a> is said to
+  <dfn>gain focus</dfn> when that <a>focusable area</a> becomes the <a>currently focused area of a
+  top-level browsing context</a>. When an element is the <a>DOM anchor</a> of a
+  <a>focusable area</a> of the <a>currently focused area of a top-level browsing context</a>, it is
+  <dfn>focused</dfn>.
+
+  <div class="impl">
+    The <dfn>focus chain</dfn> of a <a>focusable area</a> or <a>control group owner object</a>
+    <var>subject</var> is the ordered list constructed as follows:
+
+  <ol>
+
+    <li>Let <var>current object</var> be <var>subject</var>.</li>
+
+    <li>Let <var>output</var> be an empty list.</li>
+
+    <li><i>Loop</i>: Append <var>current object</var> to <var>output</var>.</li>
+
+    <li>
+
+    If <var>current object</var> is an <{area}> element's shape, append
+    that <{area}> element to <var>output</var>.
+
+    Otherwise, if <var>current object</var> is a <a>focusable area</a> whose <a>DOM
+    anchor</a> is an element that is not <var>current object</var> itself, append that
+    <a>DOM anchor</a> element to <var>output</var>.
+
+    </li>
+
+    <li>
+
+    If <var>current object</var> is a <code>dialog</code> object in a <a>dialog group</a>,
+    let <var>current object</var> be that <a>dialog group</a>'s <a>manager</a>, and return to the step labeled <i>loop</i>.
+
+    Otherwise, if <var>current object</var> is a <a>focusable area</a>, let <var>current
+    object</var> be that <a>focusable area</a>'s <a>control group</a>'s <a>owner</a>, and return to the step labeled <i>loop</i>.
+
+    Otherwise, if <var>current object</var> is a <code>Document</code> in a <<a>nested browsing context</a>, let <var>current object</var> be its <a>browsing context container</a>,
+    and return to the step labeled <i>loop</i>.
+
+    </li>
+
+    <li>
+
+    Return <var>output</var>.
+
+    <p class="note">
+      The chain starts with <var>subject</var> and (if <var>subject</var> is or can be the
+      <a>currently focused area of a top-level browsing context</a>) continues up the focus
+      hierarchy up to the <code>Document</code> of the <a>top-level browsing context</a>.
+    </p>
+
+    </li>
+
+  </ol>
+
+  </div>
+
+<h4 id="the-tabindex-attribute">The <code>tabindex</code> attribute</h4>
+
+  The <dfn element-attr for="global"><code>tabindex</code></dfn> content attribute allows authors to
+  indicate that an element is supposed to be <a>focusable</a>, and
+  whether it is supposed to be reachable using <a>sequential focus navigation</a> and, if so,
+  what is to be the relative order of the element for the purposes of sequential focus navigation.
+  The name "tab index" comes from the common use of the "tab" key to navigate through the focusable
+  elements. The term "tabbing" refers to moving forward through the focusable elements that can be
+  reached using sequential focus navigation.
+
+  When the attribute is omitted, the user agent applies defaults. (There is no way to make an
+  element that is <a>being rendered</a> be not focusable at all without <a>disabling</a> it or making it <a>inert</a>.)
+
+  The <code>tabindex</code> attribute, if specified, must have a value
+  that is a <a>valid integer</a>. Positive numbers specify the relative position of the
+  element's <a>focusable areas</a> in the <a>sequential focus
+  navigation order</a>, and negative numbers indicate that the control is to be unreachable by
+  <a>sequential focus navigation</a>.
+
+  <div class="impl">
+
+  Each element can have a <dfn lt="can be focused|tabindex focus flag">tabindex focus flag</dfn> set, as defined
+  below. This flag is a factor that contributes towards determining whether an element is a
+  <a>focusable area</a>, as described in the previous section.
+
+  If the <code>tabindex</code> attribute is specified on an element, it
+  must be parsed using the <a>rules for parsing integers</a>. The attribute's values, or lack
+  thereof, must be interpreted as follows:
+
+  <dl>
+
+    <dt>If the attribute is omitted or parsing the value returns an error</dt>
+
+    <dd>
+
+    The user agent should follow platform conventions to determine if the element's
+    <a>tabindex focus flag</a> is set and, if so, whether the element and any <a>focusable areas</a> that have the element as their <a>DOM anchor</a> can
+    be reached using <a>sequential focus navigation</a>, and if so, what their relative
+    position in the <a>sequential focus navigation order</a> is to be.
+
+    Modulo platform conventions, it is suggested that for the following elements, the
+    <a>tabindex focus flag</a> be set:
+
+    <ul>
+
+      <li><{a}> elements that have an <{links/href}>
+      attribute</li>
+
+      <li><{link}> elements that have an <{link/href}> attribute</li>
+
+      <li><{button}> elements</li>
+
+      <li><{input}> elements whose <code>type</code> attribute are
+      not in the <a>Hidden</a> state</li>
+
+      <li><{select}> elements</li>
+
+      <li><{textarea}> elements</li>
+
+      <li><{menuitem}> elements</li>
+
+      <li>Elements with a <code>draggable</code> attribute set, if that would
+      enable the user agent to allow the user to begin a drag operations for those elements without
+      the use of a pointing device</li>
+
+      <li><a>Editing hosts</a></li>
+
+      <li><a>Browsing context containers</a></li>
+
+      <li><a>Sorting interface <code>th</code>
+      elements</a></li>
+
+    </ul>
+
+    <p class="note">
+  One valid reason to ignore the platform conventions and always allow an element
+    to be focused (by setting its <a>tabindex focus flag</a>) would be if the user's only
+    mechanism for activating an element is through a keyboard action that triggers the focused
+    element.
+  </p>
+
+    </dd>
+
+    <dt>If the value is a negative integer</dt>
+
+    <dd>
+
+    The user agent must set the element's <a>tabindex focus flag</a>, but should omit the
+    element from the <a>sequential focus navigation order</a>.
+
+    <p class="note">
+  One valid reason to ignore the requirement that sequential focus navigation not
+    allow the author to lead to the element would be if the user's only mechanism for moving the
+    focus is sequential focus navigation. For instance, a keyboard-only user would be unable to
+    click on a text field with a negative <code>tabindex</code>, so that
+    user's user agent would be well justified in allowing the user to tab to the control
+    regardless.
+  </p>
+
+    </dd>
+
+    <dt>If the value is a zero</dt>
+
+    <dd>
+
+    The user agent must set the element's <a>tabindex focus flag</a>, should allow the
+    element and any <a>focusable areas</a> that have the element as their
+    <a>DOM anchor</a> to be reached using <a>sequential focus navigation</a>, following
+    platform conventions to determine the element's relative position in the <a>sequential focus
+    navigation order</a>.
+
+    </dd>
+
+    <dt>If the value is greater than zero</dt>
+
+    <dd>
+
+    The user agent must set the element's <a>tabindex focus flag</a>, should allow the
+    element and any <a>focusable areas</a> that have the element as their
+    <a>DOM anchor</a> to be reached using sequential focus navigation, and should place the element
+    &mdash; referenced as <var>candidate</var> below &mdash; and the aforementioned <a>focusable areas</a> in the <a>sequential focus navigation</a>
+    order so that, relative to other <a>focusable areas</a> in the
+    <a>sequential focus navigation order</a>, they are:
+
+    <ul>
+
+      <li>before any <a>focusable area</a> whose <a>DOM anchor</a> is an element whose <code>tabindex</code> attribute has been omitted or whose value, when parsed,
+      returns an error,</li>
+
+      <li>before any <a>focusable area</a> whose <a>DOM anchor</a> is an element whose <code>tabindex</code> attribute has a value equal to or less than zero,</li>
+
+      <li>after any <a>focusable area</a> whose <a>DOM anchor</a> is an element whose <code>tabindex</code> attribute has a value greater than zero but less than
+      the value of the <code>tabindex</code> attribute on <var>candidate</var>,</li>
+
+      <li>after any <a>focusable area</a> whose <a>DOM anchor</a> is an element whose <code>tabindex</code> attribute has a value equal to the value of the <code>tabindex</code> attribute on <var>candidate</var> but that is
+      earlier in the document in <a>tree order</a> than <var>candidate</var>,</li>
+
+      <li>before any <a>focusable area</a> whose <a>DOM anchor</a> is an element whose <code>tabindex</code> attribute has a value equal to the value of the <code>tabindex</code> attribute on <var>candidate</var> but that is
+      later in the document in <a>tree order</a> than <var>candidate</var>, and</li>
+
+      <li>before any <a>focusable area</a> whose <a>DOM anchor</a> is an element whose <code>tabindex</code> attribute has a value greater than the value of the
+      <code>tabindex</code> attribute on <var>candidate</var>.</li>
+
+    </ul>
+
+    </dd>
+
+  </dl>
+
+  An element that has its <a>tabindex focus flag</a> set but does not otherwise have an
+  <a>activation behavior</a> defined has an <a>activation behavior</a> that does
+  nothing.
+
+  <p class="note">
+  This means that an element that is only focusable because of its <code>tabindex</code> attribute will fire a <code>click</code> event in response to a non-mouse activation (e.g. hitting the
+  "enter" key while the element is <a>focused</a>).
+  </p>
+
+  An element with the <code>tabindex</code> attribute specified is
+  <a>interactive content</a>.
+
+  The <dfn attribute for="global"><code>tabIndex</code></dfn> IDL attribute must
+  <a>reflect</a> the value of the <code>tabindex</code> content
+  attribute. Its default value is 0 for elements that are focusable and -1 for elements that
+  are not focusable.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="focus-processing-model">Processing model</h4>
+
+  The <dfn>focusing steps</dfn> for an object <var>new focus target</var> that is
+  either a <a>focusable area</a>, or an element that is not a <a>focusable area</a>, or a
+  <a>browsing context</a>, are as follows. They can optionally be run with a <i>fallback target</i>.
+
+  <ol>
+
+    <li>
+
+    If <var>new focus target</var> is neither a <{dialog}> element that has an
+    <code>open</code> attribute specified and that is <a>being
+    rendered</a> (i.e. that is a <a>control group owner object</a>), nor a <a>focusable
+    area</a>, then run the first matching set of steps from the following list:
+
+    <dl class="switch">
+
+      <dt>If <var>new focus target</var> is an <{area}> element with one or more
+      shapes that are <a>focusable areas</a></dt>
+
+      <dd>
+
+      Let <var>new focus target</var> be the shape corresponding to the first
+      <{img}> element in <a>tree order</a> that uses the image map to which the <code>area</code>
+      element belongs.
+
+      </dd>
+
+      <dt>If <var>new focus target</var> is an element with one or more scrollable regions
+      that are <a>focusable areas</a></dt>
+
+      <dd>
+
+      Let <var>new focus target</var> be the element's first scrollable region,
+      according to a pre-order, depth-first traversal of the box tree. [[!CSS-2015]]
+
+      </dd>
+
+      <dt>If <var>new focus target</var> is the <a>root element</a> of its
+      <code>Document</code></dt>
+
+      <dd>
+
+      Let <var>new focus target</var> be the <code>Document</code>'s viewport.
+
+      </dd>
+
+      <dt>If <var>new focus target</var> is a <a>browsing context</a></dt>
+
+      <dd>
+
+      Let <var>new focus target</var> be the <a>browsing context</a>'s
+      <a>active document</a>.
+
+      </dd>
+
+      <dt>If <var>new focus target</var> is a <a>browsing context container</a></dt>
+
+      <dd>
+
+      Let <var>new focus target</var> be the <a>browsing context container</a>'s <a>nested browsing context</a>'s
+      <a>active document</a>.
+
+      </dd>
+
+      <dt>Otherwise</dt>
+
+      <dd>
+
+      If no <i>fallback target</i> was specified, abort the <a>focusing steps</a>.
+
+      Otherwise, let <var>new focus target</var> be the <i>fallback target</i>.
+
+      </dd>
+
+    </dl>
+
+    </li>
+
+    <li>
+
+    If <var>new focus target</var> is a <a>control group owner object</a> that is
+    not a <a>focusable area</a>, but does have a <a>dialog group</a>, and that <a>dialog group</a>
+    has a designated <a>focused dialog</a>, then
+    let <var>new focus target</var> be the <a>focused dialog of the dialog
+    group</a>, and redo this step.
+
+    Otherwise, if <var>new focus target</var> is a <a>control group owner
+    object</a> that is not a <a>focusable area</a>, and its <a>control group</a> is not empty,
+    then designate <var>new focus target</var> as the <a>focused area of the control
+    group</a>, and redo this step.
+
+    Otherwise, if <var>new focus target</var> is a <a>browsing context
+    container</a>, then let <var>new focus target</var> be the <<a>nested browsing context</a>'s <a>active document</a>, and redo this step.
+
+    <p class="note">
+  A <{dialog}> element can be both a <a>control group owner
+    object</a> and a <a>focusable area</a>, if it has both an <code>open</code> attribute specified and a <code>tabindex</code> attribute specified and is <a>being
+    rendered</a>.
+  </p>
+
+    </li>
+
+    <li>If <var>new focus target</var> is a <a>focusable area</a> and its <a>DOM
+    anchor</a> is <a>inert</a>, then abort these steps.</li>
+
+    <li>If <var>new focus target</var> is the <a>currently focused area of a
+    top-level browsing context</a>, then abort these steps.</li>
+
+    <li>Let <var>old chain</var> be the <a>focus chain</a> of the <a>currently focused area of the
+    top-level browsing context</a> in which <var>new focus target</var> finds
+    itself.</li>
+
+    <li>Let <var>new chain</var> be the <a>focus chain</a> of <var>new
+    focus target</var>.</li>
+
+    <li>Run the <a>focus update steps</a> with <var>old chain</var>, <var>new chain</var>, and <var>new focus target</var> respectively.</li>
+
+  </ol>
+
+  User agents must <a>immediately</a> run the <a>focusing steps</a> for a <a>focusable area</a>,
+  <{dialog}>, or <a>browsing context</a> <var>candidate</var> whenever the
+  user attempts to move the focus to <var>candidate</var>.
+
+  The <dfn>unfocusing steps</dfn> for an object <var>old focus target</var> that is
+  either a <a>focusable area</a> or an element that is not a <a>focusable area</a> are as
+  follows:
+
+  <ol>
+
+    <li>If <var>old focus target</var> is <a>inert</a>, then abort these
+    steps.</li>
+
+    <li>
+
+    If <var>old focus target</var> is an <{area}> element and one of its shapes is the
+    <a>currently focused area of a top-level browsing context</a>, or, if <var>old focus
+    target</var> is an element with one or more scrollable regions, and one of them is the
+    <a>currently focused area of a top-level browsing context</a>, then let <var>old focus
+    target</var> be that <a>currently focused area of a top-level browsing context</a>.
+
+    </li>
+
+    <li>Let <var>old chain</var> be the <a>focus chain</a> of the <a>currently
+    focused area of a top-level browsing context</a>.</li>
+
+    <li>If <var>old focus target</var> is not one of the entries in <var>old
+    chain</var>, then abort these steps.</li>
+
+    <li>
+
+    If <var>old focus target</var> is a <code>dialog</code> in a <a>dialog group</a>, and
+    the <a>dialog group manager</a> has a non-empty <a>control group</a>, then let
+    <var>new focus target</var> be the designated <a>focused area of that focus group</a>.
+
+    Otherwise, if <var>old focus target</var> is a <a>focusable area</a>, then let <var>new
+    focus target</var> be the first <a>focusable area</a> of its <a>control group</a>
+    (if the <a>control group owner</a> is a {{Document}}, this will always be a
+    viewport).
+
+    Otherwise, let <var>new focus target</var> be null.
+
+    </li>
+
+    <li>If <var>new focus target</var> is not null, then run the <a>focusing
+    steps</a> for <var>new focus target</var>.</li>
+
+  </ol>
+
+  When the <a>currently focused area of a top-level browsing context</a> is somehow
+  unfocused without another element being explicitly focused in its stead, the user agent must
+  <a>immediately</a> run the <a>unfocusing steps</a> for that object.
+
+  <p class="note">
+  The <a>unfocusing steps</a> do not always result in the focus changing, even
+  when applied to the <a>currently focused area of a top-level browsing context</a>. For
+  example, if the <a>currently focused area of a top-level browsing context</a> is a viewport,
+  then it will usually keep its focus regardless until another <a>focusable area</a> is explicitly
+  focused with the <a>focusing steps</a>.
+  </p>
+
+  <hr />
+
+  When a <a>focusable area</a> is added to an empty <a>control group</a>, it must be designated
+  the <a>focused area of the control group</a>.
+
+  When a <a>dialog group</a> is formed, if the <a>dialog group manager</a> has an empty
+  <a>control group</a>, the first non-<a>inert</a> <code>dialog</code> in the <a>dialog
+  group</a>, if any, or else the first <code>dialog</code> in the <a>dialog group</a> regardless of
+  <a>inertness</a>, must be designated the <a>focused dialog of the dialog
+  group</a>.
+
+  <dfn>Focus fixup rule one</dfn>: When the designated <a>focused area of a control group</a> is removed from that <a>control group</a> in
+  some way (e.g. it stops being a <a>focusable area</a>, it is removed from the DOM, it
+  becomes <a for="/">expressly inert</a>, etc), and the <a>control
+  group</a> is still not empty: designate the first non-<a>inert</a> <a>focused area</a> in that <a>control group</a> to be the new
+  <a>focused area of the control group</a>, if any; if they are all <a>inert</a>, then
+  designate the first <a>focused area</a> in that
+  <a>control group</a> to be the new <a>focused area of the control group</a> regardless
+  of <a>inertness</a>. If such a removal instead results in the <a>control
+  group</a> being empty, then there is simply no longer a <a>focused area of the control
+  group</a>.
+
+  <p class="example">
+  For example, this might happen because an element is removed from its
+  {{Document}}, or has a <code>hidden</code> attribute added. It might
+  also happen to an <{input}> element when the element gets disabled.
+  </p>
+
+  <dfn>Focus fixup rule two</dfn>: When a <a>dialog group</a> has no designed <a>focused
+  dialog of the dialog group</a>, and its <a>dialog group manager</a>'s <a>control
+  group</a> changes from being non-empty to being empty, the first non-<a>inert</a>
+  <code>dialog</code> in the <a>dialog group</a>, if any, or else the first <code>dialog</code> in
+  the <a>dialog group</a> regardless of <a>inertness</a>, must be designated
+  the <a>focused dialog of the dialog group</a>.
+
+  <dfn>Focus fixup rule three</dfn>: When the designated <a>focused dialog of a dialog group</a> is removed from that <a>dialog group</a> in
+  some way (e.g. it stops <a>being rendered</a>, it loses its <code>open</code> attribute, it becomes <a for="/">expressly inert</a>, etc), and there is still a <a>dialog group</a> (because the
+  <code>dialog</code> in question was not the last <code>dialog</code> in that <a>dialog group</a>):
+  if the <a>dialog group</a>'s <a>manager</a>'s <a>control
+  group</a> is non-empty, let there be no designated <a>focused dialog of the dialog group</a>
+  any more; otherwise (in the case that the <a>control group</a> is empty), designate the first
+  non-<a>inert</a> <code>dialog</code> in the <a>dialog group</a> to be the <a>focused
+  dialog of the dialog group</a>, or, if they are all <a>inert</a>, designate the first
+  <code>dialog</code> in the <a>dialog group</a> to be the <a>focused dialog of the dialog
+  group</a> regardless of <a>inertness</a>.
+
+  When the <a>currently focused area of a top-level browsing context</a> was a <a>focusable
+  area</a> but stops being a <a>focusable area</a>, or when it was a <code>dialog</code> in a
+  <a>dialog group</a> and stops being part of that <a>dialog group</a>, or when it
+  starts being <a>inert</a>, the user agent must run the following steps:
+
+  <ol>
+
+    <li>Let <var>old focus target</var> be whatever the <a>currently focused area of the top-level browsing
+    context</a> was immediately before this algorithm became applicable (e.g. before the element
+    was disabled, or the dialog was closed, or whatever caused this algorithm to run).</li>
+
+    <li>Let <var>old chain</var> be the <a>focus chain</a> of the <a>currently focused area of the
+    top-level browsing context</a> at the same time.</li>
+
+    <li>Make sure that the changes implied by the focus fixup rules <span>one</span>, <span>two</span>, and <span>three</span> above are applied.</li>
+
+    <li>Let <var>new focus target</var> be the <a>currently focused area of a
+    top-level browsing context</a>.</li>
+
+    <li>If <var>old focus target</var> and <var>new focus target</var> are the
+    same, abort these steps.</li>
+
+    <li>Let <var>new chain</var> be the <a>focus chain</a> of <var>new
+    focus target</var>.</li>
+
+    <li>Run the <a>focus update steps</a> with <var>old chain</var>, <var>new chain</var>, and <var>new focus target</var> respectively.</li>
+
+  </ol>
+
+  <hr />
+
+  The <dfn lt="loses focus|focus update steps">focus update steps</dfn>, given an <var>old chain</var>, a <var>new chain</var>, and a <var>new focus target</var> respectively, are as
+  follows:
+
+  <ol>
+
+    <li>Unset the <a>sequential focus navigation starting point</a>.</li>
+
+    <li>If the last entry in <var>old chain</var> and the last entry in <var>new chain</var> are the same, pop the last entry from <var>old chain</var>
+    and the last entry from <var>new chain</var> and redo this step.</li>
+
+    <li>
+
+    For each entry <var>entry</var> in <var>old chain</var>, in order, run
+    these substeps:
+
+    <ol>
+
+      <li>If <var>entry</var> is an <code>input</code>
+      element, and the <code>change</code> event <a>applies</a> to the element, and the element does not have a
+      defined <a>activation behavior</a>, and the user has changed the element's <a for="forms">value</a> or its list of <a>selected files</a> while the control was focused
+      without committing that change, then <a>fire a simple event</a> that bubbles named <code>change</code> at the element.
+
+      <li>
+
+      If <var>entry</var> is an element, let <var>blur event target</var> be
+      <var>entry</var>.
+
+      If <var>entry</var> is a <code>Document</code> object, let <var>blur
+      event target</var> be that <code>Document</code> object's <code>Window</code> object.
+
+      Otherwise, let <var>blur event target</var> be null.
+
+      </li>
+
+      <li>If <var>entry</var> is the last entry in <var>old chain</var>, and
+      <var>entry</var> is an {{Element}}, and the last entry in <var>new
+      chain</var> is also an {{Element}}, then let <var>related blur target</var>
+      be the last entry in <var>new chain</var>. Otherwise, let <var>related blur
+      target</var> be null.</li>
+
+      <li>
+
+      If <var>blur event target</var> is not null, <a>fire a focus event</a>
+      named <code>blur</code> at <var>blur event target</var>, with
+      <var>related blur target</var> as the related target.
+
+      <p class="note">
+  In some cases, e.g. if <var>entry</var> is an <code>area</code>
+      element's shape, a scrollable region, or a viewport, no event is fired.
+  </p>
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li>Apply any relevant platform-specific conventions for focusing <var>new focus
+    target</var>. (For example, some platforms select the contents of a text field when that field is
+    focused.)</li>
+
+    <li>
+
+    For each entry <var>entry</var> in <var>new chain</var>, in reverse
+    order, run these substeps:
+
+    <ol>
+
+      <li>If <var>entry</var> is a <{dialog}> element: Let <var>entry</var> be the designated <a>focused dialog of its dialog group</a>.</li>
+
+      <li>
+
+      If <var>entry</var> is a <a>focusable area</a>: Designate <var>entry</var> as the <a>focused area of the control group</a>. If its <a>control
+      group</a>'s <a>owner</a> is also a <a>dialog group
+      manager</a>, then let there be no designated <a>focused dialog</a> in that <a>dialog group</a>.
+
+      <p class="note">
+  It is possible for <var>entry</var> to be both a <code>dialog</code>
+      element and a <a>focusable area</a>, in which case it is its own <a>control group
+      owner</a>.
+  </p>
+
+      </li>
+
+      <li>
+
+      If <var>entry</var> is an element, let <var>focus event target</var> be
+      <var>entry</var>.
+
+      If <var>entry</var> is a <code>Document</code> object, let <var>focus
+      event target</var> be that <code>Document</code> object's <code>Window</code> object.
+
+      Otherwise, let <var>focus event target</var> be null.
+
+      </li>
+
+      <li>If <var>entry</var> is the last entry in <var>new chain</var>, and
+      <var>entry</var> is an {{Element}}, and the last entry in <var>old
+      chain</var> is also an {{Element}}, then let <var>related focus target</var>
+      be the last entry in <var>old chain</var>. Otherwise, let <var>related
+      focus target</var> be null.</li>
+
+      <li>
+
+      If <var>focus event target</var> is not null, <a>fire a focus event</a>
+      named <code>focus</code> at <var>focus event target</var>, with
+      <var>related focus target</var> as the related target.
+
+      <p class="note">
+  In some cases, e.g. if <var>entry</var> is an <code>area</code>
+      element's shape, a scrollable region, or a viewport, no event is fired.
+  </p>
+
+      </li>
+
+    </ol>
+
+    </li>
+
+  </ol>
+
+  When a user agent is required to <dfn>fire a focus event</dfn> named <var>e</var> at
+  an element <var>t</var> and with a given related target <var>r</var>, the user
+  agent must create a <a>trusted</a> <code>FocusEvent</code>
+  object, initialize it to have the given name <var>e</var>, to not bubble, to not be
+  cancelable, and to have the <code>relatedTarget</code>
+  attribute initialized to <var>r</var>, the <code>view</code> attribute initialized to the <code>Window</code> object of the <code>Document</code> object of <var>t</var>, and the <code>detail</code> attribute initialized to 0, and must then <a>dispatch</a> the newly created <code>FocusEvent</code> object
+  at the specified target element <var>t</var>.
+
+  <hr />
+
+  When a key event is to be routed in a <a>top-level browsing context</a>, the user agent
+  must run the following steps:
+
+  <ol>
+
+    <li>Let <var>target area</var> be the <a>currently focused area of the top-level browsing
+    context</a>.</li>
+
+    <li>If <var>target area</var> is a <a>focusable area</a>, let <var>target
+    node</var> be <var>target area</var>'s <a>DOM anchor</a>. Otherwise, <var>target area</var> is a <code>dialog</code>; let <var>target node</var> be
+    <var>target area</var>.</li>
+
+    <li>
+
+    If <var>target node</var> is a <code>Document</code> that has a <{body}> element, then let <var>target node</var> be <a href="#the-body-element">the <code>body</code> element</a> of that {{Document}}.
+
+    Otherwise, if <var>target node</var> is a <code>Document</code> that has a
+    <a>root element</a>, then let <var>target node</var> be the <a>root
+    element</a> of that {{Document}}.
+
+    </li>
+
+    <li>
+
+    If <var>target node</var> is not <a>inert</a>, fire the event at <var>target node</var>.
+
+    <p class="note">
+  It is possible for the <a>currently focused area of a top-level browsing
+    context</a> to be <a>inert</a>, for example if a <a>modal dialog is shown</a>, and then that <code>dialog</code>
+    element is made <a>inert</a>. It is likely to be the result of a logic error in the
+    application, though.
+  </p>
+
+    </li>
+
+    <li>If the event was not canceled, then let <var>target area</var> handle the key
+    event. This might include <a>running synthetic
+    click activation steps</a> for <var>target node</var>.</li>
+
+  </ol>
+
+  <hr />
+
+  The <dfn>has focus steps</dfn>, given a <code>Document</code> object <var>target</var>, are
+  as follows:
+
+  <ol>
+
+    <li>Let <var>candidate</var> be the <code>Document</code> of the <a>top-level browsing
+    context</a>.</li>
+
+    <li>If <var>candidate</var> is <var>target</var>, return true and abort these steps.</li>
+
+    <li>
+
+    If <var>candidate</var> has a <a>dialog group</a> with a designated <a>focused
+    dialog of the dialog group</a>, then let <var>candidate</var> be the designated
+    <a>focused dialog of the dialog group</a>, and redo this step.
+
+    Otherwise, if <var>candidate</var> has a non-empty <a>control group</a>, and the
+    designated <a>focused area of the control group</a> is a <a>browsing context
+    container</a>, and the <a>active document</a> of that <a>browsing context
+    container</a>'s <a>nested browsing context</a> is <var>target</var>, then
+    return true and abort these steps.
+
+    Otherwise, if <var>candidate</var> has a non-empty <a>control group</a>, and the
+    designated <a>focused area of the control group</a> is a <a>browsing context
+    container</a>, then let <var>candidate</var> be the <a>active document</a> of
+    that <a>browsing context container</a>'s <a>nested browsing context</a>, and redo
+    this step.
+
+    Otherwise, return false and abort these steps.
+
+    </li>
+
+  </ol>
+
+<h4 id="sec-sequential-focus-navigation">Sequential focus navigation</h4>
+
+  Each <a>control group</a> has a <dfn lt="sequential focus navigation|sequential focus navigation order">sequential focus navigation order</dfn>, which orders some
+  or all of the <a>focusable areas</a> in the <a>control group</a>
+  relative to each other. The order in the <a>sequential focus navigation order</a> does not
+  have to be related to the order in the <a>control group</a> itself. If a <a>focusable area</a> is
+  omitted from the <a>sequential focus navigation order</a> of its <a>control group</a>, then
+  it is unreachable via <a>sequential focus navigation</a>.
+
+  There can also be a <dfn>sequential focus navigation starting point</dfn>. It is initially
+  unset. The user agent may set it when the user indicates that it should be moved.
+
+  <p class="example">
+  For example, the user agent could set it to the position of the user's click if
+  the user clicks on the document contents.
+  </p>
+
+  When the user requests that focus move from the <a>currently focused area of a top-level
+  browsing context</a> to the next or previous <a>focusable area</a> (e.g. as the default action
+  of pressing the <kbd>tab</kbd> key), or when the user requests that focus sequentially move to a
+  <a>top-level browsing context</a> in the first place (e.g. from the browser's location bar),
+  the user agent must use the following algorithm:
+
+  <ol>
+
+    <li>Let <var>starting point</var> be the <a>currently focused area of a top-level
+    browsing context</a>, if the user requested to move focus sequentially from there, or else the
+    <a>top-level browsing context</a> itself, if the user instead requested to move focus from
+    outside the <a>top-level browsing context</a>.</li>
+
+    <li>If there is a <a>sequential focus navigation starting point</a> defined and it is
+    inside <var>starting point</var>, then let <var>starting point</var> be the <a>sequential
+    focus navigation starting point</a> instead.</li>
+
+    <li>
+
+    Let <var>direction</var> be <i>forward</i> if the user requested the <em>next</em>
+    control, and <i>backward</i> if the user requested the previous control.
+
+    <p class="note">
+  Typically, pressing <kbd>tab</kbd> requests the next control, and pressing
+    <kbd><kbd>shift</kbd>+<kbd>tab</kbd></kbd> requests the previous control.
+  </p>
+
+    </li>
+
+    <li>
+
+    <i>Loop</i>: Let <var>selection mechanism</var> be <i>sequential</i> if the <var>starting
+    point</var> is a <a>browsing context</a> or if <var>starting point</var> is in its
+    <a>control group</a>'s <a>sequential focus navigation order</a>.
+
+    Otherwise, <var>starting point</var> is not in its <a>control group</a>'s
+    <a>sequential focus navigation order</a>; let <var>selection mechanism</var> be
+    <i>DOM</i>.
+
+    </li>
+
+    <li>Let <var>candidate</var> be the result of running the <a>sequential navigation search
+    algorithm</a> with <var>starting point</var>, <var>direction</var>, and <var>selection
+    mechanism</var> as the arguments.</li>
+
+    <li>If <var>candidate</var> is not null, then run the <a>focusing steps</a> for
+    <var>candidate</var> and abort these steps.</li>
+
+    <li>Otherwise, unset the <a>sequential focus navigation starting point</a>.</li>
+
+    <li>
+
+    If <var>starting point</var> is the <a>top-level browsing context</a>, or a
+    <a>focusable area</a> in the <a>top-level browsing context</a>, the user agent
+    should transfer focus to its own controls appropriately (if any), honouring
+    <var>direction</var>, and then abort these steps.
+
+    <p class="example">
+  For example, if <var>direction</var> is <i>backward</i>, then the last
+    focusable control before the browser's rendering area would be the control to focus.
+  </p>
+
+    If the user agent has no focusable controls &mdash; a kiosk-mode browser, for instance
+    &mdash;
+    then the user agent may instead restart these steps with the <var>starting point</var> being the
+    <a>top-level browsing context</a> itself.
+
+    </li>
+
+    <li>Otherwise, <var>starting point</var> is a <a>focusable area</a> in a
+    <a>nested browsing context</a>. Let <var>starting point</var> be that
+    <a>nested browsing context</a>'s <a>browsing context container</a>, and return to the
+    step labeled <i>loop</i>.
+
+    </li>
+
+  </ol>
+
+  The <dfn>sequential navigation search algorithm</dfn> consists of the following steps. This
+  algorithm takes three arguments: <var>starting point</var>, <var>direction</var>,
+  and <var>selection mechanism</var>.
+
+  <ol>
+
+    <li>
+
+    Pick the appropriate cell from the following table, and follow the instructions in that cell.
+
+    The appropriate cell is the one that is from the column whose header describes
+    <var>direction</var> and from the first row whose header describes <var>starting point</var> and
+    <var>selection mechanism</var>.
+
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th><var>direction</var> is <i>forward</i></th>
+          <th><var>direction</var> is <i>backward</i></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th><var>starting point</var> is a <a>browsing context</a></th>
+          <td>
+            Let <var>candidate</var> be the first <a>suitable sequentially focusable area</a> in
+            <var>starting point</var>'s <a>active document</a>'s <a>primary control group</a>, if
+            any; or else null
+          </td>
+          <td>
+            Let <var>candidate</var> be the last <a>suitable sequentially focusable area</a> in
+            <var>starting point</var>'s <a>active document</a>'s <a>primary control group</a>, if
+            any; or else null
+          </td>
+        </tr>
+        <tr>
+          <th><var>selection mechanism</var> is <i>DOM</i></th>
+          <td>
+            Let <var>candidate</var> be the first <a>suitable sequentially focusable area</a> in the
+            <a>home control group</a> following <var>starting point</var>, if any; or else null
+          </td>
+          <td>
+            Let <var>candidate</var> be the last <a>suitable sequentially focusable area</a> in the
+            <a>home control group</a> preceding <var>starting point</var>, if any; or else null
+          </td>
+        </tr>
+        <tr>
+          <th><var>selection mechanism</var> is <i>sequential</i></th>
+          <td>
+            Let <var>candidate</var> be the first <a>suitable sequentially focusable area</a> in the
+            <a>home sequential focus navigation order</a> following <var>starting point</var>, if
+            any; or else null
+          </td>
+          <td>
+            Let <var>candidate</var> be the last <a>suitable sequentially focusable area</a> in the
+            <a>home sequential focus navigation order</a> preceding <var>starting point</var>, if
+            any; or else null
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    A <dfn>suitable sequentially focusable area</dfn> is a <a>focusable area</a> whose <a>DOM
+    anchor</a> is not <a>inert</a> and that is in its <a>control group</a>'s <a>sequential
+    focus navigation order</a>.
+
+    The <dfn>primary control group</dfn> of a <a>control group owner object</a> <var>X</var> is the <a>control group</a> of <var>X</var> if <var>X</var> has no <a>dialog group</a> or if its <a>dialog group</a> has no
+    designated <a>focused dialog of the dialog group</a>, otherwise, it is the <a>primary
+    control group</a> of <var>X</var>'s <a>dialog group</a>'s designated
+    <a>focused dialog of the dialog group</a>.
+
+    The <dfn>home control group</dfn> is the <a>control group</a> to which <var>starting point</var> belongs.
+
+    The <dfn>home sequential focus navigation order</dfn> is the <a>sequential focus
+    navigation order</a> to which <var>starting point</var> belongs.
+
+    <p class="note">
+  The <a>home sequential focus navigation order</a> is the <a>home
+    control group</a>'s <a>sequential focus navigation order</a>, but is only used when the
+    <var>starting point</var> is in that <a>sequential focus navigation order</a>
+    (when it's not, <var>selection mechanism</var> will be <i>DOM</i>).
+  </p>
+
+    </li>
+
+    <li>
+
+    If <var>candidate</var> is a <a>browsing context container</a>, then let <var>new candidate</var> be the result of running the <a>sequential navigation search
+    algorithm</a> with <var>candidate</var>'s <a>nested browsing context</a> as
+    the first argument, <var>direction</var> as the second, and <i>sequential</i>
+    as the third.
+
+    If <var>new candidate</var> is null, then let <var>starting point</var>
+    be <var>candidate</var>, and return to the top of this algorithm. Otherwise, let <var>candidate</var> be <var>new candidate</var>.
+
+    </li>
+
+    <li>Return <var>candidate</var>.</li>
+
+  </ol>
+
+  </div>
+
+<h4 id="focus-management-apis">Focus management APIs</h4>
+
+  <dl class="domintro">
+
+    <dt><var>document</var> . <code>activeElement</code></dt>
+
+    <dd>
+
+    Returns the deepest element in the document through which or to which key events are being
+    routed. This is, roughly speaking, the focused element in the document.
+
+    For the purposes of this API, when a <a>child browsing context</a> is focused, its
+    <a>browsing context container</a> is <a>focused</a> in the
+    <a>parent browsing context</a>. For example, if the user moves the focus to a text field
+    in an <{iframe}>, the <code>iframe</code> is the element returned by the <code>activeElement</code> API in the <code>iframe</code>'s
+    <a>node document</a>.
+
+    </dd>
+
+    <dt><var>document</var> . <code>hasFocus</code>()</dt>
+
+    <dd>
+
+    Returns true if key events are being routed through or to the document; otherwise, returns
+    false. Roughly speaking, this corresponds to the document, or a document nested inside this
+    one, being focused.
+
+    </dd>
+
+    <dt><var>window</var> . <code>focus</code>()</dt>
+
+    <dd>
+
+    Moves the focus to the window's <a>browsing context</a>, if any.
+
+    </dd>
+
+    <dt><var>element</var> . <code>focus</code>()</dt>
+
+    <dd>
+
+    Moves the focus to the element.
+
+    If the element is a <a>browsing context container</a>, moves the focus to the <a>nested browsing context</a> instead.
+
+    </dd>
+
+    <dt><var>element</var> . <code>blur</code>()</dt>
+
+    <dd>
+
+    Moves the focus to the viewport. Use of this method is discouraged; if you want to focus the
+    viewport, call the <code>focus()</code> method on the <code>Document</code>'s root element.
+
+    Do not use this method to hide the focus ring if you find the focus ring unsightly. Instead,
+    use a CSS rule to override the 'outline' property, and provide a different way to show what
+    element is focused. Be aware that if an alternative focusing style isn't made available, the
+    page will be significantly less usable for people who primarily navigate pages using a keyboard,
+    or those with reduced vision who use focus outlines to help them navigate the page.
+
+    <div class="example">
+      For example, to hide the outline from links and instead use a yellow background to indicate
+      focus, you could use:
+
+      <pre highlight="css">:link:focus, :visited:focus { outline: none; background: yellow; color: black; }</pre>
+    </div>
+
+    Do not use this method to hide the focus ring. Do not use any
+    other method that hides the focus ring from keyboard users, in
+    particular do not use a CSS rule to override the 'outline'
+    property. Removal of the focus ring leads to serious accessibility
+    issues for users who navigate and interact with interactive
+    content using the keyboard.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <dfn><code>activeElement</code></dfn> attribute on
+  <code>Document</code> objects must return the value returned by the following steps:
+
+  <ol>
+
+    <li>Let <var>candidate</var> be the <code>Document</code> on which the method was
+    invoked.</li>
+
+    <li>If <var>candidate</var> has a <a>dialog group</a> with a designated
+    <a>focused dialog of the dialog group</a>, then let <var>candidate</var> be the
+    designated <a>focused dialog of the dialog group</a>, and redo this step.</li>
+
+    <li>If <var>candidate</var> has a non-empty <a>control group</a>, let <var>candidate</var> be the designated <a>focused area of the control
+    group</a>.
+
+    </li>
+
+    <li>If <var>candidate</var> is a <a>focusable area</a>, let <var>candidate</var> be <var>candidate</var>'s <a>DOM anchor</a>.</li>
+
+    <li>
+
+    If <var>candidate</var> is a <code>Document</code> that has a <{body}> element, then let <var>candidate</var> be <a href="#the-body-element">the <code>body</code> element</a> of that {{Document}}.
+
+    Otherwise, if <var>candidate</var> is a <code>Document</code> that has a <a>root
+    element</a>, then let <var>candidate</var> be the <a>root element</a> of that
+    {{Document}}.
+
+    Otherwise, if <var>candidate</var> is a {{Document}}, then let <var>candidate</var> be null.
+
+    </li>
+
+    <li>Return <var>candidate</var>.</li>
+
+  </ol>
+
+  The <dfn method for="Document"><code>hasFocus()</code></dfn> method on the
+  <code>Document</code> object, when invoked, must return the result of running the <a>has focus
+  steps</a> with the <code>Document</code> object as the argument.
+
+  The <dfn method for="Window"><code>focus()</code></dfn> method on the <code>Window</code>
+  object, when invoked, must run the <a>focusing steps</a> with the <code>Window</code>
+  object's <a>browsing context</a>. Additionally, if this <a>browsing context</a> is a
+  <a>top-level browsing context</a>, user agents are encouraged to trigger some sort of
+  notification to indicate to the user that the page is attempting to gain focus.
+
+  The <dfn method for="Window"><code>blur()</code></dfn> method on the <code>Window</code>
+  object, when invoked, provides a hint to the user agent that the script believes the user probably
+  is not currently interested in the contents of the <a>browsing context</a> of the
+  <code>Window</code> object on which the method was invoked, but that the contents might become
+  interesting again in the future.
+
+  User agents are encouraged to ignore calls to this <code>blur()</code>
+  method entirely.
+
+  <p class="note">
+  Historically, the <code>focus()</code> and <code>blur()</code> methods actually affected the system-level focus of the
+  system widget (e.g. tab or window) that contained the <a>browsing context</a>, but hostile
+  sites widely abuse this behavior to the user's detriment.
+  </p>
+
+  The <code>focus()</code> method on elements, when invoked, must
+  run the following algorithm:
+
+  <ol>
+
+    <li>If the element is marked as <i>locked for focus</i>, then abort these steps.</li>
+
+    <li>Mark the element as <dfn>locked for focus</dfn>.</li>
+
+    <li>Run the <a>focusing steps</a> for the element.</li>
+
+    <li>Unmark the element as <i>locked for focus</i>.</li>
+
+  </ol>
+
+  The <code>blur()</code> method, when invoked, should run the
+  <a>unfocusing steps</a> for the element on which the method was called. User agents may
+  selectively or uniformly ignore calls to this method for usability reasons.
+
+  <p class="example">
+  For example, if the <code>blur()</code> method is unwisely
+  being used to remove the focus ring for aesthetics reasons, the page would become unusable by
+  keyboard users. Ignoring calls to this method would thus allow keyboard users to interact with the
+  page.
+  </p>
+
+  </div>
+
+<h3 id="assigning-keyboard-shortcuts">Assigning keyboard shortcuts</h3>
+
+<h4 id="assigning-keyboard-shortcuts-introduction">Introduction</h4>
+
+  <em>This section is non-normative.</em>
+
+  Each element that can be activated or focused can be assigned a single key combination to
+  activate it, using the <code>accesskey</code> attribute.
+
+  The exact shortcut is determined by the user agent, based on information about the user's
+  keyboard, what keyboard shortcuts already exist on the platform, and what other shortcuts have
+  been specified on the page, using the information provided in the <code>accesskey</code> attribute as a guide.
+
+  In order to ensure that a relevant keyboard shortcut is available on a wide variety of input
+  devices, the author can provide a number of alternatives in the <code>accesskey</code> attribute.
+
+  Each alternative consists of a single character, such as a letter or digit.
+
+  User agents can provide users with a list of the keyboard shortcuts, but authors are encouraged
+  to do so also. The <code>accessKeyLabel</code> IDL attribute returns a
+  string representing the actual key combination assigned by the user agent.
+
+  <div class="example">
+    In this example, an author has provided a button that can be invoked using a shortcut key. To
+    support full keyboards, the author has provided "C" as a possible key. To support devices
+    equipped only with numeric keypads, the author has provided "1" as another possibly key.
+
+    <pre highlight="html">
+      &lt;input type=button value=Collect onclick="collect()" accesskey="C 1" id=c>
+    </pre>
+  </div>
+
+  <div class="example">
+    To tell the user what the shortcut key is, the author has this script here opted to explicitly
+    add the key combination to the button's label:
+
+    <pre highlight="javascript">
+      function addShortcutKeyLabel(button) {
+        if (button.accessKeyLabel != '')
+          button.value += ' (' + button.accessKeyLabel + ')';
+      }
+
+      addShortcutKeyLabel(document.getElementById('c'));
+    </pre>
+
+    Browsers on different platforms will show different labels, even for the same key combination,
+    based on the convention prevalent on that platform. For example, if the key combination is the
+    Control key, the Shift key, and the letter C, a Windows browser might display
+    "<samp>Ctrl+Shift+C</samp>", whereas a Mac browser might display "<samp>^&#x21E7;C</samp>", while
+    an Emacs browser might just display "<samp>C-C</samp>". Similarly, if the key combination is the
+    Alt key and the Escape key, Windows might use "<samp>Alt+Esc</samp>", Mac might use
+    "<samp>&#x2325;&#x238B;</samp>", and an Emacs browser might use "<samp>M-ESC</samp>" or
+    "<samp>ESC ESC</samp>".
+
+    In general, therefore, it is unwise to attempt to parse the value returned from the <code>accessKeyLabel</code> IDL attribute.
+  </div>
+
+<h4 id="the-accesskey-attribute">The <dfn element-attr for="global"><code>accesskey</code></dfn> attribute</h4>
+
+  All <a>html elements</a> may have the <code>accesskey</code>
+  content attribute set. The <code>accesskey</code> attribute's value is used
+  by the user agent as a guide for creating a keyboard shortcut that activates or focuses the
+  element.
+
+  If specified, the value must be an <a>ordered set of unique space-separated tokens</a>
+  that are <a>case-sensitive</a>, each of which must be exactly one Unicode code point in
+  length.
+
+  <div class="example">
+    In the following example, a variety of links are given with access keys so that keyboard users
+    familiar with the site can more quickly navigate to the relevant pages:
+
+    <pre highlight="html">
+      &lt;nav>
+        &lt;p>
+          &lt;a title="Consortium Activities" accesskey="A" href="/Consortium/activities">Activities&lt;/a> |
+          &lt;a title="Technical Reports and Recommendations" accesskey="T" href="/TR/">Technical Reports&lt;/a> |
+          &lt;a title="Alphabetical Site Index" accesskey="S" href="/Consortium/siteindex">Site Index&lt;/a> |
+          &lt;a title="About This Site" accesskey="B" href="/Consortium/">About Consortium&lt;/a> |
+          &lt;a title="Contact Consortium" accesskey="C" href="/Consortium/contact">Contact&lt;/a>
+        &lt;/p>
+      &lt;/nav>
+    </pre>
+  </div>
+
+  <div class="example">
+    In the following example, the search field is given two possible access keys, "s" and "0" (in
+    that order). A user agent on a device with a full keyboard might pick <kbd><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd></kbd> as the shortcut key,
+    while a user agent on a small device with just a numeric keypad might pick just the plain
+    unadorned key <kbd><kbd>0</kbd></kbd>:
+
+    <pre highlight="html">
+      &lt;form action="/search">
+        &lt;label>Search: &lt;input type="search" name="q" accesskey="s 0">&lt;/label>
+        &lt;input type="submit">
+      &lt;/form>
+    </pre>
+  </div>
+
+  <div class="example">
+    In the following example, a button has possible access keys described. A script then tries to
+    update the button's label to advertise the key combination the user agent selected.
+
+    <pre highlight="html">
+      &lt;input type=submit accesskey="N @ 1" value="Compose">
+      ...
+      &lt;script>
+      function labelButton(button) {
+        if (button.accessKeyLabel)
+          button.value += ' (' + button.accessKeyLabel + ')';
+      }
+      var inputs = document.getElementsByTagName('input');
+      for (var i = 0; i &lt; inputs.length; i += 1) {
+        if (inputs[i].type == "submit")
+          labelButton(inputs[i]);
+      }
+      &lt;/script>
+    </pre>
+
+    On one user agent, the button's label might become "<samp>Compose (&#x2318;N)</samp>". On
+    another, it might become "<samp>Compose (Alt+&#x21E7;+1)</samp>". If the user agent doesn't
+    assign a key, it will be just "<samp>Compose</samp>". The exact string depends on what the
+    <a>assigned access key</a> is, and on how the user agent represents that key
+    combination.
+  </div>
+
+  <div class="impl">
+
+<h4 id="assigning-keyboard-shortcuts-processing-model">Processing model</h4>
+
+  An element's <dfn>assigned access key</dfn> is a key combination derived from the element's
+  <code>accesskey</code> content attribute. Initially, an element must not
+  have an <a>assigned access key</a>.
+
+  Whenever an element's <code>accesskey</code> attribute is set, changed,
+  or removed, the user agent must update the element's <a>assigned access key</a> by running
+  the following steps:
+
+  <ol>
+
+    <li>If the element has no <code>accesskey</code> attribute, then skip
+    to the <i>fallback</i> step below.</li>
+
+    <li>Otherwise, <a lt="split a string on spaces">split the attribute's value on
+    spaces</a>, and let <var>keys</var> be the resulting tokens.</li>
+
+    <li>
+
+    For each value in <var>keys</var> in turn, in the order the tokens appeared in the
+    attribute's value, run the following substeps:
+
+    <ol>
+
+      <li>If the value is not a string exactly one Unicode code point in length, then skip the
+      remainder of these steps for this value.</li>
+
+      <li>If the value does not correspond to a key on the system's keyboard, then skip the
+      remainder of these steps for this value.</li>
+
+      <li>If the user agent can find a mix of zero or more modifier keys that, combined with the
+      key that corresponds to the value given in the attribute, can be used as the access key, then
+      the user agent may assign that combination of keys as the element's <a>assigned access
+      key</a> and abort these steps.
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li><i>Fallback</i>: Optionally, the user agent may assign a key combination of its choosing
+    as the element's <a>assigned access key</a> and then abort these steps.</li>
+
+    <li>If this step is reached, the element has no <a>assigned access key</a>.</li>
+
+  </ol>
+
+  Once a user agent has selected and assigned an access key for an element, the user agent should
+  not change the element's <a>assigned access key</a> unless the <code>accesskey</code> content attribute is changed or the element is moved to
+  another {{Document}}.
+
+  When the user presses the key combination corresponding to the <a>assigned access key</a>
+  for an element, if the element defines a command, the
+  command's <a facet for="menuitem">Hidden State</a> facet is false (visible),
+  the command's <a facet for="menuitem">Disabled State</a> facet is also false
+  (enabled), the element is <a>in a <code>Document</code></a> that has an associated
+  <a>browsing context</a>, and neither the element nor any of its ancestors has a <code>hidden</code> attribute specified, then the user agent must trigger the <a>Action</a> of the command.
+
+  <p class="note">
+  User agents might expose elements that have
+  an <code>accesskey</code> attribute in other ways as well, e.g. in a menu
+  displayed in response to a specific key combination.
+  </p>
+
+  <hr />
+
+  The <dfn attribute for="HTMLElement"><code>accessKey</code></dfn> IDL attribute must
+  <a>reflect</a> the <code>accesskey</code> content attribute.
+
+  The <dfn attribute for="HTMLElement"><code>accessKeyLabel</code></dfn> IDL attribute must return
+  a string that represents the element's <a>assigned access key</a>, if any. If the element
+  does not have one, then the IDL attribute must return the empty string.
+
+  </div>
+
+<h3 id="user-interaction-editing">Editing</h3>
+
+<h4 id="making-document-regions-editable-the-contenteditable-content-attribute">Making document regions editable: The <code>contenteditable</code> content attribute</h4>
+
+  <pre class="idl" data-highlight="webidl" dfn-for="ElementContentEditable">
+    [NoInterfaceObject]
+    interface ElementContentEditable {
+      attribute DOMString contentEditable;
+      readonly attribute boolean isContentEditable;
+    };
+  </pre>
+
+  The <dfn><code>contenteditable</code></dfn> content attribute is an
+  <a>enumerated attribute</a> whose keywords are the empty string, <code>true</code>,
+  and <code>false</code>. The empty string and the <code>true</code> keyword map
+  to the <i>true</i> state. The <code>false</code> keyword maps to the <i>false</i> state.
+  In addition, there is a third state, the <i>inherit</i> state, which is the <i>missing value default</i> (and the <i>invalid value default</i>).
+
+  The <i>true</i> state indicates that the element is editable. The <i>inherit</i> state
+  indicates that the element is editable if its parent is. The <i>false</i> state indicates that the
+  element is not editable.
+
+  <dl class="domintro">
+
+    <dt><var>element</var> . <code>contentEditable</code> [ = <var>value</var> ]</dt>
+
+    <dd>
+
+    Returns "<code>true</code>", "<code>false</code>", or "<code>inherit</code>", based on the state of the <code>contenteditable</code> attribute.
+
+    Can be set, to change that state.
+
+    Throws a <code>SyntaxError</code> exception if the new value isn't one of those strings.
+
+    </dd>
+
+    <dt><var>element</var> . <code>isContentEditable</code></dt>
+
+    <dd>
+
+    Returns true if the element is editable; otherwise, returns false.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <dfn attribute for="ElementContentEditable"><code>contentEditable</code></dfn> IDL attribute, on
+  getting, must return the string "<code>true</code>" if the content attribute is set to
+  the true state, "<code>false</code>" if the content attribute is set to the false state,
+  and "<code>inherit</code>" otherwise. On setting, if the new value is an <a>ASCII
+  case-insensitive</a> match for the string "<code>inherit</code>" then the content
+  attribute must be removed, if the new value is an <a>ASCII case-insensitive</a> match for
+  the string "<code>true</code>" then the content attribute must be set to the string
+  "<code>true</code>", if the new value is an <a>ASCII case-insensitive</a> match for
+  the string "<code>false</code>" then the content attribute must be set to the string
+  "<code>false</code>", and otherwise the attribute setter must throw a
+  <code>SyntaxError</code> exception.
+
+  The <dfn attribute for="ElementContentEditable"><code>isContentEditable</code></dfn> IDL attribute, on
+  getting, must return true if the element is either an <a>editing host</a> or
+  <a>editable</a>, and false otherwise.
+
+  </div>
+
+<h4 id="making-entire-documents-editable-the-designmode-idl-attribute">Making entire documents editable: The <code>designMode</code> IDL attribute</h4>
+
+  <div class="impl">
+
+  Documents have a <dfn><code>designMode</code></dfn>, which can be either enabled or
+  disabled.
+
+  </div>
+
+  <dl class="domintro">
+
+    <dt><var>document</var> . <code>designMode</code> [ = <var>value</var> ]</dt>
+
+    <dd>
+
+    Returns "<code>on</code>" if the document is editable, and "<code>off</code>" if it isn't.
+
+    Can be set, to change the document's current state. This focuses the document and resets the
+    selection in that document.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <code>designMode</code> IDL attribute on the
+  <code>Document</code> object takes two values, "<code>on</code>" and "<code>off</code>". On setting, the new value must be compared in an <a>ASCII
+  case-insensitive</a> manner to these two values; if it matches the "<code>on</code>"
+  value, then <code>designMode</code> must be enabled, and if it
+  matches the "<code>off</code>" value, then <code>designMode</code> must be disabled. Other values must be
+  ignored.
+
+  On getting, if <code>designMode</code> is enabled, the IDL
+  attribute must return the value "<code>on</code>"; otherwise it is disabled, and the
+  attribute must return the value "<code>off</code>".
+
+  The last state set must persist until the document is destroyed or the state is changed.
+  Initially, documents must have their <code>designMode</code>
+  disabled.
+
+  When the <code>designMode</code> changes from being disabled to
+  being enabled, the user agent must <a>immediately</a> reset the document's <a>active range</a>'s
+  start and end boundary points to be at the start of the <code>Document</code> and then run the
+  <a>focusing steps</a> for the root element of the {{Document}}, if any.
+
+  </div>
+
+<h4 id="best-practices-for-in-page-editors">Best practices for in-page editors</h4>
+
+  Authors are encouraged to set the 'white-space' property on <a>editing
+  hosts</a> and on markup that was originally created through these editing mechanisms to the
+  value ''pre-wrap''. Default HTML whitespace handling is not well suited to WYSIWYG editing, and line
+  wrapping will not work correctly in some corner cases if 'white-space' is left at its default
+  value.
+
+  <div class="example">
+    As an example of problems that occur if the default ''normal'' value is used instead, consider
+    the case of the user typing "<kbd>yellow&#x2423;&#x2423;ball</kbd>", with two spaces (here
+    represented by "&#x2423;") between the words. With the editing rules in place for the default
+    value of 'white-space' (''normal''), the resulting markup will either consist of
+    "<samp>yellow&amp;nbsp;&nbsp;ball</samp>" or "<samp>yellow&nbsp;&amp;nbsp;ball</samp>"; i.e.,
+    there will be a non-breaking space between the two words in addition to the regular space. This
+    is necessary because the ''normal'' value for 'white-space' requires adjacent regular spaces to be
+    collapsed together.
+
+    In the former case, "<samp>yellow&#x237D;</samp>" might wrap to the next line ("&#x237D;"
+    being used here to represent a non-breaking space) even though "<samp>yellow</samp>" alone might
+    fit at the end of the line; in the latter case, "<samp>&#x237D;ball</samp>", if wrapped to the
+    start of the line, would have visible indentation from the non-breaking space.
+
+    When 'white-space' is set to ''pre-wrap'', however, the editing rules will instead simply put
+    two regular spaces between the words, and should the two words be split at the end of a line, the
+    spaces would be neatly removed from the rendering.
+  </div>
+
+<h4 id="editing-apis">Editing APIs</h4>
+
+  The definition of the terms <dfn>active range</dfn>, <dfn>editing host</dfn>, and
+  <dfn>editable</dfn>, the user interface requirements of elements that are <a>editing hosts</a> or <a>editable</a>, the
+
+  <dfn><code>execCommand()</code></dfn>,
+  <dfn><code>queryCommandEnabled()</code></dfn>,
+  <dfn><code>queryCommandIndeterm()</code></dfn>,
+  <dfn><code>queryCommandState()</code></dfn>,
+  <dfn><code>queryCommandSupported()</code></dfn>, and
+  <dfn><code>queryCommandValue()</code></dfn>
+
+  methods, text selections, and the <dfn>delete the selection</dfn> algorithm are defined in the
+  HTML Editing APIs specification. The interaction of editing and the undo/redo features in user
+  agents is defined by the UndoManager and DOM Transaction specification. [[!EDITING]] [[!UNDO]]
+
+<h4 id="spelling-and-grammar-checking">Spelling and grammar checking</h4>
+
+  <div class="impl">
+
+  User agents can support the checking of spelling and grammar of editable text, either in form
+  controls (such as the value of <{textarea}> elements), or in elements in an <a>editing
+  host</a> (e.g. using <code>contenteditable</code>).
+
+  For each element, user agents must establish a <dfn>default behavior</dfn>, either through
+  defaults or through preferences expressed by the user. There are
+  three possible default behaviors for each element:
+
+  <dl>
+
+    <dt><dfn>true-by-default</dfn>
+
+    <dd>The element will be checked for spelling and grammar if its contents are editable.
+
+    <dt><dfn>false-by-default</dfn>
+
+    <dd>The element will never be checked for spelling and grammar.
+
+    <dt><dfn>inherit-by-default</dfn>
+
+    <dd>The element's default behavior is the same as its parent element's. Elements that have no
+    parent element cannot have this as their default behavior.
+
+  </dl>
+
+  <hr />
+
+  </div>
+
+  The <dfn element-attr for="global"><code>spellcheck</code></dfn> attribute is an <a>enumerated
+  attribute</a> whose keywords are the empty string, <code>true</code> and <code>false</code>. The empty string and the <code>true</code> keyword map to the
+  <i>true</i> state. The <code>false</code> keyword maps to the <i>false</i> state. In
+  addition, there is a third state, the <i>default</i> state, which is the <i>missing value default</i> (and the <i>invalid value default</i>).
+
+  <p class="note">
+  The <i>true</i> state indicates that the element is to have its spelling and
+  grammar checked. The <i>default</i> state indicates that the element is to act according to a
+  default behavior, possibly based on the parent element's own <code>spellcheck</code> state, as defined below. The <i>false</i> state
+  indicates that the element is not to be checked.
+  </p>
+
+  <div class="impl">
+
+  <hr />
+
+  </div>
+
+  <dl class="domintro">
+
+    <dt><var>element</var> . <code>spellcheck</code> [ = <var>value</var> ]</dt>
+
+    <dd>
+
+    Returns true if the element is to have its spelling and grammar checked; otherwise, returns
+    false.
+
+    Can be set, to override the default and set the <code>spellcheck</code> content attribute.
+
+    </dd>
+
+    <dt><var>element</var> . <code>forceSpellCheck</code>()</dt>
+
+    <dd>
+
+    Forces the user agent to report spelling and grammar errors on the element (if checking is
+    enabled), even if the user has never focused the element. (If the method is not invoked, user
+    agents can hide errors in text that wasn't just entered by the user.)
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The {{spellcheck}} IDL attribute, on getting, must
+  return true if the element's <{global/spellcheck}> content attribute is
+  in the <i>true</i> state, or if the element's <{global/spellcheck}>
+  content attribute is in the <i>default</i> state and the element's <a>default behavior</a> is <a>true-by-default</a>, or if the element's <{global/spellcheck}> content attribute is in the <i>default</i> state and the
+  element's <a>default behavior</a> is <a>inherit-by-default</a> and the element's parent
+  element's {{spellcheck}} IDL attribute would return true;
+  otherwise, if none of those conditions applies, then the attribute must instead return false.
+
+  <p class="note">
+  The {{spellcheck}} IDL attribute is not affected
+  by user preferences that override the <{global/spellcheck}> content
+  attribute, and therefore might not reflect the actual spellchecking state.
+  </p>
+
+  On setting, if the new value is true, then the element's <{global/spellcheck}> content attribute must be set to the literal string
+  "<code>true</code>", otherwise it must be set to the literal string "<code>false</code>".
+
+  <hr />
+
+  User agents must only consider the following pieces of text as checkable for the purposes of
+  this feature:
+
+  <ul>
+
+    <li>The <a for="forms">value</a> of <{input}> elements whose <code>type</code> attributes are in the <a element-state for="input">Text</a>, <a element-state for="input">Search</a>,
+    <a element-state for="input">URL</a>, or <a element-state for="input">E-mail</a> states and that are <i>mutable</i> (i.e. that do not have the <code>readonly</code> attribute specified and that are not disabled).</li>
+
+    <li>The <a for="forms">value</a> of <{textarea}> elements that do not
+    have a <code>readonly</code> attribute and that are not disabled.</li>
+
+    <li>Text in <code>Text</code> nodes that are children of <a>editing
+    hosts</a> or <a>editable</a> elements.</li>
+
+    <li>Text in attributes of <a>editable</a> elements.</li>
+
+  </ul>
+
+  For text that is part of a <code>Text</code> node, the element with which the text is
+  associated is the element that is the immediate parent of the first character of the word,
+  sentence, or other piece of text. For text in attributes, it is the attribute's element. For the
+  values of <code>input</code> and <{textarea}> elements, it is the element itself.
+
+  To determine if a word, sentence, or other piece of text in an applicable element (as defined
+  above) is to have spelling- and grammar-checking enabled, the user agent must use the following
+  algorithm:
+
+  <ol>
+
+    <li>If the user has disabled the checking for this text, then the checking is disabled.</li>
+
+    <li>Otherwise, if the user has forced the checking for this text to always be enabled, then the
+    checking is enabled.</li>
+
+    <li>Otherwise, if the element with which the text is associated has a <code>spellcheck</code> content attribute, then: if that attribute is in the
+    <i>true</i> state, then checking is enabled; otherwise, if that attribute is in the <i>false</i>
+    state, then checking is disabled.</li>
+
+    <li>Otherwise, if there is an ancestor element with a <code>spellcheck</code> content attribute that is not in the <i>default</i>
+    state, then: if the nearest such ancestor's <code>spellcheck</code>
+    content attribute is in the <i>true</i> state, then checking is enabled; otherwise, checking is
+    disabled.</li>
+
+    <li>Otherwise, if the element's <a>default behavior</a>
+    is <a>true-by-default</a>, then checking is
+    enabled.</li>
+
+    <li>Otherwise, if the element's <a>default behavior</a>
+    is <a>false-by-default</a>, then checking is
+    disabled.</li>
+
+    <li>Otherwise, if the element's parent element has <em>its</em> checking enabled, then checking
+    is enabled.</li>
+
+    <li>Otherwise, checking is disabled.</li>
+
+  </ol>
+
+  If the checking is enabled for a word/sentence/text, the user agent should indicate spelling
+  and grammar errors in that text. User agents should take into account the other semantics given in
+  the document when suggesting spelling and grammar corrections. User agents may use the language of
+  the element to determine what spelling and grammar rules to use, or may use the user's preferred
+  language settings. user agents should use <{input}> element attributes such as <code>pattern</code> to ensure that the resulting value is valid, where
+  possible.
+
+  If checking is disabled, the user agent should not indicate spelling or grammar errors for that
+  text.
+
+  Even when checking is enabled, user agents may opt to not report spelling or grammar errors in
+  text that the user agent deems the user has no interest in having checked (e.g. text that was
+  already present when the page was loaded, or that the user did not type, or text in controls that
+  the user has not focused, or in parts of e-mail addresses that the user agent is not confident
+  were misspelt). The <dfn><code>forceSpellCheck()</code></dfn> method,
+  when invoked on an element, must override this behavior, forcing the user agent to consider all
+  spelling and grammar errors in text in that element for which checking is enabled to be of
+  interest to the user.
+
+  <div class="example">
+    The element with ID "a" in the following example would be the one used to determine if the
+    word "Hello" is checked for spelling errors. In this example, it would not be.
+
+    <pre highlight="html">
+  &lt;div contenteditable="true">
+  &lt;span spellcheck="false">Hell&lt;/span>&lt;em>o!&lt;/em>
+  &lt;/div>
+  </pre>
+
+    The element with ID "b" in the following example would have checking enabled (the leading
+    space character in the attribute's value on the <{input}> element causes the attribute
+    to be ignored, so the ancestor's value is used instead, regardless of the default).
+
+    <pre class="bad">&lt;p spellcheck="true">
+  &lt;label>Name: &lt;input spellcheck=" false">&lt;/label>
+  &lt;/p></pre>
+  </div>
+
+  </div>
+
+  <p class="note">
+  This specification does not define the user interface for spelling and grammar
+  checkers. A user agent could offer on-demand checking, could perform continuous checking while the
+  checking is enabled, or could use other interfaces.
+  </p>
+
+<h3 id="drag-and-drop">Drag and drop</h3>
+
+  This section defines an event-based drag-and-drop mechanism.
+
+  This specification does not define exactly what a <em>drag-and-drop operation</em> actually
+  is.
+
+  On a visual medium with a pointing device, a drag operation could be the default action of a
+  <code>mousedown</code> event that is followed by a series of <code>mousemove</code> events, and the drop could be triggered by the mouse
+  being released.
+
+  When using an input modality other than a pointing device, users would probably have to
+  explicitly indicate their intention to perform a drag-and-drop operation, stating what they wish
+  to drag and where they wish to drop it, respectively.
+
+  <div class="impl">
+
+  However it is implemented, drag-and-drop operations must have a starting point (e.g. where the
+  mouse was clicked, or the start of the selection or element that was selected for the drag), may
+  have any number of intermediate steps (elements that the mouse moves over during a drag, or
+  elements that the user picks as possible drop points as he cycles through possibilities), and must
+  either have an end point (the element above which the mouse button was released, or the element
+  that was finally selected), or be canceled. The end point must be the last element selected as a
+  possible drop point before the drop occurs (so if the operation is not canceled, there must be at
+  least one element in the middle step).
+
+  </div>
+
+<h4 id="drag-and-drop-introduction">Introduction</h4>
+
+  <em>This section is non-normative.</em>
+
+  To make an element draggable is simple: give the element a <code>draggable</code> attribute, and set an event listener for <code>dragstart</code> that stores the data being dragged.
+
+  The event handler typically needs to check that it's not a text selection that is being
+  dragged, and then needs to store data into the <code>DataTransfer</code> object and set the
+  allowed effects (copy, move, link, or some combination).
+
+  For example:
+
+  <pre highlight="html">
+  &lt;p>What fruits do you like?&lt;/p>
+  &lt;ol ondragstart="dragStartHandler(event)">
+  &lt;li draggable="true">Apples&lt;/li>
+  &lt;li draggable="true">Oranges&lt;/li>
+  &lt;li draggable="true">Pears&lt;/li>
+  &lt;/ol>
+  &lt;script>
+  var internalDNDType = 'text/x-example'; // set this to something specific to your site
+  function dragStartHandler(event) {
+    if (event.target instanceof HTMLLIElement) {
+      // use the element's>
+  </pre>
+
+  <hr />
+
+  To accept a drop, the drop target has to have a <code>dropzone</code>
+  attribute and listen to the <code>drop</code> event.
+
+  The value of the <code>dropzone</code> attribute specifies what kind of
+  data to accept (e.g. "<code>string:text/plain</code>" to accept any text strings, or
+  "<code>file:image/png</code>" to accept a PNG image file) and what kind of feedback to
+  give (e.g. "<code>move</code>" to indicate that the data will be moved).
+
+  <p class="note">
+  Instead of using the <code>dropzone</code> attribute, a drop
+  target can handle the <code>dragenter</code> event (to report whether or
+  not the drop target is to accept the drop) and the <code>dragover</code>
+  event (to specify what feedback is to be shown to the user).
+  </p>
+
+  The <code>drop</code> event allows the actual drop to be performed. This
+  event needs to be canceled, so that the <code>dropEffect</code> attribute's value can be used by the source
+  (otherwise it's reset).
+
+  For example:
+
+  <pre highlight="html">
+    &lt;p>Drop your favorite fruits below:&lt;/p>
+    &lt;ol dropzone="move string:text/x-example" ondrop="dropHandler(event)">
+    &lt;!-- don't forget to change the "text/x-example" type to something
+    specific to your site -->
+    &lt;/ol>
+    &lt;script>
+    var internalDNDType = 'text/x-example'; // set this to something specific to your site
+    function dropHandler(event) {
+      var li = document.createElement('li');
+      var data = event.dataTransfer.getData(internalDNDType);
+      if (data == 'fruit-apple') {
+        li.textContent = 'Apples';
+      } else if (data == 'fruit-orange') {
+        li.textContent = 'Oranges';
+      } else if (data == 'fruit-pear') {
+        li.textContent = 'Pears';
+      } else {
+        li.textContent = 'Unknown Fruit';
+      }
+      event.target.appendChild(li);
+    }
+    &lt;/script>
+  </pre>
+
+  <hr />
+
+  To remove the original element (the one that was dragged) from the display, the <code>dragend</code> event can be used.
+
+  For our example here, that means updating the original markup to handle that event:
+
+  <pre highlight="html">
+    &lt;p>What fruits do you like?&lt;/p>
+    &lt;ol ondragstart="dragStartHandler(event)" ondragend="dragEndHandler(event)">
+    <em>...as before...</em>
+    &lt;/ol>
+    &lt;script>
+    function dragStartHandler(event) {
+      // <em>...as before...</em>
+    }
+    function dragEndHandler(event) {
+      if (event.dataTransfer.dropEffect == 'move') {
+        // remove the dragged element
+        event.target.parentNode.removeChild(event.target);
+      }
+    }
+    &lt;/script>
+  </pre>
+
+<h4 id="the-drag-data-store">The drag data store</h4>
+
+  The data that underlies a drag-and-drop operation, known as the <dfn>drag data store</dfn>,
+  consists of the following information:
+
+  <ul>
+
+    <li>A <dfn>drag data store item list</dfn>, which is a list of items representing the dragged
+    data, each consisting of the following information:
+
+    <dl>
+
+      <dt><dfn lt="a drag data item kind|The drag data item kind|drag data item kind">The drag data item kind</dfn></dt>
+
+      <dd>
+
+      The kind of data:
+
+      <dl>
+
+        <dt><i>Plain Unicode string</i></dt>
+        <dd>
+        Text.
+        </dd>
+
+        <dt><i>File</i></dt>
+        <dd>
+        Binary data with a file name.
+        </dd>
+
+      </dl>
+
+      </dd>
+
+      <dt><dfn lt="item type string|The drag data item type string|type string|a drag data item type string|drag data item type strings|drag data item type string">The drag data item type string</dfn></dt>
+
+      <dd>
+
+      A Unicode string giving the type or format of the data, generally given by a <a>MIME
+      type</a>. Some values that are not <a>MIME types</a> are
+      special-cased for legacy reasons. The API does not enforce the use of <a>MIME types</a>; other values can be used as well. In all cases, however, the values
+      are all <a>converted to ASCII lowercase</a> by the API.
+
+      <p class="note">
+  Strings that contain <a>space characters</a>
+      cannot be used with the <code>dropzone</code> attribute, so authors are
+      encouraged to use only <a>MIME types</a> or custom strings (without
+      spaces).
+  </p>
+
+      There is a limit of one <i>Plain Unicode string</i> item per <a>item type string</a>.
+
+      </dd>
+
+      <dt>The actual data</dt>
+
+      <dd>A Unicode or binary string, in some cases with a file name (itself a Unicode string),
+      as per <a>the drag data item kind</a>.</dd>
+
+    </dl>
+
+    The <a>drag data store item list</a> is ordered in the order that the items were added
+    to the list; most recently added last.
+
+    </li>
+
+    <li>
+
+    The following information, used to generate the UI feedback during the drag:
+
+    <ul>
+
+      <li>User-agent-defined default feedback information, known as the <dfn>drag data store default
+      feedback</dfn>.</li>
+
+      <li>Optionally, a bitmap image and the coordinate of a point within that image, known as the
+      <dfn>drag data store bitmap</dfn> and <dfn>drag data store hot spot coordinate</dfn>.</li>
+
+    </ul>
+
+    </li>
+
+    <li>
+
+    A <dfn>drag data store mode</dfn>, which is one of the following:
+
+    <dl>
+
+      <dt><dfn>Read/write mode</dfn></dt>
+      <dd>
+
+      For the <code>dragstart</code> event. New data can be added to the
+      <a>drag data store</a>.
+
+      </dd>
+
+      <dt><dfn>Read-only mode</dfn></dt>
+      <dd>
+
+      For the <code>drop</code> event. The list of items representing dragged
+      data can be read, including the data. No new data can be added.
+
+      </dd>
+
+      <dt><dfn>Protected mode</dfn></dt>
+      <dd>
+
+      For all other events. The formats and kinds in the <a>drag data store</a> list of
+      items representing dragged data can be enumerated, but the data itself is unavailable and no
+      new data can be added.
+
+      </dd>
+
+    </dl>
+
+    </li>
+
+    <li>
+
+    A <dfn>drag data store allowed effects state</dfn>, which is a string.
+
+    </li>
+
+  </ul>
+
+  When a <a>drag data store</a> is <dfn lt="create a drag data store">created</dfn>, it
+  must be initialized such that its <a>drag data store item list</a> is empty, it has no
+  <a>drag data store default feedback</a>, it has no <a>drag data store bitmap</a> and
+  <a>drag data store hot spot coordinate</a>, its <a>drag data store mode</a> is <a>protected mode</a>, and its <a>drag data store allowed effects
+  state</a> is the string "<code>uninitialized</code>".
+
+<h4 id="the-datatransfer-interface">The <code>DataTransfer</code> interface</h4>
+
+  <code>DataTransfer</code> objects are used to expose the <a>drag data store</a> that
+  underlies a drag-and-drop operation.
+
+  <pre class="idl" data-highlight="webidl" dfn-for="DataTransfer">
+    interface DataTransfer {
+      attribute DOMString dropEffect;
+      attribute DOMString effectAllowed;
+
+      [SameObject] readonly attribute DataTransferItemList items;
+
+      void setDragImage(Element image, long x, long y);
+
+      /* old interface */
+      [SameObject] readonly attribute DOMString[] types;
+      DOMString getData(DOMString format);
+      void setData(DOMString format, DOMString data);
+      void clearData(optional DOMString format);
+      [SameObject] readonly attribute FileList files;
+    };
+  </pre>
+
+  <dl class="domintro">
+
+    <dt><var>dataTransfer</var> . <code>dropEffect</code> [ = <var>value</var> ]</dt>
+
+    <dd>
+
+    Returns the kind of operation that is currently selected. If the kind of operation isn't one
+    of those that is allowed by the <code>effectAllowed</code> attribute, then the operation will
+    fail.
+
+    Can be set, to change the selected operation.
+
+    The possible values are "<code>none</code>", "<code>copy</code>", "<code>link</code>", and "<code>move</code>".
+
+    </dd>
+
+    <dt><var>dataTransfer</var> . <code>effectAllowed</code> [ = <var>value</var> ]</dt>
+
+    <dd>
+
+    Returns the kinds of operations that are to be allowed.
+
+    Can be set (during the <code>dragstart</code> event), to change
+    the allowed operations.
+
+    The possible values are "<code>none</code>",
+    "<code>copy</code>", "<code>copyLink</code>", "<code>copyMove</code>", "<code>link</code>", "<code>linkMove</code>", "<code>move</code>", "<code>all</code>", and "<code>uninitialized</code>",
+
+    </dd>
+
+    <dt><var>dataTransfer</var> . <code>items</code></dt>
+
+    <dd>
+
+    Returns a <code>DataTransferItemList</code> object, with the drag data.
+
+    </dd>
+
+    <dt><var>dataTransfer</var> . <code>setDragImage</code>(<var>element</var>, <var>x</var>, <var>y</var>)</dt>
+
+    <dd>
+
+    Uses the given element to update the drag feedback, replacing any previously specified
+    feedback.
+
+    </dd>
+
+    <dt><var>dataTransfer</var> . <code>types</code></dt>
+
+    <dd>
+
+    Returns an array listing the formats that were set in the <code>dragstart</code> event. In addition, if any files are being dragged,
+    then one of the types will be the string "<code>Files</code>".
+
+    </dd>
+
+    <dt><var>data</var> = <var>dataTransfer</var> . <code>getData</code>(<var>format</var>)</dt>
+
+    <dd>
+
+    Returns the specified data. If there is no such data, returns the empty string.
+
+    </dd>
+
+    <dt><var>dataTransfer</var> . <code>setData</code>(<var>format</var>, <var>data</var>)</dt>
+
+    <dd>
+
+    Adds the specified data.
+
+    </dd>
+
+    <dt><var>dataTransfer</var> . <code>clearData</code>( [ <var>format</var> ] )</dt>
+
+    <dd>
+
+    Removes the data of the specified formats. Removes all data if the argument is omitted.
+
+    </dd>
+
+    <dt><var>dataTransfer</var> . <code>files</code></dt>
+
+    <dd>
+
+    Returns a <code>FileList</code> of the files being dragged, if any.
+
+    </dd>
+
+  </dl>
+
+  <code>DataTransfer</code> objects are used during the <a>drag-and-drop
+  events</a>, and are only valid while those events are being fired.
+
+  <div class="impl">
+
+  A <code>DataTransfer</code> object is associated with a <a>drag data store</a> while it
+  is valid.
+
+  The <dfn attribute for="DataTransfer"><code>dropEffect</code></dfn> attribute controls
+  the drag-and-drop feedback that the user is given during a drag-and-drop operation. When the
+  <code>DataTransfer</code> object is created, the <code>dropEffect</code> attribute is set to a string value. On
+  getting, it must return its current value. On setting, if the new value is one of "<dfn value for="dropEffect"><code>none</code></dfn>", "<dfn value for="dropEffect"><code>copy</code></dfn>", "<dfn value for="dropEffect"><code>link</code></dfn>", or "<dfn value for="dropEffect"><code>move</code></dfn>", then the attribute's current value must be
+  set to the new value. Other values must be ignored.
+
+  The <dfn attribute for="DataTransfer"><code>effectAllowed</code></dfn> attribute is
+  used in the drag-and-drop processing model to initialize the <code>dropEffect</code> attribute during the <code>dragenter</code> and <code>dragover</code> events. When the <code>DataTransfer</code> object is
+  created, the <code>effectAllowed</code> attribute is set
+  to a string value. On getting, it must return its current value. On setting, if <a>drag data
+  store</a>'s mode is the <a>read/write mode</a> and the new value is one of "<dfn value for="effectAllowed"><code>none</code></dfn>", "<dfn value for="effectAllowed"><code>copy</code></dfn>", "<dfn value for="effectAllowed"><code>copyLink</code></dfn>", "<dfn value for="effectAllowed"><code>copyMove</code></dfn>", "<dfn value for="effectAllowed"><code>link</code></dfn>", "<dfn value for="effectAllowed"><code>linkMove</code></dfn>", "<dfn value for="effectAllowed"><code>move</code></dfn>", "<dfn value for="effectAllowed"><code>all</code></dfn>", or "<dfn value for="effectAllowed"><code>uninitialized</code></dfn>", then the attribute's
+  current value must be set to the new value. Otherwise it must be left unchanged.
+
+  The <dfn attribute for="DataTransfer"><code>items</code></dfn> attribute must return a
+  <code>DataTransferItemList</code> object associated with the <code>DataTransfer</code> object.
+
+  The <dfn method for="DataTransfer"><code>setDragImage(<var>element</var>, <var>x</var>, <var>y</var>)</code></dfn> method must run the following steps:
+
+  <ol>
+
+    <li>If the <code>DataTransfer</code> object is no longer associated with a <a>drag data
+    store</a>, abort these steps. Nothing happens.</li>
+
+    <li>If the <a>drag data store</a>'s mode is
+    not the <a>read/write mode</a>, abort these steps. Nothing
+    happens.</li>
+
+    <li>If the <var>element</var> argument is an <{img}> element, then set the <a>drag
+    data store bitmap</a> to the element's image (at its
+    <a>intrinsic size</a>); otherwise, set the
+    <a>drag data store bitmap</a> to an image generated from the given element (the exact
+    mechanism for doing so is not currently specified).</li>
+
+    <li>Set the <a>drag data store hot spot coordinate</a> to the given <var>x</var>,
+    <var>y</var> coordinate.</li>
+
+  </ol>
+
+  The <dfn attribute for="DataTransfer"><code>types</code></dfn> attribute must return a
+  <a>live</a> <a spec="webidl">read only</a> array giving the strings
+  that the following steps would produce.
+
+  <ol>
+
+    <li>Start with an empty list <var>L</var>.</li>
+
+    <li>If the <code>DataTransfer</code> object is no longer associated with a <a>drag data
+    store</a>, the array is empty. Abort these steps; return the empty list <var>L</var>.</li>
+
+    <li>For each item in the <a>drag data store item list</a>
+    whose <a>kind</a> is <i>Plain Unicode string</i>, add an
+    entry to the list <var>L</var> consisting of the item's <a>type string</a>.</li>
+
+    <li>If there are any items in the <a>drag data store item list</a> whose <a>kind</a> is <i>File</i>, then add an entry to the list
+    <var>L</var> consisting of the string "<code>Files</code>". (This value can be
+    distinguished from the other values because it is not lowercase.)</li>
+
+    <li>The strings produced by these steps are those in the list <var>L</var>.</li>
+
+  </ol>
+
+  The <dfn method for="DataTransfer"><code>getData(<var>format</var>)</code></dfn> method
+  must run the following steps:
+
+  <ol>
+
+    <li>If the <code>DataTransfer</code> object is no longer associated with a <a>drag data
+    store</a>, return the empty string and abort these steps.</li>
+
+    <li>If the <a>drag data store</a>'s mode is
+    the <a>protected mode</a>, return the empty string and abort these
+    steps.</li>
+
+    <li>Let <var>format</var> be the first argument, <a>converted to ASCII
+    lowercase</a>.</li>
+
+    <li>Let <var>convert-to-URL</var> be false.</li>
+
+    <li>If <var>format</var> equals "<code>text</code>", change it to "<code>text/plain</code>".</li>
+
+    <li>If <var>format</var> equals "<code>url</code>", change it to "<code>text/uri-list</code>" and set <var>convert-to-URL</var> to true.</li>
+
+    <li>If there is no item in the <a>drag data store item list</a> whose <a>kind</a> is <i>Plain Unicode string</i> and whose <a>type string</a> is equal to <var>format</var>, return the empty string
+    and abort these steps.</li>
+
+    <li>Let <var>result</var> be the data of the item in the <a>drag data store item
+    list</a> whose <a>kind</a> is <i>Plain Unicode
+    string</i> and whose <a>type string</a> is equal to
+    <var>format</var>.</li>
+
+    <li>If <var>convert-to-URL</var> is true, then parse <var>result</var> as appropriate for
+    <code>text/uri-list</code> data, and then set <var>result</var> to the first URL from
+    the list, if any, or the empty string otherwise. [[!RFC2483]]</li>
+
+    <li>Return <var>result</var>.</li>
+
+  </ol>
+
+  The <dfn method for="DataTransfer"><code>setData(<var>format</var>, <var>data</var>)</code></dfn> method must run the following steps:
+
+  <ol>
+
+    <li>If the <code>DataTransfer</code> object is no longer associated with a <a>drag data
+    store</a>, abort these steps. Nothing happens.</li>
+
+    <li>If the <a>drag data store</a>'s mode is
+    not the <a>read/write mode</a>, abort these steps. Nothing
+    happens.</li>
+
+    <li>Let <var>format</var> be the first argument, <a>converted to ASCII
+    lowercase</a>.</li>
+
+    <li>
+
+    If <var>format</var> equals "<code>text</code>", change it to "<code>text/plain</code>".
+
+    If <var>format</var> equals "<code>url</code>", change it to "<code>text/uri-list</code>".
+
+    </li>
+
+    <li>Remove the item in the <a>drag data store item list</a> whose <a>kind</a> is <i>Plain Unicode string</i> and whose <a>type string</a> is equal to <var>format</var>, if there is
+    one.</li>
+
+    <li>Add an item to the <a>drag data store item list</a> whose <a>kind</a> is <i>Plain Unicode string</i>, whose <a>type string</a> is equal to <var>format</var>, and whose data is the string
+    given by the method's second argument.</li>
+
+  </ol>
+
+  The <dfn method for="DataTransfer"><code>clearData()</code></dfn> method must run the
+  following steps:
+
+  <ol>
+
+    <li>If the <code>DataTransfer</code> object is no longer associated with a <a>drag data
+    store</a>, abort these steps. Nothing happens.</li>
+
+    <li>If the <a>drag data store</a>'s mode is
+    not the <a>read/write mode</a>, abort these steps. Nothing
+    happens.</li>
+
+    <li>If the method was called with no arguments, remove each item in the <a>drag data store
+    item list</a> whose <a>kind</a> is <i>Plain Unicode
+    string</i>, and abort these steps.</li>
+
+    <li>Let <var>format</var> be the first argument, <a>converted to ASCII
+    lowercase</a>.</li>
+
+    <li>
+
+    If <var>format</var> equals "<code>text</code>", change it to "<code>text/plain</code>".
+
+    If <var>format</var> equals "<code>url</code>", change it to "<code>text/uri-list</code>".
+
+    </li>
+
+    <li>Remove the item in the <a>drag data store item list</a> whose <a>kind</a> is <i>Plain Unicode string</i> and whose <a>type string</a> is equal to <var>format</var>, if there is
+    one.</li>
+
+  </ol>
+
+  <p class="note">
+  The <code>clearData()</code> method does not
+  affect whether any files were included in the drag, so the <code>types</code> attribute's list might still not be empty after
+  calling <code>clearData()</code> (it would still contain the
+  "<code>Files</code>" string if any files were included in the drag).
+  </p>
+
+  The <dfn attribute for="DataTransfer"><code>files</code></dfn> attribute must return a
+  <a>live</a> <code>FileList</code> sequence consisting of <code>File</code> objects
+  representing the files found by the following steps.
+  Furthermore, for a given <code>FileList</code> object and a given underlying file, the same
+  <code>File</code> object must be used each time.
+
+  <ol>
+
+    <li>Start with an empty list <var>L</var>.</li>
+
+    <li>If the <code>DataTransfer</code> object is no longer associated with a <a>drag data
+    store</a>, the <code>FileList</code> is empty. Abort these steps; return the empty list <var>L</var>.</li>
+
+    <li>If the <a>drag data store</a>'s mode is
+    the <a>protected mode</a>, abort these steps; return the empty list
+    <var>L</var>.</li>
+
+    <li>For each item in the <a>drag data store item list</a>
+    whose <a>kind</a> is <i>File</i> , add the item's data (the file, in particular its name and contents, as well as
+    its <a spec="fetch" for="request">type</a>) to the list <var>L</var>.</li>
+
+    <li>The files found by these steps are those in the list <var>L</var>.</li>
+
+  </ol>
+
+  <p class="note">
+  This version of the API does not expose the types of the files during the
+  drag.
+  </p>
+
+  </div>
+
+<h5 id="the-datatransferitemlist-interface">The <code>DataTransferItemList</code> interface</h5>
+
+  Each <code>DataTransfer</code> object is associated with a <code>DataTransferItemList</code>
+  object.
+
+  <pre class="idl" data-highlight="webidl" dfn-for="DataTransferItemList">
+    interface DataTransferItemList {
+      readonly attribute unsigned long length;
+      getter DataTransferItem (unsigned long index);
+      DataTransferItem? add(DOMString data, DOMString type);
+      DataTransferItem? add(File data);
+      void remove(unsigned long index);
+      void clear();
+    };
+  </pre>
+
+  <dl class="domintro">
+
+    <dt><var>items</var> . <code>length</code></dt>
+
+    <dd>Returns the number of items in the <a>drag data store</a>.</dd>
+
+    <dt><var>items</var>[<var>index</var>]</dt>
+
+    <dd>
+
+    Returns the <code>DataTransferItem</code> object representing the <var>index</var>th
+    entry in the <a>drag data store</a>.
+
+    </dd>
+
+    <dt><var>items</var> . <code>remove</code>(<var>index</var>)</dt>
+
+    <dd>
+
+    Removes the <var>index</var>th entry in the <a>drag data store</a>.
+
+    </dd>
+
+    <dt><var>items</var> . <code>clear</code>()</dt>
+
+    <dd>
+
+    Removes all the entries in the <a>drag data store</a>.
+
+    </dd>
+
+    <dt><var>items</var> . <code>add</code>(<var>data</var>)</dt>
+    <dt><var>items</var> . <code>add</code>(<var>data</var>, <var>type</var>)</dt>
+
+    <dd>
+
+    Adds a new entry for the given data to the <a>drag data store</a>. If the data is plain
+    text  then a <var>type</var> string has to be provided
+    also.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  While the <code>DataTransferItemList</code> object's <code>DataTransfer</code> object is
+  associated with a <a>drag data store</a>, the <code>DataTransferItemList</code> object's
+  <i>mode</i> is the same as the <a>drag data store mode</a>. When the
+  <code>DataTransferItemList</code> object's <code>DataTransfer</code> object is <em>not</em>
+  associated with a <a>drag data store</a>, the <code>DataTransferItemList</code> object's
+  <i>mode</i> is the <i>disabled mode</i>. The <a>drag data store</a> referenced in this
+  section (which is used only when the <code>DataTransferItemList</code> object is not in the
+  <i>disabled mode</i>) is the <a>drag data store</a> with which the
+  <code>DataTransferItemList</code> object's <code>DataTransfer</code> object is associated.
+
+  The <dfn attribute for="DataTransferItemList"><code>length</code></dfn> attribute must
+  return zero if the object is in the <i>disabled mode</i>; otherwise it must return the number of
+  items in the <a>drag data store item list</a>.
+
+  When a <code>DataTransferItemList</code> object is not in the <i>disabled mode</i>, its
+  <a spec="webidl">supported property indices</a> are the numbers in the range
+
+    0 .. <var>n</var>-1,
+
+  where <var>n</var> is the number of items in the <a>drag data store item list</a>.
+
+  To <a spec="webidl">determine the value of an indexed property</a>
+  <var>i</var> of a <code>DataTransferItemList</code> object, the user agent must return a
+  <code>DataTransferItem</code> object representing the <var>i</var>th item in the
+  <a>drag data store</a>. The same object must be returned each time a particular item is
+  obtained from this <code>DataTransferItemList</code> object. The <code>DataTransferItem</code>
+  object must be associated with the same <code>DataTransfer</code> object as the
+  <code>DataTransferItemList</code> object when it is first created.
+
+  The <dfn method for="DataTransferItemList"><code>add()</code></dfn> method must run the
+  following steps:
+
+  <ol>
+
+    <li>If the <code>DataTransferItemList</code> object is not in the <i>read/write mode</i>, return null and abort these steps.</li>
+
+    <li>
+
+    Jump to the appropriate set of steps from the following list:
+
+    <dl class="switch">
+
+      <dt>If the first argument to the method is a string</dt>
+
+      <dd>
+
+      If there is already an item in the <a>drag data store item list</a> whose <a>kind</a> is <i>Plain Unicode string</i> and whose <a>type string</a> is equal to the value of the
+      method's second argument, <a>converted to ASCII lowercase</a>, then throw a
+      <code>NotSupportedError</code> exception and abort these steps.
+
+      Otherwise, add an item to the <a>drag data store item list</a> whose <a>kind</a> is <i>Plain Unicode string</i>, whose <a>type string</a> is equal to the value of the method's second
+      argument, <a>converted to ASCII lowercase</a>, and whose data is the string given by the
+      method's first argument.
+
+      </dd>
+
+      <dt>If the first argument to the method is a <code>File</code></dt>
+
+      <dd>
+
+      Add an item to the <a>drag data store item list</a> whose <a>kind</a> is <i>File</i>, whose <a>type
+      string</a> is the <code>type</code> of the <code>File</code>,
+      <a>converted to ASCII lowercase</a>, and whose data is the same as the
+      <code>File</code>'s data.
+
+      </dd>
+
+    </dl>
+
+    </li>
+
+    <li><a spec="webidl" lt="determine the value of an indexed property">Determine the value of the indexed property</a> corresponding to the newly added item, and return that value (a newly created
+    <code>DataTransferItem</code> object).</li>
+
+  </ol>
+
+  The <dfn method for="DataTransferItemList"><code>remove()</code></dfn> method, when
+  invoked with the argument <var>i</var>, must run these steps:
+
+  <ol>
+
+    <li>If the <code>DataTransferItemList</code> object is not in the <i>read/write mode</i>, throw an <code>InvalidStateError</code> exception and
+    abort these steps.</li>
+
+    <li>Remove the <var>i</var>th item from the <a>drag data store</a>.</li>
+
+  </ol>
+
+  The <dfn method for="DataTransferItemList"><code>clear()</code></dfn> method, if the
+  <code>DataTransferItemList</code> object is in the <i>read/write mode</i>,
+  must remove all the items from the <a>drag data store</a>. Otherwise, it must do
+  nothing.
+
+  </div>
+
+<h5 id="the-datatransferitem-interface">The <code>DataTransferItem</code> interface</h5>
+
+  Each <code>DataTransferItem</code> object is associated with a <code>DataTransfer</code>
+  object.
+
+  <pre class="idl" data-highlight="webidl" dfn-for="DataTransferItem">
+    interface DataTransferItem {
+      readonly attribute DOMString kind;
+      readonly attribute DOMString type;
+      void getAsString(FunctionStringCallback? _callback);
+      File? getAsFile();
+    };
+
+    callback FunctionStringCallback = void (DOMString data);
+  </pre>
+
+  <dl class="domintro">
+
+    <dt><var>item</var> . <code>kind</code></dt>
+    <dd>
+
+    Returns <a>the drag data item kind</a>, one of: "string",
+      "file".
+
+    </dd>
+
+    <dt><var>item</var> . <code>type</code></dt>
+    <dd>
+
+    Returns <a>the drag data item type string</a>.
+
+    </dd>
+
+    <dt><var>item</var> . <code>getAsString</code>(<var>callback</var>)</dt>
+    <dd>
+
+    Invokes the callback with the string data as the argument, if <a>the drag data item
+    kind</a> is <i>Plain Unicode string</i>.
+
+    </dd>
+
+    <dt><var>file</var> = <var>item</var> . <code>getAsFile</code>()</dt>
+    <dd>
+
+    Returns a <code>File</code> object, if <a>the drag data item kind</a> is <i>File</i>.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  While the <code>DataTransferItem</code> object's <code>DataTransfer</code> object is associated
+  with a <a>drag data store</a> and that <a>drag data store</a>'s <a>drag data store
+  item list</a> still contains the item that the <code>DataTransferItem</code> object represents,
+  the <code>DataTransferItem</code> object's <i>mode</i> is the same as the <a>drag data store
+  mode</a>. When the <code>DataTransferItem</code> object's <code>DataTransfer</code> object is
+  <em>not</em> associated with a <a>drag data store</a>, or if the item that the
+  <code>DataTransferItem</code> object represents has been removed from the relevant <a>drag data
+  store item list</a>, the <code>DataTransferItem</code> object's <i>mode</i> is the <i>disabled
+  mode</i>. The <a>drag data store</a> referenced in this section (which is used only when the
+  <code>DataTransferItem</code> object is not in the <i>disabled mode</i>) is the <a>drag data
+  store</a> with which the <code>DataTransferItem</code> object's <code>DataTransfer</code>
+  object is associated.
+
+  The <dfn attribute for="DataTransferItem"><code>kind</code></dfn> attribute must return the
+  empty string if the <code>DataTransferItem</code> object is in the <i>disabled mode</i>; otherwise
+  it must return the string given in the cell from the second column of the following table from the
+  row whose cell in the first column contains <a>the drag data item kind</a> of the item
+  represented by the <code>DataTransferItem</code> object:
+
+  <table>
+    <thead>
+    <tr> <th> Kind <th> String
+    <tbody>
+    <tr> <td> <i>Plain Unicode string</i> <td> "<code>string</code>"
+
+    <tr> <td> <i>File</i> <td> "<code>file</code>"
+
+  </table>
+
+  The <dfn attribute for="DataTransferItem"><code>type</code></dfn> attribute must return the
+  empty string if the <code>DataTransferItem</code> object is in the <i>disabled mode</i>; otherwise
+  it must return <a>the drag data item type string</a> of the item represented by the
+  <code>DataTransferItem</code> object.
+
+  The <dfn method for="DataTransferItem"><code>getAsString(<var>callback</var>)</code></dfn> method must run the following steps:
+
+  <ol>
+
+    <li>If the <var>callback</var> is null, abort these steps.</li>
+
+    <li>If the <code>DataTransferItem</code> object is not in the <i>read/write mode</i> or the <i>read-only mode</i>,
+    abort these steps. The callback is never invoked.</li>
+
+    <li>If <a>the drag data item kind</a> is not <i>Plain Unicode string</i>, abort these
+    steps. The callback is never invoked.</li>
+
+    <li>Otherwise, <a>queue a task</a> to invoke <var>callback</var>, passing the
+    actual data of the item represented by the <code>DataTransferItem</code> object as the
+    argument.</li>
+
+  </ol>
+
+  The <dfn method for="DataTransferItem"><code>getAsFile()</code></dfn>
+  method must run the following steps:
+
+  <ol>
+
+    <li>If the <code>DataTransferItem</code> object is not in the <i>read/write mode</i> or the <i>read-only mode</i>,
+    return null and abort these steps.</li>
+
+    <li>If <a>the drag data item kind</a> is not <i>File</i>, then return null and abort
+    these steps.</li>
+
+    <li>Return a new <code>File</code> object representing the actual data of the item represented
+    by the <code>DataTransferItem</code> object.
+
+  </ol>
+
+  </div>
+
+<h4 id="the-dragevent-interface">The <code>DragEvent</code> interface</h4>
+
+  The drag-and-drop processing model involves several events. They all use the
+  <code>DragEvent</code> interface.
+
+  <pre class="idl" data-highlight="webidl" dfn-for="DragEvent">
+    [Constructor(DOMString type, optional DragEventInit eventInitDict)]
+    interface DragEvent : MouseEvent {
+      readonly attribute DataTransfer? dataTransfer;
+    };
+
+    dictionary DragEventInit : MouseEventInit {
+      DataTransfer? dataTransfer = null;
+    };
+  </pre>
+
+  <dl class="domintro">
+
+    <dt><var>event</var> . <code>dataTransfer</code></dt>
+
+    <dd>
+
+    Returns the <code>DataTransfer</code> object for the event.
+
+    </dd>
+
+  </dl>
+
+  <p class="note">
+  Although, for consistency with other event interfaces, the <code>DragEvent</code>
+  interface has a constructor, it is not particularly useful. In particular, there's no way to
+  create a useful <code>DataTransfer</code> object from script, as <code>DataTransfer</code> objects
+  have a processing and security model that is coordinated by the browser during drag-and-drops.
+  </p>
+
+  <div class="impl">
+
+  The <dfn attribute for="DragEvent"><code>dataTransfer</code></dfn> attribute of the
+  <code>DragEvent</code> interface must return the value it was initialized to. It represents the
+  context information for the event.
+
+  </div>
+
+  <div class="impl">
+
+  When a user agent is required to <dfn>fire a DND event</dfn> named <var>e</var> at an element,
+  using a particular <a>drag data store</a>, and optionally with a specific <var>related
+  target</var>, the user agent must run the following steps:
+
+  <ol>
+
+    <li>If no specific <var>related target</var> was provided, set <var>related target</var> to
+    null.</li>
+
+    <li>Let <var>window</var> be the <code>Window</code> object of the <code>Document</code>
+    object of the specified target element.</li>
+
+    <li>
+
+    If <var>e</var> is <code>dragstart</code>, set the <a>drag
+    data store mode</a> to the <a>read/write mode</a>.
+
+    If <var>e</var> is <code>drop</code>, set the <a>drag data store
+    mode</a> to the <a>read-only mode</a>.
+
+    </li>
+
+    <li>Let <var>dataTransfer</var> be a newly created <code>DataTransfer</code> object
+    associated with the given <a>drag data store</a>.</li>
+
+    <li>Set the <code>effectAllowed</code> attribute to the <a>drag data
+    store</a>'s <a>drag data store allowed effects state</a>.</li>
+
+    <li>
+
+    Set the <code>dropEffect</code> attribute to "<code>none</code>" if <var>e</var> is <code>dragstart</code>, <code>drag</code>, <code>dragexit</code>, or <code>dragleave</code>; to the value corresponding to the <a>current
+    drag operation</a> if <var>e</var> is <code>drop</code> or
+    <code>dragend</code>; and to a value based on the <code>effectAllowed</code> attribute's value and the
+    drag-and-drop source, as given by the following table, otherwise (i.e. if <var>e</var>
+    is <code>dragenter</code> or <code>dragover</code>):
+
+    <table>
+      <thead>
+      <tr>
+        <th><code>effectAllowed</code></th>
+        <th><code>dropEffect</code></th>
+      </tr>
+      </thead>
+      <tr>
+      <td>"<code>none</code>"</td>
+      <td>"<code>none</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>copy</code>"</td>
+      <td>"<code>copy</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>copyLink</code>"</td>
+      <td>"<code>copy</code>", or, <a>if appropriate</a>, "<code>link</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>copyMove</code>"</td>
+      <td>"<code>copy</code>", or, <a>if appropriate</a>, "<code>move</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>all</code>"</td>
+      <td>"<code>copy</code>", or, <a>if appropriate</a>, either "<code>link</code>" or "<code>move</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>link</code>"</td>
+      <td>"<code>link</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>linkMove</code>"</td>
+      <td>"<code>link</code>", or, <a>if appropriate</a>, "<code>move</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>move</code>"</td>
+      <td>"<code>move</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>uninitialized</code>" when what is being dragged is a selection from a text field</td>
+      <td>"<code>move</code>", or, <a>if appropriate</a>, either "<code>copy</code>" or "<code>link</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>uninitialized</code>" when what is being dragged is a selection</td>
+      <td>"<code>copy</code>", or, <a>if appropriate</a>, either "<code>link</code>" or "<code>move</code>"</td>
+      </tr>
+      <tr>
+      <td>"<code>uninitialized</code>" when what is being dragged is an <{a}> element with an <{links/href}> attribute</td>
+      <td>"<code>link</code>", or, <a>if appropriate</a>, either "<code>copy</code>" or "<code>move</code>"</td>
+      </tr>
+      <tr>
+      <td>Any other case</td>
+      <td>"<code>copy</code>", or, <a>if appropriate</a>, either "<code>link</code>" or "<code>move</code>"</td>
+      </tr>
+    </table>
+
+    Where the table above provides <dfn lt="if appropriate|possibly appropriate alternatives">possibly appropriate alternatives</dfn>, user agents may instead use the listed alternative values if
+    platform conventions dictate that the user has requested those alternate effects.
+
+    <p class="example">
+  For example, Windows platform conventions are such that dragging while
+    holding the "alt" key indicates a preference for linking the data, rather than moving or copying
+    it. Therefore, on a Windows system, if "<code>link</code>" is an option according to
+    the table above while the "alt" key is depressed, the user agent could select that instead of
+    "<code>copy</code>" or "<code>move</code>".
+  </p>
+
+    </li>
+
+    <li>
+
+    Create a <a>trusted</a> <code>DragEvent</code> object
+    and initialize it to have the given name <var>e</var>, to bubble, to be cancelable unless
+    <var>e</var> is <code>dragexit</code>, <code>dragleave</code>, or <code>dragend</code>, and to have the <code>view</code> attribute initialized to <var>window</var>, the <code>detail</code> attribute initialized to zero, the mouse and key
+    attributes initialized according to the state of the input devices as they would be for user
+    interaction events, the <code>relatedTarget</code>
+    attribute initialized to <var>related target</var>, and the <code>dataTransfer</code> attribute initialized to
+    <var>dataTransfer</var>, the <code>DataTransfer</code> object created above.
+
+    If there is no relevant pointing device, the object must have its <code>screenX</code>, <code>screenY</code>, <code>clientX</code>, <code>clientY</code>, and <code>button</code> attributes set to 0.
+
+    </li>
+
+    <li><a>Dispatch</a> the newly created
+    <code>DragEvent</code> object at the specified target element.</li>
+
+    <li>Set the <a>drag data store allowed effects state</a> to the current value of
+    <var>dataTransfer</var>'s <code>effectAllowed</code>
+    attribute. (It can only have changed value if <var>e</var> is <code>dragstart</code>.)</li>
+
+    <li>Set the <a>drag data store mode</a> back to the <a>protected mode</a> if it was changed in the first step.</li>
+
+    <li>Break the association between <var>dataTransfer</var> and the <a>drag data
+    store</a>.</li>
+
+  </ol>
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="drag-and-drop-processing-model">Drag-and-drop processing model</h4>
+
+  When the user attempts to begin a drag operation, the user agent must run the following steps.
+  User agents must act as if these steps were run even if the drag actually started in another
+  document or application and the user agent was not aware that the drag was occurring until it
+  intersected with a document under the user agent's purview.
+
+  <ol>
+
+    <li>
+
+    Determine what is being dragged, as follows:
+
+    If the drag operation was invoked on a selection, then it is the selection that is being
+    dragged.
+
+    Otherwise, if the drag operation was invoked on a {{Document}}, it is the first
+    element, going up the ancestor chain, starting at the node that the user tried to drag, that has
+    the IDL attribute <code>draggable</code> set to true. If there is no such
+    element, then nothing is being dragged; abort these steps, the drag-and-drop operation is never
+    started.
+
+    Otherwise, the drag operation was invoked outside the user agent's purview. What is being
+    dragged is defined by the document or application where the drag was started.
+
+    <p class="note">
+  <{img}> elements and <{a}> elements with an <{links/href}> attribute have their <code>draggable</code> attribute set to true by default.
+  </p>
+
+    </li>
+
+    <li><a>Create a drag data store</a>. All the DND events fired subsequently by the steps
+    in this section must use this <a>drag data store</a>.</li>
+
+    <li>
+
+    Establish which DOM node is the <dfn>source node</dfn>, as follows:
+
+    If it is a selection that is being dragged, then the <a>source node</a> is the
+    <code>Text</code> node that the user started the drag on (typically the <code>Text</code> node
+    that the user originally clicked). If the user did not specify a particular node, for example if
+    the user just told the user agent to begin a drag of "the selection", then the <a>source
+    node</a> is the first <code>Text</code> node containing a part of the selection.
+
+    Otherwise, if it is an element that is being dragged, then the <a>source node</a> is
+    the element that is being dragged.
+
+    Otherwise, the <a>source node</a> is part of another document or application. When this
+    specification requires that an event be dispatched at the <a>source node</a> in this case,
+    the user agent must instead follow the platform-specific conventions relevant to that
+    situation.
+
+    <p class="note">
+      Multiple events are fired on the <a>source node</a> during the course of the drag-and-drop
+      operation.
+  </p>
+
+    </li>
+
+    <li>
+
+    Determine the <dfn>list of dragged nodes</dfn>, as follows:
+
+    If it is a selection that is being dragged, then the <a>list of dragged nodes</a>
+    contains, in <a>tree order</a>, every node that is partially or completely included in the
+    selection (including all their ancestors).
+
+    Otherwise, the <a>list of dragged nodes</a> contains only the <a>source node</a>,
+    if any.
+
+    </li>
+
+    <li>
+
+    If it is a selection that is being dragged, then add an item to the <a>drag data store
+    item list</a>, with its properties set as follows:
+
+    <dl>
+
+      <dt><a>The drag data item type string</a>
+      <dd>"<code>text/plain</code>"</dd>
+
+      <dt><a>The drag data item kind</a>
+      <dd><i>Plain Unicode string</i></dd>
+
+      <dt>The actual data</dt>
+      <dd>The text of the selection</dd>
+
+    </dl>
+
+    Otherwise, if any files are being dragged, then add one item per file to the <a>drag data
+    store item list</a>, with their properties set as follows:
+
+    <dl>
+
+      <dt><a>The drag data item type string</a>
+      <dd>The MIME type of the file, if known, or "<code>application/octet-stream</code>" otherwise.</dd>
+
+      <dt><a>The drag data item kind</a>
+      <dd><i>File</i></dd>
+
+      <dt>The actual data</dt>
+      <dd>The file's contents and name.</dd>
+
+    </dl>
+
+    <p class="note">
+  Dragging files can currently only happen from outside a <a>browsing
+    context</a>, for example from a file system manager application.
+  </p>
+
+    If the drag initiated outside of the application, the user agent must add items to the
+    <a>drag data store item list</a> as appropriate for the data being dragged, honoring
+    platform conventions where appropriate; however, if the platform conventions do not use <a>MIME types</a> to label dragged data, the user agent must make a
+    best-effort attempt to map the types to MIME types, and, in any case, all the <a>drag data item type strings</a> must be <a>converted to ASCII
+    lowercase</a>.
+
+    User agents may also add one or more items representing the selection or dragged element(s)
+    in other forms, e.g. as HTML.
+
+    </li>
+
+    <li>
+
+    If the <a>list of dragged nodes</a> is not empty, then extract the microdata from those nodes into a JSON form, and add one item to the
+    <a>drag data store item list</a>, with its properties set as follows:
+
+    <dl>
+
+      <dt><a>The drag data item type string</a>
+      <dd><code>application/microdata+json</code></dd>
+
+      <dt><a>The drag data item kind</a>
+      <dd><i>Plain Unicode string</i></dd>
+
+      <dt>The actual data</dt>
+      <dd>The resulting JSON string.</dd>
+
+    </dl>
+
+    </li>
+
+    <li>
+
+    Run the following substeps:
+
+    <ol>
+
+      <li>Let <var>urls</var> be an empty list of <a>absolute URLs</a>.</li>
+
+      <li>
+
+      For each <var>node</var> in the <a>list of dragged nodes</a>:
+
+      <dl>
+
+        <dt>If the node is an <{a}> element with an <{links/href}> attribute</dt>
+
+        <dd>Add to <var>urls</var> the result of <a>resolving</a> the element's <{links/href}> content
+        attribute relative to the element.</dd>
+
+        <dt>If the node is an <{img}> element with a <{img/src}>
+        attribute</dt>
+
+        <dd>Add to <var>urls</var> the result of <a>resolving</a> the element's <code>src</code> content attribute
+        relative to the element.</dd>
+
+      </dl>
+
+      </li>
+
+      <li>If <var>urls</var> is still empty, abort these substeps.</li>
+
+      <li>Let <var>url string</var> be the result of concatenating the strings in <var>urls</var>,
+      in the order they were added, separated by a U+000D CARRIAGE RETURN U+000A LINE FEED character
+      pair (CRLF).</li>
+
+      <li>Add one item to the <a>drag data store item list</a>, with its properties set as
+      follows:
+
+      <dl>
+
+        <dt><a>The drag data item type string</a>
+        <dd><code>text/uri-list</code></dd>
+
+        <dt><a>The drag data item kind</a>
+        <dd><i>Plain Unicode string</i></dd>
+
+        <dt>The actual data</dt>
+        <dd><var>url string</var></dd>
+
+      </dl>
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li>
+
+    Update the <a>drag data store default feedback</a> as appropriate for the user agent
+    (if the user is dragging the selection, then the selection would likely be the basis for this
+    feedback; if the user is dragging an element, then that element's rendering would be used; if
+    the drag began outside the user agent, then the platform conventions for determining the drag
+    feedback should be used).
+
+    </li>
+
+    <li>
+
+    <a>Fire a DND event</a> named <code>dragstart</code> at the
+    <a>source node</a>.
+
+    If the event is canceled, then the drag-and-drop operation should not occur; abort these
+    steps.
+
+    <p class="note">
+  Since events with no event listeners registered are, almost by definition, never
+    canceled, drag-and-drop is always available to the user if the author does not specifically
+    prevent it.
+  </p>
+
+    </li>
+
+    <li>
+
+    <a>Initiate the drag-and-drop operation</a> in a manner consistent with platform
+    conventions, and as described below.
+
+    The drag-and-drop feedback must be generated from the first of the
+    following sources that is available:
+
+    <ol>
+
+      <li>The <a>drag data store bitmap</a>, if any. In this case, the <a>drag data store
+      hot spot coordinate</a> should be used as hints for where to put the cursor relative to the
+      resulting image. The values are expressed as distances in CSS pixels from the left side and
+      from the top side of the image respectively. [[!CSS-2015]]</li>
+
+      <li>The <a>drag data store default feedback</a>.</li>
+
+    </ol>
+
+    </li>
+
+  </ol>
+
+  From the moment that the user agent is to <dfn lt="initiated|initiate the drag-and-drop operation">initiate the drag-and-drop operation</dfn>,
+  until the end of the drag-and-drop operation, device input events (e.g. mouse and keyboard events)
+  must be suppressed.
+
+  During the drag operation, the element directly indicated by the user as the drop target is
+  called the <dfn>immediate user selection</dfn>. (Only elements can be selected by the user; other
+  nodes must not be made available as drop targets.) However, the <a>immediate user
+  selection</a> is not necessarily the <dfn lt="previous target element|current target element">current target element</dfn>, which is the element
+  currently selected for the drop part of the drag-and-drop operation.
+
+  The <a>immediate user selection</a> changes as the user selects different elements
+  (either by pointing at them with a pointing device, or by selecting them in some other way). The
+  <a>current target element</a> changes when the <a>immediate user selection</a>
+  changes, based on the results of event listeners in the document, as described below.
+
+  Both the <a>current target element</a> and the <a>immediate user selection</a> can
+  be null, which means no target element is selected. They can also both be elements in other
+  (DOM-based) documents, or other (non-Web) programs altogether. (For example, a user could drag
+  text to a word-processor.) The <a>current target element</a> is initially null.
+
+  In addition, there is also a <dfn>current drag operation</dfn>, which can take on the values
+  "<dfn value for="drag"><code>none</code></dfn>", "<dfn value for="drag"><code>copy</code></dfn>", "<dfn value for="drag"><code>link</code></dfn>", and "<dfn value for="drag"><code>move</code></dfn>". Initially, it has the value
+  "<code>none</code>". It is updated by the user agent
+  as described in the steps below.
+
+  User agents must, as soon as the drag operation is <a>initiated</a> and every 350ms (&#xB1;200ms) thereafter for as long as the drag
+  operation is ongoing, <a>queue a task</a> to perform the following steps in sequence:
+
+  <ol>
+
+    <li>
+
+    If the user agent is still performing the previous iteration of the sequence (if any) when
+    the next iteration becomes due, abort these steps for this iteration (effectively "skipping
+    missed frames" of the drag-and-drop operation).
+
+    </li>
+
+    <li>
+
+    <a>Fire a DND event</a> named <code>drag</code> at the
+    <a>source node</a>. If this event is canceled, the user agent must set the <a>current
+    drag operation</a> to "<code>none</code>" (no
+    drag operation).
+
+    </li>
+
+    <li>
+
+    If the <code>drag</code> event was not canceled and the user has not
+    ended the drag-and-drop operation, check the state of the drag-and-drop operation, as
+    follows:
+
+    <ol>
+
+      <li>
+
+      If the user is indicating a different <a>immediate user selection</a> than during the
+      last iteration (or if this is the first iteration), and if this <a>immediate user
+      selection</a> is not the same as the <a>current target element</a>, then <a>fire a
+      DND event</a> named <code>dragexit</code> at the <a>current
+      target element</a>, and then update the <a>current target element</a> as follows:
+
+      <dl class="switch">
+
+        <dt>If the new <a>immediate user selection</a> is null</dt>
+
+        <dd>Set the <a>current target element</a> to null also.</dd>
+
+        <dt>If the new <a>immediate user selection</a> is in a non-DOM document or
+        application</dt>
+
+        <dd>Set the <a>current target element</a> to the <a>immediate user
+        selection</a>.</dd>
+
+        <dt>Otherwise</dt>
+
+        <dd>
+
+        <a>Fire a DND event</a> named <code>dragenter</code>
+        at the <a>immediate user selection</a>.
+
+        If the event is canceled, then set the <a>current target element</a> to the
+        <a>immediate user selection</a>.
+
+        Otherwise, run the appropriate step from the following list:
+
+        <dl class="switch">
+
+          <dt>If the <a>immediate user selection</a> is a text field (e.g.
+          <{textarea}>, or an <{input}> element whose <code>type</code> attribute is in the <a>Text</a> state) or an <a>editing host</a> or
+          <a>editable</a> element, and the <a>drag data store item list</a> has an item
+          with <a>the drag data item type string</a> "<code>text/plain</code>" and <a>the
+          drag data item kind</a> <i>Plain Unicode string</i></dt>
+
+          <dd>Set the <a>current target element</a> to the <a>immediate user
+          selection</a> anyway.</dd>
+
+          <dt>If the <a>immediate user selection</a> is an element with a <code>dropzone</code> attribute that <a>matches</a> the <a>drag data store</a></dt>
+
+          <dd>Set the <a>current target element</a> to the <a>immediate user
+          selection</a> anyway.</dd>
+
+          <dt>If the <a>immediate user selection</a> is an element that itself has an ancestor
+          element with a <code>dropzone</code> attribute that <a>matches</a> the <a>drag data store</a></dt>
+
+          <dd>
+
+          Let <var>new target</var> be the nearest (deepest) such ancestor element.
+
+          If the <a>immediate user selection</a> is <var>new target</var>, then leave the
+          <a>current target element</a> unchanged.
+
+          Otherwise, <a>fire a DND event</a> named <code>dragenter</code> at <var>new target</var>, with the current
+          <a>current target element</a> as the specific <var>related target</var>. Then, set
+          the <a>current target element</a> to <var>new target</var>, regardless of whether
+          that event was canceled or not.
+
+          </dd>
+
+          <dt>If the <a>immediate user selection</a> is <a href="#the-body-element">the <code>body</code> element</a></dt>
+
+          <dd>Leave the <a>current target element</a> unchanged.</dd>
+
+          <dt>Otherwise</dt>
+
+          <dd>
+
+          <a>Fire a DND event</a> named <code>dragenter</code>
+          at <a href="#the-body-element">the <code>body</code> element</a>, if there is one, or at the <code>Document</code> object,
+          if not. Then, set the <a>current target element</a> to <a href="#the-body-element">the <code>body</code> element</a>, regardless of whether that event was canceled or not.
+
+          </dd>
+
+        </dl>
+
+        </dd>
+
+      </dl>
+
+      </li>
+
+      <li>
+
+      If the previous step caused the <a>current target element</a> to change, and if the
+      previous target element was not null or a part of a non-DOM document, then <a>fire a DND
+      event</a> named <code>dragleave</code> at the previous target
+      element, with the new <a>current target element</a> as the specific <var>related
+      target</var>.
+
+      </li>
+
+      <li>
+
+      If the <a>current target element</a> is a DOM element, then <a>fire a DND
+      event</a> named <code>dragover</code> at this <a>current
+      target element</a>.
+
+      If the <code>dragover</code> event is not canceled, run the
+      appropriate step from the following list:
+
+      <dl class="switch">
+
+        <dt>If the <a>current target element</a> is a text field (e.g. <{textarea}>,
+        or an <{input}> element whose <code>type</code> attribute
+        is in the <a>Text</a> state) or an <a>editing
+        host</a> or <a>editable</a> element, and the <a>drag data store item list</a>
+        has an item with <a>the drag data item type string</a> "<code>text/plain</code>" and
+        <a>the drag data item kind</a> <i>Plain Unicode string</i></dt>
+
+        <dd>Set the <a>current drag operation</a> to either "<code>copy</code>" or "<code>move</code>", as appropriate given the platform
+        conventions.</dd>
+
+        <dt>If the <a>current target element</a> is an element with a <code>dropzone</code> attribute that <a>matches</a> the <a>drag data store</a> and <a>specifies an operation</a></dt>
+
+        <dd>Set the <a>current drag operation</a> to the operation <a>specified</a> by the <code>dropzone</code> attribute of the <a>current target
+        element</a>.
+
+        <dt>If the <a>current target element</a> is an element with a <code>dropzone</code> attribute that <a>matches</a> the <a>drag data store</a> and does not
+        <a>specify an operation</a></dt>
+
+        <dd>Set the <a>current drag operation</a> to "<code>copy</code>".
+
+        <dt>Otherwise</dt>
+
+        <dd>Reset the <a>current drag operation</a> to "<code>none</code>".</dd>
+
+      </dl>
+
+      Otherwise (if the <code>dragover</code> event <em>is</em>
+      canceled), set the <a>current drag operation</a> based on the values of the <code>effectAllowed</code> and <code>dropEffect</code> attributes of the
+      <code>DragEvent</code> object's <code>dataTransfer</code>
+      object as they stood after the event <a>dispatch</a>
+      finished, as per the following table:
+
+      <table>
+        <thead>
+          <tr>
+            <th><code>effectAllowed</code></th>
+            <th><code>dropEffect</code></th>
+            <th>Drag operation</th>
+          </tr>
+        </thead>
+        <tr>
+          <td>"<code>uninitialized</code>", "<code>copy</code>", "<code>copyLink</code>", "<code>copyMove</code>", or "<code>all</code>"</td>
+          <td>"<code>copy</code>"</td>
+          <td>"<code>copy</code>"</td>
+        </tr>
+        <tr>
+          <td>"<code>uninitialized</code>", "<code>link</code>", "<code>copyLink</code>", "<code>linkMove</code>", or "<code>all</code>"</td>
+          <td>"<code>link</code>"</td>
+          <td>"<code>link</code>"</td>
+        </tr>
+        <tr>
+          <td>"<code>uninitialized</code>", "<code>move</code>", "<code>copyMove</code>", "<code>linkMove</code>", or "<code>all</code>"</td>
+          <td>"<code>move</code>"</td>
+          <td>"<code>move</code>"</td>
+        </tr>
+        <tr>
+          <td colspan="2">Any other case</td>
+          <td>"<code>none</code>"</td>
+        </tr>
+      </table>
+
+      </li>
+
+      <li>
+
+      Otherwise, if the <a>current target element</a> is not a DOM element, use
+      platform-specific mechanisms to determine what drag operation is being performed (none, copy,
+      link, or move), and set the <a>current drag operation</a> accordingly.
+
+      </li>
+
+      <li>
+
+      Update the drag feedback (e.g. the mouse cursor) to match the <a>current drag
+      operation</a>, as follows:
+
+      <table>
+        <thead>
+          <tr>
+            <th>Drag operation</th>
+            <th>Feedback</th>
+          </tr>
+        </thead>
+        <tr>
+          <td>"<code>copy</code>"</td>
+          <td>Data will be copied if dropped here.</td>
+        </tr>
+        <tr>
+          <td>"<code>link</code>"</td>
+          <td>Data will be linked if dropped here.</td>
+        </tr>
+        <tr>
+          <td>"<code>move</code>"</td>
+          <td>Data will be moved if dropped here.</td>
+        </tr>
+        <tr>
+          <td>"<code>none</code>"</td>
+          <td>No operation allowed, dropping here will cancel the drag-and-drop operation.</td>
+        </tr>
+      </table>
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li>
+
+    Otherwise, if the user ended the drag-and-drop operation (e.g. by releasing the mouse button
+    in a mouse-driven drag-and-drop interface), or if the <code>drag</code>
+    event was canceled, then this will be the last iteration. Run the following steps, then stop the
+    drag-and-drop operation:
+
+    <ol>
+
+      <li>
+
+      If the <a>current drag operation</a> is "<code>none</code>" (no drag operation), or, if the user
+      ended the drag-and-drop operation by canceling it (e.g. by hitting the <kbd>Escape</kbd> key),
+      or if the <a>current target element</a> is null, then the drag operation failed. Run
+      these substeps:
+
+      <ol>
+
+        <li>Let <var>dropped</var> be false.</li>
+
+        <li>If the <a>current target element</a> is a DOM element, <a>fire a DND
+        event</a> named <code>dragleave</code> at it; otherwise, if
+        it is not null, use platform-specific conventions for drag cancelation.</li>
+
+        <li>Set the <a>current drag operation</a> to "<code>none</code>".</li>
+
+      </ol>
+
+      Otherwise, the drag operation might be a success; run these substeps:
+
+      <ol>
+
+        <li>Let <var>dropped</var> be true.</li>
+
+        <li>If the <a>current target element</a> is a DOM element, <a>fire a DND
+        event</a> named <code>drop</code> at it; otherwise, use
+        platform-specific conventions for indicating a drop.</li>
+
+        <li>
+
+        If the event is canceled, set the <a>current drag operation</a> to the value of the
+        <code>dropEffect</code> attribute of the
+        <code>DragEvent</code> object's <code>dataTransfer</code>
+        object as it stood after the event <a>dispatch</a>
+        finished.
+
+        Otherwise, the event is not canceled; perform the event's default action, which depends
+        on the exact target as follows:
+
+        <dl class="switch">
+
+          <dt>If the <a>current target element</a> is a text field (e.g. <{textarea}>,
+          or an <{input}> element whose <code>type</code> attribute
+          is in the <a>Text</a> state) or an <a>editing
+          host</a> or <a>editable</a> element, and the <a>drag data store item
+          list</a> has an item with <a>the drag data item type string</a>
+          "<code>text/plain</code>" and <a>the drag data item kind</a> <i>Plain Unicode
+          string</i></dt>
+
+          <dd>Insert the actual data of the first item in the <a>drag data store item
+          list</a> to have <a>a drag data item type
+          string</a> of "<code>text/plain</code>" and <a>a drag
+          data item kind</a> that is <i>Plain Unicode string</i> into the text field or
+          <a>editing host</a> or <a>editable</a> element in a manner consistent with
+          platform-specific conventions (e.g. inserting it at the current mouse cursor position, or
+          inserting it at the end of the field).</dd>
+
+          <dt>Otherwise</dt>
+
+          <dd>Reset the <a>current drag operation</a> to "<code>none</code>".</dd>
+
+        </dl>
+
+        </li>
+
+      </ol>
+
+      </li>
+
+      <li>
+
+      <a>Fire a DND event</a> named <code>dragend</code> at the
+      <a>source node</a>.
+
+      </li>
+
+      <li>
+
+      Run the appropriate steps from the following list as the default action of the <code>dragend</code> event:
+
+      <dl class="switch">
+
+        <dt>If <var>dropped</var> is true, the <a>current target element</a> is a <i>text
+        field</i> (see below), the <a>current drag operation</a> is "<code>move</code>", and the source of the
+        drag-and-drop operation is a selection in the DOM that is entirely contained within an
+        <a>editing host</a></dt>
+
+        <dd><a>Delete the selection</a>.</dd>
+
+        <dt>If <var>dropped</var> is true, the <a>current target element</a> is a <i>text
+        field</i> (see below), the <a>current drag operation</a> is "<code>move</code>", and the source of the
+        drag-and-drop operation is a selection in a text field</dt>
+
+        <dd>The user agent should delete the dragged selection from the relevant text
+        field.</dd>
+
+        <dt>If <var>dropped</var> is false or if the <a>current drag operation</a> is "<code>none</code>"</dt>
+
+        <dd>The drag was canceled. If the platform conventions dictate that this be represented to
+        the user (e.g. by animating the dragged selection going back to the source of the
+        drag-and-drop operation), then do so.</dd>
+
+        <dt>Otherwise</dt>
+
+        <dd>The event has no default action.</dd>
+
+      </dl>
+
+      For the purposes of this step, a <i>text field</i> is a <{textarea}> element or an
+      <{input}> element whose <{input/type}> attribute is in
+      one of the
+      <a element-state for="input">Text</a>,
+      <a element-state for="input">Search</a>,
+      <a element-state for="input">Telephone</a>,
+      <a element-state for="input">URL</a>,
+      <a element-state for="input">E-mail</a>,
+      <a element-state for="input">Password</a>, or
+      <a element-state for="input">Number</a>
+      states.
+
+      </li>
+
+    </ol>
+
+    </li>
+
+  </ol>
+
+    <p class="note">
+      User agents are encouraged to consider how to react to drags near the edge of scrollable
+      regions. For example, if a user drags a link to the bottom of the viewport on a long page, it
+      might make sense to scroll the page so that the user can drop the link lower on the page.
+    </p>
+
+    <p class="note">
+      This model is independent of which <code>Document</code> object the nodes involved are from;
+      the events are fired as described above and the rest of the processing model runs as described
+      above, irrespective of how many documents are involved in the operation.
+    </p>
+  </div>
+
+<h4 id="events-summary">Events summary</h4>
+
+  <em>This section is non-normative.</em>
+
+  The following events are involved in the drag-and-drop model.
+
+  <table>
+    <thead>
+      <tr>
+        <th>Event Name</th>
+        <th>Target</th>
+        <th>Cancelable?</th>
+        <th><a>Drag data store mode</a></th>
+        <th><code>dropEffect</code></th>
+        <th>Default Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><dfn events for="global"><code>dragstart</code></dfn></td>
+        <td><a>Source node</a></td>
+        <td>&#x2713; Cancelable</td>
+        <td><a>Read/write mode</a>
+        <td>"<code>none</code>"</td>
+        <td>Initiate the drag-and-drop operation</td>
+      </tr>
+      <tr>
+        <td><dfn events for="global"><code>drag</code></dfn></td>
+        <td><a>Source node</a></td>
+        <td>&#x2713; Cancelable</td>
+        <td><a>Protected mode</a>
+        <td>"<code>none</code>"</td>
+        <td>Continue the drag-and-drop operation</td>
+      </tr>
+      <tr>
+        <td><dfn events for="global"><code>dragenter</code></dfn></td>
+        <td><a>Immediate user selection</a> or <a href="#the-body-element">the <code>body</code> element</a></td>
+        <td>&#x2713; Cancelable</td>
+        <td><a>Protected mode</a>
+        <td>Based on <code>effectAllowed</code> value</td>
+        <td>Reject <a>immediate user selection</a> as potential <a>target element</a></td>
+      </tr>
+      <tr>
+        <td><dfn events for="global"><code>dragexit</code></dfn></td>
+        <td><a>Previous target element</a></td>
+        <td>&mdash;</td>
+        <td><a>Protected mode</a>
+        <td>"<code>none</code>"</td>
+        <td>None</td>
+      </tr>
+      <tr>
+        <td><dfn events for="global"><code>dragleave</code></dfn></td>
+        <td><a>Previous target element</a></td>
+        <td>&mdash;</td>
+        <td><a>Protected mode</a>
+        <td>"<code>none</code>"</td>
+        <td>None</td>
+      </tr>
+      <tr>
+        <td><dfn events for="global"><code>dragover</code></dfn></td>
+        <td><a>Current target element</a></td>
+        <td>&#x2713; Cancelable</td>
+        <td><a>Protected mode</a>
+        <td>Based on <code>effectAllowed</code> value</td>
+        <td>Reset the <a>current drag operation</a> to "none"</td>
+      </tr>
+      <tr>
+        <td><dfn events for="global"><code>drop</code></dfn></td>
+        <td><a>Current target element</a></td>
+        <td>&#x2713; Cancelable</td>
+        <td><a>Read-only mode</a>
+        <td><a>Current drag operation</a></td>
+        <td>Varies</td>
+      </tr>
+      <tr>
+        <td><dfn events for="global"><code>dragend</code></dfn></td>
+        <td><a>Source node</a></td>
+        <td>&mdash;</td>
+        <td><a>Protected mode</a>
+        <td><a>Current drag operation</a></td>
+        <td>Varies</td>
+      </tr>
+    </tbody>
+  </table>
+
+  Not shown in the above table: all these events bubble, and the <code>effectAllowed</code>
+  attribute always has the value it had after the <code>dragstart</code> event, defaulting to
+  "<code>uninitialized</code>" in the <code>dragstart</code> event.
+
+<h4 id="the-draggable-attribute">The <dfn element-attr for="global"><code>draggable</code></dfn> attribute</h4>
+
+  All <a>html elements</a> may have the <code>draggable</code> content attribute set. The
+  <code>draggable</code> attribute is an <a>enumerated attribute</a>. It has three states. The first
+  state is <i>true</i> and it has the keyword <code>true</code>. The second state is <i>false</i>
+  and it has the keyword <code>false</code>. The third state is <i>auto</i>; it has no keywords but
+  it is the <i>missing value default</i>.
+
+  The <i>true</i> state means the element is draggable; the <i>false</i> state means that it is not.
+  The <i>auto</i> state uses the default behavior of the user agent.
+
+  An element with a <code>draggable</code> attribute should also have a <code>title</code> attribute
+  that names the element for the purpose of non-visual interactions.
+
+  <dl class="domintro">
+    <dt><var>element</var> . <code>draggable</code> [ = <var>value</var> ]</dt>
+    <dd>
+    Returns true if the element is draggable; otherwise, returns false.
+
+    Can be set, to override the default and set the <code>draggable</code>
+    content attribute.
+    </dd>
+  </dl>
+
+  <div class="impl">
+    The {{draggable}} IDL attribute, whose value depends on the content
+    attribute's in the way described below, controls whether or not the element is draggable.
+    Generally, only text selections are draggable, but elements whose <code>draggable</code> IDL
+    attribute is true become draggable as well.
+
+    If an element's <code>draggable</code> content attribute has the state <i>true</i>, the
+    <code>draggable</code> IDL attribute must return true.
+
+    Otherwise, if the element's <code>draggable</code> content attribute has the state <i>false</i>,
+    the <code>draggable</code> IDL attribute must return false.
+
+    Otherwise, the element's <code>draggable</code> content attribute has the state <i>auto</i>. If
+    the element is an <{img}> element, an <{object}> element that
+    <a>represents</a> an image, or an <{a}> element with an <{links/href}> content
+    attribute, the <code>draggable</code> IDL attribute must return true; otherwise, the
+    <code>draggable</code> IDL attribute must return false.
+
+    If the <code>draggable</code> IDL attribute is set to the value false, the
+    <code>draggable</code> content attribute must be set to the literal value "<code>false</code>".
+    If the <code>draggable</code> IDL attribute is set to the value true, the <code>draggable</code>
+    content attribute must be set to the literal value "<code>true</code>".
+  </div>
+
+<h4 id="the-dropzone-attribute">The <dfn element-attr for="global"><code>dropzone</code></dfn> attribute</h4>
+
+  All <a>html elements</a> may have the <{global/dropzone}> content attribute set. When specified,
+  its value must be an <a>unordered set of unique space-separated tokens</a> that are
+  <a>ASCII case-insensitive</a>. The allowed values are the following:
+
+  : <dfn><code>copy</code></dfn>
+  :: Indicates that dropping an accepted item on the element will result in a copy of the dragged
+      data.
+  : <dfn><code>move</code></dfn>
+  :: Indicates that dropping an accepted item on the element will result in the dragged data being
+      moved to the new location.
+  : <dfn><code>link</code></dfn>
+  :: Indicates that dropping an accepted item on the element will result in a link to the original
+      data.
+  : Any keyword with eight characters or more, beginning with an <a>ASCII case-insensitive</a>
+      match for the string "<code>string:</code>"
+  :: Indicates that items with <a>the drag data item kind</a> <i>Plain Unicode string</i> and
+      <a>the drag data item type string</a> set to a value that matches the remainder of the keyword
+      are accepted.
+  : Any keyword with six characters or more, beginning with an <a>ASCII case-insensitive</a> match
+      for the string "<code>file:</code>"
+  :: Indicates that items with <a>the drag data item kind</a> <i>File</i> and <a>the drag data item
+      type string</a> set to a value that matches the remainder of the keyword are accepted.
+
+  The <{global/dropzone}> content attribute's values must not have more than one of the three
+  feedback values (<code>copy</code>, <code>move</code>, and <code>link</code>) specified. If none
+  are specified, the <code>copy</code> value is implied.
+
+  An element with a <{global/dropzone}> attribute should also have a <code>title</code> attribute
+  that names the element for the purpose of non-visual interactions.
+
+  <div class="impl">
+    A <{global/dropzone}> attribute <dfn>matches a drag data store</dfn> if the
+    <a><code>dropzone</code> processing steps</a> result in a match.
+
+    A <{global/dropzone}> attribute <dfn lt="specified|specifies an operation|specify an operation">specifies an operation</dfn> if the
+    <a><code>dropzone</code> processing steps</a> result in a specified operation. The specified
+    operation is as given by those steps.
+
+    The <dfn><{global/dropzone}> processing steps</dfn> are as follows. They either result in a
+    match or not, and separate from this result either in a specified operation or not, as defined
+    below.
+
+    1. Let <var>value</var> be the value of the <{global/dropzone}> attribute.
+    2. Let <var>keywords</var> be the result of <a lt="split a string on spaces">splitting <var>value</var> on spaces</a>.
+    3. Let <var>matched</var> be false.
+    4. Let <var>operation</var> be unspecified.
+    5. For each value in <var>keywords</var>, if any, in the order that they were found in
+        <var>value</var>, run the following steps.
+        1. Let <var>keyword</var> be the keyword.
+        2. If <var>keyword</var> is one of "<code>copy</code>", "<code>move</code>", or
+            "<code>link</code>", then: run the following substeps:
+            1. If <var>operation</var> is still unspecified, then let <var>operation</var> be the
+                string given by <var>keyword</var>.
+            2. Skip to the step labeled <i>end of keyword</i> below.
+        3. If <var>keyword</var> does not contain a U+003A COLON character (:), or if the first such
+            character in <var>keyword</var> is either the first character or the last character in
+            the string, then skip to the step labeled <i>end of keyword</i> below.
+        4. Let <var>kind code</var> be the substring of <var>keyword</var> from the first character
+            in the string to the last character in the string that is before the first U+003A COLON
+            character (:) in the string, <a>converted to ASCII lowercase</a>.
+        5. Jump to the appropriate step from the list below, based on the value of
+            <var>kind code</var>:
+            <dl class="switch">
+              <dt>If <var>kind code</var> is the string "<code>string</code>"</dt>
+              <dd>Let <var>kind</var> be <i>Plain Unicode string</i>.</dd>
+              <dt>If <var>kind code</var> is the string "<code>file</code>"</dt>
+              <dd>Let <var>kind</var> be <i>File</i>.</dd>
+              <dt>Otherwise</dt>
+              <dd>Skip to the step labeled <i>end of keyword</i> below.</dd>
+            </dl>
+        6. Let <var>type</var> be the substring of <var>keyword</var> from the first character after
+            the first U+003A COLON character (:) in the string, to the last character in the string,
+            <a>converted to ASCII lowercase</a>.
+        7. If there exist any items in the <a>drag data store item list</a> whose
+            <a>drag data item kind</a> is  the kind given in <var>kind</var> and whose
+            <a>drag data item type string</a> is <var>type</var>, then let <var>matched</var> be
+            true.
+        8. <i>End of keyword</i>: Go on to the next keyword, if any, or the next step in the overall
+            algorithm, if there are no more.
+    6. The algorithm results in a match if <var>matched</var> is true, and does not otherwise.
+
+        The algorithm results in a specified operation if <var>operation</var> is not unspecified.
+        The specified operation, if one is specified, is the one given by <var>operation</var>.
+
+    The <dfn attribute for="global"><code>dropzone</code></dfn> IDL attribute must <a>reflect</a> the content attribute of
+    the same name.
+
+    The <a>supported tokens</a> for
+    {{global/dropzone}} are the allowed values defined for the
+    <{global/dropzone}> attribute that are supported by the user agent.
+
+  </div>
+
+  <div class="example">
+    In this example, a <{div}> element is made into a drop target for image files using the
+    <{global/dropzone}> attribute. Images dropped into the target are then displayed.
+
+    <pre highlight="html">
+      &lt;div dropzone="copy file:image/png file:image/gif file:image/jpeg" ondrop="receive(event, this)">
+      &lt;p>Drop an image here to have it displayed.&lt;/p>
+      &lt;/div>
+      &lt;script>
+      function receive(event, element) {
+        var data = event.dataTransfer.items;
+        for (var i = 0; i &lt; data.length; i += 1) {
+          if ((data[i].kind == 'file') && (data[i].type.match('^image/'))) {
+            var img = new Image();
+            img.src = window.createObjectURL(data[i].getAsFile());
+            element.appendChild(img);
+          }
+        }
+      }
+      &lt;/script>
+    </pre>
+  </div>
+
+  <div class="impl">
+    <h4 id="security-risks-in-the-drag-and-drop-model">Security risks in the drag-and-drop model</h4>
+
+    User agents must not make the data added to the <code>DataTransfer</code> object during the
+    <code>dragstart</code> event available to scripts until the <code>drop</code> event, because
+    otherwise, if a user were to drag sensitive information from one document to a second document,
+    crossing a hostile third document in the process, the hostile document could intercept the data.
+
+    For the same reason, user agents must consider a drop to be successful only if the user
+    specifically ended the drag operation &mdash; if any scripts end the drag operation, it must be
+    considered unsuccessful (canceled) and the <code>drop</code> event must not be fired.
+
+    User agents should take care to not start drag-and-drop operations in response to script
+    actions. For example, in a mouse-and-window environment, if a script moves a window while the
+    user has his mouse button depressed, the user agent would not consider that to start a drag. This is
+    important because otherwise user agents could cause data to be dragged from sensitive sources and
+    dropped into hostile documents without the user's consent.
+
+    User agents should filter potentially active (scripted) content (e.g. HTML) when it is dragged
+    and when it is dropped, using a safelist of known-safe features. Similarly, <a>relative URLs</a>
+    should be turned into absolute URLs to avoid references changing in unexpected ways. This
+    specification does not specify how this is performed.
+
+    <div class="example">
+      Consider a hostile page providing some content and getting the user to select and drag and
+      drop (or indeed, copy and paste) that content to a victim page's <code>contenteditable</code>
+      region. If the browser does not ensure that only safe content is dragged, potentially unsafe
+      content such as scripts and event handlers in the selection, once dropped (or pasted) into the
+      victim site, get the privileges of the victim site. This would thus enable a cross-site
+      scripting attack.
+    </div>
+  </div>
+
+</section>
