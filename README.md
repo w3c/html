@@ -21,3 +21,7 @@ To make changes to the specification:
 1. Edit single-page.bs (or one of the include files it references)
 2. Run bikeshed on single-page.bs to generate single-page.html
 3. Create a pull request
+
+## Old HTML repo
+
+The [https://github.com/w3c/html-old](old HTML repo) is available for archival purposes.
