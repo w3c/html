@@ -7,3 +7,13 @@ The specification is built using Bikeshed. If you would like to propose edits, p
 1. Install [bikeshed](https://github.com/tabatkins/bikeshed)
 2. From the HTML folder open a command prompt
 3. run bikeshed: `'bikeshed -f spec'`
+
+Use the standard fork, branch, and pull request workflow to propose changes to the specification. Please make branch names informative - by including the issue or bug number for example.
+
+More information on contributing is in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+To make changes to the specification:
+
+1. Edit single-page.bs (or one of the include files it references)
+2. Run bikeshed on single-page.bs to generate single-page.html
+3. Create a pull request
