@@ -10,6 +10,11 @@ The specification is built using Bikeshed. If you would like to propose edits, p
 2. From the HTML folder open a command prompt
 3. run bikeshed: `'bikeshed -f spec'`
 
+For the multipage version, one can do as follows:
+
+1. Install [html-tools](https://github.com/w3c/html-tools)
+2. Follow the instructions there to regenerate the HTML files
+
 ## Contributing to this Repository
 
 Use the standard fork, branch, and pull request workflow to propose changes to the specification. Please make branch names informative - by including the issue or bug number for example.
