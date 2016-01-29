@@ -8,7 +8,12 @@ The specification is built using Bikeshed. If you would like to propose edits, p
 
 1. Install [bikeshed](https://github.com/tabatkins/bikeshed)
 2. From the HTML folder open a command prompt
-3. run bikeshed: `'bikeshed -f spec'`
+3. run bikeshed: `'bikeshed spec'`
+
+For the multipage version, one can do as follows:
+
+1. Install [html-tools](https://github.com/w3c/html-tools)
+2. Follow the instructions there to regenerate the HTML files
 
 ## Contributing to this Repository
 
