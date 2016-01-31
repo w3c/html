@@ -29,4 +29,4 @@ To make changes to the specification:
 
 ## Old HTML repo
 
-The [https://github.com/w3c/html-old](old HTML repo) is available for archival purposes.
+The [old HTML repo](https://github.com/w3c/html-old) is available for archival purposes.
