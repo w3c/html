@@ -1,5 +1,7 @@
 # HTML
 
+Status: [![Build Status](https://travis-ci.org/w3c/html.svg?branch=master)](https://travis-ci.org/w3c/html)
+
 This is the repository for the [Working Draft of the HTML specification](https://w3c.github.io/html/). This repository is managed by the [W3C Web Platform Working Group](https://www.w3.org/WebPlatform/WG/).
 
 ## Editorial Documentation
