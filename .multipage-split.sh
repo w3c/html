@@ -3,7 +3,6 @@ set -ev
 rm -rf out
 mkdir out
 
-nvm install stable
 git clone --depth=1 --branch=master https://github.com/w3c/html-tools.git ./tools
 pushd ./tools
 npm install
