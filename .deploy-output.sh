@@ -7,8 +7,8 @@ cd out
 git init
 git config user.name "Travis-CI"
 git config user.email "travis-ci"
-cp ../sample.html .
-node ../tools/multipage.js sample.html .
+cp ../single-page.html .
+node ../tools/multipage.js single-page.html .
 git add .
 git commit -m "Built by Travis-CI: $STATUS"
 git status
