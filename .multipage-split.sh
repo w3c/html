@@ -8,4 +8,6 @@ pushd ./tools
 npm install
 popd
 
-node ./tools/multipage.js single-page.html ./out
+DIR=`pwd`
+
+node ./tools/multipage.js file://$DIR/single-page.html ./out/
