@@ -3,11 +3,9 @@ set -ev
 rm -rf out
 mkdir out
 
-git clone --depth=1 --branch=master https://github.com/w3c/html-tools.git ./tools
+git clone --depth=1 --branch=master https://github.com/adrianba/multipage.git ./tools
 pushd ./tools
 npm install
 popd
 
-DIR=`pwd`
-
-node ./tools/multipage.js file://$DIR/single-page.html ./out/
+node ./tools/multipage.js single-page.html ./out/
