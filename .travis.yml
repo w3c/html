@@ -15,7 +15,9 @@ install:
 - pip install pygments cssselect html5lib lxml
 - git clone --depth=1 --branch=master https://github.com/tabatkins/bikeshed.git ./bikeshed
 - pip install --editable ./bikeshed
-- bikeshed update
+#- bikeshed update
+# Instead of bikeshed update, we use a cached copy of the files to give consistent builds
+- cp .spec-data/* ./bikeshed/bikeshed/spec-data
 script: 'bikeshed spec && ./.multipage-split.sh'
 after_success:
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./.deploy-output.sh'
