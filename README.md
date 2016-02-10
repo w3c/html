@@ -14,7 +14,7 @@ The specification is built using Bikeshed. If you would like to propose edits, p
 
 For the multipage version, one can do as follows:
 
-1. Install [html-tools](https://github.com/w3c/html-tools)
+1. Install [multipage](https://github.com/adrianba/multipage)
 2. Follow the instructions there to regenerate the HTML files
 
 ## Contributing to this Repository
@@ -25,10 +25,10 @@ More information on contributing is in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 To make changes to the specification:
 
-1. Edit single-page.bs (or one of the include files it references)
+1. Edit single-page.bs (or one of the include files it references). Do not edit the output HTML files directly.
 2. Ideally run bikeshed on single-page.bs to make sure there are no errors
 3. Create a pull request but do not include the single-page.html file
-4. When the editors merge your pull request they will build the new HTML pages
+4. When the editors merge and commit your pull request Travis-CI will build the HTML files
 
 The following considerations should be kept in mind when making a pull request:
 
