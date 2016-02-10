@@ -1,6 +1,6 @@
 # HTML
 
-[![Build Status](https://travis-ci.org/w3c/html.svg?branch=gh-pages)](https://travis-ci.org/w3c/html)
+[![Build Status](https://travis-ci.org/w3c/html.svg?branch=master)](https://travis-ci.org/w3c/html)
 
 This is the repository for the [Working Draft of the HTML specification](https://w3c.github.io/html/). This repository is managed by the [W3C Web Platform Working Group](https://www.w3.org/WebPlatform/WG/).
 
@@ -25,8 +25,8 @@ More information on contributing is in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 To make changes to the specification:
 
-1. Edit single-page.bs (or one of the include files it references). Do not edit the output HTML files directly.
-2. Ideally run bikeshed on single-page.bs to make sure there are no errors
+1. Edit single-page.bs (or one of the include files it references) in the `master` branch. Do not edit the HTML files in the `gh-pages` branch. These are built automatically.
+2. Ideally run bikeshed on single-page.bs to make sure there are no errors (run `bikeshed spec`).
 3. Create a pull request but do not include the single-page.html file
 4. When the editors merge and commit your pull request Travis-CI will build the HTML files
 
