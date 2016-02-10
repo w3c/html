@@ -31,18 +31,6 @@ The following subsections contain instructions for merging. They assume the Bash
    * If commits or sets of commits represent multiple distinct actions (i.e. do something then rename a variable), then the branch might be squashed into two or more commits, each representing a distinct action.
    * Squash commits by running `git rebase -i origin/gh-pages` then using `squash` on the commit(s) to be squashed.
 
-1. Single-page.html and the multi-page HTML files are not usually part of the pull request and need to be updated (NOTE: we are working on an automatic build system that will run Bikeshed and html-tools for you - this should be in place soon):
-  1. Generate single-page.html using Bikeshed.
-  1. Generate the index.html page and other multi-page files using [html-tools](https://github.com/w3c/html-tools).
-  1. Run the following:
-
-    ```
-    git add single-page.html
-    git add index.html
-    git add _other changed files_
-    git commit --amend
-    ```
-
 1. If the commit message needs to be updated (i.e. To add "Fix #\<bug ID\>: "), do one of the following and update the message:
     * Run `git rebase -i origin/gh-pages` then use `reword` to select the commit(s) to reword.
     * Run `git commit --amend` and edit the last commit message.
