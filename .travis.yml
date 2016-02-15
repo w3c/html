@@ -1,0 +1,27 @@
+language: python
+python:
+- '2.7'
+sudo: false
+branches:
+  only:
+  - master
+before_install:
+- chmod 755 ./.deploy-output.sh
+- chmod 755 ./.multipage-split.sh
+- nvm install stable
+install:
+- pip install pygments cssselect html5lib lxml
+- git clone --depth=100 --branch=master https://github.com/tabatkins/bikeshed.git ./bikeshed
+- pushd ./bikeshed
+- git checkout 4b204ef45e54a91c7423eff2cf4afe7495d9581e
+- popd
+- pip install --editable ./bikeshed
+#- bikeshed update
+# Instead of bikeshed update, we use a cached copy of the files to give consistent builds
+- cp .spec-data/* ./bikeshed/bikeshed/spec-data
+script: 'bikeshed spec && ./.multipage-split.sh'
+after_success:
+- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./.deploy-output.sh'
+env:
+  global:
+    secure: nvnce7JnTsJyb8QxHsBcUsAZuD8NIKanXlLgam8uRV3aAjTP65w2rFwW5SR3ilMe/8AuPQvCGKxp8kEW9P+X6vKhTIg5KyiKYH4/czaNWPmflgJt8cR5dxc7X0vaFQ0CzEkB7jiVLfledxgcDZXSzLQBknGNAAt/TnzMwR5ruEYdQEF1G3D4OKoubHVmzysTLD6brEjWQfVLonL9rwHgAHPT4uyFLmVr+YIKLJPMwAQfHi/RGudf8uv9qQAWT7jiReII2ntEVhP7HLtw+HFL3IqNCgCbyXg4Q54H8IQ6BC/Y8FMz25ePaXxl9SLczCBZjVHMb8xq8fw+TYuVTX+hWRdN+29YWmSVEBN2bN1cfhx2MSAix0m+CcGapa1xcX2rGP6NkKwy1KGH8JQCpJZnAWysSI1jDfvJQlGFqoCGq81h7CRPeesiGygjvh2eMepP0M3r1d0XTaDAFPGNWZUD58qz+4Cvn+etcXb5CRafvFNnRQpghKfVSq+FxmIApzJdmLZJipkhdWDBkySHskIcjTNk85jxLRt7VRaNAoc9uKscgmiCN7vCsLT8WM9GfmEGn/KfvVbfMoXzVrhN6R8etXY4OJcK9J6R+/RkDzR0OHJ7s4AiwPJTnJDCymyQu3yotTO44QDgjZ6O9NKw0+D+1flb4aMDlfsErnei1ZixZtk=
