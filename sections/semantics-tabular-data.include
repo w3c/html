@@ -1,0 +1,4095 @@
+<section>
+
+<h3 id="tabular-data">Tabular data</h3>
+
+<h4 id="the-table-element">The <dfn element><code>table</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd><a>Flow content</a>.</dd>
+    <dd><a>Palpable content</a>.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>Where <a>flow content</a> is expected.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd>In this order: optionally a <{caption}> element, followed by zero or more
+    <{colgroup}> elements, followed optionally by a <{thead}> element, followed by
+    either zero or more <{tbody}> elements or one or more <{tr}> elements, followed
+    optionally by a <{tfoot}> element, optionally intermixed with one or more
+    <a>script-supporting elements</a>.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>Neither tag is omissible</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dd><code>border</code></dd>
+    <dd><code>sortable</code> - Enables a sorting interface for the table</dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableElement">
+        interface HTMLTableElement : HTMLElement {
+          attribute HTMLTableCaptionElement? caption;
+          HTMLTableCaptionElement createCaption();
+          void deleteCaption();
+          attribute HTMLTableSectionElement? tHead;
+          HTMLTableSectionElement createTHead();
+          void deleteTHead();
+          attribute HTMLTableSectionElement? tFoot;
+          HTMLTableSectionElement createTFoot();
+          void deleteTFoot();
+          [SameObject] readonly attribute HTMLCollection tBodies;
+          HTMLTableSectionElement createTBody();
+          [SameObject] readonly attribute HTMLCollection rows;
+          HTMLTableRowElement insertRow(optional long index = -1);
+          void deleteRow(long index);
+          attribute boolean sortable;
+          void stopSorting();
+        };
+      </pre>
+    </dd>
+  </dl>
+
+  The <{table}> element <a>represents</a> data with more than one dimension, in
+  the form of a <a>table</a>.
+
+  <span class="impl">The <{table}> element takes part in the <a>table
+  model</a>.</span> Tables have rows, columns, and cells given by their descendants. The rows and
+  columns form a grid; a table's cells must completely cover that grid without overlap.
+
+  <div class="impl">
+
+  <p class="note">
+    Precise rules for determining whether this conformance requirement is met are
+  described in the description of the <a>table model</a>.
+  </p>
+
+  </div>
+
+  Authors are encouraged to provide information describing how to interpret complex tables.
+  Guidance on how to <a>provide such information</a> is given
+  below.
+
+  Tables should not be used as layout aids.
+
+  Historically, many Web authors have tables in HTML as a way to
+  control their page layout making it difficult to extract tabular
+  data from such documents.
+
+  In particular, users of accessibility tools, like screen readers,
+  are likely to find it very difficult to navigate pages with tables
+  used for layout.
+
+  If a table is to be used for layout it must be marked with the
+  attribute <code>role="presentation"</code> for a
+  user agent to properly represent the table to an assistive technology and to properly convey the
+  intent of the author to tools that wish to extract tabular data from
+  the document.
+
+  <p class="note">
+    There are a variety of alternatives to using HTML
+  tables for layout, primarily using CSS positioning and the CSS table
+  model. [[!CSS-2015]]
+  </p>
+
+  The <dfn element-attr for="HTMLTableElement"><code>border</code></dfn>
+  content attribute may be specified on a <{table}> element to
+  explicitly indicate that the <{table}> element is not being
+  used for layout purposes. If specified, the attribute's value must
+  either be the empty string or the value "<code>1</code>".
+  The attribute is used by certain user agents as an indication that
+  borders should be drawn around cells of the table.
+
+  <div class="impl">
+
+  <hr />
+
+  Tables can be complicated to understand and navigate. To help
+  users with this, user agents should clearly delineate cells in a
+  table from each other, unless the user agent has classified the
+  table as a
+  layout table.
+  </div>
+
+  <p class="note">
+    Authors <span class="impl">and implementors</span>
+  are encouraged to consider using some of the <a>table design techniques</a>
+  described below to make tables easier to navigate for users.
+  </p>
+
+  <div class="impl">
+
+  User agents, especially those that do table analysis on arbitrary content, are encouraged to
+  find heuristics to determine which tables actually contain data and which are merely being used
+  for layout. This specification does not define a precise heuristic, but the following are
+  suggested as possible indicators:
+
+  <table>
+    <thead>
+    <tr>
+      <th>Feature
+      </th><th>Indication
+    </th></tr></thead><tbody>
+    <tr>
+      <td>The use of the <code>role</code> attribute with the value <code>presentation</code>
+      </td><td>Probably a layout table
+    </td></tr><tr>
+      <td>The use of the non-conforming <code>border</code> attribute with the non-conforming value 0
+      </td><td>Probably a layout table
+    </td></tr><tr>
+      <td>The use of the non-conforming <code>cellspacing</code> and
+      <code>cellpadding</code> attributes with the value 0
+      </td><td>Probably a layout table
+    </td></tr></tbody><tbody>
+    <tr>
+      <td>The use of <{caption}>, <{thead}>, or <{th}> elements
+      </td><td>Probably a non-layout table
+    </td></tr><tr>
+      <td>The use of the <code>headers</code> and <code>scope</code> attributes
+      </td><td>Probably a non-layout table
+    </td></tr><tr>
+      <td>The use of the non-conforming <code>border</code> attribute with a value other than 0
+      </td><td>Probably a non-layout table
+    </td></tr><tr>
+      <td>Explicit visible borders set using CSS
+      </td><td>Probably a non-layout table
+    </td></tr></tbody><tbody>
+    <tr>
+      <td>The use of the <code>summary</code> attribute
+      </td><td>Not a good indicator (both layout and non-layout tables have historically been given this attribute)
+  </td></tr></tbody></table>
+
+  <p class="note">
+    It is quite possible that the above suggestions are wrong. Implementors are urged
+  to provide feedback elaborating on their experiences with trying to create a layout table
+  detection heuristic.
+  </p>
+
+  If a <{table}> element has a (non-conforming) <code>summary</code> attribute, and the user agent has not classified the
+  table as a layout table, the user agent may report the contents of that attribute to the user.
+
+  </div>
+
+  <hr />
+
+  The <code>sortable</code> attribute is used in the <a href="table-sorting-model">table sorting model</a>.
+
+  <hr />
+
+  <dl class="domintro">
+
+    <dt><var>table</var> . <code>caption</code> [ = <var>value</var> ]</dt>
+    <dd>
+
+    Returns the table's <{caption}> element.
+
+    Can be set, to replace the <{caption}> element.
+
+    </dd>
+
+    <dt><var>caption</var> = <var>table</var> . <code>createCaption</code>()</dt>
+    <dd>
+
+    Ensures the table has a <{caption}> element, and returns it.
+
+    </dd>
+
+    <dt><var>table</var> . <code>deleteCaption</code>()</dt>
+    <dd>
+
+    Ensures the table does not have a <{caption}> element.
+
+    </dd>
+
+    <dt><var>table</var> . <code>tHead</code> [ = <var>value</var> ]</dt>
+    <dd>
+
+    Returns the table's <{thead}> element.
+
+    Can be set, to replace the <{thead}> element. If the new value is not a
+    <{thead}> element, throws a <code>HierarchyRequestError</code> exception.
+
+    </dd>
+
+    <dt><var>thead</var> = <var>table</var> . <code>createTHead</code>()</dt>
+    <dd>
+
+    Ensures the table has a <{thead}> element, and returns it.
+
+    </dd>
+
+    <dt><var>table</var> . <code>deleteTHead</code>()</dt>
+    <dd>
+
+    Ensures the table does not have a <{thead}> element.
+
+    </dd>
+
+    <dt><var>table</var> . <code>tFoot</code> [ = <var>value</var> ]</dt>
+    <dd>
+
+    Returns the table's <{tfoot}> element.
+
+    Can be set, to replace the <{tfoot}> element. If the new value is not a
+    <{tfoot}> element, throws a <code>HierarchyRequestError</code> exception.
+
+    </dd>
+
+    <dt><var>tfoot</var> = <var>table</var> . <code>createTFoot</code>()</dt>
+    <dd>
+
+    Ensures the table has a <{tfoot}> element, and returns it.
+
+    </dd>
+
+    <dt><var>table</var> . <code>deleteTFoot</code>()</dt>
+    <dd>
+
+    Ensures the table does not have a <{tfoot}> element.
+
+    </dd>
+
+    <dt><var>table</var> . <code>tBodies</code></dt>
+    <dd>
+
+    Returns an <code>HTMLCollection</code> of the <{tbody}> elements of the table.
+
+    </dd>
+
+    <dt><var>tbody</var> = <var>table</var> . <code>createTBody</code>()</dt>
+    <dd>
+
+    Creates a <{tbody}> element, inserts it into the table, and returns it.
+
+    </dd>
+
+    <dt><var>table</var> . <code>rows</code></dt>
+    <dd>
+
+    Returns an <code>HTMLCollection</code> of the <{tr}> elements of the table.
+
+    </dd>
+
+    <dt><var>tr</var> = <var>table</var> . <code>insertRow</code>( [ <var>index</var> ] )</dt>
+    <dd>
+
+    Creates a <{tr}> element, along with a <code>tbody</code> if required, inserts them
+    into the table at the position given by the argument, and returns the <{tr}>.
+
+    The position is relative to the rows in the table. The index -1, which is the default
+    if the argument is omitted, is equivalent to inserting at the end of the table.
+
+    If the given position is less than -1 or greater than the number of rows, throws an
+    <code>IndexSizeError</code> exception.
+
+    </dd>
+
+    <dt><var>table</var> . <code>deleteRow</code>(<var>index</var>)</dt>
+    <dd>
+
+    Removes the <{tr}> element with the given position in the table.
+
+    The position is relative to the rows in the table. The index -1 is equivalent to
+    deleting the last row of the table.
+
+    If the given position is less than -1 or greater than the index of the last row, or if
+    there are no rows, throws an <code>IndexSizeError</code> exception.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <dfn attribute for="HTMLTableElement"><code>caption</code></dfn> IDL attribute must return, on
+  getting, the first <{caption}> element child of the <{table}> element, if any,
+  or null otherwise. On setting, the first <{caption}> element child of the
+  <{table}> element, if any, must be removed, and the new value, if not null, must be
+  inserted as the first node of the <{table}> element.
+
+  The <dfn method for="HTMLTableElement"><code>createCaption()</code></dfn> method must return
+  the first <{caption}> element child of the <{table}> element, if any; otherwise
+  a new <{caption}> element must be created, inserted as the first node of the
+  <{table}> element, and then returned.
+
+  The <dfn method for="HTMLTableElement"><code>deleteCaption()</code></dfn> method must remove
+  the first <{caption}> element child of the <{table}> element, if any.
+
+  The <dfn attribute for="HTMLTableElement"><code>tHead</code></dfn> IDL attribute must return, on
+  getting, the first <{thead}> element child of the <{table}> element, if any, or
+  null otherwise. On setting, if the new value is null or a <{thead}> element, the first
+  <{thead}> element child of the <{table}> element, if any, must be removed, and
+  the new value, if not null, must be inserted immediately before the first element in the
+  <{table}> element that is neither a <{caption}> element nor a
+  <{colgroup}> element, if any, or at the end of the table if there are no such elements.
+  If the new value is neither null nor a <{thead}> element, then a
+  <code>HierarchyRequestError</code> DOM exception must be thrown instead.
+
+  The <dfn method for="HTMLTableElement"><code>createTHead()</code></dfn> method must return the
+  first <{thead}> element child of the <{table}> element, if any; otherwise a new
+  <{thead}> element must be created and inserted immediately before the first element in
+  the <{table}> element that is neither a <{caption}> element nor a
+  <{colgroup}> element, if any, or at the end of the table if there are no such elements,
+  and then that new element must be returned.
+
+  The <dfn method for="HTMLTableElement"><code>deleteTHead()</code></dfn> method must remove the
+  first <{thead}> element child of the <{table}> element, if any.
+
+  The <dfn attribute for="HTMLTableElement"><code>tFoot</code></dfn> IDL attribute must return, on
+  getting, the first <{tfoot}> element child of the <{table}> element, if any, or
+  null otherwise. On setting, if the new value is null or a <{tfoot}> element, the first
+  <{tfoot}> element child of the <{table}> element, if any, must be removed, and
+  the new value, if not null, must be inserted at the end of the table. If the new value is neither
+  null nor a <{tfoot}> element, then a <code>HierarchyRequestError</code> DOM exception
+  must be thrown instead.
+
+  The <dfn method for="HTMLTableElement"><code>createTFoot()</code></dfn> method must return the
+  first <{tfoot}> element child of the <{table}> element, if any; otherwise a new
+  <{tfoot}> element must be created and inserted at the end of the table, and then that new
+  element must be returned.
+
+  The <dfn method for="HTMLTableElement"><code>deleteTFoot()</code></dfn> method must remove the
+  first <{tfoot}> element child of the <{table}> element, if any.
+
+  The <dfn attribute for="HTMLTableElement"><code>tBodies</code></dfn> attribute must return an
+  <code>HTMLCollection</code> rooted at the <code>table</code> node, whose filter matches only
+  <{tbody}> elements that are children of the <{table}> element.
+
+  The <dfn method for="HTMLTableElement"><code>createTBody()</code></dfn> method must create a
+  new <{tbody}> element, insert it immediately after the last <{tbody}> element
+  child in the <{table}> element, if any, or at the end of the <{table}> element
+  if the <{table}> element has no <{tbody}> element children, and then must return
+  the new <{tbody}> element.
+
+  The <dfn attribute for="HTMLTableElement"><code>rows</code></dfn> attribute must return an
+  <code>HTMLCollection</code> rooted at the <code>table</code> node, whose filter matches only
+  <{tr}> elements that are either children of the <{table}> element, or children
+  of <{thead}>, <{tbody}>, or <{tfoot}> elements that are themselves
+  children of the <{table}> element. The elements in the collection must be ordered such
+  that those elements whose parent is a <code>thead</code> are included first, in <a>tree order</a>,
+  followed by those elements whose parent is either a <code>table</code> or <code>tbody</code>
+  element, again in <a>tree order</a>, followed finally by those elements whose parent is a
+  <{tfoot}> element, still in <a>tree order</a>.
+
+  The behavior of the <dfn method for="HTMLTableElement"><code>insertRow(<var>index</var>)</code></dfn> method depends on the state of the table. When it is called,
+  the method must act as required by the first item in the following list of conditions that
+  describes the state of the table and the <var>index</var> argument:
+
+  <dl class="switch">
+
+    <dt>If <var>index</var> is less than -1 or greater than the number of elements
+    in <code>rows</code> collection:</dt>
+
+    <dd>The method must throw an <code>IndexSizeError</code> exception.</dd>
+
+    <dt>If the <code>rows</code> collection has zero elements in it, and the
+    <code>table</code> has no <{tbody}> elements in it:</dt>
+
+    <dd>The method must create a <{tbody}> element, then create a <{tr}> element,
+    then append the <{tr}> element to the <{tbody}> element, then append the
+    <{tbody}> element to the <{table}> element, and finally return the
+    <{tr}> element.</dd>
+
+    <dt>If the <code>rows</code> collection has zero elements in it:</dt>
+
+    <dd>The method must create a <{tr}> element, append it to the last <code>tbody</code>
+    element in the table, and return the <{tr}> element.</dd>
+
+    <dt>If <var>index</var> is -1 or equal to the number of items in <code>rows</code> collection:</dt>
+
+    <dd>The method must create a <{tr}> element, and append it to the parent of the last
+    <{tr}> element in the <code>rows</code> collection. Then, the
+    newly created <{tr}> element must be returned.</dd>
+
+    <dt>Otherwise:</dt>
+
+    <dd>The method must create a <{tr}> element, insert it immediately before the <var>index</var>th <{tr}> element in the <code>rows</code>
+    collection, in the same parent, and finally must return the newly created <code>tr</code>
+    element.</dd>
+
+  </dl>
+
+  When the <dfn method for="HTMLTableElement"><code>deleteRow(<var>index</var>)</code></dfn> method is called, the user agent must run the following
+  steps:
+
+  <ol>
+
+    <li>If <var>index</var> is equal to -1, then <var>index</var> must be
+    set to the number of items in the <code>rows</code> collection, minus
+    one.</li>
+
+    <li>Now, if <var>index</var> is less than zero, or greater than or equal to the
+    number of elements in the <code>rows</code> collection, the method must
+    instead throw an <code>IndexSizeError</code> exception, and these steps must be aborted.</li>
+
+    <li>Otherwise, the method must remove the <var>index</var>th element in the <code>rows</code> collection from its parent.
+
+  </li></ol>
+
+  The <code>stopSorting()</code> method is used in the <a href="table-sorting-model">table sorting model</a>.
+
+  The IDL attribute <dfn attribute for="HTMLTableElement"><code>sortable</code></dfn> must
+  <a>reflect</a> the <code>sortable</code> content attribute.
+
+  </div>
+
+  <div class="example">
+    Here is an example of a table being used to mark up a Sudoku puzzle. Observe the lack of
+    headers, which are not necessary in such a table.
+
+    <pre highlight="html">
+&lt;section&gt;
+  &lt;style scoped&gt;
+  table { border-collapse: collapse; border: solid thick; }
+  colgroup, tbody { border: solid medium; }
+  td { border: solid thin; height: 1.4em; width: 1.4em; text-align: center; padding: 0; }
+  &lt;/style&gt;
+  &lt;h1&gt;Today's Sudoku&lt;/h1&gt;
+  &lt;table&gt;
+  &lt;colgroup&gt;&lt;col&gt;&lt;col&gt;&lt;col&gt;
+  &lt;colgroup&gt;&lt;col&gt;&lt;col&gt;&lt;col&gt;
+  &lt;colgroup&gt;&lt;col&gt;&lt;col&gt;&lt;col&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt; &lt;td&gt; 1 &lt;td&gt;   &lt;td&gt; 3 &lt;td&gt; 6 &lt;td&gt;   &lt;td&gt; 4 &lt;td&gt; 7 &lt;td&gt;   &lt;td&gt; 9
+    &lt;tr&gt; &lt;td&gt;   &lt;td&gt; 2 &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 9 &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 1 &lt;td&gt;
+    &lt;tr&gt; &lt;td&gt; 7 &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 6
+  &lt;tbody&gt;
+    &lt;tr&gt; &lt;td&gt; 2 &lt;td&gt;   &lt;td&gt; 4 &lt;td&gt;   &lt;td&gt; 3 &lt;td&gt;   &lt;td&gt; 9 &lt;td&gt;   &lt;td&gt; 8
+    &lt;tr&gt; &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;
+    &lt;tr&gt; &lt;td&gt; 5 &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 9 &lt;td&gt;   &lt;td&gt; 7 &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 1
+  &lt;tbody&gt;
+    &lt;tr&gt; &lt;td&gt; 6 &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 5 &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 2
+    &lt;tr&gt; &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 7 &lt;td&gt;   &lt;td&gt;   &lt;td&gt;   &lt;td&gt;
+    &lt;tr&gt; &lt;td&gt; 9 &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 8 &lt;td&gt;   &lt;td&gt; 2 &lt;td&gt;   &lt;td&gt;   &lt;td&gt; 5
+  &lt;/table&gt;
+&lt;/section&gt;
+    </pre>
+
+  </div>
+
+<h5 id="sec-techniques-for-describing-tables"><dfn lt="provide such information|table design techniques">Techniques for describing tables</dfn></h5>
+
+  For tables that consist of more than just a grid of cells with headers
+  in the first row and headers in the first column, and for any table in general where the reader
+  might have difficulty understanding the content, authors should include explanatory information
+  introducing the table. This information is useful for all users, but is especially useful for
+  users who cannot see the table, e.g. users of screen readers.
+
+  Such explanatory information should introduce the purpose of the table, outline its basic cell
+  structure, highlight any trends or patterns, and generally teach the user how to use the
+  table.
+
+  For instance, the following table:
+
+  <table>
+    <caption>Characteristics with positive and negative sides</caption>
+    <thead>
+    <tr>
+      <th id="n"> Negative
+      </th><th> Characteristic
+      </th><th> Positive
+    </th></tr></thead><tbody>
+    <tr>
+      <td headers="n r1"> Sad
+      </td><th id="r1"> Mood
+      </th><td> Happy
+    </td></tr><tr>
+      <td headers="n r2"> Failing
+      </td><th id="r2"> Grade
+      </th><td> Passing
+  </td></tr></tbody></table>
+
+  ...might benefit from a description explaining the way the table is laid out, something like
+  "Characteristics are given in the second column, with the negative side in the left column and the
+  positive side in the right column".
+
+  There are a variety of ways to include this information, such as:
+
+  <dl>
+
+    <dt>In prose, surrounding the table</dt>
+
+    <dd>
+    <div class="example"><pre highlight="html">
+&lt;p id="summary"&gt;In the following table, characteristics are
+given in the second column, with the negative side in the left column and the positive
+side in the right column.&lt;/p&gt;
+&lt;table aria-describedby="summary"&gt;
+  &lt;caption&gt;Characteristics with positive and negative sides&lt;/caption&gt;
+  &lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th id="n"&gt; Negative
+    &lt;th&gt; Characteristic
+    &lt;th&gt; Positive
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td headers="n r1"&gt; Sad
+    &lt;th id="r1"&gt; Mood
+    &lt;td&gt; Happy
+  &lt;tr&gt;
+    &lt;td headers="n r2"&gt; Failing
+    &lt;th id="r2"&gt; Grade
+    &lt;td&gt; Passing
+&lt;/table&gt;
+    </pre></div>
+    <p class="note">
+    In the example above the
+    <a element-attr for="global"><code>aria-describedby</code></a> attribute is used to explicitly associate the information
+    with the table for assistive technology users.
+  </p>
+    </dd>
+
+    <dt>In the table's <code>caption</code></dt>
+
+    <dd>
+    <div class="example"><pre highlight="html">
+&lt;table&gt;
+<strong> &lt;caption&gt;
+  &lt;strong&gt;Characteristics with positive and negative sides.&lt;/strong&gt;
+  &lt;p&gt;Characteristics are given in the second column, with the
+  negative side in the left column and the positive side in the right
+  column.&lt;/p&gt;</strong>
+  &lt;/caption&gt;
+  &lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th id="n"&gt; Negative
+    &lt;th&gt; Characteristic
+    &lt;th&gt; Positive
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td headers="n r1"&gt; Sad
+    &lt;th id="r1"&gt; Mood
+    &lt;td&gt; Happy
+  &lt;tr&gt;
+    &lt;td headers="n r2"&gt; Failing
+    &lt;th id="r2"&gt; Grade
+    &lt;td&gt; Passing
+&lt;/table&gt;
+    </pre></div>
+    </dd>
+
+    <dt>In the table's <{caption}>, in a <{details}> element</dt>
+
+    <dd>
+    <div class="example"><pre highlight="html">
+&lt;table&gt;
+  &lt;caption&gt;
+  &lt;strong&gt;Characteristics with positive and negative sides.&lt;/strong&gt;
+<strong>  &lt;details&gt;
+    &lt;summary&gt;Help&lt;/summary&gt;
+    &lt;p&gt;Characteristics are given in the second column, with the
+    negative side in the left column and the positive side in the right
+    column.&lt;/p&gt;
+  &lt;/details&gt;</strong>
+  &lt;/caption&gt;
+  &lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th id="n"&gt; Negative
+    &lt;th&gt; Characteristic
+    &lt;th&gt; Positive
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td headers="n r1"&gt; Sad
+    &lt;th id="r1"&gt; Mood
+    &lt;td&gt; Happy
+  &lt;tr&gt;
+    &lt;td headers="n r2"&gt; Failing
+    &lt;th id="r2"&gt; Grade
+    &lt;td&gt; Passing
+&lt;/table&gt;
+    </pre></div>
+    </dd>
+
+    <dt>Next to the table, in the same <code>figure</code></dt>
+
+    <dd>
+    <div class="example"><pre highlight="html">
+&lt;figure&gt;
+  &lt;figcaption&gt;Characteristics with positive and negative sides&lt;/figcaption&gt;
+<strong> &lt;p&gt;Characteristics are given in the second column, with the
+  negative side in the left column and the positive side in the right
+  column.&lt;/p&gt;</strong>
+  &lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+    &lt;th id="n"&gt; Negative
+    &lt;th&gt; Characteristic
+    &lt;th&gt; Positive
+  &lt;tbody&gt;
+    &lt;tr&gt;
+    &lt;td headers="n r1"&gt; Sad
+    &lt;th id="r1"&gt; Mood
+    &lt;td&gt; Happy
+    &lt;tr&gt;
+    &lt;td headers="n r2"&gt; Failing
+    &lt;th id="r2"&gt; Grade
+    &lt;td&gt; Passing
+  &lt;/table&gt;
+&lt;/figure&gt;
+    </pre></div>
+    </dd>
+
+    <dt>Next to the table, in a <code>figure</code>'s <code>figcaption</code></dt>
+
+    <dd>
+    <div class="example"><pre highlight="html">
+&lt;figure&gt;
+  &lt;figcaption&gt;
+  &lt;strong&gt;Characteristics with positive and negative sides&lt;/strong&gt;
+<strong>  &lt;p&gt;Characteristics are given in the second column, with the
+  negative side in the left column and the positive side in the right
+  column.&lt;/p&gt;</strong>
+  &lt;/figcaption&gt;
+  &lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+    &lt;th id="n"&gt; Negative
+    &lt;th&gt; Characteristic
+    &lt;th&gt; Positive
+  &lt;tbody&gt;
+    &lt;tr&gt;
+    &lt;td headers="n r1"&gt; Sad
+    &lt;th id="r1"&gt; Mood
+    &lt;td&gt; Happy
+    &lt;tr&gt;
+    &lt;td headers="n r2"&gt; Failing
+    &lt;th id="r2"&gt; Grade
+    &lt;td&gt; Passing
+  &lt;/table&gt;
+&lt;/figure&gt;
+    </pre></div>
+    </dd>
+
+  </dl>
+
+  Authors may also use other techniques, or combinations of the above techniques, as
+  appropriate.
+
+  The best option, of course, rather than writing a description explaining the way the table is
+  laid out, is to adjust the table such that no explanation is needed.
+
+  <div class="example">
+    In the case of the table used in the examples above, a simple rearrangement of the table so
+    that the headers are on the top and left sides removes the need for an explanation as well as
+    removing the need for the use of <code>headers</code> attributes:
+
+    <pre highlight="html">
+&lt;table&gt;
+  &lt;caption&gt;Characteristics with positive and negative sides&lt;/caption&gt;
+  &lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th&gt; Characteristic
+    &lt;th&gt; Negative
+    &lt;th&gt; Positive
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;th&gt; Mood
+    &lt;td&gt; Sad
+    &lt;td&gt; Happy
+  &lt;tr&gt;
+    &lt;th&gt; Grade
+    &lt;td&gt; Failing
+    &lt;td&gt; Passing
+&lt;/table&gt;
+    </pre>
+
+  </div>
+
+<h5 id="techniques-for-table-design">Techniques for table design</h5>
+
+  Good table design is key to making tables more readable and usable.
+
+  In visual media, providing column and row borders and alternating row backgrounds can be very
+  effective to make complicated tables more readable.
+
+  For tables with large volumes of numeric content, using monospaced fonts can help users see
+  patterns, especially in situations where a user agent does not render the borders. (Unfortunately,
+  for historical reasons, not rendering borders on tables is a common default.)
+
+  In speech media, table cells can be distinguished by reporting the corresponding headers before
+  reading the cell's contents, and by allowing users to navigate the table in a grid fashion, rather
+  than serializing the entire contents of the table in source order.
+
+  Authors are encouraged to use CSS to achieve these effects.
+
+  <div class="impl">
+
+  User agents are encouraged to render tables using these techniques whenever the page does not
+  use CSS and the table is not classified as a layout table.
+
+  </div>
+
+<h4 id="the-caption-element">The <dfn element><code>caption</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As the first element child of a <{table}> element.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd><a>Flow content</a>, but with no descendant <{table}> elements.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>Neither tag is omissible</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableCaptionElement">
+        interface HTMLTableCaptionElement : HTMLElement {};
+      </pre>
+    </dd>
+  </dl>
+
+  The <{caption}> element <a>represents</a> the title of the <code>table</code>
+  that is its parent, if it has a parent and that is a <{table}> element.
+
+  <div class="impl">
+
+  The <{caption}> element takes part in the <a>table model</a>.
+
+  </div>
+
+  When a <{table}> element is the only content in a <{figure}> element other
+  than the <{figcaption}>, the <{caption}> element should be omitted in favor of
+  the <{figcaption}>.
+
+  A caption can introduce context for a table, making it significantly easier to understand.
+
+  <div class="example">
+    Consider, for instance, the following table:
+
+    <table class="dice-example">
+    <tbody><tr> <th>   </th><th> 1 </th><th> 2 </th><th> 3 </th><th> 4 </th><th> 5 </th><th> 6
+    </th></tr><tr> <th> 1 </th><td> 2 </td><td> 3 </td><td> 4 </td><td> 5 </td><td> 6 </td><td> 7
+    </td></tr><tr> <th> 2 </th><td> 3 </td><td> 4 </td><td> 5 </td><td> 6 </td><td> 7 </td><td> 8
+    </td></tr><tr> <th> 3 </th><td> 4 </td><td> 5 </td><td> 6 </td><td> 7 </td><td> 8 </td><td> 9
+    </td></tr><tr> <th> 4 </th><td> 5 </td><td> 6 </td><td> 7 </td><td> 8 </td><td> 9 </td><td> 10
+    </td></tr><tr> <th> 5 </th><td> 6 </td><td> 7 </td><td> 8 </td><td> 9 </td><td> 10 </td><td> 11
+    </td></tr><tr> <th> 6 </th><td> 7 </td><td> 8 </td><td> 9 </td><td> 10 </td><td> 11 </td><td> 12
+    </td></tr></tbody></table>
+
+    In the abstract, this table is not clear. However, with a caption giving the table's number
+    (for reference in the main prose) and explaining its use, it makes more sense:
+
+    <pre highlight="html">
+&lt;caption&gt;
+&lt;p&gt;Table 1.
+&lt;p&gt;This table shows the total score obtained from rolling two
+six-sided dice. The first row represents the value of the first die,
+the first column the value of the second die. The total is given in
+the cell that corresponds to the values of the two dice.
+&lt;/caption&gt;
+    </pre>
+
+    This provides the user with more context:
+
+    <table class="dice-example">
+    <caption>
+      Table 1.
+      This table shows the total score obtained from rolling two
+      six-sided dice. The first row represents the value of the first
+      die, the first column the value of the second die. The total is
+      given in the cell that corresponds to the values of the two dice.
+    </caption>
+    <tbody><tr> <th>   </th><th> 1 </th><th> 2 </th><th> 3 </th><th> 4 </th><th> 5 </th><th> 6
+    </th></tr><tr> <th> 1 </th><td> 2 </td><td> 3 </td><td> 4 </td><td> 5 </td><td> 6 </td><td> 7
+    </td></tr><tr> <th> 2 </th><td> 3 </td><td> 4 </td><td> 5 </td><td> 6 </td><td> 7 </td><td> 8
+    </td></tr><tr> <th> 3 </th><td> 4 </td><td> 5 </td><td> 6 </td><td> 7 </td><td> 8 </td><td> 9
+    </td></tr><tr> <th> 4 </th><td> 5 </td><td> 6 </td><td> 7 </td><td> 8 </td><td> 9 </td><td> 10
+    </td></tr><tr> <th> 5 </th><td> 6 </td><td> 7 </td><td> 8 </td><td> 9 </td><td> 10 </td><td> 11
+    </td></tr><tr> <th> 6 </th><td> 7 </td><td> 8 </td><td> 9 </td><td> 10 </td><td> 11 </td><td> 12
+    </td></tr></tbody></table>
+
+  </div>
+
+<h4 id="the-colgroup-element">The <dfn element><code>colgroup</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{table}> element, after any
+    <{caption}> elements and before any <{thead}>,
+    <{tbody}>, <{tfoot}>, and <code>tr</code>
+    elements.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd>If the <code>span</code> attribute is present: <a>Nothing</a>.</dd>
+    <dd>If the <code>span</code> attribute is absent: Zero or more <code>col</code> and <{template}> elements.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>A <{colgroup}> element's <a>end tag</a> may be omitted if
+    the <{colgroup}> element is not immediately followed by a <a>space character</a> or
+    a <a>comment</a>. A <{colgroup}> element's
+    <a>end tag</a> may be omitted if the <{colgroup}> element is not
+    immediately followed by a <a>space character</a> or a <a>comment</a>.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dd><code>span</code> - Number of columns spanned by the element</dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd>None</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableColElement">
+        interface HTMLTableColElement : HTMLElement {
+          attribute unsigned long span;
+        };
+      </pre>
+    </dd>
+  </dl>
+
+  The <{colgroup}> element <a>represents</a> a <a>group</a> of one or more <a>columns</a> in the <code>table</code> that is its parent, if it has a
+  parent and that is a <{table}> element.
+
+  If the <{colgroup}> element contains no <{col}> elements, then the element
+  may have a <dfn element-attr for="colgroup"><code>span</code></dfn> content attribute specified,
+  whose value must be a <a>valid non-negative integer</a> greater than zero.
+
+  <div class="impl">
+
+  The <{colgroup}> element and its <code>span</code>
+  attribute take part in the <a>table model</a>.
+
+  The <dfn attribute for="HTMLTableColElement"><code>span</code></dfn> IDL attribute must
+  <a>reflect</a> the content attribute of the same name. The value must be <a>limited to
+  only non-negative numbers greater than zero</a>.
+
+  </div>
+
+<h4 id="the-col-element">The <dfn element><code>col</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{colgroup}> element that doesn't have
+    a <code>span</code> attribute.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd><a>Nothing</a>.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>No <a>end tag</a>.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dd><code>span</code></dd>
+
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd>None</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+    {{HTMLTableColElement}}, same as for
+    <{colgroup}> elements. This interface defines one member,
+    <{span}>.
+    </dd>
+  </dl>
+
+  If a <{col}> element has a parent and that is a <{colgroup}> element that
+  itself has a parent that is a <{table}> element, then the <{col}> element
+  <a>represents</a> one or more <a>columns</a> in the <a>column group</a> represented by that <{colgroup}>.
+
+  The element may have a <dfn element-attr for="col"><code>span</code></dfn> content attribute
+  specified, whose value must be a <a>valid non-negative integer</a> greater than zero.
+
+  <div class="impl">
+
+  The <{col}> element and its <code>span</code> attribute take
+  part in the <a>table model</a>.
+
+  The {{HTMLTableColElement/span}} IDL attribute must <a>reflect</a>
+  the content attribute of the same name. The value must be <a>limited to only non-negative
+  numbers greater than zero</a>.
+
+  </div>
+
+<h4 id="the-tbody-element">The <dfn element><code>tbody</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{table}> element, after any
+    <{caption}>, <{colgroup}>, and
+    <{thead}> elements, but only if there are no
+    <{tr}> elements that are children of the
+    <{table}> element.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd>Zero or more <code>tr</code> and <a>script-supporting elements</a>.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>A <{tbody}> element's <a>start tag</a> may be omitted
+  if the first thing inside the <{tbody}> element is a <{tr}> element, and if the
+  element is not immediately preceded by a <{tbody}>, <{thead}>, or
+  <{tfoot}> element whose <a>end tag</a> has been omitted. (It
+  can't be omitted if the element is empty.). A <{tbody}> element's
+  <a>end tag</a> may be omitted if
+  the <{tbody}> element is immediately followed by a <code>tbody</code> or
+  <{tfoot}> element, or if there is no more content in the parent element.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableSectionElement">
+        interface HTMLTableSectionElement : HTMLElement {
+          [SameObject] readonly attribute HTMLCollection rows;
+          HTMLElement insertRow(optional long index = -1);
+          void deleteRow(long index);
+        };
+      </pre>
+
+      The {{HTMLTableSectionElement}} interface is also
+      used for <{thead}> and <{tfoot}> elements.
+    </dd>
+  </dl>
+
+  The <{tbody}> element <a>represents</a> a <a>block</a> of <a>rows</a> that consist of a
+  body of data for the parent <{table}> element, if the <{tbody}> element has a
+  parent and it is a <{table}>.
+
+  <div class="impl">
+
+  The <{tbody}> element takes part in the <a>table model</a>.
+
+  </div>
+
+  <dl class="domintro">
+
+    <dt><var>tbody</var> . <code>rows</code></dt>
+    <dd>
+
+    Returns an <code>HTMLCollection</code> of the <{tr}> elements of the table
+    section.
+
+    </dd>
+
+    <dt><var>tr</var> = <var>tbody</var> . <code>insertRow</code>( [ <var>index</var> ] )</dt>
+    <dd>
+
+    Creates a <{tr}> element, inserts it into the table section at the position given by
+    the argument, and returns the <{tr}>.
+
+    The position is relative to the rows in the table section. The index -1, which is the
+    default if the argument is omitted, is equivalent to inserting at the end of the table
+    section.
+
+    If the given position is less than -1 or greater than the number of rows, throws an
+    <code>IndexSizeError</code> exception.
+
+    </dd>
+
+    <dt><var>tbody</var> . <code>deleteRow</code>(<var>index</var>)</dt>
+    <dd>
+
+    Removes the <{tr}> element with the given position in the table section.
+
+    The position is relative to the rows in the table section. The index -1 is equivalent
+    to deleting the last row of the table section.
+
+    If the given position is less than -1 or greater than the index of the last row, or if
+    there are no rows, throws an <code>IndexSizeError</code> exception.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <dfn attribute for="HTMLTableSectionElement"><code>rows</code></dfn> attribute must return an
+  <code>HTMLCollection</code> rooted at the element, whose filter matches only <code>tr</code>
+  elements that are children of the element.
+
+  The <dfn method for="HTMLTableSectionElement"><code>insertRow(<var>index</var>)</code></dfn>
+  method must, when invoked on an element <var>table section</var>, act as follows:
+
+  If <var>index</var> is less than -1 or greater than the number of elements in
+  the <code>rows</code> collection, the method must throw an
+  <code>IndexSizeError</code> exception.
+
+  If <var>index</var> is -1 or equal to the number of items in the <code>rows</code> collection, the method must create a <{tr}> element,
+  append it to the element <var>table section</var>, and return the newly created
+  <{tr}> element.
+
+  Otherwise, the method must create a <{tr}> element, insert it as a child of the <var>table section</var> element, immediately before the <var>index</var>th
+  <{tr}> element in the <code>rows</code> collection, and finally
+  must return the newly created <{tr}> element.
+
+  The <dfn method for="HTMLTableSectionElement"><code>deleteRow(<var>index</var>)</code></dfn> method
+  must, when invoked, act as follows:
+
+  If <var>index</var> is less than -1 or greater than the number of elements in
+  the <code>rows</code> collection, the method must throw an
+  <code>IndexSizeError</code> exception.
+
+  If <var>index</var> is -1, remove the last element in the <code>rows</code> collection from its parent.
+
+  Otherwise, remove the <var>index</var>th element in the <code>rows</code> collection from its parent.
+
+  </div>
+
+<h4 id="the-thead-element">The <dfn element><code>thead</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{table}> element, after any
+    <{caption}>, and <code>colgroup</code>
+    elements and before any <{tbody}>, <{tfoot}>, and
+    <{tr}> elements, but only if there are no other
+    <{thead}> elements that are children of the
+    <{table}> element.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd>Zero or more <code>tr</code> and <a>script-supporting elements</a>.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>A <{thead}> element's <a>end tag</a> may be omitted if
+  the <{thead}> element is immediately followed by a <code>tbody</code> or
+  <{tfoot}> element.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd><code>HTMLTableSectionElement</code>, as defined for
+    <{tbody}> elements.</dd>
+  </dl>
+
+  The <{thead}> element <a>represents</a> the <a>block</a> of <a>rows</a> that consist of
+  the column labels (headers) for the parent <{table}> element, if the <code>thead</code>
+  element has a parent and it is a <{table}>.
+
+  <div class="impl">
+
+  The <{thead}> element takes part in the <a>table model</a>.
+
+  </div>
+
+  <div class="example">
+    This example shows a <{thead}> element being used. Notice the use of both
+    <code>th</code> and <{td}> elements in the <{thead}> element: the first row is
+    the headers, and the second row is an explanation of how to fill in the table.
+
+    <pre highlight="html">
+      &lt;table&gt;
+        &lt;caption&gt; School auction sign-up sheet &lt;/caption&gt;
+      <strong> &lt;thead&gt;
+        &lt;tr&gt;
+          &lt;th&gt;&lt;label for=e1&gt;Name&lt;/label&gt;
+          &lt;th&gt;&lt;label for=e2&gt;Product&lt;/label&gt;
+          &lt;th&gt;&lt;label for=e3&gt;Picture&lt;/label&gt;
+          &lt;th&gt;&lt;label for=e4&gt;Price&lt;/label&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Your name here
+          &lt;td&gt;What are you selling?
+          &lt;td&gt;Link to a picture
+          &lt;td&gt;Your reserve price
+      </strong> &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Ms Danus
+          &lt;td&gt;Doughnuts
+          &lt;td&gt;&lt;img src="http://example.com/mydoughnuts.png" title="Doughnuts from Ms Danus"&gt;
+          &lt;td&gt;$45
+        &lt;tr&gt;
+          &lt;td&gt;&lt;input id=e1 type=text name=who required form=f&gt;
+          &lt;td&gt;&lt;input id=e2 type=text name=what required form=f&gt;
+          &lt;td&gt;&lt;input id=e3 type=url name=pic form=f&gt;
+          &lt;td&gt;&lt;input id=e4 type=number step=0.01 min=0 value=0 required form=f&gt;
+      &lt;/table&gt;
+      &lt;form id=f action="/auction.cgi"&gt;
+        &lt;input type=button name=add value="Submit"&gt;
+      &lt;/form&gt;
+    </pre>
+
+  </div>
+
+<h4 id="the-tfoot-element">The <dfn element><code>tfoot</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{table}> element, after any
+    <{caption}>, <{colgroup}>, <{thead}>,
+    <{tbody}>, and <{tr}> elements, but only if there
+    are no other <{tfoot}> elements that are children of the
+    <{table}> element.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd>Zero or more <code>tr</code> and <a>script-supporting elements</a>.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>A <{tfoot}> element's <a>end tag</a> may be omitted if
+  the <{tfoot}> element is immediately followed by a <{tbody}> element, or if
+  there is no more content in the parent element.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd><code>HTMLTableSectionElement</code>, as defined for
+    <{tbody}> elements.</dd>
+  </dl>
+
+  The <{tfoot}> element <a>represents</a> the <a>block</a> of <a>rows</a> that consist of
+  the column summaries (footers) for the parent <{table}> element, if the
+  <{tfoot}> element has a parent and it is a <{table}>.
+
+  <div class="impl">
+
+  The <{tfoot}> element takes part in the <a>table model</a>.
+
+  </div>
+
+<h4 id="the-tr-element">The <dfn element><code>tr</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{thead}> element.</dd>
+    <dd>As a child of a <{tbody}> element.</dd>
+    <dd>As a child of a <{tfoot}> element.</dd>
+    <dd>As a child of a <{table}> element, after any
+    <{caption}>, <{colgroup}>, and <code>thead</code>
+    elements, but only if there are no <{tbody}> elements that
+    are children of the <{table}> element.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd>Zero or more <{td}>, <{th}>, and <a>script-supporting elements</a>.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>A <{tr}> element's <a>end tag</a> may be omitted if the
+  <{tr}> element is immediately followed by another <{tr}> element, or if there is
+  no more content in the parent element.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableRowElement">
+        interface HTMLTableRowElement : HTMLElement {
+          readonly attribute long rowIndex;
+          readonly attribute long sectionRowIndex;
+          [SameObject] readonly attribute HTMLCollection cells;
+          HTMLElement insertCell(optional long index = -1);
+          void deleteCell(long index);
+        };
+      </pre>
+    </dd>
+  </dl>
+
+  The <{tr}> element <a>represents</a> a <a>row</a> of
+  <a>cells</a> in a <a>table</a>.
+
+  <div class="impl">
+
+  The <{tr}> element takes part in the <a>table model</a>.
+
+  </div>
+
+  <dl class="domintro">
+
+    <dt><var>tr</var> . <code>rowIndex</code></dt>
+
+    <dd>
+
+    Returns the position of the row in the table's <code>rows</code>
+    list.
+
+    Returns -1 if the element isn't in a table.
+
+    </dd>
+
+    <dt><var>tr</var> . <code>sectionRowIndex</code></dt>
+
+    <dd>
+
+    Returns the position of the row in the table section's <code>rows</code> list.
+
+    Returns -1 if the element isn't in a table section.
+
+    </dd>
+
+    <dt><var>tr</var> . <code>cells</code></dt>
+    <dd>
+
+    Returns an <code>HTMLCollection</code> of the <code>td</code> and <{th}> elements of
+    the row.
+
+    </dd>
+
+    <dt><var>cell</var> = <var>tr</var> . <code>insertCell</code>( [ <var>index</var> ] )</dt>
+
+    <dd>
+
+    Creates a <{td}> element, inserts it into the table row at the position given by the
+    argument, and returns the <{td}>.
+
+    The position is relative to the cells in the row. The index -1, which is the default
+    if the argument is omitted, is equivalent to inserting at the end of the row.
+
+    If the given position is less than -1 or greater than the number of cells, throws an
+    <code>IndexSizeError</code> exception.
+
+    </dd>
+
+    <dt><var>tr</var> . <code>deleteCell</code>(<var>index</var>)</dt>
+    <dd>
+
+    Removes the <code>td</code> or <{th}> element with the given position in the
+    row.
+
+    The position is relative to the cells in the row. The index -1 is equivalent to
+    deleting the last cell of the row.
+
+    If the given position is less than -1 or greater than the index of the last cell, or
+    if there are no cells, throws an <code>IndexSizeError</code> exception.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <dfn attribute for="HTMLTableRowElement"><code>rowIndex</code></dfn> attribute must, if the element has
+  a parent <{table}> element, or a parent <{tbody}>, <{thead}>, or
+  <{tfoot}> element and a <em>grandparent</em> <{table}> element, return the index
+  of the <{tr}> element in that <{table}> element's <code>rows</code> collection. If there is no such <{table}> element,
+  then the attribute must return -1.
+
+  The <dfn attribute for="HTMLTableRowElement"><code>sectionRowIndex</code></dfn> attribute must, if
+  the element has a parent <{table}>, <{tbody}>, <{thead}>, or
+  <{tfoot}> element, return the index of the <{tr}> element in the parent
+  element's <code>rows</code> collection (for tables, that's the <code>HTMLTableElement.rows</code> collection; for table sections, that's the
+  <code>HTMLTableRowElement.rows</code> collection). If there is no such
+  parent element, then the attribute must return -1.
+
+  The <dfn attribute for="HTMLTableRowElement"><code>cells</code></dfn> attribute must return an
+  <code>HTMLCollection</code> rooted at the <{tr}> element, whose filter matches only
+  <code>td</code> and <{th}> elements that are children of the <{tr}> element.
+
+  The <dfn method for="HTMLTableRowElement"><code>insertCell(<var>index</var>)</code></dfn>
+  method must act as follows:
+
+  If <var>index</var> is less than -1 or greater than the number of elements in
+  the <code>cells</code> collection, the method must throw an
+  <code>IndexSizeError</code> exception.
+
+  If <var>index</var> is equal to -1 or equal to the number of items in <code>cells</code> collection, the method must create a <{td}> element,
+  append it to the <{tr}> element, and return the newly created <code>td</code>
+  element.
+
+  Otherwise, the method must create a <{td}> element, insert it as a child of the
+  <{tr}> element, immediately before the <var>index</var>th <code>td</code> or
+  <{th}> element in the <code>cells</code> collection, and finally
+  must return the newly created <{td}> element.
+
+  The <dfn method for="HTMLTableRowElement"><code>deleteCell(<var>index</var>)</code></dfn>
+  method must act as follows:
+
+  If <var>index</var> is less than -1 or greater than the number of elements in
+  the <code>cells</code> collection, the method must throw an
+  <code>IndexSizeError</code> exception.
+
+  If <var>index</var> is -1, remove the last element in the <code>cells</code> collection from its parent.
+
+  Otherwise, remove the <var>index</var>th element in the <code>cells</code> collection from its parent.
+
+  </div>
+
+<h4 id="the-td-element">The <dfn element><code>td</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd><a>Sectioning root</a>.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{tr}> element.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd><a>Flow content</a>.</dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>A <{td}> element's <a>end tag</a> may be omitted if the
+  <{td}> element is immediately followed by a <code>td</code> or <{th}> element,
+  or if there is no more content in the parent element.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dd><code>colspan</code> - Number of columns that the cell is to span</dd>
+    <dd><code>rowspan</code> - Number of rows that the cell is to span</dd>
+    <dd><code>headers</code> - The header cells for this cell</dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableDataCellElement">
+        interface HTMLTableDataCellElement : HTMLTableCellElement {};
+      </pre>
+    </dd>
+  </dl>
+
+  The <{td}> element <a>represents</a> a data <a>cell</a> in a table.
+
+  <div class="impl">
+
+  The <{td}> element and its <code>colspan</code>, <code>rowspan</code>, and <code>headers</code>
+  attributes take part in the <a>table model</a>.
+
+  User agents, especially in non-visual environments or where displaying the table as a 2D grid
+  is impractical, may give the user context for the cell when rendering the contents of a cell; for
+  instance, giving its position in the <a>table model</a>, or listing the cell's header cells
+  (as determined by the <a>algorithm for assigning header cells</a>). When a cell's header
+  cells are being listed, user agents may use the value of <code>abbr</code>
+  attributes on those header cells, if any, instead of the contents of the header cells
+  themselves.
+
+  </div>
+
+<h4 id="the-th-element">The <dfn element><code>th</code></dfn> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd>If the <{th}> element is a <a>sorting interface <code>th</code> element</a>: <a>interactive content</a>.</dd>
+    <dd>Otherwise: None.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>As a child of a <{tr}> element.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd><a>Flow content</a>, but with no <{header}>, <{footer}>, <a>sectioning content</a>, or <a>heading content</a> descendants, and if the <{th}> element is a <a>sorting interface <code>th</code> element</a>, no <a>interactive content</a> descendants.</dd>
+
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>A <{th}> element's <a>end tag</a> may be omitted if the
+  <{th}> element is immediately followed by a <code>td</code> or <{th}> element,
+  or if there is no more content in the parent element.</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dd><code>colspan</code> - Number of columns that the cell is to span</dd>
+    <dd><code>rowspan</code> - Number of rows that the cell is to span</dd>
+    <dd><code>headers</code> - The headers for this cell</dd>
+    <dd><code>scope</code> - Specifies which cells the header cell applies to</dd>
+    <dd><code>abbr</code> - Alternative label to use for the header cell when
+    referencing the cell in other contexts</dd>
+    <dd><code>sorted</code> - <a>Column sort direction</a> and
+    <a>ordinality</a></dd>
+    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dd><a>Global aria-* attributes</a></dd>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableHeaderCellElement">
+        interface HTMLTableHeaderCellElement : HTMLTableCellElement {
+          attribute DOMString scope;
+          attribute DOMString abbr;
+          attribute DOMString sorted;
+          void sort();
+        };
+      </pre>
+    </dd>
+  </dl>
+
+  The <{th}> element <a>represents</a> a header <a>cell</a> in a table.
+
+  The <{th}> element may have a <dfn element-attr for="th"><code>scope</code></dfn>
+  content attribute specified. The <code>scope</code> attribute is an
+  <a>enumerated attribute</a> with five states, four of which have explicit keywords:
+
+  <dl>
+
+    <dt>The <dfn attr-value for="scope"><code>row</code></dfn> keyword, which maps to the
+    <i>row</i> state</dt>
+
+    <dd>The <dfn state for="scope">row</dfn> state means the header cell applies to some of the subsequent cells in the
+    same row(s).</dd>
+
+    <dt>The <dfn attr-value for="scope"><code>col</code></dfn> keyword, which maps to the
+    <i>column</i> state</dt>
+
+    <dd>The <dfn state for="scope">column</dfn> state means the header cell applies to some of the subsequent cells in the
+    same column(s).</dd>
+
+    <dt>The <dfn attr-value for="scope"><code>rowgroup</code></dfn> keyword, which maps to
+    the <i>row group</i> state</dt>
+
+    <dd>The <dfn state for="scope">row group</dfn> state means the header cell applies to all the remaining cells in the
+    row group. A <{th}> element's <code>scope</code> attribute must
+    not be in the <a>row group</a> state if the element is not
+    anchored in a <a>row group</a>.</dd>
+
+    <dt>The <dfn attr-value for="scope"><code>colgroup</code></dfn> keyword, which maps to
+    the <i>column group</i> state</dt>
+
+    <dd>The <dfn state for="scope">colgroup group</dfn> state means the header cell applies to all the remaining cells in the
+    column group. A <{th}> element's <code>scope</code> attribute must
+    not be in the <a>column group</a> state if the element is
+    not anchored in a <a>column group</a>.</dd>
+
+    <dt>The <i>auto</i> state</dt>
+
+    <dd>The <dfn state for="scope">auto</dfn> state makes the header cell apply to a set of cells selected based on
+    context.</dd>
+
+  </dl>
+
+  The <code>scope</code> attribute's <i>missing value default</i> is the
+  <i>auto</i> state.
+
+  The <{th}> element may have an <dfn element-attr for="th"><code>abbr</code></dfn>
+  content attribute specified. Its value must be an alternative label for the header cell, to be
+  used when referencing the cell in other contexts (e.g. when describing the header cells that apply
+  to a data cell). It is typically an abbreviated form of the full header cell, but can also be an
+  expansion, or merely a different phrasing.
+
+  The <dfn element-attr for="th"><code>sorted</code></dfn> attribute is used in the <a href="table-sorting-model">table sorting model</a>.
+
+  <div class="impl">
+
+  The <{th}> element and its <code>colspan</code>, <code>rowspan</code>, <code>headers</code>, and
+  <code>scope</code> attributes take part in the <a>table model</a>.
+
+  The <code>sort()</code> method is used in the <a href="table-sorting-model">table sorting model</a>.
+
+  The <dfn attribute for="HTMLTableHeaderCellElement"><code>scope</code></dfn> IDL attribute must <a>reflect</a>
+  the content attribute of the same name, <a>limited to only known values</a>.
+
+  The <dfn attribute for="HTMLTableHeaderCellElement"><code>abbr</code></dfn> and <dfn attribute for="HTMLTableHeaderCellElement"><code>sorted</code></dfn> IDL attributes must <a>reflect</a> the
+  content attributes of the same name.
+
+  </div>
+
+  <div class="example">
+    The following example shows how the <code>scope</code> attribute's <code>rowgroup</code> value affects which data cells a header cell
+    applies to.
+
+    Here is a markup fragment showing a table:
+<p class="note">
+    The <{tbody}> elements in this example identify the range of the row groups.
+  </p>
+
+    <pre highlight="html">
+&lt;table&gt;
+    &lt;caption&gt;Measurement of legs and tails in Cats and English speakers&lt;/caption&gt;
+  &lt;thead&gt;
+  &lt;tr&gt; &lt;th&gt; ID &lt;th&gt; Measurement &lt;th&gt; Average &lt;th&gt; Maximum
+  &lt;tbody&gt;
+  &lt;tr&gt; &lt;td&gt; &lt;th scope=rowgroup&gt; Cats &lt;td&gt; &lt;td&gt;
+  &lt;tr&gt; &lt;td&gt; 93 &lt;th scope=row&gt; Legs &lt;td&gt; 3.5 &lt;td&gt; 4
+  &lt;tr&gt; &lt;td&gt; 10 &lt;th scope=row&gt; Tails &lt;td&gt; 1 &lt;td&gt; 1
+  &lt;/tbody&gt;
+  &lt;tbody&gt;
+  &lt;tr&gt; &lt;td&gt; &lt;th scope=rowgroup&gt; English speakers &lt;td&gt; &lt;td&gt;
+  &lt;tr&gt; &lt;td&gt; 32 &lt;th scope=row&gt; Legs &lt;td&gt; 2.67 &lt;td&gt; 4
+  &lt;tr&gt; &lt;td&gt; 35 &lt;th scope=row&gt; Tails &lt;td&gt; 0.33 &lt;td&gt; 1
+  &lt;/tbody&gt;
+&lt;/table&gt;
+    </pre>
+
+    This would result in the following table:
+
+    <table>
+<caption>Measurement of legs and tails in Cats and English speakers</caption>
+    <thead>
+      <tr> <th aria-describedby="exp1"> ID </th><th> Measurement </th><th> Average </th><th> Maximum
+    </th></tr></thead><tbody>
+      <tr> <td aria-describedby="exp2"> </td><th scope="rowgroup" aria-describedby="exp3"> Cats </th><td> </td><td>
+      </td></tr><tr> <td> 93 </td><th scope="row" aria-describedby="exp5"> Legs </th><td> 3.5 </td><td> 4
+      </td></tr><tr> <td> 10 </td><th scope="row"> Tails </th><td> 1 </td><td> 1
+    </td></tr></tbody><tbody>
+      <tr> <td> </td><th scope="rowgroup" aria-describedby="exp4"> English speakers </th><td> </td><td>
+      </td></tr><tr> <td> 32 </td><th scope="row"> Legs </th><td> 2.67 </td><td> 4
+      </td></tr><tr> <td> 35 </td><th scope="row"> Tails </th><td> 0.33 </td><td> 1
+    </td></tr></tbody></table>
+
+    The header cells in row 1 (&quot;ID&quot;, &quot;Measurement&quot;, &quot;Average&quot; and &quot;Maximum&quot;) each apply only to the cells in their column.
+
+    The header cells with a <code>scope=rowgroup</code>
+    (&quot;Cats&quot; and 'English speakers') apply to all the cells in their row group other
+    than the cells (to their left) in column 1:
+
+     The header &quot;Cats&quot; (row 2, column 2) applies to the headers &quot;Legs&quot; (row 3, column 2)
+    and &quot;Tails&quot; (row 4, column 2) and to the data cells
+    in rows 2, 3 and 4 of the &quot;Average&quot; and &quot;Maximum&quot; columns.
+
+     The header 'English speakers' (row 5, column 2) applies to the headers &quot;Legs&quot; (row 6, column 2)
+    and &quot;Tails&quot; (row 7, column 2) and to the data cells in rows 5, 6 and 7 of the &quot;Average&quot; and &quot;Maximum&quot; columns.
+
+    Each of the &quot;Legs&quot; and &quot;Tails&quot; header cells has a <code>scope=row</code> and therefore apply to the data cells (to the right)
+    in their row, from the &quot;Average&quot; and &quot;Maximum&quot; columns.
+
+    <img src="images/table-scope-diagram.png" width="459" height="256" alt="Representation of the example table overlayed with arrows indicating which cells each header applies to." />
+
+  </div>
+
+<h4 id="attributes-common-to-td-and-th-elements">Attributes common to <code>td</code> and <{th}> elements</h4>
+
+  <dfn lt="span multiple columns"></dfn>The <{td}> and <{th}> elements may have a <dfn element-attr for="tablecells"><code>colspan</code></dfn> content attribute specified, whose value must
+  be a <a>valid non-negative integer</a> greater than zero.
+
+  The <{td}> and <{th}> elements may also have a <dfn element-attr for="tablecells"><code>rowspan</code></dfn> content attribute specified, whose value must
+  be a <a>valid non-negative integer</a>. For this attribute, the value zero means that the
+  cell is to span all the remaining rows in the row group.
+
+  These attributes give the number of columns and rows respectively that the cell is to span.
+  These attributes must not be used to overlap cells<span class="impl">, as described in the
+  description of the <a>table model</a></span>.
+
+  <hr />
+
+  The <{td}> and <{th}> element may have a <dfn element-attr for="tablecells"><code>headers</code></dfn> content attribute specified. The <code>headers</code> attribute, if specified, must contain a string consisting
+  of an <a>unordered set of unique space-separated tokens</a> that are
+  <a>case-sensitive</a>, each of which must have the value of an <{global/id}> of a <{th}> element taking part in the same <a>table</a> as the <{td}> or <{th}> element<span class="impl"> (as defined by the <a>table model</a>)</span>.
+
+  A <{th}> element with <{global/id}> <var>id</var> is
+  said to be <i>directly targeted</i> by all <code>td</code> and <{th}> elements in the
+  same <a>table</a> that have <code>headers</code> attributes whose values include as one of their tokens
+  the <a>ID</a> <var>id</var>. A <{th}> element <var>A</var> is said to be <i>targeted</i> by a <code>th</code> or <{td}> element
+  <var>B</var> if either <var>A</var> is <i>directly targeted</i> by <var>B</var> or if there exists an element <var>C</var> that is itself
+  <i>targeted</i> by the element <var>B</var> and <var>A</var> is <i>directly
+  targeted</i> by <var>C</var>.
+
+  A <{th}> element must not be <i>targeted</i> by itself.
+
+  <div class="impl">
+
+  The <code>colspan</code>, <code>rowspan</code>, and <code>headers</code>
+  attributes take part in the <a>table model</a>.
+
+  </div>
+
+  <hr />
+
+  The <code>td</code> and <{th}> elements implement interfaces that inherit from the
+  <code>HTMLTableCellElement</code> interface:
+
+  <pre class="idl" data-highlight="webidl" dfn-for="HTMLTableCellElement">
+    interface HTMLTableCellElement : HTMLElement {
+      attribute unsigned long colSpan;
+      attribute unsigned long rowSpan;
+      [PutForwards=value] readonly attribute DOMTokenList headers;
+      readonly attribute long cellIndex;
+    };
+  </pre>
+
+  <dl class="domintro">
+
+    <dt><var>cell</var> . <code>cellIndex</code></dt>
+
+    <dd>
+
+    Returns the position of the cell in the row's <code>cells</code> list.
+    This does not necessarily correspond to the <var>x</var>-position of the cell in the
+    table, since earlier cells might cover multiple rows or columns.
+
+    Returns -1 if the element isn't in a row.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <dfn attribute for="HTMLTableCellElement"><code>colSpan</code></dfn> IDL attribute must
+  <a>reflect</a> the <code>colspan</code> content attribute. Its
+  default value is 1.
+
+  The <dfn attribute for="HTMLTableCellElement"><code>rowSpan</code></dfn> IDL attribute must
+  <a>reflect</a> the <code>rowspan</code> content attribute. Its
+  default value is 1.
+
+  The <dfn attribute for="HTMLTableCellElement"><code>headers</code></dfn> IDL attribute must
+  <a>reflect</a> the content attribute of the same name.
+
+  The <dfn attribute for="HTMLTableCellElement"><code>cellIndex</code></dfn> IDL attribute must, if the
+  element has a parent <{tr}> element, return the index of the cell's element in the parent
+  element's <code>cells</code> collection. If there is no such parent element,
+  then the attribute must return -1.
+
+  </div>
+
+  <div class="impl">
+
+<h4 id="tabular-data-processing-model">Processing model</h4>
+
+  The various table elements and their content attributes together define the <dfn>table
+  model</dfn>.
+
+  A <dfn lt="table|tables">table</dfn> consists of cells aligned on a two-dimensional grid of
+  <dfn>slots</dfn> with coordinates (<var>x</var>, <var>y</var>). The grid is finite, and is either empty or has one or more slots. If the grid
+  has one or more slots, then the <var>x</var> coordinates are always in the range 0&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>x<sub>width</sub></var>, and the <var>y</var> coordinates are always in the
+  range 0&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>y<sub>height</sub></var>. If one or both of <var>x<sub>width</sub></var> and <var>y<sub>height</sub></var> are zero, then the
+  table is empty (has no slots). Tables correspond to <{table}> elements.
+
+  A <dfn lt="cell|cells">cell</dfn> is a set of slots anchored at a slot (<var>cell<sub>x</sub></var>, <var>cell<sub>y</sub></var>), and with
+  a particular <var>width</var> and <var>height</var> such that the cell covers
+  all the slots with coordinates (<var>x</var>, <var>y</var>) where <var>cell<sub>x</sub></var>&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>cell<sub>x</sub></var>+<var>width</var> and <var>cell<sub>y</sub></var>&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>cell<sub>y</sub></var>+<var>height</var>. Cells can either be <em>data cells</em>
+  or <em>header cells</em>. Data cells correspond to <{td}> elements, and header cells
+  correspond to <{th}> elements. Cells of both types can have zero or more associated
+  header cells.
+
+  It is possible, in certain error cases, for two cells to occupy the same slot.
+
+  A <dfn lt="row|rows">row</dfn> is a complete set of slots from <var>x</var>=0 to <var>x</var>=<var>x<sub>width</sub></var>-1, for a particular value of <var>y</var>. Rows usually
+  correspond to <{tr}> elements, though a <a>row group</a>
+  can have some implied <a>rows</a> at the end in some cases involving
+  <a>cells</a> spanning multiple rows.
+
+  A <dfn lt="column|columns">column</dfn> is a complete set of slots from <var>y</var>=0 to <var>y</var>=<var>y<sub>height</sub></var>-1, for a particular value of <var>x</var>. Columns can
+  correspond to <{col}> elements. In the absence of <{col}> elements, columns are
+  implied.
+
+  A <dfn lt="row group|row groups">row group</dfn> is a set of <a>rows</a> anchored at a slot (0, <var>group<sub>y</sub></var>) with a particular <var>height</var> such that the row group
+  covers all the slots with coordinates (<var>x</var>, <var>y</var>) where 0&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>x<sub>width</sub></var> and <var>group<sub>y</sub></var>&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>group<sub>y</sub></var>+<var>height</var>. Row groups correspond to
+  <{tbody}>, <{thead}>, and <{tfoot}> elements. Not every row is
+  necessarily in a row group.
+
+  A <dfn lt="column group|column groups|group">column group</dfn> is a set of <a>columns</a> anchored at a slot (<var>group<sub>x</sub></var>, 0) with a particular <var>width</var> such that the column group
+  covers all the slots with coordinates (<var>x</var>, <var>y</var>) where <var>group<sub>x</sub></var>&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>group<sub>x</sub></var>+<var>width</var> and 0&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>y<sub>height</sub></var>. Column
+  groups correspond to <{colgroup}> elements. Not every column is necessarily in a column
+  group.
+
+  <a>Row groups</a> cannot overlap each other. Similarly, <a>column groups</a> cannot overlap each other.
+
+  A <a>cell</a> cannot cover slots that are from two or more <a>row groups</a>. It is, however, possible for a cell to be in multiple
+  <a>column groups</a>. All the slots that form part of one cell
+  are part of zero or one <a>row groups</a> and zero or more <a>column groups</a>.
+
+  In addition to <a>cells</a>, <a>columns</a>, <a>rows</a>, <a>row groups</a>, and <a>column
+  groups</a>, <a>tables</a> can have a <{caption}> element
+  associated with them. This gives the table a heading, or legend.
+
+  A <dfn>table model error</dfn> is an error with the data represented by <code>table</code>
+  elements and their descendants. Documents must not have table model errors.
+
+<h5 id="forming-a-table">Forming a table</h5>
+
+  To determine which elements correspond to which slots in a <a>table</a> associated with a <{table}> element, to determine the
+  dimensions of the table (<var>x<sub>width</sub></var> and <var>y<sub>height</sub></var>), and to determine if there are any <a>table model errors</a>, user agents must use the following algorithm:
+
+  <ol>
+
+    <li>
+    Let <var>x<sub>width</sub></var> be zero.
+    </li>
+
+    <li>
+    Let <var>y<sub>height</sub></var> be zero.
+    </li>
+
+    <li>
+
+    Let <var>pending <{tfoot}> elements</var> be a list of <code>tfoot</code>
+    elements, initially empty.
+
+    </li>
+
+    <li>
+
+    Let <var>the table</var> be the <a>table</a> represented
+    by the <{table}> element. The <var>x<sub>width</sub></var> and <var>y<sub>height</sub></var> variables give <var>the table</var>'s
+    dimensions. <var>The table</var> is initially empty.
+
+    </li>
+
+    <li>
+
+    If the <{table}> element has no children elements, then return <var>the
+    table</var> (which will be empty), and abort these steps.
+
+    </li>
+
+    <li>
+
+    Associate the first <{caption}> element child of the <{table}> element with
+    <var>the table</var>. If there are no such children, then it has no associated
+    <{caption}> element.
+
+    </li>
+
+    <li>
+
+    Let the <var>current element</var> be the first element child of the
+    <{table}> element.
+
+    If a step in this algorithm ever requires the <var>current element</var> to be <dfn lt="advance|advanced to the next child of the table">advanced to the next child of the <code>table</code></dfn> when
+    there is no such next child, then the user agent must jump to the step labeled <i>end</i>, near
+    the end of this algorithm.
+
+    </li>
+
+    <li>
+
+    While the <var>current element</var> is not one of the following elements, <a>advance</a> the <var>current element</var> to the next
+    child of the <code>table</code>:
+
+    <ul class="brief">
+      <li><{colgroup}></li>
+      <li><{thead}></li>
+      <li><{tbody}></li>
+      <li><{tfoot}></li>
+      <li><{tr}></li>
+    </ul>
+
+    </li>
+
+    <li>
+
+    If the <var>current element</var> is a <{colgroup}>, follow these
+    substeps:
+
+    <ol>
+
+      <li>
+
+      <i>Column groups</i>: Process the <var>current element</var> according to the
+      appropriate case below:
+
+      <dl class="switch">
+
+        <dt>If the <var>current element</var> has any <{col}> element children</dt>
+
+        <dd>
+
+        Follow these steps:
+
+        <ol>
+
+          <li>
+
+          Let <var>x<sub>start</sub></var> have the value of <var>x<sub>width</sub></var>.
+
+          </li>
+
+          <li>
+
+          Let the <var>current column</var> be the first <{col}> element child
+          of the <{colgroup}> element.
+
+          </li>
+
+          <li>
+
+          <i>Columns</i>: If the <var>current column</var> <{col}> element has
+          a <code>span</code> attribute, then parse its value using the
+          <a>rules for parsing non-negative integers</a>.
+
+          If the result of parsing the value is not an error or zero, then let <var>span</var> be that value.
+
+          Otherwise, if the <{col}> element has no <code>span</code> attribute, or if trying to parse the attribute's value
+          resulted in an error or zero, then let <var>span</var> be 1.
+
+          </li>
+
+          <li>
+
+          Increase <var>x<sub>width</sub></var> by <var>span</var>.
+
+          </li>
+
+          <li>
+
+          Let the last <var>span</var> <a>columns</a> in
+          <var>the table</var> correspond to the <var>current column</var>
+          <{col}> element.
+
+          </li>
+
+          <li>
+
+          If <var>current column</var> is not the last <{col}> element child of
+          the <{colgroup}> element, then let the <var>current column</var> be the
+          next <{col}> element child of the <{colgroup}> element, and return to
+          the step labeled <i>columns</i>.
+
+          </li>
+
+          <li>
+
+          Let all the last <a>columns</a> in <var>the
+          table</var> from x=<var>x<sub>start</sub></var> to
+          x=<var>x<sub>width</sub></var>-1 form a new <a>column group</a>, anchored at the slot (<var>x<sub>start</sub></var>, 0), with width <var>x<sub>width</sub></var>-<var>x<sub>start</sub></var>, corresponding to the <{colgroup}> element.
+
+          </li>
+
+        </ol>
+
+        </dd>
+
+        <dt>If the <var>current element</var> has no <{col}> element children</dt>
+
+        <dd>
+
+        <ol>
+
+          <li>
+
+          If the <{colgroup}> element has a <code>span</code> attribute, then parse its value using the <a>rules for parsing non-negative
+          integers</a>.
+
+          If the result of parsing the value is not an error or zero, then let <var>span</var> be that value.
+
+          Otherwise, if the <{colgroup}> element has no <code>span</code> attribute, or if trying to parse the attribute's
+          value resulted in an error or zero, then let <var>span</var> be 1.
+
+          </li>
+
+          <li>
+
+          Increase <var>x<sub>width</sub></var> by <var>span</var>.
+
+          </li>
+
+          <li>
+
+          Let the last <var>span</var> <a>columns</a> in
+          <var>the table</var> form a new <a>column
+          group</a>, anchored at the slot (<var>x<sub>width</sub></var>-<var>span</var>, 0), with width <var>span</var>, corresponding to the <{colgroup}> element.
+
+          </li>
+
+        </ol>
+
+        </dd>
+
+      </dl>
+
+      </li>
+
+      <li>
+
+      <a>Advance</a> the <var>current element</var>
+      to the next child of the <{table}>.
+
+      </li>
+
+      <li>
+
+      While the <var>current element</var> is not one of the following elements, <a>advance</a> the <var>current element</var> to the
+      next child of the <code>table</code>:
+
+      <ul class="brief">
+        <li><{colgroup}></li>
+        <li><{thead}></li>
+        <li><{tbody}></li>
+        <li><{tfoot}></li>
+        <li><{tr}></li>
+      </ul>
+
+      </li>
+
+      <li>
+
+      If the <var>current element</var> is a <{colgroup}> element, jump to the
+      step labeled <i>column groups</i> above.
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li>
+
+    Let <var>y<sub>current</sub></var> be zero.
+
+    </li>
+
+    <li>
+
+    Let the <var>list of downward-growing cells</var> be an empty list.
+
+    </li>
+
+    <li>
+
+    <i>Rows</i>: While the <var>current element</var> is not one of the following
+    elements, <a>advance</a> the <var>current
+    element</var> to the next child of the <code>table</code>:
+
+    <ul class="brief">
+      <li><{thead}></li>
+      <li><{tbody}></li>
+      <li><{tfoot}></li>
+      <li><{tr}></li>
+    </ul>
+
+    </li>
+
+    <li>
+
+    If the <var>current element</var> is a <{tr}>, then run the <a>algorithm
+    for processing rows</a>, <a>advance</a> the <var>current element</var> to the next child of the <{table}>, and return to the
+    step labeled <i>rows</i>.
+
+    </li>
+
+    <li>
+
+    Run the <a>algorithm for ending a row group</a>.
+
+    </li>
+
+    <li>
+
+    If the <var>current element</var> is a <{tfoot}>, then add that element to
+    the list of <var>pending <{tfoot}> elements</var>, <a>advance</a> the <var>current element</var> to the next
+    child of the <{table}>, and return to the step labeled <i>rows</i>.
+
+    </li>
+
+    <li>
+
+    The <var>current element</var> is either a <code>thead</code> or a
+    <{tbody}>.
+
+    Run the <a>algorithm for processing row groups</a>.
+
+    </li>
+
+    <li>
+
+    <a>Advance</a> the <var>current element</var> to
+    the next child of the <{table}>.
+
+    </li>
+
+    <li>
+
+    Return to the step labeled <i>rows</i>.
+
+    </li>
+
+    <li>
+
+    <i>End</i>: For each <{tfoot}> element in the list of <var>pending
+    <{tfoot}> elements</var>, in <a>tree order</a>, run the <a>algorithm for processing row
+    groups</a>.
+
+    </li>
+
+    <li>
+
+    If there exists a <a>row</a> or <a>column</a> in <var>the table</var> containing only <a>slots</a> that do not have a <a>cell</a>
+    anchored to them, then this is a <a>table model error</a>.
+
+    </li>
+
+    <li>
+
+    Return <var>the table</var>.
+
+    </li>
+
+  </ol>
+
+  The <dfn>algorithm for processing row groups</dfn>, which is invoked by the set of steps above
+  for processing <{thead}>, <{tbody}>, and <{tfoot}> elements, is:
+
+  <ol>
+
+    <li>
+
+    Let <var>y<sub>start</sub></var> have the value of <var>y<sub>height</sub></var>.
+
+    </li>
+
+    <li>
+
+    For each <{tr}> element that is a child of the element being processed, in tree
+    order, run the <a>algorithm for processing rows</a>.
+
+    </li>
+
+    <li>
+
+    If <var>y<sub>height</sub></var>&nbsp;&gt;&nbsp;<var>y<sub>start</sub></var>, then let all the last <a>rows</a> in <var>the table</var> from y=<var>y<sub>start</sub></var> to y=<var>y<sub>height</sub></var>-1 form a new <a>row
+    group</a>, anchored at the slot with coordinate (0, <var>y<sub>start</sub></var>), with height <var>y<sub>height</sub></var>-<var>y<sub>start</sub></var>, corresponding
+    to the element being processed.
+
+    </li>
+
+    <li>
+
+    Run the <a>algorithm for ending a row group</a>.
+
+    </li>
+
+  </ol>
+
+  The <dfn>algorithm for ending a row group</dfn>, which is invoked by the set of steps above
+  when starting and ending a block of rows, is:
+
+  <ol>
+
+    <li>
+
+    While <var>y<sub>current</sub></var> is less than <var>y<sub>height</sub></var>, follow these steps:
+
+    <ol>
+
+      <li>
+
+      Run the <a>algorithm for growing downward-growing cells</a>.
+
+      </li>
+
+      <li>
+
+      Increase <var>y<sub>current</sub></var> by 1.
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li>
+
+    Empty the <var>list of downward-growing cells</var>.
+
+    </li>
+
+  </ol>
+
+  The <dfn>algorithm for processing rows</dfn>, which is invoked by the set of steps above for
+  processing <{tr}> elements, is:
+
+  <ol>
+
+    <li>
+
+    If <var>y<sub>height</sub></var> is equal to <var>y<sub>current</sub></var>, then increase <var>y<sub>height</sub></var> by
+    1. (<var>y<sub>current</sub></var> is never <em>greater</em> than <var>y<sub>height</sub></var>.)
+
+    </li>
+
+    <li>
+
+    Let <var>x<sub>current</sub></var> be 0.
+
+    </li>
+
+    <li>
+
+    Run the <a>algorithm for growing downward-growing cells</a>.
+
+    </li>
+
+    <li>
+
+    If the <{tr}> element being processed has no <code>td</code> or <code>th</code>
+    element children, then increase <var>y<sub>current</sub></var> by 1, abort
+    this set of steps, and return to the algorithm above.
+
+    </li>
+
+    <li>
+
+    Let <var>current cell</var> be the first <code>td</code> or <{th}> element child
+    in the <{tr}> element being processed.
+
+    </li>
+
+    <li>
+
+    <i>Cells</i>: While <var>x<sub>current</sub></var> is less than <var>x<sub>width</sub></var> and the slot with coordinate (<var>x<sub>current</sub></var>, <var>y<sub>current</sub></var>) already has a
+    cell assigned to it, increase <var>x<sub>current</sub></var> by 1.
+
+    </li>
+
+    <li>
+
+    If <var>x<sub>current</sub></var> is equal to <var>x<sub>width</sub></var>, increase <var>x<sub>width</sub></var> by 1. (<var>x<sub>current</sub></var> is never <em>greater</em> than <var>x<sub>width</sub></var>.)
+
+    </li>
+
+    <li>
+
+    If the <var>current cell</var> has a <code>colspan</code>
+    attribute, then <a>parse that attribute's
+    value</a>, and let <var>colspan</var> be the result.
+
+    If parsing that value failed, or returned zero, or if the attribute is absent, then let <var>colspan</var> be 1, instead.
+
+    </li>
+
+    <li>
+
+    If the <var>current cell</var> has a <code>rowspan</code>
+    attribute, then <a>parse that attribute's
+    value</a>, and let <var>rowspan</var> be the result.
+
+    If parsing that value failed or if the attribute is absent, then let <var>rowspan</var> be 1, instead.
+
+    </li>
+
+    <li>
+
+    If <var>rowspan</var> is zero and the <{table}> element's
+    <a>node document</a> is not set to <a>quirks mode</a>, then let <var>cell grows
+    downward</var> be true, and set <var>rowspan</var> to 1. Otherwise, let <var>cell grows downward</var> be false.
+
+    </li>
+
+    <li>
+
+    If <var>x<sub>width</sub></var>&nbsp;&lt;&nbsp;<var>x<sub>current</sub></var>+<var>colspan</var>, then let <var>x<sub>width</sub></var> be <var>x<sub>current</sub></var>+<var>colspan</var>.
+
+    </li>
+
+    <li>
+
+    If <var>y<sub>height</sub></var>&nbsp;&lt;&nbsp;<var>y<sub>current</sub></var>+<var>rowspan</var>, then let <var>y<sub>height</sub></var> be <var>y<sub>current</sub></var>+<var>rowspan</var>.
+
+    </li>
+
+    <li>
+
+    Let the slots with coordinates (<var>x</var>, <var>y</var>) such that <var>x<sub>current</sub></var>&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>x<sub>current</sub></var>+<var>colspan</var> and <var>y<sub>current</sub></var>&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>y<sub>current</sub></var>+<var>rowspan</var> be covered by a
+    new <a>cell</a> <var>c</var>, anchored at (<var>x<sub>current</sub></var>, <var>y<sub>current</sub></var>),
+    which has width <var>colspan</var> and height <var>rowspan</var>,
+    corresponding to the <var>current cell</var> element.
+
+    If the <var>current cell</var> element is a <{th}> element, let this new
+    cell <var>c</var> be a header cell; otherwise, let it be a data cell.
+
+    To establish which header cells apply to the <var>current cell</var> element, use
+    the <a>algorithm for assigning header cells</a> described in the next section.
+
+    If any of the slots involved already had a <a>cell</a> covering
+    them, then this is a <a>table model error</a>. Those slots now have two cells
+    overlapping.
+
+    </li>
+
+    <li>
+
+    If <var>cell grows downward</var> is true, then add the tuple {<var>c</var>, <var>x<sub>current</sub></var>, <var>colspan</var>}
+    to the <var>list of downward-growing cells</var>.
+
+    </li>
+
+    <li>
+
+    Increase <var>x<sub>current</sub></var> by <var>colspan</var>.
+
+    </li>
+
+    <li>
+
+    If <var>current cell</var> is the last <code>td</code> or <{th}> element child in
+    the <{tr}> element being processed, then increase <var>y<sub>current</sub></var> by 1, abort this set of steps, and return to the algorithm
+    above.
+
+    </li>
+
+    <li>
+
+    Let <var>current cell</var> be the next <code>td</code> or <{th}> element child
+    in the <{tr}> element being processed.
+
+    </li>
+
+    <li>
+
+    Return to the step labeled <i>cells</i>.
+
+    </li>
+
+  </ol>
+
+  When the algorithms above require the user agent to run the <dfn>algorithm for growing
+  downward-growing cells</dfn>, the user agent must, for each {<var>cell</var>, <var>cell<sub>x</sub></var>, <var>width</var>} tuple in the <var>list of downward-growing cells</var>, if any, extend the <a>cell</a> <var>cell</var> so that it also covers the slots with
+  coordinates (<var>x</var>, <var>y<sub>current</sub></var>), where <var>cell<sub>x</sub></var>&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>cell<sub>x</sub></var>+<var>width</var>.
+
+<h5 id="forming-relationships-between-data-cells-and-header-cells">Forming relationships between data cells and header cells</h5>
+
+  Each cell can be assigned zero or more header cells. The <dfn>algorithm for assigning header
+  cells</dfn> to a cell <var>principal cell</var> is as follows.
+
+  <ol>
+
+    <li>
+
+    Let <var>header list</var> be an empty list of cells.
+
+    </li>
+
+    <li>
+
+    Let (<var>principal<sub>x</sub></var>, <var>principal<sub>y</sub></var>) be the coordinate of the slot to which the <var>principal
+    cell</var> is anchored.
+
+    </li>
+
+    <li>
+
+    <dl class="switch">
+
+      <dt>If the <var>principal cell</var> has a <code>headers</code> attribute specified</dt>
+
+      <dd>
+
+      <ol>
+
+        <li>
+
+        Take the value of the <var>principal cell</var>'s <code>headers</code> attribute and <a lt="split a string on spaces">split it on spaces</a>, letting <var>id list</var> be the list of tokens
+        obtained.
+
+        </li>
+
+        <li>
+
+        For each token in the <var>id list</var>, if the
+        first element in the {{Document}} with an <a>ID</a> equal to
+        the token is a cell in the same <a>table</a>, and that cell is not the
+        <var>principal cell</var>, then add that cell to <var>header list</var>.
+
+        </li>
+
+      </ol>
+
+      </dd>
+
+      <dt>If <var>principal cell</var> does not have a <code>headers</code> attribute specified</dt>
+
+      <dd>
+
+      <ol>
+
+        <li>
+
+        Let <var>principal<sub>width</sub></var> be the width of the <var>principal cell</var>.
+
+        </li>
+
+        <li>
+
+        Let <var>principal<sub>height</sub></var> be the height of the <var>principal cell</var>.
+
+        </li>
+
+        <li>
+
+        For each value of <var>y</var> from <var>principal<sub>y</sub></var> to <var>principal<sub>y</sub></var>+<var>principal<sub>height</sub></var>-1, run
+        the <a>internal algorithm for scanning and assigning header cells</a>, with the <var>principal cell</var>, the <var>header list</var>, the initial coordinate
+        (<var>principal<sub>x</sub></var>,<var>y</var>), and the
+        increments Δ<var>x</var>=-1 and Δ<var>y</var>=0.
+
+        </li>
+
+        <li>
+
+        For each value of <var>x</var> from <var>principal<sub>x</sub></var> to <var>principal<sub>x</sub></var>+<var>principal<sub>width</sub></var>-1, run
+        the <a>internal algorithm for scanning and assigning header cells</a>, with the <var>principal cell</var>, the <var>header list</var>, the initial coordinate
+        (<var>x</var>,<var>principal<sub>y</sub></var>), and the
+        increments Δ<var>x</var>=0 and Δ<var>y</var>=-1.
+
+        </li>
+
+        <li>
+
+        If the <var>principal cell</var> is anchored in a <a>row group</a>, then add all header cells that are <a>row group headers</a> and are anchored in the same row group
+        with an <var>x</var>-coordinate less than or equal to <var>principal<sub>x</sub></var>+<var>principal<sub>width</sub></var>-1 and a <var>y</var>-coordinate less than or
+        equal to <var>principal<sub>y</sub></var>+<var>principal<sub>height</sub></var>-1 to <var>header
+        list</var>.
+
+        </li>
+
+        <li>
+
+        If the <var>principal cell</var> is anchored in a <a>column group</a>, then add all header cells that are <a>column group headers</a> and are anchored in the same column
+        group with an <var>x</var>-coordinate less than or equal to <var>principal<sub>x</sub></var>+<var>principal<sub>width</sub></var>-1 and a <var>y</var>-coordinate less than or
+        equal to <var>principal<sub>y</sub></var>+<var>principal<sub>height</sub></var>-1 to <var>header
+        list</var>.
+
+        </li>
+
+      </ol>
+
+      </dd>
+
+    </dl>
+
+    </li>
+
+    <li>
+
+    Remove all the <a>empty cells</a> from the <var>header
+    list</var>.
+
+    </li>
+
+    <li>
+
+    Remove any duplicates from the <var>header list</var>.
+
+    </li>
+
+    <li>
+
+    Remove <var>principal cell</var> from the <var>header list</var> if it is
+    there.
+
+    </li>
+
+    <li>
+
+    Assign the headers in the <var>header list</var> to the <var>principal
+    cell</var>.
+
+    </li>
+
+  </ol>
+
+  The <dfn>internal algorithm for scanning and assigning header cells</dfn>, given a <var>principal cell</var>, a <var>header list</var>, an initial coordinate (<var>initial<sub>x</sub></var>, <var>initial<sub>y</sub></var>),
+  and Δ<var>x</var> and Δ<var>y</var> increments, is as follows:
+
+  <ol>
+
+    <li>
+
+    Let <var>x</var> equal <var>initial<sub>x</sub></var>.
+
+    </li>
+
+    <li>
+
+    Let <var>y</var> equal <var>initial<sub>y</sub></var>.
+
+    </li>
+
+    <li>
+
+    Let <var>opaque headers</var> be an empty list of cells.
+
+    </li>
+
+    <li>
+
+    <dl class="switch">
+
+      <dt>If <var>principal cell</var> is a header cell</dt>
+
+      <dd>Let <var>in header block</var> be true, and let <var>headers from
+      current header block</var> be a list of cells containing just the <var>principal
+      cell</var>.</dd>
+
+      <dt>Otherwise</dt>
+
+      <dd>Let <var>in header block</var> be false and let <var>headers from
+      current header block</var> be an empty list of cells.
+
+    </dd></dl>
+
+    </li>
+
+    <li>
+
+    <i>Loop</i>: Increment <var>x</var> by Δ<var>x</var>; increment <var>y</var> by Δ<var>y</var>.
+
+    <p class="note">
+    For each invocation of this algorithm, one of Δ<var>x</var> and
+    Δ<var>y</var> will be -1, and the other will be 0.
+  </p>
+
+    </li>
+
+    <li>
+
+    If either <var>x</var> or <var>y</var> is less than 0, then abort this
+    internal algorithm.
+
+    </li>
+
+    <li>
+
+    If there is no cell covering slot (<var>x</var>, <var>y</var>), or if there
+    is more than one cell covering slot (<var>x</var>, <var>y</var>), return to
+    the substep labeled <i>loop</i>.
+
+    </li>
+
+    <li>
+
+    Let <var>current cell</var> be the cell covering slot (<var>x</var>, <var>y</var>).
+
+    </li>
+
+    <li>
+
+    <dl class="switch">
+
+      <dt>If <var>current cell</var> is a header cell</dt>
+
+      <dd>
+
+      <ol>
+
+        <li>Set <var>in header block</var> to true.</li>
+
+        <li>Add <var>current cell</var> to <var>headers from current header
+        block</var>.</li>
+
+        <li>Let <var>blocked</var> be false.</li>
+
+        <li>
+
+        <dl class="switch">
+
+          <dt>If Δ<var>x</var> is 0</dt>
+
+          <dd>
+
+          If there are any cells in the <var>opaque headers</var> list anchored with the
+          same <var>x</var>-coordinate as the <var>current cell</var>, and with
+          the same width as <var>current cell</var>, then let <var>blocked</var>
+          be true.
+
+          If the <var>current cell</var> is not a <a>column header</a>, then let
+          <var>blocked</var> be true.
+
+          </dd>
+
+          <dt>If Δ<var>y</var> is 0</dt>
+
+          <dd>
+
+          If there are any cells in the <var>opaque headers</var> list anchored with the
+          same <var>y</var>-coordinate as the <var>current cell</var>, and with
+          the same height as <var>current cell</var>, then let <var>blocked</var>
+          be true.
+
+          If the <var>current cell</var> is not a <a>row header</a>, then let <var>blocked</var> be true.
+
+          </dd>
+
+        </dl>
+
+        </li>
+
+        <li>If <var>blocked</var> is false, then add the <var>current cell</var>
+        to the <var>headers list</var>.</li>
+
+      </ol>
+
+      </dd>
+
+      <dt>If <var>current cell</var> is a data cell and <var>in header block</var> is true</dt>
+
+      <dd>Set <var>in header block</var> to false. Add all the cells in <var>headers from current header block</var> to the <var>opaque headers</var>
+      list, and empty the <var>headers from current header block</var> list.
+
+    </dd></dl>
+
+    </li>
+
+    <li>
+
+    Return to the step labeled <i>loop</i>.
+
+    </li>
+
+  </ol>
+
+  A header cell anchored at the slot with coordinate (<var>x</var>, <var>y</var>) with width <var>width</var> and height <var>height</var> is
+  said to be a <dfn>column header</dfn> if any of the following conditions are true:
+
+  <ul>
+
+    <li>The cell's <{td/scope}> attribute is in the <a state for="scope">column</a> state, or</li>
+
+    <li>The cell's <{td/scope}> attribute is in the <a state for="scope">auto</a> state, and there are no data cells in any of the cells
+    covering slots with <var>y</var>-coordinates <var>y</var> .. <var>y</var>+<var>height</var>-1.</li>
+
+  </ul>
+
+  A header cell anchored at the slot with coordinate (<var>x</var>, <var>y</var>) with width <var>width</var> and height <var>height</var> is
+  said to be a <dfn>row header</dfn> if any of the following conditions are true:
+
+  <ul>
+
+    <li>The cell's <{td/scope}> attribute is in the <a state for="scope">row</a> state, or</li>
+
+    <li>The cell's <{td/scope}> attribute is in the <a state for="scope">auto</a> state, the cell is not a <a>column header</a>, and
+    there are no data cells in any of the cells covering slots with <var>x</var>-coordinates
+    <var>x</var> .. <var>x</var>+<var>width</var>-1.</li>
+
+  </ul>
+
+  A header cell is said to be a <dfn>column group header</dfn> if its <{td/scope}> attribute is in the <a>column
+  group</a> state.
+
+  A header cell is said to be a <dfn>row group header</dfn> if its <{td/scope}> attribute is in the <a>row
+  group</a> state.
+
+  A cell is said to be an <dfn>empty cell</dfn> if it contains no elements and its text content,
+  if any, consists only of <a>White_Space</a> characters.
+
+  </div>
+
+<h4 id="table-sorting-model">Table sorting model</h4>
+
+  The <dfn element-attr for="table"><code>sortable</code></dfn> attribute on
+  <{table}> elements is a <a>boolean attribute</a>. When present, it indicates that
+  the user agent is to allow the user to sort the <{table}>.
+
+  To make a column sortable in a <{table}> with a <{thead}>, the column needs
+  to have <{th}> element that does not <a>span multiple
+  columns</a> in a <code>thead</code> above any rows that it is to sort.
+
+  To make a column sortable in a <{table}> without a <{thead}>, the column
+  needs to have <{th}> element that does not <a>span multiple
+  columns</a> in the first <{tr}> element of the <{table}>, where that
+  <{tr}> element is not in a <{tfoot}>.
+
+  When the user selects a column by which to sort, the user agent sets the <code>th</code>
+  element's <dfn attribute for="table"><code>sorted</code></dfn> attribute. This attribute can also
+  be set manually, to indicate that the table should be automatically sorted, even when scripts
+  modify the page on when the page is loaded.
+
+  The <code>sorted</code> attribute, if specified, must have a value that
+  is a <a>set of space-separated tokens</a> consisting of optionally a token whose value is an
+  <a>ASCII case-insensitive</a> match for the string "<dfn><code>reversed</code></dfn>", and optionally a token whose value
+  is a <a>valid non-negative integer</a> greater than zero, in either order.
+
+  <p class="note">
+    In other words, ignoring spaces and case, the <code>sorted</code> attribute's value can be empty, "<code>reversed</code>", "<code>1</code>", "<code>reversed 1</code>", or
+  "<code>1 reversed</code>", where "1" is any number equal to or greater than 1.
+  </p>
+
+  While one or more <{th}> elements in the table have a <code>sorted</code> attribute, the user agent will keep the table's data rows
+  sorted. The value of the attribute controls how the column is used in determining the sort order.
+  The <code>reversed</code> keyword means that the <dfn>column sort
+  direction</dfn> is <i>reversed</i>, rather than <i>normal</i>, which is the default if the keyword
+  is omitted. The number, if present, indicates the <dfn lt="ordinality|column key ordinality">column key ordinality</dfn>; if the number
+  is omitted, the column is the primary key, as if the value 1 had been specified.
+
+  <p class="note">
+    Thus, <code>sorted="1"</code> indicates the table's primary key, <code>sorted="2"</code> its secondary key, and so forth.
+  </p>
+
+  <hr />
+
+  A <dfn lt="sorting-capable|sorting-capable th element">sorting-capable <{th}> element</dfn> is a <{th}> element that matches
+  all the following conditions simultaneously:
+
+  <ul>
+
+    <li>It corresponds to a <a>cell</a> whose <i>width</i> is 1.
+    (Specifically, a <i>header cell</i>, since this is a <{th}> element.)</li>
+
+    <li>There is no <a>cell</a> that corresponds to another
+    <a>sorting-capable <code>th</code> element</a> that covers slots in the same <a>column</a> but on a higher (earlier) <a>row</a>.</li>
+
+    <li>
+
+    If the <a>cell</a>'s <a>table</a> has
+    a <a>row group</a> corresponding to a <code>thead</code>
+    element, the <a>cell</a> is in a <a>row
+    group</a> that corresponds to the <em>first</em> <{thead}> element of the <a>cell</a>'s <a>table</a>.
+
+    Otherwise: the <a>cell</a> is not in a <a>row group</a> corresponding to a <{tfoot}> element, and
+    the <a>cell</a> is in the first <a>row</a>
+    of the <a>table</a>.
+
+    </li>
+
+  </ul>
+
+  <p class="note">
+    In other words, each <a>column</a> can have one
+  <a>sorting-capable <code>th</code> element</a>; this will be the highest <code>th</code> in
+  a <code>thead</code> that spans no other columns, or, if there is no <{thead}>, the
+  <code>th</code> in the first row (that is not in a <code>tfoot</code>), assuming it spans no
+  columns.
+  </p>
+
+  The <dfn>sorting-capable <{th}> elements of the <{table}> element</dfn> <var>table</var> are the <a>sorting-capable <code>th</code> elements</a> whose <a>cell</a>'s <a>table</a> is <var>table</var>.
+
+  A <{table}> element <var>table</var> is a <dfn>sorting-capable
+  <{table}> element</dfn> if there are one or more <a>sorting-capable <code>th</code> elements of the <code>table</code> element</a> <var>table</var>.
+
+  A <{th}> element is a <dfn>sorting-enabled <{th}> element</dfn> if it is a
+  <a>sorting-capable <code>th</code> element</a> and it has a <code>sorted</code> attribute.
+
+  The <dfn>sorting-enabled <{th}> elements of the <{table}> element</dfn> <var>table</var> are the <a>sorting-enabled <code>th</code> elements</a> whose <a>cell</a>'s <a>table</a> is <var>table</var>.
+
+  A <{table}> element <var>table</var> is a <dfn>sorting-enabled
+  <{table}> element</dfn> if there are one or more <a>sorting-capable <code>th</code> elements of the <code>table</code> element</a> <var>table</var>, and at least one of
+  them is a <a>sorting-enabled <code>th</code> element</a> (i.e. at least one has a <code>sorted</code> attribute).
+
+  A <{table}> element is a <dfn><code>table</code> element with a user-agent exposed
+  sorting interface</dfn> if it is a <a>sorting-capable <code>table</code> element</a> and has
+  a <code>sortable</code> attribute specified.
+
+  A <dfn lt="sorting interface th element|sorting interface th elements">sorting interface <{th}> element</dfn> is a <a>sorting-capable <code>th</code> element</a> whose <a>cell</a>'s <a>table</a> is a <{table}> element with a user-agent exposed
+  sorting interface</a>.
+
+  <hr />
+
+  Each <{table}> element has a <dfn>currently-sorting flag</dfn>, which must initially
+  be false.
+
+  <hr />
+
+  The <code>sorted</code> attribute must not be specified on
+  <{th}> elements that are not <a>sorting-capable <code>th</code> elements</a>. The <code>sortable</code> attribute
+  must not be specified on <{table}> elements that are not <a>sorting-capable <code>table</code> elements</a>.
+
+  <div class="impl">
+
+  To determine a <{th}> element's <code>sorted</code> attribute's
+  <a>column sort direction</a> and <a>column key ordinality</a>, user agents must use
+  the following algorithm:
+
+  <ol>
+
+    <li>Let <var>direction</var> be <i>normal</i>.
+
+    </li><li>Let <var>have explicit direction</var> be false.
+
+    </li><li>Let <var>ordinality</var> be 1.
+
+    </li><li>Let <var>have explicit ordinality</var> be false.
+
+    </li><li>Let <var>tokens</var> be the result of <a lt="split a string on spaces">splitting the attribute's value on spaces</a>.</li>
+
+    <li>
+
+    For each token <var>token</var> in <var>tokens</var>, run the appropriate
+    steps from the following list:
+
+    <dl class="switch">
+
+      <dt>If <var>have explicit direction</var> is false and <var>token</var> is an
+      <a>ASCII case-insensitive</a> match for the string "<code>reversed</code>"</dt>
+
+      <dd>
+
+      Let <var>direction</var> be <i>reversed</i> and <var>have explicit
+      direction</var> be true.
+
+      </dd>
+
+      <dt>If <var>have explicit ordinality</var> is false</dt>
+
+      <dd>
+
+      <a>Parse <var>token</var> as an
+      integer</a>. If this resulted in an error or the value zero, then ignore the token.
+      Otherwise, set <var>ordinality</var> to the parsed value, and set <var>have
+      explicit ordinality</var> to true.
+
+      </dd>
+
+      <dt>Otherwise</dt>
+
+      <dd>Ignore the token.</dd>
+
+    </dl>
+
+    </li>
+
+    <li>The <a>column sort direction</a> is the value of <var>direction</var>, and
+    the <a>column key ordinality</a> is the value of <var>ordinality</var>.</li>
+
+  </ol>
+
+  </div>
+
+  A <code>table</code> must not have two <{th}> elements whose <code>sorted</code> attribute have the same <a>column key
+  ordinality</a>.
+
+  <div class="impl">
+
+  <hr />
+
+  The <dfn>table sorting algorithm</dfn>, which is applied to a <{table}>, is as
+  follows:
+
+  <ol>
+
+    <li>Let <var>table</var> be the <{table}> element being sorted.</li>
+
+    <li>If <var>table</var>'s <a>currently-sorting flag</a> is true, then abort
+    these steps.</li>
+
+    <li>Set <var>table</var>'s <a>currently-sorting flag</a> to true.</li>
+
+    <li><a>Fire a simple event</a> named <code>sort</code> that is
+    cancelable at <var>table</var>.</li>
+
+    <li>If the event fired in the previous step was canceled, then jump to the step labeled
+    <i>end</i> below.</li>
+
+    <li>
+
+    If <var>table</var> is not now a <a>sorting-enabled <code>table</code>
+    element</a>, then jump to the step labeled <i>end</i> below.
+
+    <p class="note">
+    Even if <var>table</var> was a <a>sorting-enabled <code>table</code>
+    element</a> when the algorithm was invoked, the DOM might have been entirely changed by the
+    event handlers for the <code>sort</code> event, so this has to be verified at
+    this stage, not earlier.
+  </p>
+
+    </li>
+
+    <li>Let <var>key heading cells</var> be the <a>sorting-enabled <code>th</code>
+    elements of the <code>table</code> element</a> <var>table</var>.</li>
+
+    <li>Sort <var>key heading cells</var> in ascending order of the <a>column key
+    ordinality</a> of their <code>sorted</code> attributes, with those
+    having the same <a>column key ordinality</a> being sorted in <a>tree order</a>.
+
+    </li><li>
+
+    Let <var>row collection cursor</var> be a pointer to an element, initially pointing
+    at the first child of <var>table</var> that is after <var>table</var>'s first
+    <{thead}>, if any, and that is either a <{tbody}> or a <{tr}>
+    element, assuming there is one. If there is no such child, then jump to the step labeled
+    <i>end</i> below.
+
+    </li>
+
+    <li>If <var>table</var> has no <a>row group</a>
+    corresponding to a <{thead}> element, then set <var>ignore first group</var> to
+    true. Otherwise, set it to false.</li>
+
+    <li>
+
+    Run these substeps:
+
+    <ol>
+
+      <li><i>Row loop</i>: Let <var>rows</var> be an empty list of <{tr}>
+      elements.</li>
+
+      <li>
+
+      Run these substeps:
+
+      <ol>
+
+        <li>
+
+        Run the appropriate steps from the following list:
+
+        <dl class="switch">
+
+          <dt>If <var>row collection cursor</var> points to a <{tr}> element
+
+          </dt><dd>
+
+          <ol>
+
+            <li><i>Collect</i>: Append the element pointed to by <var>row collection
+            cursor</var> to <var>rows</var>.</li>
+
+            <li>If there are no <code>tr</code> or <code>tbody</code> children of <var>table</var> that are later siblings of the element pointed to by <var>row
+            collection cursor</var>, or if the next such child is a <{tbody}> element, then jump
+            to the step labeled <i>group</i> below.</li>
+
+            <li>Let <var>row collection cursor</var> point to the next <code>tr</code> child
+            of <var>table</var> that is a later sibling of the element pointed to by <var>row collection cursor</var>.</li>
+
+            <li>Jump back to the step labeled <i>collect</i> above.</li>
+
+          </ol>
+
+          </dd>
+
+          <dt>If <var>row collection cursor</var> points to a <{tbody}> element
+
+          </dt><dd>
+
+          <ol>
+
+            <li>Place all the <{tr}> element children of the element pointed to by <var>row collection cursor</var> into <var>rows</var>, in <a>tree
+            order</a>.</li>
+
+            <li>If <var>rows</var> is empty, jump to the step labeled <i>increment loop</i>
+            below.</li>
+
+          </ol>
+
+          </dd>
+
+        </dl>
+
+        </li>
+
+        <li><i>Group</i>: Let <var>groups</var> be an empty list of groups of <code>tr</code>
+        elements.</li>
+
+        <li>Let <var>group</var> be an empty group of <{tr}> elements.</li>
+
+        <li>Let <var>group cursor</var> be a pointer to an element, initially pointing at the
+        first <{tr}> element in <var>rows</var>.</li>
+
+        <li>
+
+        Run these substeps:
+
+        <ol>
+
+          <li><i>Start group</i>: Let <var>pending rows in group</var> be 1.</li>
+
+          <li>
+
+          Run these substeps:
+
+          <ol>
+
+            <li><i>Group loop</i>: Append the <{tr}> element pointed to by <var>group
+            cursor</var> to <var>group</var>.</li>
+
+            <li>If there are any <a>cells</a> whose highest <a>row</a>'s element is the one pointed to by <var>group
+            cursor</var>, then let <var>tallest height</var> be the number of rows covered by the
+            tallest such <a>cell</a>.</li>
+
+            <li>If <var>tallest height</var> is greater than <var>pending rows in
+            group</var> then set <var>pending rows in group</var> to <var>tallest
+            height</var>.</li>
+
+            <li>Decrement <var>pending rows in group</var> by one.</li>
+
+            <li>Let <var>group cursor</var> point to the next <{tr}> element in <var>rows</var>, if any; otherwise, let it be null.</li>
+
+            <li>If <var>group cursor</var> is not null and <var>pending rows in
+            group</var> is not zero, jump back to the step labeled <i>group loop</i>.</li>
+
+          </ol>
+
+          </li>
+
+          <li>Append a new group to <var>groups</var> consisting of the <code>tr</code>
+          elements in <var>group</var>.</li>
+
+          <li>Empty <var>group</var>.</li>
+
+          <li>If <var>group cursor</var> is not null, then jump back to the step labeled <i>start
+          group</i>.</li>
+
+        </ol>
+
+        </li>
+
+        <li>If <var>ignore first group</var> is true, then drop the first group in <var>groups</var> and set <var>ignore first group</var> to false.</li>
+
+        <li>
+
+        Run these steps:
+
+        <ol>
+
+          <li><i>Drop leading header groups</i>: If <var>groups</var> is now empty, jump to the
+          step labeled <i>increment loop</i> below.</li>
+
+          <li>If the first group of <var>groups</var> consists of <{tr}> elements
+          whose element children are all <{th}> elements, then drop the first group in <var>groups</var> and jump back to the previous step (labeled <i>drop leading header
+          groups</i>).</li>
+
+        </ol>
+
+        </li>
+
+        <li>Let <var>insertion point</var> be a placeholder in a DOM tree, which can be used
+        to reinsert nodes at a specific point in the DOM. Insert <var>insertion point</var> into
+        the parent of the first <{tr}> element of the first group in <var>groups</var>,
+        immediately before that <{tr}> element.</li>
+
+        <li>
+
+        Sort the groups in <var>groups</var>, using the following algorithm to decide the
+        relative order of any two groups <var>a</var> and <var>b</var> (the algorithm
+        either returns that <var>a</var> comes before <var>b</var>, or that <var>b</var> comes before <var>a</var>):
+
+        <ol>
+
+          <li>Let <var>key index</var> be an index into <var>key heading
+          cells</var>, initially denoting the first element in the list.</li>
+
+          <li>Let <var>direction</var> be a sort direction, initially <i>ascending</i>. Its
+          other possible value is <i>descending</i>. When <var>direction</var> is
+          <i>toggled</i>, that means that if its value is <i>ascending</i>, it must be changed to
+          <i>descending</i>, and when its value is <i>descending</i>, it must be changed to
+          <i>ascending</i>.</li>
+
+          <li>
+
+          Run these substeps:
+
+          <ol>
+
+            <li><i>Column loop</i>: Let <var>th</var> be the <var>key index</var>th
+            <code>th</code> in <var>key heading cells</var>.</li>
+
+            <li>If <var>th</var>'s <code>sorted</code> attribute's
+            <a>column sort direction</a> is <i>reversed</i>, then toggle <var>direction</var>.</li>
+
+            <li>Let <var>tentative order</var> be the result of <a>comparing two row groups using the <code>th</code> element</a> <var>th</var>, with <var>a</var> and
+            <var>b</var> as the rows.</li>
+
+            <li>If <var>tentative order</var> is not "equal", then jump to the step labeled
+            <i>return</i> below.</li>
+
+            <li>Increment <var>key index</var>.</li>
+
+            <li>If <var>key index</var> still denotes a <{th}> element in <var>key heading cells</var>, then jump back to the step above labeled <i>column
+            loop</i>.</li>
+
+          </ol>
+
+          </li>
+
+          <li>If <var>a</var>'s <{tr}> elements precede <var>b</var>'s in
+          <a>tree order</a>, then let <var>tentative order</var> be "a before b".
+          Otherwise, let <var>tentative order</var> be "b before a".</li>
+
+          <li><i>Return</i>: Return the relative order given by the matching option from the following
+          list:
+
+          <dl class="switch">
+
+            <dt>If <var>direction</var> is <i>ascending</i> and <var>tentative
+            order</var> is "a before b"</dt>
+
+            <dd>Return that <var>a</var> comes before <var>b</var>.</dd>
+
+            <dt>If <var>direction</var> is <i>ascending</i> and <var>tentative
+            order</var> is "b before a"</dt>
+
+            <dd>Return that <var>b</var> comes before <var>a</var>.</dd>
+
+            <dt>If <var>direction</var> is <i>descending</i> and <var>tentative
+            order</var> is "a before b"</dt>
+
+            <dd>Return that <var>b</var> comes before <var>a</var>.</dd>
+
+            <dt>If <var>direction</var> is <i>descending</i> and <var>tentative
+            order</var> is "b before a"</dt>
+
+            <dd>Return that <var>a</var> comes before <var>b</var>.</dd>
+
+          </dl>
+
+          </li>
+
+        </ol>
+
+        When the user agent is required to <dfn lt="comparing two row groups using the th element|compare two row groups using the th element">compare two row groups using the <{th}> element</dfn> <var>th</var>,
+        with <var>a</var> and <var>b</var> being the two row groups respectively, the
+        user agent must run the following steps:
+
+        <ol>
+
+          <li>Let <var>x</var> be the <var>x</var>-coordinate of the slots that
+          <code>th</code> covers in its <a>table</a>.</li>
+
+          <li>
+
+          Let <var>cell<sub>a</sub></var> be the element corresponding to the <a>cell</a> in the first <a>row</a> of group
+          <var>a</var> that covers the slot in that <a>row</a> whose
+          <var>x</var>-coordinate is <var>x</var>.
+
+          Let <var>cell<sub>b</sub></var> be the element corresponding to the <a>cell</a> in the first <a>row</a> of group
+          <var>b</var> that covers the slot in that <a>row</a> whose
+          <var>x</var>-coordinate is <var>x</var>.
+
+          In either case, if there's no <a>cell</a> that actually covers
+          the slot, then use the value <i>null</i> instead.
+
+          </li>
+
+          <li>
+
+          Let <var>type<sub>a</sub></var> and <var>value<sub>a</sub></var> be
+          the <a>type and value of the cell</a> <var>cell<sub>a</sub></var>, as defined
+          below.
+
+          Let <var>type<sub>b</sub></var> and <var>value<sub>b</sub></var> be
+          the <a>type and value of the cell</a> <var>cell<sub>b</sub></var>, as defined
+          below.
+
+          The <dfn>type and value of the cell</dfn> <var>cell</var> are computed as follows.
+
+          <ol>
+
+            <li>If <var>cell</var> is <i>null</i>, then the type is "string" and the value is
+            the empty string; abort these steps.</li>
+
+            <li>If, ignoring <a>inter-element whitespace</a> and nodes other than
+            {{Element}} and {{Text}} nodes, <var>cell</var> has only one child
+            and that child is a <{data}> element, then the value is the value of that
+            <{data}> element's <code>value</code> attribute, if there is
+            one, or the empty string otherwise; the type is "string".
+
+            </li><li>If, ignoring <a>inter-element whitespace</a> and nodes other than
+            {{Element}} and {{Text}} nodes, <var>cell</var> has only one child
+            and that child is a <{progress}> element, then the value is the value of that
+            <{progress}> element's <code>value</code> attribute, if
+            there is one, or the empty string otherwise; the type is "string".
+
+            </li><li>If, ignoring <a>inter-element whitespace</a> and nodes other than
+            {{Element}} and {{Text}} nodes, <var>cell</var> has only one child
+            and that child is a <{meter}> element, then the value is the value of that
+            <{meter}> element's <code>value</code> attribute, if there is
+            one, or the empty string otherwise; the type is "string".
+
+            </li><li>
+
+            If, ignoring <a>inter-element whitespace</a> and nodes other than
+            {{Element}} and {{Text}} nodes, <var>cell</var> has only one
+            child and that child is a <{time}> element, then the value is the
+            <a>machine-readable equivalent of the element's contents</a>, if any, and the type is
+            the kind of value that is thus obtained
+            (a <a>month</a>,
+            a <a for="dates">date</a>,
+            a <a>yearless date</a>,
+            a <a>time</a>,
+            a <a>floating date and time</a>,
+            a <a>time-zone offset</a>,
+            a <a>global date and time</a>,
+            a <a>week</a>,
+            a year, or
+            a <a>duration</a>);
+            abort these steps after completing this one.
+
+            If there is no machine-readable equivalent, then the type is "string" and the value is
+            the empty string.
+
+            If the type is
+            a <a>month</a>,
+            a <a for="dates">date</a>,
+            a <a>week</a>, or
+            a year,
+            then change the value to be the instant in time (with no time zone) that describes the
+            earliest moment that the value represents, and change the type to be
+            a <a>floating date and time</a>.
+
+            <p class="example">For example, if the cell was <code>&lt;td&gt;&lt;time&gt;2011-11&lt;/time&gt;</code> then for sorting purposes the value is
+            interpreted as "2011-11-01T00:00:00.000" and the type is treated as a <a>floating date and time</a> rather than a <a>month</a>.</p>
+
+            <p class="example">Similarly, if the cell was <code>&lt;td&gt;&lt;time
+            datetime="2014"&gt;MMXIV&lt;/time&gt;</code> then for sorting purposes the value is interpreted as
+            "2014-01-01T00:00:00.000" and the type is treated as a <a>floating date and time</a> rather than a year.</p>
+
+            </li>
+
+            <li>The value is the element's {{Node/textContent}}. The type is "string".</li>
+
+          </ol>
+
+          </li>
+
+          <li>
+
+          If <var>type<sub>a</sub></var> and <var>type<sub>b</sub></var> are not
+          equal, then: return "a before b" if <var>type<sub>a</sub></var> is earlier in the
+          following list than <var>type<sub>b</sub></var>, otherwise, return "b before a";
+          then, abort these steps.
+
+          <ol class="brief">
+            <li><a>time</a></li>
+            <li><a>yearless date</a></li>
+            <li><a>floating date and time</a></li>
+            <li><a>global date and time</a></li>
+            <li><a>time-zone offset</a></li>
+            <li><a>duration</a></li>
+            <li>"string"</li>
+          </ol>
+
+          </li>
+
+          <li>If <var>value<sub>a</sub></var> and <var>value<sub>b</sub></var> are
+          equal, then return "equal" and abort these steps.</li>
+
+          <li>
+
+          If <var>type<sub>a</sub></var> and <var>type<sub>b</sub></var> are not
+          "string", then: if <var>value<sub>a</sub></var> is earlier than <var>value<sub>b</sub></var> then return "a before b" and abort these steps, otherwise,
+          return "b before a" and abort these steps.
+
+          Values sort in their natural order, with the following additional constraints:
+
+          For <a>time</a> values, 00:00:00.000 is the earliest value and
+          23:59:59.999 is the latest value.
+
+          For <a>yearless date</a> values, 01-01 is the earliest
+          value and 12-31 is the latest value; 02-28 is earlier than 02-29 which is earlier than
+          03-01.
+
+          Values that are <a>floating date and time</a> compare as
+          if they were in the same time zone.
+
+          For <a>time-zone offset</a> values, -23:59 is the earliest
+          value and +23:59 is the latest value.
+
+          </li>
+
+          <li>
+
+          Let <var>components<sub>a</sub></var> be the result of <a>parsing the sort
+          key</a> <var>value<sub>a</sub></var>.
+
+          Let <var>components<sub>b</sub></var> be the result of <a>parsing the sort
+          key</a> <var>value<sub>b</sub></var>.
+
+          As described below, <var>components<sub>a</sub></var> and <var>components<sub>b</sub></var> are tuples consisting of a list of <var>n</var>
+          <i>numbers</i>, a list of <var>n</var> <i>number strings</i>, a list of <var>n</var>+1 <i>non-numeric strings</i>, and a list of 2<var>n</var>+1 <i>raw
+          strings</i>, for any non-negative integer value of <var>n</var> (zero or more).
+
+          </li>
+
+          <li>
+
+          Let <var>order</var> be the result of a <a>locale-specific string
+          comparison</a> of <var>components<sub>a</sub></var>'s first <i>non-numeric
+          string</i> and <var>components<sub>b</sub></var>'s first <i>non-numeric string</i>,
+          in the context of <var>th</var>.
+
+          If <var>order</var> is not "equal" then return <var>order</var> and abort
+          these steps.
+
+          </li>
+
+          <li>
+
+          If <var>components<sub>a</sub></var> and <var>components<sub>b</sub></var> both have exactly one <i>number</i>, then run these
+          substeps:
+
+          <ol>
+
+            <li>
+
+            If <var>components<sub>a</sub></var>'s <i>number</i> is less than <var>components<sub>b</sub></var>'s <i>number</i>, return "a before b".
+
+            If <var>components<sub>b</sub></var>'s <i>number</i> is less than <var>components<sub>a</sub></var>'s <i>number</i>, return "b before a".
+
+            </li>
+
+            <li>
+
+            Let <var>order</var> be the result of a <a>locale-specific string
+            comparison</a> of <var>components<sub>a</sub></var>'s second <i>non-numeric
+            string</i> and <var>components<sub>b</sub></var>'s second <i>non-numeric
+            string</i>, in the context of <var>th</var>.
+
+            If <var>order</var> is not "equal" then return <var>order</var> and
+            abort these steps.
+
+            </li>
+
+            <li>
+
+            Let <var>order</var> be the result of a <a>locale-specific string
+            comparison</a> of <var>components<sub>a</sub></var>'s <i>number string</i> and
+            <var>components<sub>b</sub></var>'s <i>number string</i>, in the context of <var>th</var>.
+
+            If <var>order</var> is not "equal" then return <var>order</var> and
+            abort these steps.
+
+            </li>
+
+          </ol>
+
+          Otherwise, run these substeps:
+
+          <ol>
+
+            <li>
+
+            If <var>components<sub>a</sub></var> has zero <i>numbers</i> but <var>components<sub>b</sub></var> has more than zero <i>numbers</i>, return "a before
+            b".
+
+            If <var>components<sub>b</sub></var> has zero <i>numbers</i> but <var>components<sub>a</sub></var> has more than zero <i>numbers</i>, return "b before
+            a".
+
+            </li>
+
+            <li>
+
+            If <var>components<sub>a</sub></var> has one <i>number</i>, return "a before
+            b".
+
+            If <var>components<sub>b</sub></var> has one <i>number</i>, return "b before
+            a".
+
+            </li>
+
+            <li>
+
+            If <var>components<sub>a</sub></var> and <var>components<sub>b</sub></var> have more than one <i>number</i>, run these substeps:
+
+            <ol>
+
+              <li>Let <var>count</var> be the smaller of the number of <i>numbers</i> in <var>components<sub>a</sub></var> and the number of <i>numbers</i> in <var>components<sub>b</sub></var>.</li>
+
+              <li>For each <i>number</i> in <var>components<sub>a</sub></var> and <var>components<sub>b</sub></var> from the first to the <var>count</var>th, in
+              order: if <var>components<sub>a</sub></var>'s <i>number</i> is less than <var>components<sub>b</sub></var>'s <i>number</i>, then return "a before b" and abort
+              these steps; otherwise, if <var>components<sub>b</sub></var>'s <i>number</i> is
+              less than <var>components<sub>a</sub></var>'s <i>number</i>, return "b before a"
+              and abort these steps.</li>
+
+              <li>
+
+              If <var>components<sub>a</sub></var> has fewer <i>numbers</i> than <var>components<sub>b</sub></var>, return "a before b" and abort these steps.
+
+              If <var>components<sub>b</sub></var> has fewer <i>numbers</i> than <var>components<sub>a</sub></var>, return "b before a" and abort these steps.
+
+              </li>
+
+              <li>Let <var>index</var> be zero.</li>
+
+              <li>
+
+              <i>String loop</i>: Let <var>order</var> be the result of a <a>locale-specific
+              string comparison</a> of <var>components<sub>a</sub></var>'s <var>index</var>th <i>number string</i> and <var>components<sub>b</sub></var>'s <var>index</var>th <i>number string</i>,
+              in the context of <var>th</var>.
+
+              If <var>order</var> is not "equal" then return <var>order</var> and
+              abort these steps.
+
+              </li>
+
+              <li>
+
+              Increment <var>index</var>.
+
+              </li>
+
+              <li>
+
+              Let <var>order</var> be the result of a <a>locale-specific string
+              comparison</a> of <var>components<sub>a</sub></var>'s <var>index</var>th <i>separator string</i> and <var>components<sub>b</sub></var>'s <var>index</var>th <i>separator
+              string</i>, in the context of <var>th</var>.
+
+              If <var>order</var> is not "equal" then return <var>order</var> and
+              abort these steps.
+
+              </li>
+
+              <li>
+
+              If <var>index</var> is less than the number of <i>numbers</i> in <var>components<sub>a</sub></var> and <var>components<sub>b</sub></var>, jump back
+              to the step labeled <i>string loop</i>.
+
+              </li>
+
+            </ol>
+
+            </li>
+
+          </ol>
+
+          </li>
+
+          <li>
+
+          Let <var>index</var> be zero.
+
+          </li>
+
+          <li>
+
+          Run these substeps:
+
+          <ol>
+
+            <li>
+
+            <i>Final loop:</i> Let <var>order</var> be the result of a <a>raw string
+            comparison</a> of <var>components<sub>a</sub></var>'s <var>n</var>th
+            <i>raw string</i> and <var>components<sub>b</sub></var>'s <var>n</var>th
+            <i>raw string</i>.
+
+            If <var>order</var> is not "equal" then return <var>order</var> and abort
+            these steps.
+
+            </li>
+
+            <li>
+
+            Increment <var>index</var>.
+
+            </li>
+
+            <li>
+
+            If <var>index</var> is less than the number of <i>raw strings</i> in <var>components<sub>a</sub></var> and <var>components<sub>b</sub></var>, jump back
+            to the step labeled <i>final loop</i>.
+
+            </li>
+
+          </ol>
+
+          </li>
+
+          <li>
+
+          Return "equal".
+
+          </li>
+
+        </ol>
+
+        </li>
+
+        <li>Let <var>new order</var> be a list of <{tr}> elements consisting of the
+        <{tr}> elements of all the groups in the newly ordered <var>groups</var>, with
+        the <{tr}> elements being in the same order as the groups to which they belong are in
+        <var>groups</var>, and the <{tr}> elements within each such group themselves
+        being ordered in <a>tree order</a>.</li>
+
+        <li><a>Remove</a> all the <{tr}> elements in <var>new order</var> from their parents, in <a>tree order</a>.</li>
+
+        <li><a>Insert</a> all the <{tr}> elements in <var>new order</var> into the DOM at the location of <var>insertion point</var>, in
+        the order these elements are found in <var>new order</var>.</li>
+
+        <li>Remove <var>insertion point</var> from the DOM.</li>
+
+      </ol>
+
+      </li>
+
+      <li><i>Increment loop</i>: If there are no <code>tr</code> or <code>tbody</code> children of
+      <var>table</var> that are later siblings of the element pointed to by <var>row
+      collection cursor</var>, then jump to the step labeled <i>end</i> below.</li>
+
+      <li>Let <var>row collection cursor</var> point to the next <code>tr</code> or
+      <code>tbody</code> child of <var>table</var> that is a later sibling of the element
+      pointed to by <var>row collection cursor</var>.</li>
+
+      <li>Jump back to the step labeled <i>row loop</i> above.</li>
+
+    </ol>
+
+    </li>
+
+    <li><i>End</i>: Set <var>table</var>'s <a>currently-sorting flag</a> to
+    false.</li>
+
+  </ol>
+
+  When a user agent is to <dfn lt="parsing the sort key|parse the sort key">parse the sort key</dfn> <var>value</var>, it must run the following steps. These return a tuple consisting of a list
+  of <var>n</var> <i>numbers</i>, a list of <var>n</var> <i>number strings</i>, a
+  list of <var>n</var>+1 <i>non-numeric strings</i>, and a list of 2<var>n</var>+1
+  <i>raw strings</i>, respectively, for any non-negative integer value of <var>n</var> (zero or
+  more).
+
+  <ol>
+
+    <li>
+    Let <var>raw strings</var> be a list of strings initially containing just one entry, an empty string.
+    </li>
+
+    <li>
+    Let <var>negatives prejudiced</var> be false.
+    Let <var>decimals prejudiced</var> be false.
+    Let <var>exponents prejudiced</var> be false.
+    </li>
+
+    <li>
+    Let <var>buffer</var> be the empty string.
+    Let <var>index</var> be zero.
+    Let <var>mode</var> be "<a>separator</a>".
+
+    When a subsequent step in this algorithm says to <dfn>push the buffer</dfn>, the user agent must run the following substeps:
+
+    <ol>
+
+      <li>Add an entry to <var>raw strings</var> that consists of the value of <var>buffer</var>.</li>
+
+      <li>Add an entry to <var>raw strings</var> that is the empty string.</li>
+
+      <li>Decrement <var>index</var> by one.</li>
+
+      <li>Set <var>mode</var> to "<a>separator</a>".</li>
+
+    </ol>
+
+    </li>
+
+    <li>
+    Let <var>checkpoint buffer</var> be the empty string.
+    Let <var>checkpoint index</var> be zero.
+
+    When a subsequent step in this algorithm says to <dfn>checkpoint</dfn>, the user agent must run the following substeps:
+
+    <ol>
+      <li>Set the <var>checkpoint buffer</var> to the value of <var>buffer</var>.
+      </li><li>Set the <var>checkpoint index</var> to the value of <var>index</var>.
+    </li></ol>
+
+    When a subsequent step in this algorithm says to <dfn>push the checkpoint</dfn>, the user agent must run the following substeps:
+
+    <ol>
+
+      <li>Add an entry to <var>raw strings</var> that consists of the value of <var>checkpoint buffer</var>.</li>
+
+      <li>Add an entry to <var>raw strings</var> that is the empty string.</li>
+
+      <li>Decrement <var>index</var> by one.</li>
+
+      <li>Set <var>mode</var> to "<a>separator</a>".</li>
+
+    </ol>
+
+    </li>
+
+    <li>
+
+    Run through the following steps repeatedly until the condition in the last step is met.
+
+    <ol>
+
+      <li>
+
+      <i>Top of loop</i>: If <var>index</var> is equal to or greater than the number of
+      characters in <var>value</var>, let <var>c</var> be EOF. Otherwise, let <var>c</var> be the <var>index</var>th character in <var>value</var>.
+
+      </li>
+
+      <li>
+
+      Run the appropriate steps from the following list:
+
+      <pre>parse using c, index, buffer, negatives prejudiced, decimals prejudiced, exponents prejudiced
+      posting to: the last entry in <var>raw strings</var>
+      buffering to: <var>buffer</var>
+      defined above: push the buffer, checkpoint, push the checkpoint
+      prefix xrefs with "sort parser"
+      switch using mode
+        case separator:
+          c=space character:
+            negatives prejudiced := false
+            decimals prejudiced := false
+            exponents prejudiced := false
+            post c
+          c=- unless negatives prejudiced:
+            buffer := c
+            mode := negative
+          c=. unless decimals prejudiced:
+            buffer := c
+            mode := leading-decimal
+          c=0-9:
+            buffer := c
+            mode := integral
+          c=letter:
+            exponents prejudiced := true
+            post c
+          c=eof:
+            nop
+          otherwise:
+            post c
+        case negative:
+          c=-:
+            negatives prejudiced := true
+            post buffer
+            post c
+            mode := separator
+          c=. unless decimals prejudiced:
+            buffer c
+            mode := leading-decimal
+          c=0-9:
+            buffer c
+            mode := integral
+          otherwise:
+            post buffer
+            dec index
+            mode := separator
+        case integral:
+          c=-:
+            negatives prejudiced := true
+            push the buffer
+          c=. unless decimals prejudiced:
+            checkpoint
+            buffer c
+            mode := decimal
+          c=0-9:
+            post c
+          c=e/E unless exponents prejudiced:
+            checkpoint
+            buffer c
+            mode := exponent
+          otherwise:
+            push the buffer
+        case leading-decimal:
+          c=0-9:
+            buffer c
+            mode := decimal
+          otherwise:
+            post buffer
+            dec index
+            mode := separator
+        case decimal:
+          c=-:
+            negatives prejudiced := true
+            push the buffer
+          c=. if numbers are coming:
+            decimals prejudiced := true
+            push the checkpoint
+          c=. if numbers are not coming:
+            push the buffer
+          c=0-9:
+            buffer c
+          c=e/E unless exponents prejudiced:
+            checkpoint
+            buffer c
+            mode := exponent
+          otherwise:
+            push the buffer
+        case exponent:
+          c=- unless negatives prejudiced:
+            buffer c
+            mode := exponent-negative
+          c=.:
+            decimals prejudiced := true
+            push the checkpoint
+          c=0-9:
+            buffer c
+            mode := exponent-number
+          c=e/E:
+            exponents prejudiced := true
+            push the checkpoint
+          otherwise:
+            push the checkpoint
+        case exponent-negative:
+          c=-:
+            negatives prejudiced := true
+            push the checkpoint
+          c=.:
+            decimals prejudiced := true
+            push the checkpoint
+          c=0-9:
+            buffer c
+            mode := exponent-negative-number
+          c=e/E:
+            exponents prejudiced := true
+            push the checkpoint
+          otherwise:
+            push the checkpoint
+        case exponent-number:
+          c=-:
+            negatives prejudiced := true
+            push the buffer
+          c=.:
+            decimals prejudiced := true
+            push the checkpoint
+          c=0-9:
+            buffer c
+          c=e/E:
+            exponents prejudiced := true
+            push the checkpoint
+          otherwise:
+            push the buffer
+        case exponent-negative-number:
+          c=-:
+            negatives prejudiced := true
+            push the checkpoint
+          c=.:
+            decimals prejudiced := true
+            push the checkpoint
+          c=0-9:
+            buffer c
+          c=e/E:
+            exponents prejudiced := true
+            push the checkpoint
+          otherwise:
+            push the buffer
+      </pre>
+
+      </li>
+
+      <li>
+
+      Increment <var>index</var> by one.
+
+      </li>
+
+      <li>
+
+      If <var>index</var> is greater than the number of characters in <var>value</var>, stop repeating these substeps and continue along the overall steps.
+      Otherwise, return to the step labeled <i>top of loop</i>.
+
+      </li>
+
+    </ol>
+
+    </li>
+
+    <li>
+    Let <var>numbers</var> be an empty list.
+    Let <var>number strings</var> be an empty list.
+    Let <var>non-numeric strings</var> be an empty list.
+    </li>
+
+    <li>
+
+    For each even-numbered entry in <var>raw strings</var>, in order, starting from the
+    first entry (numbered 0), append an entry to <var>non-numeric strings</var> that
+    consists of the result of <a>trimming and collapsing</a> the value of the entry.
+
+    </li>
+
+    <li>
+
+    If <var>raw strings</var> has more than one entry, then, for each odd-numbered entry
+    in <var>raw strings</var>, in order, starting from the second entry (numbered 1),
+    append an entry to <var>number strings</var> that consists of the value of the entry,
+    and append an entry to <var>number strings</var> that consists of the result of parsing
+    the value of the entry using the <a>rules for parsing floating-point number
+    values</a>.
+
+    </li>
+
+    <li>
+
+    Return <var>numbers</var>, <var>number strings</var>, <var>non-numeric strings</var>, and <var>raw strings</var> respectively.
+
+    </li>
+
+  </ol>
+
+  When the user agent is required by the step above to perform a <dfn>locale-specific string
+  comparison</dfn> of two strings <var>a</var> and <var>b</var> in the context of
+  an element <var>e</var>, the user agent must apply the Unicode Collation Algorithm, using
+  the Default Unicode Collation Element Table as customized for the <a>language</a> of the
+  element <var>e</var> in the Common Locale Data Repository, to the strings <var>a</var> and <var>b</var>, ignoring case. If the result of this algorithm places
+  <var>a</var> first, then return "a before b"; if it places <var>b</var> first,
+  then return "b before a"; otherwise, if they compare as equal, then return "equal". [[!UTS10]] [[!CLDR]]
+
+  When the user agent is required by the step above to perform a <dfn>raw string comparison</dfn>
+  of two strings <var>a</var> and <var>b</var>, the user agent must apply the
+  Unicode Collation Algorithm, using the Default Unicode Collation Element Table without
+  customizations, to the strings <var>a</var> and <var>b</var>. If the result of
+  this algorithm places <var>a</var> first, then return "a before b"; if it places <var>b</var> first, then return "b before a"; otherwise, if they compare as equal, then return
+  "equal". [[!UTS10]]
+
+  Where the steps above refer to <dfn>trimming and collapsing</dfn> a string <var>value</var>, it means running the following algorithm:
+
+  <ol>
+
+    <li><a>Strip leading and trailing whitespace</a> from <var>value</var>.</li>
+
+    <li>Replace any sequence of one or more <a>space characters</a>
+    in <var>value</var> with a single U+0020 SPACE character.</li>
+
+  </ol>
+
+  <hr />
+
+  When any of the descendants of a <span>sorting-enabled <{table}> element</span> change
+  in any way (including attributes changing), and when a <{table}> element becomes a
+  <span>sorting-enabled <{table}> element</span>, the <{table}> element is said to
+  become <dfn>a table with a pending sort</dfn>. When a <{table}> element becomes <a>a
+  table with a pending sort</a>, the user agent must <a>queue a microtask</a> that applies
+  the <a>table sorting algorithm</a> to that <{table}>, and then flags the
+  <code>table</code> as no longer being <a>a table with a pending sort</a>.
+
+  <hr />
+
+  When the user agent is to <dfn>set the sort key</dfn> to a <{th}> element <var>target</var>, it must run the following algorithm:
+
+  <ol>
+
+    <li>Let <var>table</var> be the <code>table</code> of the <a>table</a> of which <var>target</var> is a header cell.</li>
+
+    <li>If <code>th</code> is a <span>sorting-enabled <{th}> element</span> whose
+    <a>column key ordinality</a> is 1, then: if its <a>column sort direction</a> is
+    <i>normal</i>, set that element's <code>sorted</code> attribute to the
+    string "<code>reversed</code>", otherwise, set it to the empty string; then, abort these
+    steps.</li>
+
+    <li>Let <var>current headers</var> be the <a>sorting-enabled <code>th</code>
+    elements of the <code>table</code> element</a> <var>table</var>, excluding <var>target</var>.</li>
+
+    <li>Sort <var>current headers</var> by their <code>sorted</code> attributes' <a>column key ordinality</a>, in ascending
+    order, with elements that have the same <a>column key ordinality</a> being sorted in
+    <a>tree order</a>.</li>
+
+    <li>Let <var>level</var> be 2.</li>
+
+    <li>
+
+    For each <{th}> element <var>th</var> in <var>current
+    headers</var>, in order, run the following substeps:
+
+    <ol>
+
+      <li>If <var>th</var>'s <code>sorted</code> attribute's
+      <a>column sort direction</a> is <i>normal</i>, then set <var>th</var>'s <code>sorted</code> attribute to a <a>valid integer</a> whose value is
+      <var>level</var>. Otherwise, set it to the concatenation of the string "<code>reversed</code>", a U+0020 SPACE character, and a <a>valid integer</a> whose
+      value is <var>level</var>.
+
+      </li><li>Increment <var>level</var> by 1.</li>
+
+    </ol>
+
+    </li>
+
+    <li>Set <var>target</var>'s <code>sorted</code> attribute to
+    the empty string.</li>
+
+  </ol>
+
+  <hr />
+
+  The <a>activation behavior</a> of a <a>sorting interface <code>th</code>
+  element</a> is to <a>set the sort key</a> to the <{th}> element.
+
+  <p class="note">
+    The <code>table</code> will be sorted the next time the user agent <a>performs a microtask checkpoint</a>.
+  </p>
+
+  </div>
+
+  <dl class="domintro">
+
+    <dt><var>th</var> . <code>sort</code>()</dt>
+
+    <dd>
+
+    Act as if the user had indicated that this was to be the new primary sort column.
+
+    The <code>table</code> won't actually be sorted until the script terminates.
+
+    </dd>
+
+    <dt><var>table</var> . <code>stopSorting</code>()</dt>
+
+    <dd>
+
+    Removes all the <code>sorted</code> attributes that are causing the
+    table to automatically sort its contents, if any.
+
+    </dd>
+
+  </dl>
+
+  <div class="impl">
+
+  The <{th}> element's <dfn><code>sort()</code></dfn> method, when
+  invoked, must run the following steps:
+
+  <ol>
+
+    <li>If the <{th}> element is not a <a>sorting-capable <code>th</code>
+    element</a>, then abort these steps.</li>
+
+    <li>
+
+    <a>Set the sort key</a> to the <{th}> element.
+
+    <p class="note">
+    The <code>table</code> will be sorted the next time the user agent <a>performs a microtask checkpoint</a>.
+  </p>
+
+    </li>
+
+  </ol>
+
+  The <{table}> element's <dfn><code>stopSorting()</code></dfn> method, when invoked, must remove
+  the <code>sorted</code> attribute of all the <a>sorting-enabled
+  <code>th</code> elements of the table element</a> on which the method was invoked.
+
+  </div>
+
+<h4 id="examples">Examples</h4>
+
+  <em>This section is non-normative.</em>
+
+  The following shows how might one mark up the bottom part of table 45 of the <cite>Smithsonian
+  physical tables, Volume 71</cite>:
+
+  <pre highlight="html">
+&lt;table&gt;
+  &lt;caption&gt;Specification values: &lt;b&gt;Steel&lt;/b&gt;, &lt;b&gt;Castings&lt;/b&gt;,
+  Ann. A.S.T.M. A27-16, Class B;* P max. 0.06; S max. 0.05.&lt;/caption&gt;
+  &lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th rowspan=2&gt;Grade.&lt;/th&gt;
+    &lt;th rowspan=2&gt;Yield Point.&lt;/th&gt;
+    &lt;th colspan=2&gt;Ultimate tensile strength&lt;/th&gt;
+    &lt;th rowspan=2&gt;Per cent elong. 50.8mm or 2 in.&lt;/th&gt;
+    &lt;th rowspan=2&gt;Per cent reduct. area.&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;th&gt;kg/mm&lt;sup&gt;2&lt;/sup&gt;&lt;/th&gt;
+    &lt;th&gt;lb/in&lt;sup&gt;2&lt;/sup&gt;&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Hard&lt;/td&gt;
+    &lt;td&gt;0.45 ultimate&lt;/td&gt;
+    &lt;td&gt;56.2&lt;/td&gt;
+    &lt;td&gt;80,000&lt;/td&gt;
+    &lt;td&gt;15&lt;/td&gt;
+    &lt;td&gt;20&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Medium&lt;/td&gt;
+    &lt;td&gt;0.45 ultimate&lt;/td&gt;
+    &lt;td&gt;49.2&lt;/td&gt;
+    &lt;td&gt;70,000&lt;/td&gt;
+    &lt;td&gt;18&lt;/td&gt;
+    &lt;td&gt;25&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Soft&lt;/td&gt;
+    &lt;td&gt;0.45 ultimate&lt;/td&gt;
+    &lt;td&gt;42.2&lt;/td&gt;
+    &lt;td&gt;60,000&lt;/td&gt;
+    &lt;td&gt;22&lt;/td&gt;
+    &lt;td&gt;30&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+    </pre>
+
+  This table could look like this:
+
+  <table>
+    <caption>Specification values: <b>Steel</b>, <b>Castings</b>,
+    Ann. A.S.T.M. A27-16, Class B;* P max. 0.06; S max. 0.05.</caption>
+    <thead>
+    <tr>
+      <th rowspan="2">Grade.</th>
+      <th rowspan="2">Yield Point.</th>
+      <th colspan="2">Ultimate tensile strength</th>
+      <th rowspan="2">Per cent elong. 50.8&nbsp;mm or&nbsp;2&nbsp;in.</th>
+      <th rowspan="2">Per cent reduct. area.</th>
+    </tr>
+    <tr>
+      <th>kg/mm<sup>2</sup></th>
+      <th>lb/in<sup>2</sup></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>Hard</td>
+      <td>0.45 ultimate</td>
+      <td>56.2</td>
+      <td>80,000</td>
+      <td>15</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>0.45 ultimate</td>
+      <td>49.2</td>
+      <td>70,000</td>
+      <td>18</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>Soft</td>
+      <td>0.45 ultimate</td>
+      <td>42.2</td>
+      <td>60,000</td>
+      <td>22</td>
+      <td>30</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  The following shows how one might mark up the gross margin table on page 46 of Apple, Inc's
+  10-K filing for fiscal year 2008:
+
+  <pre highlight="html">
+&lt;table&gt;
+  &lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th&gt;
+    &lt;th&gt;2008
+    &lt;th&gt;2007
+    &lt;th&gt;2006
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Net sales
+    &lt;td&gt;$ 32,479
+    &lt;td&gt;$ 24,006
+    &lt;td&gt;$ 19,315
+  &lt;tr&gt;
+    &lt;th&gt;Cost of sales
+    &lt;td&gt;  21,334
+    &lt;td&gt;  15,852
+    &lt;td&gt;  13,717
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Gross margin
+    &lt;td&gt;$ 11,145
+    &lt;td&gt;$  8,154
+    &lt;td&gt;$  5,598
+  &lt;tfoot&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Gross margin percentage
+    &lt;td&gt;34.3%
+    &lt;td&gt;34.0%
+    &lt;td&gt;29.0%
+&lt;/table&gt;
+    </pre>
+
+  This table could look like this:
+
+  <table class="apple-table-examples e1">
+    <thead>
+      <tr>
+        <th></th>
+        <th>2008</th>
+        <th>2007</th>
+        <th>2006</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Net sales</th>
+        <td>$ 32,479</td>
+        <td>$ 24,006</td>
+        <td>$ 19,315</td>
+      </tr>
+      <tr>
+        <th>Cost of sales</th>
+        <td>21,334</td>
+        <td>15,852</td>
+        <td>13,717</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <th>Gross margin</th>
+        <td>$ 11,145</td>
+        <td>$  8,154</td>
+        <td>$  5,598</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>Gross margin percentage</th>
+        <td>34.3%</td>
+        <td>34.0%</td>
+        <td>29.0%</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <hr />
+
+  The following shows how one might mark up the operating expenses table from lower on the same
+  page of that document:
+
+  <pre highlight="html">
+&lt;table&gt;
+  &lt;colgroup&gt; &lt;col&gt;
+  &lt;colgroup&gt; &lt;col&gt; &lt;col&gt; &lt;col&gt;
+  &lt;thead&gt;
+  &lt;tr&gt; &lt;th&gt; &lt;th&gt;2008 &lt;th&gt;2007 &lt;th&gt;2006
+  &lt;tbody&gt;
+  &lt;tr&gt; &lt;th scope=rowgroup&gt; Research and development
+        &lt;td&gt; $ 1,109 &lt;td&gt; $ 782 &lt;td&gt; $ 712
+  &lt;tr&gt; &lt;th scope=row&gt; Percentage of net sales
+        &lt;td&gt; 3.4% &lt;td&gt; 3.3% &lt;td&gt; 3.7%
+  &lt;tbody&gt;
+  &lt;tr&gt; &lt;th scope=rowgroup&gt; Selling, general, and administrative
+        &lt;td&gt; $ 3,761 &lt;td&gt; $ 2,963 &lt;td&gt; $ 2,433
+  &lt;tr&gt; &lt;th scope=row&gt; Percentage of net sales
+        &lt;td&gt; 11.6% &lt;td&gt; 12.3% &lt;td&gt; 12.6%
+&lt;/table&gt;
+    </pre>
+
+  This table could look like this:
+
+  <table class="apple-table-examples e2">
+    <thead>
+    <tr> <th> </th><th>2008 </th><th>2007 </th><th>2006
+    </th></tr></thead><tbody>
+    <tr> <th scope="rowgroup"> Research and development
+          </th><td> $ 1,109 </td><td> $ 782 </td><td> $ 712
+    </td></tr><tr> <th scope="row"> Percentage of net sales
+          </th><td> 3.4% </td><td> 3.3% </td><td> 3.7%
+    </td></tr></tbody><tbody>
+    <tr> <th scope="rowgroup"> Selling, general, and administrative
+          </th><td> $ 3,761 </td><td> $ 2,963 </td><td> $ 2,433
+    </td></tr><tr> <th scope="row"> Percentage of net sales
+          </th><td> 11.6% </td><td> 12.3% </td><td> 12.6%
+  </td></tr></tbody></table>
+
+  <hr />
+
+  Sometimes, tables are used for dense data. For examples, here a table is used to show entries
+  in an access log:
+
+  <pre highlight="html">
+&lt;table sortable&gt;
+  &lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th sorted&gt; Timestamp
+    &lt;th&gt; IP
+    &lt;th&gt; Message
+  &lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td&gt; &lt;time&gt;21:01&lt;/time&gt;
+    &lt;td&gt; 128.30.52.199
+    &lt;td&gt; Exceeded ingress limit
+  &lt;tr&gt;
+    &lt;td&gt; &lt;time&gt;21:04&lt;/time&gt;
+    &lt;td&gt; 128.30.52.3
+    &lt;td&gt; Authentication failure
+  &lt;tr&gt;
+    &lt;td&gt; &lt;time&gt;22:35&lt;/time&gt;
+    &lt;td&gt; 128.30.52.29
+    &lt;td&gt; Malware command request blocked
+  &lt;tr&gt;
+    &lt;td&gt; &lt;time&gt;22:36&lt;/time&gt;
+    &lt;td&gt; 128.30.52.3
+    &lt;td&gt; Authentication failure
+&lt;/table&gt;
+    </pre>
+
+  Because the <{table}> element has a <code>sortable</code>
+  attribute, the column headers can be selected to change the table's sort order.
+
+  This might render as follows:
+
+  <img width="418" height="109" src="images/sample-table-sortable-1.png" alt="The table as marked above, but with the column headers having interactive affordances to select which column to sort by, the first being already selected." />
+
+  If the user activates the second column, the table might change as follows:
+
+  <img width="414" height="109" src="images/sample-table-sortable-2.png" alt="The same table, but with the second column header's interactive affordance marked as selected, with the IP addresses sorted in numeric order (first the rows with the address ending in '3', then the row with the address ending in '29', and finally the row with the address ending in '199'." />
+
+  If the user activates the second column again, reversing the sort order, it might change as follows:
+
+  <img width="414" height="109" src="images/sample-table-sortable-3.png" alt="The same table, but with the second column header's interactive affordance marked as selected and reversed, with the IP addresses sorted in reverse numeric order (first the row with the address ending in '199', then the row with the address ending in '29', and finally the rows with the address ending in '3'." />
+
+</section>
