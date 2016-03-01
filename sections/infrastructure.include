@@ -2108,6 +2108,42 @@
 
 <h4 id="dates-and-times">Dates and times</h4>
 
+<section class="note">
+  This specification <em>encodes</em> dates and times according to a common subset of the [[ISO8601]]
+  standard for dates.
+
+  This means that encoded dates will look like 1582-03-01, 0033-03-27, or 2016-03-01, and date-times will look like
+  1929-11-13T19:00Z, 0325-06-03T00:21+10:30. The format is approximately YYYY-MM-DDTHH:MM:SS.DD±HH:MM, although some
+  parts are optional, for example to express a month and day as in a birthday, a time without time-zone information,
+  and the like.
+
+  Times are expressed using the 24-hour clock, and it is as error to express leap seconds.
+
+  Dates are expressed in the <a>proleptic Gregorian calendar</a> between the proleptic year 0000, and the year
+  9999. Other years cannot be encoded.
+
+  The <a>proleptic Gregorian calendar</a> is the calendar most common globally since around 1950, and is
+  likely to be understood by almost everyone for dates between the years 1950 and 9999, and for many
+  people for dates in the last few decades or centuries.
+
+  The Gregorian calendar was adopted officially in different countries at different times, between
+  the years 1582 when it was proposed by Pope Gregory XIII as a replacement for the Julian calendar, and
+  1949 when it was adopted by the People's republic of China.
+
+  For most practical purposes, dealing with the present, recent past, or the next few thousand years,
+  this will work without problems. For dates before the adoption of the Gregorian Calendar - for example
+  prior to 1917 in Russia or Turkey, prior to 1752 in Britain or the then British colonies of America,
+  or prior to 1582 in Spain, the Spanish colonies in America, and the rest of the world, dates will not
+  match those written at the time.
+
+  The use of the Gregorian calendar as an underlying encoding is a somewhat arbitrary choice. Many other
+  calendars were or are in use, and the interested reader should look for information on the Web.
+
+  See also the discussion of <a href="#date-time-and-number-formats">date, time, and number formats</a>
+  in forms <span class="impl">(for authors), <a href="#implementation-notes-regarding-localization-of-form-controls">implementation
+  notes regarding localization of form controls</a>,</span> and the <{time}> element.
+</section>
+
   In the algorithms below, the
   <dfn>number of days in month <var>month</var> of year <var>year</var></dfn> is: <em>31</em> if
   <var>month</var> is 1, 3, 5, 7, 8, 10, or 12; <em>30</em> if <var>month</var> is 4, 6, 9, or 11;
@@ -2134,14 +2170,6 @@
   <dfn>proleptic-Gregorian date</dfn>, is one that is described using that calendar even if that
   calendar was not in use at the time (or place) in question. [[GREGORIAN]]
 
-  <p class="note">
-    The use of the Gregorian calendar as the wire format in this specification is an arbitrary
-    choice resulting from the cultural biases of those involved in the decision. See also the
-    section discussing <a href="#date-time-and-number-formats">date, time, and number formats</a> in forms <span class="impl">(for
-    authors), <a href="#implementation-notes-regarding-localization-of-form-controls">implementation notes regarding localization of form controls</a>,</span> and the
-    <{time}> element.
-  </p>
-
 <h5 id="months">Months</h5>
 
   A <dfn>month</dfn> consists of a specific <a>proleptic-Gregorian date</a> with no time-zone
@@ -2155,6 +2183,12 @@
   2. A U+002D HYPHEN-MINUS character (-)
   3. Two <a>ASCII digits</a>, representing the month <var>month</var>, in the range
       1&nbsp;&le;&nbsp;<var>month</var>&nbsp;&le;&nbsp;12
+
+  <p class="example">
+  For example, February 2005 is encoded 2005-02, and March of the year 33AD (as a proleptic gregorian date)
+  is encoded <code>0033-03</code>. The expression <code>325-03</code> does <em>not</em> mean March in the year 325,
+  it is an error, because it does not have 4 digits for the year.
+  </p>
 
   <div class="impl">
     The rules to <dfn lt="parsing a month string|parse a month string|parsing a month">parse a month string</dfn> are as follows. This will return either a year and
@@ -2203,6 +2237,12 @@
   3. Two <a>ASCII digits</a>, representing <var>day</var>, in the range
       1&nbsp;&le;&nbsp;<var>day</var>&nbsp;&le;&nbsp;<var>maxday</var> where <var>maxday</var> is
       the <a lt="number of days in month month of year year">number of days in the month <var>month</var> and year <var>year</var></a>
+
+  <p class="example">
+  For example, 29 February 2016 is encoded 2016-02-29, and 3 March of the year 33AD (as a proleptic gregorian date)
+  is encoded <code>0033-03-03</code>. The expression <code>325-03-03</code> does <em>not</em> mean 3 March in the year 325,
+  it is an error, because it does not have 4 digits for the year.
+  </p>
 
   <div class="impl">
     The rules to <dfn lt="parsing a date string|parse a date string|parsing a date">parse a date string</dfn> are as follows. This will return either a date, or
@@ -2260,6 +2300,11 @@
     In other words, if the <var>month</var> is "<code>02</code>", meaning February, then the day can
     be 29, as if the year was a leap year.
   </p>
+
+  <p class="example">
+  For example, 29 February is encoded <code>02-29</code>, and 3 March is encoded <code>03-03</code>.
+  </p>
+
 
   <div class="impl">
     The rules to <dfn lt="parsing a yearless date string|parse a yearless date string">parse a yearless date string</dfn> are as follows. This will return either a
@@ -2326,6 +2371,13 @@
     The <var>second</var> component cannot be 60 or 61; leap seconds cannot be represented.
   </p>
 
+  <p class="example">
+  Times are encoded using the 24 hour clock, with optional seconds, and optional decimal fractions
+  of seconds. Thus 7.45pm is encoded as <code>19:45</code>. Note that parsing that time will return
+  19:45:00, or 7.45pm and zero seconds. <code>19:45:45.456</code> is 456 thousandths of
+  a second after 7.45pm and 45 seconds.
+  </p> 
+
   <div class="impl">
     The rules to <dfn lt="parsing a time string|parse a time string|parsing a time">parse a time string</dfn> are as follows. This will return either a time, or
     nothing. If at any point the algorithm says that it "fails", this means that it is aborted at
@@ -2370,7 +2422,7 @@
             FULL STOP characters. If the collected sequence is three characters long, or if it is
             longer than three characters long and the third character is not a U+002E FULL STOP
             character, or if it has more than one U+002E FULL STOP character, then fail. Otherwise,
-            let the collected string be <var>second</var> instead of its previous value.
+            let  <var>second</var> be the collected string.
 
     8. Interpret <var>second</var> as a base-ten number (possibly with a fractional part). Let
         <var>second</var> be that number instead of the string version.
