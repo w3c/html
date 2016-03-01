@@ -1086,7 +1086,6 @@
     <dd>Neither tag is omissable</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>form</code> - Associates the control with a <{form}> element</dd>
     <dd><code>for</code> - Associate the label with form control</dd>
     <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
     <dd>None</dd>
@@ -1125,6 +1124,21 @@
   <a>labelable element</a>, then that element is the <code>label</code>
   element's <a>labeled control</a>.</span>
 
+<div class="example">
+  <p>The following example shows the use of a <code>for</code> attribute, to associate <{label}>s which do not contain the element they label.</p>
+  <pre highlight="html">
+&lt;form&gt;
+  &lt;table&gt;
+    &lt;caption&gt;Example of using <code>for</code> with <{label}>&lt;/caption&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;label for="name"&gt;Customer name: &lt;/label&gt;&lt;/th&gt;
+      &lt;td&gt;&lt;input name="name" id="name"&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/form&gt;
+    </pre>
+<p>Note that the <code>id</code> attribute is required to associate the <code>for</code> attribute, while the <code>name</code> attribute is required so the value of the input will be submitted as part of the form.</p>
+</div>
   <div class="impl">
 
   If the <code>for</code> attribute is not specified, but the
@@ -1132,24 +1146,31 @@
   then the first such descendant in <a>tree order</a> is the <{label}> element's
   <a>labeled control</a>.
 
-  The <{label}> element's exact default presentation and behavior, in particular what
-  its <a>activation behavior</a> might be, if anything, should match the platform's label
-  behavior. The <a>activation behavior</a> of a <{label}> element for events targeted
-  at <a>interactive content</a> descendants of a <{label}> element, and any
-  descendants of those <a>interactive content</a> descendants, must be to do nothing.
+  The <{label}> element's <a>activation behavior</a> should match the platform's label
+  behavior. Similarly, any additional presentation hints should match the platform's label presentation.
 
   <div class="example">
-    For example, on platforms where clicking a checkbox label checks the checkbox, clicking the
-    <code>label</code> in the following snippet could trigger the user agent to <a>run synthetic
-    click activation steps</a> on the <{input}> element, as if the element itself had
-    been triggered by the user:
+    On many platforms activating a checkbox label checks the checkbox, while activating a text input's label focuses the input. Clicking the
+    <{label}> "Lost" in the following snippet could trigger the user agent to <a>run synthetic
+    click activation steps</a> on the checkbox, as if the element itself had
+    been triggered by the user, while clicking the <{label}> "Where?" would <a>queue a task</a> that runs the <a>focusing steps</a> for the element to the text input:
 
     <pre highlight="html">
-&lt;label&gt;&lt;input type=checkbox name=lost&gt; Lost&lt;/label&gt;
+&lt;label&gt;&lt;input type="checkbox" name="lost"&gt; Lost&lt;/label&gt;&lt;br&gt; &lt;label&gt;Where? &lt;input type="text" name="where"&gt;&lt;/label&gt;
     </pre>
 
-    On other platforms, the behavior might be just to focus the control, or do nothing.
+  </div>
 
+  If a <{label}> element has <a>interactive content</a> other than its <a>labeled control</a>, the <a>activation behavior</a> of the <{label}> element for events targeted
+  at those <a>interactive content</a> descendants and any
+  descendants of those must be to do nothing.
+
+  <div class="example">
+  <p>In the following example, clicking on the link does not toggle the checkbox, even if the platform normally toggles a checkbox when clicking on a label. Instead, clicking the link triggers the normal <a>activation behaviour</a> of following the link.</p>
+  <pre highlight="html">
+  &lt;!-- bad example - link inside label reduces checkbox activation area --&gt;
+  &lt;label&gt;&lt;input type=checkbox name=tac&gt;I agree to &lt;a href="tandc.html"&gt;the terms and conditions&lt;/a&gt;&lt;/label&gt;
+    </pre>
   </div>
   </div>
 
@@ -1161,11 +1182,6 @@
   behavior, such as a link:
 
   <div class="example">
-  <pre highlight="html">
-  &lt;!-- bad example - link inside label reduces checkbox activation area --&gt;
-  &lt;label&gt;&lt;input type=checkbox name=tac&gt;I agree to &lt;a href="tandc.html"&gt;the terms and conditions&lt;/a&gt;&lt;/label&gt;
-    </pre>
-
   <pre highlight="html">
   &lt;!-- bad example - all label text inside the link reduces activation area to checkbox only --&gt;
   &lt;label&gt;&lt;input type=checkbox name=tac&gt;&lt;a href="tandc.html"&gt;I agree to the terms and conditions&lt;/a&gt;&lt;/label&gt;
@@ -1179,9 +1195,6 @@
 (read &lt;a href="tandc.html"&gt;Terms and Conditions&lt;/a&gt;)
     </pre></div>
   </p>
-
-  The <dfn element-attr for="label"><code>form</code></dfn> attribute is used to explicitly associate the
-  <{label}> element with its <a>form owner</a>.
 
   <div class="example">
     The following example shows three form controls each with a label, two of which have small
@@ -1214,9 +1227,6 @@
 
   The <dfn attribute for="HTMLLabelElement"><code>control</code></dfn> IDL attribute must return the
   <{label}> element's <a>labeled control</a>, if any, or null if there isn't one.
-
-  The <dfn attribute for="HTMLLabelElement"><code>form</code></dfn> IDL attribute is part of the element's forms
-  API.
 
   </div>
 
