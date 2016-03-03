@@ -3814,17 +3814,18 @@
 
 <h4 id="collections">Collections</h4>
 
-  The {{HTMLAllCollection}}, {{HTMLFormControlsCollection}},
-  {{HTMLOptionsCollection}}, interfaces are <a lt="collection">collections</a> derived from the
-  {{HTMLCollection}} interface.
+  The {{HTMLFormControlsCollection}} and {{HTMLOptionsCollection}} interfaces are 
+  <a lt="collection">collections</a> derived from the {{HTMLCollection}} interface. The 
+  {{HTMLAllCollection}} however, is independent as it has a variety of unique quirks that are not 
+  desirable to inherit from {{HTMLCollection}}. 
 
 <h5 id="the-htmlallcollection-interface">The <code>HTMLAllCollection</code> interface</h5>
 
   The <code>HTMLAllCollection</code> interface is used for the legacy <code>document.all</code>
-  attribute. It operates similarly to <code>HTMLCollection</code>; the main differences are that its
-  <code>namedItem()</code> method returns an <code>HTMLCollection</code> object when there are
-  multiple matching elements, and that its <code>item()</code> method can be used as a synonym for
-  its <code>namedItem()</code> method.
+  attribute. It operates similarly to <code>HTMLCollection</code>; it also supports a variety of 
+  other legacy features required for web compatibility such as the ability to be invoked like a
+  function (<code>legacycaller</code>) and returning an <code>HTMLCollection</code> object when 
+  there are multiple matching elements.
 
   <p class="note">
     All <code>HTMLAllCollection</code> objects are rooted at a {{Document}} and have a
@@ -3834,11 +3835,12 @@
   </p>
 
   <pre class="idl" data-highlight="webidl" dfn-for="HTMLAllCollection">
+    [LegacyUnenumerableNamedProperties]
     interface HTMLAllCollection {
       readonly attribute unsigned long length;
-      getter Element? item(unsigned long index);
-      (HTMLCollection or Element)? item(DOMString name);
-      legacycaller getter (HTMLCollection or Element)? namedItem(DOMString name);
+      getter Element? (unsigned long index);
+      getter (HTMLCollection or Element)? namedItem(DOMString name);
+      legacycaller (HTMLCollection or Element)? item(optional (unsigned long or DOMString) nameOrItem);
     };
   </pre>
 
@@ -3847,10 +3849,10 @@
     <dd>Returns the number of elements in the collection.</dd>
 
     <dt><var>element</var> = <var>collection</var> . <code>item</code>(<var>index</var>)</dt>
+    <dt><var>element</var> = <var>collection</var>(<var>index</var>)</dt>
     <dt><var>element</var> = <var>collection</var>[<var>index</var>]</dt>
     <dd>
-      Returns the item with index <var>index</var> from the collection. The items are sorted in
-      <a>tree order</a>.
+      Returns the item with index <var>index</var> from the collection based on <a>tree order</a>.
     </dd>
 
     <dt><var>element</var> = <var>collection</var> . <code>item</code>(<var>name</var>)</dt>
@@ -3878,43 +3880,57 @@
     The object's <a>supported property indices</a> are as defined for <code>HTMLCollection</code>
     objects.
 
-    The following elements are <dfn id="all-named-elements">"all"-named elements</dfn>: <{a}>, <{applet}>,
-    <{button}>, <{embed}>, <{form}>, <{frame}>,
-    <{frameset}>, <{iframe}>, <{img}>, <{input}>,
-    <{map}>, <{meta}>, <{object}>, <{select}>, and
-    <{textarea}>
+    The following elements are considered <dfn id="all-named-elements">"all"-named elements</dfn>: 
+    <{a}>, <{applet}>, <{button}>, <{embed}>, <{form}>, <{frame}>, <{frameset}>, <{iframe}>, 
+    <{img}>, <{input}>, <{map}>, <{meta}>, <{object}>, <{select}>, and <{textarea}>
 
-    The <a spec="webidl">supported property names</a> consist of the non-empty values of all the <code>id</code>
-    attributes of all the elements <a>represented by the collection</a>, and the non-empty values of
-    all the <code>name</code> attributes of all the <a>"all"-named elements</a> <a>represented by
-    the collection</a>, in <a>tree order</a>, ignoring later duplicates, with the <code>id</code> of
-    an element preceding its <code>name</code> if it contributes both, they differ from each other,
-    and neither is the duplicate of an earlier entry.
+    The <a spec="webidl">supported property names</a> consist of the non-empty values of all the 
+    <code>id</code> attributes of all the elements <a>represented by the collection</a>, and the 
+    non-empty values of all the <code>name</code> attributes of all the <a>"all"-named element or 
+    elements</a> <a>represented by the collection</a>, in <a>tree order</a>, ignoring later 
+    duplicates, with the <code>id</code> of an element preceding its <code>name</code> if it contributes both, they 
+    differ from each other, and neither is the duplicate of an earlier entry.
 
-    The properties exposed in this way must be <a>unenumerable</a>.
+    On getting, the <dfn attribute for="HTMLAllCollection"><code>length</code></dfn> attribute must 
+    return the number of nodes <a>represented by the collection</a>.
 
-    On getting, the <dfn attribute for="HTMLAllCollection"><code>length</code></dfn> attribute must return the number of nodes
-    <a>represented by the collection</a>.
+    The indexed property getter must return the result of getting the 
+    <a>"all"-indexed element</a> from this {{HTMLAllCollection}} given the passed index.
+    
+    To get the <dfn id="all-indexed-element">"all"-indexed element</dfn> from an 
+    {{HTMLAllCollection}} <var>collection</var> given an index <var>index</var>, return the element
+    with index <var>index</var> in <var>collection</var>, or null if there is no such element at 
+    <var>index</var>.
 
-    The <dfn method for="HTMLAllCollection" lt="item(index)"><code>item(<var>index</var>)</code></dfn> method must return the <var>index</var><sup>th</sup>
-    element in the collection. If there is no <var>index</var><sup>th</sup> element in the
-    <a>collection</a>, then the method must return null.
-
-    The <dfn method for="HTMLAllCollection" lt="item(name)"><code>item(<var>name</var>)</code></dfn> and <dfn method for="HTMLAllCollection"><code>namedItem(<var>name</var>)</code></dfn> methods must
-    act according to the following algorithm:
-
+    The <dfn method for="HTMLAllCollection"><code>namedItem(<var>name</var>)</code></dfn> method 
+    must return the <a>"all"-named element or elements</a> from this {{HTMLAllCollection}} given
+    <var>name</var>.
+    
+    To get the <dfn id="all-named-element-or-elements">"all"-named element or elements</dfn> from 
+    an {{HTMLAllCollection}} <var>collection</var> given a name <var>name</var>, run the
+    following algorithm:
+    
     1. If <var>name</var> is the empty string, return null and stop the algorithm.
     2. Let <var>collection</var> be an <code>HTMLCollection</code> object rooted at the same
-        {{Document}} as the <code>HTMLAllCollection</code> object on which the method was
-        invoked, whose filter matches only elements that are either:
-        * <a>"all"-named elements</a> with a <code>name</code> attribute equal to <var>name</var>,
+        {{Document}} as the {{HTMLAllCollection}} object on which the method was invoked, whose 
+        filter matches only elements that are either:
+        * <a>"all"-named elements</a> with a <code>name</code> attribute equal to <var>name</var>, 
             or,
         * elements with an <a>ID</a> equal to <var>name</var>.
-    3. If, at the time the method is called, there is exactly one node in <var>collection</var>,
-        then return that node and stop the algorithm.
-    4. Otherwise, if, at the time the method is called, <var>collection</var> is empty, return null
-        and stop the algorithm.
+    3. If there is exactly one node in <var>collection</var>, then return that node and stop the 
+        algorithm.
+    4. Otherwise, if <var>collection</var> is empty, return null and stop the algorithm.
     5. Otherwise, return <var>collection</var>.
+    
+    The <dfn method for="HTMLAllCollection"><code>item(<var>nameOrIndex</var>)</code></dfn> method 
+    must act according to the following algorithm:
+
+    1. If <var>nameOrIndex</var> was not provided, return null.
+    2. If <var>nameOrIndex</var> is an <code>unsigned long</code>, return the result of getting the 
+        <a>"all"-indexed element</a> from this {{HTMLAllCollection}} given <var>nameOrIndex</var>.
+    3. Otherwise, <var>nameOrIndex</var> is a <code>DOMString</code>. Return the result of getting 
+        the <a>"all"-named element or elements</a> from this {{HTMLAllCollection}} given 
+        <var>nameOrIndex</var>.    
   </div>
 
 <h5 id="the-htmlformcontrolscollection-interface">The <code>HTMLFormControlsCollection</code> interface</h5>
