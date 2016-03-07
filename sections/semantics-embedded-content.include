@@ -86,20 +86,6 @@
 
     <li>
 
-    Authors might want to show different image content depending on the rendered size of the image.
-    This is usually referred to as <dfn for="image" lt="art directed|art direction">art direction</dfn>.
-
-    <p class="example">
-      When a Web page is viewed on a screen with a large physical size (assuming a maximized browser window),
-    the author might wish to include some less relevant parts surrounding the critical part of the image.
-    When the same Web page is viewed on a screen with a small physical size,
-    the author might wish to show only the critical part of the image.
-    </p>
-
-    </li>
-
-    <li>
-
     Authors might want to show the same image content but with different rendered size depending on, usually, the width of the viewport.
     This is usually referred to as <dfn>viewport-based selection</dfn>.
 
@@ -113,6 +99,20 @@
     with the images varying in rendered size in each case to fill up the viewport.
     In this case, the rendered size of an image might be <em>bigger</em> in the one-column layout compared to the two-column layout,
     despite the screen being smaller.</p>
+
+    </li>
+
+    <li>
+
+    Authors might want to show different image content depending on the rendered size of the image.
+    This is usually referred to as <dfn for="image" lt="art directed|art direction">art direction</dfn>.
+
+    <p class="example">
+      When a Web page is viewed on a screen with a large physical size (assuming a maximized browser window),
+    the author might wish to include some less relevant parts surrounding the critical part of the image.
+    When the same Web page is viewed on a screen with a small physical size,
+    the author might wish to show only the critical part of the image.
+    </p>
 
     </li>
 
@@ -204,58 +204,6 @@ was an English &lt;a href="/wiki/Music_hall"&gt;music hall&lt;/a&gt; singer, ...
 
     </dd>
 
-    <dt><a for="image">Art direction</a>-based selection</dt>
-
-    <dd>
-
-    The <{picture}> element and the <{source}> element,
-    together with the <code>media</code> attribute,
-    can be used, to provide multiple images that vary the image content
-    (for intance the smaller image might be a cropped version of the bigger image).
-
-    <div class="example">
-<pre highlight="html">
-&lt;picture&gt;
-  &lt;source media="(min-width: 45em)" srcset="large.jpg"&gt;
-  &lt;source media="(min-width: 32em)" srcset="med.jpg"&gt;
-  &lt;img src="small.jpg" alt="The president giving an award."&gt;
-&lt;/picture&gt;
-    </pre>
-
-      The user agent will choose the first <{source}> element
-      for which the media query in the <code>media</code> attribute matches,
-      and then choose an appropriate URL from its <code>srcset</code> attribute.
-
-      The rendered size of the image varies depending on which resource is chosen.
-      To specify dimensions that the user agent can use before having downloaded the image,
-      CSS can be used.
-
-      <pre class="css">
-        img { width: 300px; height: 300px }
-        @media (min-width: 32em) { img { width: 500px; height:300px } }
-        @media (min-width: 45em) { img { width: 700px; height:400px } }
-      </pre>
-
-    </div>
-
-    <div class="example">
-      This example combines <a for="image">art direction</a>- and <a>device-pixel-ratio</a>-based selection.
-      A banner that takes half the viewport is provided in two versions,
-      one for wide screens and one for narrow screens.
-
-    <pre highlight="html">
-      &lt;h1&gt;
-        &lt;picture&gt;
-        &lt;source media="(max-width: 500px)" srcset="banner-phone.jpeg, banner-phone-HD.jpeg 2x"&gt;
-        &lt;img src="banner.jpeg" srcset="banner-HD.jpeg 2x" alt="The Breakfast Combo"&gt;
-        &lt;/picture&gt;
-      &lt;/h1&gt;
-    </pre>
-
-    </div>
-
-    </dd>
-
     <dt><a>Viewport-based selection</a></dt>
 
     <dd>
@@ -331,6 +279,58 @@ was an English &lt;a href="/wiki/Music_hall"&gt;music hall&lt;/a&gt; singer, ...
 
       The user agent can then calculate the effective pixel density and choose an appropriate resource
       similarly to the previous example.
+
+    </div>
+
+    </dd>
+
+    <dt><a for="image">Art direction</a>-based selection</dt>
+
+    <dd>
+
+    The <{picture}> element and the <{source}> element,
+    together with the <code>media</code> attribute,
+    can be used, to provide multiple images that vary the image content
+    (for intance the smaller image might be a cropped version of the bigger image).
+
+    <div class="example">
+<pre highlight="html">
+&lt;picture&gt;
+  &lt;source media="(min-width: 45em)" srcset="large.jpg"&gt;
+  &lt;source media="(min-width: 32em)" srcset="med.jpg"&gt;
+  &lt;img src="small.jpg" alt="The president giving an award."&gt;
+&lt;/picture&gt;
+    </pre>
+
+      The user agent will choose the first <{source}> element
+      for which the media query in the <code>media</code> attribute matches,
+      and then choose an appropriate URL from its <code>srcset</code> attribute.
+
+      The rendered size of the image varies depending on which resource is chosen.
+      To specify dimensions that the user agent can use before having downloaded the image,
+      CSS can be used.
+
+      <pre class="css">
+        img { width: 300px; height: 300px }
+        @media (min-width: 32em) { img { width: 500px; height:300px } }
+        @media (min-width: 45em) { img { width: 700px; height:400px } }
+      </pre>
+
+    </div>
+
+    <div class="example">
+      This example combines <a for="image">art direction</a>- and <a>device-pixel-ratio</a>-based selection.
+      A banner that takes half the viewport is provided in two versions,
+      one for wide screens and one for narrow screens.
+
+    <pre highlight="html">
+      &lt;h1&gt;
+        &lt;picture&gt;
+        &lt;source media="(max-width: 500px)" srcset="banner-phone.jpeg, banner-phone-HD.jpeg 2x"&gt;
+        &lt;img src="banner.jpeg" srcset="banner-HD.jpeg 2x" alt="The Breakfast Combo"&gt;
+        &lt;/picture&gt;
+      &lt;/h1&gt;
+    </pre>
 
     </div>
 
