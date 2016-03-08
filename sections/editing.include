@@ -1661,8 +1661,7 @@
   Each alternative consists of a single character, such as a letter or digit.
 
   User agents can provide users with a list of the keyboard shortcuts, but authors are encouraged
-  to do so also. The <code>accessKeyLabel</code> IDL attribute returns a
-  string representing the actual key combination assigned by the user agent.
+  to do so also.
 
   <div class="example">
     In this example, an author has provided a button that can be invoked using a shortcut key. To
@@ -1674,30 +1673,6 @@
     </pre>
   </div>
 
-  <div class="example">
-    To tell the user what the shortcut key is, the author has this script here opted to explicitly
-    add the key combination to the button's label:
-
-    <pre highlight="javascript">
-      function addShortcutKeyLabel(button) {
-        if (button.accessKeyLabel != '')
-          button.value += ' (' + button.accessKeyLabel + ')';
-      }
-
-      addShortcutKeyLabel(document.getElementById('c'));
-    </pre>
-
-    Browsers on different platforms will show different labels, even for the same key combination,
-    based on the convention prevalent on that platform. For example, if the key combination is the
-    Control key, the Shift key, and the letter C, a Windows browser might display
-    "<samp>Ctrl+Shift+C</samp>", whereas a Mac browser might display "<samp>^&#x21E7;C</samp>", while
-    an Emacs browser might just display "<samp>C-C</samp>". Similarly, if the key combination is the
-    Alt key and the Escape key, Windows might use "<samp>Alt+Esc</samp>", Mac might use
-    "<samp>&#x2325;&#x238B;</samp>", and an Emacs browser might use "<samp>M-ESC</samp>" or
-    "<samp>ESC ESC</samp>".
-
-    In general, therefore, it is unwise to attempt to parse the value returned from the <code>accessKeyLabel</code> IDL attribute.
-  </div>
 
 <h4 id="the-accesskey-attribute">The <dfn element-attr for="global"><code>accesskey</code></dfn> attribute</h4>
 
@@ -1741,32 +1716,6 @@
     </pre>
   </div>
 
-  <div class="example">
-    In the following example, a button has possible access keys described. A script then tries to
-    update the button's label to advertise the key combination the user agent selected.
-
-    <pre highlight="html">
-      &lt;input type=submit accesskey="N @ 1" value="Compose">
-      ...
-      &lt;script>
-      function labelButton(button) {
-        if (button.accessKeyLabel)
-          button.value += ' (' + button.accessKeyLabel + ')';
-      }
-      var inputs = document.getElementsByTagName('input');
-      for (var i = 0; i &lt; inputs.length; i += 1) {
-        if (inputs[i].type == "submit")
-          labelButton(inputs[i]);
-      }
-      &lt;/script>
-    </pre>
-
-    On one user agent, the button's label might become "<samp>Compose (&#x2318;N)</samp>". On
-    another, it might become "<samp>Compose (Alt+&#x21E7;+1)</samp>". If the user agent doesn't
-    assign a key, it will be just "<samp>Compose</samp>". The exact string depends on what the
-    <a>assigned access key</a> is, and on how the user agent represents that key
-    combination.
-  </div>
 
   <div class="impl">
 
@@ -1840,10 +1789,6 @@
 
   The <dfn attribute for="HTMLElement"><code>accessKey</code></dfn> IDL attribute must
   <a>reflect</a> the <code>accesskey</code> content attribute.
-
-  The <dfn attribute for="HTMLElement"><code>accessKeyLabel</code></dfn> IDL attribute must return
-  a string that represents the element's <a>assigned access key</a>, if any. If the element
-  does not have one, then the IDL attribute must return the empty string.
 
   </div>
 
