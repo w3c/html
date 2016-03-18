@@ -9,6 +9,7 @@ mkdir ./out/styles
 cp fonts/* ./out/fonts
 cp images/* ./out/images
 cp styles/* ./out/styles
+cp entities.json ./out/
 
 cd out
 git init
