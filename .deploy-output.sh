@@ -9,6 +9,7 @@ mkdir ./out/styles
 cp fonts/* ./out/fonts
 cp images/* ./out/images
 cp styles/* ./out/styles
+cp entities.dtd ./out/
 cp entities.json ./out/
 
 cd out
