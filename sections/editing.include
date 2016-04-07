@@ -1701,8 +1701,9 @@
 <h4 id="assigning-keyboard-shortcuts-processing-model">Processing model</h4>
 
   An element's <dfn>assigned access key</dfn> is a key combination derived from the element's
-  <code>accesskey</code> content attribute. Initially, an element must not
-  have an <a>assigned access key</a>.
+  <code>accesskey</code> content attribute, or assigned by the user agent, optionally 
+  based on a user preference. Initially, an element must not have an 
+  <a>assigned access key</a>.
 
   Whenever an element's <code>accesskey</code> attribute is set, changed,
   or removed, the user agent must update the element's <a>assigned access key</a> by running
@@ -1713,15 +1714,19 @@
     <li>If the element has no <code>accesskey</code> attribute, then skip
     to the <i>fallback</i> step below.</li>
 
-    <li>If the value is not a string exactly one Unicode code point in length, then skip the
-    remainder of these steps for this value.</li>
-
     <li>The user agent may assign a key combination based on stored user preferences as the
     element's <a>assigned access key</a> and then abort these steps.</li>
 
+    <li>Let <var>value</var> be the value of the <code>accesskey</code> attribute.
+
+    <li>The user agent may strip content from <var>value</var> to reduce the length of
+    <var>value</var> to a single unicode code point.</li>
+
+    <li>If <var>value</var> is not a string exactly one Unicode code point in length, then
+    abort these steps.</li>
+
     <li>The user agent may assign a combination of a mix of zero or more modifier keys and
-    the value of the <code>accesskey</code> attribute the as the element's <a>assigned access
-    key</a> and abort these steps.</li>
+    <var>value</var> as the element's <a>assigned access key</a> and abort these steps.</li>
 
     <li><i>Fallback</i>: Optionally, the user agent may assign a key combination of its choosing
     as the element's <a>assigned access key</a> and then abort these steps.</li>
