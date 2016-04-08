@@ -1648,28 +1648,24 @@
 
   <em>This section is non-normative.</em>
 
-  Each element that can be activated or focused can be assigned a single key combination to
+  Each element that can be activated or focused can be assigned a shortcut key combination to
   activate it, using the <code>accesskey</code> attribute.
 
-  The exact shortcut is determined by the user agent, based on information about the user's
+  The exact shortcut is determined by the user agent, potentially using information about the user's
   preferences, what keyboard shortcuts already exist on the platform, and what other shortcuts have
-  been specified on the page, using the information provided in the <code>accesskey</code> attribute as a guide.
+  been specified on the page, as well as the value of the <code>accesskey</code> attribute.
 
-  In order to ensure that a relevant keyboard shortcut is available on a wide variety of input
-  devices, the author can provide a number of alternatives in the <code>accesskey</code> attribute.
-
-  Each alternative consists of a single character, such as a letter or digit.
+  A valid value for <code>accesskey</code> consists of a single character, such as a letter or digit.
 
   User agents can provide users with a list of the keyboard shortcuts, but authors are encouraged
   to do so also.
 
   <div class="example">
-    In this example, an author has provided a button that can be invoked using a shortcut key. To
-    support full keyboards, the author has provided "C" as a possible key. To support devices
-    equipped only with numeric keypads, the author has provided "1" as another possibly key.
+    In this example, an author has provided a button that can be invoked using a shortcut key,
+    and suggested "C" as a memorable and useful shortcut.
 
     <pre highlight="html">
-      &lt;input type=button value=Collect onclick="collect()" accesskey="C 1" id=c>
+      &lt;input type=button value=Collect onclick="collect()" accesskey="C" id=c>
     </pre>
   </div>
 
@@ -1681,9 +1677,10 @@
   by the user agent as a guide for creating a keyboard shortcut that activates or focuses the
   element.
 
-  If specified, the value must be an <a>ordered set of unique space-separated tokens</a>
-  that are <a>case-sensitive</a>, each of which must be exactly one Unicode code point in
-  length.
+  If specified, the value must be a single printable character: a string exactly one Unicode code point in length.
+
+  Authors should not use <samp>" "</samp>, nor characters that normally require a modifier key to
+  generate, as a value of <code>accesskey</code>.
 
   <div class="example">
     In the following example, a variety of links are given with access keys so that keyboard users
@@ -1702,28 +1699,14 @@
     </pre>
   </div>
 
-  <div class="example">
-    In the following example, the search field is given two possible access keys, "s" and "0" (in
-    that order). A user agent on a device with a full keyboard might pick <kbd><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd></kbd> as the shortcut key,
-    while a user agent on a small device with just a numeric keypad might pick just the plain
-    unadorned key <kbd><kbd>0</kbd></kbd>:
-
-    <pre highlight="html">
-      &lt;form action="/search">
-        &lt;label>Search: &lt;input type="search" name="q" accesskey="s 0">&lt;/label>
-        &lt;input type="submit">
-      &lt;/form>
-    </pre>
-  </div>
-
-
   <div class="impl">
 
 <h4 id="assigning-keyboard-shortcuts-processing-model">Processing model</h4>
 
   An element's <dfn>assigned access key</dfn> is a key combination derived from the element's
-  <code>accesskey</code> content attribute. Initially, an element must not
-  have an <a>assigned access key</a>.
+  <code>accesskey</code> content attribute, or assigned by the user agent, optionally 
+  based on a user preference. Initially, an element must not have an 
+  <a>assigned access key</a>.
 
   Whenever an element's <code>accesskey</code> attribute is set, changed,
   or removed, the user agent must update the element's <a>assigned access key</a> by running
@@ -1734,32 +1717,19 @@
     <li>If the element has no <code>accesskey</code> attribute, then skip
     to the <i>fallback</i> step below.</li>
 
-    <li>Otherwise, <a lt="split a string on spaces">split the attribute's value on
-    spaces</a>, and let <var>keys</var> be the resulting tokens.</li>
+    <li>The user agent may assign a key combination based on stored user preferences as the
+    element's <a>assigned access key</a> and then abort these steps.</li>
 
-    <li>
+    <li>Let <var>value</var> be the value of the <code>accesskey</code> attribute.
 
-    For each value in <var>keys</var> in turn, in the order the tokens appeared in the
-    attribute's value, run the following substeps:
+    <li>The user agent may strip content from <var>value</var> to reduce the length of
+    <var>value</var> to a single unicode code point.</li>
 
-    <ol>
+    <li>If <var>value</var> is not a string exactly one Unicode code point in length, then
+    abort these steps.</li>
 
-      <li>If the value is not a string exactly one Unicode code point in length, then skip the
-      remainder of these steps for this value.</li>
-
-      <li>The user agent may assign a key combination based on stored user preferences as the
-      element's <a>assigned access key</a> and then abort these steps.</li>
-
-      <li>If the user agent can find a mix of zero or more modifier keys that, combined with the
-      key that corresponds to the value given in the attribute, can be used as the access key, then
-      the user agent may assign that combination of keys as the element's <a>assigned access
-      key</a> and abort these steps.
-
-      </li>
-
-    </ol>
-
-    </li>
+    <li>The user agent may assign a combination of a mix of zero or more modifier keys and
+    <var>value</var> as the element's <a>assigned access key</a> and abort these steps.</li>
 
     <li><i>Fallback</i>: Optionally, the user agent may assign a key combination of its choosing
     as the element's <a>assigned access key</a> and then abort these steps.</li>
@@ -1769,15 +1739,16 @@
   </ol>
 
   Once a user agent has selected and assigned an access key for an element, the user agent should
-  not change the element's <a>assigned access key</a> unless the <code>accesskey</code> content attribute is changed or the element is moved to
-  another {{Document}}.
+  not change the element's <a>assigned access key</a> unless the <code>accesskey</code> content
+  attribute is changed or the element is moved to another {{Document}}.
 
   When the user presses the key combination corresponding to the <a>assigned access key</a>
   for an element, if the element defines a command, the
   command's <a facet for="menuitem">Hidden State</a> facet is false (visible),
   the command's <a facet for="menuitem">Disabled State</a> facet is also false
   (enabled), the element is <a>in a <code>Document</code></a> that has an associated
-  <a>browsing context</a>, and neither the element nor any of its ancestors has a <code>hidden</code> attribute specified, then the user agent must trigger the <a>Action</a> of the command.
+  <a>browsing context</a>, and neither the element nor any of its ancestors has a
+  <code>hidden</code> attribute specified, then the user agent must trigger the <a>Action</a> of the command.
 
   <p class="note">
   User agents might expose elements that have
