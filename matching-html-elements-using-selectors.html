@@ -1,0 +1,473 @@
+<!doctype html><html lang="en">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>HTML 5.1: 4.15. Matching HTML elements using selectors</title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <meta content="ED" name="w3c-status">
+  <link href="../default.css" rel="stylesheet" type="text/css">
+  <link href="../csslogo.ico" rel="shortcut icon" type="image/x-icon">
+  <link href="styles/styles-html.css" rel="stylesheet" type="text/css">
+  <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet" type="text/css">
+  <meta content="Bikeshed 1.0.0" name="generator">
+<style>
+        .dfn-panel {
+            display: inline-block;
+            position: absolute;
+            z-index: 35;
+            height: auto;
+            width: -webkit-fit-content;
+            max-width: 300px;
+            max-height: 500px;
+            overflow: auto;
+            padding: 0.5em 0.75em;
+            font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+            background: #DDDDDD;
+            color: black;
+            border: outset 0.2em;
+        }
+        .dfn-panel:not(.on) { display: none; }
+        .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+        .dfn-panel > b { display: block; }
+        .dfn-panel a { color: black; }
+        .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+        .dfn-panel > b + b { margin-top: 0.25em; }
+        .dfn-panel > span { display: list-item; list-style: inside; }
+        .dfn-panel.activated {
+            display: inline-block;
+            position: fixed;
+            left: .5em;
+            bottom: .5em;
+            margin: 0 auto;
+            max-width: calc(100vw - 1.5em - .4em - .5em);
+            max-height: 30vh;
+        }
+
+        .dfn-paneled { cursor: pointer; }
+        </style>
+<style>.highlight .hll { background-color: #ffffcc }
+.highlight  { background: #ffffff; }
+.highlight .c { color: #708090 } /* Comment */
+.highlight .k { color: #990055 } /* Keyword */
+.highlight .l { color: #000000 } /* Literal */
+.highlight .n { color: #0077aa } /* Name */
+.highlight .o { color: #999999 } /* Operator */
+.highlight .p { color: #999999 } /* Punctuation */
+.highlight .ch { color: #708090 } /* Comment.Hashbang */
+.highlight .cm { color: #708090 } /* Comment.Multiline */
+.highlight .cp { color: #708090 } /* Comment.Preproc */
+.highlight .cpf { color: #708090 } /* Comment.PreprocFile */
+.highlight .c1 { color: #708090 } /* Comment.Single */
+.highlight .cs { color: #708090 } /* Comment.Special */
+.highlight .kc { color: #990055 } /* Keyword.Constant */
+.highlight .kd { color: #990055 } /* Keyword.Declaration */
+.highlight .kn { color: #990055 } /* Keyword.Namespace */
+.highlight .kp { color: #990055 } /* Keyword.Pseudo */
+.highlight .kr { color: #990055 } /* Keyword.Reserved */
+.highlight .kt { color: #990055 } /* Keyword.Type */
+.highlight .ld { color: #000000 } /* Literal.Date */
+.highlight .m { color: #000000 } /* Literal.Number */
+.highlight .s { color: #a67f59 } /* Literal.String */
+.highlight .na { color: #0077aa } /* Name.Attribute */
+.highlight .nc { color: #0077aa } /* Name.Class */
+.highlight .no { color: #0077aa } /* Name.Constant */
+.highlight .nd { color: #0077aa } /* Name.Decorator */
+.highlight .ni { color: #0077aa } /* Name.Entity */
+.highlight .ne { color: #0077aa } /* Name.Exception */
+.highlight .nf { color: #0077aa } /* Name.Function */
+.highlight .nl { color: #0077aa } /* Name.Label */
+.highlight .nn { color: #0077aa } /* Name.Namespace */
+.highlight .py { color: #0077aa } /* Name.Property */
+.highlight .nt { color: #669900 } /* Name.Tag */
+.highlight .nv { color: #0077aa } /* Name.Variable */
+.highlight .ow { color: #999999 } /* Operator.Word */
+.highlight .mb { color: #000000 } /* Literal.Number.Bin */
+.highlight .mf { color: #000000 } /* Literal.Number.Float */
+.highlight .mh { color: #000000 } /* Literal.Number.Hex */
+.highlight .mi { color: #000000 } /* Literal.Number.Integer */
+.highlight .mo { color: #000000 } /* Literal.Number.Oct */
+.highlight .sb { color: #a67f59 } /* Literal.String.Backtick */
+.highlight .sc { color: #a67f59 } /* Literal.String.Char */
+.highlight .sd { color: #a67f59 } /* Literal.String.Doc */
+.highlight .s2 { color: #a67f59 } /* Literal.String.Double */
+.highlight .se { color: #a67f59 } /* Literal.String.Escape */
+.highlight .sh { color: #a67f59 } /* Literal.String.Heredoc */
+.highlight .si { color: #a67f59 } /* Literal.String.Interpol */
+.highlight .sx { color: #a67f59 } /* Literal.String.Other */
+.highlight .sr { color: #a67f59 } /* Literal.String.Regex */
+.highlight .s1 { color: #a67f59 } /* Literal.String.Single */
+.highlight .ss { color: #a67f59 } /* Literal.String.Symbol */
+.highlight .vc { color: #0077aa } /* Name.Variable.Class */
+.highlight .vg { color: #0077aa } /* Name.Variable.Global */
+.highlight .vi { color: #0077aa } /* Name.Variable.Instance */
+.highlight .il { color: #000000 } /* Literal.Number.Integer.Long */
+        .highlight { background: hsl(24, 20%, 95%); }
+        code.highlight { padding: .1em; border-radius: .3em; }
+        pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
+        </style>
+ </head><body class="h-entry">
+  <div class="head">
+   <header>
+    <p data-fill-with="logo"><a href="http://www.w3.org/"><img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"></a></p>
+    <h1 class="p-name no-ref allcaps" id="title">HTML 5.1</h1>
+    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor&#x2019;s Draft, <time class="dt-updated" datetime="2016-04-12">12 April 2016</time></span></h2>
+   </header>
+   
+   
+   
+   
+  </div>
+  
+  
+  
+  
+  
+  <nav data-fill-with="table-of-contents" id="toc"><p class="prev_next">&#x2190; <a href="disabled-elements.html#disabled-elements"><span class="secno">4.14</span> <span class="content">Disabled elements</span></a> &#x2014; <a href="index.html#contents">Table of contents</a> &#x2014; <a href="editing.html#editing"><span class="secno">5</span> <span class="content">User interaction</span></a> &#x2192;</p>
+   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
+   <ol class="toc" role="directory"><li>
+       <a href="matching-html-elements-using-selectors.html#matching-html-elements-using-selectors"><span class="secno">4.15</span> <span class="content">Matching HTML elements using selectors</span></a>
+       <ol class="toc">
+        <li><a href="matching-html-elements-using-selectors.html#casesensitivity"><span class="secno">4.15.1</span> <span class="content">Case-sensitivity</span></a>
+        </li><li><a href="matching-html-elements-using-selectors.html#pseudoclasses"><span class="secno">4.15.2</span> <span class="content">Pseudo-classes</span></a>
+       </li></ol>
+     </li></ol>
+  </nav>
+  <main><section>
+     <h3 class="heading settled" data-level="4.15" id="matching-html-elements-using-selectors"><span class="secno">4.15. </span><span class="content">Matching HTML elements using selectors</span><a class="self-link" href="matching-html-elements-using-selectors.html#matching-html-elements-using-selectors"></a></h3>
+     <h4 class="heading settled" data-level="4.15.1" id="casesensitivity"><span class="secno">4.15.1. </span><span class="content">Case-sensitivity</span><a class="self-link" href="matching-html-elements-using-selectors.html#casesensitivity"></a></h4>
+     <p>The Selectors specification leaves the case-sensitivity of element names, attribute names, and
+  attribute values to be defined by the host language. <a data-link-type="biblio" href="references.html#biblio-css3-selectors">[CSS3-SELECTORS]</a></p>
+     <p class="note" role="note"><cite>Selectors</cite> defines that ID and class selectors, when matched against
+  elements in documents that are in <a data-link-type="dfn" href="infrastructure.html#quirks-mode" id="ref-for-quirks-mode-4">quirks mode</a>, will be matched in an <a data-link-type="dfn" href="infrastructure.html#ascii-case-insensitive" id="ref-for-ascii-case-insensitive-45">ASCII
+  case-insensitive</a> manner.</p>
+     <p>When comparing a CSS element type selector to the names of <a data-link-type="dfn" href="infrastructure.html#html-element" id="ref-for-html-element-49">html elements</a> in <a data-link-type="dfn" href="infrastructure.html#html-document" id="ref-for-html-document-21">HTML documents</a>, the CSS element type selector must first be <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#converted-to-ascii-lowercase">converted to ASCII
+  lowercase</a>. The same selector when compared to other elements must be compared according to
+  its original case. In both cases, the comparison is <a data-link-type="dfn" href="infrastructure.html#case-sensitive" id="ref-for-case-sensitive-10">case-sensitive</a>.</p>
+     <p>When comparing the name part of a CSS attribute selector to the names of namespace-less
+  attributes on <a data-link-type="dfn" href="infrastructure.html#html-element" id="ref-for-html-element-50">html elements</a> in <a data-link-type="dfn" href="infrastructure.html#html-document" id="ref-for-html-document-22">HTML documents</a>, the name part of the CSS
+  attribute selector must first be <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#converted-to-ascii-lowercase">converted to ASCII lowercase</a>. The same selector when
+  compared to other attributes must be compared according to its original case. In both cases, the
+  comparison is <a data-link-type="dfn" href="infrastructure.html#case-sensitive" id="ref-for-case-sensitive-11">case-sensitive</a>.</p>
+     <p>Attribute selectors on an <a data-link-type="dfn" href="infrastructure.html#html-element" id="ref-for-html-element-51">HTML element</a> in an <a data-link-type="dfn" href="infrastructure.html#html-document" id="ref-for-html-document-23">HTML document</a> must treat the <em>values</em> of attributes
+  with the following names as <a data-link-type="dfn" href="infrastructure.html#ascii-case-insensitive" id="ref-for-ascii-case-insensitive-46">ASCII case-insensitive</a>, with one
+  exception as noted in <a href="rendering.html#rendering">&#xA7;10 Rendering</a>:</p>
+     <ul class="brief">
+      <li><code>accept</code> 
+      </li><li><code>accept-charset</code> 
+      </li><li><code>align</code> 
+      </li><li><code>alink</code> 
+      </li><li><code>axis</code> 
+      </li><li><code>bgcolor</code> 
+      </li><li><code>charset</code> 
+      </li><li><code>checked</code> 
+      </li><li><code>clear</code> 
+      </li><li><code>codetype</code> 
+      </li><li><code>color</code> 
+      </li><li><code>compact</code> 
+      </li><li><code>declare</code> 
+      </li><li><code>defer</code> 
+      </li><li><code>dir</code> 
+      </li><li><code>direction</code> 
+      </li><li><code>disabled</code> 
+      </li><li><code>enctype</code> 
+      </li><li><code>face</code> 
+      </li><li><code>frame</code> 
+      </li><li><code>hreflang</code> 
+      </li><li><code>http-equiv</code> 
+      </li><li><code><a data-link-type="element-sub" href="dom.html#element-attrdef-global-lang" id="ref-for-element-attrdef-global-lang-29">lang</a></code> 
+      </li><li><code>language</code> 
+      </li><li><code>link</code> 
+      </li><li><code>media</code> 
+      </li><li><code>method</code> 
+      </li><li><code>multiple</code> 
+      </li><li><code>nohref</code> 
+      </li><li><code>noresize</code> 
+      </li><li><code>noshade</code> 
+      </li><li><code>nowrap</code> 
+      </li><li><code>readonly</code> 
+      </li><li><code>rel</code> 
+      </li><li><code>rev</code> 
+      </li><li><code>rules</code> 
+      </li><li><code>scope</code> 
+      </li><li><code>scrolling</code> 
+      </li><li><code>selected</code> 
+      </li><li><code>shape</code> 
+      </li><li><code>target</code> 
+      </li><li><code>text</code> 
+      </li><li><code>type</code> (except as specified in <a href="rendering.html#rendering">&#xA7;10 Rendering</a>) 
+      </li><li><code>valign</code> 
+      </li><li><code>valuetype</code> 
+      </li><li><code>vlink</code> 
+     </li></ul>
+     <p>All other attribute values and everything else must be treated as entirely <a data-link-type="dfn" href="infrastructure.html#case-sensitive" id="ref-for-case-sensitive-12">case-sensitive</a> for the purposes of selector matching. This includes:</p>
+     <ul class="brief">
+      <li> IDs and classes in <a data-link-type="dfn" href="infrastructure.html#no-quirks-mode" id="ref-for-no-quirks-mode-2">no-quirks mode</a> and <a data-link-type="dfn" href="infrastructure.html#limited-quirks-mode" id="ref-for-limited-quirks-mode-1">limited-quirks mode</a> 
+      </li><li> the names of elements not in the <a data-link-type="dfn" href="infrastructure.html#html-namespace" id="ref-for-html-namespace-14">HTML namespace</a> 
+      </li><li> the names of <a data-link-type="dfn" href="infrastructure.html#html-element" id="ref-for-html-element-52">html elements</a> in <a data-link-type="dfn" href="infrastructure.html#xml-document" id="ref-for-xml-document-15">XML documents</a> 
+      </li><li> the names of attributes of elements not in the <a data-link-type="dfn" href="infrastructure.html#html-namespace" id="ref-for-html-namespace-15">HTML namespace</a> 
+      </li><li> the names of attributes of <a data-link-type="dfn" href="infrastructure.html#html-element" id="ref-for-html-element-53">html elements</a> in <a data-link-type="dfn" href="infrastructure.html#xml-document" id="ref-for-xml-document-16">XML documents</a> 
+      </li><li> the names of attributes that themselves have namespaces 
+     </li></ul>
+     <h4 class="heading settled" data-level="4.15.2" id="pseudoclasses"><span class="secno">4.15.2. </span><span class="content">Pseudo-classes</span><a class="self-link" href="matching-html-elements-using-selectors.html#pseudoclasses"></a></h4>
+     <p>There are a number of dynamic selectors that can be used with HTML. This section defines when
+  these selectors match HTML elements. <a data-link-type="biblio" href="references.html#biblio-css3-selectors">[CSS3-SELECTORS]</a> <a data-link-type="biblio" href="references.html#biblio-cssui">[CSSUI]</a></p>
+     <dl>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-link"><code>:link</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-link"></a></dfn>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-visited"><code>:visited</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-visited"></a></dfn>
+      <dd>
+       <p>All <code><a data-link-type="element" href="textlevel-semantics.html#elementdef-a" id="ref-for-elementdef-a-85">a</a></code> elements that have an <code><a data-link-type="element-sub" href="links.html#element-attrdef-links-href" id="ref-for-element-attrdef-links-href-22">href</a></code> attribute, all <code><a data-link-type="element" href="semantics-embedded-content.html#elementdef-area" id="ref-for-elementdef-area-79">area</a></code> elements that have an <code><a data-link-type="element-sub" href="links.html#element-attrdef-links-href" id="ref-for-element-attrdef-links-href-23">href</a></code> attribute, and all <code><a data-link-type="element" href="document-metadata.html#elementdef-link" id="ref-for-elementdef-link-62">link</a></code> elements that have
+    an <code><a data-link-type="element-sub" href="document-metadata.html#element-attrdef-link-href" id="ref-for-element-attrdef-link-href-6">href</a></code> attribute, must match one of <code>:link</code> and <code>:visited</code>.</p>
+       <p>Other specifications might apply more specific rules regarding how these elements are to
+    match these pseudo-classes, to mitigate some privacy concerns that apply with straightforward
+    implementations of this requirement.</p>
+      <dt><dfn class="dfn-paneled css" data-dfn-type="selector" data-noexport="" id="selectordef-active"><code>:active</code><span class="dfn-panel"><b><a href="matching-html-elements-using-selectors.html#selectordef-active">#selectordef-active</a></b><b>Referenced in:</b><span><a href="matching-html-elements-using-selectors.html#ref-for-selectordef-active-1">4.15.2. Pseudo-classes</a></span></span></dfn>
+      <dd>
+       <p>The <code>:active</code> pseudo-class is defined to match an element <q cite="https://drafts.csswg.org/selectors3/#the-user-action-pseudo-classes-hover-act">while an
+    element is <dfn data-dfn-type="dfn" data-noexport="" id="being-activated"><i>being activated</i><a class="self-link" href="matching-html-elements-using-selectors.html#being-activated"></a></dfn> by the user</q>.</p>
+       <p>To determine whether a particular element is <i>being activated</i> for the purposes of
+    defining the <code>:active</code> pseudo-class only, an HTML user agent
+    must use the first relevant entry in the following list.</p>
+       <dl>
+        <dt>If the element has a descendant that is currently matching the <code>:active</code> pseudo-class
+        <dd>The element is <i>being activated</i>.
+        <dt>If the element is the <a data-link-type="dfn" href="sec-forms.html#labeled-control" id="ref-for-labeled-control-15">labeled control</a> of a <code><a data-link-type="element" href="sec-forms.html#elementdef-label" id="ref-for-elementdef-label-36">label</a></code> element that is
+      currently matching <a class="css" data-link-type="selector" href="matching-html-elements-using-selectors.html#selectordef-active" id="ref-for-selectordef-active-1">:active</a>
+        <dd>The element is <i>being activated</i>.
+        <dt>If the element is a <code><a data-link-type="element" href="sec-forms.html#elementdef-button" id="ref-for-elementdef-button-32">button</a></code> element
+        <dt>If the element is an <code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-249">input</a></code> element whose <code>type</code> attribute is in the <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-submit-button" id="ref-for-element-statedef-input-submit-button-15">submit button</a>, <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-image-button" id="ref-for-element-statedef-input-image-button-18">image button</a>, <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-reset-button" id="ref-for-element-statedef-input-reset-button-7">Reset Button</a>, or <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-button" id="ref-for-element-statedef-input-button-6">Button</a> state
+        <dd>
+         <p>The element is <i>being activated</i> if it is <a data-link-type="dfn" href="matching-html-elements-using-selectors.html#in-a-formal-activation-state" id="ref-for-in-a-formal-activation-state-1">in a formal activation state</a> and it is not disabled.</p>
+         <p class="example" id="example-8ef26938"><a class="self-link" href="matching-html-elements-using-selectors.html#example-8ef26938"></a>For example, if the user is using a keyboard to push a <code>button</code> element by pressing the space bar, the element would match this pseudo-class in between the
+      time that the element received the <code>keydown</code> event and the
+      time the element received the <code>keyup</code> event.</p>
+        <dt>If the element is a <code><a data-link-type="element" href="interactive-elements.html#elementdef-menuitem" id="ref-for-elementdef-menuitem-15">menuitem</a></code> element
+        <dd>The element is <i>being activated</i> if it is <a data-link-type="dfn" href="matching-html-elements-using-selectors.html#in-a-formal-activation-state" id="ref-for-in-a-formal-activation-state-2">in a formal activation state</a> and it does not have a <code>disabled</code> attribute.
+        <dt>If the element is an <code><a data-link-type="element" href="textlevel-semantics.html#elementdef-a" id="ref-for-elementdef-a-86">a</a></code> element that has an <code><a data-link-type="element-sub" href="links.html#element-attrdef-links-href" id="ref-for-element-attrdef-links-href-24">href</a></code> attribute
+        <dt>If the element is an <code><a data-link-type="element" href="semantics-embedded-content.html#elementdef-area" id="ref-for-elementdef-area-80">area</a></code> element that has an <code><a data-link-type="element-sub" href="links.html#element-attrdef-links-href" id="ref-for-element-attrdef-links-href-25">href</a></code> attribute
+        <dt>If the element is a <code><a data-link-type="element" href="document-metadata.html#elementdef-link" id="ref-for-elementdef-link-63">link</a></code> element that has an <code><a data-link-type="element-sub" href="document-metadata.html#element-attrdef-link-href" id="ref-for-element-attrdef-link-href-7">href</a></code> attribute
+        <dt>If the element has its <a data-link-type="dfn" href="editing.html#can-be-focused" id="ref-for-can-be-focused-2">tabindex focus flag</a> set
+        <dd>The element is <i>being activated</i> if it is <a data-link-type="dfn" href="matching-html-elements-using-selectors.html#in-a-formal-activation-state" id="ref-for-in-a-formal-activation-state-3">in a formal activation
+      state</a>.
+        <dt>If the element is <a data-link-type="dfn" href="matching-html-elements-using-selectors.html#being-actively-pointed-at" id="ref-for-being-actively-pointed-at-1">being actively pointed at</a>
+        <dd>The element is <i>being activated</i>.
+       </dd></dt></dd></dt></dt></dt></dt></dd></dt></dd></dt></dt></dd></dt></dd></dt></dl>
+       <p>An element is said to be <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="in-a-formal-activation-state">in a formal activation state<span class="dfn-panel"><b><a href="matching-html-elements-using-selectors.html#in-a-formal-activation-state">#in-a-formal-activation-state</a></b><b>Referenced in:</b><span><a href="matching-html-elements-using-selectors.html#ref-for-in-a-formal-activation-state-1">4.15.2. Pseudo-classes</a> <a href="matching-html-elements-using-selectors.html#ref-for-in-a-formal-activation-state-2">(2)</a> <a href="matching-html-elements-using-selectors.html#ref-for-in-a-formal-activation-state-3">(3)</a></span></span></dfn> between the time the user
+    begins to indicate an intent to trigger the element&#x2019;s <a data-link-type="dfn" href="editing.html#activation-behavior" id="ref-for-activation-behavior-40">activation behavior</a> and
+    either the time the user stops indicating an intent to trigger the element&#x2019;s <a data-link-type="dfn" href="editing.html#activation-behavior" id="ref-for-activation-behavior-41">activation
+    behavior</a>, or the time the element&#x2019;s <a data-link-type="dfn" href="editing.html#activation-behavior" id="ref-for-activation-behavior-42">activation behavior</a> has finished
+    running, which ever comes first.</p>
+       <p>An element is said to be <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="being-actively-pointed-at">being actively pointed at<span class="dfn-panel"><b><a href="matching-html-elements-using-selectors.html#being-actively-pointed-at">#being-actively-pointed-at</a></b><b>Referenced in:</b><span><a href="matching-html-elements-using-selectors.html#ref-for-being-actively-pointed-at-1">4.15.2. Pseudo-classes</a></span></span></dfn> while the user indicates the
+    element using a pointing device while that pointing device is in the &quot;down&quot; state (e.g., for a
+    mouse, between the time the mouse button is pressed and the time it is depressed; for a finger
+    in a multitouch environment, while the finger is touching the display surface).</p>
+      <dt><dfn class="dfn-paneled css" data-dfn-type="selector" data-noexport="" id="selectordef-hover"><code>:hover</code><span class="dfn-panel"><b><a href="matching-html-elements-using-selectors.html#selectordef-hover">#selectordef-hover</a></b><b>Referenced in:</b><span><a href="matching-html-elements-using-selectors.html#ref-for-selectordef-hover-1">4.15.2. Pseudo-classes</a> <a href="matching-html-elements-using-selectors.html#ref-for-selectordef-hover-2">(2)</a> <a href="matching-html-elements-using-selectors.html#ref-for-selectordef-hover-3">(3)</a> <a href="matching-html-elements-using-selectors.html#ref-for-selectordef-hover-4">(4)</a> <a href="matching-html-elements-using-selectors.html#ref-for-selectordef-hover-5">(5)</a></span></span></dfn>
+      <dd>
+       <p>The <code>:hover</code> pseudo-class is defined to match an element <q cite="https://drafts.csswg.org/selectors3/#the-user-action-pseudo-classes-hover-act">while the
+    user <i>designates</i> an element with a pointing device</q>. For the purposes of defining the <code>:hover</code> pseudo-class only, an HTML user agent must consider
+    an element as being one that the user <i>designates</i> if it is:</p>
+       <ul>
+        <li>
+         <p>An element that the user indicates using a pointing device.</p>
+        </li><li>
+         <p>An element that has a descendant that the user indicates using a pointing device.</p>
+        </li><li>
+         <p>An element that is the <a data-link-type="dfn" href="sec-forms.html#labeled-control" id="ref-for-labeled-control-16">labeled control</a> of a <code><a data-link-type="element" href="sec-forms.html#elementdef-label" id="ref-for-elementdef-label-37">label</a></code> element that is
+      currently matching <a class="css" data-link-type="selector" href="matching-html-elements-using-selectors.html#selectordef-hover" id="ref-for-selectordef-hover-1">:hover</a>.</p>
+       </li></ul>
+       <div class="example" id="example-7eb0ac58">
+        <a class="self-link" href="matching-html-elements-using-selectors.html#example-7eb0ac58"></a> Consider in particular a fragment such as: 
+<pre class="highlight"><span></span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span> <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">c</span><span class="p">&gt;</span> <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">a</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span> <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">b</span><span class="p">&gt;</span> <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">c</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span></pre>
+        <p>If the user designates the element with ID &quot;<code><a data-link-type="element" href="textlevel-semantics.html#elementdef-a" id="ref-for-elementdef-a-87">a</a></code>&quot; with their pointing
+      device, then the <code><a data-link-type="element" href="grouping-content.html#elementdef-p" id="ref-for-elementdef-p-34">p</a></code> element (and all its ancestors not shown in the snippet above),
+      the <code><a data-link-type="element" href="sec-forms.html#elementdef-label" id="ref-for-elementdef-label-38">label</a></code> element, the element with ID &quot;<code><a data-link-type="element" href="textlevel-semantics.html#elementdef-a" id="ref-for-elementdef-a-88">a</a></code>&quot;, and the element
+      with ID &quot;<code>c</code>&quot; will match the <a class="css" data-link-type="selector" href="matching-html-elements-using-selectors.html#selectordef-hover" id="ref-for-selectordef-hover-2">:hover</a> pseudo-class. The element with ID &quot;<code><a data-link-type="element" href="textlevel-semantics.html#elementdef-a" id="ref-for-elementdef-a-89">a</a></code>&quot; matches it from condition 1, the <code>label</code> and <code><a data-link-type="element" href="grouping-content.html#elementdef-p" id="ref-for-elementdef-p-35">p</a></code> elements match it because of condition 2 (one of their
+      descendants is designated), and the element with ID &quot;<code>c</code>&quot; matches it
+      through condition 3 (its <code><a data-link-type="element" href="sec-forms.html#elementdef-label" id="ref-for-elementdef-label-39">label</a></code> element matches <a class="css" data-link-type="selector" href="matching-html-elements-using-selectors.html#selectordef-hover" id="ref-for-selectordef-hover-3">:hover</a>). However, the element with ID &quot;<code>b</code>&quot;
+      does <em>not</em> match <a class="css" data-link-type="selector" href="matching-html-elements-using-selectors.html#selectordef-hover" id="ref-for-selectordef-hover-4">:hover</a>: its descendant is not
+      designated, even though it matches <a class="css" data-link-type="selector" href="matching-html-elements-using-selectors.html#selectordef-hover" id="ref-for-selectordef-hover-5">:hover</a>.</p>
+       </div>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-focus"><code>:focus</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-focus"></a></dfn>
+      <dd>
+       <p>For the purposes of the CSS &apos;:focus&apos; pseudo-class, an <dfn data-dfn-type="dfn" data-noexport="" id="element-has-the-focus">element has the focus<a class="self-link" href="matching-html-elements-using-selectors.html#element-has-the-focus"></a></dfn> when
+    its <a data-link-type="dfn" href="browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context-9">top-level browsing context</a> has the system focus, it is not itself a <a data-link-type="dfn" href="browsers.html#browsing-context-container" id="ref-for-browsing-context-container-4">browsing context container</a>, and it is one of the elements listed in the <a data-link-type="dfn" href="editing.html#focus-chain" id="ref-for-focus-chain-1">focus
+    chain</a> of the <a data-link-type="dfn" href="editing.html#currently-focused-area-of-the-top-level-browsing-context" id="ref-for-currently-focused-area-of-the-top-level-browsing-context-1">currently focused area of the top-level browsing context</a>.</p>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-enabled"><code>:enabled</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-enabled"></a></dfn>
+      <dd>
+       <p>The <code>:enabled</code> pseudo-class must match any element
+    that is one of the following:</p>
+       <ul>
+        <li>a <code><a data-link-type="element" href="sec-forms.html#elementdef-button" id="ref-for-elementdef-button-33">button</a></code> element that is not disabled
+        </li><li>an <code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-250">input</a></code> element that is not disabled
+        </li><li>a <code><a data-link-type="element" href="sec-forms.html#elementdef-select" id="ref-for-elementdef-select-91">select</a></code> element that is not disabled
+        </li><li>a <code><a data-link-type="element" href="sec-forms.html#elementdef-textarea" id="ref-for-elementdef-textarea-56">textarea</a></code> element that is not disabled
+        </li><li>an <code><a data-link-type="element" href="sec-forms.html#elementdef-optgroup" id="ref-for-elementdef-optgroup-21">optgroup</a></code> element that does not have a <code>disabled</code> attribute
+        </li><li>an <code><a data-link-type="element" href="sec-forms.html#elementdef-option" id="ref-for-elementdef-option-87">option</a></code> element that is not disabled
+        </li><li>a <code><a data-link-type="element" href="interactive-elements.html#elementdef-menuitem" id="ref-for-elementdef-menuitem-16">menuitem</a></code> element that does not have a <code>disabled</code> attribute
+        </li><li>a <code><a data-link-type="element" href="sec-forms.html#elementdef-fieldset" id="ref-for-elementdef-fieldset-33">fieldset</a></code> element that is not a <a data-link-type="dfn" href="sec-forms.html#disabled-fieldset" id="ref-for-disabled-fieldset-2">disabled fieldset</a>
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-disabled"><code>:disabled</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-disabled"></a></dfn>
+      <dd>
+       <p>The <code>:disabled</code> pseudo-class must match any element that
+    is <a data-link-type="dfn" href="disabled-elements.html#disabling" id="ref-for-disabling-2">actually disabled</a>.</p>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-checked"><code>:checked</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-checked"></a></dfn>
+      <dd>
+       <p>The <code>:checked</code> pseudo-class must match any element
+    falling into one of the following categories:</p>
+       <ul>
+        <li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-251">input</a></code> elements whose <code>type</code> attribute is in
+      the <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-checkbox" id="ref-for-element-statedef-input-checkbox-12">Checkbox</a> state and whose <a data-link-type="dfn" href="sec-forms.html#forms-checkedness" id="ref-for-forms-checkedness-34">checkedness</a> state is true
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-252">input</a></code> elements whose <code>type</code> attribute is in
+      the <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-radio-button" id="ref-for-element-statedef-input-radio-button-13">Radio Button</a> state and whose <a data-link-type="dfn" href="sec-forms.html#forms-checkedness" id="ref-for-forms-checkedness-35">checkedness</a> state is true
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-option" id="ref-for-elementdef-option-88">option</a></code> elements whose <a data-link-type="state" href="sec-forms.html#statedef-option-selectedness" id="ref-for-statedef-option-selectedness-41">selectedness</a> is true
+        </li><li><code><a data-link-type="element" href="interactive-elements.html#elementdef-menuitem" id="ref-for-elementdef-menuitem-17">menuitem</a></code> elements whose <code>type</code> attribute
+      is in the <a data-link-type="state" href="interactive-elements.html#statedef-menuitem-checkbox" id="ref-for-statedef-menuitem-checkbox-3">Checkbox</a> state and that have a <code>checked</code> attribute
+        </li><li><code><a data-link-type="element" href="interactive-elements.html#elementdef-menuitem" id="ref-for-elementdef-menuitem-18">menuitem</a></code> elements whose <code>type</code> attribute
+      is in the <a data-link-type="state" href="interactive-elements.html#statedef-menuitem-radio" id="ref-for-statedef-menuitem-radio-5">Radio</a> state and that have a <code>checked</code> attribute
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-indeterminate"><code>:indeterminate</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-indeterminate"></a></dfn>
+      <dd>
+       <p>The <code>:indeterminate</code> pseudo-class must match any
+    element falling into one of the following categories:</p>
+       <ul>
+        <li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-253">input</a></code> elements whose <code>type</code> attribute is in
+      the <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-checkbox" id="ref-for-element-statedef-input-checkbox-13">Checkbox</a> state and whose <code>indeterminate</code> IDL attribute is set to true
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-254">input</a></code> elements whose <code>type</code> attribute is in
+      the <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-radio-button" id="ref-for-element-statedef-input-radio-button-14">Radio Button</a> state and whose <a data-link-type="dfn" href="sec-forms.html#radio-button-group" id="ref-for-radio-button-group-7">radio button
+      group</a> contains no <code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-255">input</a></code> elements whose <a data-link-type="dfn" href="sec-forms.html#forms-checkedness" id="ref-for-forms-checkedness-36">checkedness</a> state is true.
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-progress" id="ref-for-elementdef-progress-14">progress</a></code> elements with no <code>value</code> content attribute
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-default"><code>:default</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-default"></a></dfn>
+      <dd>
+       <p>The <code>:default</code> pseudo-class must match any element
+    falling into one of the following categories:</p>
+       <ul>
+        <li><code><a data-link-type="element" href="sec-forms.html#elementdef-button" id="ref-for-elementdef-button-34">button</a></code> elements that are their form&#x2019;s <a data-link-type="dfn" href="sec-forms.html#default-button" id="ref-for-default-button-4">default button</a>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-256">input</a></code> elements whose <code>type</code> attribute is in
+      the <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-submit-button" id="ref-for-element-statedef-input-submit-button-16">submit button</a> or <a data-link-type="element-state" href="sec-forms.html#element-statedef-input-image-button" id="ref-for-element-statedef-input-image-button-19">image button</a> state, and that are their form&#x2019;s <a data-link-type="dfn" href="sec-forms.html#default-button" id="ref-for-default-button-5">default button</a>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-257">input</a></code> elements to which the <code>checked</code> attribute applies and that have a <code>checked</code> attribute
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-option" id="ref-for-elementdef-option-89">option</a></code> elements that have a <code>selected</code> attribute
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-valid"><code>:valid</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-valid"></a></dfn>
+      <dd>
+       <p>The <code>:valid</code> pseudo-class must match any element falling
+    into one of the following categories:</p>
+       <ul>
+        <li>elements that are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-7">candidates for
+      constraint validation</a> and that <a data-link-type="dfn" href="sec-forms.html#satisfy-its-constraints" id="ref-for-satisfy-its-constraints-7">satisfy their constraints</a>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-form" id="ref-for-elementdef-form-82">form</a></code> elements that are not the <a data-link-type="dfn" href="sec-forms.html#form-owner" id="ref-for-form-owner-62">form owner</a> of any elements that
+      themselves are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-8">candidates for constraint
+      validation</a> but do not <a data-link-type="dfn" href="sec-forms.html#satisfy-its-constraints" id="ref-for-satisfy-its-constraints-8">satisfy their constraints</a>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-fieldset" id="ref-for-elementdef-fieldset-34">fieldset</a></code> elements that have no descendant elements that themselves are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-9">candidates for constraint validation</a> but do
+      not <a data-link-type="dfn" href="sec-forms.html#satisfy-its-constraints" id="ref-for-satisfy-its-constraints-9">satisfy their constraints</a>
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-invalid"><code>:invalid</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-invalid"></a></dfn>
+      <dd>
+       <p>The <code>:invalid</code> pseudo-class must match any element
+    falling into one of the following categories:</p>
+       <ul>
+        <li>elements that are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-10">candidates for
+      constraint validation</a> but that do not <a data-link-type="dfn" href="sec-forms.html#satisfy-its-constraints" id="ref-for-satisfy-its-constraints-10">satisfy their constraints</a>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-form" id="ref-for-elementdef-form-83">form</a></code> elements that are the <a data-link-type="dfn" href="sec-forms.html#form-owner" id="ref-for-form-owner-63">form owner</a> of one or more elements
+      that themselves are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-11">candidates for constraint
+      validation</a> but do not <a data-link-type="dfn" href="sec-forms.html#satisfy-its-constraints" id="ref-for-satisfy-its-constraints-11">satisfy their constraints</a>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-fieldset" id="ref-for-elementdef-fieldset-35">fieldset</a></code> elements that have of one or more descendant elements that themselves
+      are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-12">candidates for constraint
+      validation</a> but do not <a data-link-type="dfn" href="sec-forms.html#satisfy-its-constraints" id="ref-for-satisfy-its-constraints-12">satisfy their constraints</a>
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-in-range"><code>:in-range</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-in-range"></a></dfn>
+      <dd>
+       <p>The <code>:in-range</code> pseudo-class must match all elements
+    that are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-13">candidates for constraint
+    validation</a>, <a data-link-type="dfn" href="sec-forms.html#have-range-limitations" id="ref-for-have-range-limitations-1">have range limitations</a>, and that are neither <a data-link-type="dfn" href="sec-forms.html#suffer-from-an-underflow" id="ref-for-suffer-from-an-underflow-9">suffering
+    from an underflow</a> nor <a data-link-type="dfn" href="sec-forms.html#suffer-from-an-overflow" id="ref-for-suffer-from-an-overflow-9">suffering from an overflow</a>.</p>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-out-of-range"><code>:out-of-range</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-out-of-range"></a></dfn>
+      <dd>
+       <p>The <code>:out-of-range</code> pseudo-class must match all
+    elements that are <a data-link-type="dfn" href="sec-forms.html#candidates-for-constraint-validation" id="ref-for-candidates-for-constraint-validation-14">candidates for constraint
+    validation</a>, <a data-link-type="dfn" href="sec-forms.html#have-range-limitations" id="ref-for-have-range-limitations-2">have range limitations</a>, and that are either <a data-link-type="dfn" href="sec-forms.html#suffer-from-an-underflow" id="ref-for-suffer-from-an-underflow-10">suffering from
+    an underflow</a> or <a data-link-type="dfn" href="sec-forms.html#suffer-from-an-overflow" id="ref-for-suffer-from-an-overflow-10">suffering from an overflow</a>.</p>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-required"><code>:required</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-required"></a></dfn>
+      <dd>
+       <p>The <code>:required</code> pseudo-class must match any element
+    falling into one of the following categories:</p>
+       <ul>
+        <li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-258">input</a></code> elements that are <i>required</i>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-select" id="ref-for-elementdef-select-92">select</a></code> elements that have a <code>required</code> attribute
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-textarea" id="ref-for-elementdef-textarea-57">textarea</a></code> elements that have a <code>required</code> attribute
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-optional"><code>:optional</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-optional"></a></dfn>
+      <dd>
+       <p>The <code>:optional</code> pseudo-class must match any element
+    falling into one of the following categories:</p>
+       <ul>
+        <li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-259">input</a></code> elements to which the <code>required</code> attribute applies that are not <i>required</i>
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-select" id="ref-for-elementdef-select-93">select</a></code> elements that do not have a <code>required</code> attribute
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-textarea" id="ref-for-elementdef-textarea-58">textarea</a></code> elements that do not have a <code>required</code> attribute
+       </li></ul>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-read-only"><code>:read-only</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-read-only"></a></dfn>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-read-write"><code>:read-write</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-read-write"></a></dfn>
+      <dd>
+       <p>The <code>:read-write</code> pseudo-class must match any element
+    falling into one of the following categories, which for the purposes of Selectors are thus
+    considered <i>user-alterable</i>: <a data-link-type="biblio" href="references.html#biblio-css3-selectors">[CSS3-SELECTORS]</a></p>
+       <ul>
+        <li><code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-260">input</a></code> elements to which the <code>readonly</code> attribute applies, and that are <i>mutable</i> (i.e., that do not
+      have the <code>readonly</code> attribute specified and that are not
+      disabled)
+        </li><li><code><a data-link-type="element" href="sec-forms.html#elementdef-textarea" id="ref-for-elementdef-textarea-59">textarea</a></code> elements that do not have a <code>readonly</code> attribute, and that are not disabled
+        </li><li>elements that are <a data-link-type="dfn" href="editing.html#editing-host" id="ref-for-editing-host-1">editing hosts</a> or <a data-link-type="dfn" href="editing.html#editable" id="ref-for-editable-1">editable</a> and are neither <code><a data-link-type="element" href="sec-forms.html#elementdef-input" id="ref-for-elementdef-input-261">input</a></code> elements nor <code><a data-link-type="element" href="sec-forms.html#elementdef-textarea" id="ref-for-elementdef-textarea-60">textarea</a></code> elements
+       </li></ul>
+       <p>The <code>:read-only</code> pseudo-class must match all other <a data-link-type="dfn" href="infrastructure.html#html-element" id="ref-for-html-element-54">html elements</a>.</p>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-dir-ltr"><code>:dir(ltr)</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-dir-ltr"></a></dfn>
+      <dd>
+       <p>The <code>:dir(ltr)</code> pseudo-class must match all elements whose <a data-link-type="dfn" href="dom.html#directionality" id="ref-for-directionality-28">directionality</a> is &apos;<a data-link-type="state" href="dom.html#statedef-dir-ltr" id="ref-for-statedef-dir-ltr-7">ltr</a>&apos;.</p>
+      <dt><dfn class="css" data-dfn-type="selector" data-noexport="" id="selectordef-dir-rtl"><code>:dir(rtl)</code><a class="self-link" href="matching-html-elements-using-selectors.html#selectordef-dir-rtl"></a></dfn>
+      <dd>
+       <p>The <code>:dir(rtl)</code> pseudo-class must match all elements whose <a data-link-type="dfn" href="dom.html#directionality" id="ref-for-directionality-29">directionality</a> is &apos;<a data-link-type="state" href="dom.html#statedef-dir-rtl" id="ref-for-statedef-dir-rtl-5">rtl</a>&apos;.</p>
+     </dd></dt></dd></dt></dd></dt></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dd></dt></dt></dl>
+     <p class="note" role="note"> Another section of this specification defines the <i>target element</i> used with the <code>:target</code> pseudo-class. </p>
+     <p class="note" role="note"> This specification does not define when an element matches the <code>:lang()</code> dynamic
+    pseudo-class, as it is defined in sufficient detail in a language-agnostic fashion in the
+    Selectors specification. <a data-link-type="biblio" href="references.html#biblio-css3-selectors">[CSS3-SELECTORS]</a> </p>
+    </section></main>
+<script src="https://www.w3.org/scripts/TR/2016/fixup.js"></script>
+<script>
+        document.body.addEventListener("click", function(e) {
+            var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
+            // Find the dfn element or panel, if any, that was clicked on.
+            var el = e.target;
+            var target;
+            while(el.parentElement) {
+                if(el.tagName == "DFN") {
+                    target = "dfn";
+                    break;
+                }
+                if(/H\d/.test(el.tagName) && el.getAttribute('data-dfn-type') != null) {
+                    target = "dfn";
+                    break;
+                }
+                if(el.classList.contains("dfn-panel")) {
+                    target = "dfn-panel";
+                    break;
+                }
+                el = el.parentElement;
+            }
+            if(target != "dfn-panel") {
+                // Turn off any currently "on" or "activated" panels.
+                queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
+                    el.classList.remove("on");
+                    el.classList.remove("activated");
+                });
+            }
+            if(target == "dfn") {
+                // open the panel
+                var dfnPanel = el.querySelector(".dfn-panel");
+                if(dfnPanel) {
+                    dfnPanel.classList.add("on");
+                }
+            } else if(target == "dfn-panel") {
+                // Switch it to "activated" state, which pins it.
+                el.classList.add("activated");
+            }
+
+        });
+        </script><p class="prev_next">&#x2190; <a href="disabled-elements.html#disabled-elements"><span class="secno">4.14</span> <span class="content">Disabled elements</span></a> &#x2014; <a href="index.html#contents">Table of contents</a> &#x2014; <a href="editing.html#editing"><span class="secno">5</span> <span class="content">User interaction</span></a> &#x2192;</p></body></html>
