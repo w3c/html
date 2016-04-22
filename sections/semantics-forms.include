@@ -10682,13 +10682,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   in the <{form}> element's <code>elements</code> object. If the attribute is specified, its value
   must not be the empty string.
 
-  Any non-empty value for <{formelements/name}> is allowed, but the names
-  "<code>_charset_</code>" and "<code>isindex</code>" are special:
-
-  : <dfn attr-value for="formelements/name"><code>isindex</code></dfn>
-  :: This value, if used as the name of a <a>Text</a> control that is the first control in a form
-     that is submitted using the <code>application/x-www-form-urlencoded</code> mechanism, causes
-     the submission to only include the value of this control, with no name.
+  Any non-empty value for <{formelements/name}> is allowed, but the name
+  "<code>_charset_</code>" is special:
 
   : <dfn attr-value for="formelements/name"><code>_charset_</code></dfn>
   :: This value, if used as the name of a <a element-state for="input">Hidden</a>
@@ -14633,13 +14628,7 @@ fur
 
       </li>
 
-      <li>If the entry's name is "<code>isindex</code>", its type is
-      "<code>text</code>", and this is the first entry in the <var>form data
-      set</var>, then append the value to <var>result</var> and skip the rest of the
-      substeps for this entry, moving on to the next entry, if any, or the next step in the overall
-      algorithm otherwise.</li>
-
-      <li>If this is not the first entry, append a single U+0026 AMPERSAND character (&amp;) to
+      <li>Append a single U+0026 AMPERSAND character (&amp;) to
       <var>result</var>.</li>
 
       <li>Append the entry's name to <var>result</var>.</li>
@@ -14662,27 +14651,18 @@ fur
   To <dfn lt="decoding algorithm">decode <code>application/x-www-form-urlencoded</code> payloads</dfn>, the following algorithm should be
   used. This algorithm uses as inputs the payload itself, <var>payload</var>, consisting of
   a Unicode string using only characters in the range U+0000 to U+007F; a default character encoding
-  <var>encoding</var>; and optionally an <var>isindex</var> flag indicating that
-  the payload is to be processed as if it had been generated for a form containing an <code>isindex</code> control. The output of this algorithm is a sorted list
-  of name-value pairs. If the <var>isindex</var> flag is set and the first control really
-  was an <code>isindex</code> control, then the first name-value pair
-  will have as its name the empty string.
+  <var>encoding</var>. The output of this algorithm is a sorted list
+  of name-value pairs.
 
   Which default character encoding to use can only be determined on a case-by-case basis, but
   generally the best character encoding to use as a default is the one that was used to encode the
   page on which the form used to create the payload was itself found. In the absence of a better
   default, UTF-8 is suggested.
 
-  The <var>isindex</var> flag is for legacy use only. Forms in conforming HTML documents
-  will not generate payloads that need to be decoded with this flag set.
-
   <ol>
 
     <li>Let <var>strings</var> be the result of <a>strictly splitting the string</a> <var>payload</var> on U+0026 AMPERSAND
     characters (&amp;).</li>
-
-    <li>If the <var>isindex</var> flag is set and the first string in <var>strings</var> does not contain a U+003D EQUALS SIGN character (=), insert a U+003D
-    EQUALS SIGN character (=) at the start of the first string in <var>strings</var>.</li>
 
     <li>Let <var>pairs</var> be an empty list of name-value pairs.</li>
 
