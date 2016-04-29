@@ -188,9 +188,6 @@
   context</a>. User agents must not allow the user to interact with <a>child browsing contexts</a> of elements that are in <code>Document</code>s that are
   not themselves <a>fully active</a>.
 
-  A <a>nested browsing context</a> can have a <a>seamless browsing context flag</a>
-  set, if it is embedded through an <{iframe}> element with a <code>seamless</code> attribute.
-
   A <a>nested browsing context</a> can be put into a <dfn>delaying <code>load</code> events mode</dfn>. This is used when it is <a>navigated</a>, to <a>delay the load event</a> of the <a>browsing
   context container</a> before the new <code>Document</code> is created.
 
@@ -426,9 +423,7 @@
   These values have different meanings based on whether the page is sandboxed or not, as
   summarized in the following (non-normative) table. In this table, "current" means the
   <a>browsing context</a> that the link or script is in, "parent" means the <a>parent
-  browsing context</a> of the one the link or script is in, "master" means the nearest
-  <a>ancestor browsing context</a> of the one the link or script is in that is not itself in a
-  <a>seamless iframe</a>, "top" means the <a>top-level
+  browsing context</a> of the one the link or script is in, "top" means the <a>top-level
   browsing context</a> of the one the link or script is in, "new" means a new <a>top-level
   browsing context</a> or <a>auxiliary browsing context</a> is to be created, subject to
   various user preferences and user agent policies, "none" means that nothing will happen, and
@@ -443,45 +438,30 @@
       <th rowspan=2>Ordinary effect
       <th colspan=5>Effect in an <code>iframe</code> with...
     <tr>
-      <th><code>seamless=""</code>
       <th><code>sandbox=""</code>
-      <th><code>sandbox="" seamless=""</code>
       <th><code>sandbox="allow-top-navigation"</code>
-      <th><code>sandbox="allow-top-navigation" seamless=""</code>
 
     <tbody>
     <tr>
       <td>none specified, for links and form submissions
       <td>current
-      <td>master
       <td>current
-      <td>master
       <td>current
-      <td>master
 
     <tr>
       <td>empty string
       <td>current
-      <td>master
       <td>current
-      <td>master
       <td>current
-      <td>master
 
     <tr>
       <td><code>_blank</code>
       <td>new
-      <td>new
-      <td>maybe new
-      <td>maybe new
       <td>maybe new
       <td>maybe new
 
     <tr>
       <td><code>_self</code>
-      <td>current
-      <td>current
-      <td>current
       <td>current
       <td>current
       <td>current
@@ -491,25 +471,16 @@
       <td>current
       <td>current
       <td>current
-      <td>current
-      <td>current
-      <td>current
 
     <tr>
       <td><code>_parent</code> if parent is also top
       <td>parent/top
-      <td>parent/top
       <td>none
-      <td>none
-      <td>parent/top
       <td>parent/top
 
     <tr>
       <td><code>_parent</code> if there is one and it's not top
       <td>parent
-      <td>parent
-      <td>none
-      <td>none
       <td>none
       <td>none
 
@@ -518,33 +489,21 @@
       <td>current
       <td>current
       <td>current
-      <td>current
-      <td>current
-      <td>current
 
     <tr>
       <td><code>_top</code> if top is not current
       <td>top
-      <td>top
       <td>none
-      <td>none
-      <td>top
       <td>top
 
     <tr>
       <td>name that doesn't exist
       <td>new
-      <td>new
-      <td>maybe new
-      <td>maybe new
       <td>maybe new
       <td>maybe new
 
     <tr>
       <td>name that exists and is a descendant
-      <td>specified descendant
-      <td>specified descendant
-      <td>specified descendant
       <td>specified descendant
       <td>specified descendant
       <td>specified descendant
@@ -554,34 +513,22 @@
       <td>current
       <td>current
       <td>current
-      <td>current
-      <td>current
-      <td>current
 
     <tr>
       <td>name that exists and is an ancestor that is top
       <td>specified ancestor
-      <td>specified ancestor
       <td>none
-      <td>none
-      <td>specified ancestor/top
       <td>specified ancestor/top
 
     <tr>
       <td>name that exists and is an ancestor that is not top
       <td>specified ancestor
-      <td>specified ancestor
-      <td>none
-      <td>none
       <td>none
       <td>none
 
     <tr>
       <td>other name that exists with common top
       <td>specified
-      <td>specified
-      <td>none
-      <td>none
       <td>none
       <td>none
 
@@ -590,25 +537,16 @@
       <td>specified
       <td>specified
       <td>specified
-      <td>specified
-      <td>specified
-      <td>specified
 
     <tr>
       <td>name that exists with different top, if familiar but not <a>one permitted sandboxed navigator</a>
       <td>specified
-      <td>specified
-      <td>none
-      <td>none
       <td>none
       <td>none
 
     <tr>
       <td>name that exists with different top, not familiar
       <td>new
-      <td>new
-      <td>maybe new
-      <td>maybe new
       <td>maybe new
       <td>maybe new
 
@@ -671,16 +609,8 @@
 
   <ol>
 
-    <li>
-
-    If the given browsing context name is the empty string or <code>_self</code>, then
-    the chosen browsing context must be the current one.
-
-    If the given browsing context name is <code>_self</code>, then this is an
-    <a>explicit self-navigation override</a>, which overrides the behavior of the
-    <a>seamless browsing context flag</a> set by the <code>seamless</code> attribute on <{iframe}> elements.
-
-    </li>
+    <li>If the given browsing context name is the empty string or <code>_self</code>, then
+    the chosen browsing context must be the current one.</li>
 
     <li>If the given browsing context name is <code>_parent</code>, then the chosen
     browsing context must be the <a><em>parent</em> browsing context</a> of the current one,
@@ -691,24 +621,16 @@
     context must be the <a>top-level browsing context</a> of the current one, if there is one,
     or else the current browsing context.</li>
 
-    <li>
-
-    If the given browsing context name is not <code>_blank</code> and there exists a
+    <li>If the given browsing context name is not <code>_blank</code> and there exists a
     browsing context whose <a lt="browsing context name">name</a> is the same as the given
     browsing context name, and the current browsing context is familiar with that
     browsing context, and the user agent determines that the two browsing contexts are related
     enough that it is ok if they reach each other, then that browsing context must be the chosen
     one. If there are multiple matching browsing contexts, the user agent should select one in some
     arbitrary consistent manner, such as the most recently opened, most recently focused, or more
-    closely related.
-
-    If the browsing context is chosen by this step to be the current browsing context, then this
-    is also an <a>explicit self-navigation override</a>.
-
-    </li>
+    closely related.</li>
 
     <li>
-
     Otherwise, a new browsing context is being requested, and what happens depends on the user
     agent's configuration and abilities &mdash; it is determined by the rules given for the first
     applicable option from the following list:
@@ -2169,21 +2091,6 @@
 
     </dd>
 
-    <dt>The <dfn>sandboxed seamless iframes flag</dfn></dt>
-
-    <dd>
-
-    This flag prevents content from using the <code>seamless</code>
-    attribute on descendant <{iframe}> elements.
-
-    <p class="note">
-  This prevents a page inserted using the <code>allow-same-origin</code> keyword from using a
-    CSS-selector-based method of probing the DOM of other pages on the same site (in particular,
-    pages that contain user-sensitive information).
-  </p>
-
-    </dd>
-
     <dt>The <dfn lt="sandboxed into a unique origin|sandboxed origin browsing context flag">sandboxed origin browsing context flag</dfn></dt>
 
     <dd>
@@ -2309,8 +2216,6 @@
       keyword.</li>
 
       <li>The <a>sandboxed plugins browsing context flag</a>.</li>
-
-      <li>The <a>sandboxed seamless iframes flag</a>.</li>
 
       <li>
 
@@ -3755,14 +3660,6 @@
     throw a <code>SecurityError</code> exception.
 
     </li>
-
-    <li><dfn lt="cause links to open in the parent browsing context"></dfn>If the <a>source browsing context</a> is the same as the
-    <a>browsing context</a> being navigated, and this browsing context has its <a>seamless
-    browsing context flag</a> set, and the <a>browsing context</a> being navigated was not
-    chosen using an <dfn>explicit self-navigation override</dfn>, then find the nearest
-    <a>ancestor browsing context</a> that does not have its <a>seamless browsing context
-    flag</a> set, and continue these steps as if <em>that</em> <a>browsing context</a> was
-    the one that was going to be <a>navigated</a> instead.</li>
 
     <li>If there is a preexisting attempt to navigate the <a>browsing context</a>, and the
     <a>source browsing context</a> is the same as the <a>browsing context</a> being
