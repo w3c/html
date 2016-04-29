@@ -1355,20 +1355,13 @@
   <dl class="element">
     <dt><a>Categories</a>:</dt>
     <dd><a>Metadata content</a>.</dd>
-    <dd>If the <code>scoped</code> attribute is present: <a>flow content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>
-      If the <code>scoped</code> attribute is absent: where <a>metadata content</a> is expected.
+      Where <a>metadata content</a> is expected.
     </dd>
     <dd>
-      If the <code>scoped</code> attribute is absent: in a <{noscript}> element that is a
+      In a <{noscript}> element that is a
       child of a <{head}> element.
-    </dd>
-    <dd>
-      If the <code>scoped</code> attribute is present: where <a>flow content</a> is expected, but
-      before any other <a>flow content</a> other than <a>inter-element whitespace</a> and
-      <{style}> elements, and not as the child of an element whose content model is
-      <a>transparent</a>.
     </dd>
     <dt><a>Content model</a>:</dt>
     <dd>
@@ -1381,10 +1374,6 @@
     <dd><a>Global attributes</a></dd>
     <dd><code>media</code> — Applicable media</dd>
     <dd><code>type</code> — Type of embedded resource</dd>
-    <dd>
-      <code>scoped</code> — Whether the styles apply to the entire document or just the parent
-      subtree
-    </dd>
     <dd>
       Also, the <{style/title}> attribute has special semantics on this element: Alternative
       style sheet set name.
@@ -1399,7 +1388,6 @@
         interface HTMLStyleElement : HTMLElement {
           attribute DOMString media;
           attribute DOMString type;
-          attribute boolean scoped;
         };
         HTMLStyleElement implements LinkStyle;
       </pre>
@@ -1437,28 +1425,10 @@
   The default, if the <code>media</code> attribute is omitted, is "<code>all</code>", meaning that
   by default styles apply to all media.
 
-  The <dfn element-attr for="style"><code>scoped</code></dfn> attribute is a <a>boolean attribute</a>. If present, it
-  indicates that the styles are intended just for the subtree rooted at the <code>style</code>
-  element's parent element, as opposed to the whole {{Document}}.
-
-  If the <code>scoped</code> attribute is present and the element has a parent element, then the
-  <{style}> element must precede any <a>flow content</a> in its parent element other than
-  <a>inter-element whitespace</a> and other <{style}> elements, and the parent element's
-  content model must not have a <a>transparent</a> component.
-
   <p class="note">
-    This implies that scoped <{style}> elements cannot be children of, e.g., <{a}>
-    or <{ins}> elements, even when those are used as <a>flow content</a> containers.
-  </p>
-
-  <p class="note">
-    A <{style}> element <em>without</em> a <code>scoped</code> attribute is restricted to
+    A <{style}> element is restricted to
     appearing in the <code>head</code> of the document.
   </p>
-
-  A style sheet declared by a <{style}> element that has a <code>scoped</code> attribute
-  and has a parent node that is an element is <i>scoped</i>, with the <i>scoping root</i> being the
-  <{style}> element's parent element. [[!CSS-SCOPING-1]]
 
   The <dfn element-attr for="style"><code>title</code></dfn> attribute on <{style}> elements defines
   <a>alternative style sheet sets</a>. If the <{style}> element has no <code>title</code>
@@ -1569,8 +1539,7 @@
   </p>
 
   <div class="impl">
-    The {{HTMLStyleElement/media}}, {{HTMLStyleElement/type}} and
-    {{HTMLStyleElement/scoped}} IDL attributes must <a>reflect</a> the respective content
+    The {{HTMLStyleElement/media}} and {{HTMLStyleElement/type}} IDL attributes must <a>reflect</a> the respective content
     attributes of the same name.
   </div>
 
