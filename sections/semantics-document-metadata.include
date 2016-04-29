@@ -415,19 +415,42 @@
   keywords and their meanings</a> for the <{links/rev}> attribute. Both the <{links/rel}> and
   <{links/rev}> attributes may be present on the same element.
 
-  <dfn lt="reverse link|Reverse links">Reverse links</dfn> compliment the typical "forward link" by
-  indicating a relationship to the current document from the the linked-to resource. This can
-  enable user agents to build a more comprehensive map of linked documents.
+  <dfn lt="reverse link|Reverse links">Reverse links</dfn> are a way to express the reverse
+  directional relationship of a link. In contrast to the <{links/rel}> attribute, whose value
+  conveys a forward directional relationship ("how is the link related to me"), the <{links/rev}>
+  attribute allows for similiar relationships to be expressed in the reverse direction ("how am I
+  related to this link"). These values can enable user agents to build a more comprehensive map of
+  linked documents.
 
   <div class="example">Given two documents, each containing a chapter of a book, the links between
-  them could be described with the <{link/rel}> and <{links/rev}> attributes as follows (where both
-  links are semantically equivalent:
+  them could be described with the <{link/rel}> and <{links/rev}> attributes as follows:
 
   Document with URL "chapter1.html"
-  <pre highlight="html">&lt;link href="chapter2.html" rel="Next"&gt;</pre>
+  <pre highlight="html">&lt;link href="chapter2.html" rel="next" rev="prev"&gt;</pre>
 
   Document with URL "chapter2.html"
-  <pre highlight="html">&lt;link href="chapter1.html" rev="Prev"&gt;</pre>
+  <pre highlight="html">
+&lt;link href="chapter1.html" rel="prev" rev="next"&gt;
+&lt;link href="chapter3.html" rel="next" rev="prev"&gt;</pre>
+
+  From chapter1.html, the link to chapter2.html is the "<code>next</code>" chapter in the series in the
+  forward direction, and the "<code>previous</code>" chapter in the reverse diretion (from
+  chapter2.html to chapter1.html).
+  </div>
+
+  <div class="example">The links in a table of contents document might be described using
+  <{links/rel}> and <{links/rev}> as follows:
+  <pre highlight="html">
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href="chapter1.html" rev="toc" rel="next"&gt;chapter 1&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="chapter2.html" rev="toc"&gt;&lt;/a&gt;chapter 2&lt;/li&gt;
+    &lt;li&gt;&lt;a href="chapter3.html" rev="toc"&gt;&lt;/a&gt;chapter 3&lt;/li&gt;
+  &lt;/ol&gt;
+  </pre>
+
+  From the table of contents, the "<code>next</code>" logical path is to the first chapter,
+  expressed using <{links/rel}>. Each chapter link has a "<code>toc</code>" <{links/rev}> value
+  which indicates that the current document is the table of contents document for every chapter.
 
   </div>
 
