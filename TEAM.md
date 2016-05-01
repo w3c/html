@@ -12,9 +12,11 @@ This document contains information used by the editors maintaining the specifica
 
 4. The editors should review the contribution considerations listed in the [README.md](README.md) file.
 
-5. Use your judgement before approving a change that might be considered controversial. In general, such changes often need a wider review from the working group and should not be merged before that happens. Of course, we can revert or amend changes if it is clear that they don't represent WG consensus so it is a judgement call.
+Substantive changes should be approved by two editors. If the PR originated from outside the editorial team, then two editors should indicate their support before it is merged. If the PR was submitted by an editor, then another editor is able to merge it.
 
-6. Note: the editors don't need to create pull requests for editorial changes. Editors may commit these changes directly to the repository. Editors should create pull requests for normative changes associated with a bug or issue. Editors may merge their own pull requests if they are expected to be uncontroversial. Again, use good judgement.
+6. Use your judgement before approving a change that might be considered controversial. In general, such changes often need a wider review from the working group and should not be merged before that happens. Of course, we can revert or amend changes if it is clear that they don't represent WG consensus so it is a judgement call.
+
+7. Note: the editors don't need to create pull requests for editorial changes. Editors may commit these changes directly to the repository. Editors should create pull requests for normative changes associated with a bug or issue. Editors may merge their own pull requests if they are expected to be uncontroversial. Again, use good judgement .
 
 ## Automatic build process
 
