@@ -3408,7 +3408,6 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <dd><code>srcdoc</code> - A document to render in the <code>iframe</code></dd>
     <dd><code>name</code> - Name of <a>nested browsing context</a></dd>
     <dd><code>sandbox</code> - Security rules for nested content</dd>
-    <dd><code>seamless</code> - Whether to apply the document's styles to the nested content</dd>
     <dd><code>allowfullscreen</code> - Whether to allow the <code>iframe</code>'s
     contents to use <code>requestFullscreen()</code></dd>
     <dd><code>width</code> - Horizontal dimension</dd>
@@ -3429,7 +3428,6 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
           attribute DOMString srcdoc;
           attribute DOMString name;
           [PutForwards=value] readonly attribute DOMTokenList sandbox;
-          attribute boolean seamless;
           attribute boolean allowFullscreen;
           attribute DOMString width;
           attribute DOMString height;
@@ -3474,7 +3472,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   <div class="example">
     Here a blog uses the <code>srcdoc</code> attribute in conjunction
-    with the <code>sandbox</code> and <code>seamless</code> attributes described below to provide users of user
+    with the <code>sandbox</code> attributes described below to provide users of user
     agents that support this feature with an extra layer of protection from script injection in the
     blog post comments:
 
@@ -3490,15 +3488,15 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
   &lt;/footer&gt;
   &lt;article&gt;
   &lt;footer&gt; Thirteen minutes ago, &lt;a href="/users/ch"&gt;ch&lt;/a&gt; wrote: &lt;/footer&gt;
-  &lt;iframe seamless sandbox srcdoc="&lt;p&gt;did you get a cover picture yet?"&gt;&lt;/iframe&gt;
+  &lt;iframe sandbox srcdoc="&lt;p&gt;did you get a cover picture yet?"&gt;&lt;/iframe&gt;
   &lt;/article&gt;
   &lt;article&gt;
   &lt;footer&gt; Nine minutes ago, &lt;a href="/users/cap"&gt;cap&lt;/a&gt; wrote: &lt;/footer&gt;
-  &lt;iframe seamless sandbox srcdoc="&lt;p&gt;Yeah, you can see it &lt;a href=&amp;quot;/gallery?mode=cover&amp;amp;amp;page=1&amp;quot;&gt;in my gallery&lt;/a&gt;."&gt;&lt;/iframe&gt;
+  &lt;iframe sandbox srcdoc="&lt;p&gt;Yeah, you can see it &lt;a href=&amp;quot;/gallery?mode=cover&amp;amp;amp;page=1&amp;quot;&gt;in my gallery&lt;/a&gt;."&gt;&lt;/iframe&gt;
   &lt;/article&gt;
   &lt;article&gt;
   &lt;footer&gt; Five minutes ago, &lt;a href="/users/ch"&gt;ch&lt;/a&gt; wrote: &lt;/footer&gt;
-  &lt;iframe seamless sandbox srcdoc="&lt;p&gt;hey that's earl's table.
+  &lt;iframe sandbox srcdoc="&lt;p&gt;hey that's earl's table.
 &lt;p&gt;you should get earl&amp;amp;amp;me on the next cover."&gt;&lt;/iframe&gt;
   &lt;/article&gt;
     </pre>
@@ -3630,11 +3628,6 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     </dd>
 
   </dl>
-
-  Any <a>navigation</a> required of the user agent in the <a>process
-  the <code>iframe</code> attributes</a> algorithm must be completed as an <a>explicit
-  self-navigation override</a> and with the <{iframe}> element's <a>node document</a>'s
-  <a>browsing context</a> as the <a>source browsing context</a>.
 
   Furthermore, if the <a>active document</a> of the element's <a>child browsing
   context</a> before such a <a>navigation</a> was not <a>completely
@@ -3788,7 +3781,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
     <pre highlight="html">
 &lt;p&gt;We're not scared of you! Here is your content, unedited:&lt;/p&gt;
-&lt;iframe sandbox src="http://usercontent.example.net/getusercontent.cgi?id=12193"&gt;&lt;/iframe&gt;
+&lt;iframe title="Example iframe" sandbox src="http://usercontent.example.net/getusercontent.cgi?id=12193"&gt;&lt;/iframe&gt;
     </pre>
 
     <p class="warning">It is important to use a separate domain so that if the attacker convinces the
@@ -3804,7 +3797,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     thus reducing the risk of the user being exposed to malware and other annoyances.
 
     <pre highlight="html">
-&lt;iframe sandbox="allow-same-origin allow-forms allow-scripts"
+&lt;iframe title="Maps" sandbox="allow-same-origin allow-forms allow-scripts"
         src="http://maps.example.com/embedded.html"&gt;&lt;/iframe&gt;
     </pre>
 
@@ -3814,13 +3807,13 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     Suppose a file A contained the following fragment:
 
     <pre highlight="html">
-&lt;iframe sandbox="allow-same-origin allow-forms" src=B&gt;&lt;/iframe&gt;
+&lt;iframe title="Example iframe" sandbox="allow-same-origin allow-forms" src=B&gt;&lt;/iframe&gt;
     </pre>
 
     Suppose that file B contained an iframe also:
 
     <pre highlight="html">
-&lt;iframe sandbox="allow-scripts" src=C&gt;&lt;/iframe&gt;
+&lt;iframe title="Example iframe" sandbox="allow-scripts" src=C&gt;&lt;/iframe&gt;
     </pre>
 
     Further, suppose that file C contained a link:
@@ -3850,167 +3843,6 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   <hr />
 
-  The <dfn lt="seamless iframe"></dfn><dfn element-attr for="iframe"><code>seamless</code></dfn> attribute is a <a>boolean
-  attribute</a>. When specified, it indicates that the <{iframe}> element's
-  <a>browsing context</a> is to be rendered in a manner that makes it appear to be part of the
-  containing document (seamlessly included in the parent document).
-
-  <div class="example">
-    An HTML inclusion is effected using this attribute as in the following example.
-    In this case, the inclusion is of a site-wide navigation bar. Any links in the
-    <code>iframe</code> will, in new user agents, be automatically opened in the
-    <code>iframe</code>'s parent browsing context; for legacy user agents, the site could also
-    include a <{base}> element with a <code>target</code>
-    attribute with the value <code>_parent</code>. Similarly, in new user agents the styles
-    of the parent page will be automatically applied to the contents of the frame, but to support
-    legacy user agents authors might wish to include the styles explicitly.
-
-    <pre highlight="html">
-&lt;!DOCTYPE HTML&gt;
-&lt;title&gt;Mirror Mirror — MovieInfo™&lt;/title&gt;
-&lt;header&gt;
-  &lt;h1&gt;Mirror Mirror&lt;/h1&gt;
-  &lt;p&gt;Part of the MovieInfo™ Database&lt;/p&gt;
-  &lt;nav&gt;
-  &lt;iframe seamless src="nav.inc"&gt;&lt;/iframe&gt;
-  &lt;/nav&gt;
-&lt;/header&gt;
-...
-    </pre>
-
-  </div>
-
-  <div class="impl">
-
-  An <{iframe}> element is said to be <dfn>in seamless mode</dfn> when all of the
-  following conditions are met:
-
-  <ul>
-
-    <li>The <code>seamless</code> attribute is set on the
-    <{iframe}> element, and
-
-    </li><li>The <{iframe}> element's owner {{Document}}'s <a>active sandboxing flag
-    set</a> does not have the <a>sandboxed seamless iframes flag</a> set, and
-
-    </li><li>Either:
-
-    <ul>
-
-      <li>The <a>browsing context</a>'s <a>active document</a> has the <a>same
-      origin</a> as the <{iframe}> element's <a>node document</a>, or
-
-      </li><li>The <a>browsing context</a>'s <a>active document</a>'s <em><a>address</a></em> has the <a>same origin</a> as the
-      <{iframe}> element's <a>node document</a>, or
-
-      </li><li>The <a>browsing context</a>'s <a>active document</a> is <a lt="iframe srcdoc document">an
-      <code>iframe</code> <code>srcdoc</code> document</a>.
-
-    </li></ul>
-
-    </li>
-
-  </ul>
-
-  When an <{iframe}> element is <a>in seamless mode</a>, the following
-  requirements apply:
-
-  <ul>
-
-    <li>The user agent must set the <dfn>seamless browsing context flag</dfn> to true for that
-    <a>browsing context</a>. This will <a>cause links to open in the parent browsing context</a> unless an <a>explicit self-navigation override</a> is used
-    (<code>target="_self"</code>).</li>
-
-    <li>Media queries in the context of the <code>iframe</code>'s <a>browsing context</a>
-    (e.g., on <code>media</code> attributes of <{style}> elements in
-    {{Document}}s in that <code>iframe</code>) must be evaluated with respect to the nearest
-    <a>ancestor browsing context</a> that is not itself being <a>nested through</a> an <code>iframe</code> that is <a>in seamless
-    mode</a>. [[!MEDIAQ]]</li>
-
-    <li>In a CSS-supporting user agent: the user agent must add all the style sheets that apply to
-    the <{iframe}> element to the cascade of the <a>active document</a> of the
-    <{iframe}> element's <a>nested browsing context</a>, at the appropriate cascade
-    levels, before any style sheets specified by the document itself.</li>
-
-    <li>In a CSS-supporting user agent: the user agent must, for the purpose of CSS property
-    inheritance only, treat the root element of the <a>active document</a> of the
-    <{iframe}> element's <a>nested browsing context</a> as being a child of the
-    <{iframe}> element. (Thus inherited properties on the root element of the document in
-    the <code>iframe</code> will inherit the computed values of those properties on the
-    <{iframe}> element instead of taking their initial values.)</li>
-
-    <li>In visual media, in a CSS-supporting user agent: the user agent should set the
-    <a>intrinsic width</a> of the <code>iframe</code> to the width that the element would have
-    if it was a non-replaced block-level element with &quot;width: auto&quot;, unless that width would be zero
-    (e.g., if the element is floating or absolutely positioned), in which case the user agent should
-    set the <a>intrinsic width</a> of the <code>iframe</code> to the shrink-to-fit width of
-    the root element (if any) of the content rendered in the <{iframe}>.</li>
-
-    <li>In visual media, in a CSS-supporting user agent: the user agent should set the
-    <a>intrinsic height</a> of the <code>iframe</code> to the shortest height that would make
-    the content rendered in the <code>iframe</code> at its current width (as given in the previous
-    bullet point) have no scrollable overflow at its bottom edge. Scrollable overflow is any overflow that
-    would increase the range to which a scrollbar or other scrolling mechanism can scroll.</li>
-
-    <li>
-
-    In visual media, in a CSS-supporting user agent: the user agent must force the height of the
-    initial containing block of the <a>active document</a> of the <a>nested browsing context</a> of the <code>iframe</code> to zero.
-
-    <p class="note">
-    This is intended to get around the otherwise circular dependency of percentage
-    dimensions that depend on the height of the containing block, thus affecting the height of the
-    document's bounding box, thus affecting the height of the viewport, thus affecting the size of
-    the initial containing block.
-  </p>
-
-    </li>
-
-    <li>In speech media, the user agent should render the <a>nested browsing context</a>
-    without announcing that it is a separate document.</li>
-
-    <li>
-
-    User agents should, in general, act as if the <a>active document</a> of the
-    <code>iframe</code>'s <a>nested browsing context</a> was part of the document that the
-    <code>iframe</code> is in, if any.
-
-    <p class="example">For example if the user agent supports listing all the links in a document,
-    links in "seamlessly" nested documents would be included in that list without being
-    significantly distinguished from links in the document itself.</p>
-
-    </li>
-
-    <li>The <a>nested browsing context</a>'s <code>Window</code> object's
-    <a>cross-boundary event parent</a> is the <a>browsing context container</a>. [[!DOM]]</li>
-
-  </ul>
-
-  If the attribute is not specified, or if the <a>origin</a> conditions listed above are
-  not met, then the user agent should render the <a>nested browsing context</a> in a manner
-  that is clearly distinguishable as a separate <a>browsing context</a>, and the
-  <a>seamless browsing context flag</a> must be set to false for that <a>browsing context</a>.
-
-  <p class="warning">It is important that user agents recheck the above conditions whenever the
-  <a>active document</a> of the <a>nested browsing context</a> of the
-  <code>iframe</code> changes, such that the <a>seamless browsing context flag</a> gets unset
-  if the <a>nested browsing context</a> is <a>navigated</a> to another
-  origin.</p>
-
-  </div>
-
-  <p class="note">
-    The attribute can be set or removed dynamically, with the rendering updating in
-  tandem.
-  </p>
-
-  <p class="note">
-    The <code>contenteditable</code> attribute does not
-  propagate into <code>seamless</code> <code>iframe</code>s.
-  </p>
-
-  <hr />
-
   The <dfn element-attr for="iframe"><code>allowfullscreen</code></dfn> attribute is a
   <a>boolean attribute</a>. When specified, it indicates that {{Document}} objects in
   the <{iframe}> element's <a>browsing context</a> are to be allowed to use <code>requestFullscreen()</code> (if it's not blocked for other
@@ -4028,7 +3860,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
   &lt;/header&gt;
   &lt;main&gt;
   &lt;p&gt;Check out my new ride!&lt;/p&gt;
-  &lt;iframe src="https://video.example.com/embed?id=92469812" allowfullscreen&gt;&lt;/iframe&gt;
+  &lt;iframe title="Video" src="https://video.example.com/embed?id=92469812" allowfullscreen&gt;&lt;/iframe&gt;
   &lt;/main&gt;
 &lt;/article&gt;
     </pre>
@@ -4068,7 +3900,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   <hr />
 
-  The IDL attributes <dfn attribute for="HTMLIFrameElement"><code>src</code></dfn>, <dfn attribute for="HTMLIFrameElement"><code>srcdoc</code></dfn>, <dfn attribute for="HTMLIFrameElement"><code>name</code></dfn>, <dfn attribute for="HTMLIFrameElement"><code>sandbox</code></dfn>, and <dfn attribute for="HTMLIFrameElement"><code>seamless</code></dfn> must <a>reflect</a> the respective
+  The IDL attributes <dfn attribute for="HTMLIFrameElement"><code>src</code></dfn>, <dfn attribute for="HTMLIFrameElement"><code>srcdoc</code></dfn>, <dfn attribute for="HTMLIFrameElement"><code>name</code></dfn>, and <dfn attribute for="HTMLIFrameElement"><code>sandbox</code></dfn> must <a>reflect</a> the respective
   content attributes of the same name.
 
   The <a>supported tokens</a> for <code>sandbox</code>'s <code>DOMTokenList</code> are the
@@ -4094,7 +3926,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     advertising broker:
 
     <pre highlight="html">
-&lt;iframe src="http://ads.example.com/?customerid=923513721&amp;amp;format=banner"
+&lt;iframe title="Advert" src="http://ads.example.com/?customerid=923513721&amp;amp;format=banner"
         width="468" height="60"&gt;&lt;/iframe&gt;
     </pre>
 
@@ -10147,15 +9979,9 @@ zero or more <{track}> elements, then
 
     <pre highlight="html">
 &lt;article&gt;
-  &lt;style scoped&gt;
-  div { margin: 1em auto; position: relative; width: 400px; height: 300px; }
-  video { position; absolute; bottom: 0; right: 0; }
-  video:first-child { width: 100%; height: 100%; }
-  video:last-child { width: 30%; }
-  &lt;/style&gt;
-  &lt;div&gt;
-  &lt;video src="movie.vid#track=Video&amp;amp;track=English" autoplay controls mediagroup=movie&gt;&lt;/video&gt;
-  &lt;video src="movie.vid#track=sign" autoplay mediagroup=movie&gt;&lt;/video&gt;
+  &lt;div style="margin: 1em auto; position: relative; width: 400px; height: 300px;"&gt;
+  &lt;video style="position; absolute; bottom: 0; right: 0; width: 100%; height: 100%;" src="movie.vid#track=Video&amp;amp;track=English" autoplay controls mediagroup=movie&gt;&lt;/video&gt;
+  &lt;video style="position; absolute; bottom: 0; right: 0; width: 30%;" src="movie.vid#track=sign" autoplay mediagroup=movie&gt;&lt;/video&gt;
   &lt;/div&gt;
 &lt;/article&gt;
     </pre>
