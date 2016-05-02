@@ -146,8 +146,8 @@
   document, page, application, or site and that is, in principle, independently distributable or
   reusable, e.g., in syndication. This could be a forum post, a magazine or newspaper article, a blog
   entry, a user-submitted comment, an interactive widget or gadget, or any other independent item of
-  content. Each <code>article</code> should be identified, typically by including a heading
-  (<code>h1</code>-<code>h6</code> element) as a child of the <{article}> element.
+  content. Each <{article}> should be identified, typically by including a heading
+  (<{h1}>-<{h6}> element) as a child of the <{article}> element.
 
   A general rule is that the <{article}> element is appropriate only if the element's
   contents would be listed explicitly in the document's outline.
@@ -161,7 +161,7 @@
   element) does not apply to nested <{article}> elements.
 
   <p class="note">
-    When used specifically with content to be redistributed in syndication, the <code>article</code>
+    When used specifically with content to be redistributed in syndication, the <{article}>
     element is similar in purpose to the <code>entry</code> element in Atom. [[RFC4287]]
   </p>
   <p class="note">
@@ -377,12 +377,13 @@
     books.
 
     <pre highlight="html">
+      &lt;style&gt;
+        section { border: double medium; margin: 2em; }
+        section.chapter h1 { font: 2em Roboto, Helvetica Neue, sans-serif; }
+        section.appendix h1 { font: small-caps 2em Roboto, Helvetica Neue, sans-serif; }
+      &lt;/style&gt;
+      ...
       &lt;article class="book"&gt;
-        &lt;style&gt;
-          section { border: double medium; margin: 2em; }
-          section.chapter h1 { font: 2em Roboto, Helvetica Neue, sans-serif; }
-          section.appendix h1 { font: small-caps 2em Roboto, Helvetica Neue, sans-serif; }
-        &lt;/style&gt;
         &lt;header&gt;
           &lt;h2&gt;My Book&lt;/h2&gt;
           &lt;p&gt;A sample with not much content&lt;/p&gt;
@@ -598,7 +599,7 @@
   </div>
 
   <div class="example">
-    In this example, <code>nav</code> is used in an e-mail application, to let the user switch
+    In this example, <{nav}> is used in an e-mail application, to let the user switch
     folders:
 
     <pre highlight="html">
@@ -645,13 +646,13 @@
   </dl>
 
   The <{aside}> element <a>represents</a> a section of a page that consists of content that
-  is tangentially related to the content around the <{aside}> element, and which could be
-  considered separate from that content. Such sections are often represented as sidebars in printed
-  typography.
+  is tangentially related to the content of the parenting <a>sectioning content</a>, and which
+  could be considered separate from that content. Such sections are often represented as sidebars
+  in printed typography.
 
   The element can be used for typographical effects like pull quotes or sidebars, for advertising,
   for groups of <{nav}> elements, and for other content that is considered separate from
-  the main content of the page.
+  the main content of the nearest ancestor <a>sectioning content</a>.
 
   <p class="note">
     It's not appropriate to use the <{aside}> element just for parentheticals, since those
@@ -699,7 +700,7 @@
   </div>
 
   <div class="example">
-    The following extract shows how <code>aside</code> can be used for blogrolls and other side
+    The following extract shows how <{aside}> can be used for blogrolls and other side
     content on a blog:
 
     <pre highlight="html">
@@ -866,26 +867,6 @@
     for when that compatibility is no longer needed. This third snippet again has the same outline
     as the previous two:
 
-    <pre highlight="html">
-      &lt;body&gt;
-        &lt;h1&gt;Let's call it a draw(ing surface)&lt;/h1&gt;
-        &lt;section&gt;
-          &lt;h2&gt;Diving in&lt;/h2&gt;
-        &lt;/section&gt;
-        &lt;section&gt;
-          &lt;h2&gt;Simple shapes&lt;/h2&gt;
-        &lt;/section&gt;
-        &lt;section&gt;
-          &lt;h2&gt;Canvas coordinates&lt;/h2&gt;
-          &lt;section&gt;
-            &lt;h3&gt;Canvas coordinates diagram&lt;/h3&gt;
-          &lt;/section&gt;
-        &lt;/section&gt;
-        &lt;section&gt;
-          &lt;h2&gt;Paths&lt;/h2&gt;
-        &lt;/section&gt;
-      &lt;/body&gt;
-    </pre>
   </div>
 
 <h4 id="the-header-element">The <dfn element><code>header</code></dfn> element</h4>
@@ -1235,7 +1216,7 @@
       <dt>If <var>node</var> has an ancestor element that is a <{body}> element</dt>
       <dd>
         The contact information of <var>node</var> is the same as the contact information of the
-        nearest <code>article</code> or <{body}> element ancestor, whichever is nearest.
+        nearest <{article}> or <{body}> element ancestor, whichever is nearest.
       </dd>
 
       <dt>If <var>node</var>'s <a>node document</a> has a <{body}> element</dt>
@@ -1662,7 +1643,7 @@
       </pre>
 
       Although it contains no headings, this snippet has three sections: a document (the
-      <code>body</code>) with two subsections (a <code>nav</code> and an <code>aside</code>). A user
+      <{body}>) with two subsections (a <{nav}> and an <{aside}>). A user
       agent could present the outline as follows:
 
       1. Untitled document
@@ -1889,9 +1870,9 @@
   </div>
 
   <div class="example">
-    Thus, when an <{article}> element starts with a <code>nav</code> block and only later
-    has its heading, the result is that the <code>nav</code> block is not part of the same section
-    as the rest of the <code>article</code> in the outline. For instance, take this document:
+    Thus, when an <{article}> element starts with a <{nav}> block and only later
+    has its heading, the result is that the <{nav}> block is not part of the same section
+    as the rest of the <{article}> in the outline. For instance, take this document:
 
     <pre highlight="html">
       &lt;!DOCTYPE HTML&gt;
@@ -1926,7 +1907,7 @@
             1. <i>Untitled navigation section</i>
         2. We're adopting a child!
 
-    Also worthy of note in this example is that the <code>header</code> and <code>main</code>
+    Also worthy of note in this example is that the <{header}> and <{main}>
     elements have no effect whatsoever on the document outline.
   </div>
 
@@ -2116,18 +2097,18 @@
 
   <em>This section is non-normative.</em>
 
-  A <code>section</code> forms part of something else. An <code>article</code> is its own thing. But
+  A <{section}> forms part of something else. An <{article}> is its own thing. But
   how does one know which is which? Mostly the real answer is "it depends on author intent".
 
   For example, one could imagine a book with a "Granny Smith" chapter that just said "These juicy,
-  green apples make a great filling for apple pies."; that would be a <code>section</code> because
+  green apples make a great filling for apple pies."; that would be a <{section}> because
   there'd be lots of other chapters on (maybe) other kinds of apples.
 
   On the other hand, one could imagine a tweet or reddit comment or tumblr post or newspaper
   classified ad that just said "Granny Smith. These juicy, green apples make a great filling for
-  apple pies."; it would then be <code>article</code>s because that was the whole thing.
+  apple pies."; it would then be <{article}>s because that was the whole thing.
 
-  A comment on an article is not part of the <code>article</code> on which it is commenting,
+  A comment on an article is not part of the <{article}> on which it is commenting,
   therefore it is its own <{article}>.
 
 </section>
