@@ -248,8 +248,9 @@
 
     A <{base}> element that is the first <{base}> element with an
     <{base/href}> content attribute in a particular {{Document}} has a
-    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a> <a lt="setting">set</a>
-    whenever any of the following situations occur:
+    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a> 
+    <a lt="set the frozen base URL">set</a> for an element whenever any of the following situations 
+    occur:
 
     * The <{base}> element becomes the first <{base}> element in <a>tree order</a>
         with an <{base/href}> content attribute in its {{Document}}.
@@ -258,11 +259,17 @@
         an <{base/href}> content attribute in its {{Document}}, and its
         <{base/href}> content attribute is changed.
 
-    To <dfn>set the frozen base URL</dfn>, <a>resolve</a> the value of the element's
-    <{base/href}> content attribute relative to the {{Document}}'s
-    <a>fallback base URL</a>; if this is successful, set the <a>frozen base URL</a> to the
-    <a>resulting absolute URL</a>, otherwise, set the <a>frozen base URL</a> to the
-    <a>fallback base URL</a>.
+    To <dfn>set the frozen base URL</dfn>, for an element <var>element</var>:
+    
+    1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
+    2. Let <var>urlRecord</var> be teh result of <a lt="resolve a URL">parsing</a> the value of 
+        <var>element</var>'s <{base/href}> content attribute with <var>document</var>'s
+        <a>fallback base URL</a>, and <var>document</var>'s <a>character encoding</a>. (Thus the
+        <{base}> element isn't affected by itself.)
+    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s <a>fallback base 
+        URL</a>, if <var>urlRecord</var> is failure or running <a>Is base allowed for Document?</a> 
+        on the <a>resulting parsed URL</a> and <var>document</var> returns "<code>Blocked</code>", 
+        and to <var>urlRecord</var> otherwise.
 
     The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must return the result of running
     the following algorithm:
