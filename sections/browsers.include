@@ -1372,7 +1372,7 @@
   <code>WindowProxy</code> object.
   </p>
 
-  Each <a>script</a> has a strong reference to its <a>settings
+  Each <a for="concept">script</a> has a strong reference to its <a>settings
   object</a>, and each <a>environment settings object</a> has strong references to its
   <a>global object</a>, <a>responsible browsing context</a>, and <a>responsible
   document</a> (if any).
@@ -1714,10 +1714,9 @@
 
       <dd>
 
-      The <a>origin</a> is an <a>alias</a> to the
-      <a>origin</a> specified by the <a>incumbent settings object</a> when the <a>navigate</a>
-      algorithm was invoked, or, if no <a>script</a> was involved, of
-      the <a>node document</a> of the element that initiated the <a>navigation</a> to that <a for="url">URL</a>.
+      The <a>origin</a> of the <a>incumbent settings object</a> when the <a>navigate</a> algorithm 
+      was invoked, or, if no <a for="concept">script</a> was involved, of the <a>node document</a> 
+      of the element that initiated the <a>navigation</a> to that <a for="url">URL</a>.
 
       The <a>effective script origin</a> is initially an <a>alias</a> to the <a>effective script origin</a> of that
       same <a>environment settings object</a> or {{Document}}.
@@ -3874,71 +3873,51 @@
 
       <dd>
 
-      <a>Queue a task</a> to run <dfn lt="javascript: urls|javascript: url|dereferencing a javascript: url">these "<code>javascript:</code> URL" steps</dfn>, associated with the <a>active document</a>
-      of the <a>browsing context</a> being navigated:
+      <a>Queue a task</a> to run 
+      <dfn lt="javascript: urls|javascript: url|dereferencing a javascript: url">these "<code>javascript:</code> URL" steps</dfn>, 
+      associated with the <a>active document</a> of the <a>browsing context</a> being navigated:
 
-      <ol>
+      1. If the <a>origin</a> of the <a>source browsing context</a> is not the <a>same origin</a> as 
+          the <a>origin</a> of the <a>active document</a> of the <a>browsing context</a> being 
+          navigated, then let <var>result</var> be undefined, and jump to the step labeled 
+          <i>process results</i> below.
+      2. Let <var>urlRecord</var> be the result of running the <a>URL parser</a> on the 
+          <a for="url">URL</a> of the new resource.
+      3. Let <var>script source</var> be the empty string.
+      4. Append the first string of <var>urlRecord</var>'s <a>path</a> component to <var>script 
+          source</var>.
+      5. If <var>urlRecord</var>'s <a for="urlsyntax">query</a> component is not null, then first 
+          append a U+003F QUESTION MARK character (?) to <var>script source</var>, and then append 
+          <var>urlRecord</var>'s <a for="urlsyntax">query</a> component to <var>script source</var>.
+      6. If <var>urlRecord</var>'s <a for="urlsyntax">fragment</a> component is not null, then first 
+          append a U+0023 NUMBER SIGN character (#) to <var>script source</var>, and then append 
+          <var>urlRecord</var>'s <a for="urlsyntax">fragment</a> component to <var>script 
+          source</var>.
+      7. Replace <var>script source</var> with the result of applying the
+          <a spec="url">percent decode</a> algorithm to <var>script source</var>.
+      8. Replace <var>script source</var> with the result of applying the <a>UTF-8 decode</a> 
+          algorithm to <var>script source</var>.
+      9. Let <var>address</var> be the <a>address</a> of the <a>active document</a> of the 
+          <a>browsing context</a> being navigated.
+      10. Let <var>settings</var> be the <a>relevant settings object</a> of the <a>browsing
+           context</a> being navigated.
+      11. Let <var>script</var> be the result of <a>creating a classic script</a> given 
+           <var>script source</var> and <var>settings</var>.
+      12. Let <var>result</var> be the result of <a>running the classic script</a> 
+           <var>script</var>. If evaluation was unsuccessful, let <var>result</var> be undefined 
+           instead. (The result will also be undefined if <a>scripting is disabled</a>.)
+      13. <em>Process results</em>: If <a for="ecma">Type</a>(<var>result</var>) is not 
+           <code>String</code>, then the result of obtaining the resource for the URL is a 
+           <a>response</a> whose <a>status</a> is <code>204</code>.
 
-        <li>If the <a>origin</a> of the <a>source browsing context</a> is not the
-        <a>same origin</a> as the <a>origin</a> of the <a>active document</a> of
-        the <a>browsing context</a> being navigated, then act as if the result of evaluating
-        the script was the void value, and jump to the step labeled <i>process results</i>
-        below.</li>
+           Otherwise, the result of obtaining the resource for the URL is a <a>response</a> whose 
+           <a>header list</a> consists of 
+           <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a> and whose 
+           <a>body</a> is <var>result</var>, and whose <a>HTTPS state</a> is <var>settings</var>'s
+           <a>HTTPS state</a>.
 
-        <li>Apply the <a>URL parser</a> to the <a for="url">URL</a> being navigated.</li>
-
-        <li>Let <var>parsed URL</var> be the result of the <a>URL
-        parser</a>.</li>
-
-        <li>Let <var>script source</var> be the empty string.</li>
-
-        <li>Append <var>parsed URL</var>'s <a>scheme
-        data</a> component to <var>script source</var>.</li>
-
-        <li>If <var>parsed URL</var>'s <a for="urlsyntax">query</a>
-        component is not null, then first append a U+003F QUESTION MARK character (?) to <var>script source</var>, and then append <var>parsed URL</var>'s <a for="urlsyntax">query</a> component to <var>script
-        source</var>.</li>
-
-        <li>If <var>parsed URL</var>'s <a for="urlsyntax">fragment</a> component is not null, then first append a
-        U+0023 NUMBER SIGN character (#) to <var>script source</var>, and then append <var>parsed URL</var>'s <a for="urlsyntax">fragment</a> component to
-        <var>script source</var>.</li>
-
-        <li>Replace <var>script source</var> with the result of applying the
-        <a spec="url">percent decode</a> algorithm to <var>script source</var>.</li>
-
-        <li>Replace <var>script source</var> with the result of applying the <a>UTF-8
-        decode</a> algorithm to <var>script source</var>.</li>
-
-        <li>Let <var>address</var> be the <a>address</a> of the <a>active document</a> of the <a>browsing
-        context</a> being navigated.</li>
-
-        <li>
-
-        <a>Create a script</a>, using <var>script source</var> as the script
-        source, <var>address</var> as the script source URL, JavaScript as the scripting
-        language, and the <a>environment settings object</a> of the <code>Window</code> object of
-        the <a>active document</a> of the <a>browsing context</a> being navigated.
-
-        Let <var>result</var> be the return value of the <a>code entry-point</a>
-        of this <a>script</a>. If an exception was thrown, let <var>result</var> be void instead. (The result will be void also if <a>scripting is disabled</a>.)
-
-        </li>
-
-        <li>
-
-        <i>Process results</i>: If the result of executing the script is void (there is no return
-        value), then the result of obtaining the resource for the URL is a <a>response</a> whose
-        <a>status</a> is <code>204</code>.
-
-        Otherwise, the result of obtaining the resource for the URL is a <a>response</a> whose <a>header list</a> consists of <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a> and whose <a>body</a> is the return value converted to a string
-        value.
-
-        When it comes time to <a>set the document's address</a> in the <a>navigation algorithm</a>, use <var>address</var> as the
-        <a>override URL</a>.
-
-        </li>
-
-      </ol>
+           When it comes time to <a>set the document's address</a> in the 
+           <a>navigation algorithm</a>, use <var>address</var> as the <a>override URL</a>.
 
       The <a>task source</a> for this <a>task</a> is the
       <a>DOM manipulation task source</a>.

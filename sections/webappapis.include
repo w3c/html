@@ -18,56 +18,35 @@
   Various mechanisms can cause author-provided executable code to run in the context of a
   document. These mechanisms include, but are probably not limited to:
 
-  <ul>
-
-    <li>Processing of <{script}> elements.</li>
-
-    <li>Navigating to <a><code>javascript:</code> URLs</a>.</li>
-
-    <li>Event handlers, whether registered through the DOM using <code>addEventListener()</code>, by explicit <a>event handler content attributes</a>, by
-    <a>event handler IDL attributes</a>, or otherwise.</li>
-
-    <li>Processing of technologies like SVG that have their own scripting features.</li>
-
-  </ul>
-
-  <div class="impl">
+  * Processing of <{script}> elements.
+  * Navigating to <a><code>javascript:</code> URLs</a>.
+  * Event handlers, whether registered through the DOM using <code>addEventListener()</code>, by
+     explicit <a>event handler content attributes</a>, by <a>event handler IDL attributes</a>, or
+     otherwise.
+  * Processing of technologies like SVG that have their own scripting features.
 
 <h4 id="enabling-and-disabling-scripting">Enabling and disabling scripting</h4>
 
   <dfn lt="scripting was enabled|scripting is enabled">Scripting is enabled</dfn> in a <em><a>browsing
   context</a></em> when all of the following conditions are true:
 
-  <ul>
-
-    <li>The user agent supports scripting.</li>
-
-    <li>The user has not disabled scripting for this <a>browsing context</a> at this time.
-    (User agents may provide users with the option to disable scripting globally, or in a
-    finer-grained manner, e.g., on a per-origin basis.)
-
-    </li>
-
-    <li>The <a>browsing context</a>'s <a>active document</a>'s
-    <a>active sandboxing flag set</a> does not have its <a>sandboxed scripts browsing
-    context flag</a> set.</li>
-
-  </ul>
+  * The user agent supports scripting.
+  * The user has not disabled scripting for this <a>browsing context</a> at this time.
+     (User agents may provide users with the option to disable scripting globally, or in a
+     finer-grained manner, e.g. on a per-origin basis.)
+  * The <a>browsing context</a>'s <a>active document</a>'s <a>active sandboxing flag set</a> does
+     not have its <a>sandboxed scripts browsing context flag</a> set.
 
   <dfn>Scripting is disabled</dfn> in a <a>browsing context</a>
   when any of the above conditions are false (i.e., when scripting is not enabled).
 
   <hr />
 
-  Scripting is enabled for a <em>node</em> if the
-  <code>Document</code> object of the node (the node itself, if it is itself a <code>Document</code>
-  object) has an associated <a>browsing context</a>, and <a>scripting is enabled</a> in that <a>browsing context</a>.
+  <dfn>Scripting is enabled for a <em>node</em></dfn> if the node's <a>node document</a> has a
+  <a>browsing context</a>, and <a>scripting is enabled</a> in that <a>browsing context</a>.
 
-  Scripting is disabled for a node if there is no such
-  <a>browsing context</a>, or if <a>scripting is
-  disabled</a> in that <a>browsing context</a>.
-
-  </div>
+  <dfn>Scripting is disabled for a node</dfn> if there is no such <a>browsing context</a>, or if <a>scripting
+  is disabled</a> in that <a>browsing context</a>.
 
   <div class="impl">
 
@@ -75,196 +54,100 @@
 
 <h5 id="processing-model-definitions">Definitions</h5>
 
-  This specification describes three kinds of <a>JavaScript global environments</a>: the <dfn>document environment</dfn>, the
-  <dfn>dedicated worker environment</dfn>, and the <dfn>shared worker environment</dfn>. The
-  <a>dedicated worker environment</a> and the <a>shared worker environment</a> are both
-  types of <dfn>worker environments</dfn>.
+  A <dfn for="concept" lt="script|scripts|scripting">script</dfn> is one of two possible structures.
+  All scripts have:
 
-  Except where otherwise specified, a <a>JavaScript global environment</a> is a
-  <a>document environment</a>.
+  : A <dfn>settings object</dfn>
+  :: An <a>environment settings object</a>, containing various settings that are shared with other
+      <a for="concept">scripts</a> in the same context.
 
-  <hr />
+  A <dfn>classic script</dfn> additionally has:
 
-  A <a>script</a> has:
+  : A <dfn>Source text</dfn>
+  :: A string containing a block of executable code to be evaluated as a JavaScript
+      <a for="ecma">Script</a>.
+  : Optionally, a <dfn>muted errors</dfn> flag
+  :: A flag which, if set, means that error information will not be provided for errors in this
+    script (used to mute errors for cross-origin scripts, since that can leak private information).
 
-  <dl>
-
-    <dt>A <dfn>code entry-point</dfn></dt>
-
-    <dd>
-
-    A code entry-point represents a block of executable code that the script exposes to other
-    scripts and to the user agent. Typically, the code corresponding to the code entry-point is
-    executed immediately after the script is parsed, but for event handlers, it is called each time
-    the handler is invoked.
-
-    <p class="example">
-  In JavaScript <code>script</code> blocks, this corresponds to the execution
-    context of the global code.
-  </p>
-
-    </dd>
-
-    <dt>Optionally, a <dfn>muted errors</dfn> flag</dt>
-
-    <dd>
-
-    A flag which, if set, means that error information will not be provided for errors in this
-    script (used to mute errors for cross-origin scripts, since that can leak private
-    information).
-
-    </dd>
-
-    <dt>A <dfn>settings object</dfn></dt>
-
-    <dd>
-
-    An <a>environment settings object</a>, various settings that are shared with other scripts in
-    the same context.
-
-    </dd>
-
-  </dl>
-
+  A <dfn>module script</dfn> additionally has:
+  
+  : A <dfn>module record</dfn>
+  :: A <a>Source Text Module Record</a> representing the parsed module, ready to be evaluated.
+  : A <dfn>base URL</dfn>
+  :: A base URL used for resolving module specifiers when <a>resolving a module specifier</a>. This 
+      will either be the URL from which the script was obtained, for external module scripts, or the
+      <a>document base URL</a> of the containing document, for inline module scripts.
+  : A <a>credentials mode</a>
+  :: A <a>credentials mode</a> used to fetch imported modules.
+  : A <dfn>cryptographic nonce</dfn>
+  :: A <a>cryptographic nonce</a> used to fetch imported modules.
+  : A <dfn>parser state</dfn>
+  :: The <a>parser metadata</a> used to fetch imported modules.
+  
   <hr />
 
   An <dfn>environment settings object</dfn> specifies algorithms for obtaining the following:
 
-  <dl>
+  : A <a>realm execution context</a>
+  :: A <a>JavaScript execution context</a> shared by all <{script}> elements that use this settings 
+      object, i.e. all scripts in a given <a>JavaScript realm</a>. When we <a>run a classic 
+      script</a> or <a>run a module script</a>, this execution context becomes the top of the 
+      <a>JavaScript execution context stack</a>, on top of which another execution context specific 
+      to the script in question is pushed. (This setup ensures <a>ParseScript</a> and 
+      </a>ModuleEvaluation</a> know which Realm to use.)
+  
+  : A <a>module map</a>
+  :: Used when importing JavaScript modules.
+  
+  : A <dfn>responsible browsing context</dfn>
+  :: A <a>browsing context</a> that is assigned responsibility for actions taken by the scripts that 
+      use this <a>environment settings object</a>.
 
-    <dt>A <dfn>script execution environment</dfn> for each language supported by the user agent</dt>
+      <p class="example">When a script creates and <a>navigates</a> a new <a>top-level browsing 
+      context</a>, the {{Window/opener}} attribute of the new <a>browsing context</a>'s {{Window}}
+      object will be set to the <a>responsible browsing context</a>'s {{WindowProxy}} object.</p>
+  : A <dfn>responsible event loop</dfn>
+  :: An <a>event loop</a> that is used when it would not be immediately clear what event loop to 
+      use.
+  
+  : A <dfn>responsible document</dfn>
+  :: A {{Document}} that is assigned responsibility for actions taken by the scripts that use this 
+      <a>environment settings object</a>.
 
-    <dd>
+      <p class="example">For example, the <a>address</a> of the <a>responsible document</a> is used 
+      to set the <a>address</a> of the {{Document}} after it has been reset using 
+      {{Document/open()}}.</p>
 
-    The characteristics of the script execution environment depend on the language, and are not
-    defined by this specification.
+      If the <a>responsible event loop</a> is not a <a>browsing context</a> <a>event loop</a>, then 
+      the <a>environment settings object</a> has no <a>responsible document</a>.
 
-    <p class="example">
-  In JavaScript, the script execution environment consists of the interpreter,
-    the stack of <i>execution contexts</i>, the <i>global code</i> and <i>function code</i> and the
-    <code>Function</code> objects resulting, and so forth.
-  </p>
+  : An <dfn>API URL character encoding</dfn>
+  :: A character encoding used to encode URLs by APIs called by scripts that use this <a>environment
+      settings object</a>.
 
-    </dd>
+  : An <dfn>API base URL</dfn>
+  :: An <a>absolute URL</a> used by APIs called by scripts that use this <a>environment settings 
+      object</a> to resolve <a>relative URLs</a>.
+  
+  : An <a>origin</a>
+  :: An instrument used in security checks.
 
-    <dt>A <dfn>global object</dfn></dt>
-    <dd>
+  : A <dfn>creation URL</dfn>
+  :: An <a>absolute URL</a> representing the location of the resource with which the <a>environment 
+      settings object</a> is associated. Note that this URL might be distinct from the 
+      <a>responsible document</a>'s <a>address</a>, due to mechanisms such as 
+      <code>history.pushState()</code>.
+  
+  : An <a>HTTPS state</a>
+  :: A value representing the security properties of the network channel used to deliver the
+      resource with which the <a>environment settings object</a> is associated. The value will
+      be one of "<code>modern</code>", "<code>deprecated</code>", or "<code>none</code>".
 
-    An object that provides the APIs that can be called by the code in scripts that use this
-    <a>settings object</a>.
-
-    <p class="note">
-  This is typically a <code>Window</code> object or a
-    <code>WorkerGlobalScope</code> object. When a <a>global object</a> is an empty object, it
-    can't do anything that interacts with the environment.
-  </p>
-
-    If the <a>global object</a> is a <code>Window</code> object, then, in JavaScript, the
-    ThisBinding of the global execution context for this script must be the <code>Window</code>
-    object's <code>WindowProxy</code> object, rather than the global object. [[!ECMA-262]]
-
-    <p class="note">
-  This is a <a>willful violation</a> of the JavaScript specification current
-    at the time of writing (ECMAScript edition 6, as defined in section 10.4.1.1 Initial Global
-    Execution Context, step 3). The JavaScript specification requires that the <code>this</code> keyword in the global scope return the global object, but this is not
-    compatible with the security design prevalent in implementations as specified herein. [[!ECMA-262]]
-  </p>
-
-    </dd>
-
-    <dt>A <dfn>responsible browsing context</dfn></dt>
-
-    <dd>
-
-    A <a>browsing context</a> that is assigned responsibility for actions taken by the
-    scripts that use this <a>environment settings object</a>.
-
-    <p class="example">
-  When a script creates and <a>navigates</a> a new
-    <a>top-level browsing context</a>, the <code>opener</code> attribute
-    of the new <a>browsing context</a>'s <code>Window</code> object will be set to the
-    <a>responsible browsing context</a>'s <code>WindowProxy</code> object.
-  </p>
-
-    </dd>
-
-    <dt>A <dfn>responsible event loop</dfn></dt>
-
-    <dd>
-
-    An <a>event loop</a> that is used when it would not be immediately clear what event
-    loop to use.
-
-    </dd>
-
-    <dt>A <dfn>responsible document</dfn></dt>
-
-    <dd>
-
-    A <code>Document</code> that is assigned responsibility for actions taken by the scripts that
-    use this <a>environment settings object</a>.
-
-    <p class="example">
-  For example, the <a>address</a> of the
-    <a>responsible document</a> is used to set the <a>address</a> of the {{Document}} after it has been reset using <code>document.open()</code>.
-  </p>
-
-    If the <a>responsible event loop</a> is not a <a>browsing context</a> <a>event loop</a>,
-    then the <a>environment settings object</a> has no <a>responsible document</a>.
-
-    </dd>
-
-    <dt>An <dfn>API URL character encoding</dfn></dt>
-
-    <dd>
-
-    A character encoding used to encode URLs by APIs called by scripts that use this <a>environment
-    settings object</a>.
-
-    </dd>
-
-    <dt>An <dfn>API base URL</dfn></dt>
-
-    <dd>
-
-    An <a>absolute URL</a> used by APIs called by scripts that use this <a>environment
-    settings object</a> to resolve <a>relative URLs</a>.
-
-    </dd>
-
-    <dt>An <a>origin</a> and an <a>effective script origin</a></dt>
-
-    <dd>
-
-    An instrument used in security checks.
-
-    </dd>
-
-    <dt>A <dfn>creation URL</dfn></dt>
-
-    <dd>
-    An <a>absolute URL</a> representing the location of the resource with which the
-    <a>environment settings object</a> is associated. Note that this URL might be distinct
-    from the <a>responsible document</a>'s <a>address</a>, due to mechanisms such as <code>history.pushState()</code>.
-    </dd>
-
-    <dt>An <a>HTTPS state</a></dt>
-
-    <dd>
-    A value representing the security properties of the network channel used to deliver the
-    resource with which the <a>environment settings object</a> is associated. The value will
-    be one of "<code>modern</code>", "<code>deprecated</code>", or
-    "<code>none</code>".
-
-    <p class="note">
-  Resources delivered over HTTPS will generally have an <a>HTTPS state</a>
-    of "<code>modern</code>". A user agent can use "<code>deprecated</code>"
-    during transitional periods where rejecting the response entirely would be inappropriate (e.g.,
-    while removing support for a hash function or cypher suite).
-  </p>
-    </dd>
-
-  </dl>
+      <p class="note">Resources delivered over HTTPS will generally have an <a>HTTPS state</a> of 
+      "<code>modern</code>". A user agent can use "<code>deprecated</code>" during transitional 
+      periods where rejecting the response entirely would be inappropriate (e.g., while removing 
+      support for a hash function or cypher suite).</p>
 
   An <a>environment settings object</a> also has an
   <dfn>outstanding rejected promises weak set</dfn> and an
@@ -272,13 +155,6 @@
   <a>unhandled promise rejections</a>. The <a>outstanding rejected promises weak set</a> must not
   create strong references to any of its members, and implementations are free to limit its size,
   e.g., by removing old entries from it when new ones are added.
-
-  The <dfn>relevant settings object for a global object</dfn> <var>o</var> is the
-  <a>environment settings object</a> whose <a>global object</a> is <var>o</var>.
-  (There is always a 1:1 mapping of global objects to environment settings objects.)
-
-  The <dfn>relevant settings object for a script</dfn> <var>s</var> is the
-  <a>settings object</a> of <var>s</var>.
 
 <h5 id="script-settings-for-browsing-contexts">Script settings for browsing contexts</h5>
 
@@ -391,17 +267,9 @@
 
 <h5 id="calling-scripts">Calling scripts</h5>
 
-  Each <a>unit of related similar-origin browsing contexts</a> has a <dfn>stack of script
-  settings objects</dfn>, which must be initially empty. When a new <a>environment settings
-  object</a> is <i>pushed</i> onto this stack, the specified <a>environment settings object</a>
-  is to be added to the stack; when the <a>environment settings object</a> on this stack that was
-  most recently pushed onto it is to be <i>popped</i> from the stack, it must be removed. Entries on
-  this stack can be labeled as <dfn>candidate entry
-  settings objects</dfn>.
-
-  When a user agent is to <dfn>jump to a code entry-point</dfn> for a <a>script</a> <var>s</var>, given an optional <var>rethrow errors</var>
-  flag, the user agent must run the following steps:
-
+  To <dfn>run a classic script</dfn> given a classic script <em>s</em> and an optional <em>rethrow 
+  errors</em> flag:
+  
   <ol>
 
     <li>Let <var>context</var> be the <a>settings object</a> of <var>s</var>.</li>
@@ -460,7 +328,7 @@
   </p>
 
   When a JavaScript <i>SourceElements</i> production is to be evaluated, the <a>settings
-  object</a> of the <a>script</a> corresponding to that
+  object</a> of the <a for="concept">script</a> corresponding to that
   <i>SourceElements</i> must be pushed onto the <a>stack of script settings objects</a> before
   the evaluation begins, and popped when the evaluation ends (regardless of whether it's an abrupt
   completion or not).
@@ -530,13 +398,12 @@
 
 <h5 id="sec-creating-scripts"><dfn lt="create a script|creating scripts">Creating scripts</dfn></h5>
 
-  When the specification says that a <a>script</a> is to be <i>created</i>, given some script source, a script source URL, its
-  scripting language, an <a>environment settings object</a>, and optionally a <var>muted
-  errors</var> flag, the user agent must run the following steps:
+  To <dfn>create a classic script</dfn>, given some script source, an <a>environment settings 
+  object</a>, and an optional <var>muted errors</var> flag:
 
   <ol>
 
-    <li>Let <var>script</var> be a new <a>script</a> that
+    <li>Let <var>script</var> be a new <a>classic script</a> that
     this algorithm will subsequently initialize.</li>
 
     <li>If <a>scripting is disabled</a> for <a>browsing
@@ -672,7 +539,7 @@
   <div class="impl">
 
   When the user agent is required to <dfn>report an error</dfn> for a
-  particular <a>script</a> <var>script</var> with a particular
+  particular <a for="concept">script</a> <var>script</var> with a particular
   position <var>line</var>:<var>col</var>, using a particular target <var>target</var>, it must run these steps, after which the error is either <dfn><i>handled</i></dfn> or <dfn><i>not
   handled</i></dfn>:
 
@@ -753,7 +620,7 @@
 <h6 id="runtime-script-errors-in-documents">Runtime script errors in documents</h6>
 
   When the user agent is to <dfn lt="report the exception|report an exception">report an exception</dfn>
-  <var>E</var>, the user agent must report the error for the relevant <a>script</a>, with the problematic position (line number and column
+  <var>E</var>, the user agent must report the error for the relevant <a for="concept">script</a>, with the problematic position (line number and column
   number) in the resource containing the script, using the <a>global object</a> specified by
   the script's <a>settings object</a> as the target. If the error is still <i>not handled</i> after this, then the error may be reported to
   the user.
@@ -870,72 +737,33 @@
 
 <h6 id="the-hostpromiserejectiontracker-implementation">The HostPromiseRejectionTracker implementation</h6>
 
-  <p>ECMAScript contains an implementation-defined HostPromiseRejectionTracker(<var>promise</var>,
+  ECMAScript contains an implementation-defined HostPromiseRejectionTracker(<var>promise</var>,
   <var>operation</var>) abstract operation. User agents must use the following implementation:
-  [[!ECMA-262]]</p>
+  [[!ECMA-262]]
 
-  <ol>
-
-   <li>
-    Let <var>script</var> be the <a>script</a> corresponding
-    to the running execution context.
-
-    <div class="note">The exact mechanism for correlating ECMAScript's notion of execution contexts
-    and HTML's notion of <a>scripts</a> is not yet well-defined.</div>
-   </li>
-
-   <li>If <var>script</var> has <a>muted errors</a>, terminate these steps.</li>
-
-   <li>Let <var>settings object</var> be <var>script</var>'s <a>settings object</a>.
-   </li>
-
-   <li>
-    <p>If <var>operation</var> is <code>"reject"</code>,
-
-    <ol>
-     <li>Add <var>promise</var> to <var>settings object</var>'s <a>about-to-be-notified
-     rejected promises list</a>.</li>
-    </ol>
-   </li>
-
-   <li>
-    <p>If <var>operation</var> is <code>"handle"</code>,
-
-    <ol>
-
-     <li>If <var>settings object</var>'s <a>about-to-be-notified rejected promises
-     list</a> contains <var>promise</var>, remove <var>promise</var> from that list and abort
-     these steps.</li>
-
-     <li>If <var>settings object</var>'s <a>outstanding rejected promises weak set</a>
-     does not contain <var>promise</var>, abort these steps.</li>
-
-     <li>Remove <var>promise</var> from <var>settings object</var>'s <a>outstanding rejected
-     promises weak set</a>.</li>
-
-     <li>
-      <p><a>Queue a task</a> to run the following steps:</p>
-
-      <ol>
-
-       <li>Let <var>event</var> be a new <a>trusted</a>
-       <code>PromiseRejectionEvent</code> object that does not bubble and is not cancelable, and
-       which has the event name <code>rejectionhandled</code>.</li>
-
-       <li>Initialise <var>event</var>'s <code>promise</code> attribute to
-       <var>promise</var>.</li>
-
-       <li>Initialise <var>event</var>'s <code>reason</code> attribute to the value of
-       <var>promise</var>'s \[[PromiseResult]] internal slot.</li>
-
-       <li><a>Dispatch</a> <var>event</var> at <var>settings object</var>'s <a>global
-       object</a>.</li>
-
-      </ol>
-     </li>
-    </ol>
-   </li>
-  </ol>
+  1. Let <var>script</var> be the <a>running script</a>.
+  2. If <var>script</var> has <a>muted errors</a>, terminate these steps.
+  3. Let <var>settings object</var> be <var>script</var>'s <a>settings object</a>.
+  4. If <var>operation</var> is <code>"reject"</code>,
+      1. Add <var>promise</var> to <var>settings object</var>'s <a>about-to-be-notified
+          rejected promises list</a>.
+  5. If <var>operation</var> is <code>"handle"</code>,
+      1. If <var>settings object</var>'s <a>about-to-be-notified rejected promises list</a> contains
+          <var>promise</var>, remove <var>promise</var> from that list and abort these steps.
+      2. If <var>settings object</var>'s <a>outstanding rejected promises weak set</a> does not 
+          contain <var>promise</var>, abort these steps.
+      3. Remove <var>promise</var> from <var>settings object</var>'s <a>outstanding rejected
+          promises weak set</a>.
+      4. <a>Queue a task</a> to run the following steps:
+         
+          1. Let <var>event</var> be a new <a>trusted</a> {{PromiseRejectionEvent}} object that does 
+              not bubble and is not cancelable, and which has the event name 
+              <code>rejectionhandled</code>.
+          2. Initialise <var>event</var>'s {{PromiseRejectionEvent/promise}} attribute to 
+              <var>promise</var>.
+          3. Initialise <var>event</var>'s {{PromiseRejectionEvent/reason}} attribute to the value 
+              of <var>promise</var>'s \[[PromiseResult]] internal slot.
+          4. <a>Dispatch</a> <var>event</var> at <var>settings object</var>'s <a>global object</a>.
 
 <h6 id="the-promiserejectionevent-interface">The <code>PromiseRejectionEvent</code> interface</h6>
 
@@ -1038,7 +866,7 @@
   Each <a>task</a> in a <a>browsing context</a> <a>event loop</a> is associated with a <code>Document</code>; if the task was queued in the context of
   an element, then it is the element's <a>node document</a>; if the task was queued in the context
   of a <a>browsing context</a>, then it is the <a>browsing context</a>'s <a>active
-  document</a> at the time the task was queued; if the task was queued by or for a <a>script</a> then the document is the <a>responsible document</a>
+  document</a> at the time the task was queued; if the task was queued by or for a <a for="concept">script</a> then the document is the <a>responsible document</a>
   specified by the script's <a>settings object</a>.
 
   A <a>task</a> is intended for a specific <a>event loop</a>:
@@ -1768,7 +1596,7 @@
 
         <li>Set <var>H</var>'s value to null.</li>
 
-        <li>Report the error for the appropriate <a>script</a> and with the appropriate position (line number and
+        <li>Report the error for the appropriate <a for="concept">script</a> and with the appropriate position (line number and
         column number) given by <var>location</var>, using the <a>global object</a>
         specified by <var>script settings</var> as the target. If the error is still <i>not handled</i> after this, then the error may be reported
         to a developer console.</li>
@@ -1857,7 +1685,7 @@
 
       </li>
 
-      <li>Let <var>script</var> be a new <a>script</a>.</li>
+      <li>Let <var>script</var> be a new <a>classic script</a>.</li>
 
       <li>Let <var>script</var>'s <a>code entry-point</a> be <var>function</var>.</li>
 
@@ -2377,7 +2205,7 @@
 
 <h4 id="opening-the-input-stream">Opening the input stream</h4>
 
-  The <dfn method for="document" id="dom-document-_open"><code>open()</code></dfn> method comes in several variants
+  The <dfn method for="Document" id="dom-document-_open" lt="open()|open(type)|open(type,replace)|open(url,name,features)|open(url,name,features,replace)"><code>open()</code></dfn> method comes in several variants
   with different numbers of arguments.
 
   <dl class="domintro">
