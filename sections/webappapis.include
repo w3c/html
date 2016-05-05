@@ -273,68 +273,213 @@
   The following algorithms are used when <a>fetching a module script tree</a>, and are not meant to 
   be used directly by other specifications (or by other parts of this specification).
   
+  To <dfn>fetch the descendants of a module script</dfn> <var>module script</var>, given a 
+  <var>destination</var> and an <var>ancestor list</var>, run these steps. The algorithm will 
+  asynchronously complete with either null (on failure) or with <var>module script</var> 
+  (on success).
+
+  1. Let <var>record</var> be <var>module script</var>'s <a>module record</a>.
+  2. If <var>record</var>.\[[RequestedModules]] is empty, asynchronously complete this algorithm 
+      with <var>module script</var>.
+  3. Let <var>urls</var> be a new empty list.
+  4. For each string <var>requested</var> of <var>record</var>.\[[RequestedModules]]:
+      1. Let <var>url</var> be the result of <a>resolving a module specifier</a> given 
+          <var>module script</var> and <var>requested</var>.
+      2. If the result is error:
+          1. Let <var>error</var> be a new {{TypeError}} exception.
+          2. <a>Report the exception</a> <var>error</var> for <var>module script</var>.
+          3. Abort this algorithm, and asynchronously complete it with null.
+      3. Otherwise, if <var>url</var> is not in <var>ancestor list</var>, add <var>url</var> to 
+          <var>urls</var>.
+  5. For each <var>url</var> in <var>urls</var>, <a>fetch a module script tree</a> given 
+      <var>url</var>, <var>module script</var>'s <a>credentials mode</a>, 
+      <var>module script</var>'s <a>cryptographic nonce</a>, <var>module script</var>'s 
+      <a>parser state</a>, <var>destination</var>, <var>module script</var>'s 
+      <a>settings object</a>, and <var>ancestor list</var>.
+
+      <p class="note">It is intentional that no custom <a>set up the request</a> or <a>process the 
+      response</a> steps are passed along here. Those hooks only apply to the top-level fetch at 
+      the root of the module script tree.</p>
+
+      If any of the <a>fetch a module script tree</a> invocations asynchronously complete with 
+      null, the user agent may <a>terminate</a> any or all of the other fetches, and must then 
+      asynchronously complete this algorithm with null.
+
+      Once all of the <a>fetch a module script tree</a> invocations asynchronously complete with a 
+      <a>module script</a>, asynchronously complete this algorithm with <var>module script</var>.
+
+  To <dfn>fetch a single module script</dfn>, given a <var>url</var>, a 
+  <var>credentials mode</var>, a <var>cryptographic nonce</var>, a <var>parser state</var>, 
+  a <var>destination</var>, and a <var>settings object</var>, run these steps. The algorithm will 
+  asynchronously complete with either null (on failure) or a <a>module script</a> (on success).
+
+  1. Let <var>module map</var> be <var>settings object</var>'s <a>module map</a>.
+  2. If <var>module map</var> contains an entry with key <var>url</var> whose value is 
+      "<code>fetching</code>", wait (<a>in parallel</a>) until that entry's value changes, then 
+      proceed to the next step.
+  3. If <var>module map</var> contains an entry with key <var>url</var>, asynchronously complete 
+      this algorithm with that entry's value, and abort these steps.
+  4. Create an entry in <var>module map</var> with key <var>url</var> and value 
+      "<code>fetching</code>".
+  5. Let <var>request</var> be a new <a>request</a> whose <a for="request">url</a> is 
+      <var>url</var>, <a>destination</a> is <var>destination</var>, <a for="request">type</a> is 
+      "<code>script</code>", <a for="request">mode</a> is "<code>cors</code>", 
+      <a>credentials mode</a> is <var>credentials mode</var>, <a>cryptographic nonce metadata</a>
+      is <var>cryptographic nonce</var>, <a>parser metadata</a> is <var>parser state</var> and 
+      <a>client</a> is <var>settings object</var>.
+  6. If the caller specified custom steps to <a>set up the request</a>, perform them on 
+      <var>request</var>.
+  7. <a>Fetch</a> <var>request</var>.
+  8. Return from this algorithm, and run the remaining steps as part of the fetch's 
+      <a>process response</a> for the <a>response</a> <var>response</var>.
+
+      <p class="note"><var>response</var> is always <a>CORS-same-origin</a>.</p>
+  9. If any of the following conditions are met, set the value of the entry in 
+      <var>module map</var> whose key is <var>url</var> to null, asynchronously complete this 
+      algorithm with null, and abort these steps:
+      
+      * <var>response</var>'s <a for="response">type</a> is "<code>error</code>"
+      * <var>response</var>'s <a>status</a> is not an <a>ok status</a>
+      * The result of <a>extracting a MIME type</a> from <var>response</var>'s <a>header list</a>
+         (ignoring parameters) is not a <a>JavaScript MIME type</a>.
+
+         <p class="note">For historical reasons, <a>fetching a classic script</a> does not include 
+         MIME type checking. In contrast, module scripts will fail to load if they are not of a 
+         correct MIME type.</p>
+      * The caller specified custom steps to <a>process the response</a>, which when performed on 
+         <var>response</var> return false.
+  10. Let <var>source text</var> be the result of <a>UTF-8 decoding</a> <var>response</var>'s 
+       <a>body</a>.
+  11. Let <var>module script</var> be the result of <a>creating a module script</a> given 
+       <var>source text</var>, <var>settings object</var>, <var>response</var>'s 
+       <a for="response">url</a>, <var>credentials mode</var>, and <var>cryptographic nonce</var>.
+  12. Set the value of the entry in <var>module map</var> whose key is <var>url</var> to 
+       <var>module script</var>, and asynchronously complete this algorithm with 
+       <var>module script</var>.
+
+       <p class="note">It is intentional that the <a>module map</a> is keyed by the 
+       <a>request URL</a>, whereas the <a>base URL</a> for the <a>module script</a> is set to the 
+       <a>response URL</a>. The former is used to deduplicate fetches, while the latter is used for 
+       URL resolution.
   
 <h5 id="sec-creating-scripts"><dfn lt="create a script|creating scripts">Creating scripts</dfn></h5>
 
   To <dfn>create a classic script</dfn>, given some script source, an <a>environment settings 
   object</a>, and an optional <var>muted errors</var> flag:
 
-  <ol>
+  1. Let <var>script</var> be a new <a>classic script</a> that this algorithm will subsequently 
+      initialize.
+  2. Set <var>script</var>'s <a>settings object</a> to the <a>environment settings object</a>
+      provided.
+  3. If <a>scripting is disabled</a> for the given <a>environment settings object</a>'s 
+      <a>responsible browsing context</a>, set <var>script</var>'s <a>source text</a> to the empty
+      string. Otherwise, set <var>script</var>'s <a>source text</a> to the supplied script source.
+  4. If the <var>muted errors</var> flag was set, then set <var>script</var>'s <a>muted errors</a> 
+      flag.
+  5. Return <var>script</var>.
+    
+To <dfn>create a module script</dfn>, given some script source, an <a>environment settings 
+object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a parser state:
 
-    <li>Let <var>script</var> be a new <a>classic script</a> that
-    this algorithm will subsequently initialize.</li>
-
-    <li>If <a>scripting is disabled</a> for <a>browsing
-    context</a> passed to this algorithm, then abort these steps, as if the script source
-    described a program that did nothing but return void.
-
-    <li>Obtain the appropriate <a>script execution environment</a> for the given scripting
-    language from the <a>environment settings object</a> provided.</li>
-
-    <li>Parse/compile/initialize the source of the script using the <a>script execution
-    environment</a>, as appropriate for the scripting language, and thus obtain <var>script</var>'s <a>code entry-point</a>.</li>
-
-    <li>Let <var>script</var>'s <a>settings object</a> be the <a>environment
-    settings object</a> provided.</li>
-
-    <li>If the <var>muted errors</var> flag was set, then set <var>script</var>'s <a>muted errors</a> flag.</li>
-
-    <li>
-
-    If all the steps above succeeded (in particular, if the script was compiled successfully),
-    Jump to <var>script</var>'s <a>code
-    entry-point</a>.
-
-    Otherwise, report the error for <var>script</var>, with the
-    problematic position (line number and column number), using the <a>global object</a>
-    specified by the <a>environment settings object</a> as the target. If the error is still <i>not handled</i> after this, then the error may be reported to
-    a developer console.
-
-    </li>
-
-  </ol>
-
-
+  1. Let <var>script</var> be a new <a>module script</a> that this algorithm will subsequently 
+      initialise.
+  2. Set <var>script</var>'s <a>settings object</a> to the <a>environment settings object</a> 
+      provided.
+  3. Let <var>realm</var> be the provided <a>environment settings object</a>'s <a>Realm</a>.
+  4. If <a>scripting is disabled</a> for the given <a>environment settings object</a>'s 
+      <a>responsible browsing context</a>, then let <var>script source</var> be the empty string. 
+      Otherwise, let <var>script source</var> be the provided script source.
+  5. Let <var>result</var> be <a>ParseModule</a>(<var>script source</var>, <var>realm</var>, 
+      <var>script</var>).
+  6. If <var>result</var> is a <a for="ecma">List</a> of errors, <a>report the exception</a> given 
+      by the first element of <var>result</var> for <var>script</var>, return null, and abort these 
+      steps.
+  7. Set <var>script</var>'s <a>module record</a> to <var>result</var>.
+  8. Set <var>script</var>'s <a>base URL</a> to the script base URL provided.
+  9. Set <var>script</var>'s <a>credentials mode</a> to the credentials mode provided.
+  10. Set <var>script</var>'s <a>cryptographic nonce</a> to the cryptographic nonce provided.
+  11. Set <var>script</var>'s <a>parser state</a> to the parser state.
+  12. Return <var>script</var>.
   
 <h5 id="calling-scripts">Calling scripts</h5>
   
-  To <dfn>run a classic script</dfn> given a classic script <em>s</em> and an optional <em>rethrow 
-  errors</em> flag:
+  To <dfn>run a classic script</dfn> given a <a>classic script</a> <var>s</var> and an optional 
+  <var>rethrow errors</var> flag:
   
-  <ol>
+Let settings be the settings object of s.
 
-    <li>Let <var>context</var> be the <a>settings object</a> of <var>s</var>.</li>
+Check if we can run script with settings. If this returns "do not run", then return undefined and 
+abort these steps.
 
-    <li><a>Prepare to run a callback</a> with <var>context</var> as the
-    <a>environment settings object</a>. If this returns "do not run" then abort these
-    steps.</li>
+Let realm be settings's Realm.
 
-    <li>Make the appropriate <a>script execution environment</a> specified by <var>context</var> execute the <var>s</var>'s <a>code
-    entry-point</a>.</li>
+Prepare to run script with settings.
 
-    <li><a>Clean up after running a callback</a>.</li>
+Let result be ParseScript(s's source text, realm, s).
 
-  </ol>
+If result is a List of errors, set result to the first element of result and go to the step labeled
+ error.
+
+Let evaluationStatus be ScriptEvaluation(result).
+
+If evaluationStatus is an abrupt completion, set result to evaluationStatus.\[[Value]] and go to the 
+next step (labeled error). If evaluationStatus is a normal completion, or if ScriptEvaluation does
+ not complete because the user agent has aborted the running script, skip to the step labeled cleanup.
+
+Error: At this point result must be an exception. Perform the following steps:
+
+If the rethrow errors flag is set and s's muted errors flag is not set, rethrow result.
+
+If the rethrow errors flag is set and s's muted errors flag is set, throw a NetworkError exception.
+
+If the rethrow errors flag is not set, report the exception given by result for the script s.
+
+Cleanup: Clean up after running script with settings.
+
+If evaluationStatus exists and is a normal completion, return evaluationStatus.\[[Value]]. Otherwise,
+ script execution was unsuccessful, either because an error occurred during parsing, or an exception 
+ occurred during evaluation, or because it was aborted prematurely.
+
+To run a module script given a module script s:
+
+Let settings be the settings object of s.
+
+Check if we can run script with settings. If this returns "do not run" then abort these steps.
+
+Let record be s's module record.
+
+Let instantiationStatus be record.ModuleDeclarationInstantiation().
+
+This step will recursively instantiate all of the module's dependencies.
+
+If instantiationStatus is an abrupt completion, report the exception given by 
+instantiationStatus.\[[Value]] for s and abort these steps.
+
+Prepare to run script given settings.
+
+Let evaluationStatus be record.ModuleEvaluation().
+
+This step will recursively evaluate all of the module's dependencies.
+
+If evaluationStatus is an abrupt completion, report the exception given by evaluationStatus.\[[Value]] 
+for s. (Do not perform this step if ScriptEvaluation fails to complete as a result of the user agent 
+aborting the running script.)
+
+Clean up after running script with settings.
+
+The steps to check if we can run script with an environment settings object settings are as follows.
+ They return either "run" or "do not run".
+
+If the global object specified by settings is a Window object whose Document object is not fully 
+active, then return "do not run" and abort these steps.
+
+If scripting is disabled for the responsible browsing context specified by settings, then return
+ "do not run" and abort these steps.
+
+Return "run".
+
+
+
 
   The steps to <dfn>prepare to run a callback</dfn> with an <a>environment settings object</a>
   <var>o</var> are as follows. They return either "run" or "do not run".
