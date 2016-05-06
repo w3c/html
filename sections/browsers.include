@@ -70,64 +70,36 @@
   <a>creator browsing context</a> at the time <var>A</var> was created is the
   <dfn>creator <code>Document</code></dfn>.
 
-  <div class="impl">
-
   To <dfn lt="creating a new browsing context|create a new browsing context">create a new browsing context</dfn>:
 
-  <ol>
-   <li>Let <var>document</var> be a new <code>Document</code>, whose <a>address</a> is <code>about:blank</code>, which is marked as being an
-   <a>HTML document</a>, whose <a>character encoding</a> is UTF-8, and which is both <a>ready for post-load
-   tasks</a> and <a>completely loaded</a> immediately.</li>
-
-   <li>
-    Set the <a>origin</a> and <a>effective script
-    origin</a> of <var>document</var>:
-
-    <ul>
-     <li>If the new <a>browsing context</a> has a <a>creator browsing context</a>,
-     then the <a>origin</a> of <var>document</var> is an <a>alias</a> to the <a>origin</a> of the <a>creator
-     <code>Document</code></a> and the <a>effective script origin</a> of
-     <var>document</var> is initially an <a>alias</a> to the
-     <a>effective script origin</a> of the <a>creator
-     <code>Document</code></a>.</li>
-
-     <li>Otherwise, the <a>origin</a> of <var>document</var> is a globally unique
-     identifier assigned when the new <a>browsing context</a> is created and the
-     <a>effective script origin</a> of <var>document</var> is initially an <a>alias</a> to its <a>origin</a>.</li>
-    </ul>
-   </li>
-
-   <li>If the new <a>browsing context</a> has a <a>creator
-   <code>Document</code></a>, then set <var>document</var>'s <a>referrer</a> to <a>the address</a> of that
-   <a>creator <code>Document</code></a>.</li>
-
-   <li>Ensure that <var>document</var> has a single child <code>html</code> node, which itself
-   has two empty child nodes: a <code>head</code> element, and a <code>body</code>
-   element.</li>
-
-   <li><a>Implement the sandboxing</a> for <var>document</var>.</li>
-
-   <li>Let <var>window</var> be a new <code>Window</code> object.</li>
-
-   <li>Set <var>window</var>'s associated <code>Document</code> to <var>document</var>.</li>
-
-   <li>Add <var>document</var> to the new <a>browsing context</a>'s <a>session
-   history</a>.</li>
-
-   <li>
-    <p>Let <var>windowProxy</var> be a new <code>WindowProxy</code> object that forwards
-    everything to the new <a>browsing context</a>'s <a>active document</a>'s
-    <code>Window</code> object.</p>
-
-    <p class="note">Initially, this means forwarding to <var>window</var>, but this can change as
-    navigations occur.</p>
-   </li>
-
-   <li>Set the new <a>browsing context</a>'s associated <code>WindowProxy</code> to
-   <var>windowProxy</var>.</li>
-  </ol>
-
-  </div>
+  1. Call the JavaScript <a>InitializeHostDefinedRealm()</a> abstract operation with the following 
+      customizations:
+    
+      * For the global object, create a new {{Window}} object <var>window</var>.
+      * For the global <em>this</em> value, create a new {{WindowProxy}} object 
+         <var>windowProxy</var>, whose \[[{{Window}}]] internal slot value is <var>window</var>.
+         
+         <p class="note">The internal slot value is updated when navigations occur.</p>
+      * Let <var>realm execution context</var> be the created <a>JavaScript execution context</a>.
+  2. Set the new <a>browsing context</a>'s associated {{WindowProxy}} to <var>windowProxy</var>.
+  3. Let <var>document</var> be a new {{Document}}, whose <a>URL</a> is <a scheme>about:blank</a>, 
+      which is marked as being an <a>HTML document</a>, whose <a>character encoding</a> is UTF-8, 
+      and which is both <a>ready for post-load tasks</a> and <a>completely loaded</a> immediately.
+  4. Set the <a>origin</a> of <var>document</var>:
+      
+      * If the new <a>browsing context</a> has a <a>creator browsing context</a>, then the 
+         <a>origin</a> of <var>document</var> is the <a>creator origin</a>.
+      * Otherwise, the <a>origin</a> of <var>document</var> is a unique <a>opaque origin</a>assigned 
+         when the new <a>browsing context</a> is created.
+  5. If the new <a>browsing context</a> has a <a>creator browsing context</a>, then set 
+      <var>document</var>'s <a>referrer</a> to the <a>creator URL</a>.
+  6. Ensure that <var>document</var> has a single child <{html}> node, which itself has two empty 
+      child nodes: a <{head}> element, and a <{body}> element.
+  7. <a>Implement the sandboxing</a> for <var>document</var>.
+  8. Add <var>document</var> to the new <a>browsing context</a>'s <a>session history</a>.
+  9. Set <var>window</var>'s associated {{Document}} to <var>document</var>.
+  10. <a>Set up a browsing context environment settings object</a> with <var>realm execution 
+       context</var>.
 
 <h4 id="sec-nested-browsing-contexts"><dfn lt="nested browsing contexts|nested browsing context">Nested browsing contexts</dfn></h4>
 
@@ -1623,7 +1595,7 @@
 
   <hr />
 
-  The <dfn lt="cross-origin">origin</dfn> of a resource and the
+  The <dfn lt="cross-origin|origin|origins">origin</dfn> of a resource and the
   <dfn>effective script origin</dfn> of a resource are each one of the
   following:
 
@@ -3911,10 +3883,10 @@
            <a>response</a> whose <a>status</a> is <code>204</code>.
 
            Otherwise, the result of obtaining the resource for the URL is a <a>response</a> whose 
-           <a>header list</a> consists of 
+           <a for="response">header list</a> consists of 
            <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a> and whose 
-           <a>body</a> is <var>result</var>, and whose <a>HTTPS state</a> is <var>settings</var>'s
-           <a>HTTPS state</a>.
+           <a for="response">body</a> is <var>result</var>, and whose <a>HTTPS state</a> is 
+           <var>settings</var>'s <a>HTTPS state</a>.
 
            When it comes time to <a>set the document's address</a> in the 
            <a>navigation algorithm</a>, use <var>address</var> as the <a>override URL</a>.
@@ -3975,7 +3947,7 @@
 
         <li>Set <var>request</var>'s <a>omit-<code>Origin</code>-header flag</a>.
 
-        <li>If <var>request</var>'s <a>method</a> is not
+        <li>If <var>request</var>'s <a for="request">method</a> is not
         <code>GET</code>, or, if the <a>navigation algorithm</a>
         was invoked as a result of the <a>form submission
         algorithm</a>, then if there is an <a>origin</a> of the <a>active document</a>
@@ -5724,8 +5696,7 @@
   have its <a>completeness flag</a> set to
   <i>incomplete</i>; the others are always all <i>complete</i>.
 
-  Each <a>application cache group</a> has an <dfn>update
-  status</dfn>, which is one of the following: <i>idle</i>, <i>checking</i>, <i>downloading</i>.
+  Each <a>application cache group</a> has an <dfn>update status</dfn>, which is one of the following: <i>idle</i>, <i>checking</i>, <i>downloading</i>.
 
   A <dfn>relevant application cache</dfn> is an <a>application cache</a> that is the <a>newest</a> in its <a>group</a> to be <i>complete</i>.
 
@@ -6439,7 +6410,7 @@
     <i>Fetching the manifest</i>: Let <var>manifest</var> be the result of <a>fetching</a> <var>request</var>. HTTP caching semantics should be
     honored for this request.
 
-    Parse <var>manifest</var>'s <a>body</a> according to the
+    Parse <var>manifest</var>'s <a for="response">body</a> according to the
     <a>rules for parsing manifests</a>, obtaining a list of
     <a>explicit entries</a>, <a>fallback entries</a> and the <a>fallback namespaces</a> that map to them, entries for
     the <a>online safelist</a>, and values for the
