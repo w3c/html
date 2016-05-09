@@ -5065,8 +5065,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <a>media resource</a> will likely need</dd>
     <dd><code>autoplay</code> - Hint that the <a>media resource</a>
     can be started automatically when the page is loaded</dd>
-    <dd><code>mediagroup</code> - Groups <a href="#media-elements">media elements</a>
-    together with an implicit <code>MediaController</code></dd>
     <dd><code>loop</code> - Whether to loop the <a>media resource</a></dd>
     <dd><code>muted</code> - Whether to mute the <a>media resource</a> by default</dd>
     <dd><{video/controls}> - Show user agent controls</dd>
@@ -5107,7 +5105,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   and those with other physical or cognitive disabilities, a variety of features are available.
   Captions can be provided, either embedded in the video stream or as external files using the
   <{track}> element. Sign-language tracks can be provided, again either embedded in the
-  video stream or by synchronizing multiple <{video}> elements using the <code>mediagroup</code> attribute or a <code>MediaController</code>
+  video stream or using a <code>MediaController</code>
   object. Audio descriptions can be provided, either as a separate track embedded in the video
   stream, or a separate audio track in an <{audio}> element <a>slaved</a> to the same controller as the <{video}> element(s), or in text
   form using a <a>WebVTT file</a> referenced using the <{track}> element and
@@ -5120,7 +5118,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   ostensibly video data, possibly with associated audio data.
 
   The <code>src</code>, <code>preload</code>,
-  <code>autoplay</code>, <code>mediagroup</code>, <code>loop</code>, <code>muted</code>, and <{video/controls}>
+  <code>autoplay</code>, <code>loop</code>, <code>muted</code>, and <{video/controls}>
   attributes are the attributes common to all media elements.
 
   The <dfn element-attr for="video"><code>poster</code></dfn> content attribute gives the address of an
@@ -5402,8 +5400,6 @@ zero or more <{track}> elements, then
     <a>media resource</a> will likely need</dd>
     <dd><code>autoplay</code> - Hint that the <a>media resource</a>
     can be started automatically when the page is loaded</dd>
-    <dd><code>mediagroup</code> - Groups <a href="#media-elements">media elements</a>
-    together with an implicit <code>MediaController</code></dd>
     <dd><code>loop</code> - Whether to loop the <a>media resource</a></dd>
     <dd><code>muted</code> - Whether to mute the <a>media resource</a> by default</dd>
     <dd><{audio/controls}> - Show user agent controls</dd>
@@ -5444,7 +5440,7 @@ zero or more <{track}> elements, then
   ostensibly audio data.
 
   The <code>src</code>, <code>preload</code>,
-  <code>autoplay</code>, <code>mediagroup</code>, <code>loop</code>, <code>muted</code>, and <{audio/controls}>
+  <code>autoplay</code>, <code>loop</code>, <code>muted</code>, and <{audio/controls}>
   attributes are the attributes common to all media elements.
 
   <div class="impl">
@@ -5950,7 +5946,6 @@ zero or more <{track}> elements, then
       void pause();
 
       // media controller
-      attribute DOMString mediaGroup;
       attribute MediaController? controller;
 
       // controls
@@ -5967,8 +5962,7 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  The <dfn>media element attributes</dfn>, <code>src</code>, <code>crossorigin</code>, <code>preload</code>, <code>autoplay</code>,
-  <code>mediagroup</code>, <code>loop</code>,
+  The <dfn>media element attributes</dfn>, <code>src</code>, <code>crossorigin</code>, <code>preload</code>, <code>autoplay</code>, <code>loop</code>,
   <code>muted</code>, and <{mediaelements/controls}>, apply to all <a href="#media-elements">media elements</a>. They are defined in this section.
 
   <a href="#media-elements">Media elements</a> are used to present audio data, or video and
@@ -9180,8 +9174,7 @@ zero or more <{track}> elements, then
   <code>MediaController</code> is an object that coordinates the playback of multiple <a href="#media-elements">media elements</a>, for instance so that a sign-language interpreter
   track can be overlaid on a video track, with the two being kept synchronized.
 
-  By default, a <a href="#media-elements">media element</a> has no <code>MediaController</code>. An implicit
-  <code>MediaController</code> can be assigned using the <code>mediagroup</code> content attribute. An explicit
+  By default, a <a href="#media-elements">media element</a> has no <code>MediaController</code>. An explicit
   <code>MediaController</code> can be assigned directly using the <code>controller</code> IDL attribute.
 
   <a href="#media-elements">Media elements</a> with a <code>MediaController</code> are said
@@ -9256,8 +9249,6 @@ zero or more <{track}> elements, then
 
     Returns the current <code>MediaController</code> for the <a href="#media-elements">media element</a>, if any,
     or null otherwise.
-
-    Can be set, to set an explicit <code>MediaController</code>. Doing so removes the <code>mediagroup</code> attribute, if any.
 
     </dd>
 
@@ -9422,14 +9413,11 @@ zero or more <{track}> elements, then
   <div class="impl">
 
   A <a href="#media-elements">media element</a> can have a <dfn>current media controller</dfn>, which is a
-  <code>MediaController</code> object. When a <a href="#media-elements">media element</a> is created without a <code>mediagroup</code> attribute, it does not have a <a>current media
-  controller</a>. (If it is created <em>with</em> such an attribute, then that attribute
-  initializes the <a>current media controller</a>, as defined below.)
+  <code>MediaController</code> object.
 
   The <dfn lt="slaved media elements|slaved media element|slaved">slaved media elements</dfn> of a <code>MediaController</code> are the <a href="#media-elements">media elements</a> whose <a>current media controller</a> is that
   <code>MediaController</code>. All the <a>slaved media elements</a> of a
-  <code>MediaController</code> must use the same clock for their definition of their <a>media
-  timeline</a>'s unit time. When the user agent is required to act on each <a>slaved media element</a> in turn, they must be processed in the order that they
+  <code>MediaController</code> must use the same clock for their definition of their <a>media timeline</a>'s unit time. When the user agent is required to act on each <a>slaved media element</a> in turn, they must be processed in the order that they
   were last associated with the <code>MediaController</code>.
 
   <hr />
@@ -9448,9 +9436,6 @@ zero or more <{track}> elements, then
 
     <li>Let <var>m</var> have no <a>current media controller</a>, if it currently
     has one.</li>
-
-    <li>Remove the element's <code>mediagroup</code> content
-    attribute, if any.</li>
 
     <li>If the new value is null, then jump to the <i>update controllers</i> step below.</li>
 
@@ -9900,96 +9885,6 @@ zero or more <{track}> elements, then
 
   The <a>task source</a> for the <a>tasks</a> listed in this
   section is the <a>DOM manipulation task source</a>.
-
-  </div>
-
-<h6 id="assigning-a-media-controller-declaratively">Assigning a media controller declaratively</h6>
-
-  The <dfn element-attr for="media"><code>mediagroup</code></dfn> content attribute on <a href="#media-elements">media elements</a> can be used to link multiple <a href="#media-elements">media elements</a> together by implicitly creating a <code>MediaController</code>. The
-  value is text; <a href="#media-elements">media elements</a> with the same value are
-  automatically linked by the user agent.
-
-  <div class="impl">
-
-  When a <a href="#media-elements">media element</a> is created with a <code>mediagroup</code> attribute, and when a <a href="#media-elements">media element</a>'s
-  <code>mediagroup</code> attribute is set, changed, or removed, the
-  user agent must run the following steps:
-
-  <ol>
-
-    <li>Let <var>m</var> be the <a href="#media-elements">media element</a> in question.</li>
-
-    <li>Let <var>old controller</var> be <var>m</var>'s <a>current media
-    controller</a>, if it currently has one, and null otherwise.</li>
-
-    <li>Let <var>new controller</var> be null.</li>
-
-    <li>Let <var>m</var> have no <a>current media controller</a>, if it currently
-    has one.</li>
-
-    <li>If <var>m</var>'s <code>mediagroup</code> attribute
-    is being removed, then jump to the <i>update controllers</i> step below.</li>
-
-    <li>
-
-    If there is another <a href="#media-elements">media element</a> whose {{Document}} is the same as
-    <var>m</var>'s <a>node document</a> (even if one or both of these elements are not
-    actually <a><em>in</em> the <code>Document</code></a>), and which
-    also has a <code>mediagroup</code> attribute, and whose <code>mediagroup</code> attribute has the same value as the new value of
-    <var>m</var>'s <code>mediagroup</code> attribute, then
-    let <var>controller</var> be that <a href="#media-elements">media element</a>'s <a>current media
-    controller</a>.
-
-    Otherwise, let <var>controller</var> be a newly created
-    <code>MediaController</code>.
-
-    </li>
-
-    <li>Let <var>m</var>'s <a>current media controller</a> be <var>controller</var>.</li>
-
-    <li>Let <var>new controller</var> be <var>m</var>'s <a>current media
-    controller</a>.</li>
-
-    <li><a>Bring the media element up to speed with its new media
-    controller</a>.</li>
-
-    <li><i>Update controllers</i>: If <var>old
-    controller</var> and <var>new controller</var> are the
-    same (whether both null or both the same controller) then abort
-    these steps.</li>
-
-    <li>If <var>old controller</var> is not null and still has one or more <a>slaved
-    media elements</a>, then <a>report the controller state</a> for <var>old
-    controller</var>.</li>
-
-    <li>If <var>new controller</var> is not null, then <a>report the controller
-    state</a> for <var>new controller</var>.</li>
-
-  </ol>
-
-  The <dfn attribute for="HTMLMediaElement"><code>mediaGroup</code></dfn> IDL attribute on <a href="#media-elements">media elements</a> must <a>reflect</a> the <code>mediagroup</code> content attribute.
-
-  </div>
-
-  <div class="example">
-    Multiple <a href="#media-elements">media elements</a> referencing the same <a>media
-    resource</a> will share a single network request. This can be used to efficiently play two
-    (video) tracks from the same <a>media resource</a> in two different places on the screen.
-    Used with the <code>mediagroup</code> attribute, these elements can
-    also be kept synchronized.
-
-    In this example, a sign-language interpreter track from a movie file is overlaid on the primary
-    video track of that same video file using two <{video}> elements, some CSS, and an
-    implicit <code>MediaController</code>:
-
-    <pre highlight="html">
-&lt;article&gt;
-  &lt;div style="margin: 1em auto; position: relative; width: 400px; height: 300px;"&gt;
-  &lt;video style="position; absolute; bottom: 0; right: 0; width: 100%; height: 100%;" src="movie.vid#track=Video&amp;amp;track=English" autoplay controls mediagroup=movie&gt;&lt;/video&gt;
-  &lt;video style="position; absolute; bottom: 0; right: 0; width: 30%;" src="movie.vid#track=sign" autoplay mediagroup=movie&gt;&lt;/video&gt;
-  &lt;/div&gt;
-&lt;/article&gt;
-    </pre>
 
   </div>
 
