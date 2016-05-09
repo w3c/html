@@ -47,12 +47,13 @@
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>src</code> - Address of the resource</dd>
-    <dd><code>type</code> - Type of embedded resource</dd>
-    <dd><code>charset</code> - Character encoding of the external script resource</dd>
-    <dd><code>async</code> - Execute script <a>in parallel</a></dd>
-    <dd><code>defer</code> - Defer script execution</dd>
-    <dd><code>crossorigin</code> - How the element handles crossorigin requests</dd>
+    <dd><{script/src}> - Address of the resource</dd>
+    <dd><{script/type}> - Type of embedded resource</dd>
+    <dd><{script/charset}> - Character encoding of the external script resource</dd>
+    <dd><{script/async}> - Execute script <a>in parallel</a></dd>
+    <dd><{script/defer}> - Defer script execution</dd>
+    <dd><{script/crossorigin}> - How the element handles crossorigin requests</dd>
+    <dd><{script/nonce}> - Cryptographic nonce used in <em>Content Security Policy</em> checks [[CSP3]]</dd>
     <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
     <dd>None</dd>
     <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
@@ -68,6 +69,7 @@
           attribute boolean defer;
           attribute DOMString? crossOrigin;
           attribute DOMString text;
+          attribute DOMString nonce;
         };
       </pre>
     </dd>
@@ -77,757 +79,154 @@
   their documents. The element does not <a>represent</a> content for the
   user.
 
-  When used to include dynamic scripts, the scripts may either be embedded inline or may be
-  imported from an external file using the <code>src</code> attribute. If
-  the language is not that described by "<code>text/javascript</code>", then the <code>type</code> attribute must be present, as described below. Whatever
-  language is used, the contents of the <{script}> element must conform with the
-  requirements of that language's specification.
+  The <dfn element-attr for="script"><code>type</code></dfn> attribute allows customization of the
+  type of script represented:
 
-  When used to include data blocks (as opposed to scripts), the data must be embedded inline, the
-  format of the data must be given using the <code>type</code> attribute,
-  the <code>src</code> attribute must not be specified, and the contents of
-  the <{script}> element must conform to the requirements defined for the format used.
+  * Omitting the attribute, or setting it to a <a>JavaScript MIME type</a>, means that the script is
+     a <a>classic script</a>, to be interpreted according to the JavaScript <a for="ecma">Script</a>
+     top-level production. Classic scripts are affected by the <{script/charset}>, <{script/async}>,
+     and <{script/defer}> attributes. Authors should omit the attribute, instead of redundantly
+     giving a <a>JavaScript MIME type</a>.
+  * Setting the attribute to an <a>ASCII case-insensitive</a> match for the string
+     "`module`" means that the script is a <a>module script</a>, to be interpreted
+     according to the JavaScript <a for="ecma">Module</a> top-level production. Module scripts are
+     not affected by the <{script/charset}> and <{script/defer}> attributes.
+  * Setting the attribute to any other value means that the script is a
+     <dfn lt="data block|data blocks">data block</dfn>, which is not processed. None of the
+     <{script}> attributes (except <{script/type}> itself) have any effect on <a>data blocks</a>.
+     Authors must use a <a>valid MIME type</a> that is not a <a>JavaScript MIME type</a> to denote
+     <a>data blocks</a>.
 
-  The <dfn element-attr for="script"><code>type</code></dfn> attribute gives the language of the
-  script or format of the data. If the attribute is present, its value must be a <a>valid MIME
-  type</a>. The <code>charset</code> parameter must not be specified. The default, which
-  is used if the attribute is absent, is "<code>text/javascript</code>".
+  <p class="note">The requirement that <a>data blocks</a> must be denoted using a
+  <a>valid MIME type</a> is in place to avoid potential future collisions. If this specification
+  ever adds additional types of <a for="concept">script</a>, they will be triggered by setting the
+  <{script/type}> attribute to something which is not a MIME type, like how the "`module`" value
+  denotes <a>module scripts</a>. By using a valid MIME type now, you ensure that your data block
+  will not ever be reinterpreted as a different script type, even in future user agents.</p>
 
-  The <dfn element-attr for="script"><code>src</code></dfn> attribute, if specified, gives the
-  address of the external script resource to use. The value of the attribute must be a <a>valid
-  non-empty URL potentially surrounded by spaces</a> identifying a script resource of the type
-  given by the <code>type</code> attribute, if the attribute is present, or
-  of the type "<code>text/javascript</code>", if the attribute is absent. A resource is a
-  script resource of a given type if that type identifies a scripting language and the resource
-  conforms with the requirements of that language's specification.
+  <a>Classic scripts</a> and <a>module scripts</a> may either be embedded inline or may be imported
+  from an external file using the <dfn element-attr for="script"><code>src</code></dfn> attribute,
+  which if specified gives the <a>URL</a> of the external script resource to use. If <{script/src}>
+  is specified, it must be a <a>valid non-empty URL potentially surrounded by spaces</a>. The
+  contents of inline <{script}> elements, or the external script resource, must conform with the
+  requirements of the JavaScript specification's <a for="ecma">Script</a> or
+  <a for="ecma">Module</a> productions, for <a>classic scripts</a> and <a>module scripts</a>
+  respectively. [[ECMA-262]]
+
+  When used to include <a>data blocks</a>, the data must be embedded inline, the format of the data
+  must be given using the <{script/type}> attribute, and the contents of the <{script}> element must
+  conform to the requirements defined for the format used. The <{script/src}>, <{script/charset}>,
+  <{script/async}>, <{script/defer}>, <{script/crossorigin}>, and <{script/nonce}> attributes must
+  not be specified.
 
   The <dfn element-attr for="script"><code>charset</code></dfn> attribute gives the character
-  encoding of the external script resource. The attribute must not be specified if the <code>src</code> attribute is not present. If the attribute is set, its value
-  must be an <a>ASCII case-insensitive</a> match for one of the <a lt="character encoding">labels</a> of an <a>encoding</a>, and must specify the same <a>encoding</a> as
-  the <code>charset</code> parameter of the <a>Content-Type
-  metadata</a> of the external file, if any. [[!ENCODING]]
+  encoding of the external script resource. The attribute must not be specified if the
+  <{script/src}> attribute is not present, or if the script is not a <a>classic script</a>.
+  (<a>Module scripts</a> are always interpreted as UTF-8.) If the attribute is set, its value
+  must be an <a>ASCII case-insensitive</a> match for one of the
+  <a lt="character encoding">labels</a> of an <a>encoding</a>, and must specify the same
+  <a>encoding</a> as the `charset` parameter of the <a>Content-Type metadata</a> of the external
+  file, if any. [[!ENCODING]]
 
-  The <dfn element-attr for="script"><code>async</code></dfn> and <dfn element-attr for="script"><code>defer</code></dfn> attributes are <a>boolean attributes</a> that indicate how the script should be executed. The <code>defer</code> and <code>async</code> attributes
-  must not be specified if the <code>src</code> attribute is not
-  present.
+  The <dfn element-attr for="script"><code>async</code></dfn> and
+  <dfn element-attr for="script"><code>defer</code></dfn> attributes are <a>boolean attributes</a>
+  that indicate how the script should be executed. <a>Classic scripts</a> may specify
+  <{script/defer}> or <{script/async}>; <a>module scripts</a> may specify <{script/async}>.
 
-  There are three possible modes that can be selected using these attributes. If the <code>async</code> attribute is present, then the script will be executed
-  as soon as it is available, but without blocking further parsing of the page. If the <code>async</code>
-  attribute is not present but the <code>defer</code> attribute is
-  present, then the script is executed when the page has finished parsing. If neither attribute is
-  present, then the script is fetched and executed immediately, before the user agent continues
-  parsing the page. This is summarized in the following schematic diagram:
+  There are several possible modes that can be selected using these attributes, and depending on the
+  script's <{script/type}>.
 
-  <img src="images/asyncdefer.svg" style="width: 80%; min-width: 690px;" alt="With &lt;script>, parsing is interrupted by fetching and execution; with &lt;script defer>, fetching is parallel to parsing and execution takes place after all parsing has finished; and with &lt;script async>, fetching is parallel to parsing but once it finishes parsing is interrupted to execute the script." />
+  For <a>classic scripts</a>, if the <{script/async}> attribute is present, then the classic script
+  will be fetched <a>in parallel</a> to parsing and evaluated as soon as it is available
+  (potentially before parsing completes). If the <{script/async}> attribute is not present but the
+  <{script/defer}> attribute is present, then the <a>classic script</a> will be fetched
+  <a>in parallel</a> and evaluated when the page has finished parsing. If neither attribute is
+  present, then the script is fetched and evaluated immediately, blocking parsing until these are
+  both complete.
+
+  For <a>module scripts</a>, if the <{script/async}> attribute is present, then the module script
+  and all its dependencies will be fetched <a>in parallel</a> to parsing, and the module script will
+  be evaluated as soon as it is available (potentially before parsing completes). Otherwise, the
+  module script and its dependencies will be fetched <a>in parallel</a> to parsing and evaluated
+  when the page has finished parsing. (The <{script/defer}> attribute has no effect on module
+  scripts.)
+
+  This is all summarized in the following schematic diagram:
+
+  <img src="images/asyncdefer.svg" style="width: 80%; min-width: 690px;" alt="With &lt;script>, parsing is interrupted by fetching and execution. With &lt;script defer>, fetching is parallel to parsing and execution takes place after all parsing has finished. And with &lt;script async>, fetching is parallel to parsing but once it finishes parsing is interrupted to execute the script. The story for &lt;script type="module"> is similar to &lt;script defer>, but the dependencies will be fetched as well, and the story for &lt;script type="module" async> is similar to &lt;script async> with the extra dependency fetching." />
 
   <p class="note">
     The exact processing details for these attributes are, for mostly historical
   reasons, somewhat non-trivial, involving a number of aspects of HTML. The implementation
   requirements are therefore by necessity scattered throughout the specification. The algorithms
   below (in this section) describe the core of this processing, but these algorithms reference and
-  are referenced by the parsing rules for <code>script</code> <a lt="start tag">start</a> and <a lt="end tag">end</a> tags in HTML, <a>in foreign content</a>,
-  and in XML, the rules for the <a method lt="write()"><code>document.write()</code></a> method, the handling of <a for="concept">scripting</a>, etc.
-  </p>
+  are referenced by the parsing rules for <{script}> <a lt="start tag">start</a> and
+  <a lt="end tag">end</a> tags in HTML, <a>in foreign content</a>, and in XML, the rules for the
+  <a method lt="write()"><code>document.write()</code></a> method, the handling of
+  <a for="concept">scripting</a>, etc.</p>
 
-  The <a element-attr for="script"><code>defer</code></a> attribute may be specified even if the <code>async</code> attribute is specified, to cause legacy Web browsers that
-  only support <code>defer</code> (and not <code>async</code>) to fall back to the <code>defer</code> behavior instead of the blocking behavior that
-  is the default.
+  The <{script/defer}> attribute may be specified even if the <{script/async}> attribute is
+  specified, to cause legacy Web browsers that only support <{script/defer}> (and not
+  <{script/async}>) to fall back to the <{script/defer}> behavior instead of the blocking behavior
+  that is the default.
 
   The <dfn element-attr for="script"><code>crossorigin</code></dfn> attribute is a
-  <a>CORS settings attribute</a>. It controls, for scripts that are obtained from other <a>origins</a>, whether error information will be exposed.
-
-  Changing the <code>src</code>, <code>type</code>, <code>charset</code>, <code>async</code>, <code>defer</code>, and <code>crossorigin</code> attributes dynamically has no direct effect;
-  these attribute are only used at specific times described below.
-
-  <div class="impl">
-
-  A <{script}> element has several associated pieces of state.
-
-  The first is a flag indicating whether or not the script block has been <dfn>"already
-  started"</dfn>. Initially, <{script}> elements must have this flag unset (script blocks,
-  when created, are not "already started"). The <a>cloning
-  steps</a> for <{script}> elements must set the "already started" flag on the copy if
-  it is set on the element being cloned.
-
-  The second is a flag indicating whether the element was <dfn>"parser-inserted"</dfn>.
-  Initially, <{script}> elements must have this flag unset. It is set by the <a>HTML
-  parser</a> and the <a>XML parser</a> on <{script}> elements they insert and
-  affects the processing of those elements.
-
-  The third is a flag indicating whether the element will <dfn>"non-blocking"</dfn>. Initially,
-  <{script}> elements must have this flag set. It is unset by the <a>HTML parser</a>
-  and the <a>XML parser</a> on <{script}> elements they insert. In addition, whenever
-  a <{script}> element whose <a>"non-blocking"</a> flag is set has an <code>async</code> content attribute added, the element's
-  <a>"non-blocking"</a> flag must be unset.
-
-  The fourth is a flag indicating whether or not the script block is <dfn>"ready to be
-  parser-executed"</dfn>. Initially, <{script}> elements must have this flag unset (script
-  blocks, when created, are not "ready to be parser-executed"). This flag is used only for elements
-  that are also <a>"parser-inserted"</a>, to let the parser know when to execute the
-  script.
-
-  The last few pieces of state are <dfn><var>the script block
-  type</var></dfn>, <dfn><var>the script block character
-  encoding</var></dfn>, and <dfn><var>the script block
-  fallback character encoding</var></dfn>. They are determined when the script is prepared, based on
-  the attributes on the element at that time, and the
-  <{script}> element's <a>node document</a>.
-
-  When a <{script}> element that is not marked as being <a>"parser-inserted"</a>
-  experiences one of the events listed in the following list, the user agent must <a>immediately</a>
-  prepare the <{script}> element:
-
-  <ul>
-
-    <li>The <{script}> element gets <a for="document">inserted into a document</a>, at the time the node is inserted
-    according to the DOM, after any other <{script}> elements inserted at the same time that
-    are earlier in the <code>Document</code> in <a>tree order</a>.</li>
-
-    <li>The <{script}> element is <a>in a <code>Document</code></a> and a node or
-    document fragment is <a>inserted</a> into the
-    <{script}> element, after any <{script}> elements <a>inserted</a> at that time.</li>
-
-    <li>The <{script}> element is <a>in a <code>Document</code></a> and has a <code>src</code> attribute set where previously the element had no such
-    attribute.</li>
-
-  </ul>
-
-  To <dfn>prepare a script</dfn>, the user agent must act as
-  follows:
-
-  <ol>
-
-    <li>
-
-    If the <{script}> element is marked as having <a>"already started"</a>, then
-    the user agent must abort these steps at this point. The script is not executed.
-
-    </li>
-
-    <li>
-
-    If the element has its <a>"parser-inserted"</a> flag set, then set <var>was-parser-inserted</var> to true and unset the element's
-    <a>"parser-inserted"</a> flag. Otherwise, set <var>was-parser-inserted</var> to
-    false.
-
-    <p class="note">
-    This is done so that if parser-inserted <{script}> elements fail to run
-    when the parser tries to run them, e.g., because they are empty or specify an unsupported
-    scripting language, another script can later mutate them and cause them to run again.
-  </p>
-
-    </li>
-
-    <li>
-
-    If <var>was-parser-inserted</var> is true and the element does not have an <code>async</code> attribute, then set the element's
-    <a>"non-blocking"</a> flag to true.
-
-    <p class="note">
-    This is done so that if a parser-inserted <{script}> element fails to
-    run when the parser tries to run it, but it is later executed after a script dynamically updates
-    it, it will execute in a non-blocking fashion even if the <code>async</code>
-    attribute isn't set.
-  </p>
-
-    </li>
-
-    <li id="script-processing-empty">
-
-    If the element has no <code>src</code> attribute, and its child
-    nodes, if any, consist only of comment nodes and empty <code>Text</code> nodes, then the user
-    agent must abort these steps at this point. The script is not executed.
-
-    </li>
-
-    <li>
-
-    If the element is not <a>in a <code>Document</code></a>, then the user agent must abort
-    these steps at this point. The script is not executed.
-
-    </li>
-
-    <li id="script-processing-prepare">
-
-    If either:
-
-    <ul class="brief">
-
-      <li>the <{script}> element has a <code>type</code> attribute
-      and its value is the empty string, or</li>
-
-      <li>the <{script}> element has no <code>type</code> attribute
-      but it has a <code>language</code> attribute and <em>that</em>
-      attribute's value is the empty string, or</li>
-
-      <li>the <{script}> element has neither a <code>type</code>
-      attribute nor a <code>language</code> attribute, then</li>
-
-    </ul>
-
-    ...let <var>the script block's type</var> for this
-    <{script}> element be "<code>text/javascript</code>".
-
-    Otherwise, if the <{script}> element has a <code>type</code> attribute, let <var>the
-    script block's type</var> for this <{script}> element be the value of that attribute
-    with any leading or trailing sequences of <a>space characters</a>
-    removed.
-
-    Otherwise, the element has a non-empty <code>language</code>
-    attribute; let <var>the script block's type</var> for this
-    <{script}> element be the concatenation of the string "<code>text/</code>"
-    followed by the value of the <code>language</code> attribute.
-
-    <p class="note">
-    The <code>language</code> attribute is never
-    conforming, and is always ignored if there is a <code>type</code>
-    attribute present.
-  </p>
-
-    </li>
-
-    <li>
-
-    If the user agent does not <a>support the scripting language</a> given by <var>the script block's type</var> for this <{script}> element,
-    then the user agent must abort these steps at this point. The script is not executed.
-
-    </li>
-
-    <li>
-
-    If <var>was-parser-inserted</var> is true, then flag the element as
-    <a>"parser-inserted"</a> again, and set the element's <a>"non-blocking"</a> flag to
-    false.
-
-    </li>
-
-    <li id="script-processing-start">
-
-    The user agent must set the element's <a>"already started"</a> flag.
-
-    <p class="note">
-    The state of the element at this moment <a>is later used</a> to determine the script source.
-  </p>
-
-    </li>
-
-    <li>
-
-    If the element is flagged as <a>"parser-inserted"</a>, but the element's
-    <a>node document</a> is not the <code>Document</code> of the parser that created the element,
-    then abort these steps.
-
-    </li>
-
-    <li id="script-processing-noscript">
-
-    If <a>scripting is disabled</a> for the <code>script</code>
-    element, then the user agent must abort these steps at this point. The script is not
-    executed.
-
-    <p class="note">
-    The definition of <a>scripting is disabled</a>
-    means that, amongst others, the following scripts will not execute: scripts in
-    <code>XMLHttpRequest</code>'s <code>responseXML</code>
-    documents, scripts in <code>DOMParser</code>-created documents, scripts in documents created by
-    <code>XSLTProcessor</code>'s <code>transformToDocument</code> feature, and scripts
-    that are first inserted by a script into a <code>Document</code> that was created using the
-    <code>createDocument()</code> API. [[!XHR]] [[!DOMPARSING]]  [[!DOM]]
-  </p>
-
-    </li>
-
-    <li id="script-processing-for">
-
-    If the <{script}> element has an <code>event</code>
-    attribute and a <code>for</code> attribute, then run these substeps:
-
-    <ol>
-
-      <li>Let <var>for</var> be the value of the <code>for</code>
-      attribute.</li>
-
-      <li>Let <var>event</var> be the value of the <code>event</code> attribute.</li>
-
-      <li><a>Strip leading and trailing whitespace</a> from <var>event</var> and
-      <var>for</var>.</li>
-
-      <li>If <var>for</var> is not an <a>ASCII case-insensitive</a> match for the
-      string "<code>window</code>", then the user agent must abort these steps at this
-      point. The script is not executed.</li>
-
-      <li>If <var>event</var> is not an <a>ASCII case-insensitive</a> match for
-      either the string "<a attribute for="GlobalEventHandlers"><code>onload</code></a>" or the string "<code>onload()</code>", then the user agent must abort these steps at this point. The script
-      is not executed.</li>
-
-    </ol>
-
-    </li>
-
-    <li id="script-processing-encoding">
-
-    If the <{script}> element has a <code>charset</code>
-    attribute, then let <var>the script block's character
-    encoding</var> for this <{script}> element be the result of <a>getting an
-    encoding</a> from the value of the <code>charset</code>
-    attribute.
-
-    Otherwise, let <var>the script block's fallback
-    character encoding</var> for this <{script}> element be the same as <a lt="encoding">the encoding of the document itself</a>.
-
-    <p class="note">
-    Only one of these two pieces of state is set.
-  </p>
-
-    </li>
-
-    <li id="script-processing-src-prepare">
-
-    If the element has a <code>src</code> content attribute, run these
-    substeps:
-
-    <ol>
-
-      <li>Let <var>src</var> be the value of the element's <code>src</code> attribute.</li>
-
-      <li>If <var>src</var> is the empty string, <a>queue a task</a> to <a>fire
-      a simple event</a> named <code>error</code> at the element, and abort
-      these steps.</li>
-
-      <li><a>Resolve</a> <var>src</var> relative to the
-      element.</li>
-
-      <li>If the previous step failed, <a>queue a task</a> to <a>fire a simple
-      event</a> named <code>error</code> at the element, and abort these
-      steps.</li>
-
-      <li>Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given the
-      <a>resulting absolute URL</a> and the current state of the element's
-      <code>crossorigin</code> content attribute.</li>
-
-      <li>Set <var>request</var>'s <a>client</a> to the
-      element's <a>node document</a>'s <code>Window</code> object's <a>environment settings
-      object</a> and <a for="request">type</a> to "<code>script</code>".</li>
-
-      <li>
-      <a>Fetch</a> <var>request</var>.
-
-      The resource obtained in this fashion can be either <a>CORS-same-origin</a> or
-      <a>CORS-cross-origin</a>. This only affects how error reporting happens.
-
-      For performance reasons, user agents may start fetching the script (as defined above) as
-      soon as the <code>src</code> attribute is set, instead, in the hope
-      that the element will be <a for="document">inserted into the document</a> (and that the <code>crossorigin</code> attribute won't change value in the
-      meantime). Either way, once the element is <a for="document">inserted into the document</a>, the load must have started as described in this
-      step. If the user agent performs such prefetching, but the element is never inserted in the document,
-      or the <code>src</code> attribute is dynamically changed, or the <code>crossorigin</code> attribute is dynamically changed, then the
-      user agent will not execute the script so obtained, and the fetching process will have been
-      effectively wasted.
-
-      </li>
-
-    </ol>
-
-    </li>
-
-    <li>
-
-    Then, the first of the following options that describes the situation must be followed:
-
-    <dl class="switch">
-
-      <dt id="script-processing-defer">If the element has a <code>src</code>
-      attribute, and the element has a <code>defer</code> attribute, and
-      the element has been flagged as <a>"parser-inserted"</a>, and the element does not have
-      an <code>async</code> attribute</dt>
-
-      <dd>
-
-      The element must be added to the end of the <dfn>list of scripts that will execute when the
-      document has finished parsing</dfn> associated with the <code>Document</code> of the parser
-      that created the element.
-
-      The <a>task</a> that the <a>networking task source</a>
-      places on the <a>task queue</a> once fetching has completed must set the element's
-      <a>"ready to be parser-executed"</a> flag. The parser will handle executing the
-      script.
-
-      </dd>
-
-      <dt id="script-processing-parser-inserted">If the element has a <code>src</code> attribute, and the element has been flagged as
-      <a>"parser-inserted"</a>, and the element does not have an <code>async</code> attribute</dt>
-
-      <dd>
-
-      The element is the <a>pending parsing-blocking script</a> of the
-      <code>Document</code> of the parser that created the element. (There can only be one such
-      script per <code>Document</code> at a time.)
-
-      The <a>task</a> that the <a>networking task source</a>
-      places on the <a>task queue</a> once fetching has completed must set the element's
-      <a>"ready to be parser-executed"</a> flag. The parser will handle executing the
-      script.
-
-      </dd>
-
-      <dt id="script-processing-style-delayed">If the element does not have a <code>src</code> attribute, and the element has been flagged as
-      <a>"parser-inserted"</a>, and either the parser that created the <code>script</code> is
-      an <a>XML parser</a> or it's an <a>HTML parser</a> whose <a>script nesting
-      level</a> is not greater than one, and the <code>Document</code> of the <a>HTML
-      parser</a> or <a>XML parser</a> that created the <{script}> element <a>has
-      a style sheet that is blocking scripts</a></dt>
-
-      <dd>
-
-      The element is the <a>pending parsing-blocking script</a> of the
-      <code>Document</code> of the parser that created the element. (There can only be one such
-      script per <code>Document</code> at a time.)
-
-      Set the element's <a>"ready to be parser-executed"</a> flag. The parser will handle
-      executing the script.
-
-      </dd>
-
-      <dt id="script-processing-src-sync">If the element has a <code>src</code> attribute, does not have an <code>async</code> attribute, and does not have the
-      <a>"non-blocking"</a> flag set</dt>
-
-      <dd>
-
-      The element must be added to the end of the <dfn>list of scripts that will execute in order
-      as soon as possible</dfn> associated with the <a>node document</a> of the <code>script</code>
-      element at the time the <a>prepare a script</a> algorithm started.
-
-      The <a>task</a> that the <a>networking task source</a>
-      places on the <a>task queue</a> once fetching has completed must run the following
-      steps:
-
-      <ol>
-
-        <li>If the element is not now the first element in the <a>list of scripts that will
-        execute in order as soon as possible</a> to which it was added above, then mark the
-        element as ready but abort these steps without executing the script yet.</li>
-
-        <li><i>Execution</i>: <a>Execute the script block</a> corresponding to the first
-        script element in this <a>list of scripts that will execute in order as soon as
-        possible</a>.</li>
-
-        <li>Remove the first element from this <a>list of scripts that will execute in order as
-        soon as possible</a>.</li>
-
-        <li>If this <a>list of scripts that will execute in order as soon as possible</a> is
-        still not empty and the first entry has already been marked as ready, then jump back to the
-        step labeled <i>execution</i>.</li>
-
-      </ol>
-
-      </dd>
-
-      <dt id="script-processing-src">If the element has a <code>src</code>
-      attribute</dt>
-
-      <dd>
-
-      The element must be added to the <dfn>set of scripts that will execute as soon as
-      possible</dfn> of the <a>node document</a> of the <{script}> element at the time the
-      <a>prepare a script</a> algorithm started.
-
-      The <a>task</a> that the <a>networking task source</a>
-      places on the <a>task queue</a> once fetching has completed must <a>execute the
-      script block</a> and then remove the element from the <a>set of scripts that will
-      execute as soon as possible</a>.
-
-      </dd>
-
-      <dt id="script-processing-inline">Otherwise</dt>
-
-      <dd>The user agent must <a>immediately</a> <a>execute the script block</a>, even if other
-      scripts are already executing.</dd>
-
-    </dl>
-
-    </li>
-
-  </ol>
-
-  Fetching an external script must <a>delay the load event</a> of the element's <a>node document</a>
-  until the <a>task</a> that is <a>queued</a>
-  by the <a>networking task source</a> once the resource has been fetched (defined above) has
-  been run.
-
-  The <dfn>pending parsing-blocking script</dfn> of a <code>Document</code> is used by the
-  <code>Document</code>'s parser(s).
-
-  <p class="note">
-    If a <{script}> element that blocks a parser gets moved to another
-  <code>Document</code> before it would normally have stopped blocking that parser, it nonetheless
-  continues blocking that parser until the condition that causes it to be blocking the parser no
-  longer applies (e.g., if the script is a <a>pending parsing-blocking script</a> because there
-  was <a>a style sheet that is blocking scripts</a> when it was parsed, but then the script is
-  moved to another <code>Document</code> before the style sheet loads, the script still blocks the
-  parser until the style sheets are all loaded, at which time the script executes and the parser is
-  unblocked).
-  </p>
-
-  When the user agent is required to <dfn lt="execute a script block|execute|execute the script block">execute a script block</dfn>, it must run the following steps:
-
-  <ol>
-
-    <li>
-
-    If the element is flagged as <a>"parser-inserted"</a>, but the element's
-    <a>node document</a> is not the <code>Document</code> of the parser that created the element,
-    then abort these steps.
-
-    </li>
-
-    <li>
-
-    Jump to the appropriate set of steps from the list below:
-
-    <dl class="switch">
-
-      <dt>If the load resulted in an error (for example a DNS error, or an HTTP 404 error)</dt>
-
-      <dd>Executing the script block must just consist of <a>firing a simple event</a> named <code>error</code> at the element.</dd>
-
-      <dt>If the load was successful</dt>
-
-      <dd>
-
-      Executing the script block must consist of running the following steps. For the purposes of
-      these steps, the script is considered to be from an <i>external file</i> if, while the
-      <a>prepare a script</a> algorithm above was running for this script, the
-      <{script}> element had a <code>src</code> attribute
-      specified.
-
-      <ol>
-
-        <li id="establish-script-block-source">
-
-        Initialize <dfn lt="is later used|the script block's source"><var>the script block's source</var></dfn>
-        as follows:
-
-        <dl class="switch">
-
-          <dt>If the script is from an external file and <var>the script
-          block's type</var> is a text-based language</dt>
-
-          <dd>
-
-          The contents of that file, interpreted as a Unicode string, are the script source.
-
-          To obtain the Unicode string, the user agent run the following steps:
-
-          <ol>
-
-            <li>If the resource's <a>Content-Type metadata</a>, if any,
-            specifies a character encoding, and the user agent supports that encoding, then let <var>character encoding</var> be that encoding, and jump to the bottom step in this
-            series of steps.</li>
-
-            <li>If the algorithm above set <var>the script
-            block's character encoding</var>, then let <var>character encoding</var> be
-            that encoding, and jump to the bottom step in this series of steps.</li>
-
-            <li>Let <var>character encoding</var> be <var>the script block's fallback character
-            encoding</var>.</li>
-
-            <li>
-
-            If the specification for <var>the script block's
-            type</var> gives specific rules for decoding files in that format to Unicode, follow
-            them, using <var>character encoding</var> as the character encoding specified by
-            higher-level protocols, if necessary.
-
-            Otherwise, <a>decode</a> the file to Unicode, using <var>character
-            encoding</var> as the fallback encoding.
-
-            <p class="note">
-    The <a>decode</a> algorithm overrides <var>character
-            encoding</var> if the file contains a BOM.
-  </p>
-
-            </li>
-
-          </ol>
-
-          </dd>
-
-          <dt>If the script is from an external file and <var>the script
-          block's type</var> is an XML-based language</dt>
-
-          <dd>
-
-          The external file is the script source. When it is later executed, it must be
-          interpreted in a manner consistent with the specification defining the language given by
-          <var>the script block's type</var>.
-
-          </dd>
-
-          <dt>If the script is inline and <var>the script block's
-          type</var> is a text-based language</dt>
-
-          <dd>
-
-          The value of the <code>text</code> IDL attribute at the time
-          the element's <a>"already started"</a> flag was last set is the script source.
-
-          </dd>
-
-          <dt>If the script is inline and <var>the script block's
-          type</var> is an XML-based language</dt>
-
-          <dd>
-
-          The child nodes of the <{script}> element at the time the element's
-          <a>"already started"</a> flag was last set are the script source.
-
-          </dd>
-
-        </dl>
-
-        </li>
-
-        <li>
-
-        <a>Fire a simple event</a> named <code>beforescriptexecute</code> that bubbles and is cancelable
-        at the <{script}> element.
-
-        If the event is canceled, then abort these steps.
-
-        </li>
-
-        <li>
-
-        If the script is from an external file, then increment the
-        <a>ignore-destructive-writes counter</a> of the <{script}> element's
-        <a>node document</a>. Let <var>neutralized doc</var> be that
-        {{Document}}.
-
-        </li>
-
-        <li>
-
-        Let <var>old script element</var> be the value to which the <code>script</code>
-        element's <a>node document</a>'s <code>currentScript</code> object was most recently
-        initialized.
-
-        </li>
-
-        <li>
-
-        Initialize the <{script}> element's <a>node document</a>'s <code>currentScript</code> object to the <code>script</code>
-        element.
-
-        </li>
-
-        <li>
-
-        <a>Create a script</a>, using <var>the script
-        block's source</var>, the <a for="url">URL</a> from which the script was obtained, <var>the script block's type</var> as the scripting language, and
-        the <a>environment settings object</a> of the <{script}> element's
-        <a>node document</a>'s <code>Window</code> object.
-
-        If the script came from a resource that was fetched in the steps above, and the resource
-        was <a>CORS-cross-origin</a>, then pass the <var>muted errors</var> flag to the
-        <a>create a script</a> algorithm as well.
-
-        <p class="note">
-    This is where the script is compiled and actually executed.
-  </p>
-
-        </li>
-
-        <li>
-
-        Initialize the <{script}> element's <a>node document</a>'s <code>currentScript</code> object to <var>old script
-        element</var>.
-
-        </li>
-
-        <li>
-
-        Decrement the <a>ignore-destructive-writes counter</a> of <var>neutralized doc</var>, if it was incremented in the earlier step.
-
-        </li>
-
-        <li>
-
-        <a>Fire a simple event</a> named <code>afterscriptexecute</code> that bubbles (but is not
-        cancelable) at the <{script}> element.
-
-        </li>
-
-        <li>
-
-        If the script is from an external file, <a>fire a simple event</a> named <code>load</code> at the <{script}> element.
-
-        Otherwise, the script is internal; <a>queue a task</a> to <a>fire a simple
-        event</a> named <code>load</code> at the <code>script</code>
-        element.
-
-        </li>
-
-      </ol>
-
-      </dd>
-
-    </dl>
-
-    </li>
-
-  </ol>
-
-  The IDL attributes <dfn attribute for="HTMLScriptElement"><code>src</code></dfn>, <dfn attribute for="HTMLScriptElement"><code>type</code></dfn>, <dfn attribute for="HTMLScriptElement"><code>charset</code></dfn>, and <dfn attribute for="HTMLScriptElement"><code>defer</code></dfn>, must each <a>reflect</a> the respective
-  content attributes of the same name.
+  <a>CORS settings attribute</a>. For <a>classic scripts</a>, it controls whether error information
+  will be exposed, when the script is obtained from other <a>origins</a>. For <a>module scripts</a>,
+  it controls the <a>credentials mode</a> used for cross-origin requests.
+
+  <p class="note">Unlike <a>classic scripts</a>, <a>module scripts</a> require the use of the
+  <a>CORS protocol</a> for cross-origin fetching.</p>
+
+  The <dfn element-attr for="script"><code>nonce</code></dfn> attribute represents a
+  cryptographic nonce ("number used once") which can be used by <em>Content Security Policy </em> to
+  determine whether or not the script specified by an element will be executed. The value is text.
+  [[CSP3]]
+
+  Changing the <{script/src}>, <{script/type}>, <{script/charset}>, <{script/async}>,
+  <{script/defer}>, <{script/crossorigin}>, and <{script/nonce}> attributes dynamically has no
+  direct effect; these attributes are only used at specific times described below.
+
+  The IDL attributes
+  <dfn attribute for="HTMLScriptElement"><code>src</code></dfn>,
+  <dfn attribute for="HTMLScriptElement"><code>type</code></dfn>,
+  <dfn attribute for="HTMLScriptElement"><code>charset</code></dfn>,
+  <dfn attribute for="HTMLScriptElement"><code>defer</code></dfn>, and
+  <dfn attribute for="HTMLScriptElement"><code>nonce</code></dfn>, must each <a>reflect</a> the
+  respective content attributes of the same name.
 
   The <dfn attribute for="HTMLScriptElement"><code>crossOrigin</code></dfn> IDL attribute must
   <a>reflect</a> the <{script/crossorigin}> content attribute.
 
-  The <dfn attribute for="HTMLScriptElement"><code>async</code></dfn> IDL attribute controls whether the
-  element will execute <a>in parallel</a> or not. If the element's <a>"non-blocking"</a> flag is
-  set, then, on getting, the <code>async</code> IDL attribute must return
-  true, and on setting, the <a>"non-blocking"</a> flag must first be unset, and then the
-  content attribute must be removed if the IDL attribute's new value is false, and must be set to
-  the empty string if the IDL attribute's new value is true. If the element's
-  <a>"non-blocking"</a> flag is <em>not</em> set, the IDL attribute must <a>reflect</a>
-  the <{script/async}> content attribute.
-
-  </div>
+  The <dfn attribute for="HTMLScriptElement"><code>async</code></dfn> IDL attribute controls whether
+  the element will execute <a>in parallel</a> or not. If the element's <a>"non-blocking"</a> flag is
+  set, then, on getting, the {{HTMLScriptElement/async}} IDL attribute must return true, and on
+  setting, the <a>"non-blocking"</a> flag must first be unset, and then the content attribute must
+  be removed if the IDL attribute's new value is false, and must be set to the empty string if the
+  IDL attribute's new value is true. If the element's <a>"non-blocking"</a> flag is <em>not</em>
+  set, the IDL attribute must <a>reflect</a> the <{script/async}> content attribute.
 
   <dl class="domintro">
 
-    <dt><var>script</var> . <code>text</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns the contents of the element, ignoring child nodes that aren't <code>Text</code>
-    nodes.
+    <dt><var>script</var> . {{HTMLScriptElement/text}} [ = <var>value</var> ]</dt>
+    <dd>Returns the <a>child text content</a> of the element.
 
     Can be set, to replace the element's children with the given value.
-
     </dd>
-
   </dl>
 
-  <div class="impl">
+  The IDL attribute <dfn attribute for="HTMLScriptElement"><code>text</code></dfn> must return the
+  <a>child text content</a> of the <{script}> element. On setting, it must act the same way as the
+  {{Node/textContent}} IDL attribute.
 
-  The IDL attribute <dfn attribute for="HTMLScriptElement"><code>text</code></dfn> must return a
-  concatenation of the contents of all the <code>Text</code> nodes that are children of the
-  <{script}> element (ignoring any other nodes such as comments or elements), in tree
-  order. On setting, it must act the same way as the {{Node/textContent}} IDL attribute.
-
-  </div>
-
-  <p class="note">
-    When inserted using the <a method lt="write()"><code>document.write()</code></a>
-  method, <{script}> elements execute (typically blocking further script execution or HTML parsing), but when inserted using
-  <code>innerHTML</code> and <code>outerHTML</code>
-  attributes, they do not execute at all.
-  </p>
+  <p class="note">When inserted using the <a method lt="write()"><code>document.write()</code></a>
+  method, <{script}> elements execute (typically blocking further script execution or HTML parsing),
+  but when inserted using <code>innerHTML</code> and <code>outerHTML</code> attributes, they do not
+  execute at all.</p>
 
   <div class="example">
-    In this example, two <{script}> elements are used. One embeds an external script, and
-    the other includes some data.
+    In this example, two <{script}> elements are used. One embeds an external <a>classic script</a>,
+    and the other includes some data as a <a>data block</a>.
 
     <pre highlight="html">
 &lt;script src="game-engine.js"&gt;&lt;/script&gt;
@@ -843,14 +242,13 @@ o............A....e
     data doesn't have to be used that way, though; maybe the map data is actually embedded in other
     parts of the page's markup, and the data block here is just used by the site's search engine to
     help users who are looking for particular features in their game maps.
-
   </div>
 
   <div class="example">
-    The following sample shows how a script element can be used to define a function that is then
-    used by other parts of the document. It also shows how a <{script}> element can be used
-    to invoke script while the document is being parsed, in this case to initialize the form's
-    output.
+    The following sample shows how a <{script}> element can be used to define a function that is
+    then used by other parts of the document, as part of a <a>classic script</a>. It also shows how
+    a <{script}> element can be used to invoke script while the document is being parsed, in this
+    case to initialize the form's output.
 
     <pre highlight="html">
       &lt;script&gt;
@@ -885,18 +283,541 @@ o............A....e
         &lt;/script&gt;
       &lt;/form&gt;
     </pre>
-
   </div>
+
+  <div class="example">
+    The following sample shows how a <{script}> element can be used to include an external
+    <a>module script</a>.
+
+    <pre highlight="html">
+      &lt;script type="module" src="app.js">&lt;/script>
+    </pre>
+
+    This module, and all its dependencies (expressed through JavaScript `import` statements in the
+    source file), will be fetched. Once the entire resulting module tree has been imported, and the
+    document has finished parsing, the contents of `app.js` will be evaluated.
+  </div>
+
+  <div class="example">
+    The following sample shows how a <{script}> element can be used to write an inline
+    <a>module script</a> that performs a number of substitutions on the document's text, in order to
+    make for a more interesting reading experience (e.g. on a news site): [[XKCD-1288]]
+
+    <pre highlight="html">
+      &lt;script type="module">
+       import { walkAllTextNodeDescendants } from "./dom-utils.js";
+
+       const substitutions = new Map([
+         ["witnesses", "these dudes I know"]
+         ["allegedly", "kinda probably"]
+         ["new study", "Tumblr post"]
+         ["rebuild", "avenge"]
+         ["space", "spaaace"]
+         ["Google glass", "Virtual Boy"]
+         ["smartphone", "Pokédex"]
+         ["electric", "atomic"]
+         ["Senator", "Elf-Lord"]
+         ["car", "cat"]
+         ["election", "eating contest"]
+         ["Congressional leaders", "river spirits"]
+         ["homeland security", "Homestar Runner"]
+         ["could not be reached for comment", "is guilty and everyone knows it"]
+       ]);
+
+       function substitute(textNode) {
+         for (const [before, after] of substitutions.entries()) {
+           textNode.data = textNode.data.replace(new RegExp(`\\b${before}\\b`, "ig"), after);
+         }
+       }
+
+       walkAllTextNodeDescendants(document.body, substitute);
+      &lt;/script>
+    </pre>
+
+    Some notable features gained by using a <a>module script</a> include the ability to import
+    functions from other JavaScript modules, strict mode by default, and how top-level declarations
+    do not introduce new properties onto the <a>global object</a>. Also note that no matter where
+    this <{script}> element appears in the document, it will not be evaluated until both document
+    parsing has complete and its dependency (`dom-utils.js`) has been fetched and evaluated.
+  </div>
+
+  <h5 id="script-processing-model">Processing model</h5>
+
+  A <{script}> element has several associated pieces of state.
+
+  The first is a flag indicating whether or not the script block has been
+  <dfn>"already started"</dfn>. Initially, <{script}> elements must have this flag unset (script
+  blocks, when created, are not "already started"). The <a>cloning steps</a> for <{script}> elements
+  must set the "already started" flag on the copy if it is set on the element being cloned.
+
+  The second is a flag indicating whether the element was <dfn>"parser-inserted"</dfn>.
+  Initially, <{script}> elements must have this flag unset. It is set by the <a>HTML parser</a>
+  and the <a>XML parser</a> on <{script}> elements they insert and affects the processing of those
+  elements.
+
+  The third is a flag indicating whether the element will <dfn>"non-blocking"</dfn>. Initially,
+  <{script}> elements must have this flag set. It is unset by the <a>HTML parser</a>
+  and the <a>XML parser</a> on <{script}> elements they insert. In addition, whenever
+  a <{script}> element whose <a>"non-blocking"</a> flag is set has an <{script/async}> content
+  attribute added, the element's <a>"non-blocking"</a> flag must be unset.
+
+  The fourth is a flag indicating whether or not the script block is
+  <dfn>"ready to be parser-executed"</dfn>. Initially, <{script}> elements must have this flag unset
+  (script blocks, when created, are not "ready to be parser-executed"). This flag is used only for
+  elements that are also <a>"parser-inserted"</a>, to let the parser know when to execute the
+  script.
+
+  The fifth is <dfn>the script's type</dfn>, which is either "`classic`" or "`module`". It is
+  determined when the script is <a>prepared</a>, based on the <{script/type}> attribute of the
+  element at that time. Initially, <{script}> elements must have this flag unset.
+
+  The sixth is a flag indicating whether or not the script is <dfn>from an external file</dfn>. It
+  is determined when the script is <a>prepared</a>, based on the <{script/src}> attribute of the
+  element at that time.
+
+  Finally, a <{script}> element has <dfn>the script's script</dfn>, which is a
+  <{script}> resulting from <a>preparing</a> the element. This is set asynchronously after the
+  <a>classic script</a> or module tree is fetched. Once it is set, either to a <{script}> in the
+  case of success or to null in the case of failure, the fetching algorithms will note that
+  <dfn>the script is ready</dfn>, which can trigger other actions. The user agent must
+  <a>delay the load event</a> of the element's <a>node document</a> until
+  <a>the script is ready</a>.
+
+  When a <{script}> element that is not marked as being <a>"parser-inserted"</a> experiences one of
+  the events listed in the following list, the user agent must <a>immediately prepare</a> the
+  <{script}> element:
+
+  * The <{script}> element gets <a for="document">inserted into a document</a>, at the time the node
+     is inserted according to the DOM, after any other <{script}> elements inserted at the same time
+     that are earlier in the <code>Document</code> in <a>tree order</a>.
+  * The <{script}> element is <a>in a <code>Document</code></a> and a node or document fragment is
+     <a>inserted</a> into the <{script}> element, after any <{script}> elements <a>inserted</a> at
+     that time.
+  * The <{script}> element is <a>in a <code>Document</code></a> and has a <code>src</code> attribute
+     set where previously the element had no such attribute.
+
+  To <dfn>prepare a script</dfn>, the user agent must act as follows:
+
+  1. If the <{script}> element is marked as having <a>"already started"</a>, then the user agent
+      must abort these steps at this point. The script is not executed.
+  2. If the element has its <a>"parser-inserted"</a> flag set, then set
+      <var>was-parser-inserted</var> to true and unset the element's <a>"parser-inserted"</a> flag.
+      Otherwise, set <var>was-parser-inserted</var> to false.
+
+      <p class="note">This is done so that if parser-inserted <{script}> elements fail to run when
+      the parser tries to run them, e.g., because they are empty or specify an unsupported
+      scripting language, another script can later mutate them and cause them to run again.</p>
+  3. If <var>was-parser-inserted</var> is true and the element does not have an <{script/async}>
+      attribute, then set the element's <a>"non-blocking"</a> flag to true.
+
+      <p class="note">This is done so that if a parser-inserted <{script}> element fails to run when
+      the parser tries to run it, but it is later executed after a script dynamically updates it, it
+      will execute in a non-blocking fashion even if the <{script/async}> attribute isn't set.</p>
+  4. If the element has no <{script/src}> attribute, and its child nodes, if any, consist only of
+      comment nodes and empty {{Text}} nodes, then abort these steps at this point. The script is
+      not executed.
+  5. If the element is not <a>in a `Document`</a>, then the user agent must abort these steps at
+      this point. The script is not executed.
+  6. If either:
+
+      * the <{script}> element has a <{script/type}> attribute and its value is the empty string, or
+      * the <{script}> element has no <{script/type}> attribute but it has a <{script/language}>
+         attribute and <em>that</em> attribute's value is the empty string, or
+      * the <{script}> element has neither a <{script/type}> attribute nor a <{script/language}>
+         attribute, then
+
+      ...let <var>the script block's type</var> for this <{script}> element be "<`text/javascript`".
+
+      Otherwise, if the <{script}> element has a <{script/type}> attribute, let
+      <var>the script block's type string</var> for this <{script}> element be the value of that
+      attribute with any leading or trailing sequences of <a>space characters</a> removed.
+
+      Otherwise, the element has a non-empty <{script/language}> attribute; let
+      <var>the script block's type string</var> for this <{script}> element be the concatenation of
+      the string "`text/`" followed by the value of the <{script/language}> attribute.
+
+      <p class="note">The <{script/language}> attribute is never conforming, and is always ignored
+      if there is a <{script/type}> attribute present.</p>
+
+      Determine <a>the script's type</a> as follows:
+
+      * If <var>the script block's type string</var> is an <a>ASCII case-insensitive</a> match for
+         any <a>JavaScript MIME type</a>, <a>the script's type</a> is "`classic`".
+      * If <var>the script block's type string</var> is an <a>ASCII case-insensitive</a> match for
+         the string "`module`", <a>the script's type</a> is "`module`".
+      * If neither of the above conditions are true, then abort these steps at this point. No script
+         is executed.
+  7. If <var>was-parser-inserted</var> is true, then flag the element as <a>"parser-inserted"</a>
+      again, and set the element's <a>"non-blocking"</a> flag to false.
+  8. The user agent must set the element's <a>"already started"</a> flag.
+  9. If the element is flagged as <a>"parser-inserted"</a>, but the element's <a>node document</a>
+      is not the {{Document}} of the parser that created the element, then abort these steps.
+  10. If <a>scripting is disabled</a> for the <{script}> element, then abort these steps at this
+       point. The script is not executed.
+
+       <p class="note">The definition of <a>scripting is disabled</a> means that, amongst others,
+       the following scripts will not execute: scripts in {{XMLHttpRequest}}'s
+       {{XMLHttpRequest/responseXML}} documents, scripts in {{DOMParser}}-created documents, scripts
+       in documents created by <code>XSLTProcessor</code>'s <code>transformToDocument</code>
+       feature, and scripts that are first inserted by a script into a {{Document}} that was created
+       using the {{DOMImplementation/createDocument()}} API. [[!XHR]] [[!DOMPARSING]] [[!DOM]]</p>
+  11. If the <{script}> element does not have a <{script/src}> content attribute, and the
+       <a>Should element's inline behavior be blocked by Content Security Policy?</a> algorithm
+       returns "`Blocked`" when executed upon the <{script}> element, "`script`", and the <{script}>
+       element's <a>child text content</a>, then abort these steps. The script is not executed.
+       [[CSP3]]
+  12. If the <{script}> element has an <{script/event}> attribute and a <{script/for}> attribute,
+       and <a>the script's type</a> is "`classic`", then run these substeps:
+
+       1. Let <var>for</var> be the value of the <{script/for}> attribute.
+       2. Let <var>event</var> be the value of the <{script/event}> attribute.
+       3. <a>Strip leading and trailing whitespace</a> from <var>event</var> and <var>for</var>.
+       4. If <var>for</var> is not an <a>ASCII case-insensitive</a> match for the string "`window`",
+           then the user agent must abort these steps at this point. The script is not executed.
+       5. If <var>event</var> is not an <a>ASCII case-insensitive</a> match for either the string
+           "`onload`" or the string "`onload()`", then the user agent must abort these steps at this
+           point. The script is not executed.
+  13. If the <{script}> element has a <{script/charset}> attribute, then let <var>encoding</var> be
+       the result of <a>getting an encoding</a> from the value of the <{script/charset}> attribute.
+
+       If the <{script}> element does not have a <{script/charset}> attribute, or if
+       <a>getting an encoding</a> failed, let <var>encoding</var> be the same as
+       <a lt="encoding">the encoding of the document itself</a>.
+
+       <p class="note">If <a>the script's type</a> is "`module`", this encoding will be ignored.</p>
+  14. Let <var>CORS setting</var> be the current state of the element's <{script/crossorigin}>
+       content attribute.
+  15. If the <{script}> element has a <{script/nonce}> attribute, then let
+       <var>crytographic nonce</var> be that attribute's value.
+
+       Otherwise, let <var>cryptographic nonce</var> be the empty string.
+  16. Let <var>parser state</var> be "`parser-inserted`" if the <{script}> element has been flagged
+       as <a>"parser-inserted"</a>, and "`not parser-inserted`" otherwise.
+  17. Let <var>settings</var> be the element's <a>node document</a>'s {{Window}} object's
+       <a>environment settings object</a>.
+  18. If the element has a <{script/src}> content attribute, run these substeps:
+
+       1. Let <var>src</var> be the value of the element's <{script/src}> attribute.
+       2. If <var>src</var> is the empty string, <a>queue a task</a> to <a>fire a simple event</a>
+           named <code>error</code> at the element, and abort these steps.
+       3. Set the element's <a>from an external file</a> flag.
+       4. <a>Resolve</a> <var>src</var> relative to the element's <a>node document</a>.
+       5. If the previous step failed, <a>queue a task</a> to <a>fire a simple event</a> named
+           <code>error</code> at the element, and abort these steps.
+
+           Otherwise, let <var>url</var> be the <a>resulting URL record</a>.
+       6. Switch on <a>the script's type</a>:
+           <dl class="switch">
+             <dt>`"classic"`</dt>
+             <dd><a>Fetch a classic script</a> given <var>url</var>, <var>CORS setting</var>,
+             <var>cryptographic nonce</var>, <var>parser state</var>, <var>settings</var>, and
+             <var>encoding</var>.
+
+             <dt>`"module"`</dt>
+             <dd>
+                   1. Let <var>credentials mode</var> be determined by switching on
+                       <var>CORS setting</var>:
+                       <dl class="switch">
+                         <dt><a>No CORS</a></dt>
+                         <dd>`"omit"`</dd>
+
+                         <dt><a>Anonymous</a></dt>
+                         <dd>`"same-origin"`</dd>
+
+                         <dt><a>Use Credentials</a></dt>
+                         <dd>`"include"`</dd>
+                       </dl>
+                   2. <a>Fetch a module script tree</a> given <var>url</var>,
+                       <var>credentials mode</var>, <var>cryptographic nonce</var>,
+                       <var>parser state</var>, "`script`", and <var>settings</var>.
+             </dd>
+           </dl>
+           When the chosen algorithm asynchronously completes, set <a>the script's script</a> to the
+           result. At that time, <a>the script is ready</a>.
+
+           For performance reasons, user agents may start fetching the classic script or module tree
+           (as defined above) as the <{script/src}> attribute is set, instead, in the hope that the
+           element will be <a for="document">inserted into the document</a> (and that the
+           <{script/crossorigin}> attribute won't change value in the meantime). Either way, once
+           the element is <a for="document">inserted into the document</a>, the load must have
+           started as described in this step. If the UA performs such prefetching, but the element
+           is never inserted in the document, or the <{script/src}> attribute is dynamically
+           changed, or the <{script/crossorigin}> attribute is dynamically changed, then the user
+           agent will not execute the script so obtained, and the fetching process will have been
+           effectively wasted.
+  19. If the element does not have a <{script/src}> content attribute, run these substeps:
+
+       1. Let <var>source text</var> be the value of the {{HTMLScriptElement/text}} IDL attribute.
+       2. Switch on <a>the script's type</a>:
+           <dl class="switch">
+             <dt>`"classic"`</dt>
+             <dd>
+                  1. Let <var>script</var> be the result of <a>creating a classic script</a> using
+                      <var>source text</var> and <var>settings</var>.
+                  2. Set <a>the script's script</a> to <var>script</var>.
+                  3. <a>The script is ready</a>.
+             </dd>
+
+             <dt>`"module"`</dt>
+             <dd>
+                  1. Let <var>base URL</var> be the <{script}> element's <a>node document</a>'s
+                      <a>document base URL</a>.
+                  2. Let <var>script</var> be the result of <a>creating a module script</a> using
+                      <var>source text</var>, <var>settings</var>, <var>base URL</var>, and
+                      <var>CORS setting</var>.
+                  3. If this returns null, set <a>the script's script</a> to null and abort these
+                      substeps; <a>the script is ready</a>.
+                  4. <a>Fetch the descendants</a> of <var>script</var>. When this asynchronously
+                      completes, set <a>the script's script</a> to the result. At that time,
+                      <a>the script is ready</a>.
+             </dd>
+           </dl>
+  20. Then, follow the first of the following options that describes the situation:
+       <dl class="switch">
+         <dt>
+           <table>
+             <thead>
+               <tr>
+                 <th><a>the script's type</a>
+                 <th><{script/src}> present?
+                 <th><{script/defer}> present?
+                 <th><{script/async}> present?
+                 <th>other conditions
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>`"classic"`
+                 <td>yes
+                 <td>yes
+                 <td>no
+                 <td>element flagged as <a>"parser-inserted"</a>
+               </tr>
+               <tr>
+                 <td>`"module"`
+                 <td>yes or no
+                 <td>n/a
+                 <td>no
+                 <td>element flagged as <a>"parser-inserted"</a>
+               </tr>
+             </tbody>
+           </table>
+         </dt>
+         <dd>Add the element to the end of the <dfn>list of scripts that will execute when the
+         document has finished parsing</dfn> associated with the {{Document}} of the parser that
+         created the element.
+
+         When the <a>the script is ready</a>, set the element's <a>"ready to be parser-executed"</a>
+         flag. The parser will handle executing the script.</dd>
+
+         <dt>
+           <table>
+             <thead>
+               <tr>
+                 <th><a>the script's type</a>
+                 <th><{script/src}> present?
+                 <th><{script/defer}> present?
+                 <th><{script/async}> present?
+                 <th>other conditions
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>`"classic"`
+                 <td>yes
+                 <td>no
+                 <td>no
+                 <td>element flagged as <a>"parser-inserted"</a>
+               </tr>
+             </tbody>
+           </table>
+         </dt>
+         <dd>The element is the <a>pending parsing-blocking script</a> of the {{Document}} of the
+         parser that created the element. (There can only be one such script per {{Document}} at a
+         time.)
+
+         When <a>the script is ready</a>, set the element's <a>"ready to be parser-executed"</a>
+         flag. The parser will handle executing the script.
+         </dd>
+
+         <dt>
+           <table>
+             <thead>
+               <tr>
+                 <th><a>the script's type</a>
+                 <th><{script/src}> present?
+                 <th><{script/defer}> present?
+                 <th><{script/async}> present?
+                 <th>other conditions
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>`"classic"`
+                 <td>yes
+                 <td>yes or no
+                 <td>no
+                 <td><a>"non-blocking"</a> flag not set on element
+               </tr>
+               <tr>
+                 <td>`"module"`
+                 <td>yes or no
+                 <td>n/a
+                 <td>no
+                 <td><a>"non-blocking"</a> flag not set on element
+               </tr>
+             </tbody>
+           </table>
+         </dt>
+         <dd>Add the element to the end of the <dfn>list of scripts that will execute in order
+         as soon as possible</dfn> associated with the <a>node document</a> of the <{script}>
+         element at the time the <a>prepare a script</a> algorithm started.
+
+         When <a>the script is ready</a>, run the following steps:
+
+         1. If the element is not now the first element in the
+             <a>list of scripts that will execute in order as soon as possible</a> to which it was
+             added above, then mark the element as ready but abort these steps without executing the
+             script yet.
+         2. <var>Execution</var>: <a>Execute the script block</a> corresponding to the first script
+             element in this <a>list of scripts that will execute in order as soon as possible</a>.
+         3. Remove the first element from this
+             <a>list of scripts that will execute in order as soon as possible</a>.
+         4. If this <a>list of scripts that will execute in order as soon as possible</a> is still
+             not empty and the first entry has already been marked as ready, then jump back to the
+             step labeled <var>Execution</var>.
+
+         </dd>
+
+         <dt>
+           <table>
+             <thead>
+               <tr>
+                 <th><a>the script's type</a>
+                 <th><{script/src}> present?
+                 <th><{script/defer}> present?
+                 <th><{script/async}> present?
+                 <th>other conditions
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>`"classic"`
+                 <td>yes
+                 <td>yes or no
+                 <td>yes or no
+                 <td>n/a
+               </tr>
+               <tr>
+                 <td>`"module"`
+                 <td>yes or no
+                 <td>n/a
+                 <td>yes or no
+                 <td>n/a
+               </tr>
+             </tbody>
+           </table>
+         </dt>
+         <dd>The element must be added to the
+         <dfn>set of scripts that will execute as soon as possible</dfn> of the <a>node document</a>
+         of the <{script}> element at the time the <a>prepare a script</a> algorithm started.
+
+         When <a>the script is ready</a>, <a>execute the script block</a> and then remove the
+         element from the <a>set of scripts that will execute as soon as possible</a>.</dd>
+
+         <dt>
+           <table>
+             <thead>
+               <tr>
+                 <th><a>the script's type</a>
+                 <th><{script/src}> present?
+                 <th><{script/defer}> present?
+                 <th><{script/async}> present?
+                 <th>other conditions
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>`"classic"` or `"module"`
+                 <td>no
+                 <td>yes or no
+                 <td>yes or no
+                 <td>All of the following:
+
+                      * element flagged as <a>"parser-inserted"</a>
+                      * an <a>XML parser</a> or an <a>HTML parser</a> whose
+                         <a>script nesting level</a> is not greater than one created the <{script}>
+                      * the {{Document}} of the <a>XML parser</a> or <a>HTML parser</a> that created
+                         the <{script}> <a>has a style sheet that is blocking scripts</a>
+
+               </tr>
+             </tbody>
+           </table>
+         </dt>
+         <dd>The element is the <a>pending parsing-blocking script</a> of the {{Document}} of the
+         parser that created the element. (There can only be one such script per {{Document}} at a
+         time.)
+
+         Set the element's <a>"ready to be parser-executed"</a> flag. The parser will handle
+         executing the script.</dd>
+
+         <dt>Otherwise</dt>
+         <dd><a>Immediately</a> <a>execute the script block</a>, even if other scripts are already
+         executing.</dd>
+       </dl>
+
+  The <dfn>pending parsing-blocking script</dfn> of a {{Document}} is used by the {{Document}}'s
+  parser(s).
+
+  <p class="note">If a <{script}> element that blocks a parser gets moved to another {{Document}}
+  before it would normally have stopped blocking that parser, it nonetheless continues blocking that
+  parser until the condition that causes it to be blocking the parser no longer applies (e.g., if
+  the script is a <a>pending parsing-blocking script</a> because there was
+  <a>a style sheet that is blocking scripts</a> when it was parsed, but then the script is moved to
+  another {{Document}} before the style sheet loads, the script still blocks the parser until the
+  style sheets are all loaded, at which time the script executes and the parser is unblocked).</p>
+
+  When the user agent is required to <dfn lt="execute a script block|execute|execute the script block">execute a script block</dfn>, it must run the following steps:
+
+  1. If the element is flagged as <a>"parser-inserted"</a>, but the element's <a>node document</a>
+      is not the {{Document}} of the parser that created the element, then abort these steps.
+  2. If <a>the script's script</a> is null, <a>fire a simple event</a> named `error` at the element,
+      and abort these steps.
+  3. If the script is <a>from an external file</a>, or <a>the script's type</a> is "`module`", then
+      increment the <a>ignore-destructive-writes counter</a> of the <{script}> element's
+      <a>node document</a>. Let <var>neutralized doc</var> be that {{Document}}.
+  4. Let <var>old script element</var> be the value to which the <{script}> element's
+      <a>node document</a>'s {{Document/currentScript}} object was most recently set.
+  5. Switch on <a>the script's type</a>:
+      <dl class="switch">
+        <dt>`classic`</dt>
+        <dd>
+             1. Set the <{script}> element's <a>node document</a>'s {{Document/currentScript}}
+                 attribute to the <{script}> element.
+
+                 <p class="note">This does not use the <a>in a document</a> check, as the <{script}>
+                 element could have been removed from the document prior to execution, and in that
+                 scenario {{Document/currentScript}} still needs to point to it.</p>
+             2. <a>Run the classic script</a> given by <a>the script's script</a>.
+        </dd>
+
+        <dt>`module`</dt>
+        <dd>
+             1. Set the <{script}> element's <a>node document</a>'s {{Document/currentScript}}
+                 attribute to null.
+             2. <a>Run the module script</a> given by <a>the script's script</a>.
+        </dd>
+  6. Set the <{script}> element's <a>node document</a>'s {{Document/currentScript}} object to 
+      <var>old script element</var>.
+  7. Decrement the <a>ignore-destructive-writes counter</a> of <var>neutralized doc</var>, if it was 
+      incremented in the earlier step.
+  8. If <a>the script's type</a> is "`classic`" and the script is <a>from an external file</a>, 
+      <a>fire a simple event</a> named `load` at the <{script}> element.
+
+      Otherwise <a>queue a task</a> to <a>fire a simple event</a> named `load` at the <{script}>
+      element.
 
 <h5 id="scripting-languages">Scripting languages</h5>
-
-  <div class="impl">
-
-  A user agent is said to <dfn>support the scripting language</dfn> if each component of <var>the script block's type</var> is an <a>ASCII
-  case-insensitive</a> match for the corresponding component in the <a>MIME type</a> string
-  of a scripting language that the user agent implements.
-
-  </div>
 
   A <dfn>JavaScript MIME type</dfn> is a <a>MIME type</a> string that is one of the
   following and refers to JavaScript: [[!ECMA-262]]
@@ -920,57 +841,43 @@ o............A....e
     </li><li><code>text/x-javascript</code>
   </li></ul>
 
-  User agents must recognize all <a>JavaScript MIME
-  types</a>.
+  User agents must recognize all <a>JavaScript MIME types</a>.
 
-  <div class="impl">
+  User agents may support other <a>MIME types</a> for other languages, but must not support other 
+  <a>MIME types</a> for the languages in the list above. User agents are not required to support
+  JavaScript. The processing model for languages other than JavaScript is outside the scope of this
+  specification.
 
-  User agents may support other <a>MIME types</a> for other languages,
-  but must not support other <a>MIME types</a> for the languages in the list
-  above. User agents are not required to support the languages listed above.
+  The following <a>MIME types</a> (with or without parameters) must not be interpreted as scripting 
+  languages:
 
-  The following <a>MIME types</a> (with or without parameters) must not
-  be interpreted as scripting languages:
+  * `text/plain`
+  * `text/xml`
+  * `application/octet-stream`
+  * `application/xml`
 
-  <ul class="brief">
-
-    <li><code>text/plain</code>
-    </li><li><code>text/xml</code>
-
-    </li><li><code>application/octet-stream</code>
-    </li><li><code>application/xml</code>
-
-  </li></ul>
-
-  <p class="note">
-    These types are explicitly listed here because they are poorly-defined types that
+  <p class="note">These types are explicitly listed here because they are poorly-defined types that
   are nonetheless likely to be used as formats for data blocks, and it would be problematic if they
-  were suddenly to be interpreted as script by a user agent.
-  </p>
+  were suddenly to be interpreted as script by a user agent.</p>
 
   When examining types to determine if they represent supported languages, user agents must not
   ignore MIME parameters. Types are to be compared including all parameters.
 
-  <p class="note">
-    For example, types that include the <code>charset</code> parameter will
-  not be recognized as referencing any of the scripting languages listed above.
-  </p>
-
-  </div>
+  <p class="note">For example, types that include the <code>charset</code> parameter will not be 
+  recognized as referencing any of the scripting languages listed above.</p>
 
 <h5 id="restrictions-for-contents-of-script-elements"><dfn lt="script content restrictions">Restrictions for contents of <{script}> elements</dfn></h5>
 
-  <p class="note">
-    The easiest and safest way to avoid the rather strange restrictions described in
-  this section is to always escape "<code>&lt;!--</code>" as "<code>&lt;\!--</code>", "<code>&lt;script</code>" as "<code>&lt;\script</code>", and "<code>&lt;/script</code>" as "<code>&lt;\/script</code>" when these sequences appear in literals in scripts (e.g., in
-  strings, regular expressions, or comments), and to avoid writing code that uses such constructs in
-  expressions. Doing so avoids the pitfalls that the restrictions in this section are prone to
-  triggering: namely, that, for historical reasons, parsing of <code>script</code> blocks in HTML is
-  a strange and exotic practice that acts unintuitively in the face of these sequences.
-  </p>
+  <p class="note">The easiest and safest way to avoid the rather strange restrictions described in
+  this section is to always escape "`&lt;!--`" as "`&lt;\!--`", "`&lt;script`" as "`&lt;\script`", 
+  and "`&lt;/script`" as "`&lt;\/script`" when these sequences appear in literals in scripts (e.g., 
+  in strings, regular expressions, or comments), and to avoid writing code that uses such constructs 
+  in expressions. Doing so avoids the pitfalls that the restrictions in this section are prone to
+  triggering: namely, that, for historical reasons, parsing of <{script}> blocks in HTML is a 
+  strange and exotic practice that acts unintuitively in the face of these sequences.</p>
 
-  The {{Node/textContent}} of a <{script}> element must match the <code>script</code> production in the following ABNF, the character set for which is Unicode.
-  [[!ABNF]]
+  The {{Node/textContent}} of a <{script}> element must match the <code>script</code> production in 
+  the following ABNF, the character set for which is Unicode. [[!ABNF]]
 
   <pre data-highlight="abnf">
     script        = outer *( comment-open inner comment-close outer )
@@ -1005,8 +912,8 @@ o............A....e
     tag-end       =/ %x003E ; U+003E GREATER-THAN SIGN (&gt;)
   </pre>
 
-  When a <{script}> element contains <a>script documentation</a>, there are
-  further restrictions on the contents of the element, as described in the section below.
+  When a <{script}> element contains <a>script documentation</a>, there are further restrictions on 
+  the contents of the element, as described in the section below.
 
   <div class="example">
     The following script illustrates this issue. Suppose you have a script that contains a string,
@@ -1017,7 +924,7 @@ o............A....e
       console.log(example);
     </pre>
 
-    If one were to put this string directly in a <code>script</code> block, it would violate the
+    If one were to put this string directly in a <{script}> block, it would violate the
     restrictions above:
 
     <pre highlight="html">
@@ -1029,10 +936,10 @@ o............A....e
 
     The bigger problem, though, and the reason why it would violate those restrictions, is that
     actually the script would get parsed weirdly: <em>the script block above is not terminated</em>.
-    That is, what looks like a "<code>&lt;/script&gt;</code>" end tag in this snippet is
-    actually still part of the <code>script</code> block. The script doesn't execute (since it's not
-    terminated); if it somehow were to execute, as it might if the markup looked as follows, it would
-    fail because the script is not valid JavaScript:
+    That is, what looks like a "`&lt;/script&gt;`" end tag in this snippet is actually still part of 
+    the <{script}> block. The script doesn't execute (since it's not terminated); if it somehow were 
+    to execute, as it might if the markup looked as follows, it would fail because the script is not 
+    valid JavaScript:
 
     <pre highlight="html">
       &lt;script&gt;
@@ -1045,8 +952,9 @@ o............A....e
       &lt;/script&gt;
     </pre>
 
-    What is going on here is that for legacy reasons, "<code>&lt;!--</code>" and "<code>&lt;script</code>" strings in <{script}> elements in HTML need to be balanced
-    in order for the parser to consider closing the block.
+    What is going on here is that for legacy reasons, "`&lt;!--`" and "`&lt;script`" strings in 
+    <{script}> elements in HTML need to be balanced in order for the parser to consider closing the 
+    block.
 
     By escaping the problematic strings as mentioned at the top of this section, the problem is
     avoided entirely:
@@ -1082,17 +990,17 @@ o............A....e
     </pre>
 
     Doing this also avoids a different pitfall as well: for related historical reasons, the string
-    "&lt;!--" in JavaScript is actually treated as a line comment start, just like "//".
+    "`&lt;!--`" in <a>classic scripts</a> is actually treated as a line comment start, just like 
+    "`//`".
 
   </div>
 
 <h5 id="inline-documentation-for-external-scripts"><dfn lt="script documentation">Inline documentation for external scripts</dfn></h5>
 
-  If a <{script}> element's <{script/src}> attribute is
-  specified, then the contents of the <{script}> element, if any, must be such that the
-  value of the <code>text</code> IDL attribute, which is derived from the
-  element's contents, matches the <code>documentation</code> production in the following
-  ABNF, the character set for which is Unicode. [[!ABNF]]
+  If a <{script}> element's <{script/src}> attribute is specified, then the contents of the 
+  <{script}> element, if any, must be such that the value of the {{HTMLScriptElement/text}} IDL 
+  attribute, which is derived from the element's contents, matches the `documentation` production in 
+  the following ABNF, the character set for which is Unicode. [[!ABNF]]
 
   <pre data-highlight="abnf">
     documentation = *( *( space / tab / comment ) [ line-comment ] newline )
@@ -1113,9 +1021,7 @@ o............A....e
                     ; a Unicode character other than U+002F SOLIDUS (/)
   </pre>
 
-  <p class="note">
-    This corresponds to putting the contents of the element in JavaScript
-  comments.
+  <p class="note">This corresponds to putting the contents of the element in JavaScript comments.
   </p>
 
   <p class="note">
@@ -1127,7 +1033,7 @@ o............A....e
     This allows authors to include documentation, such as license information or API information,
     inside their documents while still referring to external script files. The syntax is constrained
     so that authors don't accidentally include what looks like valid script while also providing a
-    <code>src</code> attribute.
+    <{script/src}> attribute.
 
     <pre highlight="html">
       &lt;script src="cool-effects.js"&gt;
@@ -1140,8 +1046,6 @@ o............A....e
     </pre>
   </div>
 
-  <div class="impl">
-
 <h5 id="interaction-of-script-elements-and-xslt">Interaction of <{script}> elements and XSLT</h5>
 
   <em>This section is non-normative.</em>
@@ -1150,33 +1054,26 @@ o............A....e
   However, in the absence of another specification actually defining this, here are some guidelines
   for implementors, based on existing implementations:
 
-  <ul>
-
-    <li>When an XSLT transformation program is triggered by an <code>&lt;?xml-stylesheet?&gt;</code> processing instruction and the browser implements a
-    direct-to-DOM transformation, <{script}> elements created by the XSLT processor need to
-    be marked <a>"parser-inserted"</a> and run in document order (modulo scripts marked <code>defer</code> or <code>async</code>),
-    <a>immediately</a>, as the transformation is occurring.</li>
-
-    <li>The <code>XSLTProcessor.transformToDocument()</code> method
-    adds elements to a <code>Document</code> that is not in a <a>browsing context</a>, and,
-    accordingly, any <{script}> elements they create need to have their <a>"already
-    started"</a> flag set in the <a>prepare a script</a> algorithm and never get executed
-    (<a>scripting is disabled</a>). Such <code>script</code>
-    elements still need to be marked <a>"parser-inserted"</a>, though, such that their <code>async</code> IDL attribute will return false in the absence of an <code>async</code> content attribute.</li>
-
-    <li>The <code>XSLTProcessor.transformToFragment()</code> method
-    needs to create a fragment that is equivalent to one built manually by creating the elements
-    using <code>document.createElementNS()</code>. For instance,
-    it needs to create <{script}> elements that aren't <a>"parser-inserted"</a> and
-    that don't have their <a>"already started"</a> flag set, so that they will execute when the
-    fragment is <a for="document">inserted into a document</a>.</li>
-
-  </ul>
+  * When an XSLT transformation program is triggered by an `&lt;?xml-stylesheet?&gt;` processing 
+     instruction and the browser implements a direct-to-DOM transformation, <{script}> elements 
+     created by the XSLT processor need to be marked <a>"parser-inserted"</a> and run in document 
+     order (modulo scripts marked <{script/defer}> or <{script/async}>), <a>immediately</a>, as the 
+     transformation is occurring.
+  * The <code>XSLTProcessor.transformToDocument()</code> method adds elements to a {{Document}} that 
+     is not in a <a>browsing context</a>, and, accordingly, any <{script}> elements they create need 
+     to have their <a>"already started"</a> flag set in the <a>prepare a script</a> algorithm and 
+     never get executed (<a>scripting is disabled</a>). Such <{script}> elements still need to be 
+     marked <a>"parser-inserted"</a>, though, such that their {{HTMLScriptElement/async}} IDL 
+     attribute will return false in the absence of an <{script/async}> content attribute.
+  * The <code>XSLTProcessor.transformToFragment()</code> method needs to create a fragment that is 
+     equivalent to one built manually by creating the elements using 
+     {{Document/createElementNS()|document.createElementNS()}}. For instance, it needs to create 
+     <{script}> elements that aren't <a>"parser-inserted"</a> and that don't have their 
+     <a>"already started"</a> flag set, so that they will execute when the fragment is 
+     <a for="document">inserted into a document</a>.
 
   The main distinction between the first two cases and the last case is that the first two
-  operate on <code>Document</code>s and the last operates on a fragment.
-
-  </div>
+  operate on {{Document}}s and the last operates on a fragment.
 
 <h4 id="the-noscript-element">The <dfn element><code>noscript</code></dfn> element</h4>
 
@@ -1201,104 +1098,66 @@ o............A....e
     <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
-    <dd>Uses <code>HTMLElement</code>.</dd>
+    <dd>Uses {{HTMLElement}}.</dd>
   </dl>
 
-  The <{noscript}> element <a>represents</a> nothing if <a>scripting is enabled</a>, and <a>represents</a> its children if
-  <a>scripting is disabled</a>. It is used to present different
+  The <{noscript}> element <a>represents</a> nothing if <a>scripting is enabled</a>, and 
+  <a>represents</a> its children if <a>scripting is disabled</a>. It is used to present different
   markup to user agents that support scripting and those that don't support scripting, by affecting
   how the document is parsed.
 
   When used in <a>HTML documents</a>, the allowed content model is as follows:
 
-  <dl>
+  : In a <{head}> element, if <a>scripting is disabled</a> for the <{noscript}> element
+  :: The <{noscript}> element must contain only <{link}>, <{style}>, and <{meta}> elements.
 
-    <dt>In a <{head}> element, if <a>scripting is
-    disabled</a> for the <{noscript}> element</dt>
+  : In a <{head}> element, if <a>scripting is enabled</a> for the <{noscript}> element
+  :: The <{noscript}> element must contain only text, except that invoking the
+      <a>HTML fragment parsing algorithm</a> with the <{noscript}> element as the <var>context</var>
+      element and the text contents as the <var>input</var> must result in a list of nodes that 
+      consists only of <{link}>, <{style}>, and <{meta}> elements that would be conforming if they 
+      were children of the <{noscript}> element, and no 
+      <a for="parser">parse errors</a>.
 
-    <dd>The <{noscript}> element must contain only <{link}>, <{style}>,
-    and <{meta}> elements.</dd>
+  : Outside of <{head}> elements, if <a>scripting is disabled</a> for the <{noscript}> element
+  :: The <{noscript}> element's content model is <a>transparent</a>, with the additional restriction 
+      that a <{noscript}> element must not have a <{noscript}> element as an ancestor (that is, 
+      <{noscript}> can't be nested).
 
-    <dt>In a <{head}> element, if <a>scripting is enabled</a>
-    for the <{noscript}> element</dt>
+  : Outside of <{head}> elements, if <a>scripting is enabled</a> for the <{noscript}> element
+  :: The <{noscript}> element must contain only text, except that the text must be such that running 
+      the following algorithm results in a <a lt="conforming document">conforming document</a> with 
+      no <{noscript}> elements and no <{script}> elements, and such that no step in the algorithm 
+      throws an exception or causes an <a>HTML parser</a> to flag a <a for="parser">parse error</a>:
 
-    <dd>The <{noscript}> element must contain only text, except that invoking the
-    <a>HTML fragment parsing algorithm</a>  with
-    the <{noscript}> element as the <var>context</var>
-    element and the text contents as the <var>input</var> must result in a list of nodes
-    that consists only of <{link}>, <{style}>, and <{meta}> elements that
-    would be conforming if they were children of the <{noscript}> element, and no <a for="parser" lt="parse error">parse errors</a>.</dd>
+      1. Remove every <{script}> element from the document.
+      2. Make a list of every <{noscript}> element in the document. For every <{noscript}> element 
+          in that list, perform the following steps:
 
-    <dt>Outside of <{head}> elements, if <a>scripting is
-    disabled</a> for the <{noscript}> element</dt>
+          1. Let <var>s</var> be the concatenation of all the {{Text}} node children of the 
+              <{noscript}> element.
+          2. Set the <code>outerHTML</code> attribute of the <{noscript}> element to the value of 
+              <var>s</var>. (This, as a side-effect, causes the <{noscript}> element to be removed 
+              from the document.) [[!DOMPARSING]]
 
-    <dd>The <{noscript}> element's content model is <a>transparent</a>, with the
-    additional restriction that a <{noscript}> element must not have a <code>noscript</code>
-    element as an ancestor (that is, <code>noscript</code> can't be nested).</dd>
-
-    <dt>Outside of <{head}> elements, if <a>scripting is
-    enabled</a> for the <{noscript}> element</dt>
-
-    <dd>
-
-    The <{noscript}> element must contain only text, except that the text must be such
-    that running the following algorithm results in a <a lt="conforming document">conforming document</a> with no
-    <{noscript}> elements and no <{script}> elements, and such that no step in the
-    algorithm throws an exception or causes an <a>HTML parser</a> to flag a <a for="parser">parse error</a>:
-
-    <ol>
-
-      <li>Remove every <{script}> element from the document.</li>
-
-      <li>Make a list of every <{noscript}> element in the document. For every
-      <{noscript}> element in that list, perform the following steps:
-
-      <ol>
-
-        <li>Let <var>s</var> be the concatenation of all the <code>Text</code> node
-        children of the <{noscript}> element.</li>
-
-        <li>Set the <code>outerHTML</code> attribute of the
-        <{noscript}> element to the value of <var>s</var>. (This, as a
-        side-effect, causes the <{noscript}> element to be removed from the document.) [[!DOMPARSING]]</li>
-
-      </ol>
-
-      </li>
-
-    </ol>
-
-    </dd>
-
-  </dl>
-
-  <p class="note">
-    All these contortions are required because, for historical reasons, the
-  <{noscript}> element is handled differently by the <a>HTML parser</a> based on
-  whether <a>scripting was enabled or not</a> when the parser was
-  invoked.
-  </p>
+  <p class="note">All these contortions are required because, for historical reasons, the 
+  <{noscript}> element is handled differently by the <a>HTML parser</a> based on whether 
+  <a>scripting was enabled or not</a> when the parser was invoked.</p>
 
   The <{noscript}> element must not be used in <a>XML documents</a>.
 
-  <p class="note">
-    The <{noscript}> element is only effective in <a href="#syntax">the HTML syntax</a>, it has no effect in <a href="#xhtml">the XHTML syntax</a>. This is because the way it works
-  is by essentially "turning off" the parser when scripts are enabled, so that the contents of the
-  element are treated as pure text and not as real elements. XML does not define a mechanism by
-  which to do this.
-  </p>
+  <p class="note">The <{noscript}> element is only effective in 
+  <a href="#syntax">the HTML syntax</a>, it has no effect in <a href="#xhtml">the XHTML syntax</a>. 
+  This is because the way it works is by essentially "turning off" the parser when scripts are 
+  enabled, so that the contents of the element are treated as pure text and not as real elements. 
+  XML does not define a mechanism by which to do this.</p>
 
-  <div class="impl">
-
-  The <{noscript}> element has no other requirements. In particular, children of the
-  <{noscript}> element are not exempt from [[#forms-form-submission]], scripting, and so
-  forth, even when <a>scripting is enabled</a> for the element.
-
-  </div>
+  The <{noscript}> element has no other requirements. In particular, children of the <{noscript}> 
+  element are not exempt from [[#forms-form-submission]], scripting, and so forth, even when 
+  <a>scripting is enabled</a> for the element.
 
   <div class="example">
-    In the following example, a <{noscript}> element is
-    used to provide fallback for a script.
+    In the following example, a <{noscript}> element is used to provide fallback for a script.
 
     <pre highlight="html">
 &lt;form action="calcSquare.php"&gt;
@@ -1354,7 +1213,7 @@ o............A....e
 &lt;/form&gt;
     </pre>
 
-    The above technique is also useful in XHTML, since <code>noscript</code> is not supported in
+    The above technique is also useful in XHTML, since <{noscript}> is not supported in
     <a href="#xhtml">the XHTML syntax</a>.
 
   </div>
