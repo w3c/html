@@ -5867,12 +5867,12 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   then unless the user agent cannot support images, or its support for images has been disabled,
   or the user agent only fetches images on demand, or the <{input/src}>
-  attribute's value is the empty string, the user agent must <a>resolve</a> the value of the <{input/src}>
+  attribute's value is the empty string, the user agent must <a>parse</a> the value of the <{input/src}>
   attribute value, relative to the element, and if that is successful, run these substeps:
 
   <ol>
     <li>Let <var>request</var> be a new <a>request</a> whose
-    <a for="url">URL</a> is the <a>resulting parsed URL</a>,
+    <a for="url">URL</a> is the <a>resulting URL string</a>,
     <a>client</a> is the element's <a>node document</a>'s
     <code>Window</code> object's <a>environment settings object</a>, <a for="request">type</a> is "<code>image</code>", <a>destination</a> is "<code>subresource</code>",
     <a>omit-<code>Origin</code>-header flag</a> is set, <a>credentials mode</a> is "<code>include</code>", and whose <a>use-URL-credentials flag</a> is set.</li>
@@ -6754,7 +6754,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   attribute as described below.</span>
 
   The <{input/step}> attribute, if specified, must either have a
-  value that is a <a>valid floating-point number</a> that <a>parses</a> to a number that is greater than zero, or must have a
+  value that is a <a>valid floating-point number</a> that <a for="integers">parses</a> to a number
+  that is greater than zero, or must have a
   value that is an <a>ASCII case-insensitive</a> match for the string "<code>any</code>".
 
   <div class="impl">
@@ -10913,9 +10914,9 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   The <i>invalid value default</i> for these attributes is the <a for="http">GET</a> state. The <i>missing value default</i> for the <{form/method}> attribute is also the <a for="http">GET</a> state. (There is no <i>missing value default</i> for the
   <{submitbuttonelements/formmethod}> attribute.)
 
-  The <dfn for="forms">method</dfn> of an element is one of those states. If the element is a 
-  <a element-state for="input">submit button</a> and has a <{submitbuttonelements/formmethod}> 
-  attribute, then the element's <a for="forms">method</a> is that attribute's state; otherwise, it 
+  The <dfn for="forms">method</dfn> of an element is one of those states. If the element is a
+  <a element-state for="input">submit button</a> and has a <{submitbuttonelements/formmethod}>
+  attribute, then the element's <a for="forms">method</a> is that attribute's state; otherwise, it
   is the <a>form owner</a>'s <{form/method}> attribute's state.
 
   <div class="example">
@@ -14048,15 +14049,15 @@ fur
 
     </li>
 
-    <li><a>Resolve</a> the <a for="url">URL</a> <var>action</var>, relative to the <var>submitter</var> element. If this fails,
+    <li><a>Parse</a> the <a for="url">URL</a> <var>action</var>, relative to the <var>submitter</var> element. If this fails,
     abort these steps.</li>
 
-    <li>Let <var>action</var> be the <a>resulting absolute URL</a>.</li>
+    <li>Let <var>action</var> be the <a>resulting URL string</a>.</li>
 
-    <li>Let <var>action components</var> be the <a>resulting parsed URL</a>.</li>
+    <li>Let <var>action components</var> be the <a>resulting URL record</a>.</li>
 
-    <li>Let <var>scheme</var> be the <a for="urlsyntax">scheme</a> of
-    the <a>resulting parsed URL</a>.</li>
+    <li>Let <var>scheme</var> be the <a for="url">scheme</a> of
+    the <a>resulting URL record</a>.</li>
 
     <li>Let <var>enctype</var> be the <var>submitter</var> element's <a>enctype</a>.</li>
 
@@ -14173,7 +14174,7 @@ fur
         <a><code>application/x-www-form-urlencoded</code> encoding algorithm</a>, interpreted as
         a US-ASCII string.
 
-        Set <var>parsed action</var>'s <a for="urlsyntax">query</a> component to <var>query</var>.
+        Set <var>parsed action</var>'s <a for="url">query</a> component to <var>query</var>.
 
         Let <var>destination</var> be a new <a for="url">URL</a> formed by applying the
         <a spec="url">URL serializer</a> algorithm to <var>parsed action</var>.
@@ -14200,8 +14201,8 @@ fur
         :: Let <var>MIME type</var> be "<code>text/plain</code>".
 
         Otherwise, <a>plan to navigate</a> to a new <a>request</a> whose <a for="url">URL</a> is
-        <var>action</var>, <a for="request">method</a> is <var>method</var>, <a for="request">header list</a> 
-        consists of <code>Content-Type</code>/<var>MIME type</var>, and <a for="request">body</a> is 
+        <var>action</var>, <a for="request">method</a> is <var>method</var>, <a for="request">header list</a>
+        consists of <code>Content-Type</code>/<var>MIME type</var>, and <a for="request">body</a> is
         <var>entity body</var>.
 
     : <dfn>Get action URL</dfn>

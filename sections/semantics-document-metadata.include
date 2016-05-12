@@ -208,7 +208,7 @@
   </dl>
 
   The <{base}> element allows authors to specify the <a>document base URL</a> for the
-  purposes of <a>resolving relative URLs</a>, and the name of the default <a>browsing context</a>
+  purposes of <a>parsing relative URLs</a>, and the name of the default <a>browsing context</a>
   for the purposes of <a>following hyperlinks</a>. The element does not <a>represent</a> any content
   beyond this information.
 
@@ -254,7 +254,6 @@
 
     * The <{base}> element becomes the first <{base}> element in <a>tree order</a>
         with an <{base/href}> content attribute in its {{Document}}.
-
     * The <{base}> element is the first <{base}> element in <a>tree order</a> with
         an <{base/href}> content attribute in its {{Document}}, and its
         <{base/href}> content attribute is changed.
@@ -262,29 +261,27 @@
     To <dfn>set the frozen base URL</dfn>, for an element <var>element</var>:
     
     1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
-    2. Let <var>urlRecord</var> be the result of <a lt="resolve a URL">parsing</a> the value of 
+    2. Let <var>urlRecord</var> be the result of <a>parsing</a> the value of 
         <var>element</var>'s <{base/href}> content attribute with <var>document</var>'s
         <a>fallback base URL</a>, and <var>document</var>'s <a>character encoding</a>. (Thus the
         <{base}> element isn't affected by itself.)
-    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s <a>fallback base 
-        URL</a>, if <var>urlRecord</var> is failure or running <a>Is base allowed for Document?</a> 
-        on the <a>resulting parsed URL</a> and <var>document</var> returns "<code>Blocked</code>", 
-        and to <var>urlRecord</var> otherwise.
+    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s 
+        <a>fallback base URL</a>, if <var>urlRecord</var> is failure or running 
+        <a>Is base allowed for Document?</a> on the <a>resulting URL record</a> and 
+        <var>document</var> returns "<code>Blocked</code>", and to <var>urlRecord</var> otherwise.
 
-    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must return the result of running
-    the following algorithm:
+    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must 
+    return the result of running the following algorithm:
 
-    1. If the <{base}> element has no <{base/href}> content attribute, then return the
-        <a>document base URL</a> and abort these steps.
-    2. Let <var>fallback base url</var> be the {{Document}}'s <a>fallback base URL</a>.
-    3. Let <var>url</var> be the value of the <{base/href}> attribute of the <code>base</code>
-        element.
-    4. <a>Resolve</a> <var>url</var> relative to <var>fallback base url</var> (thus, the
-        <code>base</code>'s <{base/href}> attribute isn't affected by other <code>base</code>
-        elements).
-    5. If the previous step was successful, return the <a>resulting absolute URL</a> and abort these
-        steps.
-    6. Otherwise, return the empty string.
+    1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
+    2. Let <var>url</var> be the value of the <{base/href}> attribute of the <{base}> element, if it
+        has one, and the empty string otherwise.
+    3. Let <var>urlRecord</var> be the result of <a>parsing</a> <var>url</var> with 
+        <var>document</var>'s <a>fallback base url</a>, and <var>document</var>'s
+        <a>character encoding</a>. (Thus, the <{base}> element isn't affected by other <{base}>
+        elements or itself).
+    4. If <var>urlRecord</var> is failure, return <var>url</var>.
+    5. Return the <a for="url">serialization</a> of <var>urlRecord</var>.
 
     The {{HTMLBaseElement/href}} IDL attribute, on setting, must set the <{base/href}> content
     attribute to the given new value.
@@ -431,7 +428,7 @@
     run the following steps:
 
     1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
-    2. <a>Resolve</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
+    2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
         element.
     3. If the previous step fails, then abort these steps.
     4. Let <var>corsAttributeState</var> be the current state of the element's
@@ -1158,9 +1155,9 @@
             and all subsequent characters are removed.
         25. <i>Trim</i>: Strip any trailing <a>space characters</a> from the end of <var>url</var>.
         26. Strip any U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), and U+000D CARRIAGE RETURN (CR) characters from <var>url</var>.
-        27. <a>Resolve</a> the <var>url</var> value, relative to the <{meta}> element. If this
+        27. <a>Parse</a> the <var>url</var> value, relative to the <{meta}> element. If this
             fails, abort these steps.
-        28. Otherwise, let <var>parsed url</var> be the <a>resulting parsed URL</a>.
+        28. Otherwise, let <var>parsed url</var> be the <a>resulting URL string</a>.
         29. <i>End</i>: Perform one or more of the following steps:
 
             * After the refresh has come due (as defined below), if the user has not canceled the

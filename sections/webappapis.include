@@ -92,7 +92,7 @@
 
   An <dfn>environment settings object</dfn> specifies algorithms for obtaining the following:
 
-  : A <a>realm execution context</a>
+  : A <dfn>realm execution context</dfn>
   :: A <a>JavaScript execution context</a> shared by all <{script}> elements that use this settings
       object, i.e. all scripts in a given <a>JavaScript realm</a>. When we <a>run a classic
       script</a> or <a>run a module script</a>, this execution context becomes the top of the
@@ -203,8 +203,8 @@
   8. If <var>response</var>'s <a>Content Type metadata</a>, if any, specifies a character encoding,
       and the user agent supports that encoding, then set <var>character encoding</var> to that
       encoding (ignoring the passed-in value).
-  9. Let <var>source text</var> be the result of <a>decoding</a> <var>response</var>'s 
-      <a for="response">body</a> to Unicode, using <var>character encoding</var> as the fallback 
+  9. Let <var>source text</var> be the result of <a>decoding</a> <var>response</var>'s
+      <a for="response">body</a> to Unicode, using <var>character encoding</var> as the fallback
       encoding.
 
       <p class="note">The <a>decode</a> algorithm overrides <var>character encoding</var> if the
@@ -272,7 +272,7 @@
   The following algorithms are used when <a>fetching a module script tree</a>, and are not meant to
   be used directly by other specifications (or by other parts of this specification).
 
-  To <dfn>fetch the descendants of a module script</dfn> <var>module script</var>, given a
+  To <dfn>fetch the descendants</dfn> of a <a>module script</a> <var>module script</var>, given a
   <var>destination</var> and an <var>ancestor list</var>, run these steps. The algorithm will
   asynchronously complete with either null (on failure) or with <var>module script</var>
   (on success).
@@ -339,8 +339,8 @@
 
       * <var>response</var>'s <a for="response">type</a> is "<code>error</code>"
       * <var>response</var>'s <a>status</a> is not an <a>ok status</a>
-      * The result of <a>extracting a MIME type</a> from <var>response</var>'s 
-         <a for="response">header list</a> (ignoring parameters) is not a 
+      * The result of <a>extracting a MIME type</a> from <var>response</var>'s
+         <a for="response">header list</a> (ignoring parameters) is not a
          <a>JavaScript MIME type</a>.
 
          <p class="note">For historical reasons, <a>fetching a classic script</a> does not include
@@ -379,8 +379,9 @@
       flag.
   5. Return <var>script</var>.
 
-To <dfn>create a module script</dfn>, given some script source, an <a>environment settings
-object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a parser state:
+To <dfn lt="creating a module script|create a module script">create a module script</dfn>,
+given some script source, an <a>environment settings object</a>, a script base URL,
+a credentials mode, a cryptographic nonce, and a parser state:
 
   1. Let <var>script</var> be a new <a>module script</a> that this algorithm will subsequently
       initialise.
@@ -404,8 +405,8 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
 
 <h5 id="calling-scripts">Calling scripts</h5>
 
-  To <dfn lt="run a classic script|running the classic script">run a classic script</dfn> given a
-  <a>classic script</a> <var>s</var> and an optional <var>rethrow errors</var> flag:
+  To <dfn lt="run a classic script|running the classic script|run the classic script">run a classic script</dfn>
+  given a <a>classic script</a> <var>s</var> and an optional <var>rethrow errors</var> flag:
 
   1. Let <var>settings</var> be the <a>settings object</a> of <var>s</var>.
   2. <a>Check if we can run script</a> with <var>settings</var>. If this returns "do not run", then
@@ -437,7 +438,8 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
        because an error occurred during parsing, or an exception occurred during evaluation, or
        because it was <a>aborted prematurely</a>.
 
-  To <dfn>run a module script</dfn> given a <a>module script</a> <var>s</var>:
+  To <dfn lt="run a module script|run the module script">run a module script</dfn> given a
+  <a>module script</a> <var>s</var>:
 
   1. Let <var>settings</var> be the <a>settings object</a> of <var>s</var>.
   2. <a>Check if we can run script</a> with <var>settings</var>. If this returns "do not run" then
@@ -999,8 +1001,8 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
           4. Initialise <var>event</var>'s {{PromiseRejectionEvent/reason}} attribute to the value
               of <var>p</var>'s \[[PromiseResult]] internal slot.
           5. <a>Dispatch</a> <var>event</var> at <var>settings object</var>'s <a>global object</a>.
-          6. If the event was canceled, then the promise rejection is <a>handled</a>. Otherwise, the
-              promise rejection is <a>not handled</a>.
+          6. If the event was canceled, then the promise rejection is <a for="promise">handled</a>.
+              Otherwise, the promise rejection is <a for="promise">not handled</a>.
           7. If <var>p</var>'s \[[PromiseIsHandled]] internal slot is false, add <var>p</var> to
               <var>settings object</var>'s <a>outstanding rejected promises weak set</a>.
 
@@ -1538,9 +1540,9 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
 
         If the <var>return value</var> is null, then cancel the event.
 
-        Otherwise, if the {{Event}} object <var>E</var> is a <code>BeforeUnloadEvent</code> object,
-        and the {{Event}} object <var>E</var>'s {{Event/returnValue}} attribute's value is the
-        empty string, then set the {{Event/returnValue}} attribute's value to
+        Otherwise, if the {{Event}} object <var>E</var> is a {{BeforeUnloadEvent}} object,
+        and the {{Event}} object <var>E</var>'s {{BeforeUnloadEvent/returnValue}} attribute's value
+        is the empty string, then set the {{BeforeUnloadEvent/returnValue}} attribute's value to
         <var>return value</var>.
         </dd>
 
@@ -1577,7 +1579,7 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
   <code>beforeunload</code> events, the value is instead used to determine whether or not to prompt
   about unloading the document.</p>
 
-  For historical reasons, the {{Window/onerror}} handler has different arguments:
+  For historical reasons, the {{GlobalEventHandlers/onerror}} handler has different arguments:
 
   <pre class="idl" data-highlight="webidl" dfn-for="OnErrorEventHandlerNonNull">
     [TreatNonObjectAsNull]
@@ -1585,7 +1587,7 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
     typedef OnErrorEventHandlerNonNull? OnErrorEventHandler;
   </pre>
 
-  Similarly, the {{Window/onbeforeunload}} handler has a different return value:
+  Similarly, the {{OnBeforeUnloadEventHandler/onbeforeunload}} handler has a different return value:
 
   <pre class="idl" data-highlight="webidl" dfn-for="OnBeforeUnloadEventHandlerNonNull">
     [TreatNonObjectAsNull]
@@ -1643,8 +1645,8 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
 
           : <var>ParameterList</var>
           :: <dl class="switch">
-               <dt>If <var>H</var> is an {{Window/onerror}} <a>event handler</a> of a {{Window}}
-               object</dt>
+               <dt>If <var>H</var> is an {{GlobalEventHandlers/onerror}} <a>event handler</a> of a
+               {{Window}} object</dt>
                <dd>Let the function have five arguments, named <code>event</code>,
                <code>source</code>, <code>lineno</code>, <code>colno</code>, and <code>error</code>.
                </dd>
@@ -1934,9 +1936,9 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
   {{MouseEvent/clientX}, {{MouseEvent/clientY}}, and {{MouseEvent/button}} attributes initialized to
   0, its {{MouseEvent/ctrlKey}}, {{MouseEvent/shiftKey}}, {{MouseEvent/altKey}}, and
   {{MouseEvent/metaKey}} attributes initialized according to the current state of the key input
-  device, if any (false for any keys that are not available), its {{MouseEvent/detail}} attribute
+  device, if any (false for any keys that are not available), its {{UIEvent/detail}} attribute
   initialized to 1, its {{MouseEvent/relatedTarget}} attribute initialized to null (except where
-  otherwise stated), and its {{MouseEvent/view}} attribute initialized to the {{Window}} object of
+  otherwise stated), and its {{UIEvent/view}} attribute initialized to the {{Window}} object of
   the {{Document}} object of the given target node, if any, or else null. The
   {{MouseEvent/getModifierState()}} method on the object must return values appropriately describing
   the state of the key input device at the time the event is created.
@@ -2918,12 +2920,12 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
   </dl>
 
   <p class="note">
-  Logic that depends on <a>tasks</a> or <a>microtasks</a>, such as <a href="#media-elements">media elements</a>
+  Logic that depends on <a>tasks</a> or <a>microtasks</a>, such as <a>media elements</a>
   loading their <a>media data</a>, are stalled when these methods are invoked.
   </p>
 
-  The <dfn><code>alert(<var>message</var>)</code></dfn> method, when
-  invoked, must run the following steps:
+  The <dfn method for="Window" lt="alert()|alert(message)"><code>alert(<var>message</var>)</code></dfn>
+  method, when invoked, must run the following steps:
 
   <ol>
 
@@ -3113,7 +3115,7 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
 
     <li>
 
-    <a>Resolve</a> <var>url</var> relative to the
+    <a>Parse</a> <var>url</var> relative to the
     <a>API base URL</a> specified by the <a>entry settings object</a>.
 
     If this fails, then throw a <code>SyntaxError</code> exception and abort these steps.
@@ -3235,7 +3237,7 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
     <li>
 
     <a>Navigate</a> the new <a>browsing context</a> to
-    the <a>absolute URL</a> that resulted from <a>resolving</a>
+    the <a>absolute URL</a> that resulted from <a>parsing</a>
     <var>url</var> earlier, with <a>replacement enabled</a>, and with the
     <a>responsible browsing context</a> specified by the <a>incumbent settings
     object</a> as the <a>source browsing context</a>.
@@ -3294,7 +3296,7 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
 
   <dl class="domintro">
 
-    <dt><var>window</var> . <code>dialogArguments</code></dt>
+    <dt><var>window</var> . {{WindowModal/dialogArguments}}</dt>
 
     <dd>
 
@@ -3302,7 +3304,7 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
 
     </dd>
 
-    <dt><var>window</var> . <code>returnValue</code> [ = <var>value</var> ]</dt>
+    <dt><var>window</var> . {{WindowModal/returnValue}} [ = <var>value</var> ]</dt>
 
     <dd>
 
@@ -3736,17 +3738,18 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
     argument passed to one of these methods does not contain the exact literal string
     "<code>%s</code>".
 
-    User agents must throw a <code>SyntaxError</code> exception if <a>resolving</a> the <var>url</var> argument relative to the <a>API base
-    URL</a> specified by the <a>entry settings object</a> is not successful.
+    User agents must throw a <code>SyntaxError</code> exception if <a>parsing</a> the <var>url</var>
+    argument relative to the <a>API base URL</a> specified by the <a>entry settings object</a> is
+    not successful.
 
     <p class="note">
-  The <a>resulting absolute URL</a> would by definition not be a <a>valid
-    URL</a> as it would include the string "<code>%s</code>" which is not a valid
+    The <a>resulting URL string</a> would by definition not be a <a>valid URL</a>
+    as it would include the string "<code>%s</code>" which is not a valid
     component in a URL.
   </p>
 
-    User agents must throw a <code>SecurityError</code> exception if the resulting <a>absolute
-    URL</a> has an <a>origin</a> that differs from the <a>origin</a> specified by the
+    User agents must throw a <code>SecurityError</code> exception if the resulting
+    <a>absolute URL</a> has an <a>origin</a> that differs from the <a>origin</a> specified by the
     <a>entry settings object</a>.
 
     <p class="note">
@@ -3754,13 +3757,13 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
     scheme, host, or port parts of the URL.
   </p>
 
-    The <a>resulting absolute URL</a> is the <dfn>proto-URL</dfn>. It identifies the
+    The <a>resulting URL string</a> is the <dfn>proto-URL</dfn>. It identifies the
     handler for the purposes of the methods described below.
 
     When the user agent uses this handler, it must replace the first occurrence of the exact
     literal string "<code>%s</code>" in the <var>url</var> argument with an
     escaped version of the <a>absolute URL</a> of the content in question (as defined below),
-    then <a>resolve</a> the resulting URL, relative to the <a>API
+    then <a>parse</a> the resulting URL, relative to the <a>API
     base URL</a> specified by the <a>entry settings object</a> at the time the <code>registerContentHandler()</code> or <code>registerProtocolHandler()</code> methods were
     invoked, and then <a>navigate</a> an appropriate <a>browsing
     context</a> to the resulting URL.
@@ -3981,25 +3984,14 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
 
   The second argument of the four methods described above must be preprocessed as follows:
 
-  <ol>
-
-    <li>If the string does not contain the substring "<code>%s</code>", abort these
-    steps. There's no matching handler.</li>
-
-    <li><a>Resolve</a> the string relative to the <a>API base
-    URL</a> specified by the <a>entry settings object</a>.</li>
-
-    <li>If this fails, then throw a <code>SyntaxError</code> exception, aborting the
-    method.</li>
-
-    <li>If the <a>resulting absolute URL</a>'s <a>origin</a> is not the <a>same
-    origin</a> as the <a>origin</a> specified by the <a>entry settings object</a>,
-    throw a <code>SecurityError</code> exception, aborting the method.</li>
-
-    <li>Return the <a>resulting absolute URL</a> as the result of preprocessing the
-    argument.</li>
-
-  </ol>
+  1. If the string does not contain the substring "<code>%s</code>", abort these steps. There's no
+      matching handler.
+  2. <a>Parse</a> the string relative to the <a>entry settings object</a>. If this fails, then
+      throw a "<code>SyntaxError</code>" {{DOMException}}.
+  3. If the resulting URL record's <a>origin</a> is not the <a>same origin</a> as the <a>origin</a>
+      specified by the <a>entry settings object</a>, throw a "<code>SecurityError</code>"
+      {{DOMException}}.
+  4. Return the <a>resulting URL string</a> as the result of preprocessing the argument.
 
     <h6 id="security-and-privacy">Security and privacy</h6>
 
@@ -4600,13 +4592,13 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
     never does anything, or may arbitrarily ignore invocations with particular arguments for
     security, privacy, or usability reasons.</li>
 
-    <li><a>Resolve</a> the value of the method's first argument
+    <li><a>Parse</a> the value of the method's first argument
     relative to the <a>API base URL</a> specified by the <a>entry settings
     object</a>.</li>
 
     <li>If this fails, abort these steps.</li>
 
-    <li>Process the <a>resulting absolute URL</a> as the <a for="url">URL</a> to an OpenSearch
+    <li>Process the <a>resulting URL string</a> as the <a for="url">URL</a> to an OpenSearch
     description document. [[!OPENSEARCH]]</li>
 
     </ol>
@@ -4626,14 +4618,14 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
     <li>Let <var>host1</var> be the host component of the <a>origin</a> specified
     by the <a>entry settings object</a>.</li>
 
-    <li><a>Resolve</a> the <var>scriptURL</var> argument
+    <li><a>Parse</a> the <var>scriptURL</var> argument
     relative to the <a>API base URL</a> specified by the <a>entry settings
     object</a>.</li>
 
     <li>If this fails, return 0 and abort these steps.</li>
 
     <li>Let <var>host2</var> be the <a for="hostsyntax">host</a> component
-    of the <a>resulting parsed URL</a>.</li>
+    of the <a>resulting URL string</a>.</li>
 
     <li>
 
@@ -4646,8 +4638,8 @@ object</a>, a script base URL, a credentials mode, a cryptographic nonce, and a 
     </li>
 
     <li>Let <var>search engines</var> be the list of search engines known by the user
-    agent and made available to the user by the user agent for which the resulting <a>absolute
-    URL</a> is a <a>prefix match</a> of the search engine's <a for="url">URL</a>, if any. For
+    agent and made available to the user by the user agent for which the resulting
+    <a>absolute URL</a> is a <a>prefix match</a> of the search engine's <a for="url">URL</a>, if any. For
     search engines registered using OpenSearch description documents, the <a for="url">URL</a> of the
     search engine corresponds to the URL given in a <code>Url</code> element whose <code>rel</code> attribute is "<code>results</code>" (the default). [[!OPENSEARCH]]</li>
 

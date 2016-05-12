@@ -180,6 +180,10 @@
   means that the length of the text is zero (i.e., not even containing spaces or
   <a>control characters</a>).
 
+  An element's <dfn>child text content</dfn> is the concatenation of the <a>data</a> of all the 
+  {{Text}} nodes that are children of the element (ignoring any other nodes such as comments or 
+  elements), in <a>tree order</a>.
+  
   A <a for="Node" lt="insert">node <var>A</var> is
   inserted</a> into a node <var>B</var> when the
   <a>insertion steps</a> are invoked with <var>A</var> as the argument and <var>A</var>'s new parent
@@ -630,8 +634,8 @@
       * The <a for="hostsyntax">host</a> component of a <a>URL record</a>
       * The <a for="url">port</a> component of a <a>URL record</a>
       * The <a>path</a> component of a <a>URL record</a>
-      * The <a for="urlsyntax">query</a> component of a <a>URL record</a>
-      * The <a for="urlsyntax">fragment</a> component of a <a>URL record</a>
+      * The <a for="url">query</a> component of a <a>URL record</a>
+      * The <a for="url">fragment</a> component of a <a>URL record</a>
       * <a>non-relative flag</a>
       * <a for="url">Parse errors</a> from the <a>URL parser</a>
       * The <a spec="url">URL serializer</a>
@@ -725,7 +729,7 @@
         * <a for="request">mode</a>
         * <a for="request">credentials mode</a>
         * <a for="request">use-URL-credentials flag</a>
-        * <a>unsafe-request flat</a>
+        * <a>unsafe-request flag</a>
         * <a for="request">cache mode</a>
         * <a for="request">redirect mode</a>
         * <a>cryptographic nonce metadata</a>
@@ -829,10 +833,10 @@
        * The <a>current Realm Record</a>
        * <a>Use Strict Directive</a>
        * <a>Well-Known Symbols</a>, including:
-          * @@hasInstance
-          * @@isConcatSpreadable
-          * @@toPrimitive
-          * @@toStringTag
+          * <dfn lt="at-hasinstance">@@hasInstance</dfn>
+          * <dfn lt="at-isconcatspreadable">@@isConcatSpreadable</dfn>
+          * <dfn lt="at-toprimitive">@@toPrimitive</dfn>
+          * <dfn lt="at-tostringtag">@@toStringTag</dfn>
        * <a>Well-Known Intrinsic Objects</a>, including:
           * <a>%ArrayBuffer%</a>
           * <a>%ArrayPrototype%</a>
@@ -856,7 +860,7 @@
        * The <a>EnqueueJob</a> abstract operation
        * The <a>FunctionCreate</a> abstract operation
        * The <a for="ecma">Get</a> abstract operation
-       * The <a>GetActiveScriptOrModule</a> abstract operation
+       * The <a>GetActiveScriptOrModule()</a> abstract operation
        * The <a>GetFunctionRealm</a> abstract operation
        * The <a>HasOwnProperty</a> abstract operation
        * The <a>HostEnsureCanCompileStrings</a> abstract operation
@@ -1013,11 +1017,18 @@
 
       The following features are defined in the UI Events specification: [[!UIEVENTS]]
 
-      * {{MouseEvent}} interface
+      * {{MouseEvent}} interface and the following interface members:
+         * The {{MouseEvent/relatedTarget}} attribute
+         * The {{MouseEvent/button}} attribute
+         * The {{MouseEvent/ctrlKey}} attribute
+         * The {{MouseEvent/shiftKey}} attribute
+         * The {{MouseEvent/altKey}} attribute
+         * The {{MouseEvent/metaKey}} attribute
+         * The {{MouseEvent/getModifierState()}} method
       * {{MouseEventInit}} dictionary type
       * The {{FocusEvent}} interface and its
         {{FocusEvent/relatedTarget}} attribute
-      * The {{UIEvent}} interface's {{UIEvent/detail}} attribute
+      * The {{UIEvent}} interface's {{UIEvent/view}} and {{UIEvent/detail}} attributes
       * <a event>click</a> event
       * <a event>dblclick</a> event
       * <a event>mousedown</a> event
@@ -1062,10 +1073,8 @@
       * The <a>fullscreen enabled flag</a>
       * The <a>fully exit fullscreen</a> algorithm
 
-      The <cite>High Resolution Time</cite> specification provides the
-      {{DOMHighResTimeStamp}} typedef and the
-      {{Performance}} object's {{Performance/now|now()}} method.
-      [[!HR-TIME-2]]
+      The <cite>High Resolution Time</cite> specification provides the {{DOMHighResTimeStamp}} 
+      typedef and the {{Performance}} object's {{Performance/now()}} method. [[!HR-TIME-2]]
 
   : File API
   :: This specification uses the following features defined in the File API specification:
@@ -1095,7 +1104,7 @@
       features and terms are defined in the XMLHttpRequest specification: [[!XHR]]
 
       * {{XMLHttpRequest}} interface
-      * <a attribute lt="responseXML" lt="responseXML"><code>XMLHttpRequest.responseXML</code></a> attribute
+      * {{XMLHttpRequest/responseXML|XMLHttpRequest.responseXML}} attribute
       * {{ProgressEvent}} interface
       * <a attribute lt="lengthcomputable"><code>ProgressEvent.lengthComputable</code></a> attribute
       * <a attribute lt="loaded"><code>ProgressEvent.loaded</code></a> attribute
@@ -3266,14 +3275,14 @@
   The <dfn>fallback base URL</dfn> of a {{Document}} object is the <a>absolute URL</a>
   obtained by running these substeps:
 
-  1. If the {{Document}} is <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>,
-      then return the <a>document base URL</a> of the {{Document}}'s
-      <a>browsing context</a>'s <a>browsing context container</a>'s <a>node document</a> and abort
-      these steps.
-  2. If <a>the document's address</a> is <code>about:blank</code>, and the {{Document}}'s
-      <a>browsing context</a> has a <a>creator browsing context</a>, then return the <a>document
-      base URL</a> of the <a>creator <code>Document</code></a>, and abort these steps.
-  3. Return <a>the document's address</a>.
+  1. If <var>document</var> is 
+      <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>,
+      then return the <a>document base URL</a> of the <var>Document</var>'s
+      <a>browsing context</a>'s <a>browsing context container</a>'s <a>node document</a>.
+  2. If <var>document</var>'s <a for="url">URL</a> is <code>about:blank</code>, and the 
+      <var>Document</var>'s <a>browsing context</a> has a <a>creator browsing context</a>, then 
+      return the <a>creator base URL</a>.
+  3. Return <var>document</var>'s <a for="url">URL</a>.
 
   The <dfn>document base URL</dfn> of a {{Document}} object is the <a>absolute URL</a>
   obtained by running these substeps:
@@ -3285,53 +3294,33 @@
       <{base}> element in the {{Document}} that has an <{base/href}>
       attribute, in <a>tree order</a>.
 
-<h4 id="resolving-urls">Resolving URLs</h4>
+<h4 id="parsing-urls">Parsing URLs</h4>
 
-  Resolving a URL is the process of taking a <a>relative URL</a> and obtaining the
-  <a>absolute URL</a> that it implies.
+  Parsing a URL is the process of taking a URL string and obtaining the <a>URL record</a> that it 
+  implies. While this process is defined in the WHATWG URL standard, this specification defines a
+  wrapper for convenience. [[URL]]
 
-  To <dfn lt="re-resolved|resolve a URL|resolve|resolving|resolving of relative urls|resolving relative urls">resolve a URL</dfn> to an <a>absolute URL</a> relative to either another
-  <a>absolute URL</a> or an element, the user agent must use the following steps. Resolving a URL
-  can result in an error, in which case the URL is not resolvable.
+  <p class="note">This wrapper is only useful when the character encoding for the URL parser has to
+  match that of the document or environment settings object for legacy reasons. When that is not the
+  case the <a>URL parser</a> can be used directly.</p>
+  
+  To <dfn lt="reparsed|parse a URL|parse|parsing|parsing of relative urls|parsing relative urls">parse a URL</dfn>
+  <var>url</var>, relative to either a <var>document</var> or 
+  <var>environment settings object</var>, the user agent must use the following steps. Parsing a URL
+  either results in failure or a <a>resulting URL string</a> and <a>resulting URL record</a>.
 
-  1. Let <var>url</var> be the <a for="url">URL</a> being resolved.
-  2. Let <var>encoding</var> be determined as follows:
-
-      <dl class="switch">
-        <dt>
-          If the URL had a character encoding defined when the URL was created or defined or when
-          this algorithm was invoked
-        </dt>
-        <dd>The URL character encoding is as defined.</dd>
-
-        <dt>If the URL came from a script (e.g., as an argument to a method)</dt>
-        <dd>
-          The URL character encoding is the <a>API URL character encoding</a> specified by the
-          script's <a>settings object</a>.
-        </dd>
-
-        <dt>If the URL came from a DOM node (e.g., from an element)</dt>
-        <dd>
-          The node has a {{Document}}, and the URL character encoding is the
-          <a>document's character encoding</a>.
-        </dd>
-      </dl>
-
-  3. If <var>encoding</var> is a <a>UTF-16 encoding</a>, then change the value of
-      <var>encoding</var> to UTF-8.
-  4. If the algorithm was invoked with an <a>absolute URL</a> to use as the base URL, let
-      <var>base</var> be that <a>absolute URL</a>.
-
-      Otherwise, let <var>base</var> be the element's <a>node document</a>'s <a>document base URL</a>.
-
-  5. Apply the <a>URL parser</a> to <var>url</var>, with <var>base</var> as the base URL, with
-      <var>encoding</var> as the encoding.
-  6. If this returns failure, then abort these steps with an error.
-  7. Let <var>parsed URL</var> be the result of the <a>URL parser</a>.
-  8. Let <var>serialized URL</var> be the result of apply the <a spec="url">URL serializer</a> to
-      <var>parsed URL</var>.
-  9. Return <var>serialized URL</var> as the <dfn>resulting absolute URL</dfn> and
-      <var>parsed URL</var> as the <dfn>resulting parsed URL</dfn>.
+  1. Let <var>encoding</var> be <var>document</var>'s <a>character encoding</a>, if 
+      <var>document</var> was given, and <var>environment settings object</var>'s 
+      <a>API URL character encoding</a> otherwise.
+  2. Let <var>baseURL</var> be <var>document</var>'s <a>base URL</a>, if <var>document</var> was
+      given, and <var>environment settings object</var>'s <a>API base URL</a> otherwise.
+  3. Let <var>urlRecord</var> be the result of applying the <a>URL parser</a> to <var>url</var>,
+      with <var>baseURL</var> and <var>encoding</var>.
+  4. If <var>urlRecord</var> is failure, then abort these steps with an error.
+  5. Let <var>urlString</var> be the result of applying the <a spec="url">URL serializer</a> to
+      <var>urlRecord</var>.
+  6. Return <var>urlString</var> as the <dfn>resulting URL string</dfn> and <var>urlRecord</var> as 
+      the <dfn lt="resulting URL record|resulting URL records">resulting URL record</dfn>.
 
 <h4 id="dynamic-changes-to-base-urls">Dynamic changes to base URLs</h4>
 
@@ -3344,9 +3333,10 @@
   <dl class="switch">
     <dt>If the element creates a <a>hyperlink</a></dt>
     <dd>
-      If the <a>absolute URL</a> identified by the hyperlink is being shown to the user, or if any
-      data derived from that URL is affecting the display, then the <{links/href}> attribute
-      should be <a>re-resolved</a> relative to the element and the UI updated appropriately.
+      If the <a for="url">URL</a> identified by the hyperlink is being shown to the user, or if any
+      data derived from that <a for="url">URL</a> is affecting the display, then the <{links/href}> 
+      attribute should be <a>reparsed</a> relative to the element's <a>node document</a> and the UI 
+      updated appropriately.
 
       <p class="example">
         For example, the CSS <code>:link</code>/<code>:visited</code> pseudo-classes might have
@@ -3359,9 +3349,10 @@
       <{del}> element with a <code>cite</code> attribute
     </dt>
     <dd>
-      If the <a>absolute URL</a> identified by the <code>cite</code> attribute is being shown to
-      the user, or if any data derived from that URL is affecting the display, then the <a for="url">URL</a>
-      should be <a>re-resolved</a> relative to the element and the UI updated appropriately.
+      If the <a for="url">URL</a> identified by the <code>cite</code> attribute is being shown to
+      the user, or if any data derived from that <a for="url">URL</a> is affecting the display, then 
+      the <a for="url">URL</a> should be <a>reparsed</a> relative to the element's 
+      <a>node document</a> and the UI updated appropriately.
     </dd>
 
     <dt>Otherwise</dt>
@@ -3401,7 +3392,7 @@
   <var>corsAttributeState</var>, and an optional <i>same-origin fallback flag</i>, run these steps:
 
   1. Let <var>mode</var> be "<code>no-cors</code>" if <var>corsAttributeState</var> is
-      <a>No CORS</a>, and "<code>cors</code>" otherwise.
+      <a state for="cors">No CORS</a>, and "<code>cors</code>" otherwise.
 
   2. If <i>same-origin fallback flag</i> is set and <var>mode</var> is "<code>no-cors</code>", set
       <var>mode</var> to "<code>same-origin</code>".
@@ -3448,7 +3439,7 @@
       <var>referrer</var> to the empty string and jump to the step labeled <i>clean referrer</i>.
   5. Let <var>referrer</var> be <a>the document's address</a> of <var>document</var>.
   6. <i>Clean referrer</i>: Apply the <a>URL parser</a> to <var>referrer</var> and let
-      <var>parsed referrer</var> be the <a>resulting parsed URL</a>.
+      <var>parsed referrer</var> be the <a>resulting URL record</a>.
   7. Let <var>referrer</var> be the result of applying the <a spec="url">URL serializer</a> to
       <var>parsed referrer</var>, with the <i>exclude fragment flag</i> set.
   8. If <var>referrer</var> is not the empty string, is not a <a scheme lt="data:"><code>data:</code> URL</a>, and
@@ -3716,7 +3707,8 @@
   The empty string is also a valid keyword, and maps to the <a state for="cors">Anonymous</a> state. The attribute's
   <i>invalid value default</i> is the <a state for="cors">Anonymous</a> state. For the purposes of <a>reflection</a>,
   the canonical case for the <a state for="cors">Anonymous</a> state is the <a value for="cors"><code>anonymous</code></a> keyword. The
-  <i>missing value default</i>, used when the attribute is omitted, is the <dfn>No CORS</dfn> state.
+  <i>missing value default</i>, used when the attribute is omitted, is the 
+  <dfn state for="cors">No CORS</dfn> state.
 
 <h3 id="common-dom-interfaces">Common DOM interfaces</h3>
 
@@ -3731,7 +3723,7 @@
   is not present, it must first be added.
 
   If a reflecting IDL attribute is a <code>DOMString</code> attribute whose content attribute is
-  defined to contain a <a for="url">URL</a>, then on getting, the IDL attribute must <a>resolve</a> the
+  defined to contain a <a for="url">URL</a>, then on getting, the IDL attribute must <a>parse</a> the
   value of the content attribute relative to the element and return the resulting
   <a>absolute URL</a> if that was successful, or the empty string otherwise; and on setting, must
   set the content attribute to the specified literal value. If the content attribute is absent,
@@ -3740,7 +3732,7 @@
 
   If a reflecting IDL attribute is a <code>DOMString</code> attribute whose content attribute is
   defined to contain one or more <a for="url">URLs</a>, then on getting, the IDL attribute must <a lt="split a string on spaces">split the
-  content attribute on spaces</a> and return the concatenation of <a>resolving</a> each token URL
+  content attribute on spaces</a> and return the concatenation of <a>parsing</a> each token URL
   to an <a>absolute URL</a> relative to the element, with a single U+0020 SPACE character between
   each URL, ignoring any tokens that did not resolve successfully. If the content attribute is
   absent, the IDL attribute must return the default value, if the content attribute has one, or
