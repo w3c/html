@@ -37,7 +37,7 @@
   history</a> contains the {{Document}}, if any. (A {{Document}} created using
   an API such as {{DOMImplementation/createDocument()}} has no
   <a>browsing context</a>.) Each {{Document}} in a <a>browsing context</a> is
-  <dfn for="Window" lt="the window object's newest document object|associated">associated</dfn> with
+  <dfn lt="document associated with a window">associated</dfn> with
   a {{Window}} object.
 
   <p class="note">
@@ -71,7 +71,7 @@
 
   To <dfn lt="creating a new browsing context|create a new browsing context">create a new browsing context</dfn>:
 
-  1. Call the JavaScript <a>InitializeHostDefinedRealm()</a> abstract operation with the following
+  1. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the following
       customizations:
 
       * For the global object, create a new {{Window}} object <var>window</var>.
@@ -205,8 +205,6 @@
 
   </dl>
 
-  <div class="impl">
-
   The <dfn><code>top</code></dfn> IDL attribute on the <code>Window</code> object
   of a <code>Document</code> in a <a>browsing context</a> <var>b</var> must return
   the <code>WindowProxy</code> object of its <a>top-level browsing context</a> (which would be
@@ -214,31 +212,26 @@
   itself), if it has one, or its own <code>WindowProxy</code> object otherwise (e.g., if it was a
   detached <a>nested browsing context</a>).
 
-  The <dfn><code>parent</code></dfn> IDL attribute on the <code>Window</code>
-  object of a <code>Document</code> in a <a>browsing context</a> <var>b</var> must
-  return the <code>WindowProxy</code> object of the <a>parent browsing context</a>, if there
-  is one (i.e., if <var>b</var> is a <a>child browsing context</a>), or the
-  <code>WindowProxy</code> object of the <a>browsing context</a> <var>b</var> itself,
-  otherwise (i.e., if it is a <a>top-level browsing context</a> or a detached <a>nested browsing context</a>).
+  The <dfn attribute for="Window"><code>parent</code></dfn> IDL attribute on the {{Window}} object 
+  of a {{Document}} that has a <a>browsing context</a> <var>b</var> must return the {{WindowProxy}}
+  object of the <a>parent browsing context</a>, if there is one (i.e., if <var>b</var> is a 
+  <a>child browsing context</a>), or the {{WindowProxy}} object of the <a>browsing context</a> 
+  <var>b</var> itself, otherwise (i.e., if it is a <a>top-level browsing context</a> or a detached 
+  <a>nested browsing context</a>).
 
-  The <dfn><code>frameElement</code></dfn> IDL attribute on the
-  <code>Window</code> object of a <code>Document</code> <var>d</var>, on getting, must run
-  the following algorithm:
+  The <dfn attribute for="Window"><code>frameElement</code></dfn> IDL attribute on the {{Window}} 
+  object of a {{Document}} <var>d</var>, on getting, must run the following algorithm:
 
-  <ol>
-
-    <li>If <var>d</var> is not a <code>Document</code> in a <a>nested browsing context</a>, return null and abort these steps.</li>
-
-    <li>If the <a>browsing context container</a>'s <a>node document</a> does not have the
-    same <a>effective script origin</a> as the
-    <a>effective script origin</a> specified by the <a>entry settings object</a>, then
-    return null and abort these steps.</li>
-
-    <li>Return the <a>browsing context container</a> for <var>b</var>.</li>
-
-  </ol>
-
-  </div>
+  1. Let <var>d</var> be the {{Window}} object's 
+      <a lt="document associated with a window">associated <code>Document</code></a>.
+  2. Let <var>context</var> be <var>d</var>'s <a>browsing context</a>.
+  3. If <var>context</var> is not a <a>nested browsing context</a>, return null and abort these 
+      steps.
+  4. Let <var>container</var> be <var>context</var>'s <a>browsing context container</a>.
+  5. If <var>container</var>'s <a>node document</a>'s <a>origin</a> is not 
+      <a>same origin-domain</a> with the <a>entry settings object</a>'s <a>origin</a>, then return 
+      null and abort these steps.
+  6. Return <var>container</var>.
 
 <h4 id="sec-auxiliary-browsing-contexts"><dfn lt="auxiliary browsing contexts|auxiliary browsing context">Auxiliary browsing contexts</dfn></h4>
 
@@ -341,46 +334,31 @@
 
   </div>
 
-  <div class="impl">
-
 <h4 id="groupings-of-browsing-contexts">Groupings of browsing contexts</h4>
 
-  Each <a>browsing context</a> is defined as having a list of one or more <dfn>directly
-  reachable browsing contexts</dfn>. These are:
+  Each <a>browsing context</a> is defined as having a list of one or more 
+  <dfn>directly reachable browsing contexts</dfn>. These are:
 
-  <ul>
+  * The <a>browsing context</a> itself.
+  * All the <a>browsing context</a>'s <a>child browsing contexts</a>.
+  * The <a>browsing context</a>'s <a>parent browsing context</a>.
+  * All the <a>browsing contexts</a> that have the <a>browsing context</a> as their 
+     <a>opener browsing context</a>.
+  * The <a>browsing context</a>'s <a>opener browsing context</a>.
 
-    <li>The <a>browsing context</a> itself.</li>
+  The transitive closure of all the <a>browsing contexts</a> that are 
+  <a>directly reachable browsing contexts</a> forms a <dfn>unit of related browsing contexts</dfn>.
 
-    <li>All the <a>browsing context</a>'s <a>child browsing
-    contexts</a>.</li>
+  Each <a>unit of related browsing contexts</a> is then further divided into the smallest number of 
+  groups such that every member of each group has an <a>active document</a> with an <a>origin</a> 
+  that, through appropriate manipulation of the {{Document/domain|document.domain}} attribute, could 
+  be made to be <a>same origin-domain</a> with other members of the group, but could not be made the 
+  same as members of any other group. Each such group is a 
+  <dfn lt="units of related similar-origin browsing contexts|unit of related similar-origin browsing contexts">unit of related similar-origin browsing contexts</dfn>.
 
-    <li>The <a>browsing context</a>'s <a>parent browsing context</a>.</li>
-
-    <li>All the <a>browsing contexts</a> that have the <a>browsing
-    context</a> as their <a>opener browsing context</a>.</li>
-
-    <li>The <a>browsing context</a>'s <a>opener browsing context</a>.</li>
-
-  </ul>
-
-  The transitive closure of all the <a>browsing contexts</a> that
-  are <a>directly reachable browsing contexts</a> forms a <dfn>unit of related browsing
-  contexts</dfn>.
-
-  Each <a>unit of related browsing contexts</a> is then further divided into the smallest
-  number of groups such that every member of each group has an <a>active document</a> with an
-  <a>effective script origin</a> that, through appropriate manipulation of the <code>document.domain</code> attribute, could be made to be the same as
-  other members of the group, but could not be made the same as members of any other group. Each
-  such group is a <dfn lt="units of related similar-origin browsing contexts|unit of related similar-origin browsing contexts">unit of related similar-origin browsing contexts</dfn>.
-
-  <p class="note">
-  There is also at most one <a>event loop</a> per <a>unit of related
-  similar-origin browsing contexts</a> (though several <a>units of related similar-origin browsing contexts</a> can
-  have a shared <a>event loop</a>).
-  </p>
-
-  </div>
+  <p class="note">There is also at most one <a>event loop</a> per 
+  <a>unit of related similar-origin browsing contexts</a> (though several 
+  <a>units of related similar-origin browsing contexts</a> can have a shared <a>event loop</a>).</p>
 
 <h4 id="browsing-context-names">Browsing context names</h4>
 
@@ -959,9 +937,8 @@
   <p class="note">If this abstract operation returns undefined and there is no custom behavior, the
   caller needs to throw a "<code>SecurityError</code>" {{DOMException}}.</p>
 
-  1. If <var>P</var> is <a lt="at-tostringtag">@@toStringTag</a>, 
-      <a lt="at-hasinstance">@@hasInstance</a>, or 
-      <a lt="at-isconcatspreadable">@@isConcatSpreadable</a>, then return <a>PropertyDescriptor</a> 
+  1. If <var>P</var> is <a>@@toStringTag</a>, <a>@@hasInstance</a>, or <a>@@isConcatSpreadable</a>, 
+      then return <a>PropertyDescriptor</a> 
       { \[[Value]]: undefined, \[[Writable]]: false, \[[Enumerable]]: false, 
       \[[Configurable]]: true }.
   2. Let <var>crossOriginKey</var> be a tuple consisting of the <a>current settings object</a>'s
@@ -1147,7 +1124,8 @@
   <code>WindowProxy</code> object.
 
   The <dfn attribute for="Window"><code>document</code></dfn> IDL attribute must return
-  <a for="Window">the <code>Window</code> object's newest <code>Document</code> object</a>.
+  <a lt="document associated with a window">the <code>Window</code> object's newest 
+  <code>Document</code> object</a>.
 
   <p class="note">
   The <code>Document</code> object associated with a <code>Window</code> object can
@@ -1165,73 +1143,6 @@
   For historical reasons, <code>Window</code> objects must also have a writable, configurable,
   non-enumerable property named <dfn><code>HTMLDocument</code></dfn> whose value is the
   <code>Document</code> interface object.
-
-  </div>
-
-  <div class="impl">
-
-<h4 id="the-window-object-security">Security</h4>
-
-  <p class="critical">This section describes a security model that is underdefined, imperfect, and
-  does not match implementations. Work is ongoing to attempt to resolve this, but in the meantime,
-  please do not rely on this section for precision. Implementors are urged to send their feedback on
-  how cross-origin cross-global access to <code>Window</code> and <code>Location</code> objects
-  should work.
-
-  User agents must throw a <code>SecurityError</code> exception whenever any
-  properties of a <code>Window</code> object are accessed when the <a>incumbent settings
-  object</a> specifies an <a>effective script origin</a> that is not the same as the <code>Window</code> object's
-  <code>Document</code>'s <a>effective script origin</a>, with the following
-  exceptions:
-
-  <ul>
-
-    <li>The <code>location</code> attribute
-
-    <li>The <code>postMessage()</code> method
-
-    <li>The <code>window</code> attribute
-
-    <li>The <code>frames</code> attribute
-
-    <li>The <code>self</code> attribute
-
-    <li>The <code>top</code> attribute
-
-    <li>The <code>parent</code> attribute
-
-    <li>The <code>opener</code> attribute
-
-    <li>The <code>closed</code> attribute
-
-    <li>The <code>close()</code> method
-
-    <li>The <code>blur()</code> method
-
-    <li>The <code>focus()</code> method
-
-    <li>The <a>dynamic nested browsing context properties</a>
-
-  </ul>
-
-  When the <a>incumbent settings object</a> specifies an <a>effective script
-  origin</a> that is different than a <code>Window</code>
-  object's <code>Document</code>'s <a>effective script origin</a>, the user agent must
-  act as if any changes to that <code>Window</code> object's properties, getters, setters, etc, were
-  not present, and as if all the properties of that <code>Window</code> object had their \[[Enumerable]] attribute set to false.
-
-  For members that return objects (including function objects), each distinct <a>effective
-  script origin</a> that is not the same as the <code>Window</code> object's
-  <code>Document</code>'s <a>effective script origin</a> must be provided with a separate set
-  of objects. These objects must have the prototype chain appropriate for the script for which the
-  objects are created (not those that would be appropriate for scripts whose <a>global
-  object</a>, as specified by their <a>settings object</a>, is the <code>Window</code>
-  object in question).
-
-  <div class="example">
-    For instance, if two frames containing <code>Document</code>s from different <a>origins</a> access the same <code>Window</code> object's <code>postMessage()</code> method, they will get distinct objects that
-    are not equal.
-  </div>
 
   </div>
 
@@ -1456,53 +1367,25 @@
 <h4 id="accessing-other-browsing-contexts">Accessing other browsing contexts</h4>
 
   <dl class="domintro">
-
-    <dt><var>window</var> . <code>length</code></dt>
-
-    <dd>
-
-    Returns the number of <a>child browsing
-    contexts</a>.
-
-    </dd>
+    <dt><var>window</var> . {{Window/length}}</dt>
+    <dd>Returns the <a>number of child browsing contexts</a>.</dd>
 
     <dt><var>window</var>[<var>index</var>]</dt>
-
-    <dd>
-
-    Returns the indicated <a>child browsing context</a>.
-
-    </dd>
-
+    <dd>Returns the indicated <a>child browsing context</a>.</dd>
   </dl>
 
-  <div class="impl">
-
-  The <dfn attribute for="Window"><code>length</code></dfn> IDL attribute on the <code>Window</code>
-  interface must return the number of <a>child browsing
-  contexts</a> that are <a>nested through</a>
-  elements that are <a>in the <code>Document</code></a> that is the
-  <a>active document</a> of that <code>Window</code> object, if that <code>Window</code>'s
-  <a>browsing context</a> shares the same <a>event loop</a> as the <a>responsible
-  document</a> specified by the <a>entry settings object</a> accessing the IDL attribute;
-  otherwise, it must return zero.
-
-  The <a>supported property indices</a> on the <code>Window</code> object at any instant
-  are the numbers in the range 0 .. <var>n</var>-1, where <var>n</var> is the number returned by the <code>length</code> IDL
-  attribute. If <var>n</var> is zero then there are no <a>supported property
-  indices</a>.
-
-  To <a>determine the value of an indexed property</a> <var>index</var> of a <code>Window</code> object, the user agent must return the
-  <code>WindowProxy</code> object of the <var>index</var>th <a>child browsing
-  context</a> of the <code>Document</code> that is <a>nested through</a> an element that is <a>in the
-  <code>Document</code></a>, sorted in the order that the elements nesting those <a>browsing contexts</a> were most recently inserted into the
-  {{Document}}, the <code>WindowProxy</code> object of the most recently inserted
-  <a>browsing context container</a>'s <a>nested browsing context</a> being last.
-
-  These properties are the <dfn>dynamic nested browsing context properties</dfn>.
-
-  </div>
-
+  The <dfn>number of child browsing contexts</dfn> of a {{Window}} object <var>W</var> is the number 
+  of <a>child browsing contexts</a> that are <a>nested through</a> elements that are in a 
+  {{Document}} that is the <a>active document</a> of the {{Window}} object's <a>associated</a> 
+  {{Document}} object's <a>browsing context</a>.
+  
+  The <dfn attribute for="Window"><code>length</code></dfn> IDL attribute's getter must return the
+  <a>number of child browsing contexts</a> of this {{Window}} object.
+  
+  <p class="note">Indexed access to <a>child browsing contexts</a> is defined through the 
+  <a lt="windowproxy getownproperty">\[[GetOwnProperty]]</a> internal method of the {{WindowProxy}}
+  object.</p>
+  
 <h4 id="named-access-on-the-window-object">Named access on the <code>Window</code> object</h4>
 
   <dl class="domintro">
@@ -1511,7 +1394,7 @@
 
     As a general rule, relying on this will lead to brittle code. Which IDs end up mapping to
     this API can vary over time, as new features are added to the Web platform, for example. Instead
-    of this, use {{Document/getElementById()|document.getElementById()}} or 
+    of this, use {{NonElementParentNode/getElementById()|document.getElementById()}} or 
     <code>document.querySelector()</code>.
     </dd>
   </dl>
@@ -1837,7 +1720,7 @@
 
   The {{WindowProxy}} object internal methods are described in the subsections below.
 
-<h6 id="windowproxy-getprototypeof-algorithm">\[[GetPrototypeOf]] ( )</h6>
+<h6 id="windowproxy-getprototypeof-algorithm">\[[<dfn lt="windowproxy getprototypeof">GetPrototypeOf</dfn>]] ( )</h6>
 
   1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of 
       <em>this</em>.
@@ -1845,19 +1728,19 @@
       <a>OrdinaryGetPrototypeOf</a>(<var>W</var>).
   3. Return null.
 
-<h6 id="windowproxy-setprototypeof-algorithm">\[[SetPrototypeOf]] ( V )</h6>
+<h6 id="windowproxy-setprototypeof-algorithm">\[[<dfn lt="windowproxy setprototypeof">SetPrototypeOf</dfn>]] ( V )</h6>
 
   1. Return false.
 
-<h6 id="windowproxy-isextensible-algorithm">\[[IsExtensible]] ( )</h6>
+<h6 id="windowproxy-isextensible-algorithm">\[[<dfn lt="windowproxy isextensible">IsExtensible</dfn>]] ( )</h6>
 
   1. Return true.
 
-<h6 id="windowproxy-preventextensions-algorithm">\[[PreventExtensions]] ( )</h6>
+<h6 id="windowproxy-preventextensions-algorithm">\[[<dfn lt="windowproxy preventextensions">PreventExtensions</dfn>]] ( )</h6>
 
   1. Return false.
 
-<h6 id="windowproxy-getownproperty-algorithm">\[[GetOwnProperty]] ( <var>P</var> )</h6>
+<h6 id="windowproxy-getownproperty-algorithm">\[[<dfn lt="windowproxy getownproperty">GetOwnProperty</dfn>]] ( <var>P</var> )</h6>
 
   1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of 
       <em>this</em>.
@@ -1891,7 +1774,7 @@
           \[[Writable]]: false, \[[Configurable]]: true }.
   7. Throw a "<code>SecurityError</code>" {{DOMException}}.
 
-<h6 id="windowproxy-defineownproperty-algorithm">\[[DefineOwnProperty]] ( <var>P</var>, <var>Desc</var> )</h6>
+<h6 id="windowproxy-defineownproperty-algorithm">\[[<dfn lt="windowproxy defineownproperty">DefineOwnProperty</dfn>]] ( <var>P</var>, <var>Desc</var> )</h6>
 
   1. If <var>P</var> is an <a>array index property name</a>, return false.
   2. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of 
@@ -1902,7 +1785,7 @@
       <p class="note">See above about how this violates JavaScript's internal method invariants.</p>
   4. Return false.
 
-<h6 id="windowproxy-get-algorithm">\[[Get]] ( <var>P</var>, <var>Receiver</var> )</h6>
+<h6 id="windowproxy-get-algorithm">\[[<dfn lt="windowproxy get">Get</dfn>]] ( <var>P</var>, <var>Receiver</var> )</h6>
 
   1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of 
       <em>this</em>.
@@ -1910,7 +1793,7 @@
       <a>OrdinaryGet</a>(this, <var>P</var>, <var>Receiver</var>).
   3. Return ? <a>CrossOriginGet</a>(this, <var>P</var>, <var>Receiver</var>).
 
-<h6 id="windowproxy-set-algorithm">\[[Set]] ( <var>P</var>, V, <var>Receiver</var> )</h6>
+<h6 id="windowproxy-set-algorithm">\[[<dfn lt="windowproxy set">Set</dfn>]] ( <var>P</var>, V, <var>Receiver</var> )</h6>
 
   1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of 
       <em>this</em>.
@@ -1918,7 +1801,7 @@
       <a>OrdinarySet</a>(<var>W</var>, this, <var>Receiver</var>).
   3. Return <a>CrossOriginSet</a>(this, <var>P</var>, V, <var>Receiver</var>).
 
-<h6 id="windowproxy-delete-algorithm">\[[Delete]] ( <var>P</var> )</h6>
+<h6 id="windowproxy-delete-algorithm">\[[<dfn lt="windowproxy delete">Delete</dfn>]] ( <var>P</var> )</h6>
 
   1. If <var>P</var> is an <a>array index property name</a>, return false.
   2. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of 
@@ -1927,7 +1810,7 @@
       <a>OrdinaryDelete</a>(<var>W</var>, <var>P</var>).
   4. Return false.
 
-<h6 id="windowproxy-ownpropertykeys-algorithm">\[[OwnPropertyKeys]] ( )</h6>
+<h6 id="windowproxy-ownpropertykeys-algorithm">\[[<dfn lt="windowproxy ownpropertykeys">OwnPropertyKeys</dfn>]] ( )</h6>
 
   1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of 
       <em>this</em>.
@@ -1942,7 +1825,7 @@
   7. Return the concatenation of <var>keys</var> and ! 
       <a>CrossOriginOwnPropertyKeys</a>(<var>W</var>).
   
-<h3 id="origin">Origin</h3>
+<h3 id="section-origin">Origin</h3>
 
   Origins are the fundamental currency of the Web's security model. Two actors in the Web
   platform that share an origin are assumed to trust each other and to have the same authority.
@@ -1956,7 +1839,7 @@
 
   <hr />
 
-  An <dfn lt="cross-origin|origin|origins">origin</dfn> is one of the following:
+  An <dfn for="." lt="cross-origin|origin|origins">origin</dfn> is one of the following:
 
   : An <dfn>opaque origin</dfn>
   :: An internal value, with no serialisation, for which the only meaningful operation is testing
@@ -2079,13 +1962,13 @@
   4. Let <var>unicodeOrigin</var> be a new <a>tuple origin</a> consisting <var>origin</var>'s
       <a lt="origin scheme">scheme</a>, <var>unicodeHost</var>, and <var>origin</var>'s
       <a lt="origin port">port</a>.
-  5. Return the <a>ASCII serialisation of an origin</a>, given <var>unicodeOrigin</var>.
+  5. Return the <a>ASCII serialization of an origin</a>, given <var>unicodeOrigin</var>.
 
-      <p class="note">The name <a>ASCII serialisation of an origin</a> is misleading, as it merely
+      <p class="note">The name <a>ASCII serialization of an origin</a> is misleading, as it merely
       serialises an origin, which are all ASCII by default due to the <a>URL parser</a>.</p>
 
   <div class="example">
-  The <a>Unicode serialisation</a> of ("<code>https</code>", "<code>xn--maraa-rta.example</code>",
+  The <a>Unicode serialization</a> of ("<code>https</code>", "<code>xn--maraa-rta.example</code>",
   null, null) is "<code>https://maraña.example</code>".
   </div>
 
@@ -2123,6 +2006,9 @@
           <a lt="origin domain">domains</a> are identical and null, then return true.
   3. Return false.
 
+  <div class="example">
+  The following table shows how <var>A</var> and <var>B</var> are related:
+  
   <table>
     <thead>
       <tr>
@@ -2159,38 +2045,30 @@
       </tr>
     </tbody>
   </table>
+  </div>
 
 <h4 id="relaxing-the-same-origin-restriction">Relaxing the same-origin restriction</h4>
 
   <dl class="domintro">
+    <dt><var>document</var> . {{Document/domain}} [ = <var>domain</var> ]</dt>
+    <dd>Returns the current domain used for security checks.
 
-    <dt><var>document</var> . <code>domain</code> [ = <var>domain</var> ]</dt>
-
-    <dd>
-
-    Returns the current domain used for security checks.
-
-    Can be set to a value that removes subdomains, to change the <a>effective script
-    origin</a> to allow pages on other subdomains of the same domain (if they do the same thing)
-    to access each other. (Can't be set in sandboxed <code>iframe</code>s.)
-
+    Can be set to a value that removes subdomains, to change the <a>origin</a>'s 
+    <a lt="origin domain">domain</a> to allow pages on other subdomains of the same domain (if they 
+    do the same thing) to access each other. (Can't be set in sandboxed <{iframe}>s.)
     </dd>
-
   </dl>
 
-  <div class="impl">
-
-  The <dfn attribute for="Document"><code>domain</code></dfn> attribute on
-  <code>Document</code> objects must be initialized to the document's domain, if it has
-  one, and the empty string otherwise. If the document's domain starts with a U+005B
-  LEFT SQUARE BRACKET character ([) and ends with a U+005D RIGHT SQUARE BRACKET character (]), it is
-  an IPv6 address; these square brackets must be omitted when initializing the attribute's
-  value.
-
-  On getting, the attribute must return its current value, unless the <code>Document</code> has
-  no <a>browsing context</a>, in which case it must return the empty string.
-
-  On setting, the user agent must run the following algorithm:
+  The <dfn attribute for="Document"><code>domain</code></dfn> attribute's getter must run these 
+  steps:
+  
+  1. If this {{Document}} object does not have a <a>browsing context</a>, then return the empty 
+      string.
+  2. Let <var>effectiveDomain</var> be this {{Document}}'s <a>origin</a>'s <a>effective domain</a>.
+  3. If <var>effectiveDomain</var> is an <a>opaque origin</a>, then return the empty string.
+  4. Return <var>effectiveDomain</var>, <a lt="host serializer">serialised</a>.
+  
+  The {{Document/domain}} attribute on setting must run these steps:
 
   <ol>
 
@@ -2215,12 +2093,12 @@
     value.
 
     Otherwise, <a>strictly split</a> the new value on
-    U+002E FULL STOP characters (.), apply the <a spec="url">domain to ASCII</a> algorithm to each
+    U+002E FULL STOP characters (.), apply the <a>domain to ASCII</a> algorithm to each
     returned token, and let <var>new value</var> be the result of concatenating the
     results of applying that algorithm to each token, in the same order, separated by U+002E FULL
     STOP characters (.). [[!URL]]
 
-    If the <a spec="url">domain to ASCII</a> algorithm returns failure, e.g., because a component is too long or because it contains
+    If the <a>domain to ASCII</a> algorithm returns failure, e.g., because a component is too long or because it contains
     invalid characters, then throw a <code>SecurityError</code> exception and abort these steps.
 
     </li>
@@ -2259,7 +2137,7 @@
       steps. [[!PSL]]
 
       Suffixes must be compared in an <a>ASCII case-insensitive</a> manner, after applying
-      the <a spec="url">domain to ASCII</a> algorithm to their individual components, . [[!URL]]
+      the <a>domain to ASCII</a> algorithm to their individual components, . [[!URL]]
 
       </li>
 
@@ -2307,11 +2185,10 @@
 
   </ol>
 
-  The <a>domain</a> of a <code>Document</code> is the host part
+  The <a for="url">domain</a> of a <code>Document</code> is the host part
   of the document's <a>origin</a>, if the value of that <a>origin</a> is a
   scheme/host/port tuple. If it isn't, then the document does not have a domain.
 
-  </div>
 
   <p class="note">
   The <code>domain</code> attribute is used to enable
@@ -3447,7 +3324,7 @@
     <li>Let <var>copyURL</var> be a copy of this <code>Location</code> object's <a for="url">URL</a>.</li>
 
     <li>Let <var>possibleFailure</var> be the result of <a lt="basic url parser">basic URL parsing</a> the given value, followed by "<code>:</code>", with <var>copyURL</var>
-    as <var>url</var> and <a spec="url">scheme start state</a> as <var>state override</var>.</li>
+    as <var>url</var> and <a>scheme start state</a> as <var>state override</var>.</li>
 
     <li>If <var>possibleFailure</var> is failure, throw a <code>TypeError</code>
     exception.</li>
@@ -3463,13 +3340,13 @@
   <ol>
     <li>Let <var>url</var> be this <code>Location</code> object's <a for="url">URL</a>.</li>
 
-    <li>If <var>url</var>'s <a for="hostsyntax">host</a> is null, return the empty
+    <li>If <var>url</var>'s <a for="url">host</a> is null, return the empty
     string.</li>
 
     <li>If <var>url</var>'s <a for="url">port</a> is null, return
-    <var>url</var>'s <a for="hostsyntax">host</a>, serialized.</li>
+    <var>url</var>'s <a for="url">host</a>, serialized.</li>
 
-    <li>Return <var>url</var>'s <a for="hostsyntax">host</a>, serialized, followed by "<code>:</code>" and <var>url</var>'s <a for="url">port</a>, serialized.</li>
+    <li>Return <var>url</var>'s <a for="url">host</a>, serialized, followed by "<code>:</code>" and <var>url</var>'s <a for="url">port</a>, serialized.</li>
   </ol>
 
   The <code>host</code> attribute's setter must run these steps:
@@ -3481,7 +3358,7 @@
     steps.</li>
 
     <li><a lt="basic url parser">Basic URL parse</a> the given value, with
-    <var>copyURL</var> as <var>url</var> and <a spec="url">host state</a> as <var>state
+    <var>copyURL</var> as <var>url</var> and <a>host state</a> as <var>state
     override</var>.</li>
 
     <li><a><code>Location</code>-object-setter navigate</a> to <var>copyURL</var>.</li>
@@ -3492,9 +3369,9 @@
 
   <ol>
     <li>If this <code>Location</code> object's <a for="url">URL</a>'s
-    <a for="hostsyntax">host</a> is null, return the empty string.</li>
+    <a for="url">host</a> is null, return the empty string.</li>
 
-    <li>Return this <code>Location</code> object's <a for="url">URL</a>'s <a for="hostsyntax">host</a>, serialized.</li>
+    <li>Return this <code>Location</code> object's <a for="url">URL</a>'s <a for="url">host</a>, serialized.</li>
   </ol>
 
   The <code>hostname</code> attribute's setter must run these
@@ -3507,7 +3384,7 @@
     steps.</li>
 
     <li><a lt="url parser">Basic URL parse</a> the given value, with
-    <var>copyURL</var> as <var>url</var> and <a spec="url">hostname state</a> as <var>state
+    <var>copyURL</var> as <var>url</var> and <a>hostname state</a> as <var>state
     override</var>.</li>
 
     <li><a><code>Location</code>-object-setter navigate</a> to <var>copyURL</var>.</li>
@@ -3528,12 +3405,12 @@
   <ol>
     <li>Let <var>copyURL</var> be a copy of this <code>Location</code> object's <a for="url">URL</a>.</li>
 
-    <li>If <var>copyURL</var>'s <a for="hostsyntax">host</a> is null,
+    <li>If <var>copyURL</var>'s <a for="url">host</a> is null,
     <var>copyURL</var>'s <a>non-relative flag</a> is set, or <var>copyURL</var>'s <a for="url">scheme</a> is "<code>file</code>", terminate these
     steps.</li>
 
     <li><a lt="url parser">Basic URL parse</a> the given value, with
-    <var>copyURL</var> as <var>url</var> and <a spec="url">port state</a> as <var>state
+    <var>copyURL</var> as <var>url</var> and <a>port state</a> as <var>state
     override</var>.</li>
 
     <li><a><code>Location</code>-object-setter navigate</a> to <var>copyURL</var>.</li>
@@ -3565,7 +3442,7 @@
     list.</li>
 
     <li><a lt="url parser">Basic URL parse</a> the given value, with
-    <var>copyURL</var> as <var>url</var> and <a spec="url">path start state</a> as <var>state
+    <var>copyURL</var> as <var>url</var> and <a>path start state</a> as <var>state
     override</var>.</li>
 
     <li><a><code>Location</code>-object-setter navigate</a> to <var>copyURL</var>.</li>
@@ -3601,7 +3478,7 @@
       string.</li>
 
       <li><a lt="url parser">Basic URL parse</a> <var>input</var>, with
-      <var>copyURL</var> as <var>url</var> and <a spec="url">query state</a> as <var>state override</var>,
+      <var>copyURL</var> as <var>url</var> and <a>query state</a> as <var>state override</var>,
       and the <a>relevant <code>Document</code></a>'s <a>document's character
       encoding</a> as <var>encoding override</var>.</li>
     </ol>
@@ -3641,7 +3518,7 @@
       empty string.</li>
 
       <li><a lt="url parser">Basic URL parse</a> <var>input</var>, with
-      <var>copyURL</var> as <var>url</var> and <a spec="url">fragment state</a> as <var>state
+      <var>copyURL</var> as <var>url</var> and <a>fragment state</a> as <var>state
       override</var>.</li>
     </ol>
     </li>
@@ -4041,7 +3918,7 @@
           <var>urlRecord</var>'s <a for="url">fragment</a> component to <var>script
           source</var>.
       7. Replace <var>script source</var> with the result of applying the
-          <a spec="url">percent decode</a> algorithm to <var>script source</var>.
+          <a>percent decode</a> algorithm to <var>script source</var>.
       8. Replace <var>script source</var> with the result of applying the <a>UTF-8 decode</a>
           algorithm to <var>script source</var>.
       9. Let <var>address</var> be the <a>address</a> of the <a>active document</a> of the
@@ -4597,7 +4474,7 @@
   whose value is not the empty string, then, as soon as the element is
   <a for="document">inserted into the document</a>, the user agent must <a>parse</a> the value of
   that attribute relative to that element, and if
-  that is successful, must apply the <a spec="url">URL serializer</a>
+  that is successful, must apply the <a>URL serializer</a>
   algorithm to the <a>resulting URL record</a> with the <i>exclude fragment flag</i> set to
   obtain <var>manifest URL</var>, and then run the <a>application
   cache selection algorithm</a> with <var>manifest URL</var> as the manifest URL, passing in the
@@ -6323,7 +6200,7 @@
       If the <a>resulting URL record</a> has a different <a for="url">scheme</a> component than <var>base URL</var> (the
       manifest's URL), then jump back to the step labeled <i>start of line</i>.
 
-      Let <var>new URL</var> be the result of applying the <a spec="url">URL serializer</a>
+      Let <var>new URL</var> be the result of applying the <a>URL serializer</a>
       algorithm to the <a>resulting parsed URL</a>, with the <i>exclude fragment flag</i> set.
 
       Add <var>new URL</var> to the <var>explicit URLs</var>.
@@ -6352,10 +6229,10 @@
       If <var>manifest path</var> is not a <a>prefix match</a> for <var>part one
       path</var>, then jump back to the step labeled <i>start of line</i>.
 
-      Let <var>part one</var> be the result of applying the <a spec="url">URL serializer</a>
+      Let <var>part one</var> be the result of applying the <a>URL serializer</a>
       algorithm to the first <a>resulting parsed URL</a>, with the <i>exclude fragment flag</i> set.
 
-      Let <var>part two</var> be the result of applying the <a spec="url">URL serializer</a>
+      Let <var>part two</var> be the result of applying the <a>URL serializer</a>
       algorithm to the second <a>resulting parsed URL</a>, with the <i>exclude fragment flag</i>
       set.
 
@@ -6386,7 +6263,7 @@
       If <var>urlRecord</var> has a different <a for="url">scheme</a> component than <var>base URL</var> (the
       manifest's URL), then jump back to the step labeled <i>start of line</i>.
 
-      Let <var>new URL</var> be the result of applying the <a spec="url">URL serializer</a>
+      Let <var>new URL</var> be the result of applying the <a>URL serializer</a>
       algorithm to the resulting <a>parsed URL</a>, with the <i>exclude fragment flag</i> set.
 
       Add <var>new URL</var> to the <var>online safelist namespaces</var>.
@@ -6693,7 +6570,7 @@
       algorithm to the resource's <a for="url">URL</a> results in a <a>resulting URL record</a> that has a
       non-null <a for="url">fragment</a> component, the <a for="url">URL</a>
       used for the entry in <var>cache</var> must instead be the <a>absolute URL</a>
-      obtained from applying the <a spec="url">URL serializer</a>
+      obtained from applying the <a>URL serializer</a>
       algorithm to the <a>resulting URL record</a> with the <i>exclude fragment flag</i> set
       (application caches never include fragment identifiers).
 

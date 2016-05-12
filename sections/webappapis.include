@@ -174,7 +174,8 @@
 
   <hr />
 
-  To <dfn>fetch a classic script</dfn> for a <{script}> element <var>element</var>, given a
+  To <dfn lt="fetching a classic script|fetch a classic script">fetch a classic script</dfn>
+  for a <{script}> element <var>element</var>, given a
   <var>url</var>, a <var>CORS setting</var>, a <var>cryptographic nonce</var>, a
   <var>parser state</var>, a <var>settings object</var>, and a <var>character encoding</var>, run
   these steps. The algorithm will asynchronously complete with either null (on failure) or a new
@@ -200,7 +201,7 @@
   7. If the caller specified custom steps to <a>process the response</a>, perform them on
       <var>response</var>. If they return false, complete this algorithm with null, and abort these
       steps.
-  8. If <var>response</var>'s <a>Content Type metadata</a>, if any, specifies a character encoding,
+  8. If <var>response</var>'s <a>Content-Type metadata</a>, if any, specifies a character encoding,
       and the user agent supports that encoding, then set <var>character encoding</var> to that
       encoding (ignoring the passed-in value).
   9. Let <var>source text</var> be the result of <a>decoding</a> <var>response</var>'s
@@ -244,26 +245,29 @@
       text</var> and <var>settings object</var>.
   9. Asynchronously complete this algorithm with <var>script</var>.
 
-  To <dfn>fetch a module script tree</dfn> given a <var>url</var>, a <var>credentials mode</var>, a
+  To <dfn lt="fetching a module script tree|fetch a module script tree">fetch a module script tree</dfn>
+  given a <var>url</var>, a <var>credentials mode</var>, a
   <var>cryptographic nonce</var>, a <var>parser state</var>, a <var>destination</var>, a
-  <var>settings object</var>, and an optional <var>ancestor list</var>, run these steps. The
-  algorithm will asynchronously complete with either null (on failure) or a new
+  <var>fetch client settings object</var>, and an optional <var>ancestor list</var>, run these
+  steps. The algorithm will asynchronously complete with either null (on failure) or a new
   <a>module script</a> (on success).
 
   1. If <var>ancestor list</var> is not given, let it be an empty list.
-  2. <a>Fetch a single module script</a> given <var>url</var>, <var>credentials mode</var>,
+  2. If <var>module map settings object</var> is not given, let it be <var>fetch client settings
+      object</var>.
+  3. <a>Fetch a single module script</a> given <var>url</var>, <var>credentials mode</var>,
       <var>cryptographic nonce</var>, <var>parser state</var>, <var>destination</var>, and
-      <var>settings object</var>. If the caller of this algorithm specified custom <a>set up the
-      request</a> or <a>process the response</a> steps, pass those along while <a>fetching a single
-      module script</a>.
-  3. Return from this algorithm and run the following steps when <a>fetching a single module
+      <var>module map settings object</var>. If the caller of this algorithm specified custom
+      <a>set up the request</a> or <a>process the response</a> steps, pass those along while
+      <a>fetching a single module script</a>.
+  4. Return from this algorithm and run the following steps when <a>fetching a single module
       script</a> asynchronously completes with <var>result</var>:
-  4. If <var>result</var> is null, asynchronously complete this algorithm with null and abort these
+  5. If <var>result</var> is null, asynchronously complete this algorithm with null and abort these
       steps.
-  5. Otherwise, <var>result</var> is a <a>module script</a>. <a>Fetch the descendants</a> of
+  6. Otherwise, <var>result</var> is a <a>module script</a>. <a>Fetch the descendants</a> of
       <var>result</var> given <var>destination</var> and an ancestor list obtained by appending
       <var>url</var> to <var>ancestor list</var>.
-  6. When <a>fetching the descendants of a module script</a> asynchronously completes with
+  7. When <a>fetching the descendants of a module script</a> asynchronously completes with
       <var>descendants result</var>, asynchronously complete this algorithm with <var>descendants
       result</var>.
 
@@ -272,7 +276,8 @@
   The following algorithms are used when <a>fetching a module script tree</a>, and are not meant to
   be used directly by other specifications (or by other parts of this specification).
 
-  To <dfn>fetch the descendants</dfn> of a <a>module script</a> <var>module script</var>, given a
+  To <dfn lt="fetching the descendants of a module script|fetch the descendants of a module script|fetch the descendants">fetch the descendants of a module script</dfn>
+  <var>module script</var>, given a
   <var>destination</var> and an <var>ancestor list</var>, run these steps. The algorithm will
   asynchronously complete with either null (on failure) or with <var>module script</var>
   (on success).
@@ -307,7 +312,8 @@
       Once all of the <a>fetch a module script tree</a> invocations asynchronously complete with a
       <a>module script</a>, asynchronously complete this algorithm with <var>module script</var>.
 
-  To <dfn>fetch a single module script</dfn>, given a <var>url</var>, a
+  To <dfn lt="fetching a single module script|fetch a single module script">fetch a single module script</dfn>,
+  given a <var>url</var>, a
   <var>credentials mode</var>, a <var>cryptographic nonce</var>, a <var>parser state</var>,
   a <var>destination</var>, and a <var>settings object</var>, run these steps. The algorithm will
   asynchronously complete with either null (on failure) or a <a>module script</a> (on success).
@@ -403,9 +409,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
   11. Set <var>script</var>'s <a>parser state</a> to the parser state.
   12. Return <var>script</var>.
 
-<h5 id="calling-scripts">Calling scripts</h5>
+<h5 id="section-calling-scripts">Calling scripts</h5>
 
-  To <dfn lt="run a classic script|running the classic script|run the classic script">run a classic script</dfn>
+  To <dfn lt="run a classic script|running the classic script|run the classic script|calling scripts">run a classic script</dfn>
   given a <a>classic script</a> <var>s</var> and an optional <var>rethrow errors</var> flag:
 
   1. Let <var>settings</var> be the <a>settings object</a> of <var>s</var>.
@@ -526,8 +532,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
      object</dfn>.
   * A <a>JavaScript realm</a> has a \[[GlobalObject]] field, which contains <dfn>the Realm's global
      object</dfn>.
-  * Each <a>global object</a> in this specification is created during the <a>initialization</a> of a
-     corresponding <a>JavaScript realm</a>, known as <dfn>the global object's Realm</dfn>.
+  * Each <a>global object</a> in this specification is created during the
+     <a lt="InitializeHostDefinedRealm">initialization</a> of a corresponding
+     <a>JavaScript realm</a>, known as <dfn>the global object's Realm</dfn>.
   * Each <a>global object</a> in this specification is created alongside a corresponding
      <a>environment settings object</a>, known as its <a>relevant settings object</a>.
   * An <a>environment settings object</a>'s <a>realm execution context</a>'s Realm component is
@@ -675,8 +682,8 @@ a credentials mode, a cryptographic nonce, and a parser state:
 <h6 id="concept-entry">Entry</h6>
 
   All <a>realm execution contexts</a> must contain, as part of their code evaluation state, an
-  <dfn>entrance counter</dfn> value, which is initially zero. In the process of <a>calling
-  scripts</a>, this value will be incremented and decremented.
+  <dfn>entrance counter</dfn> value, which is initially zero. In the process of <a>calling scripts</a>, 
+  this value will be incremented and decremented.
 
   With this in hand, we define the <dfn>entry execution context</dfn> to be the most recently pushed
   entry in the <a>JavaScript execution context stack</a> whose <a>entrance counter</a> value is
@@ -693,7 +700,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
   The <dfn>incumbent settings object</dfn> is determined as follows:
 
-  1. Let <var>scriptOrModule</var> be the result of JavaScript's <a>GetActiveScriptOrModule()</a>
+  1. Let <var>scriptOrModule</var> be the result of JavaScript's <a>GetActiveScriptOrModule</a>()
       abstract operation.
   2. If <var>scriptOrModule</var> is null, abort these steps; there is no <a>incumbent settings
       object</a>.
@@ -747,10 +754,11 @@ a credentials mode, a cryptographic nonce, and a parser state:
 <h5 id="killing-scripts">Killing scripts</h5>
 
   Although the JavaScript specification does not account for this possibility, it's sometimes
-  necessary to <dfn>abort a running script</dfn>. This causes any <a>ScriptEvaluation</a> or
-  <a>ModuleEvaluation</a> to cease immediately, emptying the <a>JavaScript execution context
-  stack</a> without triggering any of the normal mechanisms like <code>finally</code> blocks.
-  [[ECMA-262]]
+  necessary to
+  <dfn lt="abort a running script|aborted the running script|aborting the running script|aborted prematurely|abort the script">abort a running script</dfn>.
+  This causes any <a>ScriptEvaluation</a> or <a>ModuleEvaluation</a> to cease immediately, emptying
+  the <a>JavaScript execution context stack</a> without triggering any of the normal mechanisms like
+  <code>finally</code> blocks. [[ECMA-262]]
 
   User agents may impose resource limitations on scripts, for example CPU quotas, memory limits,
   total execution time limits, or bandwidth limitations. When a script exceeds a limit, the user
@@ -838,7 +846,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
   A <dfn>module map</dfn> is a map of <a>absolute URLs</a> to values that are either a <a>module
   script</a>, null, or a placeholder value "<code>fetching</code>". <a>Module maps</a> are used to
   ensure that imported JavaScript modules are only fetched, parsed, and evaluated once per
-  {{Document}} or <a>worker</a>.
+  {{Document}} or {{Worker}}.
 
   To <dfn lt="resolve a module specifier|resolving a module specifier">resolve a module specifier</dfn>
   given a <a>module script</a> <var>script</var> and a string <var>specifier</var>, perform the
@@ -876,7 +884,8 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
 <h5 id="sec-runtime-script-errors"><dfn>Runtime script errors</dfn></h5>
 
-  When the user agent is required to <dfn>report an error</dfn> for a
+  When the user agent is required to 
+  <dfn lt="report the error|report an error">report an error</dfn> for a
   particular <a for="concept">script</a> <var>script</var> with a particular
   position <var>line</var>:<var>col</var>, using a particular target <var>target</var>, it must run
   these steps, after which the error is either <dfn for="script">handled</dfn> or
@@ -930,7 +939,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
   When the user agent is to
   <dfn lt="report the exception|report an exception">report an exception</dfn> <var>E</var>, the
-  user agent must report the error for the relevant <a for="concept">script</a>, with the
+  user agent must <a>report the error</a> for the relevant <a for="concept">script</a>, with the
   problematic position (line number and column number) in the resource containing the script, using
   the <a>global object</a> specified by the script's <a>settings object</a> as the target. If the
   error is still <a for="script">not handled</a> after this, then the error may be reported to a
@@ -1072,7 +1081,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
   To coordinate events, user interaction, scripts, rendering, networking, and so forth, user agents
   must use <dfn lt="event loop|event loops">event loops</dfn> as described in this section. There
   are two kinds of event loops: those for <a>browsing contexts</a>, and those for
-  {{worker|workers}}.
+  {{Worker|workers}}.
 
   There must be at least one <a>browsing context</a> <a>event loop</a> per user
   agent, and at most one per <a>unit of related similar-origin browsing contexts</a>.
@@ -1127,7 +1136,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
   <a>responsible document</a> specified by the script's <a>settings object</a>.
 
   A <a>task</a> is intended for a specific <a>event loop</a>: the <a>event loop</a> that is handling
-  <a>tasks</a> for the <a>task</a>'s associated {{Document}} or {{worker}}.
+  <a>tasks</a> for the <a>task</a>'s associated {{Document}} or {{Worker}}.
 
   When a user agent is to <dfn lt="queuing|queue a task|queues a task">queue a task</dfn>, it must
   add the given task to one of the <a>task queues</a> of the relevant <a>event loop</a>.
@@ -1148,9 +1157,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
   </p>
 
   Each <a>event loop</a> has a <dfn>currently running task</dfn>. Initially, this is null.
-  It is used to handle reentrancy. Each <a>event loop</a> also has a <dfn>performing a
-  microtask checkpoint</dfn> flag, which must initially be false. It is used to prevent reentrant
-  invocation of the <a>perform a microtask checkpoint</a> algorithm.
+  It is used to handle reentrancy. Each <a>event loop</a> also has a
+  <dfn>performing a microtask checkpoint flag</dfn>, which must initially be false. It is used to
+  prevent reentrant invocation of the <a>perform a microtask checkpoint</a> algorithm.
 
 <h5 id="event-loops-processing-model">Processing model</h5>
 
@@ -1167,7 +1176,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
   5. Remove the task that was run in the <var>Run</var> step above from its <a>task queue</a>.
   6. <var>Microtasks</var>: <a>Perform a microtask checkpoint</a>.
   7. <em>Update the rendering</em>: If this <a>event loop</a> is a <a>browsing context</a>
-      <a>event loop</a> (as opposed to a {{worker}} <a>event loop</a>), then run the following
+      <a>event loop</a> (as opposed to a {{Worker}} <a>event loop</a>), then run the following
       substeps.
 
       1. Let <var>now</var> be the value that would be returned by the {{Performance}} object's
@@ -1203,9 +1212,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
           <p class="note">Another example of why a browser might skip updating the rendering is to
           ensure certain <a>tasks</a> are executed immediately after each other, with only
-          <a>microtask checkpoints</a> interleaved (and without, e.g., <a>animation frame
-          callbacks</a> interleaved). For example, a user agent might wish to coalesce timer
-          callbacks together, with no intermediate rendering updates.</p>
+          <a>microtask checkpoints</a> interleaved (and without, e.g., 
+          <a>animation frame callbacks</a> interleaved). For example, a user agent might wish to 
+          coalesce timer callbacks together, with no intermediate rendering updates.</p>
       4. If there are a <a>nested browsing contexts</a> <var>B</var> that the user agent believes
           would not benefit from having their rendering updated at this time, then remove from
           <var>docs</var> all {{Document}} objects whose <a>browsing context</a> is in <var>B</var>.
@@ -1223,21 +1232,22 @@ a credentials mode, a cryptographic nonce, and a parser state:
       7. For each <a>fully active</a> {{Document}} in <var>docs</var>, <a>evaluate media queries and
           report changes</a> for that {{Document}}, passing in <var>now</var> as the timestamp.
           [[!CSSOM-VIEW]]
-      8. For each <a>fully active</a> {{Document}} in <var>docs</var>, <dfn>run CSS animations and
-          send events</dfn> for that {{Document}}, passing in <var>now</var> as the timestamp.
-          [[CSS3-ANIMATIONS]]
-      9. For each <a>fully active</a> {{Document}} in <var>docs</var>, <dfn>run the fullscreen
-          rendering steps</dfn> for that {{Document}}, passing in <var>now</var> as the timestamp.
-          [[!FULLSCREEN]]
-      10. For each <a>fully active</a> {{Document}} in <var>docs</var>, <a>run the animation frame
-           callbacks</a> for that {{Document}}, passing in <var>now</var> as the timestamp.
-      11. For each <a>fully active</a> {{Document}} in <var>docs</var>, <a>run the update
-           intersection observations steps</a> for that {{Document}}, passing in <var>now</var> as
-           the timestamp. <!-- need this in specref: INTERSECTIONOBSERVER -->
+      8. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
+          <dfn>run CSS animations and send events</dfn> for that {{Document}}, passing in 
+          <var>now</var> as the timestamp. [[CSS3-ANIMATIONS]]
+      9. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
+          <dfn>run the fullscreen rendering steps</dfn> for that {{Document}}, passing in 
+          <var>now</var> as the timestamp. [[!FULLSCREEN]]
+      10. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
+           <a>run the animation frame callbacks</a> for that {{Document}}, passing in 
+           <var>now</var> as the timestamp.
+      11. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
+           <a>run the update intersection observations steps</a> for that {{Document}}, passing in 
+           <var>now</var> as the timestamp.
       12. For each <a>fully active</a> {{Document}} in <var>docs</var>, update the rendering or user
            interface of that {{Document}} and its <a>browsing context</a> to reflect the current
            state.
-  8. If this is a {{worker}} <a>event loop</a> (i.e., one running for a {{WorkerGlobalScope}}), but
+  8. If this is a {{Worker}} <a>event loop</a> (i.e., one running for a {{WorkerGlobalScope}}), but
       there are no <a>tasks</a> in the <a>event loop</a>'s <a>task queues</a> and the
       {{WorkerGlobalScope}} object's <a>closing</a> flag is true, then destroy the
       <a>event loop</a>, aborting these steps, resuming the <a>run a worker</a> steps.
@@ -1265,11 +1275,11 @@ a credentials mode, a cryptographic nonce, and a parser state:
   <a>microtask</a> is irrelevant.</p>
 
   When a user agent is to
-  <dfn lt="performs a microtask checkpoint|perform a microtask checkpoint">perform a microtask checkpoint</dfn>,
-  if the <a>performing a microtask checkpoint</a> flag is false, then the user agent must run the
+  <dfn lt="performs a microtask checkpoint|perform a microtask checkpoint|microtask checkpoints">perform a microtask checkpoint</dfn>,
+  if the <a>performing a microtask checkpoint flag</a> is false, then the user agent must run the
   following steps:
 
-  1. Let the <a>performing a microtask checkpoint</a> flag be true.
+  1. Let the <a>performing a microtask checkpoint flag</a> be true.
   2. <var>Microtask queue handling</var>: If the <a>event loop</a>'s <a>microtask queue</a> is
       empty, jump to the <var>Done</var> step below.
   3. Select the oldest <a>microtask</a> on the <a>event loop</a>'s <a>microtask queue</a>.
@@ -1278,16 +1288,16 @@ a credentials mode, a cryptographic nonce, and a parser state:
   5. <var>Run</var>: Run the selected <a>task</a>.
 
       <p class="note">This might involve invoking scripted callbacks, which eventually calls the
-      <a>clean up after running script</a> steps, which call this <a>perform a microtask
-      checkpoint</a> algorithm again, which is why we use the <a>performing a microtask
-      checkpoint</a> flag to avoid reentrancy.</p>
+      <a>clean up after running script</a> steps, which call this
+      <a>perform a microtask checkpoint</a> algorithm again, which is why we use the
+      <a>performing a microtask checkpoint flag</a> to avoid reentrancy.</p>
   6. Set the <a>event loop</a>'s <a>currently running task</a> back to null.
   7. Remove the <a>microtask</a> run in the step above from the <a>microtask queue</a>, and return
       to the <var>Microtask queue handling</var> step.
   8. <var>Done</var>: For each <a>environment settings object</a> whose <a>responsible event
       loop</a> is this <a>event loop</a>, <a>notify about rejected promises</a> on that
       <a>environment settings object</a>.
-  9. Let the <a>performing a microtask checkpoint</a> flag be false.
+  9. Let the <a>performing a microtask checkpoint flag</a> be false.
 
   If, while a <a>compound microtask</a> is running, the user agent is required to
   <dfn lt="wrap callbacks|execute a compound microtask subtask">execute a compound microtask subtask</dfn>
@@ -1632,7 +1642,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
           2. <a>Report the error</a> for the appropriate <a for="concept">script</a> and with the
               appropriate position (line number and column number) given by <var>location</var>,
               using the <a>global object</a> specified by <var>script settings</var> as the target.
-              If the error is still <a for="scripting">not handled</a> after this, then the error
+              If the error is still <a for="script">not handled</a> after this, then the error
               may be reported to a developer console.
           3. Return null.
       8. If <var>body</var> begins with a <a>Directive Prologue</a> that contains a <a>Use Strict
@@ -3326,8 +3336,8 @@ a credentials mode, a cryptographic nonce, and a parser state:
   origin</a>. If it is, then the browsing context's <a>dialog arguments</a> must be
   returned unchanged. Otherwise, the IDL attribute must return <i>undefined</i>.
 
-  These browsing contexts also have an associated <dfn>return value</dfn> and <dfn>return value
-  origin</dfn>. As with the previous two values, these values are set by the <code>showModalDialog()</code> method in the algorithm above, when the
+  These browsing contexts also have an associated <dfn>return value</dfn> and
+  <dfn>return value origin</dfn>. As with the previous two values, these values are set by the <code>showModalDialog()</code> method in the algorithm above, when the
   browsing context is created.
 
   The <dfn attribute for="WindowModal"><code>returnValue</code></dfn> IDL attribute, on
@@ -4624,7 +4634,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
     <li>If this fails, return 0 and abort these steps.</li>
 
-    <li>Let <var>host2</var> be the <a for="hostsyntax">host</a> component
+    <li>Let <var>host2</var> be the <a for="url">host</a> component
     of the <a>resulting URL string</a>.</li>
 
     <li>
