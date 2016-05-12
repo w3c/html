@@ -10,7 +10,8 @@ The specification is built using Bikeshed. If you would like to propose edits, p
 
 1. Install [bikeshed](https://github.com/tabatkins/bikeshed)
 2. From the HTML folder open a command prompt
-3. run bikeshed: `'bikeshed spec'`
+3. run bikeshed update: `bikeshed udpate`
+4. run bikeshed: `bikeshed spec`
 
 For the multipage version, one can do as follows:
 
