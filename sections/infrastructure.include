@@ -535,7 +535,7 @@
       However, WYSIWYG tools are legitimate. WYSIWYG tools should use elements they know are
       appropriate, and should not use elements that they do not know to be appropriate. This might
       in certain extreme cases mean limiting the use of flow elements to just a few elements, like
-      <{div}>, <{b}>, <{i}>, and <{span}> and making liberal use of the <{global/style}>
+      <{div}>, <{b}>, <{i}>, and <{a}> and making liberal use of the <{global/style}>
       attribute.
 
       All authoring tools, whether WYSIWYG or not, should make a best effort attempt at enabling
@@ -1929,100 +1929,35 @@
   5. If <var>value</var> is a percentage, return <var>value</var> as a percentage.
   6. Return <var>value</var> as a length.
 
-<h5 id="lists-of-integers">Lists of integers</h5>
+<h5 id="lists-of-floating-point-numbers">Lists of floating-point numbers</h5>
 
-  A <dfn>valid list of integers</dfn> is a number of <a>valid integers</a> separated by U+002C COMMA
-  characters, with no other characters (e.g., no <a>space characters</a>). In addition, there might
-  be restrictions on the number of integers that can be given, or on the range of values allowed.
+  A <dfn>valid list of floating-point numbers</dfn> is a number of
+  <a>valid floating-point numbers</a> separated by U+002C COMMA characters, with no other characters
+  (e.g. no <a>space characters</a>). In addition, there might be restrictions on the number of
+  floating-point numbers that can be given, or on the range of values allowed.
 
-  The <dfn>rules for parsing a list of integers</dfn> are as follows:
+  The <dfn>rules for parsing a list of floating-point numbers</dfn> are as follows:
 
   1. Let <var>input</var> be the string being parsed.
   2. Let <var>position</var> be a pointer into <var>input</var>, initially pointing at the start of
       the string.
-  3. Let <var>numbers</var> be an initially empty list of integers. This list will be the
-      result of this algorithm.
-  4. If there is a character in the string <var>input</var> at position <var>position</var>, and
-      it is either a U+0020 SPACE, U+002C COMMA, or U+003B SEMICOLON character, then advance
-      <var>position</var> to the next character in <var>input</var>, or to beyond the end of the
-      string if there are no more characters.
-  5. If <var>position</var> points to beyond the end of <var>input</var>, return
-      <var>numbers</var> and abort.
-  6. If the character in the string <var>input</var> at position <var>position</var> is a U+0020
-      SPACE, U+002C COMMA, or U+003B SEMICOLON character, then return to step 4.
-  7. Let <var>negated</var> be false.
-  8. Let <var>value</var> be 0.
-  9. Let <var>started</var> be false. This variable is set to true when the parser sees a number
-      or a U+002D HYPHEN-MINUS character (-).
-  10. Let <var>got number</var> be false. This variable is set to true when the parser sees a
-      number.
-  11. Let <var>finished</var> be false. This variable is set to true to switch parser into a mode
-      where it ignores characters until the next separator.
-  12. Let <var>bogus</var> be false.
-  13. <i>Parser</i>: If the character in the string <var>input</var> at position <var>position</var> is:
-      <dl class="switch">
-        <dt>A U+002D HYPHEN-MINUS character</dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>got number</var> is true, let <var>finished</var> be true.
-            2. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            3. If <var>started</var> is true, let <var>negated</var> be false.
-            4. Otherwise, if <var>started</var> is false and if <var>bogus</var> is false, let
-                <var>negated</var> be true.
-            5. Let <var>started</var> be true.
-          </dd>
-
-        <dt>An <a>ASCII digit</a></dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            2. Multiply <var>value</var> by ten.
-            3. Add the value of the digit, interpreted in base ten, to <var>value</var>.
-            4. Let <var>started</var> be true.
-            5. Let <var>got number</var> be true.
-          </dd>
-
-        <dt>A U+0020 SPACE character</dt>
-        <dt>A U+002C COMMA character</dt>
-        <dt>A U+003B SEMICOLON character</dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>got number</var> is false, return the <var>numbers</var> list and abort. This
-                happens if an entry in the list has no digits, as in "<code>1,2,x,4</code>".
-            2. If <var>negated</var> is true, then negate <var>value</var>.
-            3. Append <var>value</var> to the <var>numbers</var> list.
-            4. Jump to step 4 in the overall set of steps.
-          </dd>
-
-        <dt>
-          A character in the range U+0001 to U+001F, U+0021 to U+002B, U+002D to U+002F, U+003A,
-          U+003C to U+0040, U+005B to U+0060, U+007b to U+007F (i.e., any other non-alphabetic
-          ASCII character)
-        </dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>got number</var> is true, let <var>finished</var> be true.
-            2. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            3. Let <var>negated</var> be false.
-          </dd>
-
-        <dt>Any other character</dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            2. Let <var>negated</var> be false.
-            3. Let <var>bogus</var> be true.
-            4. If <var>started</var> is true, then return the <var>numbers</var> list, and abort.
-                (The value in <var>value</var> is not appended to the list first; it is dropped.)
-          </dd>
-      </dl>
-  14. Advance <var>position</var> to the next character in <var>input</var>, or to beyond the end
-      of the string if there are no more characters.
-  15. If <var>position</var> points to a character (and not to beyond the end of
-      <var>input</var>), jump to the big <i>Parser</i> step above.
-  16. If <var>negated</var> is true, then negate <var>value</var>.
-  17. If <var>got number</var> is true, then append <var>value</var> to the <var>numbers</var> list.
-  18. Return the <var>numbers</var> list and abort.
+  3. Let <var>numbers</var> be an initially empty list of floating-point numbers. This list will be
+      the result of this algorithm.
+  4. <a>Collect a sequence of characters</a> that are <a>space characters</a>, U+002C COMMA, or
+      U+003B SEMICOLON characters. This skips past any leading delimiters.
+  5. While <var>position</var> is not past the end of <var>input</var>:
+      1. <a>Collect a sequence of characters</a> that are not <a>space characters</a>, U+002C COMMA,
+          U+003B SEMICOLON, <a>ASCII digits</a>, U+002E FULL STOP, or U+002D HYPHEN-MINUS
+          characters. This skips past leading garbage.
+      2. <a>Collect a sequence of characters</a> that are not <a>space characters</a>, U+002C COMMA,
+          or U+003B SEMICOLON characters, and let <var>unparsed number</var> be the result.
+      3. Let <var>number</var> be the result of parsing <var>unparsed number</var> using the
+          <a>rules for parsing floating-point number values</a>.
+      4. If <var>number</var> is an error, set <var>number</var> to zero.
+      5. Append <var>number</var> to <var>numbers</var>.
+      6. <a>Collect a sequence of characters</a> that are <a>space characters</a>, U+002C COMMA, or
+          U+003B SEMICOLON characters. This skips past the delimiter.
+  6. Return <var>numbers</var>.
 
 <h5 id="lists-of-dimensions">Lists of dimensions</h5>
 
