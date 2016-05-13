@@ -615,7 +615,7 @@
       * <a for="host-concept">host</a>
       * <a for="url">domain</a>
       * <a for="url">URL</a>
-      * <a>Origin</a> of URLs
+      * <a for="url">Origin</a> of URLs
       * <a>Absolute URL</a>
       * <a>Relative URL</a>
       * <a>Relative schemes</a>
@@ -3449,10 +3449,11 @@
   3. While <var>document</var> is <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>, let
       <var>document</var> be <var>document</var>'s <a>browsing context</a>'s
       <a>browsing context container</a>'s {{Document}} instead.
-  4. If the <a>origin</a> of <var>Document</var> is not a scheme/host/port tuple, then set
-      <var>referrer</var> to the empty string and jump to the step labeled <i>clean referrer</i>.
+  4. If the <a for="concept">origin</a> of <var>Document</var> is not a scheme/host/port tuple, then 
+      set <var>referrer</var> to the empty string and jump to the step labeled 
+      <var>Clean referrer</var>.
   5. Let <var>referrer</var> be <a>the document's address</a> of <var>document</var>.
-  6. <i>Clean referrer</i>: Apply the <a>URL parser</a> to <var>referrer</var> and let
+  6. <var>Clean referrer</var>: Apply the <a>URL parser</a> to <var>referrer</var> and let
       <var>parsed referrer</var> be the <a>resulting URL record</a>.
   7. Let <var>referrer</var> be the result of applying the <a>URL serializer</a> to
       <var>parsed referrer</var>, with the <i>exclude fragment flag</i> set.
@@ -4373,292 +4374,6 @@
     be implemented for those languages.
   </p>
 
-<h4 id="transferable-objects">Transferable objects</h4>
-
-  Some objects support being copied and closed in one operation. This is called <i>transferring</i>
-  the object, and is used in particular to transfer ownership of unsharable or expensive resources
-  across document and worker boundaries, including across documents of different <a>origins</a>.
-
-  The following <code>Transferable</code> types exist:
-
-  * {{ArrayBuffer}} [[!ECMA-262]]
-  * {{CanvasProxy}} (defined in this specification)
-  * {{MessagePort}}
-
-  The following IDL block formalizes this:
-
-  <pre class="idl" data-highlight="webidl" dfn-for="Transferable">
-    typedef (ArrayBuffer or CanvasProxy or MessagePort) Transferable;
-  </pre>
-
-  To <dfn lt="transfer|transfer a transferrable object|transferred">transfer a <code>Transferable</code> object</dfn> to a new owner, the user agent must run
-  the steps defined for the type of object in question. The steps will return a new object of the
-  same type, and will permanently <dfn>neuter</dfn> the original object. (This is an irreversible
-  and non-idempotent operation; once an object has been transferred, it cannot be transferred, or
-  indeed used, again.)
-
-  To <a>transfer</a> an {{ArrayBuffer}} object <var>old</var> to a new owner
-  <var>owner</var>, a user agent must create a new {{ArrayBuffer}} object pointing at the
-  same underlying data as <var>old</var>, thus obtaining <var>new</var>, must <a>neuter</a> the
-  <var>old</var> object, and must finally return <var>new</var>. [[!ECMA-262]]
-
-  <p class="note">
-    Rules for how to <a lt="transfer">transfer a <code>CanvasProxy</code> object</a> and how to
-    <a lt="transfer">transfer a <code>MessagePort</code> object</a> are given in the relevant sections of this
-    specification.
-  </p>
-
-<h4 id="safe-passing-of-structured-data">Safe passing of structured data</h4>
-
-  When a user agent is required to obtain a <dfn>structured clone</dfn> of a value, optionally with
-  a <i>transfer map</i>, it must run the following algorithm, which either returns a separate value,
-  or throws an exception. If a <i>transfer map</i> is provided, it consists of an association list
-  of <code>Transferable</code> objects to placeholder objects.
-
-  1. Let <var>input</var> be the value being cloned.
-  2. Let <var>transfer map</var> be the <i>transfer map</i> passed to the algorithm, if any, or the
-      empty list otherwise.
-  3. Let <var>memory</var> be an association list of pairs of objects, initially empty. This is used
-      to handle duplicate references. In each pair of objects, one is called the <i>source</i>
-      object and the other the <i>destination</i> object.
-  4. For each mapping in <var>transfer map</var>, add a mapping from the <code>Transferable</code>
-      object (the source object) to the placeholder object (the destination object) to
-      <var>memory</var>.
-  5. Let <var>output</var> be the value resulting from calling the <a>internal structured cloning
-      algorithm</a> with <var>input</var> as the "<var>input</var>" argument, and
-      <var>memory</var> as the "<var>memory</var>" argument.
-  6. Return <var>output</var>.
-
-  The <dfn>internal structured cloning algorithm</dfn> is always called with two arguments,
-  <var>input</var> and <var>memory</var>, and its behavior is as follows:
-
-  1. If <var>input</var> is the source object of a pair of objects in <var>memory</var>, then return
-      the destination object in that pair of objects and abort these steps.
-  2. If <var>input</var> is a primitive value, then return that value and abort these steps.
-  3. Let <var>deep clone</var> be <i>none</i>.
-  4. The <var>input</var> value is an object. Jump to the appropriate step below:
-      <dl class="switch">
-        <dt>If <var>input</var> is a {{Boolean}} object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed Boolean object with the same value as
-          <var>input</var>.
-        </dd>
-
-        <dt>If <var>input</var> is a <a><code>Number</code></a> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed Number object with the same value as
-          <var>input</var>.
-        </dd>
-
-        <dt>If <var>input</var> is a <a><code>String</code></a> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed String object with the same value as
-          <var>input</var>.
-        </dd>
-
-        <dt>If <var>input</var> is a {{Date}} object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed {{Date}} object with the same
-          value as <var>input</var>.
-        </dd>
-
-        <dt>If <var>input</var> is a {{RegExp}} object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed {{RegExp}} object with the same
-          pattern and flags as <var>input</var>.
-
-          <p class="note">The value of the <code>lastIndex</code> property is not copied.</p>
-        </dd>
-
-        <dt>If <var>input</var> is a <code>Blob</code> object</dt>
-        <dd>
-          If <var>input</var> has been disabled through the <code>close()</code> method, throw a
-          <code>DataCloneError</code> exception and abort the overall <a>structured clone</a>
-          algorithm. Otherwise, let <var>output</var> be a newly constructed object of the same
-          class as <var>input</var>, corresponding to the same underlying data.
-        </dd>
-
-        <dt>If <var>input</var> is a <code>FileList</code> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed <code>FileList</code> object containing a
-          list of newly constructed <code>File</code> objects corresponding to the same underlying
-          data as those in <var>input</var>, maintaining their relative order.
-        </dd>
-
-        <dt>If <var>input</var> is an <code>ImageData</code> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed <code>ImageData</code> object whose
-          <code>width</code> and <code>height</code> have values equal to the corresponding
-          attributes on <var>input</var>, and whose <code>data</code> attribute has the value
-          obtained from invoking the <a>internal structured cloning algorithm</a> recursively with
-          the value of the <code>data</code> attribute on <var>input</var> as the new
-          "<var>input</var>" argument and <var>memory</var> as the new "<var>memory</var>" argument.
-        </dd>
-
-        <dt>If <var>input</var> is an <code>ImageBitmap</code> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed <code>ImageBitmap</code> object whose bitmap
-          data is a copy of <var>input</var>'s bitmap data.
-        </dd>
-
-        <dt>If <var>input</var> is an {{ArrayBuffer}} object</dt>
-        <dd>
-          If <var>input</var> has been <a>neutered</a>, throw a <code>DataCloneError</code>
-          exception and abort the overall <a>structured clone</a> algorithm. Otherwise, let
-          <var>output</var> be a newly constructed {{ArrayBuffer}} object whose contents
-          are a copy of <var>input</var>'s contents, with the same length.
-        </dd>
-
-        <dt>If <var>input</var> is an object with a \[[DataView]] internal slot</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed object of the same class as <var>input</var>,
-          with its \[[DataView]] internal property present, its
-          \[[ViewedArrayBuffer]] internal property set to the value obtained from invoking
-          the <a>internal structured cloning algorithm</a> recursively with the value of the
-          internal property on <var>input</var> as the new "<var>input</var>" argument and
-          <var>memory</var> as the new "<var>memory</var>" argument, and with the
-          \[[ByteLength]] and \[[ByteOffset]] internal properties set to the same
-          value as their counterparts on <var>input</var>.
-        </dd>
-
-        <dt>If <var>input</var> is an <code>Array</code> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed empty <code>Array</code> object whose
-          <code>length</code> is equal to the <code>length</code> of <var>input</var>, and set
-          <var>deep clone</var> to <i>own</i>.
-
-          <p class="note">This means that the length of sparse arrays is preserved.</p>
-        </dd>
-
-        <dt>If <var>input</var> is an <code>Object</code> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed empty <code>Object</code> object, and set
-          <var>deep clone</var> to <i>own</i>.
-        </dd>
-
-        <dt>If <var>input</var> is a <code>Map</code> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed empty <code>Map</code> object, and set
-          <var>deep clone</var> to <i>map</i>.
-        </dd>
-
-        <dt>If <var>input</var> is a <code>Set</code> object</dt>
-        <dd>
-          Let <var>output</var> be a newly constructed empty <code>Set</code> object, and set
-          <var>deep clone</var> to <i>set</i>.
-        </dd>
-
-        <dt>If <var>input</var> is an object that another specification defines how to clone</dt>
-        <dd>
-          Let <var>output</var> be a clone of the object as defined by the other specification.
-        </dd>
-
-        <dt>
-          If <var>input</var> is another native object type (e.g., <code>Error</code>,
-          <code>Function</code>)
-        </dt>
-        <dt>If<var>input</var> is a host object (e.g., a DOM node)</dt>
-        <dd>
-          Throw a <code>DataCloneError</code> exception and abort the overall
-          <a>structured clone</a> algorithm.
-        </dd>
-      </dl>
-
-      For the purposes of the algorithm above, an object is a particular type of object
-      <var>class</var> if its \[[Class]] internal property is equal to <var>class</var>.
-
-      <p class="example">
-        For example, "<var>input</var> is an <code>Object</code> object" if <var>input</var>'s
-        \[[Class]] internal property is equal to the string "<code>Object</code>".
-      </p>
-  5. Add a mapping from <var>input</var> (the source object) to <var>output</var> (the destination
-      object) to <var>memory</var>.
-  6. If <var>deep clone</var> is set to <i>map</i>, then run these substeps. These substeps use the
-      terminology and typographic conventions used in the JavaScript specification's definition of
-      Maps. [[!ECMA-262]]
-
-      1. Let <var>original</var> be the List that is the value of <var>input</var>'s
-          \[[MapData]] internal slot. [[!ECMA-262]]
-      2. Let <var>source</var> be a new empty List.
-      3. For each Record {\[[key]], \[[value]]} <var>entry</var> that is an
-          element of <var>original</var>, run the following substeps:
-          1. Let <var>new entry</var> be the Record {\[[key]]: <var>entry</var>.
-              \[[key]], \[[value]]: <var>entry</var>.\[[value]]}.
-          2. If <var>new entry</var>.\[[key]] is not <i>empty</i>, append <var>new entry</var> as
-              the last element of <var>source</var>.
-      4. Let <var>target</var> be the List that is the value of <var>output</var>'s
-          \[[MapData]] internal slot.
-      5. For each Record {\[[key]], \[[value]]} <var>entry</var> that is an
-          element of <var>source</var>, run the following substeps:
-          1. Let <var>key</var> have the value obtained from invoking the
-              <a>internal structured cloning algorithm</a> recursively with <var>entry</var>.
-              \[[key]] as the new "<var>input</var>" argument and <var>memory</var> as the
-              new "<var>memory</var>" argument.
-          2. Let <var>value</var> have the value obtained from invoking the
-              <a>internal structured cloning algorithm</a> recursively with <var>entry</var>.
-              \[[value]] as the new "<var>input</var>" argument and <var>memory</var> as
-              the new "<var>memory</var>" argument.
-          3. Let <var>new entry</var> be the Record {\[[key]]: <var>key</var>,
-              \[[value]]: <var>value</var>}.
-          4. Append <var>new entry</var> as the last element of <var>target</var>.
-
-      6. Set <var>deep clone</var> to <i>own</i>.
-  7. If <var>deep clone</var> is set to <i>set</i>, then run these substeps. These substeps use the
-      terminology and typographic conventions used in the JavaScript specification's definition of
-      Sets. [[!ECMA-262]]
-      1. Let <var>source</var> be a copy of the List that is the value of <var>input</var>'s
-          \[[SetData]] internal slot. [[!ECMA-262]]
-      2. Let <var>target</var> be the List that is the value of <var>output</var>'s
-          \[[SetData]] internal slot.
-      3. For each <var>entry</var> that is an element of <var>source</var> that is not <i>empty</i>,
-          run the following substeps:
-          1. Let <var>new entry</var> have the value obtained from invoking the
-              <a>internal structured cloning algorithm</a> recursively with <var>entry</var> as
-              the new "<var>input</var>" argument and <var>memory</var> as the new
-              "<var>memory</var>" argument.
-          2. Append <var>new entry</var> as the last element of <var>target</var>.
-      4. Set <var>deep clone</var> to <i>own</i>.
-  8. If <var>deep clone</var> is set to <i>own</i>, then, for each enumerable own property in
-      <var>input</var>, run the following steps:
-      1. Let <var>name</var> be the name of the property.
-      2. Let <var>source value</var> be the result of calling the \[[Get]] internal method
-          of <var>input</var> with the argument <var>name</var>. If the \[[Get]] internal
-          method of a property involved executing script, and that script threw an uncaught
-          exception, then abort the overall <a>structured clone</a> algorithm, with that exception
-          being passed through to the caller.
-      3. Let <var>cloned value</var> be the result of invoking the
-          <a>internal structured cloning algorithm</a> recursively with <var>source value</var> as
-          the "<var>input</var>" argument and <var>memory</var> as the "<var>memory</var>" argument.
-          If this results in an exception, then abort the overall <a>structured clone</a> algorithm,
-          with that exception being passed through to the caller.
-      4. Add a new property to <var>output</var> having the name <var>name</var>, and having the
-          value <var>cloned value</var>, using CreateDataProperty(<var>output</var>,
-          <var>name</var>, <var>cloned value</var>).
-
-      The order of the properties in the <var>input</var> and <var>output</var> objects must be the
-      same, and any properties whose \[[Get]] internal method involves running script must be
-      processed in that same order.
-
-      <p class="note">This does not walk the prototype chain.</p>
-
-      <p class="note">
-        Property descriptors, setters, getters, and analogous features are not copied in this
-        process. For example, the property in the input could be marked as read-only, but in the
-        output it would just have the default state (typically read-write, though that could depend
-        on the scripting environment).
-      </p>
-
-      <p class="note">
-        Properties of Array objects are not treated any differently than those of other Objects. In
-        particular, this means that non-index properties of arrays are copied as well.
-      </p>
-
-  9. Return <var>output</var>.
-
-  <p class="note">
-    This algorithm preserves cycles and preserves the identity of duplicate objects in graphs.
-  </p>
-
 <h4 id="garbage-collection">Garbage collection</h4>
 
   There is an <dfn>implied strong reference</dfn> from any IDL attribute that returns a pre-existing
@@ -4699,4 +4414,263 @@
     effect as in XML. For instance, the colon has no special meaning in HTML element names.
   </p>
 
+<h3 id="safe-passing-of-structured-data">Safe passing of structured data</h3>
+
+  This section uses the terminology and typographic conventions from the JavaScript specification. 
+  [[ECMA-262]]
+  
+<h4 id="section-cloneable-objects"><dfn>Cloneable objects</dfn></h4>
+
+  <a>Cloneable objects</a> support being cloned across <a>event loops</a>. That is, they support 
+  being cloned across {{Document}} and {{Worker}} boundaries, including across {{Document}}s of 
+  different <a for="concept">origins</a>. Not all objects are <a>cloneable objects</a> and not all 
+  aspects of objects that are <a>cloneable objects</a> are necessarily preserved when cloned.
+
+  <a>Platform objects</a> have the following internal method:
+
+  \[[<dfn for="structured">Clone</dfn>]] ( <var>targetRealm</var>, <var>memory</var> )
+
+  Unless specified otherwise, invoking the \[[<a for="structured">Clone</a>]] internal method must 
+  throw a "{{DataCloneError}}" {{DOMException}}. (By default, <a>platform objects</a> are not 
+  <a>cloneable objects</a>.)
+
+  <a>Platform objects</a> that are <a>cloneable objects</a> have a \[[<a for="structured">Clone</a>]] 
+  internal method which is specified to run a series of steps. The result of running those steps 
+  must be a thrown exception or a clone of <em>this</em>, created in <var>targetRealm</var>. It is 
+  up such objects to define what cloning means for them.
+
+  Objects defined in the JavaScript specification are handled by the <a>StructuredClone</a> abstract 
+  operation directly.
+
+<h4 id="section-transferable-objects"><dfn>Transferable objects</dfn></h4>
+
+  <a>Transferable objects</a> support being transferred across <a>event loops</a>. Transferring is 
+  effectively recreating the object while sharing a reference to the underlying data and then 
+  detaching the object being transferred. This is useful to transfer ownership of expensive 
+  resources. Not all objects are <a>transferable objects</a> and not all aspects of objects that are 
+  <a>transferable objects</a> are necessarily preserved when transferred.
+
+  <p class="note">Transferring is an irreversible and non-idempotent operation. Once an object has 
+  been transferred, it cannot be transferred, or indeed used, again.</p>
+
+  <a>Platform objects</a> that are <a>transferable objects</a> have a \[[<dfn>Detached</dfn>]] 
+  internal slot and the following internal method:
+
+  \[[<dfn>Transfer</dfn>]] ( <var>targetRealm</var> )
+
+  <p class="note">Whereas all <a>platform objects</a> have a \[[<a for="structured">Clone</a>]] 
+  internal method, not all have a \[[<a>Detached</a>]] internal slot and a \[[<a>Transfer</a>]] 
+  internal method.</p>
+
+  <a>Platform objects</a> that are <a>transferable objects</a> must define the \[[<a>Transfer</a>]] 
+  internal method such that it either throws an exception or returns a clone of <em>this</em>, 
+  created in <var>targetRealm</var>, with <em>this</em>'s underlying data shared with the return 
+  value, and <em>this</em>'s \[[<a>Detached</a>]] internal slot value set to true. It is up to such 
+  objects to define what transfering means for them.
+
+  Objects defined in the JavaScript specification are handled by the 
+  <a>StructuredCloneWithTransfer</a> abstract operation directly. (Technically, by 
+  <a>IsTransferable</a> and <a>TransferHelper</a>.)
+
+<h4 id="section-structuredclonewithtransfer"><dfn>StructuredCloneWithTransfer</dfn> ( <var>input</var>, <var>transferList</var>, <var>targetRealm</var> )</h4>
+
+  1. Let <var>memory</var> be an empty map.
+      <p class="note">The purpose of the memory map, both here and in the <a>StructuredClone</a> 
+      abstract operation, is to avoid cloning objects twice. This ends up preserving cycles and the 
+      identity of duplicate objects in graphs.</p>
+  2. For each object <var>transferable</var> in <var>transferList</var>:
+      1. If <a>IsTransferable</a>(<var>transferable</var>) is false, then throw a 
+          "{{DataCloneError}}" {{DOMException}}.
+      2. Let <var>placeholder</var> be a user-agent-defined placeholder object.
+      3. Create an entry in <var>memory</var> with key <var>transferable</var> and value 
+          <var>placeholder</var>.
+  3. Let <var>clone</var> be the result of ? <a>StructuredClone</a>(<var>input</var>, 
+      <var>targetRealm</var>, <var>memory</var>).
+  4. Let <var>outputTransferList</var> be a new empty <a for="ecma">List</a>.
+  5. For each object <var>transferable</var> in <var>transferList</var>:
+      1. Let <var>placeholderResult</var> be the value of the entry in <var>memory</var> whose key 
+          is <var>transferable</var>.
+      2. Let <var>transferResult</var> be ? <a>TransferHelper</a>(<var>transferable</var>, 
+          <var>targetRealm</var>).
+      3. Within <var>clone</var>, replace references to <var>placeholderResult</var> with 
+          <var>transferResult</var>, such that everything holding a reference to 
+          <var>placeholderResult</var>, now holds a reference to <var>transferResult</var>.
+          
+          <p class="note">This is a rather unusual low-level operation for which no primitives are defined by JavaScript.</p>
+      4. Add <var>transferResult</var> as the last element of <var>outputTransferList</var>.
+  6. Return { \[[Clone]]: <var>clone</var>, \[[<var>transferList</var>]]: 
+      <var>outputTransferList</var> }.
+
+  <p class="note">Originally the <a>StructuredCloneWithTransfer</a> abstract operation was known as 
+  the "structured clone" algorithm. The <a>StructuredClone</a> abstract operation was known as the 
+  "internal structured clone" algorithm. Transferring objects, now handled by the 
+  <a>StructuredCloneWithTransfer</a> abstract operation, were formerly handled by parts of the 
+  algorithm of the <code>postMessage()</code> method on the {{Window}} object and the 
+  <code>Window/postMessage()</code> method on the {{MessagePort}} object.</p>
+  
+<h4 id="section-structuredclone"><dfn>StructuredClone</dfn> ( <var>input</var>, <var>targetRealm</var> [ , <var>memory</var> ] )</h4>
+
+  1. If <var>memory</var> was not supplied, let <var>memory</var> be an empty map.
+  2. If <var>memory</var> contains an entry with key <var>input</var>, then return that entry's
+      value.
+  3. If <a for="ecma">Type</a>(<var>input</var>) is Undefined, Null, Boolean, String, or Number, then return
+      <var>input</var>.
+  4. If <a for="ecma">Type</a>(<var>input</var>) is Symbol, then throw a "{{DataCloneError}}" {{DOMException}}.
+  5. Let <var>deepClone</var> be false.
+  6. If <var>input</var> has a \[[BooleanData]] internal slot, then let <var>output</var> be a new 
+      Boolean object in <var>targetRealm</var> whose \[[BooleanData]] internal slot value is the
+      \[[BooleanData]] internal slot value of <var>input</var>.
+  7. Otherwise, if <var>input</var> has a \[[NumberData]] internal slot, then let <var>output</var>
+      be a new Number object in <var>targetRealm</var> whose [NumberData]] internal slot value is
+      the \[[NumberData]] internal slot value of <var>input</var>.
+  8. Otherwise, if <var>input</var> has a \[[StringData]] internal slot, then let <var>output</var>
+      be a new String object in <var>targetRealm</var> whose \[[StringData]] internal slot value is
+      the \[[StringData]] internal slot value of <var>input</var>.
+  9. Otherwise, if <var>input</var> has a \[[DateValue]] internal slot, then let <var>output</var>
+      be a new Date object in <var>targetRealm</var> whose \[[DateValue]] internal slot value is the
+      \[[DateValue]] internal slot value of <var>input</var>.
+  10. Otherwise, if <var>input</var> has a \[[RegExpMatcher]] internal slot, then let
+      <var>output</var> be a new RegExp object in <var>targetRealm</var> whose \[[RegExpMatcher]]
+      internal slot value is the \[[RegExpMatcher]] internal slot value of <var>input</var>, whose
+      \[[OriginalSource]] internal slot value is the \[[OriginalSource]] internal slot value of
+      <var>input</var>, and whose whose \[[OriginalFlags]] internal slot value is the
+      \[[OriginalFlags]] internal slot value of <var>input</var>.
+  11. Otherwise, if <var>input</var> has an \[[ArrayBufferData]] internal slot, then:
+       1. If <a>IsDetachedBuffer</a>(<var>input</var>) is true, then throw a "{{DataCloneError}}"
+           {{DOMException}}.
+       2. Let <var>outputArrayBuffer</var> be the <a>%ArrayBuffer%</a> intrinsic object in
+           <var>targetRealm</var>.
+       3. Let <var>output</var> be ? <a>CloneArrayBuffer</a>(<var>input</var>, 0, 
+           <var>outputArrayBuffer</var>).
+  12. Otherwise, if <var>input</var> has a \[[ViewedArrayBuffer]] internal slot, then:
+       1. Let <var>buffer</var> be the value of <var>input</var>'s \[[ViewedArrayBuffer]] internal
+           slot.
+       2. Let <var>bufferClone</var> be ? <a>StructuredClone</a>(<var>buffer</var>, 
+           <var>targetRealm</var>, <var>memory</var>)}}.
+       3. If <var>input</var> has a \[[DataView]] internal slot, then let <var>output</var> be a
+           new DataView object in <var>targetRealm</var> whose \[[DataView]] internal slot value is
+           true, whose \[[ViewedArrayBuffer]] internal slot value is <var>bufferClone</var>, whose
+           \[[ByteLength]] internal slot value is the \[[ByteLength]] internal slot value of
+           <var>input</var>, and whose \[[ByteOffset]] internal slot value is the \[[ByteOffset]]
+           internal slot value of <var>input</var>.
+       4. Otherwise:
+           1. Assert: <var>input</var> has a \[[TypedArrayName]] internal slot.
+           2. Let <var>constructor</var> be the intrinsic object listed in column one of
+               <a>The TypedArray Constructors</a> table for the value of
+               <var>input</var>'s \[[TypedArrayName]] internal slot in <var>targetRealm</var>.
+           3. Let <var>byteOffset</var> be <var>input</var>'s \[[ByteOffset]] internal slot value.
+           4. Let <var>length</var> be <var>input</var>'s \[[ArrayLength]] internal slot value.
+           5. Let <var>output</var> be ? <a>TypedArrayCreate</a>(<var>constructor</var>, 
+               « <var>bufferClone</var>, <var>byteOffset</var>, <var>length</var> »).
+  13. Otherwise, if <var>input</var> has \[[MapData]] internal slot, then:
+       1. Let <var>output</var> be a new Map object in <var>targetRealm</var> whose \[[MapData]]
+           internal slot value is a new empty <a for="ecma">List</a>.
+       2. Set <var>deepClone</var> to true.
+  14. Otherwise, if <var>input</var> has \[[SetData]] internal slot, then:
+       1. Let <var>output</var> be a new Set object in <var>targetRealm</var> whose \[[SetData]]
+           internal slot value is a new empty <a for="ecma">List</a>.
+       2. Set <var>deepClone</var> to true.
+  15. Otherwise, if <var>input</var> is an Array exotic object, then:
+       1. Let <var>inputLen</var> be <a>OrdinaryGetOwnProperty</a>(<var>input</var>, 
+           "<code>length</code>").\[[Value]].
+       2. Let <var>outputProto</var> be the <a>%ArrayPrototype%</a> intrinsic object in
+           <var>targetRealm</var>.
+       3. Let <var>output</var> be ! <a>ArrayCreate</a>(<var>inputLen</var>, 
+           <var>outputProto</var>).
+       4. Set <var>deepClone</var> to true.
+  16. Otherwise, if <var>input</var> has a \[[<a for="structured">Clone</a>]] internal method, then 
+       let <var>output</var> be ? 
+       <var>input</var>.\[[<a for="structured">Clone</a>]](<var>targetRealm</var>, 
+       <var>memory</var>).
+  17. Otherwise, if <a>IsCallable</a>(<var>input</var>)}} is true, then throw a
+       "{{DataCloneError}}" {{DOMException}}.
+  18. Otherwise, if <var>input</var> has any internal slot other than \[[Prototype]] or
+       \[[Extensible]], then throw a "{{DataCloneError}}" {{DOMException}}.
+       <p class="example">For instance, a \[[PromiseState]] or \[[WeakMapData]] internal slot.</p>
+  19. Otherwise, if <var>input</var> is an exotic object, then throw a "{{DataCloneError}}"
+       {{DOMException}}.
+       <p class="example">For instance, a proxy object.</p>
+  20. Otherwise:
+       1. Let <var>output</var> be a new Object in <var>targetRealm</var>.
+       2. Set <var>deepClone</var> to true.
+  21. Create an entry in <var>memory</var> whose key is <var>input</var> and value is
+       <var>output</var>.
+  22. If <var>deepClone</var> is true, then:
+       1. If <var>input</var> has a \[[MapData]] internal slot, then:
+           1. Let <var>inputList</var> the value of <var>input</var>'s \[[MapData]] internal slot.
+           2. Let <var>copiedList</var> be a new empty <a for="ecma">List</a>.
+           3. Repeat for each <a>Record</a> { \[[Key]], \[[Value]] } <var>entry</var> that is an
+               element of <var>inputList</var>,
+               1. Let <var>copiedEntry</var> be a new <a>Record</a> { \[[Key]]:
+                   <var>entry</var>.\[[Key]], \[[Value]]: <var>entry</var>.\[[Value]] }.
+               2. If <var>copiedEntry</var>.\[[Key]] is not empty, append <var>copiedEntry</var> as
+                   the last element of <var>copiedList</var>.
+           4. Let <var>outputList</var> be the value of <var>output</var>'s \[[MapData]] internal
+               slot.
+           5. For each <a>Record</a> { \[[Key]], \[[Value]] } <var>entry</var> that is an element of
+               <var>copiedList</var>,
+               1. Let <var>outputKey</var> be ? <a>StructuredClone</a>(<var>entry</var>.\[[Key]], 
+                   <var>targetRealm</var>, <var>memory</var>).
+               2. Let <var>outputValue</var> be ? 
+                   <a>StructuredClone</a>(<var>entry</var>.\[[Value]], <var>targetRealm</var>, 
+                   <var>memory</var>).
+               3. Add { \[[Key]]: <var>outputKey</var>, \[[Value]]: <var>outputValue</var> } as the
+                   last element of <var>outputList</var>.
+       2. Otherwise, if <var>input</var> has a \[[SetData]] internal slot, then:
+           1. Let <var>copiedList</var> be a copy of the value of <var>input</var>'s \[[SetData]]
+               internal slot.
+           2. Let <var>outputList</var> be the value of <var>output</var>'s \[[SetData]] internal
+               slot.
+           3. For each <var>entry</var> that is an element of <var>copiedList</var> that is not
+               empty,
+               1. Let <var>outputEntry</var> be ? <a>StructuredClone</a>(<var>entry</var>, 
+                   <var>targetRealm</var>, <var>memory</var>).
+               2. Add <var>outputEntry</var> as the last element of <var>outputList</var>.
+       3. Otherwise:
+           1. Let <var>enumerableKeys</var> be a new empty <a for="ecma">List</a>.
+           2. For each <var>key</var> in ! <var>input</var>.\[[OwnPropertyKeys]]():
+               1. If <a for="ecma">Type</a>(<var>key</var>) is String, then:
+                   1. Let <var>inputDesc</var> be ! 
+                       <var>input</var>.\[[GetOwnProperty]](<var>key</var>).
+                   2. If <var>inputDesc</var>.\[[Enumerable]] is true, then add <var>key</var> as 
+                       the last element of <var>enumerableKeys</var>.
+           3. For each <var>key</var> in <var>enumerableKeys</var>:
+               1. If ! <a>HasOwnProperty</a>(<var>input</var>, <var>key</var>) is true, then:
+                   1. Let <var>inputValue</var> be ? <var>input</var>.\[[Get]](<var>key</var>,
+                       <var>input</var>).
+                   2. Let <var>outputValue</var> be ? <a>StructuredClone</a>(<var>inputValue</var>, 
+                       <var>targetRealm</var>, <var>memory</var>).
+                   3. Perform ? <a>CreateDataProperty</a>(<var>output</var>, <var>key</var>, 
+                       <var>outputValue</var>).
+  23. Return <var>output</var>.
+
+  <p class="note">
+    In general implementations will need to use some kind of serialization and marshalling to
+    implement the creation of objects in <var>targetRealm</var>, as <var>targetRealm</var> could be
+    in a different <a>event loop</a> and not easily accessible to the code that invokes
+    <a>StructuredCloneWithTransfer</a> or <a>StructuredClone</a>.
+  </p>
+  
+<h4 id="section-idistransferable"><dfn>IsTransferable</dfn> ( <var>O</var> )</h4>
+
+  1. Assert: <a for="ecma">Type</a>(<var>O</var>) is Object.
+  2. If <var>O</var> has an \[[ArrayBufferData]] internal slot, then:
+      1. If <a>IsDetachedBuffer</a>(<var>O</var>) is true, then return false.
+      2. Return true.
+  3. Otherwise, if <var>O</var> has a \[[<a>Detached</a>]] internal slot, then:
+      1. If <var>O</var>'s \[[<a>Detached</a>]] internal slot value is true, then return false.
+      2. Return true.
+  4. Return false.
+  
+<h4 id="section-transferhelper"><dfn>TransferHelper</dfn> ( <var>input</var>, <var>targetRealm</var> )</h4>
+
+  1. If <var>input</var> has an \[[ArrayBufferData]] internal slot, then:
+      1. Let <var>output</var> be a new {{ArrayBuffer}} object in <var>targetRealm</var> whose 
+          \[[ArrayBufferByteLength]] internal slot value is the \[[ArrayBufferByteLength]] internal 
+          slot value of <var>input</var>, and whose \[[ArrayBufferData]] internal slot value is the 
+          \[[ArrayBufferData]] internal slot value of <var>input</var>.
+      2. Perform ! <a>DetachArrayBuffer</a>(<var>input</var>).
+      3. Return <var>output</var>.
+  2. Return ? <var>input</var>.\[[<a>Transfer</a>]](<var>targetRealm</var>).
+  
 </section>
