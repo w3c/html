@@ -277,6 +277,13 @@
   <a>environment settings object</a> whose <a>global object</a> is <var>o</var>.
   (There is always a 1:1 mapping of global objects to environment settings objects.)
 
+  The <dfn>relevant settings object</dfn> for a <a>global object</a> <var>o</var> is the
+  <a>environment settings object</a> whose <a>global object</a> is <var>o</var>. The
+  <a>relevant settings object</a> for a non-global <a>platform object</a> <var>o</var> is the
+  <a>environment settings object</a> whose <a>global object</a> is the global object of the
+  <a>global environment associated with</a> <var>o</var>. (There is always a 1:1 mapping of global
+  objects to environment settings objects.)
+
   The <dfn>relevant settings object for a script</dfn> <var>s</var> is the
   <a>settings object</a> of <var>s</var>.
 
@@ -2396,9 +2403,9 @@
     If the <var>replace</var> argument is present and has the value "<code>replace</code>", the existing entries in the session history for the
     <code>Document</code> object are removed.
 
-    The method has no effect if the <code>Document</code> is still being parsed.
+    The method has no effect if the {{Document}} is still being parsed.
 
-    Throws an <code>InvalidStateError</code> exception if the <code>Document</code> is an <a>XML document</a>.
+    Throws an <code>InvalidStateError</code> exception if the {{Document}} is an <a>XML document</a>.
 
     </dd>
 
@@ -2414,7 +2421,7 @@
 
   <div class="impl">
 
-  <code>Document</code> objects have an <dfn>ignore-opens-during-unload counter</dfn>, which is
+  {{Document}} objects have an <dfn>ignore-opens-during-unload counter</dfn>, which is
   used to prevent scripts from invoking the <code>document.open()</code>
   method (directly or indirectly) while the document is <a>being unloaded</a>. Initially, the counter must be set to zero.
 
@@ -2423,11 +2430,15 @@
 
   <ol>
 
-    <li>If the <code>Document</code> object is not flagged as an <a>HTML
+    <li>If the {{Document}} object is not flagged as an <a>HTML
     document</a>, throw an <code>InvalidStateError</code> exception and abort these steps.</li>
 
-    <li>If the <code>Document</code> object is not an <a>active document</a>, then abort
+    <li>If the {{Document}} object is not an <a>active document</a>, then abort
     these steps.</li>
+
+    <li>If the <a for="concept">origin</a> of the {{Document}} is not equal to the
+    <a for="concept">origin</a> of the <a>responsible document</a> specified by the <a>entry settings object</a>,
+    throw a {{SecurityError}} exception and abort these steps.</li>
 
     <li>Let <var>type</var> be the value of the first argument.</li>
 
@@ -2437,8 +2448,8 @@
     "replace", then let <var>replace</var> be true.
 
     Otherwise, if the <a>browsing context</a>'s <a>session history</a> contains only
-    one {{Document}}, and that was the <code>about:blank</code> <code>Document</code>
-    created when the <a>browsing context</a> was created, and that <code>Document</code> has
+    one {{Document}}, and that was the <code>about:blank</code> {{Document}}
+    created when the <a>browsing context</a> was created, and that {{Document}} has
     never had the <a>unload a document</a> algorithm invoked on it (e.g., by a previous call to
     <code>document.open()</code>), then let <var>replace</var> be
     true.
@@ -2449,9 +2460,9 @@
 
     <li>
 
-    If the <code>Document</code> has an <a>active parser</a> whose <a>script nesting
+    If the {{Document}} has an <a>active parser</a> whose <a>script nesting
     level</a> is greater than zero, then the method does nothing. Abort these steps and return
-    the <code>Document</code> object on which the method was invoked.
+    the {{Document}} object on which the method was invoked.
 
     <p class="note">
   This basically causes <code>document.open()</code> to
@@ -4022,12 +4033,12 @@
     character in the URL <a>default encode set</a> with the result of <a lt="utf-8 percent encode">UTF-8 percent encoding</a> that character.
 
     <div class="example">
-      If the user had visited a site at <code>http://example.com/</code> that made the
+      If the user had visited a site at <code>https://example.com/</code> that made the
       following call:
 
       <pre highlight="javascript">navigator.registerContentHandler('application/x-soup', 'soup?url=%s', 'SoupWeb&trade;')</pre>
 
-      ...and then, much later, while visiting <code>http://www.example.net/</code>,
+      ...and then, much later, while visiting <code>https://www.example.net/</code>,
       clicked on a link such as:
 
       <pre highlight="html">
@@ -4038,7 +4049,7 @@
       <a>MIME type</a> <code>application/x-soup</code>, the user agent might navigate to the
       following URL:
 
-      <pre>http://example.com/soup?url=http://www.example.net/chickenk%C3%AFwi.soup</pre>
+      <pre>https://example.com/soup?url=https://www.example.net/chickenk%C3%AFwi.soup</pre>
 
       This site could then fetch the <code>chickenk&#xEF;wi.soup</code> file and do
       whatever it is that it does with soup (synthesize it and ship it to the user, or whatever).
@@ -4309,7 +4320,7 @@
       </ol>
 
       No actual confidential file data is leaked in this manner, but the URLs themselves could
-      contain confidential information. For example, the URL could be <code>http://www.corp.example.com/upcoming-aquisitions/the-sample-company.egf</code>, which
+      contain confidential information. For example, the URL could be <code>https://www.corp.example.com/upcoming-aquisitions/the-sample-company.egf</code>, which
       might tell the third party that Example Corporation is intending to merge with The Sample Company.
       Implementors might wish to consider allowing administrators to disable this feature for certain
       subdomains, content types, or schemes.
@@ -4350,12 +4361,12 @@
   The <code>registerContentHandler()</code> method
   could display a modal dialog box:
 
-  <img src="images/sample-content-handler-registration.png" width="534" height="374" alt="The modal dialog box could have the title 'Content Handler Registration', and could say 'This Web page: Kittens at work http://kittens.example.org/ ...would like permission to handle files of type: application/x-meowmeow using the following Web-based application: Kittens-at-work displayer http://kittens.example.org/?show=%s Do you trust the administrators of the &quot;kittens.example.org&quot; domain?' with two buttons, 'Trust kittens.example.org' and 'Cancel'." />
+  <img src="images/sample-content-handler-registration.png" width="534" height="374" alt="The modal dialog box could have the title 'Content Handler Registration', and could say 'This Web page: Kittens at work https://kittens.example.org/ ...would like permission to handle files of type: application/x-meowmeow using the following Web-based application: Kittens-at-work displayer https://kittens.example.org/?show=%s Do you trust the administrators of the &quot;kittens.example.org&quot; domain?' with two buttons, 'Trust kittens.example.org' and 'Cancel'." />
 
   In this dialog box, "Kittens at work" is the title of the page that invoked the method,
-  "http://kittens.example.org/" is the URL of that page, "application/x-meowmeow" is the string that
+  "https://kittens.example.org/" is the URL of that page, "application/x-meowmeow" is the string that
   was passed to the <code>registerContentHandler()</code> method as its first
-  argument (<var>mimeType</var>), "http://kittens.example.org/?show=%s" was the second
+  argument (<var>mimeType</var>), "https://kittens.example.org/?show=%s" was the second
   argument (<var>url</var>), and "Kittens-at-work displayer" was the third argument (<var>title</var>).
 
   If the user clicks the Cancel button, then nothing further happens. If the user clicks the
@@ -4371,7 +4382,7 @@
 
   If the user does select that option, then the browser, in accordance with the requirements
   described in the previous two sections, will redirect the user to
-  "http://kittens.example.org/?show=data%3Aapplication/x-meowmeow;base64,S2l0dGVucyBhcmUgdGhlIGN1dGVzdCE%253D".
+  "https://kittens.example.org/?show=data%3Aapplication/x-meowmeow;base64,S2l0dGVucyBhcmUgdGhlIGN1dGVzdCE%253D".
 
   The <code>registerProtocolHandler()</code> method
   would work equivalently, but for schemes instead of unknown content types.
