@@ -1379,8 +1379,9 @@
 
   The <dfn>number of child browsing contexts</dfn> of a {{Window}} object <var>W</var> is the number
   of <a>child browsing contexts</a> that are <a>nested through</a> elements that are in a
-  {{Document}} that is the <a>active document</a> of the {{Window}} object's <a>associated</a>
-  {{Document}} object's <a>browsing context</a>.
+  {{Document}} that is the <a>active document</a> of the {{Window}} object's 
+  <a lt="document associated with a window">associated</a> {{Document}} object's 
+  <a>browsing context</a>.
 
   The <dfn attribute for="Window"><code>length</code></dfn> IDL attribute's getter must return the
   <a>number of child browsing contexts</a> of this {{Window}} object.
@@ -3701,9 +3702,9 @@
     content</a> and abort these steps.
 
     <p class="note">
-  In the case of a registered handler being used, the algorithm will be reinvoked
+    In the case of a registered handler being used, the algorithm will be reinvoked
     with a new URL to handle the request.
-  </p>
+    </p>
 
     </li>
 
@@ -4067,53 +4068,57 @@
     <a for="url">URL</a> instead.
 
     <p class="note">
-  An <a>override URL</a> is set when <a>dereferencing a <code>javascript:</code> URL</a> and when
+    An <a>override URL</a> is set when <a>dereferencing a <code>javascript:</code> URL</a> and when
     performing <a>an overridden reload</a>.
-  </p>
+    </p>
 
-    <dfn>Initializing a new <code>Document</code>
-    object</dfn>: when a {{Document}} is created as part of the above steps, the user agent
-    will be required to additionally run the following algorithm after creating the new object:
+  <dfn>Initializing a new <code>Document</code> object</dfn>: when a {{Document}} is created as part 
+  of the above steps, the user agent will be required to additionally run the following algorithm 
+  after creating the new object:
 
-    <ol>
+  1. If <var>browsingContext</var>'s only entry in its <a>session history</a> is the 
+      <a scheme>about:blank</a> {{Document}} that was added when <var>browsingContext</var> was 
+      <a lt="create a new browsing context">created</a>, and navigation is occurring with 
+      <a>replacement enabled</a>, and that {{Document}} has the <a>same origin</a> as the new 
+      {{Document}}, then
+      1. Let <var>window</var> be the {{Window}} object of that {{Document}}.
+      2. Change the {{Window/document}} attribute of <var>window</var> to point to the new 
+          {{Document}}.
+  2. Otherwise,
+      1. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the 
+          following customizations:
+          
+          * For the global object, create a new {{Window}} object <var>window</var>.
+          * For the global <em>this<em> value, use <var>browsingContext</var>'s {{WindowProxy}}
+             object.
+          * Let <var>realm execution context</var> be the created 
+             <a>JavaScript execution context</a>.
+          * Do not obtain any source texts for scripts or modules.
+      2. <a>Set up a browsing context environment settings object</a> with 
+          <var>realm execution context</var>, and let <var>settings object</var> be the result.
+      3. Set <var>window</var>'s <a>associated <code>Document</code></a> to the new {{Document}}.
+  3. Set <var>browsingContext</var>'s {{WindowProxy}} object's [[Window]] internal slot value to 
+      <var>window</var>.
+  4. Set the {{Document}}'s <a>HTTPS state</a> to the <a>HTTPS state</a> of the resource used to 
+      generate the document.
+  5. Execute the <a>Initialize a <code>Document</code>'s CSP list</a> algorithm on the {{Document}}
+      object and the resource used to generate the document. [[CSP3]]
+  6. Set <a>the document's referrer</a> to the 
+      <em>address of the resource from which Request-URIs are obtained</em> as determined when the 
+      fetch algorithm obtained the resource, if that algorithm was used and determined such a value; 
+      otherwise, set it to the empty string.
+  7. <a>Implement the sandboxing</a> for the {{Document}}.
+  8. If the <a>active sandboxing flag set</a> of the {{Document}}'s <a>browsing context</a> or any 
+      of its <a>ancestor browsing contexts</a> (if any) have the 
+      <a>sandboxed fullscreen browsing context flag</a> set, then skip this step.
 
-      <li>Create a new <code>Window</code> object, and associate it with the
-      {{Document}}, with one exception: if the <a>browsing context</a>'s only entry in
-      its <a>session history</a> is the <code>about:blank</code> {{Document}} that was
-      added when the <a>browsing context</a> was created, and navigation is occurring with
-      <a>replacement enabled</a>, and that {{Document}} has the <a>same
-      origin</a> as the new {{Document}}, then use the <code>Window</code> object of that
-      {{Document}} instead, and change the {{Document}}
-      attribute of the {{Window}} object to point to the new {{Document}}.
-
-      <li>Set the <code>Window</code> object's <a>HTTPS
-      state</a> to the <a>HTTPS state</a> of the
-      resource used to generate the document.</li>
-
-      <li>Set <a>the document's referrer</a> to the <i>address of the resource from which
-      Request-URIs are obtained</i> as determined when the fetch algorithm obtained the resource, if
-      that algorithm was used and determined such a value; otherwise, set it to the empty
-      string.</li>
-
-      <li><a>Implement the sandboxing</a> for the {{Document}}.</li>
-
-      <li>
-
-      If the <a>active sandboxing flag set</a> of the {{Document}}'s
-      <a>browsing context</a> or any of its <a>ancestor
-      browsing contexts</a> (if any) have the <a>sandboxed fullscreen browsing context
-      flag</a> set, then skip this step.
-
-      If the {{Document}}'s <a>browsing context</a> has a <a>browsing context
-      container</a> and either it is not an <{iframe}> element, or it does not have the
-      <code>allowfullscreen</code> attribute specified, or its
-      {{Document}} does not have the <a>fullscreen enabled flag</a> set, then also
-      skip this step.
+      If the {{Document}}'s <a>browsing context</a> has a <a>browsing context container</a> and 
+      either it is not an <{iframe}> element, or it does not have the <code>allowfullscreen</code> 
+      attribute specified, or its {{Document}} does not have the <a>fullscreen enabled flag</a> set, 
+      then also skip this step.
 
       Otherwise, set the {{Document}}'s <a>fullscreen enabled flag</a>.
-
-    </ol>
-
+  
     </li>
 
     <li>
@@ -4126,9 +4131,9 @@
     then abort these steps.
 
     <p class="note">
-  In the case of a registered handler being used, the algorithm will be reinvoked
+    In the case of a registered handler being used, the algorithm will be reinvoked
     with a new URL to handle the request.
-  </p>
+    </p>
 
     </li>
 

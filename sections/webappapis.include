@@ -1073,6 +1073,15 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
   The <dfn attribute for="PromiseRejectionEvent"><code>reason</code></dfn> attribute must return
   the value it was initialized to. It represents the rejection reason for the promise.
+  
+<h5 id="section-hostensurecancompilestrings">HostEnsureCanCompileStrings(<var>callerRealm</var>, <var>calleeRealm</var>)</h5>
+
+  JavaScript contains an implementation-defined 
+  <a>HostEnsureCanCompileStrings</a>(<var>callerRealm</var>, <var>calleeRealm</var>) abstract operation. 
+  User agents must use the following implementation: [[ECMA-262]]
+
+  1. Perform ? <a>EnsureCSPDoesNotBlockStringCompilation</a>(<var>callerRealm</var>, 
+      <var>calleeRealm</var>). [[CSP3]]
 
 <h4 id="event-loops">Event loops</h4>
 
@@ -2724,6 +2733,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
     <li>If <var>previous handle</var> was not provided, add an entry to the <a>list of
     active timers</a> for <var>handle</var>.</li>
 
+    <li>Let <var>callerRealm</var> be the <span>current Realm Record</span>, and 
+    <var>calleeRealm</var> be <var>method context</var>'s <a>JavaScript realm</a>.</li>  
+  
     <li>
 
     Let <var>task</var> be a <a>task</a> that runs the
@@ -2755,6 +2767,8 @@ a credentials mode, a cryptographic nonce, and a parser state:
         <dd>
 
         <ol>
+          <li>Perform <a>HostEnsureCanCompileStrings</a>(<var>callerRealm</var>, 
+          <var>calleeRealm</var>). If this throws an exception, <a>report the exception</a>.</li>
 
           <li>Let <var>script source</var> be the first method argument.</li>
 
