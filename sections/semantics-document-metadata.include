@@ -1218,7 +1218,6 @@
         <pre highlight="html">&lt;meta http-equiv="Refresh" content="20; URL=page4.html"&gt;</pre>
       </div>
 
-  <div class="impl">
     : <dfn state for="http-equiv" lt="set-cookie">Cookie setter</dfn> (<code>http-equiv="set-cookie"</code>)
     :: This pragma sets an HTTP cookie. [[!COOKIES]]
 
@@ -1229,8 +1228,38 @@
         2. Act as if <a>receiving a set-cookie-string</a> for <a>the document's address</a> via a
             "non-HTTP" API, consisting of the value of the element's <code>content</code> attribute
             encoded as UTF-8. [[!COOKIES]] [[!ENCODING]]
-  </div>
 
+    : <dfn state for="http-equiv">Content security policy state</dfn> (<code>http-equiv="content-security-policy"</code>)
+    :: This pragma <a lt="enforced">enforces</a> a <a>Content Security Policy</a> on a {{Document}}. 
+        [[CSP3]]
+        
+        1. If the <{meta}> element is not a child of a <{head}> element, abort these steps.
+        2. If the <{meta}> element has no <{meta/content}> attribute, or if that attribute's value 
+            is the empty string, then abort these steps.
+        3. Let <var>policy</var> be the result of executing Content Security Policy's 
+            <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's 
+            <{meta/content}> attribute's value.
+        4. Remove all occurrences of the <a><code>report-uri</code></a>, 
+            <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a> 
+            from <var>policy</var>.
+        5. <a>Enforce the policy</a> <var>policy</var>.
+
+        For <{meta}> elements with an <{meta/http-equiv}> attribute in the 
+        <a state for="http-equiv">Content security policy state</a>, the <{meta/content}> attribute 
+        must have a value consisting of a <a>valid Content Security Policy</a>, but must not contain 
+        any <a><code>report-uri</code></a>, <a><code>frame-ancestors</code></a>, or 
+        <a><code>sandbox</code></a> <a>directives</a>. The <a>Content Security Policy</a> given in 
+        the <{meta/content}> attribute will be <a>enforced</a> upon the current document. [[CSP3]]
+
+        <div class="example">
+        A page might choose to mitigate the risk of cross-site scripting attacks by preventing the 
+        execution of inline JavaScript, as well as blocking all plugin content, using a policy such 
+        as the following:
+          <pre highlight="html">
+            &lt;meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'">
+          </pre>
+        </div>
+            
   There must not be more than one <{meta}> element with any particular state in the
   document at a time.
 
@@ -1497,8 +1526,10 @@
   <hr />
 
   <div class="impl">
-    Whenever one of the following conditions occur for an element whose {{Document}} is in
-    a <a>browsing context</a>:
+    The user agent must run the <dfn>update a <code>style</code> block</dfn> algorithm that
+    applies for the style sheet language specified by the <{style}> element's <{style/type}>
+    attribute, passing it the element's <dfn>style data</dfn>, whenever one of the following 
+    conditions occur:
 
     * the element is popped off the <a>stack of open elements</a> of an <a>HTML parser</a> or
         <a>XML parser</a>,
@@ -1507,10 +1538,6 @@
         <a for="document">removed from a document</a>,
     * the element is not on the <a>stack of open elements</a> of an <a>HTML parser</a> or
         <a>XML parser</a>, and one of its child nodes is modified by a script,
-
-    ...the user agent must run the <dfn>update a <code>style</code> block</dfn> algorithm that
-    applies for the style sheet language specified by the element's <code>type</code> attribute,
-    passing it the element's <dfn>style data</dfn>.
 
     For styling languages that consist of pure text (as opposed to XML), a <code>style</code>
     element's <a>style data</a> is the concatenation of the contents of all the <code>Text</code>
@@ -1526,7 +1553,11 @@
         <a spec="cssom" lt="remove a CSS style sheet">remove the CSS style sheet</a> in question.
     3. If <var>element</var> is not <a>in a <code>Document</code></a>, then abort
         these steps.
-    4. <a spec="cssom">create a CSS style sheet</a> with the following properties:
+    4. If the <a>Should element's inline behavior be blocked by Content Security Policy?</a> 
+        algorithm returns "<code>Blocked</code>" when executed upon the <{style}> element, 
+        "<code>style</code>", and the <{style}> element's <a>style data</a>, then abort these steps. 
+        [[CSP3]]
+    5. <a spec="cssom">create a CSS style sheet</a> with the following properties:
 
         : <{style/type}>
         :: <code>text/css</code>

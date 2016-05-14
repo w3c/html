@@ -143,15 +143,9 @@
       <code>history.pushState()</code>.
 
   : An <dfn for="settings">HTTPS state</a>
-  :: A value representing the security properties of the network channel used to deliver the
-      resource with which the <a>environment settings object</a> is associated. The value will
-      be one of "<code>modern</code>", "<code>deprecated</code>", or "<code>none</code>".
-
-      <p class="note">Resources delivered over HTTPS will generally have an <a>HTTPS state</a> of
-      "<code>modern</code>". A user agent can use "<code>deprecated</code>" during transitional
-      periods where rejecting the response entirely would be inappropriate (e.g., while removing
-      support for a hash function or cypher suite).</p>
-
+  :: An <a>HTTPS state value</a> representing the security properties of the network channel used to 
+     deliver the resource with which the <a>environment settings object</a> is associated.
+     
   An <a>environment settings object</a> also has an
   <dfn>outstanding rejected promises weak set</dfn> and an
   <dfn>about-to-be-notified rejected promises list</dfn>, used to track
@@ -1454,7 +1448,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
   When an <a>event handler content attribute</a> is set, execute the following steps:
 
-  1. If the Should element's inline behavior be blocked by Content Security Policy? algorithm
+  1. If the <a>Should element's inline behavior be blocked by Content Security Policy?</a> algorithm
       returns "<code>Blocked</code>" when executed upon the attribute's element
       "<code>script attribute</code>", and the attribute's value, then abort these steps. [[!CSP3]]
   2. Set the corresponding <a>event handler</a> to an <a>internal raw uncompiled handler</a>
@@ -2201,235 +2195,163 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
 <h4 id="opening-the-input-stream">Opening the input stream</h4>
 
-  The <dfn method for="Document" id="dom-document-_open" lt="open()|open(type)|open(type, replace)|open(url, name, features)|open(url, name, features, replace)"><code>open()</code></dfn> method comes in several variants
-  with different numbers of arguments.
+  The 
+  <dfn method for="Document" id="dom-document-_open" lt="open()|open(type)|open(type, replace)|open(url, name, features)|open(url, name, features, replace)"><code>open()</code></dfn>
+  method comes in several variants with different numbers of arguments.
 
   <dl class="domintro">
-
-    <dt><var>document</var> = <var>document</var> . <code>open</code>( [ <var>type</var> [, <var>replace</var> ] ] )</dt>
-
-    <dd>
-
-    Causes the <code>Document</code> to be replaced in-place, as if it was a new
-    <code>Document</code> object, but reusing the previous object, which is then returned.
+    <dt><var>document</var> = <var>document</var> . {{Document/open()|open}}( [ <var>type</var> [, <var>replace</var> ] ] )</dt>
+    <dd>Causes the {{Document}} to be replaced in-place, as if it was a new {{Document}} object, but 
+    reusing the previous object, which is then returned.
 
     If the <var>type</var> argument is omitted or has the value
-    "<a href="#text-html"><code>text/html</code></a>", then the resulting <code>Document</code> has an HTML parser associated
-    with it, which can be given data to parse using <a method lt="write()"><code>document.write()</code></a>. Otherwise, all content passed to <a method lt="write()"><code>document.write()</code></a> will be parsed as plain text.
+    "<a href="#text-html"><code>text/html</code></a>", then the resulting {{Document}} has an HTML 
+    parser associated with it, which can be given data to parse using 
+    {{Document/write()|document.write()}}. Otherwise, all content passed to 
+    {{Document/write()|document.write()}} will be parsed as plain text.
 
-    If the <var>replace</var> argument is present and has the value "<code>replace</code>", the existing entries in the session history for the
-    <code>Document</code> object are removed.
+    If the <var>replace</var> argument is present and has the value "<code>replace</code>", the 
+    existing entries in the session history for the {{Document}} object are removed.
 
-    The method has no effect if the <code>Document</code> is still being parsed.
+    The method has no effect if the {{Document}} is still being parsed.
 
-    Throws an <code>InvalidStateError</code> exception if the <code>Document</code> is an <a>XML document</a>.
-
+    Throws an "{{InvalidStateError}}" {{DOMException}} if the {{Document}} is an 
+    <a>XML document</a>.
     </dd>
 
-    <dt><var>window</var> = <var>document</var> . <code>open</code>( <var>url</var>, <var>name</var>, <var>features</var> [, <var>replace</var> ] )</dt>
-
-    <dd>
-
-    Works like the <code>window.open()</code> method.
-
-    </dd>
-
+    <dt><var>window</var> = <var>document</var> . {{Document/open()|open}}( <var>url</var>, <var>name</var>, <var>features</var> [, <var>replace</var> ] )</dt>
+    <dd>Works like the {{Window/open()|window.open()}} method.</dd>
   </dl>
 
-  <code>Document</code> objects have an <dfn>ignore-opens-during-unload counter</dfn>, which is
-  used to prevent scripts from invoking the <code>document.open()</code>
-  method (directly or indirectly) while the document is <a>being unloaded</a>. Initially, the counter must be set to zero.
+  {{Document}} objects have an <dfn>ignore-opens-during-unload counter</dfn>, which is used to 
+  prevent scripts from invoking the {{Document/open()|document.open()}} method (directly or 
+  indirectly) while the document is <a>being unloaded</a>. Initially, the counter must be set to 
+  zero.
 
-  When called with two arguments (or fewer), the <code>document.open()</code>
-  method must act as follows:
+  When called with two arguments (or fewer), the {{Document/open()|document.open()}} method must act 
+  as follows:
 
-  <ol>
+  1. If the {{Document}} object is an <a>XML document</a>, then throw an "{{InvalidStateError}}"
+      {{DOMException}} and abort these steps.
+  2. If the {{Document}} object is not an <a>active document</a>, then abort these steps.
+  3. If the <a for="concept">origin</a> of the {{Document}} is not equal to the 
+      <a for="concept">origin</a> of the <a>responsible document</a> specified by the 
+      <a>entry settings object</a>, throw a "{{SecurityError}}" {{DOMException}} and abort these 
+      steps.
+  4. Let <var>type</var> be the value of the first argument.
+  5. If the second argument is an <a>ASCII case-insensitive</a> match for the value 
+      "<code>replace</code>", then let <var>replace</var> be true.
 
-    <li>If the <code>Document</code> object is not flagged as an <a>HTML
-    document</a>, throw an <code>InvalidStateError</code> exception and abort these steps.</li>
+      Otherwise, if the <a>browsing context</a>'s <a>session history</a> contains only one 
+      {{Document}}, and that was the <a scheme><code>about:blank</code></a> {{Document}} created 
+      when the <a>browsing context</a> was <a lt="create a new browsing context">created</a>, and 
+      that {{Document}} has never had the <a>unload a document</a> algorithm invoked on it (e.g., 
+      by a previous call to {{Document/open()|document.open()}}), then let <var>replace</var> be
+      true.
 
-    <li>If the <code>Document</code> object is not an <a>active document</a>, then abort
-    these steps.</li>
+      Otherwise, let <var>replace</var> be false.
+  6. If the {{Document}} has an <a>active parser</a> whose <a>script nesting level</a> is greater 
+      than zero, then the method does nothing. Abort these steps and return the {{Document}} object 
+      on which the method was invoked.
 
-    <li>Let <var>type</var> be the value of the first argument.</li>
+      <p class="note">This basically causes {{Document/open()|document.open()}} to be ignored when 
+      it's called in an inline script found during parsing, while still letting it have an effect 
+      when called from a non-parser task such as a timer callback or event handler.</p>
+  7. Similarly, if the {{Document}}'s <a>ignore-opens-during-unload counter</a> is greater than 
+      zero, then the method does nothing. Abort these steps and return the {{Document}} object on 
+      which the method was invoked.
 
-    <li>
+      <p class="note">This basically causes {{Document/open()|document.open()}} to be ignored when 
+      it's called from a <code>beforeunload</code> <code>pagehide</code>, or <code>unload</code> 
+      event handler while the {{Document}} is being unloaded.</p>
+  8. Set the {{Document}}'s <i>salvageable</i> state to false.
+  9. <a>Prompt to unload</a> the {{Document}} object. If the user 
+      <a>refused to allow the document to be unloaded</a>, then abort these steps and return the 
+      {{Document}} object on which the method was invoked.
+  10. <a>Unload</a> the {{Document}} object, with the <var>recycle</var> parameter set to true.
+  11. <a>Abort</a> the {{Document}}.
+  12. Unregister all event listeners registered on the {{Document}} node and its descendants.
+  13. Remove any <a>tasks</a> associated with the {{Document}} in any <a>task source</a>.
+  14. Remove all child nodes of the document, without firing any mutation events.
+  15. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the following 
+       customizations:
 
-    If the second argument is an <a>ASCII case-insensitive</a> match for the value
-    "replace", then let <var>replace</var> be true.
+       * For the global object, create a new {{Window}} object <var>window</var>.
+       * For the global <em>this</em> value, use the current <a>browsing context</a>'s associated 
+          {{WindowProxy}}.
+       * Let <var>realm execution context</var> be the created <a>JavaScript execution context</a>.
+  16. Set <var>window</var>'s 
+       <a lt="document associated with a window">associated <code>Document</code></a> to the 
+       {{Document}}.
+  17. <a>Set up a browsing context environment settings object</a> with 
+       <var>realm execution context</var>.
+  18. Replace the {{Document}}'s singleton objects with new instances of those objects, created in
+       <var>window</var>'s <a>Realm</a>. (This includes in particular the {{Window}}, {{Location}},
+       {{History}}, {{ApplicationCache}}, and {{Navigator}}, objects, the various {{BarProp}} 
+       objects, the two <code>Storage</code> objects, the various {{HTMLCollection}} objects, and 
+       objects defined by other specifications, like <code>Selection</code>. It also includes all 
+       the Web IDL prototypes in the JavaScript binding, including the {{Document}} object's 
+       prototype.)
+  19. Change the <a>document's character encoding</a> to UTF-8.
+  20. If the {{Document}} is <a>ready for post-load tasks</a>, then set the {{Document}} object's 
+       <a>reload override flag</a> and set the {{Document}}'s <a>reload override buffer</a> to the 
+       empty string.
+  21. Set the {{Document}}'s <i>salvageable</i> state back to true.
+  22. Change the document's <a lt="document url">URL</a> to the <a lt="document url">URL</a> of the 
+       <a>responsible document</a> specified by the <a>entry settings object</a>.
+  23. If the {{Document}}'s <a>iframe load in progress</a> flag is set, set the {{Document}}'s 
+       <a>mute iframe load</a> flag.
+  24. Create a new <a>HTML parser</a> and associate it with the document. This is a
+       <dfn>script-created parser</dfn> (meaning that it can be closed by the 
+       {{Document/open()|document.open()}} and {{Document/close()|document.close()}} methods, and 
+       that the tokenizer will wait for an explicit call to {{Document/close()|document.close()}}
+       before emitting an end-of-file token). The encoding <a>confidence</a> is <i>irrelevant</i>.
+  25. Set the <a>current document readiness</a> of the document to "<code>loading</code>".
+  26. If <var>type</var> is an <a>ASCII case-insensitive</a> match for the string
+       "<code>replace</code>", then, for historical reasons, set it to the string 
+       "<a href="#text-html"><code>text/html</code></a>".
 
-    Otherwise, if the <a>browsing context</a>'s <a>session history</a> contains only
-    one {{Document}}, and that was the <code>about:blank</code> <code>Document</code>
-    created when the <a>browsing context</a> was created, and that <code>Document</code> has
-    never had the <a>unload a document</a> algorithm invoked on it (e.g., by a previous call to
-    <code>document.open()</code>), then let <var>replace</var> be
-    true.
+       Otherwise:
 
-    Otherwise, let <var>replace</var> be false.
+       If the <var>type</var> string contains a U+003B SEMICOLON character (;), remove the first 
+       such character and all characters from it up to the end of the string.
 
-    </li>
+       <a>Strip leading and trailing whitespace</a> from <var>type</var>.
+  27. If <var>type</var> is <em>not</em> now an <a>ASCII case-insensitive</a> match for the string 
+       "<a href="#text-html"><code>text/html</code></a>", then act as if the tokenizer had emitted a 
+       start tag token with the tag name "pre" followed by a single U+000A LINE FEED (LF) character, 
+       then switch the <a>HTML parser</a>'s tokenizer to the [[#plaintext-state]].
+  28. Remove all the entries in the <a>browsing context</a>'s <a>session history</a> after the 
+       <a>current entry</a>. If the <a>current entry</a> is the last entry in the session history, 
+       then no entries are removed.
 
-    <li>
+       <p class="note">This <a>doesn't necessarily have to affect</a> the user agent's user 
+       interface.</p>
+  29. Remove any <a>tasks</a> queued by the <a>history traversal task source</a> that are associated 
+       with any {{Document}} objects in the <a>top-level browsing context</a>'s 
+       <a>document family</a>.
+  30. Remove any earlier entries that share the same {{Document}}.
+  31. If <var>replace</var> is false, then add a new entry, just before the last entry, and 
+       associate with the new entry the text that was parsed by the previous parser associated with
+       the {{Document}} object, as well as the state of the document at the start of these steps. 
+       This allows the user to step backwards in the session history to see the page before it was 
+       blown away by the {{Document/open()|document.open()}} call. This new entry does not have a 
+       {{Document}} object, so a new one will be created if the session history is traversed to that 
+       entry.
+  32. Set the {{Document}}'s <a>fired unload</a> flag to false. (It could have been set to true 
+       during the unload step above.)
+  33. Finally, set the <a>insertion point</a> to point at just before the end of the
+       <a>input stream</a> (which at this point will be empty).
+  34. Return the {{Document}} on which the method was invoked.
 
-    If the <code>Document</code> has an <a>active parser</a> whose <a>script nesting
-    level</a> is greater than zero, then the method does nothing. Abort these steps and return
-    the <code>Document</code> object on which the method was invoked.
+  <p class="note">The {{Document/open()|document.open()}} method does not affect whether a 
+  {{Document}} is <a>ready for post-load tasks</a> or <a>completely loaded</a>.</p>
 
-    <p class="note">
-  This basically causes <code>document.open()</code> to
-    be ignored when it's called in an inline script found during parsing, while still letting it
-    have an effect when called from a non-parser task such as a timer callback or event handler.
-  </p>
-
-    </li>
-
-    <li>
-
-    Similarly, if the <code>Document</code>'s <a>ignore-opens-during-unload counter</a> is
-    greater than zero, then the method does nothing. Abort these steps and return the
-    <code>Document</code> object on which the method was invoked.
-
-    <p class="note">
-  This basically causes <code>document.open()</code> to
-    be ignored when it's called from a <code>beforeunload</code> <code>pagehide</code>, or <code>unload</code> event
-    handler while the <code>Document</code> is being unloaded.
-  </p>
-
-    </li>
-
-    <li>Set the <code>Document</code>'s <i>salvageable</i> state to false.</li>
-
-    <li><a>Prompt to unload</a> the
-    <code>Document</code> object. If the user <a>refused to allow the document to be unloaded</a>, then abort these steps and return the <code>Document</code> object on which the
-    method was invoked.</li>
-
-    <li><a>Unload</a> the <code>Document</code> object, with the
-    <var>recycle</var> parameter set to true.</li>
-
-    <li><a>Abort</a> the {{Document}}.</li>
-
-    <li>Unregister all event listeners registered on the <code>Document</code> node and its
-    descendants.
-
-    <li>Remove any <a>tasks</a> associated with the
-    <code>Document</code> in any <a>task source</a>.</li>
-
-    <li>Remove all child nodes of the document, without firing any mutation events.</li>
-
-    <li>
-
-    Replace the <code>Document</code>'s singleton objects with new instances of those objects.
-    (This includes in particular the {{Window}}, <code>Location</code>,
-    <code>History</code>, <code>ApplicationCache</code>, and <code>Navigator</code>, objects, the
-    various <code>BarProp</code> objects, the two <code>Storage</code> objects, the various
-    <code>HTMLCollection</code> objects, and objects defined by other specifications, like
-    <code>Selection</code>. It also includes all the Web
-    IDL prototypes in the JavaScript binding, including the <code>Document</code> object's
-    prototype.)
-
-    <p class="note">
-  The new <code>Window</code> object has a new <a>environment settings
-    object</a>.
-  </p>
-
-    </li>
-
-    <li>Set the new <code>Window</code> object's <a>HTTPS
-    state</a> to the <a>HTTPS state</a> of the
-    <code>Window</code> object of the <a>responsible document</a> specified by the <a>entry
-    settings object</a>.</li>
-
-    <li>Change the <a>document's character encoding</a> to UTF-8.</li>
-
-    <li>If the <code>Document</code> is <a>ready for post-load tasks</a>, then set the
-    <code>Document</code> object's <a>reload override flag</a> and set the
-    <code>Document</code>'s <a>reload override buffer</a> to the empty string.</li>
-
-    <li>Set the <code>Document</code>'s <i>salvageable</i> state back to true.</li>
-
-    <li>Change <a>the document's address</a> to the <a>address</a> of the <a>responsible document</a> specified by the <a>entry
-    settings object</a>.</li>
-
-    <li>If the <code>Document</code>'s <a>iframe load in progress</a> flag is set, set the
-    <code>Document</code>'s <a>mute iframe load</a> flag.</li>
-
-    <li>Create a new <a>HTML parser</a> and associate it with the document. This is a
-    <dfn>script-created parser</dfn> (meaning that it can be closed by the <code>document.open()</code> and <code>document.close()</code> methods, and that the tokenizer will wait for
-    an explicit call to <code>document.close()</code> before emitting an
-    end-of-file token). The encoding <a>confidence</a> is
-    <i>irrelevant</i>.</li>
-
-    <li>Set the <a>current document readiness</a> of the document to "<code>loading</code>".</li>
-
-    <li>
-
-    If <var>type</var> is an <a>ASCII case-insensitive</a> match for the string
-    "<code>replace</code>", then, for historical reasons, set it to the string "<a href="#text-html"><code>text/html</code></a>".
-
-    Otherwise:
-
-    If the <var>type</var> string contains a U+003B SEMICOLON character (;), remove the
-    first such character and all characters from it up to the end of the string.
-
-    <a>Strip leading and trailing whitespace</a> from <var>type</var>.
-
-    </li>
-
-    <li>
-
-    If <var>type</var> is <em>not</em> now an <a>ASCII case-insensitive</a> match
-    for the string "<a href="#text-html"><code>text/html</code></a>", then act as if the tokenizer had emitted a start tag
-    token with the tag name "pre" followed by a single U+000A LINE FEED (LF) character, then switch the
-    <a>HTML parser</a>'s tokenizer to the [[#plaintext-state]].
-
-    </li>
-
-    <li>
-
-    Remove all the entries in the <a>browsing context</a>'s <a>session history</a>
-    after the <a>current entry</a>. If the <a>current entry</a> is the last entry in the
-    session history, then no entries are removed.
-
-    <p class="note">
-  This <a>doesn't necessarily have to affect</a> the user
-    agent's user interface.
-  </p>
-
-    </li>
-
-    <li>Remove any <a>tasks</a> queued by the <a>history traversal
-    task source</a> that are associated with any <code>Document</code> objects in the
-    <a>top-level browsing context</a>'s <a>document family</a>.</li>
-
-    <li>Remove any earlier entries that share the same {{Document}}.</li>
-
-    <li>If <var>replace</var> is false, then add a new entry, just before the last entry,
-    and associate with the new entry the text that was parsed by the previous parser associated with
-    the <code>Document</code> object, as well as the state of the document at the start of these
-    steps. This allows the user to step backwards in the session history to see the page before it
-    was blown away by the <code>document.open()</code> call. This new entry
-    does not have a <code>Document</code> object, so a new one will be created if the session history
-    is traversed to that entry.</li>
-
-    <li>Finally, set the <a>insertion point</a> to point at just before the end of the
-    <a>input stream</a> (which at this point will be empty).</li>
-
-    <li>Return the <code>Document</code> on which the method was invoked.</li>
-
-  </ol>
-
-  <p class="note">
-  The <code>document.open()</code> method does not affect
-  whether a <code>Document</code> is <a>ready for post-load tasks</a> or <a>completely
-  loaded</a>.
-  </p>
-
-  When called with four arguments, the <code>open()</code> method on
-  the <code>Document</code> object must call the <code>open()</code> method on the
-  <code>Window</code> object of the <code>Document</code> object, with the same arguments as the
-  original call to the <code>open()</code> method, and return whatever
-  that method returned. If the <code>Document</code> object has no <code>Window</code> object, then
-  the method must throw an <code>InvalidAccessError</code> exception.
+  When called with four arguments, the {{Document/open()}} method on the {{Document}} object must 
+  call the {{Window/open()}} method on the {{Window}} object of the {{Document}} object, with the 
+  same arguments as the original call to the {{Document/open()}} method, and return whatever that 
+  method returned. If the {{Document}} object has no {{Window}} object, then the method must throw 
+  an "{{InvalidAccessError}}" {{DOMException}}.
 
 <h4 id="closing-the-input-stream">Closing the input stream</h4>
 
@@ -5033,3 +4955,4 @@ a credentials mode, a cryptographic nonce, and a parser state:
   </div>
 
 </section>
+

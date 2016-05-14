@@ -801,7 +801,7 @@
       : The <a>creation URL</a>
       :: Return <var>url</var>.
 
-      : The <a>HTTPS state</a>
+      : The <a for="settings">HTTPS state</a>
       :: Return the <a for="document">HTTPS state</a> of the {{Document}} with which 
           <var>window</var> is currently associated.
   5. Set <var>realm</var>'s \[[HostDefined]] field to <var>settings object</var>.
@@ -1114,13 +1114,6 @@
 
   </dl>
 
-  <div class="impl">
-
-  The <code>Window</code> has an <a>HTTPS state</a>,
-  which represents the security properties of the network channel used to deliver the
-  {{Document}} with which the <code>Window</code> is associated. The value will be one of
-  "<code>modern</code>", "<code>deprecated</code>", or "<code>none</code>". If it is not explicitly set, then its value is "<code>none</code>".
-
   The <dfn attribute for="Window"><code>window</code></dfn>, 
   <dfn attribute for="Window"><code>frames</code></dfn>, and 
   <dfn attribute for="Window"><code>self</code></dfn>
@@ -1130,24 +1123,20 @@
   The <dfn attribute for="Window"><code>document</code></dfn> IDL attribute must return
   <a lt="document associated with a window">the <code>Window</code> object's newest <code>Document</code> object</a>.
 
-  <p class="note">
-  The {{Document}} object associated with a <code>Window</code> object can
-  change in exactly one case: when the <a>navigate</a> algorithm initializes a new {{Document}} object for the first page loaded
-  in a <a>browsing context</a>. In that specific case, the <code>Window</code> object of the
-  original <code>about:blank</code> page is reused and gets a new {{Document}} object.
-  </p>
+  <p class="note">The {{Document}} object associated with a <code>Window</code> object can change in 
+  exactly one case: when the <a>navigate</a> algorithm initializes a new {{Document}} object for the 
+  first page loaded in a <a>browsing context</a>. In that specific case, the {{Window}} object of 
+  the original <a scheme>about:blank</a> page is reused and gets a new {{Document}} object.</p>
 
-  The <dfn attribute for="Window"><code>defaultView</code></dfn> IDL attribute of the
-  {{Document}} interface must return the {{Document}}'s <a>browsing
-  context</a>'s <code>WindowProxy</code> object, if there is one, or null otherwise.
+  The <dfn attribute for="Window"><code>defaultView</code></dfn> IDL attribute of the {{Document}} 
+  interface must return the {{Document}}'s <a>browsing context</a>'s {{WindowProxy}} object, if 
+  there is one, or null otherwise.
 
   <hr />
 
-  For historical reasons, <code>Window</code> objects must also have a writable, configurable,
+  For historical reasons, {{Window}} objects must also have a writable, configurable,
   non-enumerable property named <dfn><code>HTMLDocument</code></dfn> whose value is the
   {{Document}} interface object.
-
-  </div>
 
 <h4 id="apis-for-creating-and-navigating-browsing-contexts-by-name">APIs for creating and navigating browsing contexts by name</h4>
 
@@ -1307,7 +1296,7 @@
     {{Document}} object.
 
     Otherwise, <a>navigate</a> <var>target browsing context</var>
-    to <var>resource</var>, with <a>exceptions enabled</a>. If <var>new</var> is true, then
+    to <var>resource</var>, with the <a>exceptions enabled flag</a> set. If <var>new</var> is true, then
     <a>replacement must be enabled</a> also. The <a>source
     browsing context</a> is <var>source browsing context</var>.
 
@@ -3221,8 +3210,8 @@
 
   1. The <a>source browsing context</a> is the <a>responsible browsing context</a> specified by the 
       <a>incumbent settings object</a>.
-  2. <a>Navigate</a> the <a>browsing context</a> to <var>url</var>, with <a>exceptions enabled</a>.
-      Rethrow any exceptions.
+  2. <a>Navigate</a> the <a>browsing context</a> to <var>url</var>, with the 
+      <a>exceptions enabled flag</a> set. Rethrow any exceptions.
 
       If the <var>replacement flag</var> is set or the <a>browsing context</a>'s
       <a>session history</a> contains only one {{Document}}, and that was the
@@ -3530,10 +3519,10 @@
 
     <dt>Otherwise</dt>
 
-    <dd><a>Navigate</a> the <a>browsing context</a> to
-    <a>the document's address</a> with <a>replacement enabled</a> and <a>exceptions
-    enabled</a>. The <a>source browsing context</a> must be the <a>browsing
-    context</a> being navigated. This is a <a>reload-triggered navigation</a>.</dd>
+    <dd><a>Navigate</a> the <a>browsing context</a> to the document's <a lt="document url">URL</a> 
+    with the <a>exceptions enabled flag</a> set and <a>replacement enabled</a>. 
+    The <a>source browsing context</a> must be the <a>browsing context</a> being navigated. This is 
+    a <a>reload-triggered navigation</a>. Rethrow any exceptions.</dd>
 
   </dl>
 
@@ -3611,7 +3600,8 @@
     author's explicit request to sandbox the content.
   </p>
 
-    If the <a>navigate</a> algorithm was invoked with <dfn>exceptions enabled</dfn>, and it
+    If the <a>navigate</a> algorithm was invoked optionally with an 
+    <dfn>exceptions enabled flag</dfn>, and it
     is aborted on this step, then in addition to aborting this algorithm, the user agent must also
     throw a <code>SecurityError</code> exception.
 
@@ -3775,8 +3765,9 @@
            Otherwise, the result of obtaining the resource for the URL is a <a>response</a> whose
            <a for="response">header list</a> consists of
            <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a> and whose
-           <a for="response">body</a> is <var>result</var>, and whose <a>HTTPS state</a> is
-           <var>settings</var>'s <a>HTTPS state</a>.
+           <a for="response">body</a> is <var>result</var>, and whose 
+           <a for="response">HTTPS state</a> is <var>settings</var>'s 
+           <a for="settings">HTTPS state</a>.
 
            When it comes time to <a>set the document's address</a> in the
            <a>navigation algorithm</a>, use <var>address</var> as the <a>override URL</a>.
@@ -4101,8 +4092,8 @@
           {{Document}}.
   3. Set <var>browsingContext</var>'s {{WindowProxy}} object's [[Window]] internal slot value to 
       <var>window</var>.
-  4. Set the {{Document}}'s <a>HTTPS state</a> to the <a>HTTPS state</a> of the resource used to 
-      generate the document.
+  4. Set the {{Document}}'s <a for="document">HTTPS state</a> to the 
+      <a for="response">HTTPS state</a> of the resource used to generate the document.
   5. Execute the <a>Initialize a <code>Document</code>'s CSP list</a> algorithm on the {{Document}}
       object and the resource used to generate the document. [[CSP3]]
   6. Set <a>the document's referrer</a> to the 
