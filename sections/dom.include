@@ -48,23 +48,24 @@
 
 
   1. Let <var>source</var> be the value of the <a>browsing context</a>'s <a>active document</a>'s
-    <a>reload override buffer</a>.
-
+      <a>reload override buffer</a>.
   2. Let <var>address</var> be the <a>browsing context</a>'s <a>active document</a>'s
-    <a>address</a>.
+      <a lt="document url">URL</a>.
+  3. Let <var>HTTPS state</var> be the <a for="document">HTTPS state</a> of the 
+      <a>browsing context</a>'s <a>active document</a>.
+  4. Let <var>CSP list</var> be the <a for="document">CSP list</a> of the <a>browsing context</a>'s
+      <a>active document</a>.
+  5. <a>Navigate</a> the <a>browsing context</a> to a new <a>response</a> whose 
+      <a for="response">body</a> is <var>source</var>, <a for="response">CSP list</a> is 
+      <var>CSP list</var> and <a for="response">HTTPS state</a> is <var>HTTPS state</var>, with the 
+      <a>exceptions enabled flag</a> and <a>replacement enabled</a>. The 
+      <a>source browsing context</a> is that given to the <a>overridden reload</a> algorithm. When 
+      the <a>navigate</a> algorithm creates a {{Document}} object for this purpose, set that 
+      {{Document}}'s <a>reload override flag</a> and set its <a>reload override buffer</a> to 
+      <var>source</var>. Rethrow any exceptions.
 
-  3. Let <var>HTTPS state</var> be the <a>HTTPS state</a> of the <a>browsing context</a>'s
-    <a>active document</a>'s {{Window}}.
-
-  4. <a>Navigate</a> the <a>browsing context</a> to a new <a>response</a> whose <{body}> is
-    <var>source</var> and <a>HTTPS state</a> is <var>HTTPS state</var>, with
-    <a>replacement enabled</a> and <a>exceptions enabled</a>. The <a>source browsing context</a>
-    is that given to the <a>overridden reload</a> algorithm. When the <a>navigate</a> algorithm
-    creates a {{Document}} object for this purpose, set that {{Document}}'s
-    <a>reload override flag</a> and set its <a>reload override buffer</a> to <var>source</var>.
-
-    When it comes time to <a>set the document's address</a> in the <a>navigation algorithm</a>,
-    use <var>address</var> as the <a>override URL</a>.
+      When it comes time to <a>set the document's address</a> in the <a>navigation algorithm</a>,
+      use <var>address</var> as the <a>override URL</a>.
 
 <h4 id="the-document-object">The <dfn element>Document</dfn> object</h4>
 
@@ -123,6 +124,17 @@
     };
     Document implements GlobalEventHandlers;
   </pre>
+
+  The {{Document}} has an <dfn for="document">HTTPS state</dfn> (an <a>HTTPS state value</a>), 
+  initially "<code>none</code>", which represents the security properties of the network channel 
+  used to deliver the {{Document}}'s data.
+
+  The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of 
+  <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise 
+  specified.
+
+  The {{Document}} has a <dfn lt="document module map">module map</dfn>, which is a 
+  <a>module map</a>, initially empty.
 
 <h4 id="resource-metadata-management">Resource metadata management</h4>
 
