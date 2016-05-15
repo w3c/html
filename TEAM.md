@@ -6,15 +6,17 @@ This document contains information used by the editors maintaining the specifica
 
 1. Use your judgement for approving editorial changes and improvements. In general we don't need lots of review for these changes. If a change improves the readability of the spec or corrects a typo then it doesn't represent a significant contribution from an IP perspective.
 
-2. If the Pull Request contains a normative change to the specification and the IPR check fails because the contributor is either not part of the working group or not yet known to the IPR checker then please contact the chairs and do not merge the PR. The chairs will either update the tool if the contributor is a member or otherwise resolve the issue.
+2. Substantive normative changes should be approved by two editors. If the PR originated from outside the editorial team, then two editors should indicate their support before it is merged. If the PR was submitted by an editor, then another editor is able to merge it.
 
-3. Travis-CI runs against all pull requests on the `master` branch. If the build fails due to a Bikeshed error then the pull request should not be merged until it has been corrected to build without errors. If a broken pull request is merged then the main spec build will be broken.
+3. If the Pull Request contains a normative change to the specification and the IPR check fails because the contributor is either not part of the working group or not yet known to the IPR checker then please contact the chairs and do not merge the PR. The chairs will either update the tool if the contributor is a member or otherwise resolve the issue.
 
-4. The editors should review the contribution considerations listed in the [README.md](README.md) file.
+4. Travis-CI runs against all pull requests on the `master` branch. If the build fails due to a Bikeshed error then the pull request should not be merged until it has been corrected to build without errors. If a broken pull request is merged then the main spec build will be broken.
 
-5. Use your judgement before approving a change that might be considered controversial. In general, such changes often need a wider review from the working group and should not be merged before that happens. Of course, we can revert or amend changes if it is clear that they don't represent WG consensus so it is a judgement call.
+5. The editors should review the contribution considerations listed in the [README.md](README.md) file.
 
-6. Note: the editors don't need to create pull requests for editorial changes. Editors may commit these changes directly to the repository. Editors should create pull requests for normative changes associated with a bug or issue. Editors may merge their own pull requests if they are expected to be uncontroversial. Again, use good judgement.
+6. Use your judgement before approving a change that might be considered controversial. In general, such changes often need a wider review from the working group and should not be merged before that happens. Of course, we can revert or amend changes if it is clear that they don't represent WG consensus so it is a judgement call.
+
+7. Note: the editors don't need to create pull requests for editorial changes. Editors may commit these changes directly to the repository. Editors should create pull requests for normative changes associated with a bug or issue. Editors may merge their own pull requests if they are expected to be uncontroversial. Again, use good judgement .
 
 ## Automatic build process
 

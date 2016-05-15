@@ -43,8 +43,7 @@
     </dd>
   </dl>
 
-  The <{head}> element <a>represents</a> a collection of metadata for the
-  {{Document}}.
+  The <{head}> element <a>represents</a> a collection of metadata for the {{Document}}.
 
   <div class="example">
     The collection of metadata in a <{head}> element can be large or small. Here is an
@@ -83,6 +82,12 @@
     The <a element for="html"><code>title</code></a> element is a required child in most situations, but when a higher-level
     protocol provides title information, e.g., in the Subject line of an e-mail when HTML is used as
     an e-mail authoring format, the <a element for="html"><code>title</code></a> element can be omitted.
+  </p>
+
+  <p class="note">
+    It is recommended to keep the usage of attributes and their values defined on the <{head}>
+    element to a minimum to allow for proper detection of the <a>character encoding declaration</a>
+    within the first 1024 bytes.
   </p>
 
 <h4 id="the-title-element">The <dfn element><code>title</code></dfn> element</h4>
@@ -326,14 +331,12 @@
     <dd><a>Global attributes</a></dd>
     <dd><code>href</code> — Address of the <a>hyperlink</a></dd>
     <dd><code>crossorigin</code> — How the element handles crossorigin requests</dd>
-    <dd>
-      <code>rel</code> — Relationship between the document containing the hyperlink and the
-      destination resource
-    </dd>
+    <dd><{link/rel}> — Relationship of this document (or subsection/topic) to the destination resource</dd>
+    <dd><{link/rev}> — <a>Reverse link</a> relationship of the destination resource to this document (or subsection/topic)</dd>
     <dd><code>media</code> — Applicable media</dd>
     <dd><code>hreflang</code> — Language of the linked resource</dd>
     <dd><code>type</code> — Hint for the type of the referenced resource</dd>
-    <dd><code>sizes</code> — Sizes of the icons (for <code>rel</code>="<code>icon</code>")</dd>
+    <dd><code>sizes</code> — Sizes of the icons (for <{link/rel}>="<code>icon</code>")</dd>
     <dd>
       Also, the <{link/title}> attribute has special semantics on this element:  Title of the
       link; alternative style sheet set name.
@@ -351,7 +354,6 @@
           attribute DOMString href;
           attribute DOMString? crossOrigin;
           attribute DOMString rel;
-
           attribute DOMString rev;
           readonly attribute DOMTokenList relList;
           attribute DOMString media;
@@ -371,33 +373,33 @@
   <span class="impl">If the <{link/href}> attribute is absent, then the element does not define
   a link.</span>
 
-  A <{link}> element must a <code>rel</code> attribute.
+  A <{link}> element must have a <{link/rel}> attribute.
 
   <p class="note">
-    If the <code>rel</code> attribute is used, the element is restricted to the <code>head</code>
+    If the <{link/rel}> attribute is used, the element is restricted to the <code>head</code>
     element.
   </p>
 
   The types of link indicated (the relationships) are given by the value of the
-  <dfn element-attr for="link"><code>rel</code></dfn> attribute, which, if present, must have a value that is a <a>set of
-  space-separated tokens</a>. The <a>allowed keywords and their meanings</a> are defined in a later
-  section. <span class="impl">If the <code>rel</code> attribute is absent, has no keywords, or if
-  none of the keywords used are allowed according to the definitions in this specification, then the
-  element does not create any links.</span>
+  <dfn element-attr for="link"><code>rel</code></dfn> attribute, which, if present, must have a
+  value that is a <a>set of space-separated tokens</a>. The <a>allowed keywords and their
+  meanings</a> are defined in a later section. If the <{link/rel}> attribute is absent, has no
+  keywords, or if none of the keywords used are allowed according to the definitions in this
+  specification, then the element does not create any links.
 
   Two categories of links can be created using the <{link}> element:
   <a>Links to external resources</a> and <a>hyperlinks</a>. The [[#sec-link-types]] section defines
   whether a particular link type is an external resource or a hyperlink. One <code>link</code>
   element can create multiple links (of which some might be external resource links and some might
   be hyperlinks); exactly which and how many links are created depends on the keywords given in the
-  <code>rel</code> attribute. User agents must process the links on a per-link
+  <{link/rel}> attribute. User agents must process the links on a per-link
   basis, not a per-element basis.
 
   <p class="note">
     Each link created for a <{link}> element is handled separately. For instance, if there
     are two <{link}> elements with <code>rel="stylesheet"</code>, they each count as a
     separate external resource, and each is affected by its own attributes independently. Similarly,
-    if a single <{link}> element has a <code>rel</code> attribute with the value
+    if a single <{link}> element has a <{link/rel}> attribute with the value
     <code>next stylesheet</code>, it creates both a <a>hyperlink</a> (for the <code>next</code>
     keyword) and an <a>external resource link</a> (for the <code>stylesheet</code> keyword), and
     they are affected by other attributes (such as <code>media</code> or <code>title</code>)
@@ -412,6 +414,53 @@
     The two links created by this element are one whose semantic is that the target page has
     information about the current page's author, and one whose semantic is that the target page has
     information regarding the license under which the current page is provided.
+  </div>
+
+  <{link}> and <{a}> elements may also have a
+  <dfn element-attr for="a,link,links"><code>rev</code></dfn> attribute, which is used to describe
+  a <a>reverse link</a> relationship from the resource specified by the <{links/href}> to the
+  current document. If present, the value of this attribute must be a <a>set of space-separated
+  tokens</a>. Like the <{links/rel}> attribute, [[#sec-link-types]] describes the <a>allowed
+  keywords and their meanings</a> for the <{links/rev}> attribute. Both the <{links/rel}> and
+  <{links/rev}> attributes may be present on the same element.
+
+  <dfn lt="reverse link|Reverse links">Reverse links</dfn> are a way to express the reverse
+  directional relationship of a link. In contrast to the <{links/rel}> attribute, whose value
+  conveys a forward directional relationship ("how is the link related to me"), the <{links/rev}>
+  attribute allows for similiar relationships to be expressed in the reverse direction ("how am I
+  related to this link"). These values can enable user agents to build a more comprehensive map of
+  linked documents.
+
+  <div class="example">Given two documents, each containing a chapter of a book, the links between
+  them could be described with the <{link/rel}> and <{links/rev}> attributes as follows:
+
+  Document with URL "chapter1.html"
+  <pre highlight="html">&lt;link href="chapter2.html" rel="next" rev="prev"&gt;</pre>
+
+  Document with URL "chapter2.html"
+  <pre highlight="html">
+&lt;link href="chapter1.html" rel="prev" rev="next"&gt;
+&lt;link href="chapter3.html" rel="next" rev="prev"&gt;</pre>
+
+  From chapter1.html, the link to chapter2.html is the "<code>next</code>" chapter in the series in the
+  forward direction, and the "<code>previous</code>" chapter in the reverse diretion (from
+  chapter2.html to chapter1.html).
+  </div>
+
+  <div class="example">The links in a table of contents document might be described using
+  <{links/rel}> and <{links/rev}> as follows:
+  <pre highlight="html">
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href="chapter1.html" rev="toc" rel="next"&gt;chapter 1&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="chapter2.html" rev="toc"&gt;&lt;/a&gt;chapter 2&lt;/li&gt;
+    &lt;li&gt;&lt;a href="chapter3.html" rev="toc"&gt;&lt;/a&gt;chapter 3&lt;/li&gt;
+  &lt;/ol&gt;
+  </pre>
+
+  From the table of contents, the "<code>next</code>" logical path is to the first chapter,
+  expressed using <{links/rel}>. Each chapter link has a "<code>toc</code>" <{links/rev}> value
+  which indicates that the current document is the table of contents document for every chapter.
+
   </div>
 
   The <dfn element-attr for="link"><code>crossorigin</code></dfn> attribute is a <a>CORS settings attribute</a>. It is
@@ -470,7 +519,7 @@
     from the element's attributes, again as defined below), in some form or another (possibly
     simplified), for each hyperlink created with each <{link}> element in the document:
 
-    * The relationship between this document and the resource (given by the <code>rel</code>
+    * The relationship between this document and the resource (given by the <{link/rel}>
         attribute)
     * The title of the resource (given by the <code>title</code> attribute).
     * The address of the resource (given by the <{link/href}> attribute).
@@ -482,8 +531,8 @@
   </div>
 
   <p class="note">
-    Hyperlinks created with the <{link}> element and its <code>rel</code> attribute apply
-    to the whole page. This contrasts with the <code>rel</code> attribute of <{a}> and
+    Hyperlinks created with the <{link}> element and its <{link/rel}> attribute apply
+    to the whole page. This contrasts with the <{links/rel}> attribute of <{a}> and
     <{area}> elements, which indicates the type of a link whose context is given by the
     link's location within the document.
   </p>
@@ -591,7 +640,7 @@
   </p>
 
   The <code>sizes</code> attribute is used with the <code>icon</code> link type. The attribute must
-  not be specified on <{link}> elements that do not have a <code>rel</code> attribute that
+  not be specified on <{link}> elements that do not have a <{link/rel}> attribute that
   specifies the <code>icon</code> keyword.
 
   <div class="impl">
@@ -626,19 +675,19 @@
     defined in <a>HTML link types</a> which are allowed on <code>link</code> elements and supported
     by the user agent.
 
-    <code>rel</code>'s
+    <{link/rel}>'s
     <a>supported tokens</a> are the keywords defined in
     <a>HTML link types</a> which are allowed on <code>link</code> elements, impact
     the processing model, and are supported by the user agent. The possible supported tokens are
     <code>alternate</code>, <code>icon</code>, <code>prefetch</code>,
     <code>stylesheet</code> and <code>next</code>.
-    <code>rel</code>'s
+    <{link/rel}>'s
     <a>supported tokens</a> must only include the tokens from
     this list that the user agent implements the processing model for.
 
     Other specifications may add <a>HTML link types</a> as
     defined in <a>Other link types</a>. These specifications may require
-    that their link types be included in <code>rel</code>'s supported
+    that their link types be included in <{link/rel}>'s supported
     tokens.
   </div>
 
@@ -1388,20 +1437,13 @@
   <dl class="element">
     <dt><a>Categories</a>:</dt>
     <dd><a>Metadata content</a>.</dd>
-    <dd>If the <code>scoped</code> attribute is present: <a>flow content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>
-      If the <code>scoped</code> attribute is absent: where <a>metadata content</a> is expected.
+      Where <a>metadata content</a> is expected.
     </dd>
     <dd>
-      If the <code>scoped</code> attribute is absent: in a <{noscript}> element that is a
+      In a <{noscript}> element that is a
       child of a <{head}> element.
-    </dd>
-    <dd>
-      If the <code>scoped</code> attribute is present: where <a>flow content</a> is expected, but
-      before any other <a>flow content</a> other than <a>inter-element whitespace</a> and
-      <{style}> elements, and not as the child of an element whose content model is
-      <a>transparent</a>.
     </dd>
     <dt><a>Content model</a>:</dt>
     <dd>
@@ -1415,10 +1457,6 @@
     <dd><code>media</code> — Applicable media</dd>
     <dd><{style/nonce}> - Cryptographic nonce used in <em>Content Security Policy</em> checks [[CSP3]]</dd>
     <dd><code>type</code> — Type of embedded resource</dd>
-    <dd>
-      <code>scoped</code> — Whether the styles apply to the entire document or just the parent
-      subtree
-    </dd>
     <dd>
       Also, the <{style/title}> attribute has special semantics on this element: Alternative
       style sheet set name.
@@ -1434,7 +1472,6 @@
           attribute DOMString media;
           attribute DOMString nonce;
           attribute DOMString type;
-          attribute boolean scoped;
         };
         HTMLStyleElement implements LinkStyle;
       </pre>
@@ -1472,28 +1509,10 @@
   The default, if the <code>media</code> attribute is omitted, is "<code>all</code>", meaning that
   by default styles apply to all media.
 
-  The <dfn element-attr for="style"><code>scoped</code></dfn> attribute is a <a>boolean attribute</a>. If present, it
-  indicates that the styles are intended just for the subtree rooted at the <code>style</code>
-  element's parent element, as opposed to the whole {{Document}}.
-
-  If the <code>scoped</code> attribute is present and the element has a parent element, then the
-  <{style}> element must precede any <a>flow content</a> in its parent element other than
-  <a>inter-element whitespace</a> and other <{style}> elements, and the parent element's
-  content model must not have a <a>transparent</a> component.
-
   <p class="note">
-    This implies that scoped <{style}> elements cannot be children of, e.g., <{a}>
-    or <{ins}> elements, even when those are used as <a>flow content</a> containers.
+    A <{style}> element is restricted to
+    appearing in the <{head}> of the document.
   </p>
-
-  <p class="note">
-    A <{style}> element <em>without</em> a <code>scoped</code> attribute is restricted to
-    appearing in the <code>head</code> of the document.
-  </p>
-
-  A style sheet declared by a <{style}> element that has a <code>scoped</code> attribute
-  and has a parent node that is an element is <i>scoped</i>, with the <i>scoping root</i> being the
-  <{style}> element's parent element. [[!CSS-SCOPING-1]]
 
   The <dfn element-attr for="style"><code>nonce</code></dfn> attribute represents a cryptographic 
   nonce ("number used once") which can be used by <a>Content Security Policy</a> to determine 
@@ -1611,8 +1630,8 @@
   </p>
 
   <div class="impl">
-    The {{HTMLStyleElement/media}}, {{HTMLStyleElement/nonce}}, {{HTMLStyleElement/type}} and
-    {{HTMLStyleElement/scoped}} IDL attributes must <a>reflect</a> the respective content
+    The {{HTMLStyleElement/media}}, {{HTMLStyleElement/nonce}}, and {{HTMLStyleElement/type}}
+    IDL attributes must <a>reflect</a> the respective content
     attributes of the same name.
   </div>
 

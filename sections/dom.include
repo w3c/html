@@ -164,7 +164,7 @@
       Can be set, to add a new cookie to the element's set of HTTP cookies.
 
       If the contents are <a>sandboxed into a unique origin</a> (e.g., in an <code>iframe</code> with
-      the <code>sandbox</code> attribute), a <code>SecurityError</code> exception will be thrown on
+      the <{iframe/sandbox}> attribute), a <code>SecurityError</code> exception will be thrown on
       getting and setting.
     </dd>
   </dl>
@@ -615,140 +615,92 @@
   certain meanings (semantics). For example, the <{ol}> element represents an ordered list,
   and the <{global/lang}> attribute represents the language of the content.
 
-  These definitions allow HTML processors, such as Web browsers or search engines, to present and
-  use documents and applications in a wide variety of contexts that the author might not have
-  considered.
+  These definitions allow HTML processors, like web browsers and search engines, to present
+  documents and applications consistently in different contexts.
 
   <div class="example">
-    As a simple example, consider a Web page written by an author who only considered desktop
-    computer Web browsers:
+  In this example the HTML headings may be presented as large text in a desktop browser, or standard
+  size text in bold in a mobile browser. In both cases the semantic information remains the same -
+  that the <{h1}> and <{h2}> elements represent headings.
 
     <pre highlight="html">
-      &lt;!DOCTYPE HTML>
-      &lt;html>
-        &lt;head>
-          &lt;title>My Page&lt;/title>
-        &lt;/head>
-        &lt;body>
-          &lt;h1>Welcome to my page&lt;/h1>
-          &lt;p>I like cars and lorries and have a big Jeep!&lt;/p>
-          &lt;h2>Where I live&lt;/h2>
-          &lt;p>I live in a small hut on a mountain!&lt;/p>
-        &lt;/body>
-      &lt;/html>
-    </pre>
-
-    Because HTML conveys <em>meaning</em>, rather than presentation, the same page can also be used
-    by a small browser on a mobile phone, without any change to the page. Instead of headings being
-    in large letters as on the desktop, for example, the browser on the mobile phone might use the
-    same size text for the whole the page, but with the headings in bold.
-
-    But it goes further than just differences in screen size: the same page could equally be used by
-    a blind user using a browser based around speech synthesis, which instead of displaying the page
-    on a screen, reads the page to the user, e.g., using headphones. Instead of large text for the
-    headings, the speech browser might use a different volume or a slower voice.
-
-    That's not all, either. Since the browsers know which parts of the page are the headings, they
-    can create a document outline that the user can use to quickly navigate around the document,
-    using keys for "jump to next heading" or "jump to previous heading". Such features are
-    especially common with speech browsers, where users would otherwise find quickly navigating a
-    page quite difficult.
-
-    Even beyond browsers, software can make use of this information. Search engines can use the
-    headings to more effectively index a page, or to provide quick links to subsections of the page
-    from their results. Tools can use the headings to create a table of contents (that is in fact
-    how this very specification's table of contents is generated).
-
-    This example has focused on headings, but the same principle applies to all of the semantics
-    in HTML.
-  </div>
-
-  Authors must not use elements, attributes, or attribute values for purposes other than their
-  appropriate intended semantic purpose, as doing so prevents software from correctly processing the
-  page.
-
-  <div class="example">
-    <pre class="bad" highlight="html">
-      &lt;body&gt;
-        &lt;h1&gt;ACME Corporation&lt;/h1&gt;
-        &lt;h2&gt;The leaders in arbitrary fast delivery since 1920&lt;/h2&gt;
-        ...
-    </pre>
-  </div>
-
-  <div class="example">
-    The document in this next example is similarly non-conforming, despite
-    being syntactically correct, because the data placed in the cells is clearly
-    not tabular data, and the <{cite}> element mis-used:
-
-    <pre class="bad" highlight="html">
-      &lt;!DOCTYPE HTML&gt;
-      &lt;html lang="en-GB"&gt;
-        &lt;head&gt; &lt;title&gt; Demonstration &lt;/title&gt; &lt;/head&gt;
-        &lt;body&gt;
-          &lt;table&gt;
-            &lt;tr&gt; &lt;td&gt; My favourite animal is the cat. &lt;/td&gt; &lt;/tr&gt;
-            &lt;tr&gt;
-              &lt;td&gt;
-                &mdash;&lt;a href="http://example.org/~ernest/"&gt;&lt;cite&gt;Ernest&lt;/cite&gt;&lt;/a&gt;,
-                in an essay from 1992
-              &lt;/td&gt;
-            &lt;/tr&gt;
-          &lt;/table&gt;
-        &lt;/body&gt;
-      &lt;/html&gt;
-    </pre>
-
-    This would make software that relies on these semantics fail: for example, a speech browser that
-    allowed a blind user to navigate tables in the document would report the quote above as a table,
-    confusing the user; similarly, a tool that extracted titles of works from pages would extract
-    "Ernest" as the title of a work, even though it's actually a person's name, not a title.
-
-    A corrected version of this document might be:
-
-    <pre highlight="html">
-      &lt;!DOCTYPE HTML&gt;
-      &lt;html lang="en-GB"&gt;
-        &lt;head&gt; &lt;title&gt; Demonstration &lt;/title&gt; &lt;/head&gt;
-        &lt;body&gt;
-          &lt;blockquote&gt;
-            &lt;p&gt; My favourite animal is the cat. &lt;/p&gt;
-          &lt;/blockquote&gt;
-          &lt;p&gt;
-            &mdash;&lt;a href="http://example.org/~ernest/"&gt;Ernest&lt;/a&gt;,
-            in an essay from 1992
-          &lt;/p&gt;
+      &lt;!doctype html&gt;
+      &lt;html lang="en"&gt;
+        &lt;head&gt;
+          &lt;title&gt;Favorite books&lt;/title&gt;
+        &lt;/head&gt;
+            &lt;body&gt;
+          &lt;header&gt;
+            &lt;img src="logo.png" alt="Favorite books logo"&gt;
+          &lt;/header&gt;
+          &lt;main&gt;
+            &lt;h1&gt;Favorite books&lt;/h1&gt;
+            &lt;p&gt;These are a few of my favorite books.&lt;/p&gt;
+            &lt;h2&gt;The Belgariad&lt;/h2&gt;
+            &lt;p&gt;Five books by David and Leigh Eddings.&lt;/p&gt;
+            &lt;h2&gt;The Hitchhiker's Guide to the Galaxy&lt;/h2&gt;
+            &lt;p&gt;A trilogy of five books by Douglas Adams.&lt;/p&gt;
+          &lt;/main&gt;
         &lt;/body&gt;
       &lt;/html&gt;
     </pre>
   </div>
 
-  Authors must not use elements, attributes, or attribute values that are not permitted by this
-  specification or <a lt="applicable specification">other applicable specifications</a>, as doing so makes it significantly harder
-  for the language to be extended in the future.
+  This semantic information is critical to assistive technologies. For example, a screen reader will
+  query the browser for semantic information and use that information to present the document or
+  application in synthetic speech.
+
+  In some cases assistive technologies use semantic information to provide additional functionality.
+  A speech recognition tool might provide a voice command for moving focus to the start of the
+  <{main}> element for example.
+
+  When the appropriate HTML element or attribute is not used, it deprives HTML processors of
+  valuable semantic information.
 
   <div class="example">
-    In the next example, there is a non-conforming attribute value ("carpet") and a non-conforming
-    attribute ("texture"), which is not permitted by this specification:
+  In this example styling may be used to create a visual representation of headings and other
+  components, but because the appropriate HTML elements have not been used there is little semantic
+  information available to web browsers, search engines and assistive technologies.
 
-    <pre class="bad" highlight="html">&lt;label&gt;Carpet: &lt;input type="carpet" name="c" texture="deep pile"&gt;&lt;/label&gt;</pre>
-
-    Here would be an alternative and correct way to mark this up:
-
-    <pre highlight="html">&lt;label&gt;Carpet: &lt;input type="text" class="carpet" name="c" data-texture="deep pile"&gt;&lt;/label&gt;</pre>
+    <pre highlight="html">
+      &lt;!doctype html&gt;
+      &lt;html lang="en"&gt;
+        &lt;head&gt;
+          &lt;title&gt;Favorite books&lt;/title&gt;
+        &lt;/head&gt;
+              &lt;body&gt;
+          &lt;div class="header"&gt;
+             &lt;img src="logo.png" alt="Favorite books logo"&gt;
+          &lt;/div&gt;
+          &lt;div class="main"&gt;
+             &lt;span class="largeHeading"&gt;Favorite books&lt;/span&gt;
+             &lt;p&gt;These are a few of my favorite books.&lt;/p&gt;
+             &lt;span class="smallHeading"&gt;The Belgariad&lt;/span&gt;
+             &lt;p&gt;Five books by David and Leigh Eddings.&lt;/p&gt;
+             &lt;span class="smallHeading"&gt;The Hitchhiker's Guide to the Galaxy&lt;/span&gt;
+             &lt;p&gt;A trilogy of five books by Douglas Adams.&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+    </pre>
   </div>
 
-  Through scripting and using other mechanisms, the values of attributes, text, and indeed the
-  entire structure of the document may change dynamically while a user agent is processing it. The
-  semantics of a document at an instant in time are those represented by the state of the document
-  at that instant in time, and the semantics of a document can therefore change over time. User
-  agents <span class="impl">must</span> update their presentation of the document as this occurs.
+  A document can change dynamically while it is being processed. Scripting and other mechanisms can
+  be used to change attribute values, text, or the entire document structure. The semantics of a
+  document are therefore based on the document's state at a particular instance in time, but may
+  also change in response to external events. User agents must update their presentation of the
+  document to reflect these changes.
 
-  <p class="example">
-    HTML has a <{progress}> element that describes a progress bar. If its "value" attribute
-    is dynamically updated by a script, the user agent would update the rendering to show the progress
-    changing.
-  </p>
+  <div class="example">
+  In this example the <{audio}> element is used to play a music track. The
+  <dfn attribute for="Document"><code>controls</code></dfn> attribute is used to show the user
+  agent player, and as the music plays the controls are updated to indicate progress. The available
+  semantic information is updated in response to these changes.
+
+  <pre highlight="html">
+    &lt;audio src="comfortablynumb.mp3" controls&gt;
+  </pre>
+  </div>
 
 <h4 id="elements-in-the-dom">Elements in the DOM</h4>
 
@@ -1078,7 +1030,6 @@
     <li><{small}></li>
     <li><{span}></li>
     <li><{strong}></li>
-    <li><{style}> (if the <code>scoped</code> attribute is present)</li>
     <li><{sub}></li>
     <li><{sup}></li>
     <li><{svg}></li>
@@ -1244,26 +1195,27 @@
 
 <h6 id="kinds-of-content-interactive-content">Interactive content</h6>
 
-  <dfn lt="interactive content">Interactive content</dfn> is content that is specifically intended for user interaction.
+  <dfn lt="interactive content">Interactive content</dfn> is content that is specifically intended
+  for user interaction.
 
   <ul class="brief category-list">
-    <li><{a}> (if the <code>href</code> attribute is present);</li>
-    <li><{audio}> (if the <code>controls</code> attribute is present)</li>
+    <li><{a}> (if the <{a/href}> attribute is present)</li>
+    <li><{audio}> (if the <{audio/controls}> attribute is present)</li>
     <li><{button}></li>
     <li><{details}></li>
     <li><{embed}></li>
     <li><{iframe}></li>
-    <li><{img}> (if the <code>usemap</code> attribute is present)</li>
+    <li><{img}> (if the <{img/usemap}> attribute is present)</li>
     <li>
-      <code>input</code> (if the <code>type</code> attribute is <em>not</em> in the <a>Hidden</a>
+      <{input}> (if the <{input/type}> attribute is <em>not</em> in the <a>Hidden</a>
       state)
     </li>
     <li><{keygen}></li>
     <li><{label}></li>
-    <li><{object}> (if the <code>usemap</code> attribute is present)</li>
+    <li><{object}> (if the <{object/usemap}> attribute is present)</li>
     <li><{select}></li>
     <li><{textarea}></li>
-    <li><{video}> (if the <code>controls</code> attribute is present)</li>
+    <li><{video}> (if the <{video/controls}> attribute is present)</li>
   </ul>
 
   The <code>tabindex</code> attribute can also make any element into <a>interactive content</a>.
@@ -1702,7 +1654,6 @@
   * <code>onseeking</code>
   * <code>onselect</code>
   * <code>onshow</code>
-  * <code>onsort</code>
   * <code>onstalled</code>
   * <code>onsubmit</code>
   * <code>onsuspend</code>
@@ -2622,8 +2573,8 @@
     alternatively, the user agent must act as if it implemented just the aforementioned properties
     and had a user agent style sheet that included all the aforementioned rules, but without letting
     style sheets specified in documents override them, or, alternatively, the user agent must
-    implement another styling language with equivalent semantics. [[!CSS-WRITING-MODES-3]]
-    [[!CSS3-CONTENT]]
+    implement another styling language with equivalent semantics. [[CSS-WRITING-MODES-3]]
+    [[CSS3-CONTENT]]
 
     <p id="bidireq">
       The following elements and attributes have requirements defined by the [[#rendering]]
