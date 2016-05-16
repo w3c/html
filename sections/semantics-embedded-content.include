@@ -858,8 +858,8 @@
 
   Each {{Document}} object must have a <dfn>list of available images</dfn>. Each image
   in this list is identified by a tuple consisting of an <a>absolute URL</a>, a <a>CORS
-  settings attribute</a> mode, and, if the mode is not <a>No
-  CORS</a>, an <a>origin</a>.
+  settings attribute</a> mode, and, if the mode is not <a state for="cors">No CORS</a>, an 
+  <a for="concept">origin</a>.
   Each image furthermore has an <dfn>ignore higher-layer caching</dfn> flag.
   User agents may copy entries from one {{Document}}
   object's <a>list of available images</a> to another at any time (e.g., when the
@@ -935,14 +935,14 @@
 
     <ol>
 
-      <li><a>Resolve</a> <var>selected source</var>, relative
+      <li><a>Parse</a> <var>selected source</var>, relative
       to the element, and let the result be <var>absolute URL</var>. If that is not successful, then
       abort these inner set of steps.</li>
 
-      <li>Let <var>key</var> be a tuple consisting of the resulting <a>absolute
-      URL</a>, the <{img}> element's <code>crossorigin</code>
-      attribute's mode, and, if that mode is not <a>No CORS</a>,
-      the <a>node document</a>'s <a>origin</a>.</li>
+      <li>Let <var>key</var> be a tuple consisting of the resulting <a>absolute URL</a>, the 
+      <{img}> element's <code>crossorigin</code>
+      attribute's mode, and, if that mode is not <a state for="cors">No CORS</a>,
+      the <a>node document</a>'s <a for="concept">origin</a>.</li>
 
       <li>
 
@@ -1036,8 +1036,9 @@
 
     </li>
 
-    &#x231B; <a>Resolve</a> <var>selected source</var>, relative
-    to the element, and let <var>absolute URL</var> be the <a>resulting absolute URL</a>. If
+    &#x231B; <a>Parse</a> <var>selected source</var>, relative
+    to the element's <a>node document</a>, and let <var>absolute URL</var> be the 
+    <a>resulting URL string</a>. If
     that is not successful, run these substeps:
 
     <ol>
@@ -1096,7 +1097,7 @@
 
     The resource obtained in this fashion, if any, is <var>image request</var>'s <a>image data</a>.
     It can be either <a>CORS-same-origin</a> or <a>CORS-cross-origin</a>; this affects
-    the <a>origin</a> of the image itself (e.g., when used on a <code>canvas</code>).
+    the <a for="concept">origin</a> of the image itself (e.g., when used on a <code>canvas</code>).
 
     Fetching the image must <a>delay the load event</a> of the element's <a>node document</a> until the
     <a>task</a> that is <a>queued</a> by the
@@ -1920,19 +1921,23 @@
     density</var> are the same as the element's <a>last selected source</a> and <a>current
     pixel density</a>, then abort these steps.</li>
 
-    <li>&#x231B; <a>Resolve</a> <var>selected source</var>,
-    relative to the element, and let <var>absolute URL</var> be the <a>resulting absolute URL</a>.
+    <li>&#x231B; <a>Parse</a> <var>selected source</var>,
+    relative to the element's <a>node document</a>, and let <var>absolute URL</var> be the 
+    <a>resulting URL string</a>.
     If that is not successful, abort these steps.</li>
 
-    <li>&#x231B; Let <var>corsAttributeState</var> be the state of the element's <code>crossorigin</code> content attribute.</li>
+    <li>&#x231B; Let <var>corsAttributeState</var> be the state of the element's 
+    <code>crossorigin</code> content attribute.</li>
 
-    <li>&#x231B; Let <var>origin</var> be the <a>origin</a> of the <{img}> element's <a>node document</a>.</li>
+    <li>&#x231B; Let <var>origin</var> be the <a for="concept">origin</a> of the <{img}> element's 
+    <a>node document</a>.</li>
 
     <li>&#x231B; Let <var>client</var> be the <{img}> element's <a>node
     document</a>'s <code>Window</code> object's <a>environment settings object</a>.</li>
 
     <li>&#x231B; Let <var>key</var> be a tuple consisting of <var>absolute URL</var>,
-    <var>corsAttributeState</var>, and, if <var>corsAttributeState</var> is not <a>No CORS</a>, <var>origin</var>.</li>
+    <var>corsAttributeState</var>, and, if <var>corsAttributeState</var> is not 
+    <a state for="cors">No CORS</a>, <var>origin</var>.</li>
 
     <li>&#x231B; Let <var>image request</var> be a new <a>image request</a>
     whose <a>current URL</a> is <var>absolute URL</var></li>
@@ -1969,7 +1974,8 @@
       <li>Otherwise, <var>response</var>'s unsafe response is <var>image
       request</var>'s <a>image data</a>. It can be either
       <a>CORS-same-origin</a> or <a>CORS-cross-origin</a>; this affects the
-      <a>origin</a> of the image itself (e.g., when used on a <code>canvas</code>).</li>
+      <a for="concept">origin</a> of the image itself (e.g., when used on a 
+      <code>canvas</code>).</li>
     </ol>
 
     </li>
@@ -2252,7 +2258,7 @@
 
   <p class="note">
     The value of <code>complete</code> can thus change while
-  a <a>script</a> is executing.
+  a <a for="concept">script</a> is executing.
   </p>
 
   The <dfn attribute for="HTMLImageElement"><code>currentSrc</code></dfn> IDL attribute
@@ -3598,12 +3604,16 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
     <dd>
 
-    <a>Navigate</a> the element's <a>child browsing context</a> to
-    a new <a>response</a> whose <a>url list</a> consists of <code>about:srcdoc</code>, <a>header list</a> consists of
-    <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a>, <a>body</a> is the value of the attribute, and <a>HTTPS state</a> is the <a>HTTPS state</a> of the <{iframe}> element's
-    <a>node document</a>'s {{Window}}.
+    <a>Navigate</a> the element's <a>child browsing context</a> to a new <a>response</a> whose 
+    <a>url list</a> consists of <a scheme>about:srcdoc</a>, <a for="response">header list</a> 
+    consists of <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a>, 
+    <a for="response">body</a> is the value of the attribute, <a for="response">CSP list</a> is the
+    <a for="document">CSP list</a> of the <{iframe}> element's <a>node document</a>, and 
+    <a for="response">HTTPS state</a> is the <a for="document">HTTPS state</a> of the <{iframe}> 
+    element's <a>node document</a>.
 
-    The resulting {{Document}} must be considered <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>.
+    The resulting {{Document}} must be considered 
+    <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>.
 
     </dd>
 
@@ -3632,10 +3642,10 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
       value is the empty string, let <var>url</var> be the string
       "<code>about:blank</code>".
 
-      Otherwise, <a>resolve</a> the value of the <code>src</code> attribute, relative to the <{iframe}> element.
+      Otherwise, <a>parse</a> the value of the <code>src</code> attribute, relative to the <{iframe}> element.
 
       If that is not successful, then let <var>url</var> be the string
-      "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting parsed URL</a>.
+      "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting URL string</a>.
 
       </li>
 
@@ -3756,7 +3766,8 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
   must be an <a>unordered set of unique space-separated tokens</a> that are <a>ASCII
   case-insensitive</a>. The allowed values are <code>allow-forms</code>, <code>allow-pointer-lock</code>, <code>allow-popups</code>, <code>allow-same-origin</code>, <code>allow-scripts</code>, and <code>allow-top-navigation</code>.
 
-  When the attribute is set, the content is treated as being from a unique <a>origin</a>,
+  When the attribute is set, the content is treated as being from a unique 
+  <a for="concept">origin</a>,
   forms, scripts, and various potentially annoying APIs are disabled, links are prevented from
   targeting other <a>browsing contexts</a>, and plugins are secured.
   The <code>allow-same-origin</code> keyword causes
@@ -3915,8 +3926,9 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   When used in <a>HTML documents</a>, the allowed content model
   of <{iframe}> elements is text, except that invoking the <a>HTML fragment parsing
-  algorithm</a> with the <{iframe}> element as the <var>context</var> element and the text contents as the <var>input</var> must result in a list of nodes that are all <a>phrasing content</a>,
-  with no <a for="parser" lt="parse error">parse errors</a> having occurred, with no <code>script</code>
+  algorithm</a> with the <{iframe}> element as the <a>context</a> element and the text contents as 
+  the <var>input</var> must result in a list of nodes that are all <a>phrasing content</a>,
+  with no <a for="parser">parse errors</a> having occurred, with no <code>script</code>
   elements being anywhere in the list or as descendants of elements in the list, and with all the
   elements in the list (including their descendants) being themselves conforming.
 
@@ -3941,11 +3953,11 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
   must <a>reflect</a> the <code>allowfullscreen</code>
   content attribute.
 
-  The <dfn attribute for="HTMLIFrameElement"><code>contentDocument</code></dfn> IDL attribute
-  must return the {{Document}} object of the <a>active document</a> of the
-  <{iframe}> element's <a>nested browsing context</a>, if any and if its
-  <a>effective script origin</a> is the <a>same origin</a> as the <a>effective script
-  origin</a> specified by the <a>incumbent settings object</a>, or null otherwise.
+  The <dfn attribute for="HTMLIFrameElement"><code>contentDocument</code></dfn> IDL attribute must 
+  return the {{Document}} object of the <a>active document</a> of the <{iframe}> element's 
+  <a>nested browsing context</a>, if any and if its <a for="concept">origin</a> is the 
+  <a>same origin-domain</a> as the <a for="concept">origin</a> specified by the 
+  <a>incumbent settings object</a>, or null otherwise.
 
   The <dfn attribute for="HTMLIFrameElement"><code>contentWindow</code></dfn> IDL attribute must
   return the <code>WindowProxy</code> object of the <{iframe}> element's <a>nested browsing context</a>, if any, or null otherwise.
@@ -4035,7 +4047,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
     <li>The element has neither a <code>src</code> attribute nor a <code>type</code> attribute.</li>
 
-    <li>The element has a <a href="#media-elements">media element</a> ancestor.</li>
+    <li>The element has a <a>media element</a> ancestor.</li>
 
     <li>The element has an ancestor <{object}> element that is <em>not</em> showing its
     <a>fallback content</a>.</li>
@@ -4057,7 +4069,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <li>The element's <code>src</code> attribute is either absent or its value
     is not the empty string.</li>
 
-    <li>The element is not a descendant of a <a href="#media-elements">media element</a>.</li>
+    <li>The element is not a descendant of a <a>media element</a>.</li>
 
     <li>The element is not a descendant of an <{object}> element that is not showing its
     <a>fallback content</a>.</li>
@@ -4087,14 +4099,14 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
       <dd>
 
-      The user agent must <a>resolve</a> the value of the element's
+      The user agent must <a>parse</a> the value of the element's
       <code>src</code> attribute, relative to the element. If that is
       successful, the user agent should run these steps:
 
       <ol>
 
         <li>Let <var>request</var> be a new <a>request</a> whose
-        <a for="url">URL</a> is the <a>resulting absolute URL</a>,
+        <a for="url">URL</a> is the <a>resulting URL string</a>,
         <a>client</a> is the element's <a>node
         document</a>'s <code>Window</code> object's <a>environment settings object</a>,
         <a>destination</a> is "<code>unknown</code>", <a>omit-<code>Origin</code>-header flag</a> is set if the
@@ -4322,7 +4334,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd><a>Phrasing content</a>.</dd>
     <dd><a>Embedded content</a>.</dd>
     <dd>If the element has a <code>usemap</code> attribute: <a>interactive content</a>.</dd>
-    <dd><a>Listed</a>, <a>submittable</a>, and <a>reassociateable</a> <a>form-associated element</a>.</dd>
+    <dd><a lt="listed element">listed</a>, <a>submittable</a>, and <a>reassociateable</a> <a>form-associated element</a>.</dd>
     <dd><a>Palpable content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>Where <a>embedded content</a> is expected.</dd>
@@ -4388,7 +4400,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   address of the resource. If present, the attribute must be a <a>valid non-empty URL potentially
   surrounded by spaces</a>.
 
-  <p class="warning">Authors who reference resources from other <a>origins</a>
+  <p class="warning">Authors who reference resources from other <a for="concept">origins</a>
   that they do not trust are urged to use the <code>typemustmatch</code> attribute defined below. Without that
   attribute, it is possible in certain cases for an attacker on the remote host to use the plugin
   mechanism to run arbitrary scripts, even if the author has used features such as the Flash
@@ -4463,7 +4475,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <li>
 
-    If the element has an ancestor <a href="#media-elements">media element</a>, or has an ancestor
+    If the element has an ancestor <a>media element</a>, or has an ancestor
     <{object}> element that is <em>not</em> showing its <a>fallback content</a>, or
     if the element is not <a>in a <code>Document</code></a> with a
     <a>browsing context</a>, or if the element's <a>node document</a> is not <a>fully
@@ -4496,13 +4508,13 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
       <a>plugin</a> for, then the user agent may jump to the step below labeled <i>fallback</i>
       without fetching the content to examine its real type.</li>
 
-      <li><a>Resolve</a> the <a for="url">URL</a> specified by the <code>data</code> attribute, relative to the element.</li>
+      <li><a>Parse</a> the <a for="url">URL</a> specified by the <code>data</code> attribute, relative to the element.</li>
 
       <li>If that failed, <a>fire a simple event</a> named <code>error</code> at the element, then jump to the step below labeled
       <i>fallback</i>.</li>
 
       <li>Let <var>request</var> be a new <a>request</a> whose
-      <a for="url">URL</a> is the <a>resulting absolute URL</a>,
+      <a for="url">URL</a> is the <a>resulting URL string</a>,
       <a>client</a> is the element's <a>node
       document</a>'s <code>Window</code> object's <a>environment settings object</a>,
       <a>destination</a> is "<code>unknown</code>", <a>omit-<code>Origin</code>-header flag</a> is set if the
@@ -4899,11 +4911,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   attribute. The {{HTMLObjectElement/useMap}} IDL attribute must
   <a>reflect</a> the <{object/usemap}> content attribute.
 
-  The {{HTMLObjectElement/contentDocument}} IDL attribute
-  must return the {{Document}} object of the <a>active document</a> of the
-  <{object}> element's <a>nested browsing context</a>, if any and if its
-  <a>effective script origin</a> is the <a>same origin</a> as the <a>effective script
-  origin</a> specified by the <a>incumbent settings object</a>, or null otherwise.
+  The {{HTMLObjectElement/contentDocument}} IDL attribute must return the {{Document}} object of the 
+  <a>active document</a> of the <{object}> element's <a>nested browsing context</a>, if any and if 
+  its <a for="concept">origin</a> is the <a>same origin-domain</a> as the 
+  <a for="concept">origin</a> specified by the <a>incumbent settings object</a>, or null otherwise.
 
   The {{HTMLObjectElement/contentWindow}} IDL attribute must
   return the <code>WindowProxy</code> object of the <{object}> element's <a>nested browsing context</a>, if it has one; otherwise, it must return null.
@@ -5078,10 +5089,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dt><a>Content model</a>:</dt>
     <dd>If the element has a <code>src</code> attribute:
   zero or more <{track}> elements, then
-  <a>transparent</a>, but with no <a href="#media-elements">media element</a> descendants.</dd>
+  <a>transparent</a>, but with no <a>media element</a> descendants.</dd>
     <dd>If the element does not have a <code>src</code> attribute: zero or
     more <{source}> elements, then zero or more <{track}> elements, then
-  <a>transparent</a>, but with no <a href="#media-elements">media element</a> descendants.</dd>
+  <a>transparent</a>, but with no <a>media element</a> descendants.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
@@ -5142,7 +5153,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   can be provided by simply linking to them in the prose near the <{video}> element. [[WEBVTT]]
   </p>
 
-  The <{video}> element is a <a href="#media-elements">media element</a> whose <a>media data</a> is
+  The <{video}> element is a <a>media element</a> whose <a>media data</a> is
   ostensibly video data, possibly with associated audio data.
 
   The <code>src</code>, <code>preload</code>,
@@ -5169,11 +5180,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     or if the attribute is absent, then there is no <a>poster frame</a>; abort these
     steps.</li>
 
-    <li><a>Resolve</a> the <code>poster</code> attribute's value relative to the element. If this fails,
+    <li><a>Parse</a> the <code>poster</code> attribute's value relative to the element. If this fails,
     then there is no <a>poster frame</a>; abort these steps.</li>
 
     <li>Let <var>request</var> be a new <a>request</a> whose
-    <a for="url">URL</a> is the <a>resulting parsed URL</a>,
+    <a for="url">URL</a> is the <a>resulting URL string</a>,
     <a>client</a> is the element's <a>node document</a>'s
     <code>Window</code> object's <a>environment settings object</a>, <a for="request">type</a> is "<code>image</code>", <a>destination</a> is "<code>subresource</code>",
     <a>credentials mode</a> is "<code>include</code>", and whose <a>use-URL-credentials flag</a> is set.
@@ -5311,7 +5322,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   (including, for example, because the selected video
   track was changed), if the element's <code>readyState</code>
   attribute is not <code>HAVE_NOTHING</code>, the user agent must
-  <a>queue a task</a> to <a>fire a simple event</a> named <code>resize</code> at the <a href="#media-elements">media element</a>.
+  <a>queue a task</a> to <a>fire a simple event</a> named <code>resize</code> at the <a>media element</a>.
 
   </div>
 
@@ -5414,10 +5425,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dt><a>Content model</a>:</dt>
     <dd>If the element has a <code>src</code> attribute:
 zero or more <{track}> elements, then
-<a>transparent</a>, but with no <a href="#media-elements">media element</a> descendants.</dd>
+<a>transparent</a>, but with no <a>media element</a> descendants.</dd>
     <dd>If the element does not have a <code>src</code> attribute: zero or more <{source}> elements, then
   zero or more <{track}> elements, then
-  <a>transparent</a>, but with no <a href="#media-elements">media element</a> descendants.</dd>
+  <a>transparent</a>, but with no <a>media element</a> descendants.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
@@ -5464,7 +5475,7 @@ zero or more <{track}> elements, then
   the prose near the <{audio}> element. [[WEBVTT]]
   </p>
 
-  The <{audio}> element is a <a href="#media-elements">media element</a> whose <a>media data</a> is
+  The <{audio}> element is a <a>media element</a> whose <a>media data</a> is
   ostensibly audio data.
 
   The <code>src</code>, <code>preload</code>,
@@ -5516,7 +5527,7 @@ zero or more <{track}> elements, then
     <dt><a>Categories</a>:</dt>
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <a href="#media-elements">media element</a>, before any <a>flow content</a>
+    <dd>As a child of a <a>media element</a>, before any <a>flow content</a>
   or <{track}> elements.</dd>
     <dt><a>Content model</a>:</dt>
     <dd><a>Nothing</a>.</dd>
@@ -5541,7 +5552,7 @@ zero or more <{track}> elements, then
     </dd>
   </dl>
 
-  The <{source}> element allows authors to specify multiple alternative <a>media resources</a> for <a href="#media-elements">media elements</a>. It does not <a>represent</a> anything on its own.
+  The <{source}> element allows authors to specify multiple alternative <a>media resources</a> for <a>media elements</a>. It does not <a>represent</a> anything on its own.
 
   The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
   <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
@@ -5551,7 +5562,7 @@ zero or more <{track}> elements, then
     Dynamically modifying a <{source}> element and its attribute when the
   element is already inserted in a <code>video</code> or <{audio}> element will have no
   effect. To change what is playing, just use the <code>src</code> attribute
-  on the <a href="#media-elements">media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
+  on the <a>media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
   resources. Generally, manipulating <{source}> elements manually after the document has
   been parsed is an unnecessarily complicated approach.
   </p>
@@ -5639,8 +5650,8 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  If a <code>source</code> element is inserted as a child of a <a href="#media-elements">media element</a> that
-  has no <code>src</code> attribute and whose <code>networkState</code> has the value <code>NETWORK_EMPTY</code>, the user agent must invoke the <a href="#media-elements">media element</a>'s <a>resource selection
+  If a <code>source</code> element is inserted as a child of a <a>media element</a> that
+  has no <code>src</code> attribute and whose <code>networkState</code> has the value <code>NETWORK_EMPTY</code>, the user agent must invoke the <a>media element</a>'s <a>resource selection
   algorithm</a>.
 
   The IDL attributes <dfn attribute for="source"><code>src</code></dfn> and <dfn attribute for="source"><code>type</code></dfn> must <a>reflect</a> the respective content
@@ -5682,7 +5693,7 @@ zero or more <{track}> elements, then
     <dt><a>Categories</a>:</dt>
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <a href="#media-elements">media element</a>, before any <a>flow content</a>.</dd>
+    <dd>As a child of a <a>media element</a>, before any <a>flow content</a>.</dd>
     <dt><a>Content model</a>:</dt>
     <dd><a>Nothing</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
@@ -5720,7 +5731,7 @@ zero or more <{track}> elements, then
     </dd>
   </dl>
 
-  The <{track}> element allows authors to specify explicit external text resources for <a href="#media-elements">media elements</a>. It
+  The <{track}> element allows authors to specify explicit external text resources for <a>media elements</a>. It
   does not <a>represent</a> anything on its own.
 
   The <dfn element-attr for="track"><code>kind</code></dfn> attribute is an <a>enumerated
@@ -5772,14 +5783,10 @@ zero or more <{track}> elements, then
   track data. The value must be a <a>valid non-empty URL potentially surrounded by spaces</a>.
   This attribute must be present.
 
-  <div class="impl">
-
-  If the element has a <code>src</code> attribute whose value is not the
-  empty string and whose value, when the attribute was set, could be successfully <a>resolved</a> relative to the element, then the element's <dfn>track
-  URL</dfn> is the <a>resulting absolute URL</a>. Otherwise, the element's <a>track
-  URL</a> is the empty string.
-
-  </div>
+  If the element has a <{track/src}> attribute whose value is not the
+  empty string and whose value, when the attribute was set, could be successfully <a>parsed</a> 
+  relative to the element's <a>node document</a>, then the element's <dfn>track URL</dfn> is the 
+  <a>resulting URL string</a>. Otherwise, the element's <a>track URL</a> is the empty string.
 
   <div class="note">
   If the element's <a>track URL</a> identifies a <a>WebVTT</a> resource, and the
@@ -5809,7 +5816,7 @@ zero or more <{track}> elements, then
 
   The value of the <code>label</code> attribute, if the attribute is
   present, must not be the empty string. Furthermore, there must not be two <code>track</code>
-  element children of the same <a href="#media-elements">media element</a> whose <code>kind</code> attributes are in the same state, whose <code>srclang</code> attributes are both missing or have values that
+  element children of the same <a>media element</a> whose <code>kind</code> attributes are in the same state, whose <code>srclang</code> attributes are both missing or have values that
   represent the same language, and whose <code>label</code> attributes are
   again both missing or both have the same value.
 
@@ -5825,13 +5832,13 @@ zero or more <{track}> elements, then
   attribute</a>, which, if specified, indicates that the track is to be enabled if the user's
   preferences do not indicate that another track would be more appropriate.
 
-  Each <a href="#media-elements">media element</a> must have no more than one <{track}> element child
+  Each <a>media element</a> must have no more than one <{track}> element child
   whose <code>kind</code> attribute is in the <a state for="track">Subtitles</a> or <a state for="track">Captions</a> state and whose <{track/default}> attribute is specified.
 
-  Each <a href="#media-elements">media element</a> must have no more than one <{track}> element child
+  Each <a>media element</a> must have no more than one <{track}> element child
   whose <code>kind</code> attribute is in the <a state for="track">Descriptions</a> state and whose <{track/default}> attribute is specified.
 
-  Each <a href="#media-elements">media element</a> must have no more than one <{track}> element child
+  Each <a>media element</a> must have no more than one <{track}> element child
   whose <code>kind</code> attribute is in the <a state for="track">Chapters</a> state and whose <{track/default}> attribute is specified.
 
   <p class="note">
@@ -5919,10 +5926,10 @@ zero or more <{track}> elements, then
 
   </div>
 
-<h4 id="media-elements">Media elements</h4>
+<h4 id="the-media-elements">Media elements</h4>
 
-  {{HTMLMediaElement}} objects (<code>audio</code> and <{video}>, in this
-  specification) are simply known as <a href="#media-elements">media elements</a>.
+  {{HTMLMediaElement}} objects (<{audio}> and <{video}>, in this specification) are simply known as 
+  <dfn lt="media element|media elements">media elements</dfn>.
 
   <pre class="idl" data-highlight="webidl" dfn-for="CanPlayTypeResult">
     enum CanPlayTypeResult { "" /* empty string */, "maybe", "probably" };
@@ -5990,19 +5997,20 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  The <dfn>media element attributes</dfn>, <code>src</code>, <code>crossorigin</code>, <code>preload</code>, <code>autoplay</code>, <code>loop</code>,
-  <code>muted</code>, and <{mediaelements/controls}>, apply to all <a href="#media-elements">media elements</a>. They are defined in this section.
+  The <dfn>media element attributes</dfn>, <code>src</code>, <code>crossorigin</code>, <code>preload</code>, <code>autoplay</code>,
+  <code>loop</code>,
+  <code>muted</code>, and <{mediaelements/controls}>, apply to all <a>media elements</a>. They are defined in this section.
 
-  <a href="#media-elements">Media elements</a> are used to present audio data, or video and
+  <a>Media elements</a> are used to present audio data, or video and
   audio data, to the user. This is referred to as <dfn>media data</dfn> in this section, since this
-  section applies equally to <a href="#media-elements">media elements</a> for audio or for
+  section applies equally to <a>media elements</a> for audio or for
   video.
 
   The term <dfn lt="media resource|resource">media resource</dfn> is used to refer to the complete set of media data, e.g., the
   complete video file, or complete audio file.
 
   A <a>media resource</a> can have multiple audio and video tracks. For the purposes of a
-  <a href="#media-elements">media element</a>, the video data of the <a>media resource</a> is only that of the
+  <a>media element</a>, the video data of the <a>media resource</a> is only that of the
   currently selected track (if any) as given by the element's <code>videoTracks</code> attribute when the <a>event loop</a> last
   reached step 1, and the audio data of the <a>media resource</a> is the result of mixing all
   the currently enabled tracks (if any) given by the element's <code>audioTracks</code> attribute when the <a>event loop</a> last
@@ -6019,7 +6027,7 @@ zero or more <{track}> elements, then
 
   Except where otherwise explicitly specified, the <a>task source</a> for all the tasks
   <a>queued</a> in this section and its subsections is the <dfn>media
-  element event task source</dfn> of the <a href="#media-elements">media element</a> in question.
+  element event task source</dfn> of the <a>media element</a> in question.
 
   </div>
 
@@ -6042,7 +6050,7 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  All <a href="#media-elements">media elements</a> have an associated error status, which
+  All <a>media elements</a> have an associated error status, which
   records the last error the element encountered since its <a>resource selection algorithm</a> was last invoked. The
   <dfn attribute for="HTMLMediaElement"><code>error</code></dfn> attribute, on getting, must return the
   <code>MediaError</code> object created for this last error, or null if there has not been an
@@ -6106,26 +6114,26 @@ zero or more <{track}> elements, then
 
 <h5 id="location-of-the-media-resource">Location of the media resource</h5>
 
-  The <dfn element-attr for="media"><code>src</code></dfn> content attribute on <a href="#media-elements">media elements</a> gives the address of the media resource (video, audio) to show. The
+  The <dfn element-attr for="media"><code>src</code></dfn> content attribute on <a>media elements</a> gives the address of the media resource (video, audio) to show. The
   attribute, if present, must contain a <a>valid non-empty URL potentially surrounded by
   spaces</a>.
 
   The <dfn element-attr for="media"><code>crossorigin</code></dfn> content attribute on
-  <a href="#media-elements">media elements</a> is a <a>CORS settings attribute</a>.
+  <a>media elements</a> is a <a>CORS settings attribute</a>.
 
   <div class="impl">
 
-  If a <a href="#media-elements">media element</a> is created with a
+  If a <a>media element</a> is created with a
   <code>src</code> attribute, the user agent must <a>immediately</a> invoke the
-  <a href="#media-elements">media element</a>'s <a>resource selection
+  <a>media element</a>'s <a>resource selection
   algorithm</a>.
 
-  If a <code>src</code> attribute of a <a href="#media-elements">media element</a> is set
-  or changed, the user agent must invoke the <a href="#media-elements">media element</a>'s <a>media element load
+  If a <code>src</code> attribute of a <a>media element</a> is set
+  or changed, the user agent must invoke the <a>media element</a>'s <a>media element load
   algorithm</a>. (<em>Removing</em> the <code>src</code> attribute does
   not do this, even if there are <{source}> elements present.)
 
-  The <dfn attribute for="HTMLMediaElement"><code>src</code></dfn> IDL attribute on <a href="#media-elements">media elements</a> must <a>reflect</a> the content attribute of the same
+  The <dfn attribute for="HTMLMediaElement"><code>src</code></dfn> IDL attribute on <a>media elements</a> must <a>reflect</a> the content attribute of the same
   name.
 
   The <dfn attribute for="HTMLMediaElement"><code>crossOrigin</code></dfn> IDL attribute must
@@ -6139,8 +6147,8 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  Each <a href="#media-elements">media element</a> can have an <dfn>assigned media provider object</dfn>, which is a
-  <a>media provider object</a>. When a <a href="#media-elements">media element</a> is created, it has no
+  Each <a>media element</a> can have an <dfn>assigned media provider object</dfn>, which is a
+  <a>media provider object</a>. When a <a>media element</a> is created, it has no
   <a>assigned media provider object</a>.
 
   </div>
@@ -6282,7 +6290,7 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  As <a href="#media-elements">media elements</a> interact with the network, their current
+  As <a>media elements</a> interact with the network, their current
   network activity is represented by the <dfn><code>networkState</code></dfn> attribute. On getting, it must
   return the current network state of the element, which must be one of the following values:
 
@@ -6335,12 +6343,12 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  All <a href="#media-elements">media elements</a> have an <dfn>autoplaying flag</dfn>,
+  All <a>media elements</a> have an <dfn>autoplaying flag</dfn>,
   which must begin in the true state, and a <dfn>delaying-the-load-event flag</dfn>, which must
   begin in the false state. While the <a>delaying-the-load-event flag</a> is true, the element
   must <a>delay the load event</a> of its document.
 
-  When the <dfn method for="HTMLMediaElement"><code>load()</code></dfn> method on a <a href="#media-elements">media element</a> is invoked, the user agent must run the <a>media element load
+  When the <dfn method for="HTMLMediaElement"><code>load()</code></dfn> method on a <a>media element</a> is invoked, the user agent must run the <a>media element load
   algorithm</a>.
 
   The <dfn>media element load algorithm</dfn> consists of the following steps.
@@ -6352,7 +6360,7 @@ zero or more <{track}> elements, then
 
     <li>
 
-    If there are any <a>tasks</a> from the <a href="#media-elements">media element</a>'s <a>media element event task source</a> in one of the <a>task queues</a>, then remove those tasks.
+    If there are any <a>tasks</a> from the <a>media element</a>'s <a>media element event task source</a> in one of the <a>task queues</a>, then remove those tasks.
 
     <p class="note">
     Basically, pending events and callbacks for the media element are discarded when
@@ -6361,22 +6369,22 @@ zero or more <{track}> elements, then
 
     </li>
 
-    <li>If the <a href="#media-elements">media element</a>'s <code>networkState</code> is set to <code>NETWORK_LOADING</code> or <code>NETWORK_IDLE</code>, <a>queue a task</a> to <a>fire a
-    simple event</a> named <code>abort</code> at the <a href="#media-elements">media element</a>.</li>
+    <li>If the <a>media element</a>'s <code>networkState</code> is set to <code>NETWORK_LOADING</code> or <code>NETWORK_IDLE</code>, <a>queue a task</a> to <a>fire a
+    simple event</a> named <code>abort</code> at the <a>media element</a>.</li>
 
     <li>
 
-    If the <a href="#media-elements">media element</a>'s <code>networkState</code>
+    If the <a>media element</a>'s <code>networkState</code>
     is not set to <code>NETWORK_EMPTY</code>, then run these
     substeps:
 
     <ol>
 
-      <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>emptied</code> at the <a href="#media-elements">media element</a>.</li>
+      <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>emptied</code> at the <a>media element</a>.</li>
 
-      <li>If a fetching process is in progress for the <a href="#media-elements">media element</a>, the user agent should stop it.</li>
+      <li>If a fetching process is in progress for the <a>media element</a>, the user agent should stop it.</li>
 
-      <li>If the <a href="#media-elements">media element</a>'s <a>assigned media provider object</a>
+      <li>If the <a>media element</a>'s <a>assigned media provider object</a>
         is a <code>MediaSource</code> object, then <a lt="detach from a media element">detach
         it</a>.
 
@@ -6398,7 +6406,7 @@ zero or more <{track}> elements, then
       Set the <a>official playback position</a> to 0.
 
       If this changed the <a>official playback position</a>, then <a>queue a task</a>
-      to <a>fire a simple event</a> named <code>timeupdate</code> at the <a href="#media-elements">media element</a>.
+      to <a>fire a simple event</a> named <code>timeupdate</code> at the <a>media element</a>.
 
       </li>
 
@@ -6428,7 +6436,7 @@ zero or more <{track}> elements, then
     <li>Set the <code>error</code> attribute to null and the
     <a>autoplaying flag</a> to true.</li>
 
-    <li>Invoke the <a href="#media-elements">media element</a>'s <a>resource selection algorithm</a>.</li>
+    <li>Invoke the <a>media element</a>'s <a>resource selection algorithm</a>.</li>
 
     <li>
 
@@ -6441,7 +6449,7 @@ zero or more <{track}> elements, then
   </ol>
 
   The <dfn>resource selection algorithm</dfn> for a
-  <a href="#media-elements">media element</a> is as follows. This algorithm is always invoked as part of a <a>task</a>, but one
+  <a>media element</a> is as follows. This algorithm is always invoked as part of a <a>task</a>, but one
   of the first steps in the algorithm is to return and continue running the remaining steps
   <a>in parallel</a>. In addition, this algorithm interacts
   closely with the <a>event loop</a> mechanism; in particular, it has <a>synchronous sections</a> (which are triggered as part of the <a>event loop</a>
@@ -6454,7 +6462,7 @@ zero or more <{track}> elements, then
 
     <li>Set the element's <a>show poster flag</a> to true.</li>
 
-    <li>Set the <a href="#media-elements">media element</a>'s <a>delaying-the-load-event flag</a> to true
+    <li>Set the <a>media element</a>'s <a>delaying-the-load-event flag</a> to true
     (this <a>delays the load event</a>).</li>
 
     <li><a>in parallel</a> <a>await a stable state</a>, allowing the <a>task</a> that invoked this algorithm to continue. The <a>synchronous
@@ -6463,35 +6471,35 @@ zero or more <{track}> elements, then
 
     <li>
 
-    &#x231B; If the <a href="#media-elements">media element</a>'s <a>blocked-on-parser</a> flag is false,
+    &#x231B; If the <a>media element</a>'s <a>blocked-on-parser</a> flag is false,
     then <a>populate the list of pending text tracks</a>.
 
     </li>
 
     <li>
 
-    &#x231B; If the <a href="#media-elements">media element</a> has an <a>assigned media provider
+    &#x231B; If the <a>media element</a> has an <a>assigned media provider
     object</a>, then let <var>mode</var> be <i>object</i>.
 
-    &#x231B; Otherwise, if the <a href="#media-elements">media element</a> has no <a>assigned media provider
+    &#x231B; Otherwise, if the <a>media element</a> has no <a>assigned media provider
     object</a> but has a <code>src</code>
     attribute, then let <var>mode</var> be <i>attribute</i>.
 
-    &#x231B; Otherwise, if the <a href="#media-elements">media element</a> does not have an <a>assigned media provider
+    &#x231B; Otherwise, if the <a>media element</a> does not have an <a>assigned media provider
     object</a> and does not have a <code>src</code> attribute, but does have a <{source}> element child, then
     let <var>mode</var> be <i>children</i> and let <var>candidate</var>
     be the first such <{source}> element child in <a>tree order</a>.
 
-    &#x231B; Otherwise the <a href="#media-elements">media element</a> has no <a>assigned media provider
+    &#x231B; Otherwise the <a>media element</a> has no <a>assigned media provider
     object</a> and has neither a <code>src</code> attribute nor a <{source}> element child: set the
     <code>networkState</code> to <code>NETWORK_EMPTY</code>, and abort these steps; the
     <a>synchronous section</a> ends.
 
     </li>
 
-    <li>&#x231B; Set the <a href="#media-elements">media element</a>'s <code>networkState</code> to <code>NETWORK_LOADING</code>.</li>
+    <li>&#x231B; Set the <a>media element</a>'s <code>networkState</code> to <code>NETWORK_LOADING</code>.</li>
 
-    <li>&#x231B; <a>Queue a task</a> to <a>fire a simple event</a> named <code>loadstart</code> at the <a href="#media-elements">media element</a>.</li>
+    <li>&#x231B; <a>Queue a task</a> to <a>fire a simple event</a> named <code>loadstart</code> at the <a>media element</a>.</li>
 
     <li>
 
@@ -6540,9 +6548,9 @@ zero or more <{track}> elements, then
         down to the <i>failed with attribute</i> step below.</li>
 
         <li>&#x231B; Let <var>absolute URL</var> be the <a>absolute URL</a> that
-        would have resulted from <a>resolving</a> the <a for="url">URL</a>
+        would have resulted from <a>parsing</a> the <a for="url">URL</a>
         specified by the <code>src</code> attribute's value relative to the
-        <a href="#media-elements">media element</a> when the <code>src</code> attribute was last
+        <a>media element</a> when the <code>src</code> attribute was last
       changed.
 
         </li><li>&#x231B; If <var>absolute URL</var> was obtained successfully, set the <code>currentSrc</code> attribute to <var>absolute
@@ -6578,13 +6586,13 @@ zero or more <{track}> elements, then
         <li>
 
         &#x231B; Let <var>pointer</var> be a position defined by two adjacent nodes in the
-        <a href="#media-elements">media element</a>'s child list, treating the start of the list (before the first
+        <a>media element</a>'s child list, treating the start of the list (before the first
         child in the list, if any) and end of the list (after the last child in the list, if any) as
         nodes in their own right. One node is the node before <var>pointer</var>, and the
         other node is the node after <var>pointer</var>. Initially, let <var>pointer</var> be the position between the <var>candidate</var> node and the
         next node, if there are any, or the end of the list, if it is the last node.
 
-        As <a for="Node" lt="insert">nodes are inserted</a> and <a for="Node" lt="remove">removed</a> into the <a href="#media-elements">media element</a>, <var>pointer</var> must be updated as follows:
+        As <a for="Node" lt="insert">nodes are inserted</a> and <a for="Node" lt="remove">removed</a> into the <a>media element</a>, <var>pointer</var> must be updated as follows:
 
         <dl>
 
@@ -6615,7 +6623,7 @@ zero or more <{track}> elements, then
         below.</li>
 
         <li>&#x231B; Let <var>absolute URL</var> be the <a>absolute URL</a> that
-        would have resulted from <a>resolving</a> the <a for="url">URL</a>
+        would have resulted from <a>parsing</a> the <a for="url">URL</a>
       specified by <var>candidate</var>'s <code>src</code>
       attribute's value relative to the <var>candidate</var> when the <code>src</code> attribute was last changed.
 
@@ -6710,7 +6718,7 @@ zero or more <{track}> elements, then
       <li>Set the element's <a>show poster flag</a> to true.</li>
 
       <li><a>Fire a simple event</a> named <code>error</code> at
-      the <a href="#media-elements">media element</a>.</li>
+      the <a>media element</a>.</li>
 
       <li>Set the element's <a>delaying-the-load-event flag</a> to false. This stops <a>delaying the load event</a>.</li>
 
@@ -6720,7 +6728,7 @@ zero or more <{track}> elements, then
 
   </ol>
 
-  The <dfn>resource fetch algorithm</dfn> for a <a href="#media-elements">media element</a> and a given <a>absolute URL</a> or <a>media provider object</a> is as
+  The <dfn>resource fetch algorithm</dfn> for a <a>media element</a> and a given <a>absolute URL</a> or <a>media provider object</a> is as
   follows:
 
   <ol>
@@ -6735,7 +6743,7 @@ zero or more <{track}> elements, then
     resource</a>.</li>
 
     <li>Remove all <a>media-resource-specific text
-    tracks</a> from the <a href="#media-elements">media element</a>'s <a>list of pending text tracks</a>, if
+    tracks</a> from the <a>media element</a>'s <a>list of pending text tracks</a>, if
     any.
 
     </li><li>
@@ -6783,13 +6791,13 @@ zero or more <{track}> elements, then
         <li>
 
         Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
-        <var>current media resource</var>'s <a>absolute URL</a> and the <a href="#media-elements">media element</a>'s <code>crossorigin</code> content attribute
+        <var>current media resource</var>'s <a>absolute URL</a> and the <a>media element</a>'s <code>crossorigin</code> content attribute
         value.
 
         Set <var>request</var>'s <a>client</a> to the
-        <a href="#media-elements">media element</a>'s <a>node document</a>'s <code>Window</code> object's
+        <a>media element</a>'s <a>node document</a>'s <code>Window</code> object's
         <a>environment settings object</a> and <a for="request">type</a>
-        to "<code>audio</code>" if the <a href="#media-elements">media element</a> is an <code>audio</code>
+        to "<code>audio</code>" if the <a>media element</a> is an <code>audio</code>
         element and to "<code>video</code>" otherwise.
 
         <a>Fetch</a> <var>request</var>.
@@ -6801,13 +6809,13 @@ zero or more <{track}> elements, then
         <code>canvas</code> gets tainted when the video is drawn on it.
 
         The <dfn>stall timeout</dfn> is a user-agent defined length of time, which should be about
-        three seconds. When a <a href="#media-elements">media element</a> that is actively attempting to obtain
+        three seconds. When a <a>media element</a> that is actively attempting to obtain
         <a>media data</a> has failed to receive any data for a duration equal to the <a>stall
         timeout</a>, the user agent must <a>queue a task</a> to <a>fire a simple
         event</a> named <code>stalled</code> at the element.
 
         User agents may allow users to selectively block or slow <a>media data</a> downloads.
-        When a <a href="#media-elements">media element</a>'s download has been blocked altogether, the user agent must
+        When a <a>media element</a>'s download has been blocked altogether, the user agent must
         act as if it was stalled (as opposed to acting as if the connection was closed). The rate of the
         download may also be throttled automatically by the user agent, e.g., to balance the download
         with other connections sharing the same bandwidth.
@@ -6815,7 +6823,7 @@ zero or more <{track}> elements, then
         <dfn lt="the rules described previously"></dfn>User agents may decide to not download more content at any time, e.g.,
         after buffering five minutes of a one hour media resource, while waiting for the user to decide
         whether to play the resource or not, while waiting for user input in an interactive resource, or
-        when the user navigates away from the page. When a <a href="#media-elements">media element</a>'s download has
+        when the user navigates away from the page. When a <a>media element</a>'s download has
         been suspended, the user agent must <a>queue a task</a>, to set the <code>networkState</code> to <code>NETWORK_IDLE</code> and <a>fire a simple event</a> named
         <code>suspend</code> at the element. If and when downloading of the
         resource resumes, the user agent must <a>queue a task</a> to set the <code>networkState</code> to <code>NETWORK_LOADING</code>. Between the queuing of these tasks,
@@ -6937,7 +6945,7 @@ zero or more <{track}> elements, then
 
         <li>Create an <code>AudioTrack</code> object to represent the audio track.</li>
 
-        <li>Update the <a href="#media-elements">media element</a>'s <code>audioTracks</code> attribute's <code>AudioTrackList</code>
+        <li>Update the <a>media element</a>'s <code>audioTracks</code> attribute's <code>AudioTrackList</code>
         object with the new <code>AudioTrack</code> object.</li>
 
         <li>Let <var>enable</var> be <i>unknown</i>.</li>
@@ -6957,7 +6965,7 @@ zero or more <{track}> elements, then
 
         </li>
 
-        <li>If <var>enable</var> is still <i>unknown</i>, then, if the <a href="#media-elements">media element</a> does not yet have an enabled
+        <li>If <var>enable</var> is still <i>unknown</i>, then, if the <a>media element</a> does not yet have an enabled
         audio track, then set <var>enable</var> to <i>true</i>, otherwise, set <var>enable</var> to <i>false</i>.</li>
 
         <li>If <var>enable</var> is <i>true</i>, then enable this audio track,
@@ -6980,7 +6988,7 @@ zero or more <{track}> elements, then
 
         <li>Create a {{VideoTrack}} object to represent the video track.</li>
 
-        <li>Update the <a href="#media-elements">media element</a>'s <code>videoTracks</code> attribute's <code>VideoTrackList</code>
+        <li>Update the <a>media element</a>'s <code>videoTracks</code> attribute's <code>VideoTrackList</code>
         object with the new <code>VideoTrack</code> object.</li>
 
         <li>Let <var>enable</var> be <i>unknown</i>.</li>
@@ -6999,7 +7007,7 @@ zero or more <{track}> elements, then
 
         </li>
 
-        <li>If <var>enable</var> is still <i>unknown</i>, then, if the <a href="#media-elements">media element</a> does not yet have a <a>selected</a>
+        <li>If <var>enable</var> is still <i>unknown</i>, then, if the <a>media element</a> does not yet have a <a>selected</a>
         video track, then set <var>enable</var> to <i>true</i>, otherwise, set <var>enable</var> to <i>false</i>.</li>
 
         <li>If <var>enable</var> is <i>true</i>, then select this track and unselect any
@@ -7060,7 +7068,7 @@ zero or more <{track}> elements, then
 
         For <{video}> elements, set the <code>videoWidth</code> and <code>videoHeight</code> attributes, and <a>queue a task</a>
         to <a>fire a simple event</a> named <code>resize</code> at
-        the <a href="#media-elements">media element</a>.
+        the <a>media element</a>.
 
         <p class="note">
     Further <code>resize</code> events will be fired
@@ -7082,10 +7090,10 @@ zero or more <{track}> elements, then
 
         <li>Let <var>jumped</var> be false.</li>
 
-        <li>If the <a href="#media-elements">media element</a>'s <a>default playback start position</a> is
+        <li>If the <a>media element</a>'s <a>default playback start position</a> is
         greater than zero, then <a>seek</a> to that time, and let <var>jumped</var> be true.</li>
 
-        <li>Let the <a href="#media-elements">media element</a>'s <a>default playback
+        <li>Let the <a>media element</a>'s <a>default playback
         start position</a> be zero.</li>
 
         <li>Let the <var>initial playback position</var> be zero.</li>
@@ -7109,14 +7117,14 @@ zero or more <{track}> elements, then
         <li>If there is no <a>selected</a> video track,
         then select a video track. This will cause a <code>change</code> event to be <a>fired</a>.</li>
 
-        <li>If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then:
+        <li>If the <a>media element</a> has a <a>current media controller</a>, then:
         if <var>jumped</var> is true and the <var>initial playback position</var>,
         relative to the <a>current media controller</a>'s timeline, is greater than the
         <a>current media controller</a>'s <a>media controller position</a>, then
-        <a>seek the media controller</a> to the <a href="#media-elements">media element</a>'s <var>initial
+        <a>seek the media controller</a> to the <a>media element</a>'s <var>initial
         playback position</var>, relative to the <a>current media controller</a>'s timeline;
-        otherwise, <a>seek</a> the <a href="#media-elements">media element</a> to the
-        <a>media controller position</a>, relative to the <a href="#media-elements">media element</a>'s
+        otherwise, <a>seek</a> the <a>media element</a> to the
+        <a>media controller position</a>, relative to the <a>media element</a>'s
         timeline.</li>
 
       </ol>
@@ -7145,10 +7153,10 @@ zero or more <{track}> elements, then
       <dd>
 
       <a>Fire a simple event</a> named <code>progress</code>
-      at the <a href="#media-elements">media element</a>.
+      at the <a>media element</a>.
 
       Set the <code>networkState</code> to <code>NETWORK_IDLE</code> and <a>fire a simple event</a> named
-      <code>suspend</code> at the <a href="#media-elements">media element</a>.
+      <code>suspend</code> at the <a>media element</a>.
 
       If the user agent ever discards any <a>media data</a> and then needs to resume the
       network activity to obtain it again, then it must <a>queue a task</a> to set the <code>networkState</code> to <code>NETWORK_LOADING</code>.
@@ -7165,7 +7173,7 @@ zero or more <{track}> elements, then
 
       <dd>
 
-      Fatal network errors that occur after the user agent has established whether the <var>current media resource</var> is usable (i.e., once the <a href="#media-elements">media element</a>'s
+      Fatal network errors that occur after the user agent has established whether the <var>current media resource</var> is usable (i.e., once the <a>media element</a>'s
       <code>readyState</code> attribute is no longer <code>HAVE_NOTHING</code>) must cause the user agent to execute the
       following steps:
 
@@ -7183,7 +7191,7 @@ zero or more <{track}> elements, then
         <li>Set the element's <a>delaying-the-load-event flag</a> to false. This stops <a>delaying the load event</a>.</li>
 
         <li><a>Fire a simple event</a> named <code>error</code> at
-        the <a href="#media-elements">media element</a>.</li>
+        the <a>media element</a>.</li>
 
         <li>Abort the overall <a>resource selection
         algorithm</a>.</li>
@@ -7197,7 +7205,7 @@ zero or more <{track}> elements, then
       <dd>
 
       Fatal errors in decoding the <a>media data</a> that occur after the user agent has
-      established whether the <var>current media resource</var> is usable (i.e., once the <a href="#media-elements">media element</a>'s
+      established whether the <var>current media resource</var> is usable (i.e., once the <a>media element</a>'s
       <code>readyState</code> attribute is no longer <code>HAVE_NOTHING</code>) must cause the
       user agent to execute the following steps:
 
@@ -7215,7 +7223,7 @@ zero or more <{track}> elements, then
         <li>Set the element's <a>delaying-the-load-event flag</a> to false. This stops <a>delaying the load event</a>.</li>
 
         <li><a>Fire a simple event</a> named <code>error</code> at
-        the <a href="#media-elements">media element</a>.</li>
+        the <a>media element</a>.</li>
 
         <li>Abort the overall <a>resource selection
         algorithm</a>.</li>
@@ -7242,11 +7250,11 @@ zero or more <{track}> elements, then
         is set to <code>MEDIA_ERR_ABORTED</code>.</li>
 
         <li><a>Fire a simple event</a> named <code>abort</code> at
-        the <a href="#media-elements">media element</a>.</li>
+        the <a>media element</a>.</li>
 
         <li>
 
-        If the <a href="#media-elements">media element</a>'s <code>readyState</code>
+        If the <a>media element</a>'s <code>readyState</code>
         attribute has a value equal to <code>HAVE_NOTHING</code>, set
         the element's <code>networkState</code> attribute to the
         <code>NETWORK_EMPTY</code> value, set the element's
@@ -7303,11 +7311,11 @@ zero or more <{track}> elements, then
 
   </ol>
 
-  When a <a href="#media-elements">media element</a> is to <dfn>forget the media element's media-resource-specific
-  tracks</dfn>, the user agent must remove from the <a href="#media-elements">media element</a>'s <a>list of text
+  When a <a>media element</a> is to <dfn>forget the media element's media-resource-specific
+  tracks</dfn>, the user agent must remove from the <a>media element</a>'s <a>list of text
   tracks</a> all the <a>media-resource-specific
-  text tracks</a>, then empty the <a href="#media-elements">media element</a>'s <code>audioTracks</code> attribute's <code>AudioTrackList</code> object,
-  then empty the <a href="#media-elements">media element</a>'s <code>videoTracks</code>
+  text tracks</a>, then empty the <a>media element</a>'s <code>audioTracks</code> attribute's <code>AudioTrackList</code> object,
+  then empty the <a>media element</a>'s <code>videoTracks</code>
   attribute's <code>VideoTrackList</code> object. No events (in particular, no <code>removetrack</code> events) are fired as part of this; the <code>error</code> and <code>emptied</code>
   events, fired by the algorithms that invoke this one, can be used instead.
 
@@ -7337,7 +7345,7 @@ zero or more <{track}> elements, then
     </td></tr><tr>
       <td><dfn value for="HTMLMediaElement/preload"><code>metadata</code></dfn>
       </td><td><dfn state for="media">Metadata</dfn>
-      </td><td>Hints to the user agent that the author does not expect the user to need the media resource, but that fetching the resource metadata (dimensions, track list, duration, etc), and maybe even the first few frames, is reasonable. If the user agent precisely fetches no more than the metadata, then the <a href="#media-elements">media element</a> will end up with its <code>readyState</code> attribute set to <code>HAVE_METADATA</code>; typically though, some frames will be obtained as well and it will probably be <code>HAVE_CURRENT_DATA</code> or <code>HAVE_FUTURE_DATA</code>.
+      </td><td>Hints to the user agent that the author does not expect the user to need the media resource, but that fetching the resource metadata (dimensions, track list, duration, etc), and maybe even the first few frames, is reasonable. If the user agent precisely fetches no more than the metadata, then the <a>media element</a> will end up with its <code>readyState</code> attribute set to <code>HAVE_METADATA</code>; typically though, some frames will be obtained as well and it will probably be <code>HAVE_CURRENT_DATA</code> or <code>HAVE_FUTURE_DATA</code>.
           When the media resource is playing, hints to the user agent that bandwidth is to be considered scarce, e.g., suggesting throttling the download so that the media data is obtained at the slowest possible rate that still maintains consistent playback.
     </td></tr><tr>
       <td><dfn value for="HTMLMediaElement/preload"><code>auto</code></dfn>
@@ -7537,36 +7545,36 @@ zero or more <{track}> elements, then
   wall clock.
 
   <p class="note">
-    All the <a href="#media-elements">media elements</a> that share <a>current
+    All the <a>media elements</a> that share <a>current
   media controller</a> use the same clock for their <a>media timeline</a>.
   </p>
 
-  <a href="#media-elements">Media elements</a> have a <dfn lt="current position|current playback position">current playback position</dfn>,
+  <a>Media elements</a> have a <dfn lt="current position|current playback position">current playback position</dfn>,
   which must initially (i.e., in the absence of <a>media data</a>) be zero seconds. The
   <a>current playback position</a> is a time on the <a>media timeline</a>.
 
-  <a href="#media-elements">Media elements</a> also have an <dfn>official playback
+  <a>Media elements</a> also have an <dfn>official playback
   position</dfn>, which must initially be set to zero seconds. The <a>official playback
   position</a> is an approximation of the <a>current playback position</a> that is kept
   stable while scripts are running.
 
-  <a href="#media-elements">Media elements</a> also have a <dfn>default playback start
+  <a>Media elements</a> also have a <dfn>default playback start
   position</dfn>, which must initially be set to zero seconds. This time is used to allow the
   element to be seeked even before the media is loaded.
 
-  Each <a href="#media-elements">media element</a> has a <dfn>show poster flag</dfn>. When a <a href="#media-elements">media element</a> is created, this flag must be set to true. This flag is used to control when the
+  Each <a>media element</a> has a <dfn>show poster flag</dfn>. When a <a>media element</a> is created, this flag must be set to true. This flag is used to control when the
   user agent is to show a poster frame for a <{video}> element instead of showing the video
   contents.
 
   The <dfn attribute for="HTMLMediaElement"><code>currentTime</code></dfn> attribute must, on
-  getting, return the <a href="#media-elements">media element</a>'s <a>default playback start position</a>,
+  getting, return the <a>media element</a>'s <a>default playback start position</a>,
   unless that is zero, in which case it must return the element's <a>official playback
-  position</a>. The returned value must be expressed in seconds. On setting, if the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then the user agent must throw an
-  <code>InvalidStateError</code> exception; otherwise, if the <a href="#media-elements">media element</a>'s <code>readyState</code> is <code>HAVE_NOTHING</code>, then it must set the <a href="#media-elements">media element</a>'s <a>default playback start position</a> to the new value; otherwise, it must
+  position</a>. The returned value must be expressed in seconds. On setting, if the <a>media element</a> has a <a>current media controller</a>, then the user agent must throw an
+  <code>InvalidStateError</code> exception; otherwise, if the <a>media element</a>'s <code>readyState</code> is <code>HAVE_NOTHING</code>, then it must set the <a>media element</a>'s <a>default playback start position</a> to the new value; otherwise, it must
   set the <a>official playback position</a> to the new value and then <a>seek</a> to the new value. The new value must be interpreted as being in
   seconds.
 
-  <a href="#media-elements">Media elements</a> have an <dfn>initial playback position</dfn>,
+  <a>Media elements</a> have an <dfn>initial playback position</dfn>,
   which must initially (i.e., in the absence of <a>media data</a>) be zero seconds. The
   <a>initial playback position</a> is updated when a <a>media resource</a> is loaded.
   The <a>initial playback position</a> is a time on the <a>media timeline</a>.
@@ -7602,7 +7610,7 @@ zero or more <{track}> elements, then
   attribute's <code>AudioTrackList</code> object or the <code>videoTracks</code> attribute's <code>VideoTrackList</code> object as
   appropriate and then <a>fire</a> a <a>trusted</a> event with the name <code>removetrack</code>, that does not bubble and is not cancelable, and that
   uses the <code>TrackEvent</code> interface, with the <code>track</code> attribute initialized to the <code>AudioTrack</code> or
-  <code>VideoTrack</code> object representing the track, at the <a href="#media-elements">media element</a>'s
+  <code>VideoTrack</code> object representing the track, at the <a>media element</a>'s
   aforementioned <code>AudioTrackList</code> or <code>VideoTrackList</code> object.
 
   The <dfn attribute for="HTMLMediaElement"><code>duration</code></dfn> attribute must return the time
@@ -7618,7 +7626,7 @@ zero or more <{track}> elements, then
 
   When the length of the <a>media resource</a> changes to a known value
   (e.g., from being unknown to known, or from a previously established length to a new length) the
-  user agent must <a>queue a task</a> to <a>fire a simple event</a> named <code>durationchange</code> at the <a href="#media-elements">media element</a>. (The
+  user agent must <a>queue a task</a> to <a>fire a simple event</a> named <code>durationchange</code> at the <a>media element</a>. (The
   event is not fired when the duration is reset as part of loading a new media resource.) If the
   duration is changed such that the <a>current playback position</a> ends up being greater
   than the time of the end of the <a>media resource</a>, then the user agent must also <a>seek</a> to the time of the end of the <a>media resource</a>.
@@ -7642,7 +7650,7 @@ zero or more <{track}> elements, then
   <hr />
 
   The <dfn element-attr for="media"><code>loop</code></dfn> attribute is a <a>boolean
-  attribute</a> that, if specified, indicates that the <a href="#media-elements">media element</a> is to seek back
+  attribute</a> that, if specified, indicates that the <a>media element</a> is to seek back
   to the start of the <a>media resource</a> upon reaching the end.
 
   The <code>loop</code> attribute has no effect while the element has a
@@ -7672,7 +7680,7 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  <a href="#media-elements">Media elements</a> have a <i>ready state</i>, which describes to
+  <a>Media elements</a> have a <i>ready state</i>, which describes to
   what degree they are ready to be rendered at the <a>current playback position</a>. The
   possible values are as follows; the ready state of a media element at any particular time is the
   greatest value describing the state of the element:
@@ -7684,7 +7692,7 @@ zero or more <{track}> elements, then
     <dt><dfn const for="HTMLMediaElement"><code>HAVE_NOTHING</code></dfn> (numeric value 0)</dt>
 
     <dd>No information regarding the <a>media resource</a> is available. No data for the
-    <a>current playback position</a> is available. <a href="#media-elements">Media elements</a> whose <code>networkState</code> attribute are set
+    <a>current playback position</a> is available. <a>Media elements</a> whose <code>networkState</code> attribute are set
     to <code>NETWORK_EMPTY</code> are always in the <code>HAVE_NOTHING</code> state.</dd>
 
     <dt><dfn const for="HTMLMediaElement"><code>HAVE_METADATA</code></dfn> (numeric value 1)</dt>
@@ -7754,7 +7762,7 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  When the ready state of a <a href="#media-elements">media element</a> whose <code>networkState</code> is not <code>NETWORK_EMPTY</code> changes, the user agent must follow the steps
+  When the ready state of a <a>media element</a> whose <code>networkState</code> is not <code>NETWORK_EMPTY</code> changes, the user agent must follow the steps
   given below:
 
   <ol>
@@ -7783,7 +7791,7 @@ zero or more <{track}> elements, then
 
       <dd>
 
-      If this is the first time this occurs for this <a href="#media-elements">media element</a> since the <code>load()</code> algorithm was last
+      If this is the first time this occurs for this <a>media element</a> since the <code>load()</code> algorithm was last
       invoked, the user agent must <a>queue a task</a> to <a>fire a simple event</a>
       named <code>loadeddata</code> at the element.
 
@@ -7798,7 +7806,7 @@ zero or more <{track}> elements, then
 
       <dd>
 
-      If the <a href="#media-elements">media element</a> was <a>potentially
+      If the <a>media element</a> was <a>potentially
       playing</a> before its <code>readyState</code> attribute
       changed to a value lower than <code>HAVE_FUTURE_DATA</code>, and the element has not
       <a>ended playback</a>, and playback has not <a>stopped due to errors</a>,
@@ -7831,9 +7839,9 @@ zero or more <{track}> elements, then
       <a>fire a simple event</a> named <code>playing</code>
       at the element.
 
-      If the <a>autoplaying flag</a> is true, and the <code>paused</code> attribute is true, and the <a href="#media-elements">media element</a>
+      If the <a>autoplaying flag</a> is true, and the <code>paused</code> attribute is true, and the <a>media element</a>
       has an <code>autoplay</code> attribute specified, and the
-      <a href="#media-elements">media element</a>'s <a>node document</a>'s <a>active sandboxing flag set</a>
+      <a>media element</a>'s <a>node document</a>'s <a>active sandboxing flag set</a>
       does not have the <a>sandboxed automatic features browsing context flag</a> set, then
       the user agent may also run the following substeps:
 
@@ -7867,8 +7875,8 @@ zero or more <{track}> elements, then
 
     </li>
 
-    <li>If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then
-    <a>report the controller state</a> for the <a href="#media-elements">media element</a>'s <a>current media
+    <li>If the <a>media element</a> has a <a>current media controller</a>, then
+    <a>report the controller state</a> for the <a>media element</a>'s <a>current media
     controller</a>.</li>
 
   </ol>
@@ -7884,7 +7892,7 @@ zero or more <{track}> elements, then
 
   The <dfn attribute for="HTMLMediaElement"><code>readyState</code></dfn> IDL attribute must, on
   getting, return the value described above that describes the current ready state of the
-  <a href="#media-elements">media element</a>.
+  <a>media element</a>.
 
   </div>
 
@@ -7993,12 +8001,12 @@ zero or more <{track}> elements, then
   <div class="impl">
 
   The <dfn><code>paused</code></dfn> attribute represents whether the
-  <a href="#media-elements">media element</a> is paused or not. The attribute must initially be true.
+  <a>media element</a> is paused or not. The attribute must initially be true.
 
-  A <a href="#media-elements">media element</a> is a <dfn>blocked media element</dfn> if its <code>readyState</code> attribute is in the <code>HAVE_NOTHING</code> state, the <code>HAVE_METADATA</code> state, or the <code>HAVE_CURRENT_DATA</code> state, or if the element has
+  A <a>media element</a> is a <dfn>blocked media element</dfn> if its <code>readyState</code> attribute is in the <code>HAVE_NOTHING</code> state, the <code>HAVE_METADATA</code> state, or the <code>HAVE_CURRENT_DATA</code> state, or if the element has
   <a>paused for user interaction</a> or <a>paused for in-band content</a>.
 
-  A <a href="#media-elements">media element</a> is said to be <dfn>potentially playing</dfn> when its <code>paused</code> attribute is false, the element has not <a>ended
+  A <a>media element</a> is said to be <dfn>potentially playing</dfn> when its <code>paused</code> attribute is false, the element has not <a>ended
   playback</a>, playback has not <a>stopped due to errors</a>, the element either has no
   <a>current media controller</a> or has a <a>current media controller</a> but is not
   <a>blocked on its media controller</a>, and the element is not a <a>blocked media
@@ -8009,7 +8017,7 @@ zero or more <{track}> elements, then
   <a>potentially playing</a> stopping playback due to its <code>readyState</code> attribute changing to a value lower than <code>HAVE_FUTURE_DATA</code>.
   </p>
 
-  A <a href="#media-elements">media element</a> is said to have <dfn lt="playback has ended|ended playback|playback ended">ended playback</dfn> when:
+  A <a>media element</a> is said to have <dfn lt="playback has ended|ended playback|playback ended">ended playback</dfn> when:
 
   <ul>
 
@@ -8026,7 +8034,7 @@ zero or more <{track}> elements, then
 
       </li><li>The <a>direction of playback</a> is forwards, and
 
-      </li><li>Either the <a href="#media-elements">media element</a> does not have a <code>loop</code> attribute specified, or the <a href="#media-elements">media element</a> has
+      </li><li>Either the <a>media element</a> does not have a <code>loop</code> attribute specified, or the <a>media element</a> has
       a <a>current media controller</a>.
 
     </li></ul>
@@ -8047,42 +8055,42 @@ zero or more <{track}> elements, then
   </ul>
 
   The <dfn><code>ended</code></dfn> attribute must return true if, the
-  last time the <a>event loop</a> reached step 1, the <a href="#media-elements">media element</a> had
+  last time the <a>event loop</a> reached step 1, the <a>media element</a> had
   <a>ended playback</a> and the <a>direction of playback</a> was forwards, and false
   otherwise.
 
-  A <a href="#media-elements">media element</a> is said to have <dfn>stopped due to errors</dfn> when the
+  A <a>media element</a> is said to have <dfn>stopped due to errors</dfn> when the
   element's <code>readyState</code> attribute is <code>HAVE_METADATA</code> or greater, and the user agent <a href="#non-fatal-media-error">encounters a non-fatal error</a> during the processing of the
   <a>media data</a>, and due to that error, is not able to play the content at the
   <a>current playback position</a>.
 
-  A <a href="#media-elements">media element</a> is said to have <dfn>paused for user interaction</dfn> when its
+  A <a>media element</a> is said to have <dfn>paused for user interaction</dfn> when its
   <code>paused</code> attribute is false, the <code>readyState</code> attribute is either <code>HAVE_FUTURE_DATA</code> or <code>HAVE_ENOUGH_DATA</code> and the user agent has reached a point
   in the <a>media resource</a> where the user has to make a selection for the resource to
-  continue. If the <a href="#media-elements">media element</a> has a <a>current media controller</a> when this
-  happens, then the user agent must <a>report the controller state</a> for the <a href="#media-elements">media element</a>'s <a>current media controller</a>. If the <a href="#media-elements">media element</a> has a
+  continue. If the <a>media element</a> has a <a>current media controller</a> when this
+  happens, then the user agent must <a>report the controller state</a> for the <a>media element</a>'s <a>current media controller</a>. If the <a>media element</a> has a
   <a>current media controller</a> when the user makes a selection, allowing playback to
-  resume, the user agent must similarly <a>report the controller state</a> for the <a href="#media-elements">media element</a>'s <a>current media controller</a>.
+  resume, the user agent must similarly <a>report the controller state</a> for the <a>media element</a>'s <a>current media controller</a>.
 
-  It is possible for a <a href="#media-elements">media element</a> to have both <a>ended playback</a> and
+  It is possible for a <a>media element</a> to have both <a>ended playback</a> and
   <a>paused for user interaction</a> at the same time.
 
-  When a <a href="#media-elements">media element</a> that is <a>potentially playing</a> stops playing
+  When a <a>media element</a> that is <a>potentially playing</a> stops playing
   because it has <a>paused for user interaction</a>, the user agent must <a>queue a
   task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the element.
 
-  A <a href="#media-elements">media element</a> is said to have <dfn>paused for in-band content</dfn> when its
+  A <a>media element</a> is said to have <dfn>paused for in-band content</dfn> when its
   <code>paused</code> attribute is false, the <code>readyState</code> attribute is either <code>HAVE_FUTURE_DATA</code> or <code>HAVE_ENOUGH_DATA</code> and the user agent has suspended
   playback of the <a>media resource</a> in order to play content that is temporally anchored
   to the <a>media resource</a> and has a non-zero length, or to play content that is
   temporally anchored to a segment of the <a>media resource</a> but has a length longer than
-  that segment. If the <a href="#media-elements">media element</a> has a <a>current media controller</a> when
+  that segment. If the <a>media element</a> has a <a>current media controller</a> when
   this happens, then the user agent must <a>report the controller state</a> for the
-  <a href="#media-elements">media element</a>'s <a>current media controller</a>. If the <a href="#media-elements">media element</a> has a <a>current media controller</a> when the user agent unsuspends
+  <a>media element</a>'s <a>current media controller</a>. If the <a>media element</a> has a <a>current media controller</a> when the user agent unsuspends
   playback, the user agent must similarly <a>report the controller state</a> for the
-  <a href="#media-elements">media element</a>'s <a>current media controller</a>.
+  <a>media element</a>'s <a>current media controller</a>.
 
-  <p class="example">One example of when a <a href="#media-elements">media element</a> would be <a>paused for
+  <p class="example">One example of when a <a>media element</a> would be <a>paused for
   in-band content</a> is when the user agent is playing <a state for="track" lt="Descriptions">audio descriptions</a> from an external WebVTT file, and
   the synthesized speech generated for a cue is longer than the time between the <a>text track
   cue start time</a> and the <a>text track cue end time</a>.</p>
@@ -8095,24 +8103,24 @@ zero or more <{track}> elements, then
 
   <ol>
 
-    <li>If the <a href="#media-elements">media element</a> has a <code>loop</code>
+    <li>If the <a>media element</a> has a <code>loop</code>
     attribute specified and does not have a <a>current media controller</a>, then <a>seek</a> to the <a>earliest possible position</a> of the
     <a>media resource</a> and abort these steps.</li>
 
     <li>As defined above, the <code>ended</code> IDL attribute starts
     returning true once the <a>event loop</a> returns to step 1.</li>
 
-    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the <a href="#media-elements">media element</a>.</li>
+    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the <a>media element</a>.</li>
 
-    <li><a>Queue a task</a> that, if the <a href="#media-elements">media element</a> does not have a
-    <a>current media controller</a>, and the <a href="#media-elements">media element</a> has still <a>ended
+    <li><a>Queue a task</a> that, if the <a>media element</a> does not have a
+    <a>current media controller</a>, and the <a>media element</a> has still <a>ended
     playback</a>, and the <a>direction of playback</a> is still forwards, and <a>paused</a> is false, changes <a>paused</a> to true and <a>fires a
-    simple event</a> named <code>pause</code> at the <a href="#media-elements">media element</a>.</li>
+    simple event</a> named <code>pause</code> at the <a>media element</a>.</li>
 
-    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>ended</code> at the <a href="#media-elements">media element</a>.</li>
+    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>ended</code> at the <a>media element</a>.</li>
 
-    <li>If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then
-    <a>report the controller state</a> for the <a href="#media-elements">media element</a>'s <a>current media
+    <li>If the <a>media element</a> has a <a>current media controller</a>, then
+    <a>report the controller state</a> for the <a>media element</a>'s <a>current media
     controller</a>.</li>
 
   </ol>
@@ -8153,12 +8161,12 @@ zero or more <{track}> elements, then
   or <code>playbackRate</code> attributes change value (either by
   being set by script or by being changed directly by the user agent, e.g., in response to user
   control) the user agent must <a>queue a task</a> to <a>fire a simple event</a> named
-  <code>ratechange</code> at the <a href="#media-elements">media element</a>.
+  <code>ratechange</code> at the <a>media element</a>.
 
   <p class="note">
     The <code>defaultPlaybackRate</code> and
   <code>playbackRate</code> attributes have no effect when the
-  <a href="#media-elements">media element</a> has a <a>current media controller</a>; the namesake attributes on
+  <a>media element</a> has a <a>current media controller</a>; the namesake attributes on
   the <code>MediaController</code> object are used instead in that situation.
   </p>
 
@@ -8172,32 +8180,32 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  When the <dfn><code>play()</code></dfn> method on a <a href="#media-elements">media element</a> is invoked, the user agent must run the following steps.
+  When the <dfn><code>play()</code></dfn> method on a <a>media element</a> is invoked, the user agent must run the following steps.
 
   <ol>
 
-    <li>If the <a href="#media-elements">media element</a>'s <code>networkState</code> attribute has the value <code>NETWORK_EMPTY</code>, invoke the <a href="#media-elements">media element</a>'s
+    <li>If the <a>media element</a>'s <code>networkState</code> attribute has the value <code>NETWORK_EMPTY</code>, invoke the <a>media element</a>'s
     <a>resource selection algorithm</a>.</li>
 
     <li>
 
     If the <a>playback has ended</a> and the <a>direction of
-    playback</a> is forwards, and the <a href="#media-elements">media element</a> does not have a <a>current
+    playback</a> is forwards, and the <a>media element</a> does not have a <a>current
     media controller</a>, <a>seek</a> to the <a>earliest possible
     position</a> of the <a>media resource</a>.
 
     <p class="note">
-    This will cause the user agent to <a>queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the <a href="#media-elements">media element</a>.
+    This will cause the user agent to <a>queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the <a>media element</a>.
   </p>
 
     </li>
 
-    <li>If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then
+    <li>If the <a>media element</a> has a <a>current media controller</a>, then
     <a>bring the media element up to speed with its new media controller</a>.
 
     </li><li>
 
-    If the <a href="#media-elements">media element</a>'s <code>paused</code> attribute is
+    If the <a>media element</a>'s <code>paused</code> attribute is
     true, run the following substeps:
 
     <ol>
@@ -8211,12 +8219,12 @@ zero or more <{track}> elements, then
 
       <li>
 
-      If the <a href="#media-elements">media element</a>'s <code>readyState</code>
+      If the <a>media element</a>'s <code>readyState</code>
       attribute has the value <code>HAVE_NOTHING</code>, <code>HAVE_METADATA</code>, or <code>HAVE_CURRENT_DATA</code>, <a>queue a task</a> to
       <a>fire a simple event</a> named <code>waiting</code> at the
       element.
 
-      Otherwise, the <a href="#media-elements">media element</a>'s <code>readyState</code> attribute has the value <code>HAVE_FUTURE_DATA</code> or <code>HAVE_ENOUGH_DATA</code>: <a>queue a task</a> to
+      Otherwise, the <a>media element</a>'s <code>readyState</code> attribute has the value <code>HAVE_FUTURE_DATA</code> or <code>HAVE_ENOUGH_DATA</code>: <a>queue a task</a> to
       <a>fire a simple event</a> named <code>playing</code> at the
       element.
 
@@ -8226,10 +8234,10 @@ zero or more <{track}> elements, then
 
     </li>
 
-    <li>Set the <a href="#media-elements">media element</a>'s <a>autoplaying flag</a> to false.</li>
+    <li>Set the <a>media element</a>'s <a>autoplaying flag</a> to false.</li>
 
-    <li>If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then
-    <a>report the controller state</a> for the <a href="#media-elements">media element</a>'s <a>current media
+    <li>If the <a>media element</a> has a <a>current media controller</a>, then
+    <a>report the controller state</a> for the <a>media element</a>'s <a>current media
     controller</a>.</li>
 
   </ol>
@@ -8237,25 +8245,25 @@ zero or more <{track}> elements, then
   <hr />
 
   When the <dfn><code>pause()</code></dfn> method is invoked, and when
-  the user agent is required to pause the <a href="#media-elements">media element</a>, the user agent must run the
+  the user agent is required to pause the <a>media element</a>, the user agent must run the
   following steps:
 
   <ol>
 
-    <li>If the <a href="#media-elements">media element</a>'s <code>networkState</code> attribute has the value <code>NETWORK_EMPTY</code>, invoke the <a href="#media-elements">media element</a>'s
+    <li>If the <a>media element</a>'s <code>networkState</code> attribute has the value <code>NETWORK_EMPTY</code>, invoke the <a>media element</a>'s
     <a>resource selection algorithm</a>.</li>
 
-    <li>Run the <a>internal pause steps</a> for the <a href="#media-elements">media element</a>.</li>
+    <li>Run the <a>internal pause steps</a> for the <a>media element</a>.</li>
 
   </ol>
 
-  The <dfn>internal pause steps</dfn> for a <a href="#media-elements">media element</a> are as follows:
+  The <dfn>internal pause steps</dfn> for a <a>media element</a> are as follows:
 
   <ol>
 
-    <li>Set the <a href="#media-elements">media element</a>'s <a>autoplaying flag</a> to false.</li>
+    <li>Set the <a>media element</a>'s <a>autoplaying flag</a> to false.</li>
 
-    <li>If the <a href="#media-elements">media element</a>'s <code>paused</code> attribute
+    <li>If the <a>media element</a>'s <code>paused</code> attribute
     is false, run the following steps:
 
     <ol>
@@ -8277,24 +8285,24 @@ zero or more <{track}> elements, then
 
     </li>
 
-    <li>If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then
-    <a>report the controller state</a> for the <a href="#media-elements">media element</a>'s <a>current media
+    <li>If the <a>media element</a> has a <a>current media controller</a>, then
+    <a>report the controller state</a> for the <a>media element</a>'s <a>current media
     controller</a>.</li>
 
   </ol>
 
   <hr />
 
-  The <dfn>effective playback rate</dfn> is not necessarily the element's <code>playbackRate</code>. When a <a href="#media-elements">media element</a> has a
+  The <dfn>effective playback rate</dfn> is not necessarily the element's <code>playbackRate</code>. When a <a>media element</a> has a
   <a>current media controller</a>, its <a>effective playback rate</a> is the
   <code>MediaController</code>'s <a>media controller playback rate</a>. Otherwise, the
   <a>effective playback rate</a> is just the element's <code>playbackRate</code>. Thus, the <a>current media
-  controller</a> overrides the <a href="#media-elements">media element</a>.
+  controller</a> overrides the <a>media element</a>.
 
   If the <a>effective playback rate</a> is positive or zero, then the <dfn>direction of
   playback</dfn> is forwards. Otherwise, it is backwards.
 
-  When a <a href="#media-elements">media element</a> is <a>potentially playing</a> and
+  When a <a>media element</a> is <a>potentially playing</a> and
   its {{Document}} is a <a>fully active</a> {{Document}}, its <a>current
   playback position</a> must increase monotonically at <a>effective playback rate</a> units
   of media time per unit time of the <a>media timeline</a>'s clock. (This specification always
@@ -8326,7 +8334,7 @@ zero or more <{track}> elements, then
   rate</a> is not 1.0, the user agent may apply pitch adjustments to the audio as necessary to
   render it faithfully.
 
-  <a href="#media-elements">Media elements</a> that are <a>potentially playing</a>
+  <a>Media elements</a> that are <a>potentially playing</a>
   while not <a>in a <code>Document</code></a> must not play any video, but should play any
   audio component. Media elements must not stop playing just because all references to them have
   been removed; only once a media element is in a state where no further audio could ever be played
@@ -8344,22 +8352,22 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  Each <a href="#media-elements">media element</a> has a <dfn>list of newly introduced cues</dfn>, which must be
+  Each <a>media element</a> has a <dfn>list of newly introduced cues</dfn>, which must be
   initially empty. Whenever a <a>text track cue</a> is added to the <a>list of cues</a> of a <a>text track</a> that is in the <a>list of text
-  tracks</a> for a <a href="#media-elements">media element</a>, that <a>cue</a> must
-  be added to the <a href="#media-elements">media element</a>'s <a>list of newly introduced cues</a>. Whenever
-  a <a>text track</a> is added to the <a>list of text tracks</a> for a <a href="#media-elements">media element</a>, all of the <a>cues</a> in that <a>text
+  tracks</a> for a <a>media element</a>, that <a>cue</a> must
+  be added to the <a>media element</a>'s <a>list of newly introduced cues</a>. Whenever
+  a <a>text track</a> is added to the <a>list of text tracks</a> for a <a>media element</a>, all of the <a>cues</a> in that <a>text
   track</a>'s <a>list of cues</a> must be added to the
-  <a href="#media-elements">media element</a>'s <a>list of newly introduced cues</a>. When a <a href="#media-elements">media element</a>'s <a>list of newly introduced cues</a> has new cues added while the
-  <a href="#media-elements">media element</a>'s <a>show poster flag</a> is not set, then the user agent must
+  <a>media element</a>'s <a>list of newly introduced cues</a>. When a <a>media element</a>'s <a>list of newly introduced cues</a> has new cues added while the
+  <a>media element</a>'s <a>show poster flag</a> is not set, then the user agent must
   run the <i>time marches on</i> steps.
 
   When a <a>text track cue</a> is removed from the <a>list of cues</a> of a <a>text track</a> that is in the <a>list of text
-  tracks</a> for a <a href="#media-elements">media element</a>, and whenever a <a>text track</a> is removed
-  from the <a>list of text tracks</a> of a <a href="#media-elements">media element</a>, if the <a href="#media-elements">media element</a>'s <a>show poster flag</a> is not set, then the user agent must run the
+  tracks</a> for a <a>media element</a>, and whenever a <a>text track</a> is removed
+  from the <a>list of text tracks</a> of a <a>media element</a>, if the <a>media element</a>'s <a>show poster flag</a> is not set, then the user agent must run the
   <i>time marches on</i> steps.
 
-  When the <a>current playback position</a> of a <a href="#media-elements">media element</a> changes (e.g.,
+  When the <a>current playback position</a> of a <a>media element</a> changes (e.g.,
   due to playback or seeking), the user agent must run the <i>time marches on</i> steps. If the
   <a>current playback position</a> changes while the steps are running, then the user agent
   must wait for the steps to complete, and then must immediately rerun the steps. (These steps are
@@ -8372,15 +8380,15 @@ zero or more <{track}> elements, then
   <ol>
 
     <li>Let <var>current cues</var> be a list of <a>cues</a>, initialized to contain all the <a>cues</a> of all
-    the <a mode for="track">hidden</a> or <a mode for="track">showing</a> <a>text tracks</a> of the <a href="#media-elements">media element</a> (not the disabled ones) whose <a>start times</a> are less than or equal to the <a>current
+    the <a mode for="track">hidden</a> or <a mode for="track">showing</a> <a>text tracks</a> of the <a>media element</a> (not the disabled ones) whose <a>start times</a> are less than or equal to the <a>current
     playback position</a> and whose <a>end times</a> are
     greater than the <a>current playback position</a>.</li>
 
     <li>Let <var>other cues</var> be a list of <a>cues</a>,
-    initialized to contain all the <a>cues</a> of <a mode for="track">hidden</a> and <a mode for="track">showing</a> <a>text tracks</a> of the <a href="#media-elements">media element</a> that are not present in <var>current cues</var>.</li>
+    initialized to contain all the <a>cues</a> of <a mode for="track">hidden</a> and <a mode for="track">showing</a> <a>text tracks</a> of the <a>media element</a> that are not present in <var>current cues</var>.</li>
 
     <li>Let <var>last time</var> be the <a>current playback position</a> at the
-    time this algorithm was last run for this <a href="#media-elements">media element</a>, if this is not the first
+    time this algorithm was last run for this <a>media element</a>, if this is not the first
     time it has run.</li>
 
     <li>If the <a>current playback position</a> has, since the last time this algorithm was
@@ -8389,7 +8397,7 @@ zero or more <{track}> elements, then
     Otherwise, let <var>missed cues</var> be an empty list.</li>
 
     <li>Remove all the <a>cues</a> in <var>missed cues</var>
-    that are also in the <a href="#media-elements">media element</a>'s <a>list of newly introduced cues</a>, and
+    that are also in the <a>media element</a>'s <a>list of newly introduced cues</a>, and
     then empty the element's <a>list of newly introduced cues</a>.</li>
 
     <li>If the time was reached through the usual monotonic increase of the <a>current playback
@@ -8417,7 +8425,7 @@ zero or more <{track}> elements, then
     position</a> during normal playback, and there are <a>cues</a>
     in <var>other cues</var> that have their <a>text track cue pause-on-exit flag</a>
     set and that either have their <a>text track cue active flag</a> set or are also in <var>missed cues</var>, then <a>immediately</a> <a state for="useragent">pause</a> the
-    <a href="#media-elements">media element</a>.
+    <a>media element</a>.
 
     <p class="note">
     In the other cases, such as explicit seeks, playback is not paused by going past
@@ -8487,7 +8495,7 @@ zero or more <{track}> elements, then
     <li><a lt="queue a task">Queue</a> each <a>task</a> in
     <var>events</var>, in list order.</li>
 
-    <li>Sort <var>affected tracks</var> in the same order as the <a>text tracks</a> appear in the <a href="#media-elements">media element</a>'s <a>list of text
+    <li>Sort <var>affected tracks</var> in the same order as the <a>text tracks</a> appear in the <a>media element</a>'s <a>list of text
     tracks</a>, and remove duplicates.
 
     </li><li>For each <a>text track</a> in <var>affected tracks</var>, in the list
@@ -8513,25 +8521,25 @@ zero or more <{track}> elements, then
   merely if it is associated with the <a>text track</a>.
 
   <p class="note">
-    If the <a href="#media-elements">media element</a>'s <a>node document</a> stops being a
+    If the <a>media element</a>'s <a>node document</a> stops being a
   <a>fully active</a> document, then the playback will stop
   until the document is active again.
   </p>
 
-  When a <a href="#media-elements">media element</a> is <a>removed
+  When a <a>media element</a> is <a>removed
   from a <code>Document</code></a>, the user agent must run the following steps:
 
   <ol>
 
-    <li><a>Await a stable state</a>, allowing the <a>task</a> that removed the <a href="#media-elements">media element</a> from the
+    <li><a>Await a stable state</a>, allowing the <a>task</a> that removed the <a>media element</a> from the
     {{Document}} to continue. The <a>synchronous section</a> consists of all the
     remaining steps of this algorithm. (Steps in the <a>synchronous section</a> are marked with
     &#x231B;.)</li>
 
-    <li>&#x231B; If the <a href="#media-elements">media element</a> is <a>in a <code>Document</code></a>,
+    <li>&#x231B; If the <a>media element</a> is <a>in a <code>Document</code></a>,
     abort these steps.</li>
 
-    <li>&#x231B; Run the <a>internal pause steps</a> for the <a href="#media-elements">media element</a>.
+    <li>&#x231B; Run the <a>internal pause steps</a> for the <a>media element</a>.
 
   </li></ol>
   </div>
@@ -8586,9 +8594,9 @@ zero or more <{track}> elements, then
 
   <ol>
 
-    <li>Set the <a href="#media-elements">media element</a>'s <a>show poster flag</a> to false.</li>
+    <li>Set the <a>media element</a>'s <a>show poster flag</a> to false.</li>
 
-    <li>If the <a href="#media-elements">media element</a>'s <code>readyState</code>
+    <li>If the <a>media element</a>'s <code>readyState</code>
     is <code>HAVE_NOTHING</code>, abort these steps.</li>
 
     <li>If the element's <code>seeking</code> IDL attribute is true,
@@ -8638,7 +8646,7 @@ zero or more <{track}> elements, then
     position</var>.
 
     <p class="note">
-    If the <a href="#media-elements">media element</a> was <a>potentially playing</a>
+    If the <a>media element</a> was <a>potentially playing</a>
     immediately before it started seeking, but seeking caused its <code>readyState</code> attribute to change to a value lower than <code>HAVE_FUTURE_DATA</code>, then a <code>waiting</code> event will be
     <a>fired</a> at the element.
   </p>
@@ -8716,9 +8724,9 @@ zero or more <{track}> elements, then
   restart the video and watch it all the way through just to get to an earlier unbuffered spot.</p>
 
   <a>Media resources</a> might be internally scripted or
-  interactive. Thus, a <a href="#media-elements">media element</a> could play in a non-linear fashion. If this
+  interactive. Thus, a <a>media element</a> could play in a non-linear fashion. If this
   happens, the user agent must act as if the algorithm for <a>seeking</a> was used whenever the <a>current playback position</a>
-  changes in a discontinuous fashion (so that the relevant events fire). If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then the user agent must <a>seek
+  changes in a discontinuous fashion (so that the relevant events fire). If the <a>media element</a> has a <a>current media controller</a>, then the user agent must <a>seek
   the media controller</a> appropriately instead.
 
   </div>
@@ -8755,18 +8763,18 @@ zero or more <{track}> elements, then
   <div class="impl">
 
   The <dfn attribute for="HTMLMediaElement"><code>audioTracks</code></dfn> attribute of a
-  <a href="#media-elements">media element</a> must return a <a>live</a> <code>AudioTrackList</code> object
-  representing the audio tracks available in the <a href="#media-elements">media element</a>'s <a>media
+  <a>media element</a> must return a <a>live</a> <code>AudioTrackList</code> object
+  representing the audio tracks available in the <a>media element</a>'s <a>media
   resource</a>.
 
   The <dfn attribute for="HTMLMediaElement"><code>videoTracks</code></dfn> attribute of a
-  <a href="#media-elements">media element</a> must return a <a>live</a> <code>VideoTrackList</code> object
-  representing the video tracks available in the <a href="#media-elements">media element</a>'s <a>media
+  <a>media element</a> must return a <a>live</a> <code>VideoTrackList</code> object
+  representing the video tracks available in the <a>media element</a>'s <a>media
   resource</a>.
 
   <p class="note">
     There are only ever one <code>AudioTrackList</code> object and one
-  <code>VideoTrackList</code> object per <a href="#media-elements">media element</a>, even if another <a>media
+  <code>VideoTrackList</code> object per <a>media element</a>, even if another <a>media
   resource</a> is loaded into the element: the objects are reused. (The <code>AudioTrack</code>
   and <code>VideoTrack</code> objects are not, though.)
   </p>
@@ -9198,19 +9206,19 @@ zero or more <{track}> elements, then
 
 <h6 id="synchronizing-multiple-media-elements-introduction">Introduction</h6>
 
-  Each <a href="#media-elements">media element</a> can have a <code>MediaController</code>. A
-  <code>MediaController</code> is an object that coordinates the playback of multiple <a href="#media-elements">media elements</a>, for instance so that a sign-language interpreter
+  Each <a>media element</a> can have a <code>MediaController</code>. A
+  <code>MediaController</code> is an object that coordinates the playback of multiple <a>media elements</a>, for instance so that a sign-language interpreter
   track can be overlaid on a video track, with the two being kept synchronized.
 
-  By default, a <a href="#media-elements">media element</a> has no <code>MediaController</code>. An explicit
+  By default, a <a>media element</a> has no <code>MediaController</code>. An explicit
   <code>MediaController</code> can be assigned directly using the <code>controller</code> IDL attribute.
 
-  <a href="#media-elements">Media elements</a> with a <code>MediaController</code> are said
+  <a>Media elements</a> with a <code>MediaController</code> are said
   to be <i>slaved</i> to their controller. The <code>MediaController</code> modifies the playback
-  rate and the playback volume of each of the <a href="#media-elements">media elements</a>
-  slaved to it, and ensures that when any of its slaved <a href="#media-elements">media elements</a> unexpectedly stall, the others are stopped at the same time.
+  rate and the playback volume of each of the <a>media elements</a>
+  slaved to it, and ensures that when any of its slaved <a>media elements</a> unexpectedly stall, the others are stopped at the same time.
 
-  When a <a href="#media-elements">media element</a> is slaved to a <code>MediaController</code>, its playback
+  When a <a>media element</a> is slaved to a <code>MediaController</code>, its playback
   rate is fixed to that of the other tracks in the same <code>MediaController</code>, and any
   looping is disabled.
 
@@ -9275,7 +9283,7 @@ zero or more <{track}> elements, then
 
     <dd>
 
-    Returns the current <code>MediaController</code> for the <a href="#media-elements">media element</a>, if any,
+    Returns the current <code>MediaController</code> for the <a>media element</a>, if any,
     or null otherwise.
 
     </dd>
@@ -9286,7 +9294,7 @@ zero or more <{track}> elements, then
 
     Returns the state that the <code>MediaController</code> was in the last time it fired events
     as a result of <a>reporting the controller state</a>.
-    The values of this attribute are the same as for the <code>readyState</code> attribute of <a href="#media-elements">media elements</a>.
+    The values of this attribute are the same as for the <code>readyState</code> attribute of <a>media elements</a>.
 
     </dd>
 
@@ -9295,7 +9303,7 @@ zero or more <{track}> elements, then
     <dd>
 
     Returns a <code>TimeRanges</code> object that represents the intersection of the time ranges
-    for which the user agent has all relevant media data for all the slaved <a href="#media-elements">media elements</a>.
+    for which the user agent has all relevant media data for all the slaved <a>media elements</a>.
 
     </dd>
 
@@ -9304,7 +9312,7 @@ zero or more <{track}> elements, then
     <dd>
 
     Returns a <code>TimeRanges</code> object that represents the intersection of the time ranges
-    into which the user agent can seek for all the slaved <a href="#media-elements">media elements</a>.
+    into which the user agent can seek for all the slaved <a>media elements</a>.
 
     </dd>
 
@@ -9334,7 +9342,7 @@ zero or more <{track}> elements, then
     <dd>
 
     Returns true if playback is paused; false otherwise. When this attribute is true, any
-    <a href="#media-elements">media element</a> slaved to this controller will be stopped.
+    <a>media element</a> slaved to this controller will be stopped.
 
     </dd>
 
@@ -9382,7 +9390,7 @@ zero or more <{track}> elements, then
     <dd>
 
     Returns a <code>TimeRanges</code> object that represents the union of the time ranges in all
-    the slaved <a href="#media-elements">media elements</a> that have been played.
+    the slaved <a>media elements</a> that have been played.
 
     </dd>
 
@@ -9429,7 +9437,7 @@ zero or more <{track}> elements, then
     <dd>
 
     Returns true if all audio is muted (regardless of other attributes either on the controller
-    or on any <a href="#media-elements">media elements</a> slaved to this controller), and
+    or on any <a>media elements</a> slaved to this controller), and
     false otherwise.
 
     Can be set, to change whether the audio is muted or not.
@@ -9440,22 +9448,22 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  A <a href="#media-elements">media element</a> can have a <dfn>current media controller</dfn>, which is a
+  A <a>media element</a> can have a <dfn>current media controller</dfn>, which is a
   <code>MediaController</code> object.
 
-  The <dfn lt="slaved media elements|slaved media element|slaved">slaved media elements</dfn> of a <code>MediaController</code> are the <a href="#media-elements">media elements</a> whose <a>current media controller</a> is that
+  The <dfn lt="slaved media elements|slaved media element|slaved">slaved media elements</dfn> of a <code>MediaController</code> are the <a>media elements</a> whose <a>current media controller</a> is that
   <code>MediaController</code>. All the <a>slaved media elements</a> of a
   <code>MediaController</code> must use the same clock for their definition of their <a>media timeline</a>'s unit time. When the user agent is required to act on each <a>slaved media element</a> in turn, they must be processed in the order that they
   were last associated with the <code>MediaController</code>.
 
   <hr />
 
-  The <dfn><code>controller</code></dfn> attribute on a <a href="#media-elements">media element</a>, on getting, must return the element's <a>current media controller</a>, if
+  The <dfn><code>controller</code></dfn> attribute on a <a>media element</a>, on getting, must return the element's <a>current media controller</a>, if
   any, or null otherwise. On setting, the user agent must run the following steps:
 
   <ol>
 
-    <li>Let <var>m</var> be the <a href="#media-elements">media element</a> in question.</li>
+    <li>Let <var>m</var> be the <a>media element</a> in question.</li>
 
     <li>Let <var>old controller</var> be <var>m</var>'s <a>current media
     controller</a>, if it currently has one, and null otherwise.</li>
@@ -9625,7 +9633,7 @@ zero or more <{track}> elements, then
   with the earliest defined point on the timeline of the <a>media resource</a> with the
   earliest <a>timeline offset</a>).
 
-  The <dfn>media resource end position</dfn> of a <a>media resource</a> in a <a href="#media-elements">media element</a> is defined as follows: if the <a>media resource</a> has a finite and known
+  The <dfn>media resource end position</dfn> of a <a>media resource</a> in a <a>media element</a> is defined as follows: if the <a>media resource</a> has a finite and known
   duration, the <a>media resource end position</a> is the duration of the <a>media
   resource</a>'s timeline (the last defined position on that timeline); otherwise, the
   <a>media resource</a>'s duration is infinite or unknown, and the <a>media resource end
@@ -9648,8 +9656,8 @@ zero or more <{track}> elements, then
   <a>slaved media elements</a>. When a <code>MediaController</code> is created, its
   <a>media controller position</a> is initially zero.
 
-  When the user agent is to <dfn lt="bring the media element up to speed with its new media controller|bring a media element up to speed with its new media controller">bring a media element up to speed with its new media controller</dfn>, it must <a>seek</a> that <a href="#media-elements">media element</a> to the
-  <code>MediaController</code>'s <a>media controller position</a> relative to the <a href="#media-elements">media element</a>'s timeline.
+  When the user agent is to <dfn lt="bring the media element up to speed with its new media controller|bring a media element up to speed with its new media controller">bring a media element up to speed with its new media controller</dfn>, it must <a>seek</a> that <a>media element</a> to the
+  <code>MediaController</code>'s <a>media controller position</a> relative to the <a>media element</a>'s timeline.
 
   When the user agent is to <dfn>seek the media controller</dfn> to a particular <var>new playback position</var>, it must follow these steps:
 
@@ -9665,7 +9673,7 @@ zero or more <{track}> elements, then
     position</var>.</li>
 
     <li><a>Seek</a> each <a>slaved
-    media element</a> to the <var>new playback position</var> relative to the <a href="#media-elements">media element</a> timeline.</li>
+    media element</a> to the <var>new playback position</var> relative to the <a>media element</a> timeline.</li>
 
   </ol>
 
@@ -9676,7 +9684,7 @@ zero or more <{track}> elements, then
   flag</a> is true still have their <code>paused</code> attribute set to
   true, or if all of its <a>slaved media elements</a> have their <code>paused</code> attribute set to true.
 
-  A <a href="#media-elements">media element</a> is <dfn>blocked on its media controller</dfn> if the
+  A <a>media element</a> is <dfn>blocked on its media controller</dfn> if the
   <code>MediaController</code> is a <a>blocked media controller</a>, or if its <a>media
   controller position</a> is either before the <a>media resource</a>'s <a>earliest
   possible position</a> relative to the <code>MediaController</code>'s timeline or after the end
@@ -9705,7 +9713,7 @@ zero or more <{track}> elements, then
   <hr />
 
   A <code>MediaController</code> has a <dfn>most recently reported readiness state</dfn>, which
-  is a number from 0 to 4 derived from the numbers used for the <a href="#media-elements">media element</a> <code>readyState</code> attribute, and a <dfn>most recently reported
+  is a number from 0 to 4 derived from the numbers used for the <a>media element</a> <code>readyState</code> attribute, and a <dfn>most recently reported
   playback state</dfn>, which is either <i>playing</i>, <i>waiting</i>, or <i>ended</i>.
 
   When a <code>MediaController</code> is created, its <a>most recently reported readiness
@@ -9920,13 +9928,13 @@ zero or more <{track}> elements, then
 
 <h6 id="text-track-model">Text track model</h6>
 
-  A <a href="#media-elements">media element</a> can have a group of associated <dfn>text
-  tracks</dfn>, known as the <a href="#media-elements">media element</a>'s <dfn>list of text tracks</dfn>. The <a>text tracks</a> are sorted as follows:
+  A <a>media element</a> can have a group of associated <dfn>text
+  tracks</dfn>, known as the <a>media element</a>'s <dfn>list of text tracks</dfn>. The <a>text tracks</a> are sorted as follows:
 
   <ol class="brief">
 
     <li>The <a>text tracks</a> corresponding to <{track}> element
-    children of the <a href="#media-elements">media element</a>, in <a>tree order</a>.</li>
+    children of the <a>media element</a>, in <a>tree order</a>.</li>
 
     <li>Any <a>text tracks</a> added using the <code>addTextTrack()</code> method, in the order they were added, oldest
     first.</li>
@@ -10128,12 +10136,12 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  Each <a href="#media-elements">media element</a> has a <dfn>list of pending text tracks</dfn>, which must
+  Each <a>media element</a> has a <dfn>list of pending text tracks</dfn>, which must
   initially be empty, a <dfn>blocked-on-parser</dfn> flag, which must initially be false, and a
   <dfn>did-perform-automatic-track-selection</dfn> flag, which must also initially be false.
 
   When the user agent is required to <dfn>populate the list of pending text tracks</dfn> of a
-  <a href="#media-elements">media element</a>, the user agent must add to the element's <a>list of pending text
+  <a>media element</a>, the user agent must add to the element's <a>list of pending text
   tracks</a> each <a>text track</a> in the element's <a>list of text tracks</a> whose
   <a>text track mode</a> is not disabled and whose
   <a>text track readiness state</a> is  <a state for="track">loading</a>.
@@ -10146,29 +10154,29 @@ zero or more <{track}> elements, then
   <a state for="track">loaded</a> or <a state for="track">failed to load</a>, the user agent must remove it from any <a>list of pending text tracks</a> that
   it is in.
 
-  When a <a href="#media-elements">media element</a> is created by an <a>HTML parser</a> or <a>XML
+  When a <a>media element</a> is created by an <a>HTML parser</a> or <a>XML
   parser</a>, the user agent must set the element's <a>blocked-on-parser</a> flag to true.
-  When a <a href="#media-elements">media element</a> is popped off the <a>stack of open elements</a> of an
+  When a <a>media element</a> is popped off the <a>stack of open elements</a> of an
   <a>HTML parser</a> or <a>XML parser</a>, the user agent must <a>honor user
   preferences for automatic text track selection</a>, <a>populate the list of pending text
   tracks</a>, and set the element's <a>blocked-on-parser</a> flag to false.
 
-  The <a>text tracks</a> of a <a href="#media-elements">media element</a> are <dfn lt="the text tracks are ready|ready">ready</dfn> when both the element's <a>list of pending text
+  The <a>text tracks</a> of a <a>media element</a> are <dfn lt="the text tracks are ready|ready">ready</dfn> when both the element's <a>list of pending text
   tracks</a> is empty and the element's <a>blocked-on-parser</a> flag is false.
 
-  Each <a href="#media-elements">media element</a> has a <dfn>pending text track change notification flag</dfn>,
+  Each <a>media element</a> has a <dfn>pending text track change notification flag</dfn>,
   which must initially be unset.
 
-  Whenever a <a>text track</a> that is in a <a href="#media-elements">media element</a>'s <a>list of text
+  Whenever a <a>text track</a> that is in a <a>media element</a>'s <a>list of text
   tracks</a> has its <a>text track mode</a> change value, the user agent must run the
-  following steps for the <a href="#media-elements">media element</a>:
+  following steps for the <a>media element</a>:
 
   <ol>
 
-    <li>If the <a href="#media-elements">media element</a>'s <a>pending text track change notification
+    <li>If the <a>media element</a>'s <a>pending text track change notification
     flag</a> is set, abort these steps.</li>
 
-    <li>Set the <a href="#media-elements">media element</a>'s <a>pending text track change notification
+    <li>Set the <a>media element</a>'s <a>pending text track change notification
     flag</a>.</li>
 
     <li>
@@ -10177,18 +10185,18 @@ zero or more <{track}> elements, then
 
     <ol>
 
-      <li>Unset the <a href="#media-elements">media element</a>'s <a>pending text track change notification
+      <li>Unset the <a>media element</a>'s <a>pending text track change notification
       flag</a>.</li>
 
       <li><a>Fire a simple event</a> named <code>change</code> at
-      the <a href="#media-elements">media element</a>'s <code>textTracks</code>
+      the <a>media element</a>'s <code>textTracks</code>
       attribute's <code>TextTrackList</code> object.</li>
 
     </ol>
 
     </li>
 
-    <li>If the <a href="#media-elements">media element</a>'s <a>show poster flag</a> is not set, run the
+    <li>If the <a>media element</a>'s <a>show poster flag</a> is not set, run the
     <i>time marches on</i> steps.</li>
 
   </ol>
@@ -10272,8 +10280,8 @@ zero or more <{track}> elements, then
 
     The user agent must immediately unset this flag whenever the <a>text track cue</a> is
     removed from its <a>text track</a>'s <a>text track list of cues</a>; whenever the
-    <a>text track</a> itself is removed from its <a href="#media-elements">media element</a>'s <a>list of
-    text tracks</a> or has its <a>text track mode</a> changed to disabled; and whenever the <a href="#media-elements">media element</a>'s <code>readyState</code> is changed back to <code>HAVE_NOTHING</code>. When the flag is unset in this way for one
+    <a>text track</a> itself is removed from its <a>media element</a>'s <a>list of
+    text tracks</a> or has its <a>text track mode</a> changed to disabled; and whenever the <a>media element</a>'s <code>readyState</code> is changed back to <code>HAVE_NOTHING</code>. When the flag is unset in this way for one
     or more cues in <a>text tracks</a> that were <a mode for="track">showing</a> prior to the relevant incident, the user agent must, after having unset
     the flag for all the affected cues, apply the <a>rules for updating the text track
     rendering</a> of those <a>text tracks</a>. For example, for <a>text tracks</a> based on <a>WebVTT</a>, the <a>rules for updating
@@ -10290,10 +10298,10 @@ zero or more <{track}> elements, then
 
   </dl>
 
-  The <a>text track cues</a> of a <a href="#media-elements">media element</a>'s
+  The <a>text track cues</a> of a <a>media element</a>'s
   <a>text tracks</a> are ordered relative to each other in the <dfn>text
   track cue order</dfn>, which is determined as follows: first group the <a>cues</a> by their <a>text track</a>, with the groups being sorted in the same order
-  as their <a>text tracks</a> appear in the <a href="#media-elements">media element</a>'s
+  as their <a>text tracks</a> appear in the <a>media element</a>'s
   <a>list of text tracks</a>; then, within each group, <a>cues</a> must be sorted by their <a>start
   time</a>, earliest first; then, any <a>cues</a> with the same
   <a>start time</a> must be sorted by their <a>end time</a>, latest first; and finally, any <a>cues</a> with identical <a>end
@@ -10420,13 +10428,13 @@ zero or more <{track}> elements, then
 
     </li>
 
-    <li>Add the new <a>text track</a> to the <a href="#media-elements">media element</a>'s <a>list of text
+    <li>Add the new <a>text track</a> to the <a>media element</a>'s <a>list of text
     tracks</a>.</li>
 
     <li><a>Fire</a> a <a>trusted</a> event with the name <code>addtrack</code>, that does not bubble and is not cancelable, and that uses
     the <code>TrackEvent</code> interface, with the <code>track</code>
     attribute initialized to the <a>text track</a>'s <code>TextTrack</code> object, at the
-    <a href="#media-elements">media element</a>'s <code>textTracks</code> attribute's
+    <a>media element</a>'s <code>textTracks</code> attribute's
     <code>TextTrackList</code> object.</li>
 
   </ol>
@@ -10488,25 +10496,25 @@ zero or more <{track}> elements, then
   track rendering</a> appropriate for the format in question; for <a>WebVTT</a>, this is
   the <a>rules for updating the display of WebVTT text tracks</a>. [[WEBVTT]]
 
-  When a <{track}> element's parent element changes and the new parent is a <a href="#media-elements">media element</a>, then the user agent must add the <{track}> element's corresponding
-  <a>text track</a> to the <a href="#media-elements">media element</a>'s <a>list of text tracks</a>, and
+  When a <{track}> element's parent element changes and the new parent is a <a>media element</a>, then the user agent must add the <{track}> element's corresponding
+  <a>text track</a> to the <a>media element</a>'s <a>list of text tracks</a>, and
   then <a>queue a task</a> to <a>fire</a> a <a>trusted</a> event with the name <code>addtrack</code>, that does not bubble and is not cancelable, and that uses
   the <code>TrackEvent</code> interface, with the <code>track</code>
   attribute initialized to the <a>text track</a>'s <code>TextTrack</code> object, at the
-  <a href="#media-elements">media element</a>'s <code>textTracks</code> attribute's
+  <a>media element</a>'s <code>textTracks</code> attribute's
   <code>TextTrackList</code> object.
 
-  When a <{track}> element's parent element changes and the old parent was a <a href="#media-elements">media element</a>, then the user agent must remove the <{track}> element's corresponding
-  <a>text track</a> from the <a href="#media-elements">media element</a>'s <a>list of text tracks</a>,
+  When a <{track}> element's parent element changes and the old parent was a <a>media element</a>, then the user agent must remove the <{track}> element's corresponding
+  <a>text track</a> from the <a>media element</a>'s <a>list of text tracks</a>,
   and then <a>queue a task</a> to <a>fire</a> a <a>trusted</a> event with the name <code>removetrack</code>, that does not bubble and is not cancelable, and that
   uses the <code>TrackEvent</code> interface, with the <code>track</code> attribute initialized to the <a>text track</a>'s
-  <code>TextTrack</code> object, at the <a href="#media-elements">media element</a>'s <code>textTracks</code> attribute's <code>TextTrackList</code> object.
+  <code>TextTrack</code> object, at the <a>media element</a>'s <code>textTracks</code> attribute's <code>TextTrackList</code> object.
 
   <hr />
 
   When a <a>text track</a> corresponding to a <{track}> element is added to a
-  <a href="#media-elements">media element</a>'s <a>list of text tracks</a>, the user agent must <a>queue a
-  task</a> to run the following steps for the <a href="#media-elements">media element</a>:
+  <a>media element</a>'s <a>list of text tracks</a>, the user agent must <a>queue a
+  task</a> to run the following steps for the <a>media element</a>:
 
   <ol>
 
@@ -10521,7 +10529,7 @@ zero or more <{track}> elements, then
   </ol>
 
   When the user agent is required to <dfn>honor user preferences for automatic text track
-  selection</dfn> for a <a href="#media-elements">media element</a>, the user agent must run the following steps:
+  selection</dfn> for a <a>media element</a>, the user agent must run the following steps:
 
   <ol>
 
@@ -10531,7 +10539,7 @@ zero or more <{track}> elements, then
 
     <li><a>Perform automatic text track selection</a> for <code>chapters</code>.</li>
 
-    <li>If there are any <a>text tracks</a> in the <a href="#media-elements">media element</a>'s <a>list of text tracks</a> whose <a>text track kind</a> is <code>metadata</code> that correspond to <code>track</code>
+    <li>If there are any <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a> whose <a>text track kind</a> is <code>metadata</code> that correspond to <code>track</code>
     elements with a <code>default</code> attribute set whose <a>text
     track mode</a> is set to disabled, then set the
     <a>text track mode</a> of all such tracks to <a>hidden</a></li>
@@ -10546,7 +10554,7 @@ zero or more <{track}> elements, then
 
   <ol>
 
-    <li>Let <var>candidates</var> be a list consisting of the <a>text tracks</a> in the <a href="#media-elements">media element</a>'s <a>list of text tracks</a>
+    <li>Let <var>candidates</var> be a list consisting of the <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a>
     whose <a>text track kind</a> is one of the kinds that were passed to the algorithm, if any,
     in the order given in the <a>list of text tracks</a>.</li>
 
@@ -10585,7 +10593,7 @@ zero or more <{track}> elements, then
 
     <li>The <a>text track</a> has its <a>text track mode</a> changed.</li>
 
-    <li>The <{track}> element's parent element changes and the new parent is a <a href="#media-elements">media element</a>.</li>
+    <li>The <{track}> element's parent element changes and the new parent is a <a>media element</a>.</li>
 
   </ul>
 
@@ -10604,7 +10612,7 @@ zero or more <{track}> elements, then
     <li>If the <a>text track</a>'s <a>text track mode</a> is not set to one of <a>hidden</a> or <a mode for="track">showing</a>, abort
     these steps.</li>
 
-    <li>If the <a>text track</a>'s <{track}> element does not have a <a href="#media-elements">media element</a> as a parent, abort these steps.</li>
+    <li>If the <a>text track</a>'s <{track}> element does not have a <a>media element</a> as a parent, abort these steps.</li>
 
     <li>Run the remainder of these steps <a>in parallel</a>, allowing whatever caused these steps to
     run to continue.</li>
@@ -10618,9 +10626,9 @@ zero or more <{track}> elements, then
     <li>&#x231B; Let <var>URL</var> be the <a>track URL</a> of the
     <{track}> element.</li>
 
-    <li>&#x231B; If the <{track}> element's parent is a <a href="#media-elements">media element</a> then
-    let <var>corsAttributeState</var> be the state of the parent <a href="#media-elements">media element</a>'s <code>crossorigin</code> content attribute. Otherwise, let
-    <var>corsAttributeState</var> be <a>No CORS</a>.</li>
+    <li>&#x231B; If the <{track}> element's parent is a <a>media element</a> then
+    let <var>corsAttributeState</var> be the state of the parent <a>media element</a>'s <code>crossorigin</code> content attribute. Otherwise, let
+    <var>corsAttributeState</var> be <a state for="cors">No CORS</a>.</li>
 
     <li>End the <a>synchronous section</a>, continuing the remaining steps
     <a>in parallel</a>.</li>
@@ -10777,12 +10785,12 @@ zero or more <{track}> elements, then
 
     <dt><var>media</var> . <code>textTracks</code> . <code>length</code></dt>
     <dd>
-    Returns the number of <a>text tracks</a> associated with the <a href="#media-elements">media element</a> (e.g., from <{track}> elements). This is the number of <a>text tracks</a> in the <a href="#media-elements">media element</a>'s <a>list of text tracks</a>.
+    Returns the number of <a>text tracks</a> associated with the <a>media element</a> (e.g., from <{track}> elements). This is the number of <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a>.
     </dd>
 
     <dt><var>media</var> . <code>textTracks[</code> <var>n</var> <code>]</code></dt>
     <dd>
-    Returns the <code>TextTrack</code> object representing the <var>n</var>th <a>text track</a> in the <a href="#media-elements">media element</a>'s <a>list of text tracks</a>.
+    Returns the <code>TextTrack</code> object representing the <var>n</var>th <a>text track</a> in the <a>media element</a>'s <a>list of text tracks</a>.
     </dd>
 
     <dt><var>textTrack</var> = <var>media</var> . <code>textTracks</code> . <code>getTrackById</code>( <var>id</var> )</dt>
@@ -10799,9 +10807,9 @@ zero or more <{track}> elements, then
 
   A <code>TextTrackList</code> object represents a dynamically updating list of <a>text tracks</a> in a given order.
 
-  The <dfn><code>textTracks</code></dfn> attribute of <a href="#media-elements">media elements</a> must return a <code>TextTrackList</code> object
+  The <dfn><code>textTracks</code></dfn> attribute of <a>media elements</a> must return a <code>TextTrackList</code> object
   representing the <code>TextTrack</code> objects of the <a>text tracks</a>
-  in the <a href="#media-elements">media element</a>'s <a>list of text tracks</a>, in the same order as in the
+  in the <a>media element</a>'s <a>list of text tracks</a>, in the same order as in the
   <a>list of text tracks</a>.
 
   The <dfn><code>length</code></dfn> attribute of a
@@ -10858,7 +10866,7 @@ zero or more <{track}> elements, then
     <dd>
 
     Creates and returns a new <code>TextTrack</code> object, which is also added to the
-    <a href="#media-elements">media element</a>'s <a>list of text tracks</a>.
+    <a>media element</a>'s <a>list of text tracks</a>.
 
     </dd>
 
@@ -10956,7 +10964,7 @@ zero or more <{track}> elements, then
 
   <div class="impl">
 
-  The <dfn method for="TextTrack"><code>addTextTrack(<var>kind</var>, <var>label</var>, <var>language</var>)</code></dfn> method of <a href="#media-elements">media elements</a>, when invoked, must run the following steps:
+  The <dfn method for="TextTrack"><code>addTextTrack(<var>kind</var>, <var>label</var>, <var>language</var>)</code></dfn> method of <a>media elements</a>, when invoked, must run the following steps:
 
   <ol>
 
@@ -10982,7 +10990,7 @@ zero or more <{track}> elements, then
 
     <li>
 
-    Add the new <a>text track</a> to the <a href="#media-elements">media element</a>'s <a>list of text
+    Add the new <a>text track</a> to the <a>media element</a>'s <a>list of text
     tracks</a>.
 
     </li>
@@ -10991,7 +10999,7 @@ zero or more <{track}> elements, then
 
     <a>Queue a task</a> to <a>fire</a> a <a>trusted</a> event with the name <code>addtrack</code>, that does not bubble and is not cancelable, and
     that uses the <code>TrackEvent</code> interface, with the <code>track</code> attribute initialized to the new <a>text
-    track</a>'s <code>TextTrack</code> object, at the <a href="#media-elements">media element</a>'s <code>textTracks</code> attribute's <code>TextTrackList</code>
+    track</a>'s <code>TextTrack</code> object, at the <a>media element</a>'s <code>textTracks</code> attribute's <code>TextTrackList</code>
     object.
 
     </li>
@@ -11304,7 +11312,7 @@ window.onbeforeunload = function () {
   cue start time</a> must be set to the new value, interpreted in seconds; then, if the
   <code>TextTrackCue</code> object's <a>text track cue</a> is in a <a>text track</a>'s
   <a>list of cues</a>, and that <a>text track</a> is in
-  a <a href="#media-elements">media element</a>'s <a>list of text tracks</a>, and the <a href="#media-elements">media element</a>'s <a>show poster flag</a> is not set, then run the <i>time marches on</i> steps for that <a href="#media-elements">media element</a>.
+  a <a>media element</a>'s <a>list of text tracks</a>, and the <a>media element</a>'s <a>show poster flag</a> is not set, then run the <i>time marches on</i> steps for that <a>media element</a>.
 
   The <dfn attribute for="TextTrackCue"><code>endTime</code></dfn> attribute, on getting,
   must return the <a>text track cue end time</a> of the <a>text track cue</a> that the
@@ -11312,7 +11320,7 @@ window.onbeforeunload = function () {
   time</a> must be set to the new value, interpreted in seconds; then, if the
   <code>TextTrackCue</code> object's <a>text track cue</a> is in a <a>text track</a>'s
   <a>list of cues</a>, and that <a>text track</a> is in
-  a <a href="#media-elements">media element</a>'s <a>list of text tracks</a>, and the <a href="#media-elements">media element</a>'s <a>show poster flag</a> is not set, then run the <i>time marches on</i> steps for that <a href="#media-elements">media element</a>.
+  a <a>media element</a>'s <a>list of text tracks</a>, and the <a>media element</a>'s <a>show poster flag</a> is not set, then run the <i>time marches on</i> steps for that <a>media element</a>.
 
   The <dfn attribute for="TextTrackCue"><code>pauseOnExit</code></dfn> attribute, on
   getting, must return true if the <a>text track cue pause-on-exit flag</a> of the <a>text
@@ -11616,31 +11624,31 @@ red:89
   <div class="impl">
 
   If the attribute is present, or if <a>scripting is
-  disabled</a> for the <a href="#media-elements">media element</a>, then the user agent should <dfn lt="exposing a user interface|expose a user interface to the user|exposes a user interface to the user|exposing a user interface to the user|controls in the user interface that is exposed to the user">expose a user interface to the user</dfn>. This user interface should include features to begin playback, pause
+  disabled</a> for the <a>media element</a>, then the user agent should <dfn lt="exposing a user interface|expose a user interface to the user|exposes a user interface to the user|exposing a user interface to the user|controls in the user interface that is exposed to the user">expose a user interface to the user</dfn>. This user interface should include features to begin playback, pause
   playback, seek to an arbitrary position in the content (if the content supports arbitrary
   seeking), change the volume, change the display of closed captions or embedded sign-language
   tracks, select different audio tracks or turn on audio descriptions, and show the media content in
   manners more suitable to the user (e.g., full-screen video or in an independent resizable window).
   Other controls may also be made available.
 
-  If the <a href="#media-elements">media element</a> has a <a>current media controller</a>, then the user
+  If the <a>media element</a> has a <a>current media controller</a>, then the user
   agent should expose audio tracks from all the <a>slaved media elements</a> (although
   avoiding duplicates if the same <a>media resource</a> is being used several times). If a
   <a>media resource</a>'s audio track exposed in this way has no known name, and it is the
-  only audio track for a particular <a href="#media-elements">media element</a>, the user agent should use the
+  only audio track for a particular <a>media element</a>, the user agent should use the
   element's <code>title</code> attribute, if any, as the name (or as part of the
   name) of that track.
 
   Even when the attribute is absent, however, user agents may provide controls to affect playback
   of the media resource (e.g., play, pause, seeking, track selection, and volume controls), but
   such features should not interfere with the page's normal rendering. For example, such features
-  could be exposed in the <a href="#media-elements">media element</a>'s context menu, platform
+  could be exposed in the <a>media element</a>'s context menu, platform
   media keys, or a remote control. The user agent may implement this simply by <a>exposing a user
   interface to the user</a> as described above (as if the <{mediaelements/controls}> attribute
   was present).
 
   If the user agent <a>exposes a user interface to
-  the user</a> by displaying controls over the <a href="#media-elements">media element</a>, then the user agent
+  the user</a> by displaying controls over the <a>media element</a>, then the user agent
   should suppress any user interaction events while the user agent is interacting with this
   interface. (For example, if the user clicks on a video's playback control, <code>mousedown</code> events and so forth would not simultaneously be fired at
   elements on the page.)
@@ -11651,40 +11659,40 @@ red:89
   interface features exposed by the user agent must be implemented in terms of the DOM API described
   above, so that, e.g., all the same events fire.
 
-  When a <a href="#media-elements">media element</a> has a <a>current media controller</a>, the user agent's
+  When a <a>media element</a> has a <a>current media controller</a>, the user agent's
   user interface for pausing and unpausing playback, for seeking, for changing the rate of playback,
   for fast-forwarding or rewinding, and for muting or changing the volume of audio of the entire
   group must be implemented in terms of the <code>MediaController</code> API exposed on that
-  <a>current media controller</a>. When a <a href="#media-elements">media element</a> has a <a>current media
+  <a>current media controller</a>. When a <a>media element</a> has a <a>current media
   controller</a>, and all the <a>slaved media elements</a> of that
   <code>MediaController</code> are paused, the user agent should also unpause all the <a>slaved
   media elements</a> when the user invokes a user agent interface control for beginning
   playback.
 
   The "play" function in the user agent's interface must set the <code>playbackRate</code> attribute to the value of the <code>defaultPlaybackRate</code> attribute before invoking the <code>play()</code>
-  method. When a <a href="#media-elements">media element</a> has a <a>current media controller</a>, the
+  method. When a <a>media element</a> has a <a>current media controller</a>, the
   attributes and method with those names on that <code>MediaController</code> object must be used.
-  Otherwise, the attributes and method with those names on the <a href="#media-elements">media element</a> itself
+  Otherwise, the attributes and method with those names on the <a>media element</a> itself
   must be used.
 
   Features such as fast-forward or rewind must be implemented by only changing the <code>playbackRate</code> attribute (and not the <code>defaultPlaybackRate</code>
-  attribute). Again, when a <a href="#media-elements">media element</a> has a <a>current media controller</a>,
+  attribute). Again, when a <a>media element</a> has a <a>current media controller</a>,
   the attributes with those names on that <code>MediaController</code> object must be used;
-  otherwise, the attributes with those names on the <a href="#media-elements">media element</a> itself must be used.
+  otherwise, the attributes with those names on the <a>media element</a> itself must be used.
 
-  When a <a href="#media-elements">media element</a> has a <a>current media controller</a>, seeking must be
+  When a <a>media element</a> has a <a>current media controller</a>, seeking must be
   implemented in terms of the <code>currentTime</code>
   attribute on that <code>MediaController</code> object. Otherwise, the user agent must directly
-  <a>seek</a> to the requested position in the <a href="#media-elements">media element</a>'s <a>media timeline</a>. For media resources where seeking to an arbitrary
+  <a>seek</a> to the requested position in the <a>media element</a>'s <a>media timeline</a>. For media resources where seeking to an arbitrary
   position would be slow, user agents are encouraged to use the <i>approximate-for-speed</i> flag
   when seeking in response to the user manipulating an approximate position interface such as a seek
   bar.
 
-  When a <a href="#media-elements">media element</a> has a <a>current media controller</a>, user agents may
-  additionally provide the user with controls that directly manipulate an individual <a href="#media-elements">media element</a> without affecting the <code>MediaController</code>, but such features are
+  When a <a>media element</a> has a <a>current media controller</a>, user agents may
+  additionally provide the user with controls that directly manipulate an individual <a>media element</a> without affecting the <code>MediaController</code>, but such features are
   considered relatively advanced and unlikely to be useful to most users.
 
-  For the purposes of listing chapters in the <a>media resource</a>, only <a>text tracks</a> in the <a href="#media-elements">media element</a>'s <a>list of text tracks</a>
+  For the purposes of listing chapters in the <a>media resource</a>, only <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a>
   that are <a mode for="track">showing</a> and whose <a>text track kind</a> is
   <code>chapters</code> should be used. Such tracks must be
   interpreted according to the <a>rules for constructing the chapter tree from a text
@@ -11729,30 +11737,30 @@ red:89
 
   <div class="impl">
 
-  A <a href="#media-elements">media element</a> has a <dfn>playback volume</dfn>, which is a fraction in the range 0.0 (silent) to 1.0 (loudest).
+  A <a>media element</a> has a <dfn>playback volume</dfn>, which is a fraction in the range 0.0 (silent) to 1.0 (loudest).
   Initially, the volume should be 1.0, but user agents may remember the last set value across
   sessions, on a per-site basis or otherwise, so the volume may start at other values.
 
   The <dfn attribute for="HTMLMediaElement"><code>volume</code></dfn> IDL attribute must return the
   <a>playback volume</a> of any audio portions of the
-  <a href="#media-elements">media element</a>. On setting, if the new value is in the range 0.0 to 1.0 inclusive, the
-  <a href="#media-elements">media element</a>'s <a>playback volume</a> must be
+  <a>media element</a>. On setting, if the new value is in the range 0.0 to 1.0 inclusive, the
+  <a>media element</a>'s <a>playback volume</a> must be
   set to the new value. If the new value is outside the range 0.0 to 1.0 inclusive, then, on
   setting, an <code>IndexSizeError</code> exception must be thrown instead.
 
-  A <a href="#media-elements">media element</a> can also be <dfn>muted</dfn>. If
+  A <a>media element</a> can also be <dfn>muted</dfn>. If
   anything is muting the element, then it is muted. (For example, when the <a>direction of
   playback</a> is backwards, the element is muted.)
 
   The <dfn attribute for="HTMLMediaElement"><code>muted</code></dfn> IDL attribute must return the value
-  to which it was last set. When a <a href="#media-elements">media element</a> is created, if the element has a <code>muted</code> content attribute specified, then the <code>muted</code> IDL attribute should be set to true; otherwise, the user
+  to which it was last set. When a <a>media element</a> is created, if the element has a <code>muted</code> content attribute specified, then the <code>muted</code> IDL attribute should be set to true; otherwise, the user
   agents may set the value to the user's preferred value (e.g., remembering the last set value across
   sessions, on a per-site basis or otherwise). While the <code>muted</code>
-  IDL attribute is set to true, the <a href="#media-elements">media element</a> must be <a>muted</a>.
+  IDL attribute is set to true, the <a>media element</a> must be <a>muted</a>.
 
   Whenever either of the values that would be returned by the <code>volume</code> and <code>muted</code> IDL
   attributes change, the user agent must <a>queue a task</a> to <a>fire a simple
-  event</a> named <code>volumechange</code> at the <a href="#media-elements">media element</a>.
+  event</a> named <code>volumechange</code> at the <a>media element</a>.
 
   An element's <dfn>effective media volume</dfn> is determined as follows:
 
@@ -11770,7 +11778,7 @@ red:89
     element's <a>effective media volume</a> is zero. Abort these steps.</li>
 
     <li>Let <var>volume</var> be the <a>playback
-    volume</a> of the audio portions of the <a href="#media-elements">media element</a>, in range 0.0 (silent) to
+    volume</a> of the audio portions of the <a>media element</a>, in range 0.0 (silent) to
     1.0 (loudest).</li>
 
     <li>If the element has a <a>current media controller</a>, multiply <var>volume</var> by that <code>MediaController</code> object's <a>media controller
@@ -11787,7 +11795,7 @@ red:89
 
   </div>
 
-  The <dfn element-attr for="media"><code>muted</code></dfn> content attribute on <a href="#media-elements">media elements</a> is a <a>boolean attribute</a> that controls the
+  The <dfn element-attr for="media"><code>muted</code></dfn> content attribute on <a>media elements</a> is a <a>boolean attribute</a> that controls the
   default state of the audio output of the <a>media resource</a>, potentially overriding user
   preferences.
 
@@ -11889,7 +11897,7 @@ red:89
   (adjacent ranges are folded into one bigger range). A range can be empty (referencing just a
   single moment in time), e.g., to indicate that only one frame is currently buffered in the case
   that the user agent has discarded the entire <a>media resource</a> except for the current
-  frame, when a <a href="#media-elements">media element</a> is paused.
+  frame, when a <a>media element</a> is paused.
 
   Ranges in a <code>TimeRanges</code> object must be inclusive.
 
@@ -11898,7 +11906,7 @@ red:89
   zero would have a start equal to zero and an end equal to the duration of the timeline.</p>
 
   The timelines used by the objects returned by the <code>buffered</code>, <code>seekable</code> and
-  <code>played</code> IDL attributes of <a href="#media-elements">media elements</a> must be that element's <a>media timeline</a>.
+  <code>played</code> IDL attributes of <a>media elements</a> must be that element's <a>media timeline</a>.
 
   </div>
 
@@ -11940,7 +11948,7 @@ red:89
 
   <em>This section is non-normative.</em>
 
-  The following events fire on <a href="#media-elements">media elements</a> as part of the
+  The following events fire on <a>media elements</a> as part of the
   processing model described above:
 
   <table>
@@ -12009,7 +12017,7 @@ red:89
 
       </td><td><code>Event</code>
 
-      </td><td>A <a href="#media-elements">media element</a> whose <code>networkState</code>
+      </td><td>A <a>media element</a> whose <code>networkState</code>
       was previously not in the <code>NETWORK_EMPTY</code> state has
       just switched to that state (either because of a fatal error during load that's about to be
       reported, or because the <code>load()</code> method was invoked while
@@ -12209,7 +12217,7 @@ red:89
 
       </td><td>One or both of the <code>videoWidth</code> and <code>videoHeight</code> attributes have just been updated.
 
-      </td><td><a href="#media-elements">Media element</a> is a <{video}> element; <code>readyState</code> is not <code>HAVE_NOTHING</code>
+      </td><td><a>Media element</a> is a <{video}> element; <code>readyState</code> is not <code>HAVE_NOTHING</code>
 
     </td></tr><tr>
 
@@ -12561,7 +12569,7 @@ red:89
   Playing audio and video resources on small devices such as set-top boxes or mobile phones is
   often constrained by limited hardware resources in the device. For example, a device might only
   support three simultaneous videos. For this reason, it is a good practice to release resources
-  held by <a href="#media-elements">media elements</a> when they are done playing, either by
+  held by <a>media elements</a> when they are done playing, either by
   being very careful about removing all references to the element and allowing it to be garbage
   collected, or, even better, by removing the element's <code>src</code>
   attribute and any <{source}> element descendants, and invoking the element's <code>load()</code> method.
@@ -12575,7 +12583,7 @@ red:89
 
   <em>This section is non-normative.</em>
 
-  How accurately various aspects of the <a href="#media-elements">media element</a> API are implemented is
+  How accurately various aspects of the <a>media element</a> API are implemented is
   considered a quality-of-implementation issue.
 
   For example, when implementing the <code>buffered</code> attribute,
@@ -12583,7 +12591,7 @@ red:89
   the user agent inspects the data. Since the API reports ranges as times, but the data is obtained
   in byte streams, a user agent receiving a variable-bit-rate stream might only be able to determine
   precise times by actually decoding all of the data. User agents aren't required to do this,
-  however; they can instead return estimates (e.g., based on the average bit rate seen so far) which
+  however; they can instead return estimates (e.g., based on the average bitrate seen so far) which
   get revised as more information becomes available.
 
   As a general rule, user agents are urged to be conservative rather than optimistic. For
@@ -12611,9 +12619,9 @@ red:89
 
   <hr />
 
-  When a <a href="#media-elements">media element</a> that is paused is <a for="document">removed from a document</a> and not reinserted before the next time the <a>event loop</a> reaches step 1, implementations that are resource constrained are encouraged to take
+  When a <a>media element</a> that is paused is <a for="document">removed from a document</a> and not reinserted before the next time the <a>event loop</a> reaches step 1, implementations that are resource constrained are encouraged to take
   that opportunity to release all hardware resources (like video planes, networking resources, and
-  data buffers) used by the <a href="#media-elements">media element</a>. (User agents still have to keep track of the
+  data buffers) used by the <a>media element</a>. (User agents still have to keep track of the
   playback position and so forth, though, in case playback is later restarted.)
 
   </div>
