@@ -73,7 +73,6 @@
 
   1. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the following
       customizations:
-
       * For the global object, create a new {{Window}} object <var>window</var>.
       * For the global <em>this</em> value, create a new {{WindowProxy}} object
          <var>windowProxy</var>, whose \[[{{Window}}]] internal slot value is <var>window</var>.
@@ -86,7 +85,6 @@
       <a>character encoding</a> is UTF-8, and which is both <a>ready for post-load tasks</a> and
       <a>completely loaded</a> immediately.
   4. Set the <a for="concept">origin</a> of <var>document</var>:
-
       * If the new <a>browsing context</a> has a <a>creator browsing context</a>, then the
          <a for="concept">origin</a> of <var>document</var> is the <a>creator origin</a>.
       * Otherwise, the <a for="concept">origin</a> of <var>document</var> is a unique 
@@ -744,7 +742,7 @@
               3. Otherwise, if <var>type</var> is "<code>setter</code>" and
                   <var>e</var>.\[[NeedsSet]] is true, then return.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>platformObject</var>) is false, then throw a
-      "<code>SecurityError</code>" {{DOMException}}.
+      "{{SecurityError}}" {{DOMException}}.
 
 <h4 id="shared-internal-slot-crossoriginpropertydescriptormap">Shared internal slot: \[[CrossOriginPropertyDescriptorMap]]</h4>
 
@@ -853,7 +851,7 @@
 <h5 id="crossorigingetownpropertyhelper-algorithm"><dfn>CrossOriginGetOwnPropertyHelper</dfn> ( <var>O</var>, <var>P</var> )</h5>
 
   <p class="note">If this abstract operation returns undefined and there is no custom behavior, the
-  caller needs to throw a "<code>SecurityError</code>" {{DOMException}}.</p>
+  caller needs to throw a "{{SecurityError}}" {{DOMException}}.</p>
 
   1. If <var>P</var> is <a>@@toStringTag</a>, <a>@@hasInstance</a>, or <a>@@isConcatSpreadable</a>,
       then return <a>PropertyDescriptor</a>
@@ -924,7 +922,7 @@
   3. If <a>IsDataDescriptor</a>(<var>desc</var>) is true, then return <var>desc</var>.\[[Value]].
   4. Assert: <a>IsAccessorDescriptor</a>(<var>desc</var>) is true.
   5. Let <var>getter</var> be <var>desc</var>.\[[Get]].
-  6. If <var>getter</var> is undefined, throw a "<code>SecurityError</code>" {{DOMException}}.
+  6. If <var>getter</var> is undefined, throw a "{{SecurityError}}" {{DOMException}}.
   7. Return <a>Call</a>(<var>getter</var>, <var>Receiver</var>).
 
 <h5 id="crossoriginset-algorithm"><dfn>CrossOriginSet</dfn> ( <var>O</var>, <var>P</var>, V, <var>Receiver</var> )</h5>
@@ -1681,7 +1679,7 @@
           <var>P</var>.
       2. Return <a>PropertyDescriptor</a>{ \[[Value]]: <var>value</var>, \[[Enumerable]]: false,
           \[[Writable]]: false, \[[Configurable]]: true }.
-  7. Throw a "<code>SecurityError</code>" {{DOMException}}.
+  7. Throw a "{{SecurityError}}" {{DOMException}}.
 
 <h6 id="windowproxy-defineownproperty-algorithm">\[[<dfn lt="windowproxy defineownproperty">DefineOwnProperty</dfn>]] ( <var>P</var>, <var>Desc</var> )</h6>
 
@@ -1743,7 +1741,7 @@
 
   <p class="example">For example, if Example Bank's Web site, hosted at
   <code>bank.example.com</code>, tries to examine the DOM of Example Charity's Web site, hosted at
-  <code>charity.example.org</code>, a "<code>SecurityError</code>" {{DOMException}} will be raised.
+  <code>charity.example.org</code>, a "{{SecurityError}}" {{DOMException}} will be raised.
   </p>
 
   <hr />
@@ -1984,29 +1982,27 @@
   The {{Document/domain}} attribute on setting must run these steps:
 
   1. If this {{Document}} object has no <a>browsing context</a>, throw a
-      "<code>SecurityError</code>" {{DOMException}}.
+      "{{SecurityError}}" {{DOMException}}.
   2. If this {{Document}} object's <a>active sandboxing flag set</a> has its
       <a>sandboxed <code>document.domain</code> browsing context flag</a> set, then throw a
-      "<code>SecurityError</code>" {{DOMException}}.
-  3. If the given value is the empty string, then throw a "<code>SecurityError</code>"
-      {{DOMException}}.
+      "{{SecurityError}}" {{DOMException}}.
+  3. If the given value is the empty string, then throw a "{{SecurityError}}" {{DOMException}}.
   4. Let <var>host</var> be the result of <a lt="host parser">parsing</a> the given value.
-  5. If <var>host</var> is failure, then throw a "<code>SecurityError</code>" {{DOMException}}.
+  5. If <var>host</var> is failure, then throw a "{{SecurityError}}" {{DOMException}}.
   6. Let <var>effectiveDomain</var> be this {{Document}} object's <a for="concept">origin</a>'s
       <a>effective domain</a>.
   7. If <var>host</var> is not <a lt="host equals">equal</a> to <var>effectiveDomain</var>, then run
       these substeps:
       1. If <var>host</var> or <var>effectiveDomain</var> is not <a for="url">domain</a>, then throw
-          a "<code>SecurityError</code>" {{DOMException}}.
+          a "{{SecurityError}}" {{DOMException}}.
 
           <p class="note">This is meant to exclude <a lt="origin hosts">hosts</a> that are an 
           <a lt="ipv4">IPv4 address</a> or an <a lt="ipv6">IPv6 address</a>.
       2. If <var>host</var>, prefixed by a U+002E FULL STOP (.), does not exactly match
-          the <var>effectiveDomain</var>, then throw a "<code>SecurityError</code>"
-          {{DOMException}}.
+          the <var>effectiveDomain</var>, then throw a "{{SecurityError}}" {{DOMException}}.
       3. If <var>host</var> matches a suffix in the Public Suffix List, or, if <var>host</var>,
           prefixed by a U+002E FULL STOP (.), matches the end of a suffix in the Public Suffix List,
-          then throw a "<code>SecurityError</code>" {{DOMException}}. [[!PSL]]
+          then throw a "{{SecurityError}}" {{DOMException}}. [[!PSL]]
 
           Suffixes must be compared after applying the <a>host parser</a> algorithm. [[!URL]]
   8. Set <var>origin</var>'s <a lt="origin domain">domain</a> to <var>host</var>.
@@ -2582,7 +2578,7 @@
   <code>History</code> interface, on getting, must return the number of entries in the
   <a>top-level browsing context</a>'s <a>joint session history</a>. If this
   <code>History</code> object is associated with a {{Document}} that is not
-  <a>fully active</a>, getting must instead throw a <code>SecurityError</code>.
+  <a>fully active</a>, getting must instead throw a "{{SecurityError}}" {{DOMException}}.
 
   The actual entries are not accessible from script.
 
@@ -2591,12 +2587,12 @@
   current entry in the <a>session history</a>. On setting, the <a>scroll restoration mode</a> of the current entry in the <a>session history</a> must be set to the new
   value. If this <code>History</code> object is associated with a {{Document}} that is
   not <a>fully active</a>, both getting and setting must instead throw a
-  <code>SecurityError</code>.</p>
+  "{{SecurityError}}" {{DOMException}}.</p>
 
   The <dfn attribute for="History"><code>state</code></dfn> attribute of the
   <code>History</code> interface, on getting, must return the last value it was set to by the user
   agent. If this <code>History</code> object is associated with a {{Document}} that is
-  not <a>fully active</a>, getting must instead throw a <code>SecurityError</code>.
+  not <a>fully active</a>, getting must instead throw a {{SecurityError}} {{DOMException}}.
   Initially, its value must be null.
 
   When the <dfn method for="History"><code>go(<var>delta</var>)</code></dfn> method is
@@ -2605,17 +2601,17 @@
   the user agent must <a>traverse the history by a delta</a> whose value is
   <var>delta</var> If this <code>History</code> object is associated with a {{Document}}
   that is not <span>fully active</span>, invoking must instead throw a
-  <code>SecurityError</code>.
+  "{{SecurityError}}" {{DOMException}}.
 
   When the <dfn method for="History"><code>back()</code></dfn> method is invoked, the user
   agent must <a>traverse the history by a delta</a> &#x2212;1. If this <code>History</code>
   object is associated with a {{Document}} that is not <a>fully active</a>,
-  invoking must instead throw a <code>SecurityError</code>.
+  invoking must instead throw a "{{SecurityError}}" {{DOMException}}.
 
   When the <dfn method for="History"><code>forward()</code></dfn>method is invoked, the
   user agent must <a>traverse the history by a delta</a> +1. If this <code>History</code>
   object is associated with a {{Document}} that is not <a>fully active</a>,
-  invoking must instead throw a <code>SecurityError</code>.
+  invoking must instead throw a "{{SecurityError}}" {{DOMException}}.
 
   <hr />
 
@@ -2724,7 +2720,7 @@
   When either of these methods is invoked, the user agent must run the following steps:
 
   1. If this {{History}} object is associated with a {{Document}} that is not <a>fully active</a>,
-      throw a "<code>SecurityError</code>" {{DOMException}}.
+      throw a "{{SecurityError}}" {{DOMException}}.
   2. Optionally, abort these steps. (For example, the user agent might disallow calls to these
       methods that are invoked on a timer, or from event listeners that are not triggered in
       response to a clear user action, or that are invoked in rapid succession.)
@@ -2734,17 +2730,17 @@
       <var>targetRealm</var>). Rethrow any exceptions.
   5. If the third argument is not null, run these substeps:
       1. <a>Parse</a> the value of the third argument, relative to the <a>entry settings object</a>.
-      2. If that fails, throw a "<code>SecurityError</code>" {{DOMException}} and abort these steps.
+      2. If that fails, throw a "{{SecurityError}}" {{DOMException}} and abort these steps.
       3. Let <var>new URL</var> be the <a>resulting URL record</a>.
       4. Compare <var>new URL</var> to the document's <a for="url">URL</a>. If any component of
           these two <a>URL records</a> differ other than the <a>path</a>,
           <a for="url">query</a>, and <a for="url">fragment</a> components, then throw a
-          "<code>SecurityError</code>" {{DOMException}} and abort these steps.
+          "{{SecurityError}}" {{DOMException}} and abort these steps.
       5. If the <a for="url">origin</a> of <var>new URL</var> is not the same as the 
           <a for="concept">origin</a> of the <a>responsible document</a> specified by the 
           <a>entry settings object</a>, and either the <a>path</a> or <a for="url">query</a> 
           components of the two <a>URL records</a> compared in the previous step differ, throw a 
-          "<code>SecurityError</code>" {{DOMException}} and abort these steps. (This prevents 
+          "{{SecurityError}}" {{DOMException}} and abort these steps. (This prevents 
           sandboxed content from spoofing other pages on the same origin.)
   6. If the third argument is null, then let <var>new URL</var> be the <a for="url">URL</a> of the
       <a>current entry</a>.
@@ -3363,7 +3359,7 @@
     <a>API base URL</a> specified by the <a>entry settings object</a> and let
     <var>parsedURL</var> be the <a>resulting URL string</a>.
 
-    If this is not successful, throw a <code>SyntaxError</code> exception and abort these
+    If this is not successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these
     steps.
 
     </li>
@@ -3383,7 +3379,7 @@
     <a>API base URL</a> specified by the <a>entry settings object</a> and let
     <var>parsedURL</var> be the <a>resulting URL string</a>.
 
-    If this is not successful, throw a <code>SyntaxError</code> exception and abort these
+    If this is not successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these
     steps.
 
     </li>
@@ -3442,7 +3438,7 @@
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s 
       <a for="concept">origin</a> is not <a>same origin-domain</a> with the 
       <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a 
-      "<code>SecurityError</code>" {{DOMException}}.
+      "{{SecurityError}}" {{DOMException}}.
   2. Otherwise, return this {{Location}} object's <a>ancestor origins array</a>.
 
   The {{Location}} object requires additional logic beyond IDL for security purposes. The internal 
@@ -3502,7 +3498,7 @@
     If the <a>navigate</a> algorithm was invoked optionally with an 
     <dfn>exceptions enabled flag</dfn>, and it
     is aborted on this step, then in addition to aborting this algorithm, the user agent must also
-    throw a <code>SecurityError</code> exception.
+    throw a "{{SecurityError}}" {{DOMException}}.
 
     </li>
 
