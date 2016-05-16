@@ -7482,7 +7482,9 @@ zero or more <{track}> elements, then
     its zero time set to the start of this stream. Months later, user agents connecting to this
     stream will find that the first frame they receive has a time with millions of seconds. The
     <code>getStartDate()</code> method would always return the date that the
-    broadcast started.
+    broadcast started; this would allow controllers to display real times in their scrubber (e.g.,
+    "2:30pm") rather than a time relative to when the broadcast began ("8 months, 4 hours, 12
+    minutes, and 23 seconds").
 
     Consider a stream that carries a video with several concatenated fragments, broadcast by a
     server that does not allow user agents to request specific times but instead just streams the
@@ -7537,7 +7539,7 @@ zero or more <{track}> elements, then
   The <dfn attribute for="HTMLMediaElement"><code>currentTime</code></dfn> attribute must, on
   getting, return the <a href="#media-elements">media element</a>'s <a>default playback start position</a>,
   unless that is zero, in which case it must return the element's <a>official playback
-  position</a>. The returned value must be expressed in seconds. If the
+  position</a>. The returned value must be expressed in seconds. On setting, if the
   <a href="#media-elements">media element</a>'s <code>readyState</code> is <code>HAVE_NOTHING</code>,
   then it must set the <a href="#media-elements">media element</a>'s <a>default playback start position</a> to the new value; otherwise, it must
   set the <a>official playback position</a> to the new value and then <a>seek</a> to the new value. The new value must be interpreted as being in
@@ -8052,7 +8054,7 @@ zero or more <{track}> elements, then
 
     <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the <a href="#media-elements">media element</a>.</li>
 
-    <li><a>Queue a task</a> that, and the <a href="#media-elements">media element</a> has still <a>ended
+    <li><a>Queue a task</a> that, if the <a href="#media-elements">media element</a> has still <a>ended
     playback</a>, and the <a>direction of playback</a> is still forwards, and <a>paused</a> is false, changes <a>paused</a> to true and <a>fires a
     simple event</a> named <code>pause</code> at the <a href="#media-elements">media element</a>.</li>
 
@@ -8088,7 +8090,8 @@ zero or more <{track}> elements, then
   of its intrinsic speed. If it is not equal to the <code>defaultPlaybackRate</code>, then the implication is that the
   user is using a feature such as fast forward or slow motion playback. The attribute is mutable: on
   getting it must return the last value it was set to, or 1.0 if it hasn't yet been set; on setting
-  the attribute must be set to the new value, and the playback will change speed.
+  the attribute must be set to the new value, and the playback will change speed (if the element is
+  <a>potentially playing</a>).
 
   When the <code>defaultPlaybackRate</code>
   or <code>playbackRate</code> attributes change value (either by
@@ -8246,6 +8249,14 @@ zero or more <{track}> elements, then
   audio component. Media elements must not stop playing just because all references to them have
   been removed; only once a media element is in a state where no further audio could ever be played
   by that element may the element be garbage collected.
+
+  <p class="note">
+    It is possible for an element to which no explicit references exist to play audio, even if such
+    an element is not still actively playing: for instance, a
+    <a href="#media-elements">media element</a> whose <a>media resource</a> has no audio tracks
+    could eventually play audio again if it had an event listener that changes the
+    <a>media resource</a>.
+  </p>
 
   <hr />
 
@@ -10789,7 +10800,8 @@ red:89
 <h5 id="user-interface">User interface</h5>
 
   The <dfn element-attr for="mediaelements,video,audio"><code>controls</code></dfn> attribute is a
-  <a>boolean attribute</a>.
+  <a>boolean attribute</a>. If present, it indicates that the author has not provided a scripted
+  controller and would like the user agent to provide its own set of controls.
 
   <div class="impl">
 
