@@ -982,6 +982,7 @@
     // the user agent
     readonly attribute Navigator navigator;
     [Replaceable, SameObject] readonly attribute External external;
+    readonly attribute ApplicationCache applicationCache;
 
     // user prompts
     void alert();
@@ -3672,6 +3673,30 @@
 
       </dd>
 
+      <dt>If the new resource is to be fetched using <code>GET</code>, and there are
+      <a>relevant application caches</a> that are
+      identified by a URL with the <a>same origin</a> as the URL in question, and that have
+      this URL as one of their entries, excluding entries marked as <a>foreign</a>, and whose mode is <a>fast</a>, and the user agent is not in a mode where it
+      will avoid using <a>application caches</a></dt>
+
+      <dd>
+
+      Fetch the resource from the <a>most appropriate
+      application cache</a> of those that match.
+
+      <p class="example">
+  For example, imagine an HTML page with an associated application cache
+      displaying an image and a form, where the image is also used by several other application
+      caches. If the user right-clicks on the image and chooses "View Image", then the user agent
+      could decide to show the image from any of those caches, but it is likely that the most useful
+      cache for the user would be the one that was used for the aforementioned HTML page. On the
+      other hand, if the user submits the form, and the form does a POST submission, then the user
+      agent will not use an application cache at all; the submission will be made to the
+      network.
+  </p>
+
+      </dd>
+
       <dt>Otherwise</dt>
 
       <dd>
@@ -3748,6 +3773,69 @@
     the resource is being obtained using a method that is neither the POST method nor a safe method
     (in HTTP terms), then abort these steps. The user agent may indicate to the user that the
     navigation has been aborted for security reasons.
+
+    </li>
+
+    <li>
+
+    <strong>Fallback in prefer-online mode</strong>: If the resource was not fetched from an
+    <a>application cache</a>, and was to be fetched using <code>GET</code>, and
+    there are <a>relevant application caches</a> that are
+    identified by a URL with the <a>same origin</a> as the URL in question, and that have this
+    URL as one of their entries, excluding entries marked as <a>foreign</a>, and whose mode is <a>prefer-online</a>, and the user didn't cancel the
+    navigation attempt during the earlier step, and the navigation attempt failed (e.g., the server
+    returned a 4xx or 5xx status, or there was a DNS error), then:
+
+    Let <var>candidate</var> be the resource identified by the URL in question from the
+    <a>most appropriate application cache</a> of those that
+    match.
+
+    If <var>candidate</var> is not marked as <a>foreign</a>, then the user agent must discard the failed
+    load and instead continue along these steps using <var>candidate</var> as the resource.
+    The user agent may indicate to the user that the original page load failed, and that the page
+    used was a previously cached resource.
+
+    <p class="note">
+  This does not affect the <i>address of the resource from which Request-URIs are
+    obtained</i>, as used to set <a>the document's referrer</a> in the initialize the
+    {{Document}} object steps below; they still use the value as computed by the
+    original fetch algorithm.
+  </p>
+
+    </li>
+
+    <li>
+
+    <strong>Fallback for fallback entries</strong>: If the resource was not fetched from an
+    <a>application cache</a>, and was to be fetched using <code>GET</code>, and
+    its URL <a>matches the fallback namespace</a>
+    of one or more <a>relevant application caches</a>, and
+    the <a>most appropriate application cache</a> of those
+    that match does not have an entry in its <a>online
+    safelist</a> that has the <a>same origin</a> as the resource's URL and that is a
+    <a>prefix match</a> for the resource's URL, and the user didn't cancel the navigation
+    attempt during the earlier step, and the navigation attempt failed (e.g., the server returned a
+    4xx or 5xx status, or there was a DNS error), then:
+
+    Let <var>candidate</var> be the <a>fallback
+    resource</a> specified for the <a>fallback
+    namespace</a> in question. If multiple application caches match, the user agent must use the
+    fallback of the <a>most appropriate application
+    cache</a> of those that match.
+
+    If <var>candidate</var> is not marked as <a>foreign</a>, then the user agent must discard the failed
+    load and instead continue along these steps using <var>candidate</var> as the resource.
+    <a>The document's address</a>, if appropriate, will still be the originally requested URL,
+    not the fallback URL, but the user agent may indicate to the user that the original page load
+    failed, that the page used was a fallback resource, and what the URL of the fallback resource
+    actually is.
+
+    <p class="note">
+  This does not affect the <i>address of the resource from which Request-URIs are
+    obtained</i>, as used to set <a>the document's referrer</a> in the initialize the
+    {{Document}} object steps below; they still use the value as computed by the
+    original fetch algorithm.
+  </p>
 
     </li>
 
@@ -4074,6 +4162,10 @@
   before the parser <a lt="stops parsing">stops</a>, the user agent must <a>update the
   session history with the new page</a>.
 
+  <p class="note">
+  <a>Application cache selection</a> happens <a>in the HTML parser</a>.
+  </p>
+
   The <a>task source</a> for the two tasks mentioned in this section must be the
   <a>networking task source</a>.
 
@@ -4096,6 +4188,26 @@
   character encoding according to the rules given in the above specifications. Once the character
   encoding is established, the <a>document's character encoding</a> must be set to that
   character encoding.
+
+  If the root element, as parsed according to the XML specifications cited above, is found to be
+  an <{html}> element with an attribute <code>manifest</code>
+  whose value is not the empty string, then, as soon as the element is
+  <a for="document">inserted into the document</a>, the user agent must <a>parse</a> the value of
+  that attribute relative to that element, and if
+  that is successful, must apply the <a>URL serializer</a>
+  algorithm to the <a>resulting URL record</a> with the <var>exclude fragment flag</var> set to
+  obtain <var>manifest URL</var>, and then run the <a>application
+  cache selection algorithm</a> with <var>manifest URL</var> as the manifest URL, passing in the
+  newly-created {{Document}}. Otherwise, if the attribute is absent, its value is the empty
+  string, or <a>parsing</a> its value fails, then as soon as the root element is <a for="document">inserted into the document</a>, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
+  passing in the {{Document}}.
+
+  <p class="note">
+  Because the processing of the <code>manifest</code>
+  attribute happens only once the root element is parsed, any URLs referenced by processing
+  instructions before the root element (such as <code>&lt;?xml-stylesheet?></code> PIs)
+  will be fetched from the network and cannot be cached.
+  </p>
 
   User agents may examine the namespace of the root {{Element}} node of this
   {{Document}} object to perform namespace-based dispatch to alternative processing tools,
@@ -4130,6 +4242,9 @@
 
   The <a>document's character encoding</a> must be set to the character encoding used to
   decode the document.
+
+  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
+  passing in the newly-created {{Document}}.
 
   When no more bytes are available, the user agent must <a>queue a task</a> for the parser
   to process the implied EOF character, which eventually causes a <code>load</code> event to be fired.
@@ -4205,6 +4320,8 @@
   Then, the user agent must act as if it had <a>stopped
   parsing</a>.
 
+  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
+  passing in the newly-created {{Document}}.
   After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
@@ -4234,6 +4351,8 @@
   Then, the user agent must act as if it had <a>stopped
   parsing</a>.
 
+  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
+  passing in the newly-created {{Document}}.
   After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
@@ -4259,6 +4378,8 @@
 
   Once the page has been set up, the user agent must act as if it had <a lt="stops parsing">stopped parsing</a>.
 
+  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest,
+  passing in the newly-created {{Document}}.
   After creating the <code>Document</code> object, but potentially before the page has been
   completely set up, the user agent must <a>update the session history with the new
   page</a>.
