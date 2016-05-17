@@ -213,7 +213,7 @@
   </dl>
 
   The <{base}> element allows authors to specify the <a>document base URL</a> for the
-  purposes of <a>resolving relative URLs</a>, and the name of the default <a>browsing context</a>
+  purposes of <a>parsing relative URLs</a>, and the name of the default <a>browsing context</a>
   for the purposes of <a>following hyperlinks</a>. The element does not <a>represent</a> any content
   beyond this information.
 
@@ -226,9 +226,7 @@
   potentially surrounded by spaces</a>.
 
   A <{base}> element, if it has an <{base/href}> attribute, must come before any other
-  elements in the tree that have attributes defined as taking <a for="url">URLs</a>, except the
-  <{html}> element (its <code>manifest</code> attribute isn't affected by
-  <code>xml:base</code> attributes or <{base}> elements).
+  elements in the tree that have attributes defined as taking <a for="url">URLs</a>.
 
   <div class="impl">
     <p class="note">
@@ -253,36 +251,40 @@
 
     A <{base}> element that is the first <{base}> element with an
     <{base/href}> content attribute in a particular {{Document}} has a
-    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a> <a lt="setting">set</a>
-    whenever any of the following situations occur:
+    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a>
+    <a lt="set the frozen base URL">set</a> for an element whenever any of the following situations
+    occur:
 
     * The <{base}> element becomes the first <{base}> element in <a>tree order</a>
         with an <{base/href}> content attribute in its {{Document}}.
-
     * The <{base}> element is the first <{base}> element in <a>tree order</a> with
         an <{base/href}> content attribute in its {{Document}}, and its
         <{base/href}> content attribute is changed.
 
-    To <dfn>set the frozen base URL</dfn>, <a>resolve</a> the value of the element's
-    <{base/href}> content attribute relative to the {{Document}}'s
-    <a>fallback base URL</a>; if this is successful, set the <a>frozen base URL</a> to the
-    <a>resulting absolute URL</a>, otherwise, set the <a>frozen base URL</a> to the
-    <a>fallback base URL</a>.
+    To <dfn>set the frozen base URL</dfn>, for an element <var>element</var>:
 
-    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must return the result of running
-    the following algorithm:
+    1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
+    2. Let <var>urlRecord</var> be the result of <a>parsing</a> the value of
+        <var>element</var>'s <{base/href}> content attribute with <var>document</var>'s
+        <a>fallback base URL</a>, and <var>document</var>'s <a>character encoding</a>. (Thus the
+        <{base}> element isn't affected by itself.)
+    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s
+        <a>fallback base URL</a>, if <var>urlRecord</var> is failure or running
+        <a>Is base allowed for Document?</a> on the <a>resulting URL record</a> and
+        <var>document</var> returns "<code>Blocked</code>", and to <var>urlRecord</var> otherwise.
 
-    1. If the <{base}> element has no <{base/href}> content attribute, then return the
-        <a>document base URL</a> and abort these steps.
-    2. Let <var>fallback base url</var> be the {{Document}}'s <a>fallback base URL</a>.
-    3. Let <var>url</var> be the value of the <{base/href}> attribute of the <code>base</code>
-        element.
-    4. <a>Resolve</a> <var>url</var> relative to <var>fallback base url</var> (thus, the
-        <code>base</code>'s <{base/href}> attribute isn't affected by other <code>base</code>
-        elements).
-    5. If the previous step was successful, return the <a>resulting absolute URL</a> and abort these
-        steps.
-    6. Otherwise, return the empty string.
+    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must
+    return the result of running the following algorithm:
+
+    1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
+    2. Let <var>url</var> be the value of the <{base/href}> attribute of the <{base}> element, if it
+        has one, and the empty string otherwise.
+    3. Let <var>urlRecord</var> be the result of <a>parsing</a> <var>url</var> with
+        <var>document</var>'s <a>fallback base url</a>, and <var>document</var>'s
+        <a>character encoding</a>. (Thus, the <{base}> element isn't affected by other <{base}>
+        elements or itself).
+    4. If <var>urlRecord</var> is failure, return <var>url</var>.
+    5. Return the <a for="url">serialization</a> of <var>urlRecord</var>.
 
     The {{HTMLBaseElement/href}} IDL attribute, on setting, must set the <{base/href}> content
     attribute to the given new value.
@@ -473,7 +475,7 @@
     run the following steps:
 
     1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
-    2. <a>Resolve</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
+    2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
         element.
     3. If the previous step fails, then abort these steps.
     4. Let <var>corsAttributeState</var> be the current state of the element's
@@ -1200,9 +1202,9 @@
             and all subsequent characters are removed.
         25. <i>Trim</i>: Strip any trailing <a>space characters</a> from the end of <var>url</var>.
         26. Strip any U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), and U+000D CARRIAGE RETURN (CR) characters from <var>url</var>.
-        27. <a>Resolve</a> the <var>url</var> value, relative to the <{meta}> element. If this
+        27. <a>Parse</a> the <var>url</var> value, relative to the <{meta}> element. If this
             fails, abort these steps.
-        28. Otherwise, let <var>parsed url</var> be the <a>resulting parsed URL</a>.
+        28. Otherwise, let <var>parsed url</var> be the <a>resulting URL string</a>.
         29. <i>End</i>: Perform one or more of the following steps:
 
             * After the refresh has come due (as defined below), if the user has not canceled the
@@ -1263,7 +1265,6 @@
         <pre highlight="html">&lt;meta http-equiv="Refresh" content="20; URL=page4.html"&gt;</pre>
       </div>
 
-  <div class="impl">
     : <dfn state for="http-equiv" lt="set-cookie">Cookie setter</dfn> (<code>http-equiv="set-cookie"</code>)
     :: This pragma sets an HTTP cookie. [[!COOKIES]]
 
@@ -1274,7 +1275,37 @@
         2. Act as if <a>receiving a set-cookie-string</a> for <a>the document's address</a> via a
             "non-HTTP" API, consisting of the value of the element's <code>content</code> attribute
             encoded as UTF-8. [[!COOKIES]] [[!ENCODING]]
-  </div>
+
+    : <dfn state for="http-equiv">Content security policy state</dfn> (<code>http-equiv="content-security-policy"</code>)
+    :: This pragma <a lt="enforced">enforces</a> a <a>Content Security Policy</a> on a {{Document}}.
+        [[CSP3]]
+
+        1. If the <{meta}> element is not a child of a <{head}> element, abort these steps.
+        2. If the <{meta}> element has no <{meta/content}> attribute, or if that attribute's value
+            is the empty string, then abort these steps.
+        3. Let <var>policy</var> be the result of executing Content Security Policy's
+            <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's
+            <{meta/content}> attribute's value.
+        4. Remove all occurrences of the <a><code>report-uri</code></a>,
+            <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a>
+            from <var>policy</var>.
+        5. <a>Enforce the policy</a> <var>policy</var>.
+
+        For <{meta}> elements with an <{meta/http-equiv}> attribute in the
+        <a state for="http-equiv">Content security policy state</a>, the <{meta/content}> attribute
+        must have a value consisting of a <a>valid Content Security Policy</a>, but must not contain
+        any <a><code>report-uri</code></a>, <a><code>frame-ancestors</code></a>, or
+        <a><code>sandbox</code></a> <a>directives</a>. The <a>Content Security Policy</a> given in
+        the <{meta/content}> attribute will be <a>enforced</a> upon the current document. [[CSP3]]
+
+        <div class="example">
+        A page might choose to mitigate the risk of cross-site scripting attacks by preventing the
+        execution of inline JavaScript, as well as blocking all plugin content, using a policy such
+        as the following:
+          <pre highlight="html">
+            &lt;meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'">
+          </pre>
+        </div>
 
   There must not be more than one <{meta}> element with any particular state in the
   document at a time.
@@ -1422,6 +1453,7 @@
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>media</code> — Applicable media</dd>
+    <dd><{style/nonce}> - Cryptographic nonce used in <em>Content Security Policy</em> checks [[CSP3]]</dd>
     <dd><code>type</code> — Type of embedded resource</dd>
     <dd>
       Also, the <{style/title}> attribute has special semantics on this element: Alternative
@@ -1436,6 +1468,7 @@
       <pre class="idl" data-highlight="webidl" dfn-for="HTMLStyleElement">
         interface HTMLStyleElement : HTMLElement {
           attribute DOMString media;
+          attribute DOMString nonce;
           attribute DOMString type;
         };
         HTMLStyleElement implements LinkStyle;
@@ -1476,8 +1509,13 @@
 
   <p class="note">
     A <{style}> element is restricted to
-    appearing in the <code>head</code> of the document.
+    appearing in the <{head}> of the document.
   </p>
+
+  The <dfn element-attr for="style"><code>nonce</code></dfn> attribute represents a cryptographic
+  nonce ("number used once") which can be used by <a>Content Security Policy</a> to determine
+  whether or not the style specified by an element will be applied to the document. The value is
+  text. [[CSP3]]
 
   The <dfn element-attr for="style"><code>title</code></dfn> attribute on <{style}> elements defines
   <a>alternative style sheet sets</a>. If the <{style}> element has no <code>title</code>
@@ -1505,8 +1543,10 @@
   <hr />
 
   <div class="impl">
-    Whenever one of the following conditions occur for an element whose {{Document}} is in
-    a <a>browsing context</a>:
+    The user agent must run the <dfn>update a <code>style</code> block</dfn> algorithm that
+    applies for the style sheet language specified by the <{style}> element's <{style/type}>
+    attribute, passing it the element's <dfn>style data</dfn>, whenever one of the following
+    conditions occur:
 
     * the element is popped off the <a>stack of open elements</a> of an <a>HTML parser</a> or
         <a>XML parser</a>,
@@ -1515,10 +1555,6 @@
         <a for="document">removed from a document</a>,
     * the element is not on the <a>stack of open elements</a> of an <a>HTML parser</a> or
         <a>XML parser</a>, and one of its child nodes is modified by a script,
-
-    ...the user agent must run the <dfn>update a <code>style</code> block</dfn> algorithm that
-    applies for the style sheet language specified by the element's <code>type</code> attribute,
-    passing it the element's <dfn>style data</dfn>.
 
     For styling languages that consist of pure text (as opposed to XML), a <code>style</code>
     element's <a>style data</a> is the concatenation of the contents of all the <code>Text</code>
@@ -1534,7 +1570,11 @@
         <a spec="cssom" lt="remove a CSS style sheet">remove the CSS style sheet</a> in question.
     3. If <var>element</var> is not <a>in a <code>Document</code></a>, then abort
         these steps.
-    4. <a spec="cssom">create a CSS style sheet</a> with the following properties:
+    4. If the <a>Should element's inline behavior be blocked by Content Security Policy?</a>
+        algorithm returns "<code>Blocked</code>" when executed upon the <{style}> element,
+        "<code>style</code>", and the <{style}> element's <a>style data</a>, then abort these steps.
+        [[CSP3]]
+    5. <a spec="cssom">create a CSS style sheet</a> with the following properties:
 
         : <{style/type}>
         :: <code>text/css</code>
@@ -1588,7 +1628,8 @@
   </p>
 
   <div class="impl">
-    The {{HTMLStyleElement/media}} and {{HTMLStyleElement/type}} IDL attributes must <a>reflect</a> the respective content
+    The {{HTMLStyleElement/media}}, {{HTMLStyleElement/nonce}}, and {{HTMLStyleElement/type}}
+    IDL attributes must <a>reflect</a> the respective content
     attributes of the same name.
   </div>
 
