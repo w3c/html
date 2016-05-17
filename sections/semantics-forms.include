@@ -4082,7 +4082,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   The <{input/step}> attribute is expressed in weeks. The <a>step scale factor</a> is 604,800,000
   (which converts the weeks to milliseconds, which is the base unit of comparison for the conversion
   algorithms below). The <a>default step</a> is 1 week. The <a>default step base</a> is -259,200,000
-  (the start of week 1970-W01).
+  (the start of week 1970-W01 which is the Monday 3 days before 1970-01-01).
 
   <div class="impl">
 
@@ -6771,13 +6771,25 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     string "<code>any</code>", then there is no <a>allowed
     value step</a>.</li>
 
-    <li>Otherwise, if the <a>rules for parsing floating-point number values</a>, when they are
-    applied to the attribute's value, return an error, zero, or a number less than zero, then the
+    <li>Otherwise, let <var>step value</var> be the result of running the 
+    <a>rules for parsing floating-point number values</a>, when they are
+    applied to the attribute's value.</li>
+    
+    <li>If the previous step returned an error, or <var>step value</var> is zero, or a number less 
+    than zero, then the
     <a>allowed value step</a> is the <a>default step</a> multiplied by the <a>step scale factor</a>.</li>
 
-    <li>Otherwise, the <a>allowed value step</a> is the number
-    returned by the <a>rules for parsing floating-point number values</a> when they are applied
-    to the attribute's value, multiplied by the <a>step scale
+    <li>If the element's <{input/type}> attribute is in the 
+    <a element-state for="input">Date and Time</a>,
+    <a element-state for="input">Date</a>,
+    <a element-state for="input">Month</a>,
+    <a element-state for="input">Week</a>, or
+    <a element-state for="input">Time</a> state, then round <var>step value</var> to the nearest
+    whole number unless the value is less-than one, in which case let <var>step value</var> be 1.
+    </li>
+    
+    <li>The <a>allowed value step</a> is <var>step value</var> multiplied by the 
+    <a>step scale
     factor</a>.</li>
 
   </ol>
@@ -6836,10 +6848,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     <dd>
 
-    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and the result of applying the <a>algorithm to convert a string to a number</a> to
-    the string given by the element's <a for="forms">value</a> is a number, and
-    that number subtracted from the <a>step base</a> is not an
-    integral multiple of the <a>allowed value step</a>, the
+    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and 
+    the result of applying the <a>algorithm to convert a string to a number</a> to the string given 
+    by the <a for="forms">value</a> is a number, and that number <a>is not step aligned</a>, the
     element is <a>suffering from a step mismatch</a>.
 
     </dd>
@@ -6849,10 +6860,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     <dd>
 
-    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and the result of applying the <a>algorithm to convert a string to a number</a> to
-    any of the strings in the element's <a for="forms">values</a> is a number
-    that, when subtracted from the <a>step base</a>, is not an
-    integral multiple of the <a>allowed value step</a>, the
+    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and 
+    the result of applying the <a>algorithm to convert a string to a number</a> to any of the 
+    strings in the <a for="forms">values</a> is a number that <a>is not step aligned</a>, the
     element is <a>suffering from a step mismatch</a>.
 
     </dd>
@@ -7405,9 +7415,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <li>If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and the <a for="min">minimum</a>
     is greater than the <a for="max">maximum</a>, then abort these steps.
 
-    </li><li>If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and there is no value greater than or equal to the
+    </li><li>If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and there is no <a lt="is step aligned">step aligned</a> value greater than or equal to the
     element's <a for="min">minimum</a> and less than or equal to the element's
-    <a for="max">maximum</a> that, when subtracted from the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, then abort these steps.
+    <a for="max">maximum</a>, then abort these steps.
 
     </li><li>If applying the <a>algorithm to convert a
     string to a number</a> to the string given by the element's <a for="forms">value</a> does not result in an error, then let <var>value</var> be the result of that algorithm. Otherwise, let <var>value</var>
@@ -7417,14 +7427,13 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     <li>
 
-    If <var>value</var> subtracted from the <a>step
-    base</a> is not an integral multiple of the <a>allowed value
-    step</a>, then set <var>value</var> to the nearest value that, when subtracted from
-    the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, and that is less than <var>value</var> if
-    the method invoked was the <code>stepDown()</code> method, and more
-    than <var>value</var> otherwise.
+    If <var>value</var> <a>is not step aligned</a>, do the following substeps:
 
-    Otherwise (<var>value</var> subtracted from the <a>step base</a> is an integral multiple of the <a>allowed value step</a>), run the following substeps:
+    1. If the method invoked was the <code>stepDown()</code> method, then <a>step-align</a> <var>value</var> with
+        <var>negative preference</var>. Otherwise <a>step-align</a> <var>value</var> with <var>positive preference</var>. In either case,
+        let <var>value</var> be the result.
+
+    Otherwise (<var>value</var> <a>is step aligned</a>), run the following substeps:
 
     <ol>
 
@@ -7443,10 +7452,12 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     </li>
 
     <li>If the element has a <a for="min">minimum</a>, and <var>value</var> is less than that <a for="min">minimum</a>, then set
-    <var>value</var> to the smallest value that, when subtracted from the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, and that is more than or equal to <var>minimum</var>.</li>
+    <var>value</var> to the <a>step-aligned</a> <a for="min">minimum</a> value with 
+    <var>positive preference</var>.</li>
 
     <li>If the element has a <a for="max">maximum</a>, and <var>value</var> is greater than that <a for="max">maximum</a>, then
-    set <var>value</var> to the largest value that, when subtracted from the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, and that is less than or equal to <var>maximum</var>.</li>
+    set <var>value</var> to the <a>step-aligned</a> <a for="max">maximum</a> value with 
+    <var>negative preference</var>.</li>
 
     <li>
     If either the method invoked was the <code>stepDown()</code>
@@ -7473,6 +7484,42 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   </ol>
 
+  To determine if a value <var>v</var> <dfn>is step aligned</dfn> do the following:
+  
+  <p class="note">This algorithm checks to see if a value falls along an <{input}> element's 
+  defined <{input/step}> intervals, with the interval's origin at the <a>step base</a> value. It is
+  used to determine if the element's <a for="forms">value</a> is 
+  <a>suffering from a step mismatch</a> and for various checks in the {{HTMLInputElement/stepUp()}} 
+  and {{HTMLInputElement/stepDown()}} methods.</p>
+  
+  1. Subtract the <a>step base</a> from <var>v</var> and let the result be 
+      <var>relative distance</var>.
+  2. If dividing the <var>relative distance</var> by the <a>allowed value step</a> results in a 
+      value with a remainder then <var>v</var> <dfn>is not step aligned</dfn>. Otherwise it is step 
+      aligned.
+    
+  To <dfn lt="step-align|step-aligned|step-aligns">step-align</dfn> a value <var>v</var> with either 
+  <var>negative preference</var> or <var>positive preference</var>, do the following:
+  
+  <p class="note"><var>negative preference</var> selects a <a>step-aligned</a> value that is less 
+  than or equal to <var>v</var>, while <var>positive preference</var> <a>step-aligns</a> with a 
+  value greater than or equal to <var>v</var>.</p>
+  
+  1. Subtract the <a>step base</a> from <var>v</var> and let the result be 
+      <var>relative distance</var>.
+  2. Let <var>step interval count</var> be the result of integer dividing (or divide and throw out
+      any remainder) <var>relative distance</var> by the <a>allowed value step</a>. 
+  3. Let <var>candidate</var> be the <var>step interval count</var> multiplied by the 
+      <a>allowed value step</a>.
+  4. If this algorithm was invoked with <var>negative preference</var> and the value of <var>v</var>
+      is less than <var>candidate</var>, then decrement <var>candidate</var> by the
+      <a>allowed value step</a>.
+      
+      Otherwise, if this algorithm was invoked with <var>positive preference</var> and the value of 
+      <var>v</var> is greater than <var>candidate</var>, then increment <var>candidate</var> by the
+      <a>allowed value step</a>.
+  5. The <a>step-aligned</a> value is <var>candidate</var>. Return <var>candidate</var>.
+        
   <hr />
 
   The <dfn attribute for="HTMLInputElement"><code>list</code></dfn> IDL attribute must return the current
