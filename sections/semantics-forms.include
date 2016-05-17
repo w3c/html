@@ -6756,88 +6756,53 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   value that is a <a>valid floating-point number</a> that <a>parses</a> to a number that is greater than zero, or must have a
   value that is an <a>ASCII case-insensitive</a> match for the string "<code>any</code>".
 
-  <div class="impl">
-
   The attribute provides the <dfn>allowed value step</dfn> for the
   element, as follows:
 
-  <ol>
+  1. If the <{input/step}> attribute is absent, then the <a>allowed value step</a> is the 
+      <a>default step</a> multiplied by the <a>step scale factor</a>.
+  2. Otherwise, if the attribute's value is an <a>ASCII case-insensitive</a> match for the string 
+      "<code>any</code>", then there is no <a>allowed value step</a>.
+  3. Otherwise, let <var>step value</var> be the result of running the 
+      <a>rules for parsing floating-point number values</a>, when they are applied to the 
+      <{input/step}> attribute's value.
+  4. If the previous step returned an error, or <var>step value</var> is zero, or a number less than 
+      zero, then the <a>allowed value step</a> is the <a>default step</a> multiplied by the 
+      <a>step scale factor</a>.
+  5. If the element's <{input/type}> attribute is in the 
+      <a element-state for="input">Date and Time</a>,
+      <a element-state for="input">Date</a>,
+      <a element-state for="input">Month</a>,
+      <a element-state for="input">Week</a>, or
+      <a element-state for="input">Time</a> state, then round <var>step value</var> to the nearest
+      whole number unless the value is less-than one, in which case let <var>step value</var> be 1.
+  6. The <a>allowed value step</a> is <var>step value</var> multiplied by the 
+      <a>step scale factor</a>.
 
-    <li>If the attribute is absent, then the <a>allowed value
-    step</a> is the <a>default step</a> multiplied by the
-    <a>step scale factor</a>.</li>
+  The <dfn>step base</dfn> is the value returned by the following algorithm:
 
-    <li>Otherwise, if the attribute's value is an <a>ASCII case-insensitive</a> match for the
-    string "<code>any</code>", then there is no <a>allowed
-    value step</a>.</li>
+  1. If the element has a <{input/min}> content attribute, and the result of applying the 
+      <a>algorithm to convert a string to a number</a> to the value of the <{input/min}> content
+      attribute is not an error, then return that result and abort these steps.
+  2. If the element does not have a <code>multiple</code> attribute specified or if the 
+      <code>multiple</code> attribute <a>does not apply</a>, then: if the element has a 
+      <code>value</code> content attribute, and the result of applying the 
+      <a>algorithm to convert a string to a number</a> to the value of the <{input/value}> content 
+      attribute is not an error, then return that result and abort these steps.
 
-    <li>Otherwise, let <var>step value</var> be the result of running the 
-    <a>rules for parsing floating-point number values</a>, when they are
-    applied to the attribute's value.</li>
-    
-    <li>If the previous step returned an error, or <var>step value</var> is zero, or a number less 
-    than zero, then the
-    <a>allowed value step</a> is the <a>default step</a> multiplied by the <a>step scale factor</a>.</li>
-
-    <li>If the element's <{input/type}> attribute is in the 
-    <a element-state for="input">Date and Time</a>,
-    <a element-state for="input">Date</a>,
-    <a element-state for="input">Month</a>,
-    <a element-state for="input">Week</a>, or
-    <a element-state for="input">Time</a> state, then round <var>step value</var> to the nearest
-    whole number unless the value is less-than one, in which case let <var>step value</var> be 1.
-    </li>
-    
-    <li>The <a>allowed value step</a> is <var>step value</var> multiplied by the 
-    <a>step scale
-    factor</a>.</li>
-
-  </ol>
-
-  The <dfn>step base</dfn> is the value returned by the following
-  algorithm:
-
-  <ol>
-
-    <li>If the element has a <{input/min}> content attribute, and the
-    result of applying the <a>algorithm to convert a
-    string to a number</a> to the value of the <{input/min}> content
-    attribute is not an error, then return that result and abort these steps.</li>
-
-    <li>
-
-    If the element does not have a <code>multiple</code> attribute
-    specified or if the <code>multiple</code> attribute <a>does not apply</a>, then: if the element has a <code>value</code> content attribute, and the result of applying the <a>algorithm to convert a string to a number</a> to
-    the value of the <code>value</code> content attribute is not an error,
-    then return that result and abort these steps.
-
-    Otherwise, the element's <{input/type}> attribute is in the <a>Range</a> state and the element has a <code>multiple</code> attribute specified: run these substeps:
-
-    <ol>
-
-      <li>If the element does not have a <code>value</code> content
-      attribute, skip these substeps.</li>
-
-      <li><a lt="split a string on commas">Split on commas</a> the value of the <code>value</code> content attribute.</li>
-
-      <li>If the result of the previous step was not exactly two values, or if either gets an
-      error when you apply the <a>algorithm to convert
-      a string to a number</a>, then skip these substeps.</li>
-
-      <li>Return the lower of the two numbers obtained in the previous step, and abort these
-      steps.</li>
-
-    </ol>
-
-    </li>
-
-    <li>If a <a>default step base</a> is defined for
-    this element given its <{input/type}> attribute's state, then return
-    it and abort these steps.
-
-    </li><li>Return zero.</li>
-
-  </ol>
+      Otherwise, the element's <{input/type}> attribute is in the 
+      <a element-state for="input">Range</a> state and the element has a <code>multiple</code> 
+      attribute specified: run these substeps:
+      1. If the element does not have a <{input/value}> content attribute, skip these substeps.
+      2. <a lt="split a string on commas">Split on commas</a> the value of the <{input/value}> 
+          content attribute.
+      3. If the result of the previous step was not exactly two values, or if either gets an error 
+          when you apply the <a>algorithm to convert a string to a number</a>, then skip these 
+          substeps.
+      4. Return the lower of the two numbers obtained in the previous step, and abort these steps.
+  3. If a <a>default step base</a> is defined for this element given its <{input/type}> attribute's 
+      state, then return it and abort these steps.
+  4. Return zero.
 
   How these range limitations apply depends on whether the element has a <code>multiple</code> attribute.
 
@@ -7112,173 +7077,101 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 <h5 id="common-input-element-apis">Common <{input}> element <dfn>APIs</dfn></h5>
 
   <dl class="domintro">
-
-    <dt><var>input</var> . <code>value</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns the current <a for="forms">value</a> of the form control.
+    <dt><var>input</var> . {{HTMLInputElement/value}} [ = <var>value</var> ]</dt>
+    <dd>Returns the current <a for="forms">value</a> of the form control.
 
     Can be set, to change the value.
 
-    Throws an <code>InvalidStateError</code> exception if it is set to any value other than the
-    empty string when the control is a <a element-state for="input" lt="file upload">file upload</a> control.
-
-    </dd>
+    Throws an "{{InvalidStateError}}" {{DOMException}} if it is set to any value other than the empty 
+    string when the control is a <a element-state for="input">file upload</a> control.</dd>
 
     <dt><var>input</var> . {{HTMLInputElement/checked}} [ = <var>value</var> ]</dt>
+    <dd>Returns the current <a for="forms">checkedness</a> of the form control.
 
-    <dd>
+    Can be set, to change the <a for="forms">checkedness</a>.</dd>
 
-    Returns the current <a for="forms">checkedness</a> of the form
+    <dt><var>input</var> . {{HTMLInputElement/files}}</dt>
+    <dd>Returns a <code>FileList</code> object listing the <a>selected files</a> of the form 
     control.
 
-    Can be set, to change the <a for="forms">checkedness</a>.
+    Returns null if the control isn't a file control.</dd>
 
-    </dd>
-
-    <dt><var>input</var> . <code>files</code> </dt>
-
-    <dd>
-
-    Returns a <code>FileList</code> object listing the <a>selected files</a> of the form control.
-
-    Returns null if the control isn't a file control.
-
-    </dd>
-
-    <dt><var>input</var> . <code>valueAsDate</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns a {{Date}} object representing the form control's <a for="forms">value</a>, if applicable; otherwise, returns null.
+    <dt><var>input</var> . {{HTMLInputElement/valueAsDate}} [ = <var>value</var> ]</dt>
+    <dd>Returns a {{Date}} object representing the form control's <a for="forms">value</a>, if 
+    applicable; otherwise, returns null.
 
     Can be set, to change the value.
 
-    Throws an <code>InvalidStateError</code> exception if the control isn't date- or
-    time-based.
-
+    Throws an "{{InvalidStateError}}" {{DOMException}} if the control isn't date- or time-based.
     </dd>
 
-    <dt><var>input</var> . <code>valueAsNumber</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns a number representing the form control's <a for="forms">value</a>,
-    if applicable; otherwise, returns NaN.
+    <dt><var>input</var> . {{HTMLInputElement/valueAsNumber}} [ = <var>value</var> ]</dt>
+    <dd>Returns a number representing the form control's <a for="forms">value</a>, if applicable; 
+    otherwise, returns NaN.
 
     Can be set, to change the value. Setting this to NaN will set the underlying value to the
     empty string.
 
-    Throws an <code>InvalidStateError</code> exception if the control is neither date- or
-    time-based nor numeric.
+    Throws an "{{InvalidStateError}}" {{DOMException}} if the control is neither date- or time-based 
+    nor numeric.</dd>
 
-    </dd>
-
-    <dt><var>input</var> . <code>valueLow</code> [ = <var>value</var> ]</dt>
-    <dt><var>input</var> . <code>valueHigh</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns a number representing the low and high components of form control's <a for="forms">value</a> respectively, if applicable; otherwise, returns NaN.
+    <dt><var>input</var> . {{HTMLInputElement/valueLow}} [ = <var>value</var> ]</dt>
+    <dt><var>input</var> . {{HTMLInputElement/valueHigh}} [ = <var>value</var> ]</dt>
+    <dd>Returns a number representing the low and high components of form control's 
+    <a for="forms">value</a> respectively, if applicable; otherwise, returns NaN.
 
     Can be set, to change the value.
 
-    Throws an <code>InvalidStateError</code> exception if the control is not a two-handle range
-    control.
+    Throws an "{{InvalidStateError}}" {{DOMException}} if the control is not a two-handle range
+    control.</dd>
 
-    </dd>
+    <dt><var>input</var> . {{HTMLInputElement/stepUp()|stepUp}}( [ <var>n</var> ] )</dt>
+    <dt><var>input</var> . {{HTMLInputElement/stepDown()|stepDown}}( [ <var>n</var> ] )</dt>
+    <dd>Changes the form control's <a for="forms">value</a> by the value given in the <{input/step}> 
+    attribute, multiplied by <var>n</var>. The default value for <var>n</var> is 1.
 
-    <dt><var>input</var> . <code>stepUp</code>( [ <var>n</var> ] )</dt>
-    <dt><var>input</var> . <code>stepDown</code>( [ <var>n</var> ] )</dt>
+    Throws "{{InvalidStateError}}" {{DOMException}} if the control is neither date- or time-based
+    nor numeric, or if the <{input/step}> attribute's value is "<code>any</code>".</dd>
 
-    <dd>
-
-    Changes the form control's <a for="forms">value</a> by the value given in
-    the <{input/step}> attribute, multiplied by <var>n</var>.
-    The default value for <var>n</var> is 1.
-
-    Throws <code>InvalidStateError</code> exception if the control is neither date- or time-based
-    nor numeric, or if the <{input/step}> attribute's value is "<code>any</code>".
-
-    </dd>
-
-    <dt><var>input</var> . <code>list</code></dt>
-
-    <dd>
-
-    Returns the <{datalist}> element indicated by the <code>list</code> attribute.
-
-    </dd>
-
+    <dt><var>input</var> . {{HTMLInputElement/list}}</dt>
+    <dd>Returns the <{datalist}> element indicated by the <code>list</code> attribute.</dd>
   </dl>
-
-  <div class="impl">
 
   The <dfn attribute for="HTMLInputElement"><code>value</code></dfn> IDL attribute allows scripts to
   manipulate the <a for="forms">value</a> of an <{input}> element. The
   attribute is in one of the following modes, which define its behavior:
 
-  <dl>
+  : <dfn mode for="input">value</dfn>
+  :: On getting, it must return the current <a for="forms">value</a> of the element. On setting, it 
+      must set the element's <a for="forms">value</a> to the new value, set the element's 
+      <a for="input">dirty value flag</a> to true, invoke the <a>value sanitization algorithm</a>, 
+      if the element's <{input/type}> attribute's current state defines one, and then, if the 
+      element has a text entry cursor position, should move the text entry cursor position to the
+      end of the text field, unselecting any selected text and resetting the selection direction to
+      <em>none</em>.
 
-    <dt><dfn mode for="input">value</dfn>
+  : <dfn mode for="input">default</dfn>
+  :: On getting, if the element has a <{input/value}> attribute, it must return that attribute's 
+      value; otherwise, it must return the empty string. On setting, it must set the element's 
+      <{input/value}> attribute to the new value.
 
-    </dt><dd>
+  : <dfn mode for="input">default/on</dfn>
+  :: On getting, if the element has a <{input/value}> attribute, it must return that attribute's 
+      value; otherwise, it must return the string "<code>on</code>". On setting, it must set the 
+      element's <{input/value}> attribute to the new value.
 
-    On getting, it must return the current <a for="forms">value</a> of the
-    element. On setting, it must set the element's <a for="forms">value</a> to
-    the new value, set the element's <a for="input">dirty value flag</a> to true, invoke the <a>value sanitization algorithm</a>, if the element's
-    <{input/type}> attribute's current state defines one, and then, if
-    the element has a text entry cursor position, should move the text entry cursor position to the
-    end of the text field, unselecting any selected text and resetting the selection direction to
-    <i>none</i>.
+  : <dfn mode for="input">filename</dfn>
+  :: On getting, it must return the string "<code>C:\fakepath\</code>" followed by the name of the 
+      first file in the list of <a>selected files</a>, if any, or the empty string if the list is 
+      empty. On setting, if the new value is the empty string, it must empty the list of 
+      <a>selected files</a>; otherwise, it must throw an "{{InvalidStateError}}" {{DOMException}}.
 
-    </dd>
+      <p class="note">This "fakepath" requirement is a sad accident of history. See the example in 
+      the <a element-state for="input">File Upload</a> state section for more information.</p>
 
-    <dt><dfn mode for="input">default</dfn>
-
-    </dt><dd>
-
-    On getting, if the element has a <code>value</code> attribute, it
-    must return that attribute's value; otherwise, it must return the empty string. On setting, it
-    must set the element's <code>value</code> attribute to the new
-    value.
-
-    </dd>
-
-    <dt><dfn mode for="input">default/on</dfn>
-
-    </dt><dd>
-
-    On getting, if the element has a <code>value</code> attribute, it
-    must return that attribute's value; otherwise, it must return the string "<code>on</code>". On setting, it must set the element's <code>value</code> attribute to the new value.
-
-    </dd>
-
-    <dt><dfn mode for="input">filename</dfn>
-
-    </dt><dd id="fakepath-orly">
-
-    On getting, it must return the string "<code>C:\fakepath\</code>" followed by the
-    name of the first file in the list of <a>selected
-    files</a>, if any, or the empty string if the list is empty. On setting, if the new value is
-    the empty string, it must empty the list of <a>selected files</a>; otherwise, it must throw an
-    <code>InvalidStateError</code> exception.
-
-    <p class="note">
-    This "fakepath" requirement is a sad accident of history. See the example in the <a element-state for="input">File Upload</a> state section for more
-    information.
-  </p>
-
-    <p class="note">
-    Since <a>path components</a> are not
-    permitted in file names in the list of <a>selected
-    files</a>, the "\fakepath\" cannot be mistaken for a path component.
-  </p>
-
-    </dd>
-
-  </dl>
+      <p class="note">Since <a>path components</a> are not permitted in file names in the list of 
+      <a>selected files</a>, the "<code>\fakepath\</code>" cannot be mistaken for a path component.
+      </p>
 
   <hr />
 
@@ -7403,86 +7296,81 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   <dfn method for="HTMLInputElement"><code>stepUp(<var>n</var>)</code></dfn>
   methods, when invoked, must run the following algorithm:
 
-  <ol>
+  1. If the <code>stepDown()</code> and <code>stepUp()</code> methods <a>do not apply</a>, as 
+      defined for the <{input}> element's <{input/type}> attribute's current state, then throw an 
+      "{{InvalidStateError}}" {{DOMException}}, and abort these steps.
+  2. If the element has no <a>allowed value step</a>, then throw an "{{InvalidStateError}}"
+      {{DOMException}}, and abort these steps.
+  3. If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and the 
+      <a for="min">minimum</a> is greater than the <a for="max">maximum</a>, then abort these steps.
+  4. If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and there is no 
+      <a lt="is step aligned">step aligned</a> value greater than or equal to the element's 
+      <a for="min">minimum</a> and less than or equal to the element's <a for="max">maximum</a>, 
+      then abort these steps.
+  5. If applying the <a>algorithm to convert a string to a number</a> to the string given by the 
+      element's <a for="forms">value</a> does not result in an error, then let <var>value</var> be 
+      the result of that algorithm. Otherwise, let <var>value</var> be zero.
+  6. Let <var>valueBeforeStepping</var> be <var>value</var>.
+  7. If <var>value</var> <a>is not step aligned</a>, then:
+      1. If the method invoked was the <code>stepDown()</code> method, then <a>step-align</a> 
+          <var>value</var> with <var>negative preference</var>. Otherwise <a>step-align</a> 
+          <var>value</var> with <var>positive preference</var>. In either case, let <var>value</var> 
+          be the result.
+          
+          <div class="example">
+            This ensures that the value first snaps to a <a>step-aligned</a> value when it doesn't
+            start step-aligned. For example, starting with the following <{input}> with 
+            <{input/value}> of 3:
+            
+            <pre highlight="html">
+              &lt;input type="number" value="3" min="1" max="10" step="2.6">
+            </pre>
+            Invoking the {{HTMLInputElement/stepUp()}} method will snap the <{input/value}> to 3.6; 
+            subsequent invocations will increment the value by 2.6 (e.g., 6.2, then 8.8). Likewise,
+            the following <{input}> element in the <a element-state for="input">Week</a> state will
+            also <a>step-align</a> in similar fashion, though in this state, the <{input/step}> 
+            value is rounded up to 3, per the derivation of the <a>allowed value step</a>.
+            
+            <pre highlight="html">
+              &lt;input type="week" value="2016-W20" min="2016-W01" max="2017-W01" step="2.6">
+            </pre>
+            Invoking {{HTMLInputElement/stepUp()}} will result in a <{input/value}> of 
+            "<code>2016-W22</code>" because the nearest <a>step-aligned</a> value from the 
+            <a>step base</a> of "<code>2016-W01</code>" (the <{input/min}> value) with 3 week 
+            <{input/step}>s that is greater than the <{input/value}> of "<code>2016-W20</code>" is 
+            "<code>2016-W22</code>" (i.e.: W01, W04, W07, W10, W13, W16, W19, W22).
+          </div>
+      
+      Otherwise (<var>value</var> <a>is step aligned</a>), run the following substeps:
+      
+      1. Let <var>n</var> be the argument.
+      2. Let <var>delta</var> be the <a>allowed value step</a> multiplied by <var>n</var>.
+      3. If the method invoked was the <code>stepDown()</code> method, negate <var>delta</var>.
+      4. Let <var>value</var> be the result of adding <var>delta</var> to <var>value</var>.
+  8. If the element has a <a for="min">minimum</a>, and <var>value</var> is less than that 
+      <a for="min">minimum</a>, then set <var>value</var> to the <a>step-aligned</a> 
+      <a for="min">minimum</a> value with <var>positive preference</var>.
+  9. If the element has a <a for="max">maximum</a>, and <var>value</var> is greater than that 
+      <a for="max">maximum</a>, then set <var>value</var> to the <a>step-aligned</a> 
+      <a for="max">maximum</a> value with <var>negative preference</var>.
+  10. If either the method invoked was the {{HTMLInputElement/stepDown()}} method and 
+       <var>value</var> is greater than <var>valueBeforeStepping</var>, or the method invoked was 
+       the {{HTMLInputElement/stepUp()}} method and <var>value</var> is less than 
+       <var>valueBeforeStepping</var>, then abort these steps.
 
-    <li>If the <code>stepDown()</code> and <code>stepUp()</code> methods <a>do not apply</a>, as defined for the
-    <{input}> element's <{input/type}> attribute's current state,
-    then throw an <code>InvalidStateError</code> exception, and abort these steps.</li>
+       <div class="example">
+         This ensures that invoking the {{HTMLInputElement/stepUp()}} method on the <{input}> 
+         element in the following example does not change the <a for="forms">value</a> of that 
+         element:
 
-    <li>If the element has no <a>allowed value step</a>, then
-    throw an <code>InvalidStateError</code> exception, and abort these steps.</li>
-
-    <li>If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and the <a for="min">minimum</a>
-    is greater than the <a for="max">maximum</a>, then abort these steps.
-
-    </li><li>If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and there is no <a lt="is step aligned">step aligned</a> value greater than or equal to the
-    element's <a for="min">minimum</a> and less than or equal to the element's
-    <a for="max">maximum</a>, then abort these steps.
-
-    </li><li>If applying the <a>algorithm to convert a
-    string to a number</a> to the string given by the element's <a for="forms">value</a> does not result in an error, then let <var>value</var> be the result of that algorithm. Otherwise, let <var>value</var>
-    be zero.</li>
-
-    <li>Let <var>valueBeforeStepping</var> be <var>value</var>.</li>
-
-    <li>
-
-    If <var>value</var> <a>is not step aligned</a>, do the following substeps:
-
-    1. If the method invoked was the <code>stepDown()</code> method, then <a>step-align</a> <var>value</var> with
-        <var>negative preference</var>. Otherwise <a>step-align</a> <var>value</var> with <var>positive preference</var>. In either case,
-        let <var>value</var> be the result.
-
-    Otherwise (<var>value</var> <a>is step aligned</a>), run the following substeps:
-
-    <ol>
-
-      <li>Let <var>n</var> be the argument.</li>
-
-      <li>Let <var>delta</var> be the <a>allowed value
-      step</a> multiplied by <var>n</var>.</li>
-
-      <li>If the method invoked was the <code>stepDown()</code> method,
-      negate <var>delta</var>.</li>
-
-      <li>Let <var>value</var> be the result of adding <var>delta</var> to <var>value</var>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>If the element has a <a for="min">minimum</a>, and <var>value</var> is less than that <a for="min">minimum</a>, then set
-    <var>value</var> to the <a>step-aligned</a> <a for="min">minimum</a> value with 
-    <var>positive preference</var>.</li>
-
-    <li>If the element has a <a for="max">maximum</a>, and <var>value</var> is greater than that <a for="max">maximum</a>, then
-    set <var>value</var> to the <a>step-aligned</a> <a for="max">maximum</a> value with 
-    <var>negative preference</var>.</li>
-
-    <li>
-    If either the method invoked was the <code>stepDown()</code>
-    method and <var>value</var> is greater than <var>valueBeforeStepping</var>, or the method
-    invoked was the <code>stepUp()</code> method and <var>value</var> is
-    less than <var>valueBeforeStepping</var>, then abort these steps.
-
-    <div class="example">
-      This ensures that invoking the <code>stepUp()</code> method on the
-      <{input}> element in the following example does not change the <a for="forms">value</a> of that element:
-
-      <pre highlight="html">
-&lt;input type=number value=1 max=0&gt;
-    </pre>
-    </div>
-    </li>
-
-    <li>Let <var>value as string</var> be the result of running the <a>algorithm to convert a number to a string</a>, as
-    defined for the <{input}> element's <{input/type}>
-    attribute's current state, on <var>value</var>.</li>
-
-    <li>Set the <a for="forms">value</a> of the element to <var>value
-    as string</var>.</li>
-
-  </ol>
+         <pre highlight="html">
+           &lt;input type=number value=1 max=0&gt;
+         </pre>
+       </div>
+  11. Let <var>value as string</var> be the result of running the 
+       <a>algorithm to convert a number to a string</a>, as defined for the <{input}> element's 
+       <{input/type}> attribute's current state, on <var>value</var>.
+  12. Set the <a for="forms">value</a> of the element to <var>value as string</var>.
 
   To determine if a value <var>v</var> <dfn>is step aligned</dfn> do the following:
   
@@ -7522,10 +7410,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
         
   <hr />
 
-  The <dfn attribute for="HTMLInputElement"><code>list</code></dfn> IDL attribute must return the current
-  <a>suggestions source element</a>, if any, or null otherwise.
-
-  </div>
+  The <dfn attribute for="HTMLInputElement"><code>list</code></dfn> IDL attribute must return the 
+  current <a>suggestions source element</a>, if any, or null otherwise.
 
   <div class="impl">
 
