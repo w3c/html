@@ -66,7 +66,7 @@
         &lt;HTML>
         &lt;HEAD>
           &lt;META CHARSET="UTF-8">
-          &lt;BASE HREF="http://www.example.com/">
+          &lt;BASE HREF="https://www.example.com/">
           &lt;TITLE>An application with a long head&lt;/TITLE>
           &lt;LINK REL="STYLESHEET" HREF="default.css">
           &lt;LINK REL="STYLESHEET ALTERNATE" HREF="big.css" TITLE="Big Text">
@@ -222,11 +222,14 @@
   A <{base}> element must have either an <{base/href}> attribute, a <code>target</code>
   attribute, or both.
 
-  The <dfn element-attr for="base"><code>href</code></dfn> content attribute, if specified, must contain a <a>valid URL
-  potentially surrounded by spaces</a>.
+  The <dfn element-attr for="base"><code>href</code></dfn> content attribute, if specified, must
+  contain a <a>valid URL potentially surrounded by spaces</a>.
 
-  A <{base}> element, if it has an <{base/href}> attribute, must come before any other
-  elements in the tree that have attributes defined as taking <a for="url">URLs</a>.
+  A <{base}> element, if it has an <{base/href}> attribute, must come before any other elements in
+  the tree that have attributes defined as taking <a for="url">URLs</a>, except the <{html}> element
+  (its <code>manifest</code> attribute isn't affected by <code>xml:base</code> attributes or
+  <{base}> elements). elements in the tree that have attributes defined as taking
+  <a for="url">URLs</a>.
 
   <div class="impl">
     <p class="note">
@@ -251,8 +254,8 @@
 
     A <{base}> element that is the first <{base}> element with an
     <{base/href}> content attribute in a particular {{Document}} has a
-    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a> 
-    <a lt="set the frozen base URL">set</a> for an element whenever any of the following situations 
+    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a>
+    <a lt="set the frozen base URL">set</a> for an element whenever any of the following situations
     occur:
 
     * The <{base}> element becomes the first <{base}> element in <a>tree order</a>
@@ -262,24 +265,24 @@
         <{base/href}> content attribute is changed.
 
     To <dfn>set the frozen base URL</dfn>, for an element <var>element</var>:
-    
+
     1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
-    2. Let <var>urlRecord</var> be the result of <a>parsing</a> the value of 
+    2. Let <var>urlRecord</var> be the result of <a>parsing</a> the value of
         <var>element</var>'s <{base/href}> content attribute with <var>document</var>'s
         <a>fallback base URL</a>, and <var>document</var>'s <a>character encoding</a>. (Thus the
         <{base}> element isn't affected by itself.)
-    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s 
-        <a>fallback base URL</a>, if <var>urlRecord</var> is failure or running 
-        <a>Is base allowed for Document?</a> on the <a>resulting URL record</a> and 
+    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s
+        <a>fallback base URL</a>, if <var>urlRecord</var> is failure or running
+        <a>Is base allowed for Document?</a> on the <a>resulting URL record</a> and
         <var>document</var> returns "<code>Blocked</code>", and to <var>urlRecord</var> otherwise.
 
-    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must 
+    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must
     return the result of running the following algorithm:
 
     1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
     2. Let <var>url</var> be the value of the <{base/href}> attribute of the <{base}> element, if it
         has one, and the empty string otherwise.
-    3. Let <var>urlRecord</var> be the result of <a>parsing</a> <var>url</var> with 
+    3. Let <var>urlRecord</var> be the result of <a>parsing</a> <var>url</var> with
         <var>document</var>'s <a>fallback base url</a>, and <var>document</var>'s
         <a>character encoding</a>. (Thus, the <{base}> element isn't affected by other <{base}>
         elements or itself).
@@ -301,7 +304,7 @@
       &lt;html>
         &lt;head>
           &lt;title>This is an example for the &amp;lt;base&amp;gt; element&lt;/title>
-          &lt;base href="http://www.example.com/news/index.html">
+          &lt;base href="https://www.example.com/news/index.html">
         &lt;/head>
         &lt;body>
           &lt;p>Visit the &lt;a href="archives.html">archives&lt;/a>.&lt;/p>
@@ -310,7 +313,7 @@
     </pre>
 
     The link in the above example would be a link to
-    "<code>http://www.example.com/news/archives.html</code>".
+    "<code>https://www.example.com/news/archives.html</code>".
   </div>
 
 <h4 id="the-link-element">The <dfn element><code>link</code></dfn> element</h4>
@@ -1277,36 +1280,36 @@
             encoded as UTF-8. [[!COOKIES]] [[!ENCODING]]
 
     : <dfn state for="http-equiv">Content security policy state</dfn> (<code>http-equiv="content-security-policy"</code>)
-    :: This pragma <a lt="enforced">enforces</a> a <a>Content Security Policy</a> on a {{Document}}. 
+    :: This pragma <a lt="enforced">enforces</a> a <a>Content Security Policy</a> on a {{Document}}.
         [[CSP3]]
-        
+
         1. If the <{meta}> element is not a child of a <{head}> element, abort these steps.
-        2. If the <{meta}> element has no <{meta/content}> attribute, or if that attribute's value 
+        2. If the <{meta}> element has no <{meta/content}> attribute, or if that attribute's value
             is the empty string, then abort these steps.
-        3. Let <var>policy</var> be the result of executing Content Security Policy's 
-            <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's 
+        3. Let <var>policy</var> be the result of executing Content Security Policy's
+            <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's
             <{meta/content}> attribute's value.
-        4. Remove all occurrences of the <a><code>report-uri</code></a>, 
-            <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a> 
+        4. Remove all occurrences of the <a><code>report-uri</code></a>,
+            <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a>
             from <var>policy</var>.
         5. <a>Enforce the policy</a> <var>policy</var>.
 
-        For <{meta}> elements with an <{meta/http-equiv}> attribute in the 
-        <a state for="http-equiv">Content security policy state</a>, the <{meta/content}> attribute 
-        must have a value consisting of a <a>valid Content Security Policy</a>, but must not contain 
-        any <a><code>report-uri</code></a>, <a><code>frame-ancestors</code></a>, or 
-        <a><code>sandbox</code></a> <a>directives</a>. The <a>Content Security Policy</a> given in 
+        For <{meta}> elements with an <{meta/http-equiv}> attribute in the
+        <a state for="http-equiv">Content security policy state</a>, the <{meta/content}> attribute
+        must have a value consisting of a <a>valid Content Security Policy</a>, but must not contain
+        any <a><code>report-uri</code></a>, <a><code>frame-ancestors</code></a>, or
+        <a><code>sandbox</code></a> <a>directives</a>. The <a>Content Security Policy</a> given in
         the <{meta/content}> attribute will be <a>enforced</a> upon the current document. [[CSP3]]
 
         <div class="example">
-        A page might choose to mitigate the risk of cross-site scripting attacks by preventing the 
-        execution of inline JavaScript, as well as blocking all plugin content, using a policy such 
+        A page might choose to mitigate the risk of cross-site scripting attacks by preventing the
+        execution of inline JavaScript, as well as blocking all plugin content, using a policy such
         as the following:
           <pre highlight="html">
             &lt;meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'">
           </pre>
         </div>
-            
+
   There must not be more than one <{meta}> element with any particular state in the
   document at a time.
 
@@ -1512,11 +1515,11 @@
     appearing in the <{head}> of the document.
   </p>
 
-  The <dfn element-attr for="style"><code>nonce</code></dfn> attribute represents a cryptographic 
-  nonce ("number used once") which can be used by <a>Content Security Policy</a> to determine 
-  whether or not the style specified by an element will be applied to the document. The value is 
+  The <dfn element-attr for="style"><code>nonce</code></dfn> attribute represents a cryptographic
+  nonce ("number used once") which can be used by <a>Content Security Policy</a> to determine
+  whether or not the style specified by an element will be applied to the document. The value is
   text. [[CSP3]]
-  
+
   The <dfn element-attr for="style"><code>title</code></dfn> attribute on <{style}> elements defines
   <a>alternative style sheet sets</a>. If the <{style}> element has no <code>title</code>
   attribute, then it has no title; the <code>title</code> attribute of ancestors does not apply to
@@ -1545,7 +1548,7 @@
   <div class="impl">
     The user agent must run the <dfn>update a <code>style</code> block</dfn> algorithm that
     applies for the style sheet language specified by the <{style}> element's <{style/type}>
-    attribute, passing it the element's <dfn>style data</dfn>, whenever one of the following 
+    attribute, passing it the element's <dfn>style data</dfn>, whenever one of the following
     conditions occur:
 
     * the element is popped off the <a>stack of open elements</a> of an <a>HTML parser</a> or
@@ -1570,9 +1573,9 @@
         <a spec="cssom" lt="remove a CSS style sheet">remove the CSS style sheet</a> in question.
     3. If <var>element</var> is not <a>in a <code>Document</code></a>, then abort
         these steps.
-    4. If the <a>Should element's inline behavior be blocked by Content Security Policy?</a> 
-        algorithm returns "<code>Blocked</code>" when executed upon the <{style}> element, 
-        "<code>style</code>", and the <{style}> element's <a>style data</a>, then abort these steps. 
+    4. If the <a>Should element's inline behavior be blocked by Content Security Policy?</a>
+        algorithm returns "<code>Blocked</code>" when executed upon the <{style}> element,
+        "<code>style</code>", and the <{style}> element's <a>style data</a>, then abort these steps.
         [[CSP3]]
     5. <a spec="cssom">create a CSS style sheet</a> with the following properties:
 
