@@ -75,7 +75,7 @@
       customizations:
       * For the global object, create a new {{Window}} object <var>window</var>.
       * For the global <em>this</em> value, create a new {{WindowProxy}} object
-         <var>windowProxy</var>, whose \[[{{Window}}]] internal slot value is <var>window</var>.
+         <var>windowProxy</var>, whose [[{{Window}}]] internal slot value is <var>window</var>.
 
          <p class="note">The internal slot value is updated when navigations occur.</p>
       * Let <var>realm execution context</var> be the created <a>JavaScript execution context</a>.
@@ -746,10 +746,10 @@
 
 <h4 id="shared-internal-slot-crossoriginpropertydescriptormap">Shared internal slot: \[[CrossOriginPropertyDescriptorMap]]</h4>
 
-  {{Window}} and {{Location}} objects both have a \[[<dfn>CrossOriginPropertyDescriptorMap</dfn>]]
+  {{Window}} and {{Location}} objects both have a [[<dfn>CrossOriginPropertyDescriptorMap</dfn>]]
   internal slot, whose value is initially an empty map.
 
-  <p class="note">The \[[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot contains a map with
+  <p class="note">The [[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot contains a map with
   entries whose keys are (currentOrigin, objectOrigin, propertyKey)-tuples and values are property
   descriptors, as a memoization of what is visible to scripts when currentOrigin inspects a
   {{Window}} or {{Location}} object from objectOrigin. It is filled lazily by
@@ -782,58 +782,73 @@
 <h5 id="crossoriginproperties-algorithm"><dfn>CrossOriginProperties</dfn> ( <var>O</var> )</h5>
 
   1. Assert: <var>O</var> is a {{Location}} or {{Window}} object.
-  2. If <var>O</var> is a {{Location}} object, then return « <pre>{
-        \[[Property]]: "href",
-        \[[NeedsGet]]: false,
-        \[[NeedsSet]]: true
-      }, {
-        \[[Property]]: "replace"
-      }</pre> ».
-  3. Let <var>crossOriginWindowProperties</var> be « <pre>{
-        \[[Property]]: "window",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "self",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "location",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: true
-      }, {
-        \[[Property]]: "close"
-      }, {
-        \[[Property]]: "closed",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "focus"
-      }, {
-        \[[Property]]: "blur"
-      }, {
-        \[[Property]]: "frames",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "length",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "top",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "opener",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "parent",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "postMessage"
-      }</pre> ».
+  2. If <var>O</var> is a {{Location}} object, then return <pre>
+      « {
+          [[Property]]: "href",
+          [[NeedsGet]]: false,
+          [[NeedsSet]]: true
+        },
+        {
+          [[Property]]: "replace"
+        } »</pre>
+  3. Let <var>crossOriginWindowProperties</var> be <pre>
+      « {
+          [[Property]]: "window",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "self",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "location",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: true
+        },
+        {
+          [[Property]]: "close"
+        },
+        {
+          [[Property]]: "closed",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "focus"
+        },
+        {
+          [[Property]]: "blur"
+        },
+        {
+          [[Property]]: "frames",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "length",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "top",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "opener",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "parent",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "postMessage"
+        } »</pre>
   4. Repeat for each <var>e</var> that is an element of the
       <a>child browsing context name property set</a>:
       1. Add { \[[Property]]: <var>e</var> } as the last element of <var>crossOriginWindowProperties</var>.
@@ -862,14 +877,14 @@
       object's <a for="concept">origin</a>'s <a>effective domain</a>, and <var>P</var>.
   3. Repeat for each <var>e</var> that is an element of <a>CrossOriginProperties</a>(<var>O</var>):
      1. If <a>SameValue</a>(<var>e</var>.\[[Property]], <var>P</var>) is true, then:
-         1. If the value of the \[[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot of
+         1. If the value of the [[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot of
              <var>O</var> contains an entry whose key is <var>crossOriginKey</var>, then return that
              entry's value.
          2. Let <var>originalDesc</var> be <a>OrdinaryGetOwnProperty</a>(<var>O</var>,
              <var>P</var>).
          3. Let <var>crossOriginDesc</var> be <a>CrossOriginPropertyDescriptor</a>(<var>e</var>,
              <var>originalDesc</var>).
-         4. Create an entry in the value of the \[[<a>CrossOriginPropertyDescriptorMap</a>]]
+         4. Create an entry in the value of the [[<a>CrossOriginPropertyDescriptorMap</a>]]
              internal slot of <var>O</var> with key <var>crossOriginKey</var> and value
              <var>crossOriginDesc</var>.
          5. Return <var>crossOriginDesc</var>.
@@ -901,7 +916,7 @@
       <var>functionToWrap</var>.
 
   A <dfn>cross-origin wrapper function</dfn> is an anonymous built-in function that has a
-  \\[[Wrapped]] internal slot.
+  \[[Wrapped]] internal slot.
 
   When a <a>cross-origin wrapper function</a> <var>F</var> is called with a list of arguments
   <var>argumentsList</var>, the following steps are taken:
@@ -1602,7 +1617,7 @@
 
   There is no {{WindowProxy}} interface object.
 
-  Every {{WindowProxy}} object has a \[[<dfn lt="window slot">Window</dfn>]] internal slot
+  Every {{WindowProxy}} object has a [[<dfn lt="window slot">Window</dfn>]] internal slot
   representing the wrapped {{Window}} object.
 
   <p class="note">Although {{WindowProxy}} is named as a "proxy", it does not do polymorphic
@@ -1627,29 +1642,29 @@
 
   The {{WindowProxy}} object internal methods are described in the subsections below.
 
-<h6 id="windowproxy-getprototypeof-algorithm">\[[<dfn lt="windowproxy getprototypeof">GetPrototypeOf</dfn>]] ( )</h6>
+<h6 id="windowproxy-getprototypeof-algorithm">[[<dfn lt="windowproxy getprototypeof">GetPrototypeOf</dfn>]] ( )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return !
       <a>OrdinaryGetPrototypeOf</a>(<var>W</var>).
   3. Return null.
 
-<h6 id="windowproxy-setprototypeof-algorithm">\[[<dfn lt="windowproxy setprototypeof">SetPrototypeOf</dfn>]] ( V )</h6>
+<h6 id="windowproxy-setprototypeof-algorithm">[[<dfn lt="windowproxy setprototypeof">SetPrototypeOf</dfn>]] ( V )</h6>
 
   1. Return false.
 
-<h6 id="windowproxy-isextensible-algorithm">\[[<dfn lt="windowproxy isextensible">IsExtensible</dfn>]] ( )</h6>
+<h6 id="windowproxy-isextensible-algorithm">[[<dfn lt="windowproxy isextensible">IsExtensible</dfn>]] ( )</h6>
 
   1. Return true.
 
-<h6 id="windowproxy-preventextensions-algorithm">\[[<dfn lt="windowproxy preventextensions">PreventExtensions</dfn>]] ( )</h6>
+<h6 id="windowproxy-preventextensions-algorithm">[[<dfn lt="windowproxy preventextensions">PreventExtensions</dfn>]] ( )</h6>
 
   1. Return false.
 
-<h6 id="windowproxy-getownproperty-algorithm">\[[<dfn lt="windowproxy getownproperty">GetOwnProperty</dfn>]] ( <var>P</var> )</h6>
+<h6 id="windowproxy-getownproperty-algorithm">[[<dfn lt="windowproxy getownproperty">GetOwnProperty</dfn>]] ( <var>P</var> )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <var>P</var> is an <a>array index property name</a>, then:
       1. Let <var>index</var> be <a>ToUint32</a>(<var>P</var>).
@@ -1681,10 +1696,10 @@
           \[[Writable]]: false, \[[Configurable]]: true }.
   7. Throw a "{{SecurityError}}" {{DOMException}}.
 
-<h6 id="windowproxy-defineownproperty-algorithm">\[[<dfn lt="windowproxy defineownproperty">DefineOwnProperty</dfn>]] ( <var>P</var>, <var>Desc</var> )</h6>
+<h6 id="windowproxy-defineownproperty-algorithm">[[<dfn lt="windowproxy defineownproperty">DefineOwnProperty</dfn>]] ( <var>P</var>, <var>Desc</var> )</h6>
 
   1. If <var>P</var> is an <a>array index property name</a>, return false.
-  2. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  2. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   3. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinaryDefineOwnProperty</a>(<var>W</var>, <var>P</var>, <var>Desc</var>).
@@ -1692,34 +1707,34 @@
       <p class="note">See above about how this violates JavaScript's internal method invariants.</p>
   4. Return false.
 
-<h6 id="windowproxy-get-algorithm">\[[<dfn lt="windowproxy get">Get</dfn>]] ( <var>P</var>, <var>Receiver</var> )</h6>
+<h6 id="windowproxy-get-algorithm">[[<dfn lt="windowproxy get">Get</dfn>]] ( <var>P</var>, <var>Receiver</var> )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinaryGet</a>(this, <var>P</var>, <var>Receiver</var>).
   3. Return ? <a>CrossOriginGet</a>(this, <var>P</var>, <var>Receiver</var>).
 
-<h6 id="windowproxy-set-algorithm">\[[<dfn lt="windowproxy set">Set</dfn>]] ( <var>P</var>, V, <var>Receiver</var> )</h6>
+<h6 id="windowproxy-set-algorithm">[[<dfn lt="windowproxy set">Set</dfn>]] ( <var>P</var>, V, <var>Receiver</var> )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinarySet</a>(<var>W</var>, this, <var>Receiver</var>).
   3. Return <a>CrossOriginSet</a>(this, <var>P</var>, V, <var>Receiver</var>).
 
-<h6 id="windowproxy-delete-algorithm">\[[<dfn lt="windowproxy delete">Delete</dfn>]] ( <var>P</var> )</h6>
+<h6 id="windowproxy-delete-algorithm">[[<dfn lt="windowproxy delete">Delete</dfn>]] ( <var>P</var> )</h6>
 
   1. If <var>P</var> is an <a>array index property name</a>, return false.
-  2. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  2. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   3. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinaryDelete</a>(<var>W</var>, <var>P</var>).
   4. Return false.
 
-<h6 id="windowproxy-ownpropertykeys-algorithm">\[[<dfn lt="windowproxy ownpropertykeys">OwnPropertyKeys</dfn>]] ( )</h6>
+<h6 id="windowproxy-ownpropertykeys-algorithm">[[<dfn lt="windowproxy ownpropertykeys">OwnPropertyKeys</dfn>]] ( )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. Let <var>keys</var> be a new empty <a for="ecma">List</a>.
   3. Let <var>maxProperties</var> be the <a>number of child browsing contexts</a> of <var>W</var>.
@@ -2947,7 +2962,7 @@
   5. Perform ! <var>location</var>.\[[DefineOwnProperty]](<a>@@toPrimitive</a>, {
       \[[Value]]: undefined, \[[Writable]]: false, \[[Enumerable]]: false,
       \[[Configurable]]: false }).
-  6. Set the value of the \[[<a>DefaultProperties</a>]] internal slot of <var>location</var> to
+  6. Set the value of the [[<a>DefaultProperties</a>]] internal slot of <var>location</var> to
       <var>location</var>.\[[OwnPropertyKeys]]().
   7. Return <var>location</var>.
 
@@ -3445,7 +3460,7 @@
   The {{Location}} object requires additional logic beyond IDL for security purposes. The internal
   slot and internal methods {{Location}} objects must implement are defined below.
 
-  Every {{Location}} object has a \[[<dfn>DefaultProperties</dfn>]] internal slot representing its
+  Every {{Location}} object has a [[<dfn>DefaultProperties</dfn>]] internal slot representing its
   own properties at time of its creation.
 
 
