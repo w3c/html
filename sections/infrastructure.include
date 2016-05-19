@@ -261,43 +261,38 @@
 
 <h4 id="encoding-terminology">Character encodings</h4>
 
-  A <dfn lt="character encoding|character encodings">character encoding</dfn>, or just <i>encoding</i> where that is not ambiguous, is a defined
-  way to convert between byte streams and Unicode strings, as defined in the Encoding standard. An
-  <a>encoding</a> has an <dfn>encoding name</dfn> and one or more <dfn>encoding labels</dfn>,
-  referred to as the encoding's <i>name</i> and <i>labels</i> in the Encoding standard.
-  [[!ENCODING]]
+  A <dfn>character encoding</dfn>, or just
+  <i>encoding</i> where that is not ambiguous, is a defined way to convert between byte streams and
+  Unicode strings, as defined in the WHATWG Encoding standard. An <a>encoding</a> has an
+  <dfn>encoding name</dfn> and one or more <dfn>encoding labels</dfn>, referred to as the
+  encoding's <i>name</i> and <i>labels</i> in the Encoding standard. [[!ENCODING]]
 
-  An <dfn lt="ASCII-compatible encoding|ASCII-compatible character encoding">ASCII-compatible character encoding</dfn> is a single-byte or variable-length
-  <a>encoding</a> in which the bytes 0x09, 0x0A, 0x0C, 0x0D, 0x20 - 0x22, 0x26, 0x27, 0x2C - 0x3F,
-  0x41 - 0x5A, and 0x61 - 0x7A, ignoring bytes that are the second and later bytes of multibyte
-  sequences, all correspond to single-byte sequences that map to the same Unicode characters as
-  those bytes in Windows-1252. [[!ENCODING]]
+  A <dfn>UTF-16 encoding</dfn> is <a>UTF-16BE</a> or <a>UTF-16LE</a>. [[!ENCODING]]
+
+  An <dfn>ASCII-compatible encoding</dfn> is any <a>encoding</a> that is not a
+  <a>UTF-16 encoding</a>. [[!ENCODING]]
 
   <p class="note">
-    This includes such encodings as Shift_JIS, HZ-GB-2312, and variants of ISO-2022, even though it
-    is possible in these encodings for bytes like 0x70 to be part of longer sequences that are
-    unrelated to their interpretation as ASCII. It excludes UTF-16 variants, as well as obsolete
-    legacy encodings such as UTF-7, GSM03.38, and EBCDIC variants.
+    Since support for encodings that are not defined in the WHATWG Encoding standard is prohibited,
+    <a>UTF-16 encodings</a> are the only encodings that this specification needs to treat as not
+    being <a>ASCII-compatible encodings</a>.
   </p>
 
-  The term <dfn lt="UTF-16 encoding|a UTF-16 encoding">a UTF-16 encoding</dfn> refers to any variant of UTF-16: UTF-16LE or UTF-16BE,
-  regardless of the presence or absence of a BOM. [[!ENCODING]]
+  The term <dfn>code unit</dfn> is used as defined in the Web IDL specification: a 16 bit unsigned
+  integer, the smallest atomic component of a <code>DOMString</code>. (This is a narrower definition
+  than the one used in Unicode, and is not the same as a <i>code point</i>.) [[!WEBIDL]]
 
-  The term <dfn lt="code unit|code units">code unit</dfn> is used as defined in the Web IDL specification: a 16 bit
-  unsigned integer, the smallest atomic component of a <code>DOMString</code>. (This is a narrower
-  definition than the one used in Unicode, and is not the same as a <i>code point</i>.) [[!WEBIDL]]
-
-  The term <dfn lt="Unicode code point|Unicode code points">Unicode code point</dfn> means a <i>Unicode scalar value</i> where possible, and an
+  The term <dfn>Unicode code point</dfn> means a <i>Unicode scalar value</i> where possible, and an
   isolated surrogate code point when not. When a conformance requirement is defined in terms of
   characters or Unicode code points, a pair of <a>code units</a> consisting of a high surrogate
   followed by a low surrogate must be treated as the single code point represented by the surrogate
   pair, but isolated surrogates must each be treated as the single code point with the value of the
   surrogate. [[!UNICODE]]
 
-  In this specification, the term <dfn lt="character|characters">character</dfn>, when not qualified as <em>Unicode</em>
+  In this specification, the term <dfn>character</dfn>, when not qualified as <em>Unicode</em>
   character, is synonymous with the term <a>Unicode code point</a>.
 
-  The term <dfn lt="Unicode character|Unicode characters">Unicode character</dfn> is used to mean a <i>Unicode scalar value</i> (i.e., any
+  The term <dfn>Unicode character</dfn> is used to mean a <i>Unicode scalar value</i> (i.e. any
   Unicode code point that is not a surrogate code point). [[!UNICODE]]
 
   The <dfn>code-unit length</dfn> of a string is the number of <a>code units</a> in that string.
@@ -577,22 +572,20 @@
 
       The following terms are used as defined in the Encoding standard: [[!ENCODING]]
 
-      * <dfn lt="getting an encoding">Getting an encoding</dfn>
-      * The <dfn>encoder</dfn> and <dfn>decoder</dfn> algorithms for various encodings, including
-        the <dfn>UTF-8 encoder</dfn> and <dfn>UTF-8 decoder</dfn>
-      * The generic <dfn>decode</dfn> algorithm which takes a byte stream and an encoding and
+      * <dfn>Getting an encoding</dfn>
+      * <dfn lt="getting an output encoding">Get an output encoding</dfn>
+      * The generic <a>decode</a> algorithm which takes a byte stream and an encoding and
         returns a character stream
       * The <dfn>UTF-8 decode</dfn> algorithm which takes a byte stream and returns a character
         stream, additionally stripping one leading UTF-8 Byte Order Mark (BOM), if any
+      * The <dfn>UTF-8 decode without BOM</dfn> algorithm which is identical to <a>UTF-8 decode</a>
+        except that it does not strip one leading UTF-8 Byte Order Mark (BOM)
+      * The <dfn>UTF-8 decode without BOM or fail</dfn> algorithm which is identical to
+        <a>UTF-8 decode without BOM</a> except that it returns failure upon encountering an error
+      * The <a lt="encode code point">encode</a> algorithm which takes a character stream and an
+        encoding and returns a byte stream
+      * The <dfn>UTF-8 encode</dfn> algorithm which takes a character stream and returns a byte stream.
 
-      <p class="note">
-        The <a>UTF-8 decoder</a> is distinct from the <i>UTF-8 decode algorithm</i>. The latter
-        first strips a Byte Order Mark (BOM), if any, and then invokes the former.
-      </p>
-
-      For readability, character encodings are sometimes referenced in this specification with a
-      case that differs from the canonical case given in the Encoding standard. (For example,
-      "UTF-16LE" instead of "utf-16le".)
   : XML and related specifications
   :: Implementations that support <a href="#xhtml">the XHTML syntax</a> must support some version of XML, as
       well as its corresponding namespaces specification, because that syntax uses an XML

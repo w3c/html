@@ -745,8 +745,7 @@
   character encodings that are to be used for the submission. If specified, the value must be an
   <a>ordered set of unique space-separated tokens</a> that are <a>ASCII
   case-insensitive</a>, and each token must be an <a>ASCII case-insensitive</a> match for
-  one of the <a lt="character encoding">labels</a> of an <a>ASCII-compatible
-  encoding</a>. [[!ENCODING]]
+  one of the <a lt="character encoding">labels</a> of an <a>ASCII-compatible encoding</a>. [[!ENCODING]]
 
   The <dfn element-attr for="form"><code>name</code></dfn> content attribute represents the
   <{form}>'s name within the {{Document/forms}} collection. The
@@ -14224,8 +14223,8 @@ fur
         with the resulting doubly-escaped string. [[!URL]]
 
         Otherwise, if <var>action</var> contains the string "<code>%%</code>"
-        (two U+0025 PERCENT SIGN characters in a row, but not four), then <a>UTF-8 percent
-        encode</a> all characters in <var>data</var> that, if interpreted as US-ASCII, are
+        (two U+0025 PERCENT SIGN characters in a row, but not four), then
+        <a>UTF-8 percent encode</a> all characters in <var>data</var> that, if interpreted as US-ASCII, are
         not characters in the URL <a>default encode set</a>, and then, treating the result as a
         US-ASCII string, replace the first occurrence of "<code>%%</code>" in <var>action</var>
         with the resulting escaped string. [[!URL]]
@@ -14493,274 +14492,37 @@ fur
 
   </div>
 
-  <div class="impl">
-
 <h5 id="selecting-a-form-submission-encoding">Selecting a <a>form submission</a> encoding</h5>
 
-  If the user agent is to <dfn lt="picking an encoding for the form|pick an encoding for a form">pick an encoding for a form</dfn>, optionally with an <i>allow non-ASCII-compatible encodings</i> flag set, it must run
-  the following substeps:
+  If the user agent is to <dfn lt="picking an encoding for the form|pick an encoding for a form">pick an encoding for a form</dfn>,
+  it must run the following steps:
 
-  <ol>
-
-    <li>Let <var>input</var> be the value of the <{form}> element's <{form/accept-charset}> attribute.</li>
-
-    <li>Let <var>candidate encoding labels</var> be the result of <a lt="split a string on spaces">splitting <var>input</var> on spaces</a>.</li>
-
-    <li>Let <var>candidate encodings</var> be an empty list of <a>character encodings</a>.</li>
-
-    <li>For each token in <var>candidate encoding labels</var> in turn (in the order in
-    which they were found in <var>input</var>), <a>get an
-    encoding</a> for the token and, if this does not result in failure, append the
-    <a>encoding</a> to <var>candidate encodings</var>.</li>
-
-    <li>If the <i>allow non-ASCII-compatible encodings</i> flag is not set, remove any encodings
-    that are not <a>ASCII-compatible encodings</a> from
-    <var>candidate encodings</var>.</li>
-
-    <li>If <var>candidate encodings</var> is empty, return UTF-8 and abort these
-    steps.</li>
-
-    <li>
-
-    Each character encoding in <var>candidate encodings</var> can represent a finite
-    number of characters. (For example, UTF-8 can represent all 1.1 million or so Unicode code
-    points, while Windows-1252 can only represent 256.)
-
-    For each encoding in <var>candidate encodings</var>, determine how many of the
-    characters in the names and values of the entries in the <var>form data set</var> the
-    encoding can represent (without ignoring duplicates). Let <var>max</var> be the
-    highest such count. (For UTF-8, <var>max</var> would equal the number of characters
-    in the names and values of the entries in the <var>form data set</var>.)
-
-    Return the first encoding in <var>candidate encodings</var> that can encode <var>max</var> characters in the names and values of the entries in the <var>form
-    data set</var>.
-
-    </li>
-
-  </ol>
-
-  </div>
+  1. Let <var>encoding</var> be the <a>document's character encoding</a>.
+  2. If the <code>form</code> element has an <code>accept-charset</code> attribute, set
+      <var>encoding</var> to the return value of running these substeps:
+      1. Let <var>input</var> be the value of the <code>form</code> element's
+          <code>accept-charset</code> attribute.
+      2. Let <var>candidate encoding labels</var> be the result of
+          <a lt="split a string on spaces">splitting <var>input</var> on spaces</a>.
+      3. Let <var>candidate encodings</var> be an empty list of <a>character encodings</a>.
+      4. For each token in <var>candidate encoding labels</var> in turn (in the order in which they
+          were found in <var>input</var>), <a>get an encoding</a> for the token and, if this does
+          not result in failure, append the <a>encoding</a> to <var>candidate encodings</var>.
+      5. If <var>candidate encodings</var> is empty, return <a>UTF-8</a>.
+      6. Return the first encoding in <var>candidate encodings</var>.
+  3. Return the result of <a>getting an output encoding</a> from <var>encoding</var>.
 
 <h5 id="urlencoded-form-data">URL-encoded form data</h5>
 
-  <p class="note">
-    This form data set encoding is in many ways an aberrant monstrosity, the result of
-  many years of implementation accidents and compromises leading to a set of requirements necessary
-  for interoperability, but in no way representing good design practices. In particular, readers are
-  cautioned to pay close attention to the twisted details involving repeated (and in some cases
-  nested) conversions between character encodings and byte sequences.
-  </p>
-
-  <div class="impl">
-
-  The <dfn lt="encoding algorithm|application/x-www-form-urlencoded encoding algorithm"><code>application/x-www-form-urlencoded</code> encoding algorithm</dfn> is as
-  follows:
-
-  <ol>
-
-    <li>Let <var>result</var> be the empty string.</li>
-
-    <li>
-
-    If the <{form}> element has an <{form/accept-charset}> attribute, let the selected character
-    encoding be the result of <a>picking an encoding for the form</a>.
-
-    Otherwise, if the <{form}> element has no <{form/accept-charset}> attribute, but the <a>document's
-    character encoding</a> is an <a>ASCII-compatible encoding</a>, then that is the
-    selected character encoding.
-
-    Otherwise, let the selected character encoding be UTF-8.
-
-    </li>
-
-    <li>Let <var>charset</var> be the name of the
-    selected <a>character encoding</a>.</li>
-
-    <li>
-
-    For each entry in the <var>form data set</var>, perform these substeps:
-
-    <ol>
-
-      <li>If the entry's name is "<code>_charset_</code>" and its
-      type is "<code>hidden</code>", replace its value with <var>charset</var>.</li>
-
-      <li>If the entry's type is "<code>file</code>", replace its value with the file's
-      name only.</li>
-
-      <li>For each character in the entry's name and value that cannot be expressed using the
-      selected character encoding, replace the character by a string consisting of a U+0026 AMPERSAND
-      character (&amp;), a U+0023 NUMBER SIGN character (#), one or more <a>ASCII digits</a>
-      representing the Unicode code point of the character in base ten, and finally a U+003B
-      SEMICOLON character (;).</li>
-
-      <li>
-
-      Encode the entry's name and value using the <a>encoder</a> for the selected character
-      encoding. The entry's name and value are now byte strings.
-
-      </li>
-
-      <li>
-
-      For each byte in the entry's name and value, apply the appropriate subsubsteps from the
-      following list:
-
-      <dl class="switch">
-
-        <dt>If the byte is 0x20 (U+0020 SPACE if interpreted as ASCII)</dt>
-
-        <dd>Replace the byte with a single 0x2B byte (U+002B PLUS SIGN character (+) if interpreted
-        as ASCII).</dd>
-
-        <dt>If the byte is in the range 0x2A, 0x2D, 0x2E, 0x30 to 0x39, 0x41 to 0x5A, 0x5F, 0x61 to
-        0x7A</dt>
-
-        <dd>Leave the byte as is.</dd>
-
-        <dt>Otherwise</dt>
-
-        <dd>
-
-        <ol>
-
-          <li>Let <var>s</var> be a string consisting of a U+0025 PERCENT SIGN character
-          (%) followed by <a>uppercase ASCII hex digits</a> representing the hexadecimal value
-          of the byte in question (zero-padded if necessary).</li>
-
-          <li>Encode the string <var>s</var> as US-ASCII, so that it is now a byte
-          string.
-
-          </li><li>Replace the byte in question in the name or value being processed by the bytes in
-          <var>s</var>, preserving their relative order.</li>
-
-        </ol>
-
-        </dd>
-
-      </dl>
-
-      </li>
-
-      <li>
-
-      Interpret the entry's name and value as Unicode strings encoded in US-ASCII. (All of the
-      bytes in the string will be in the range 0x00 to 0x7F; the high bit will be zero throughout.)
-      The entry's name and value are now Unicode strings again.
-
-      </li>
-
-      <li>Append a single U+0026 AMPERSAND character (&amp;) to
-      <var>result</var>.</li>
-
-      <li>Append the entry's name to <var>result</var>.</li>
-
-      <li>Append a single U+003D EQUALS SIGN character (=) to <var>result</var>.</li>
-
-      <li>Append the entry's value to <var>result</var>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>Encode <var>result</var> as US-ASCII and return the resulting byte
-    stream.</li>
-
-  </ol>
-
-  </div>
-
-  To <dfn lt="decoding algorithm">decode <code>application/x-www-form-urlencoded</code> payloads</dfn>, the following algorithm should be
-  used. This algorithm uses as inputs the payload itself, <var>payload</var>, consisting of
-  a Unicode string using only characters in the range U+0000 to U+007F; a default character encoding
-  <var>encoding</var>. The output of this algorithm is a sorted list
-  of name-value pairs.
-
-  Which default character encoding to use can only be determined on a case-by-case basis, but
-  generally the best character encoding to use as a default is the one that was used to encode the
-  page on which the form used to create the payload was itself found. In the absence of a better
-  default, UTF-8 is suggested.
-
-  <ol>
-
-    <li>Let <var>strings</var> be the result of <a>strictly splitting the string</a> <var>payload</var> on U+0026 AMPERSAND
-    characters (&amp;).</li>
-
-    <li>Let <var>pairs</var> be an empty list of name-value pairs.</li>
-
-    <li>
-
-    For each string <var>string</var> in <var>strings</var>, run these
-    substeps:
-
-    <ol>
-
-      <li>
-
-      If <var>string</var> contains a U+003D EQUALS SIGN character (=), then let <var>name</var> be the substring of <var>string</var> from the start of <var>string</var> up to but excluding its first U+003D EQUALS SIGN character (=), and let
-      <var>value</var> be the substring from the first character, if any, after the first
-      U+003D EQUALS SIGN character (=) up to the end of <var>string</var>. If the first
-      U+003D EQUALS SIGN character (=) is the first character, then <var>name</var> will be
-      the empty string. If it is the last character, then <var>value</var> will be the
-      empty string.
-
-      Otherwise, <var>string</var> contains no U+003D EQUALS SIGN characters (=). Let
-      <var>name</var> have the value of <var>string</var> and let <var>value</var> be the empty string.
-
-      </li>
-
-      <li>
-
-      Replace any U+002B PLUS SIGN characters (+) in <var>name</var> and <var>value</var> with U+0020 SPACE characters.
-
-      </li>
-
-      <li>
-
-      Replace any escape in <var>name</var> and <var>value</var> with the
-      character represented by the escape. This replacement must not be recursive.
-
-      An escape is a U+0025 PERCENT SIGN character (%) followed by two <a>ASCII hex
-      digits</a>.
-
-      The character represented by an escape is the Unicode character whose code point is equal
-      to the value of the two characters after the U+0025 PERCENT SIGN character (%), interpreted as
-      a hexadecimal number (in the range 0..255).
-
-      <p class="example">So for instance the string "<code>A%2BC</code>" would become
-      "<code>A+C</code>". Similarly, the string "<code>100%25AA%21</code>" becomes
-      the string "<code>100%AA!</code>".</p>
-
-      </li>
-
-      <li>Convert the <var>name</var> and <var>value</var> strings to their byte
-      representation in ISO-8859-1 (i.e., convert the Unicode string to a byte string, mapping code
-      points to byte values directly).</li>
-
-      <li>Add a pair consisting of <var>name</var> and <var>value</var> to <var>pairs</var>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>If any of the name-value pairs in <var>pairs</var> have a name component
-    consisting of the string "<code>_charset_</code>" encoded in US-ASCII, and the value
-    component of the first such pair, when decoded as US-ASCII, is the name of a supported character
-    encoding, then let <var>encoding</var> be that character encoding (replacing the default
-    passed to the algorithm).</li>
-
-    <li>Convert the name and value components of each name-value pair in <var>pairs</var>
-    to Unicode by interpreting the bytes according to the encoding <var>encoding</var>.</li>
-
-    <li>Return <var>pairs</var>.</li>
-
-  </ol>
-
-  <p class="note">
-    Parameters on the <code>application/x-www-form-urlencoded</code> MIME type are
-  ignored. In particular, this MIME type does not support the <code>charset</code>
-  parameter.
-  </p>
+  See the WHATWG URL standard for details on <code>application/x-www-form-urlencoded</code>. [[!URL]]
+
+  The <dfn><code>application/x-www-form-urlencoded</code> encoding algorithm</dfn> is as follows:
+
+  1. Let <var>encoding</var> be the result of <a>picking an encoding for the form</a>.
+  2. Let <var>serialized</var> be the result of running the
+      <a><code>application/x-www-form-urlencoded</code> serializer</a> given
+      <var>form data set</var> and <var>encoding</var>.
+  3. Return the result of <a>encoding</a> <var>serialized</var>.
 
 <h5 id="multipart-form-data">Multipart form data</h5>
 
@@ -14868,16 +14630,15 @@ fur
     <li>
 
     If the <{form}> element has an <{form/accept-charset}> attribute, let the selected character
-    encoding be the result of <a>picking an encoding for the form</a>, with the <i>allow
-    non-ASCII-compatible encodings</i> flag unset.
+    encoding be the result of <a>picking an encoding for the form</a>, with the
+    <i>allow non-ASCII-compatible encodings</i> flag unset.
 
     Otherwise, if the <{form}> element has no <{form/accept-charset}> attribute, then that is the selected
     character encoding.
 
     </li>
 
-    <li>Let <var>charset</var> be the name of the
-    selected <a>character encoding</a>.</li>
+    <li>Let <var>charset</var> be the name of the selected <a>character encoding</a>.</li>
 
     <li>If the entry's name is "<code>_charset_</code>" and its type
     is "<code>hidden</code>", replace its value with <var>charset</var>.</li>
@@ -14903,8 +14664,7 @@ fur
 
     </li>
 
-    <li>Encode <var>result</var> using the <a>encoder</a> for the selected
-    character encoding and return the resulting byte stream.</li>
+    <li>Return the result of <a>encoding</a> <var>result</var> using <var>encoding</var>.</li>
 
   </ol>
 

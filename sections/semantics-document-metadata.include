@@ -792,8 +792,8 @@
   The <dfn element-attr for="meta"><code>charset</code></dfn> attribute specifies the character
   encoding used by the document. This is a <a>character encoding declaration</a>. If the
   attribute is present in an <a>XML document</a>, its value must be an
-  <a>ASCII case-insensitive</a> match for the string "<code>UTF-8</code>" (and the
-  document is therefore forced to use UTF-8 as its encoding).
+  <a>ASCII case-insensitive</a> match for the string "<code>utf-8</code>" (and the
+  document is therefore forced to use <a>UTF-8</a> as its encoding).
 
   <p class="note">The <code>charset</code> attribute on the
   <{meta}> element has no effect in XML documents, and is only allowed in order to
@@ -1277,7 +1277,7 @@
             attribute's value is the empty string, then abort these steps.
         2. Act as if <a>receiving a set-cookie-string</a> for <a>the document's address</a> via a
             "non-HTTP" API, consisting of the value of the element's <code>content</code> attribute
-            encoded as UTF-8. [[!COOKIES]] [[!ENCODING]]
+            <a>encoded as UTF-8</a>. [[!COOKIES]] [[!ENCODING]]
 
     : <dfn state for="http-equiv">Content security policy state</dfn> (<code>http-equiv="content-security-policy"</code>)
     :: This pragma <a lt="enforced">enforces</a> a <a>Content Security Policy</a> on a {{Document}}.
@@ -1390,29 +1390,20 @@
   <a state for="http-equiv" lt="content-type">encoding declaration state</a>, then the character encoding used must be an
   <a>ASCII-compatible encoding</a>.
 
-  Authors should use UTF-8. Conformance checkers may advise authors against using legacy encodings.
+  Authors should use <a>UTF-8</a>. Conformance checkers may advise authors against using legacy encodings.
   [[!ENCODING]]
 
-  <div class="impl">
-    Authoring tools should default to using UTF-8 for newly-created documents. [[!ENCODING]]
-  </div>
+  Authoring tools should default to using <a>UTF-8</a> for newly-created documents. [[!ENCODING]]
 
-  Encodings in which a series of bytes in the range 0x20 to 0x7E can encode characters other than
-  the corresponding characters in the range U+0020 to U+007E represent a potential security
-  vulnerability: a user agent that does not support the encoding (or does not support the label used
-  to declare the encoding, or does not use the same mechanism to detect the encoding of unlabeled
-  content as another user agent) might end up interpreting technically benign plain text content as
-  HTML tags and JavaScript. Authors should therefore not use these encodings. For example, this
-  applies to encodings in which the bytes corresponding to "<code>&lt;script&gt;</code>" in ASCII
-  can encode a different string. Authors should not use such encodings, which are known to include
-  JIS_C6226-1983, JIS_X0212-1990, HZ-GB-2312, JOHAB (Windows code page 1361), encodings based on
-  ISO-2022, and encodings based on EBCDIC. Furthermore, authors must not use the CESU-8, UTF-7,
-  BOCU-1 and SCSU encodings, which also fall into this category; these encodings were never intended
-  for use for Web content. [[RFC1345]] [[RFC1842]] [[RFC1468]] [[RFC2237]] [[RFC1554]]
-  [[CP50220]] [[RFC1922]] [[RFC1557]] [[CESU8]] [[RFC2152]] [[BOCU1]] [[SCSU]]
+  Authors must not use encodings that are not defined in the WHATWG Encoding standard. Additionally,
+  authors should not use <a>ISO-2022-JP</a>.  [[!ENCODING]]
 
-  Authors should not use UTF-32, as the encoding detection algorithms described in this
-  specification intentionally do not distinguish it from UTF-16. [[!UNICODE]]
+  <p class="note">
+    Some encodings that are not defined in the WHATWG Encoding standard use bytes in the range 0x20
+    to 0x7E, inclusive, to encode characters other than the corresponding characters in the range
+    U+0020 to U+007E, inclusive, and represent a potential security vulnerability: A user agent
+    might end up interpreting supposedly benign plain text content as HTML tags and JavaScript.
+  </p>
 
   <p class="note">
     Using non-UTF-8 encodings can have unexpected results on form submission and URL encodings,

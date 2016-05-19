@@ -51,17 +51,17 @@
       <a>reload override buffer</a>.
   2. Let <var>address</var> be the <a>browsing context</a>'s <a>active document</a>'s
       <a lt="document url">URL</a>.
-  3. Let <var>HTTPS state</var> be the <a for="document">HTTPS state</a> of the 
+  3. Let <var>HTTPS state</var> be the <a for="document">HTTPS state</a> of the
       <a>browsing context</a>'s <a>active document</a>.
   4. Let <var>CSP list</var> be the <a for="document">CSP list</a> of the <a>browsing context</a>'s
       <a>active document</a>.
-  5. <a>Navigate</a> the <a>browsing context</a> to a new <a>response</a> whose 
-      <a for="response">body</a> is <var>source</var>, <a for="response">CSP list</a> is 
-      <var>CSP list</var> and <a for="response">HTTPS state</a> is <var>HTTPS state</var>, with the 
-      <a>exceptions enabled flag</a> and <a>replacement enabled</a>. The 
-      <a>source browsing context</a> is that given to the <a>overridden reload</a> algorithm. When 
-      the <a>navigate</a> algorithm creates a {{Document}} object for this purpose, set that 
-      {{Document}}'s <a>reload override flag</a> and set its <a>reload override buffer</a> to 
+  5. <a>Navigate</a> the <a>browsing context</a> to a new <a>response</a> whose
+      <a for="response">body</a> is <var>source</var>, <a for="response">CSP list</a> is
+      <var>CSP list</var> and <a for="response">HTTPS state</a> is <var>HTTPS state</var>, with the
+      <a>exceptions enabled flag</a> and <a>replacement enabled</a>. The
+      <a>source browsing context</a> is that given to the <a>overridden reload</a> algorithm. When
+      the <a>navigate</a> algorithm creates a {{Document}} object for this purpose, set that
+      {{Document}}'s <a>reload override flag</a> and set its <a>reload override buffer</a> to
       <var>source</var>. Rethrow any exceptions.
 
       When it comes time to <a>set the document's address</a> in the <a>navigation algorithm</a>,
@@ -125,12 +125,12 @@
     Document implements GlobalEventHandlers;
   </pre>
 
-  The {{Document}} has an <dfn for="document">HTTPS state</dfn> (an <a>HTTPS state value</a>), 
-  initially "<code>none</code>", which represents the security properties of the network channel 
+  The {{Document}} has an <dfn for="document">HTTPS state</dfn> (an <a>HTTPS state value</a>),
+  initially "<code>none</code>", which represents the security properties of the network channel
   used to deliver the {{Document}}'s data.
 
-  The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of 
-  <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise 
+  The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of
+  <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise
   specified.
 
 <h4 id="resource-metadata-management">Resource metadata management</h4>
@@ -166,7 +166,7 @@
     </dd>
   </dl>
 
-  The <dfn attribute for="Document"><code>cookie</code></dfn> attribute represents the cookies of 
+  The <dfn attribute for="Document"><code>cookie</code></dfn> attribute represents the cookies of
   the resource identified by <a>the document's address</a>.
 
   A {{Document}} object that falls into one of the following conditions is a
@@ -174,15 +174,14 @@
 
   * A {{Document}} that has no <a>browsing context</a>.
 
-  * A {{Document}} whose <a>address</a> does not use a server-based naming
-      authority.
+  * A {{Document}} whose <a>address</a> does not use a server-based naming authority.
 
   On getting, if the document is a <a lt="cookie-averse">cookie-averse <code>Document</code> object</a>, then
   the user agent must return the empty string. Otherwise, if the {{Document}}'s
   <a for="concept">origin</a> is an <a>opaque origin</a>, the user agent must throw a
   "{{SecurityError}}" {{DOMException}}. Otherwise, the user agent must return the
   <a>cookie-string</a> for <a>the document's address</a> for a "non-HTTP" API, decoded
-  using the <a>UTF-8 decoder</a>.
+  using <a>UTF-8 decode without BOM</a>.
   [[!COOKIES]]
   <a class="fingerprint" href="#fingerprinting-vector"><img height="21" src="images/fingerprint.png" width="15" alt="(This is a fingerprinting vector.)" /></a>
 
@@ -190,7 +189,7 @@
   the user agent must do nothing. Otherwise, if the {{Document}}'s <a for="concept">origin</a> is
   an <a>opaque origin</a>, the user agent must throw a "{{SecurityError}}" {{DOMException}}.
   Otherwise, the user agent must act as it would when <a>receiving a set-cookie-string</a> for <a>the document's address</a>
-  via a "non-HTTP" API, consisting of the new value encoded as UTF-8. [[!COOKIES]] [[!ENCODING]]
+  via a "non-HTTP" API, consisting of the new value <a>encoded as UTF-8</a>. [[!COOKIES]] [[!ENCODING]]
 
   <p class="note">
     Since the <code>cookie</code> attribute is accessible across frames, the path restrictions on
@@ -571,18 +570,18 @@
 
     1. Let <var>document</var> be the {{XMLDocument}} object on which the method was
         invoked.
-    2. <a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If this is not 
-        successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these steps. 
+    2. <a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If this is not
+        successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these steps.
         Otherwise, let <var>urlRecord</var> be the <a>resulting URL record</a>.
-    3. If <var>urlRecord</var>'s <a for="url">origin</a> is not the same as the 
-        <a for="concept">origin</a> of <var>document</var>, throw a "{{SecurityError}}" 
+    3. If <var>urlRecord</var>'s <a for="url">origin</a> is not the same as the
+        <a for="concept">origin</a> of <var>document</var>, throw a "{{SecurityError}}"
         {{DOMException}} and abort these steps.
     4. Remove all child nodes of <var>document</var>, without firing any mutation events.
     5. Set the <a>current document readiness</a> of <var>document</var> to "<code>loading</code>".
     6. Run the remainder of these steps <a>in parallel</a>, and return true from the method.
     7. Let <var>result</var> be a {{Document}} object.
     8. Let <var>success</var> be false.
-    9. Let <var>request</var> be a new <a>request</a> whose <a for="url">URL</a> is 
+    9. Let <var>request</var> be a new <a>request</a> whose <a for="url">URL</a> is
         <var>urlRecord</var>,
         <a>client</a> is <a>entry settings object</a>, <a>destination</a> is
         "<code>subresource</code>", <a>synchronous flag</a> is set, <a for="request">mode</a> is
@@ -1667,7 +1666,7 @@
 
   <p class="note">
     While these attributes apply to all elements, they are not useful on all elements. For example,
-    only <a>media elements</a> will ever receive a 
+    only <a>media elements</a> will ever receive a
     <a event for="media"><code>volumechange</code></a> event fired by the user agent.
   </p>
 
@@ -2262,8 +2261,8 @@
     added or has its value changed, according to the rules given for <a>CSS styling attributes</a>.
     [[!CSS-STYLE-ATTR]]
 
-    However, if the 
-    <a>Should element's inline behavior be blocked by Content Security Policy?</a> algorithm returns 
+    However, if the
+    <a>Should element's inline behavior be blocked by Content Security Policy?</a> algorithm returns
     "<code>Blocked</code>" when executed upon the
     attribute's element and "<code>style attribute</code>", then the style
     rules defined in the attribute's value must not be applied to the element. [[!CSP3]]
