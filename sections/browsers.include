@@ -11,13 +11,9 @@
 
 <h2 id="browsers">Loading Web pages</h2>
 
-  <div class="impl">
-
   This section describes features that apply most directly to Web browsers. Having said that,
   except where specified otherwise, the requirements defined in this section <em>do</em> apply to
   all user agents, whether they are Web browsers or not.
-
-  </div>
 
 <h3 id="sec-browsing-contexts">Browsing contexts</h3>
 
@@ -683,7 +679,7 @@
   1. Let <var>realm</var> be the value of <var>execution context</var>'s Realm component.
   2. Let <var>window</var> be <var>realm</var>'s <a>global object</a>.
   3. Let <var>url</var> be a copy of the <a for="url">URL</a> of the {{Document}} with which
-      <var>window</var> associated.
+      <var>window</var> is associated.
   4. Let <var>settings object</var> be a new <a>environment settings object</a> whose algorithms are
       defined as follows:
       : The <a>realm execution context</a>
@@ -4459,8 +4455,7 @@
   {{Document}} (for example, the processing of fragment identifiers for <a>XML MIME types</a> is the responsibility of RFC7303). [[!RFC7303]]
 
   For HTML documents (and <a>HTML MIME types</a>), the following
-  processing model must be followed to determine what <a>the indicated part of the
-  document</a> is.
+  processing model must be followed to determine what <a>the indicated part of the document</a> is.
 
   <ol>
 
@@ -4472,10 +4467,9 @@
 
     <li>Let <var>fragid bytes</var> be the result of percent decoding <var>fragid</var>.</li>
 
-    <li>Let <var>decoded fragid</var> be the result of applying the <a>UTF-8
-    decoder</a> algorithm to <var>fragid bytes</var>. If the <a>UTF-8 decoder</a>
-    emits a <a>decoder error</a>, abort the decoder and instead jump to the step labeled <i>no
-    decoded fragid</i>.</li>
+    <li>Let <var>decoded fragid</var> be the result of running
+    <a>UTF-8 decode without BOM or fail</a> on <var>fragid bytes</var>. If <var>decoded fragid</var>
+    is failure, jump to the step labeled no <var>decoded fragid</var>.</li>
 
     <li>If there is an element in the DOM that has an <a>ID</a> exactly
     equal to <var>decoded fragid</var>, then the first such element in <a>tree order</a> is
@@ -4489,8 +4483,7 @@
     string <code>top</code>, then <a>the indicated part of the document</a> is the top
     of the document; stop the algorithm here.</li>
 
-    <li>Otherwise, there is no <a>indicated part of
-    the document</a>.</li>
+    <li>Otherwise, there is no <a>indicated part of the document</a>.</li>
 
   </ol>
 
