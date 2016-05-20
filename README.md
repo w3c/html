@@ -46,7 +46,7 @@ The `master` branch always is exposed at [https://www.w3.org/TR/html/](https://w
 
 Once a year, the HTML editors create a new `<version>` branch for the HTML specification. It only contains features that the Working Group believes can be shipped as part of the W3C Recommendation. That branch becomes associated with a specific version of the HTML specification. For a *limited period* of time, the Editor Team only accepts editorial changes or removal of features at risks in this branch. It becomes frozen once that version of HTML becomes a W3C Recommendation. Unless you're targetting a specific version of HTML (and really, you shouldn't), pull requests MUST always be made against the `master` branch.
 
-The `<version>` branches are exposed as /TR/html-`<version>`/ .
+The `<version>` branches are exposed as /TR/html`<version>`/ .
 
 ## Old HTML repository
 
