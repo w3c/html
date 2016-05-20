@@ -8187,7 +8187,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   have their <a state for="option">selectedness</a> set to true.
 
   The <dfn attribute for="HTMLSelectElement"><code>selectedIndex</code></dfn> IDL attribute, on
-  getting, must return the <a>index</a> of the first
+  getting, must return the <a for="option">index</a> of the first
   <{option}> element in the <a>list of
   options</a> in <a>tree order</a> that has its <a state for="option">selectedness</a> set to true, if any. If there isn't one,
   then it must return -1.
@@ -8196,7 +8196,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   the <a state for="option">selectedness</a> of all the <{option}>
   elements in the <a>list of options</a> to false, and
   then the <{option}> element in the <a>list of
-  options</a> whose <a>index</a> is the given new value, if
+  options</a> whose <a for="option">index</a> is the given new value, if
   any, must have its <a state for="option">selectedness</a> set to true and
   its <a state for="option">dirtiness</a> set to true.
 
@@ -8583,191 +8583,152 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     </dd>
   </dl>
 
-  The <{option}> element <a>represents</a> an option in a <{select}>
-  element or as part of a list of suggestions in a <{datalist}> element.
+  The <{option}> element <a>represents</a> an option in a <{select}> element or as part of a list of 
+  suggestions in a <{datalist}> element.
 
-  In certain circumstances described in the definition of the <{select}> element, an
-  <{option}> element can be a <{select}> element's <a>placeholder label
-  option</a>. A <a>placeholder label option</a> does not represent an actual option, but
-  instead represents a label for the <{select}> control.
+  In certain circumstances described in the definition of the <{select}> element, an <{option}> 
+  element can be a <{select}> element's <a>placeholder label option</a>. A 
+  <a>placeholder label option</a> does not represent an actual option, but instead represents a 
+  label for the <{select}> control.
 
-  The <dfn element-attr for="option"><code>disabled</code></dfn> content attribute is a <a>boolean
-  attribute</a>. An <{option}> element is disabled if its <{option/disabled}> attribute is present or if it is a child of an
-  <{optgroup}> element whose <{optgroup/disabled}> attribute
-  is present.
+  The <dfn element-attr for="option"><code>disabled</code></dfn> content attribute is a 
+  <a>boolean attribute</a>. An <{option}> element is disabled if its <{option/disabled}> attribute 
+  is present or if it is a child of an <{optgroup}> element whose <{optgroup/disabled}> attribute is 
+  present.
 
-  An <{option}> element that is disabled must
-  prevent any <code>click</code> events that are <a>queued</a> on the <a>user interaction task source</a> from being dispatched on the
+  An <{option}> element that is disabled must prevent any <a event><code>click</code></a> events 
+  that are <a>queued</a> on the <a>user interaction task source</a> from being dispatched on the
   element.
 
   The <dfn element-attr for="option"><code>label</code></dfn> content attribute provides a label for
-  the element. The <dfn>label</dfn> of an <{option}> element is
-  the value of the <{option/label}> content attribute, if there is one and its value is not the empty string,
-  or, otherwise, the value of the element's <code>text</code> IDL
-  attribute if its value is not the empty string.
+  the element. The <dfn>label</dfn> of an <{option}> element is the value of the <{option/label}> 
+  content attribute, if there is one and its value is not the empty string, or, otherwise, the value 
+  of the element's {{HTMLOptionElement/text}} IDL attribute if its value is not the empty string.
 
-  The <{option/label}> content attribute, if specified, must not be
-  empty.
+  The <{option/label}> content attribute, if specified, must not be empty.
 
   The <dfn element-attr for="option"><code>value</code></dfn> content attribute provides a value for
-  element. The <i>value</i> of an <{option}> element is
-  the value of the <code>value</code> content attribute, if there is one,
-  or, if there is not, the value of the element's <code>text</code> IDL
-  attribute (which may be the empty string).
+  element. The <i>value</i> of an <{option}> element is the value of the <code>value</code> content 
+  attribute, if there is one, or, if there is not, the value of the element's 
+  {{HTMLOptionElement/text}} IDL attribute (which may be the empty string).
 
-  The <dfn element-attr for="option"><code>selected</code></dfn> content attribute is a <a>boolean
-  attribute</a>. It represents the default <a state for="option">selectedness</a> of the element.
+  The <dfn element-attr for="option"><code>selected</code></dfn> content attribute is a 
+  <a>boolean attribute</a>. It represents the default <a state for="option">selectedness</a> of the 
+  element.
 
-  <div class="impl">
+  The <dfn state for="option">dirtiness</dfn> of an <{option}> element is a boolean state, initially 
+  false. It controls whether adding or removing the <{option/selected}> content attribute has any 
+  effect.
 
-  The <dfn state for="option">dirtiness</dfn> of an <{option}> element is
-  a boolean state, initially false. It controls whether adding or removing the <code>selected</code> content attribute has any effect.
+  The <dfn state for="option">selectedness</dfn> of an <{option}> element is a boolean state, 
+  initially false. Except where otherwise specified, when the element is created, its 
+  <a state for="option">selectedness</a> must be set to true if the element has a 
+  <{option/selected}> attribute. Whenever an <{option}> element's <{option/selected}> attribute is
+  added, if its <a state for="option">dirtiness</a> is false, its 
+  <a state for="option">selectedness</a> must be set to true. Whenever an <{option}> element's 
+  <{option/selected}> attribute is <em>removed</em>, if its <a state for="option">dirtiness</a> is 
+  false, its <a state for="option">selectedness</a> must be set to false.
 
-  The <dfn state for="option">selectedness</dfn> of an <{option}>
-  element is a boolean state, initially false. Except where otherwise specified, when the element is
-  created, its <a state for="option">selectedness</a> must be set to true if
-  the element has a <code>selected</code> attribute. Whenever an
-  <{option}> element's <code>selected</code> attribute is
-  added, if its <a state for="option">dirtiness</a> is false, its <a state for="option">selectedness</a> must be set to true. Whenever an
-  <{option}> element's <code>selected</code> attribute is
-  <em>removed</em>, if its <a state for="option">dirtiness</a> is false, its
-  <a state for="option">selectedness</a> must be set to false.
+  <p class="note">The <a constructor for="HTMLOptionElement"><code>Option()</code></a> constructor, 
+  when called with three or fewer arguments, overrides the initial state of the 
+  <a state for="option">selectedness</a> state to always be false even if the third argument is true 
+  (implying that a <{option/selected}> attribute is to be set). The fourth argument can be used to 
+  explicitly set the initial <a state for="option">selectedness</a> state when using the 
+  constructor.</p>
 
-  <p class="note" id='option'>
-    The <a constructor for="HTMLOptionElement"><code>Option()</code></a> constructor, when called with three
-  or fewer arguments, overrides the initial state of the <a state for="option">selectedness</a> state to always be false even if the third
-  argument is true (implying that a <code>selected</code> attribute is
-  to be set). The fourth argument can be used to explicitly set the initial <a state for="option">selectedness</a> state when using the constructor.
-  </p>
+  A <{select}> element whose <{select/multiple}> attribute is not specified must not have more than 
+  one descendant <{option}> element with its <{option/selected}> attribute set.
 
-  </div>
-
-  A <{select}> element whose <code>multiple</code>
-  attribute is not specified must not have more than one descendant <{option}> element with
-  its <code>selected</code> attribute set.
-
-  <div class="impl">
-
-  An <{option}> element's {{HTMLOptionElement/index}} is the number of
-  <{option}> elements that are in the same <a>list of
-  options</a> but that come before it in <a>tree order</a>. If the <{option}>
-  element is not in a <a>list of options</a>, then the
-  <{option}> element's {{HTMLOptionElement/index}} is zero.
-
-  </div>
+  An <{option}> element's <dfn for="option">index</dfn> is the number of <{option}> elements that are 
+  in the same <a>list of options</a> but that come before it in <a>tree order</a>. If the <{option}>
+  element is not in a <a>list of options</a>, then the <{option}> element's 
+  {{HTMLOptionElement/index}} is zero.
 
   <dl class="domintro">
-
-    <dt><var>option</var> . <code>selected</code></dt>
-
-    <dd>
-
-    Returns true if the element is selected, and false otherwise.
-
-    Can be set, to override the current state of the element.
-
-    </dd>
+    <dt><var>option</var> . {{HTMLOptionElement/selected}}</dt>
+    <dd>Returns true if the element is selected, and false otherwise.
+    
+    Can be set, to override the current state of the element.</dd>
 
     <dt><var>option</var> . {{HTMLOptionElement/index}}</dt>
-
-    <dd>
-
-    Returns the index of the element in its <{select}> element's <code>options</code> list.
-
-    </dd>
+    <dd>Returns the index of the element in its <{select}> element's {{HTMLSelectElement/options}} 
+    list.</dd>
 
     <dt><var>option</var> . {{HTMLOptionElement/form}}</dt>
+    <dd>Returns the element's <{form}> element, if any, or null otherwise.</dd>
 
-    <dd>
+    <dt><var>option</var> . {{HTMLOptionElement/text}}</dt>
+    <dd>Same as {{Node/textContent}}, except that spaces are collapsed and <{script}> elements are 
+    skipped.</dd>
 
-    Returns the element's <{form}> element, if any, or null otherwise.
-
-    </dd>
-
-    <dt><var>option</var> . <code>text</code></dt>
-
-    <dd>
-
-    Same as {{Node/textContent}}, except that spaces are collapsed and <{script}> elements are skipped.
-
-    </dd>
-
-    <dt><var>option</var> = new <code>Option</code>( [ <var>text</var> [, <var>value</var> [, <var>defaultSelected</var> [, <var>selected</var> ] ] ] ] )</dt>
-
-    <dd>
-
-    Returns a new <{option}> element.
+    <dt><var>option</var> = new {{Option()}}( [ <var>text</var> [, <var>value</var> [, <var>defaultSelected</var> [, <var>selected</var> ] ] ] ] )</dt>
+    <dd>Returns a new <{option}> element.
 
     The <var>text</var> argument sets the contents of the element.
 
-    The <var>value</var> argument sets the <code>value</code>
-    attribute.
+    The <var>value</var> argument sets the <{option/value}> attribute.
 
-    The <var>defaultSelected</var> argument sets the <code>selected</code> attribute.
+    The <var>defaultSelected</var> argument sets the <{option/selected}> attribute.
 
-    The <var>selected</var> argument sets whether or not the element is selected. If it
-    is omitted, even if the <var>defaultSelected</var> argument is true, the element is not
-    selected.
-
-    </dd>
-
+    The <var>selected</var> argument sets whether or not the element is selected. If it is omitted, 
+    even if the <var>defaultSelected</var> argument is true, the element is not selected.</dd>
   </dl>
 
-  <div class="impl">
-
   The <dfn attribute for="HTMLOptionElement"><code>disabled</code></dfn> IDL attribute must
-  <a>reflect</a> the content attribute of the same name. The <dfn attribute for="HTMLOptionElement"><code>defaultSelected</code></dfn> IDL attribute must
-  <a>reflect</a> the <code>selected</code> content attribute.
+  <a>reflect</a> the content attribute of the same name. The 
+  <dfn attribute for="HTMLOptionElement"><code>defaultSelected</code></dfn> IDL attribute must
+  <a>reflect</a> the <{option/selected}> content attribute.
 
-  The <dfn attribute for="HTMLOptionElement"><code>label</code></dfn> IDL attribute, on getting, if there
-  is a <{option/label}> content attribute, must return that attribute's
-  value; otherwise, it must return the element's <a>label</a>.
-  On setting, the element's <{option/label}> content attribute must be
-  set to the new value.
+  The <dfn attribute for="HTMLOptionElement"><code>label</code></dfn> IDL attribute, on getting, if 
+  there is a <{option/label}> content attribute, must return that attribute's value; otherwise, it 
+  must return the element's <a>label</a>. On setting, the element's <{option/label}> content 
+  attribute must be set to the new value.
 
-  The <dfn attribute for="HTMLOptionElement"><code>value</code></dfn> IDL attribute, on getting, must
-  return the element's <a for="forms">value</a>. On setting, the element's
-  <code>value</code> content attribute must be set to the new value.
+  The <dfn attribute for="HTMLOptionElement"><code>value</code></dfn> IDL attribute, on getting, 
+  must return the element's <a for="forms">value</a>. On setting, the element's <{option/value}> 
+  content attribute must be set to the new value.
 
   The <dfn attribute for="HTMLOptionElement"><code>selected</code></dfn> IDL attribute, on getting,
-  must return true if the element's <a state for="option">selectedness</a>
-  is true, and false otherwise. On setting, it must set the element's <a state for="option">selectedness</a> to the new value, set its <a state for="option">dirtiness</a> to true, and then cause the element to
+  must return true if the element's <a state for="option">selectedness</a> is true, and false 
+  otherwise. On setting, it must set the element's <a state for="option">selectedness</a> to the new 
+  value, set its <a state for="option">dirtiness</a> to true, and then cause the element to
   <a>ask for a reset</a>.
 
   The <dfn attribute for="HTMLOptionElement"><code>index</code></dfn> IDL attribute must return the
-  element's {{HTMLOptionElement/index}}.
+  element's <a>index</a>.
 
   The <dfn attribute for="HTMLOptionElement"><code>text</code></dfn> IDL attribute, on getting, must
-  return the result of <a>stripping and collapsing
-  whitespace</a> from the concatenation of <a>data</a> of all the
-  <code>Text</code> node descendants of the <{option}> element, in <a>tree order</a>,
-  excluding any that are descendants of descendants of the <{option}> element that are
-  themselves <{script}> elements in the <a>HTML namespace</a> or <{script}> elements in the <a>SVG namespace</a>.
+  return the result of <a>stripping and collapsing whitespace</a> from the concatenation of 
+  <a>data</a> of all the {{Text}} node descendants of the <{option}> element, in <a>tree order</a>,
+  excluding any that are descendants of descendants of the <{option}> element that are themselves 
+  <{script}> elements in the <a>HTML namespace</a> or <{script}> elements in the 
+  <a>SVG namespace</a>.
 
-  On setting, the <code>text</code> attribute must act as if the
-  {{Node/textContent}} IDL attribute on the element had been set to the new value.
+  On setting, the {{HTMLOptionElement/text}} attribute must act as if the {{Node/textContent}} IDL 
+  attribute on the element had been set to the new value.
 
-  The {{HTMLOptionElement/form}} IDL attribute's behavior depends on
-  whether the <{option}> element is in a <{select}> element or not. If the
-  <{option}> has a <{select}> element as its parent, or has an
-  <{optgroup}> element as its parent and that <{optgroup}> element has a
-  <{select}> element as its parent, then the {{HTMLOptionElement/form}} IDL
-  attribute must return the same value as the {{HTMLSelectElement/form}} IDL attribute
-  on that <{select}> element. Otherwise, it must return null.
+  The {{HTMLOptionElement/form}} IDL attribute's behavior depends on whether the <{option}> element 
+  is in a <{select}> element or not. If the <{option}> has a <{select}> element as its parent, or 
+  has an <{optgroup}> element as its parent and that <{optgroup}> element has a <{select}> element 
+  as its parent, then the {{HTMLOptionElement/form}} IDL attribute must return the same value as the 
+  {{HTMLSelectElement/form}} IDL attribute on that <{select}> element. Otherwise, it must return 
+  null.
 
-  A constructor is provided for creating <code>HTMLOptionElement</code> objects (in addition to
-  the factory methods from DOM such as <code>createElement()</code>): <dfn><code>Option(<var>text</var>, <var>value</var>, <var>defaultSelected</var>, <var>selected</var>)</code></dfn>. When invoked as a
-  constructor, it must return a new <code>HTMLOptionElement</code> object (a new <{option}>
+  A constructor is provided for creating {{HTMLOptionElement}} objects (in addition to the factory 
+  methods from DOM such as {{Document/createElement()}}): 
+  <dfn constructor for="HTMLOptionElement"><code>Option(<var>text</var>, <var>value</var>, <var>defaultSelected</var>, <var>selected</var>)</code></dfn>. 
+  When invoked as a constructor, it must return a new {{HTMLOptionElement}} object (a new <{option}>
   element). If the first argument is not the empty string, the new object must have as its only
-  child a <code>Text</code> node whose data is the value of that argument. Otherwise, it must have
-  no children. If the <var>value</var> argument is present, the new object must have a
-  <code>value</code> attribute set with the value of the argument as its
-  value. If the <var>defaultSelected</var> argument is true, the new object must have a
-  <code>selected</code> attribute set with no value. If the <var>selected</var> argument is true, the new object must have its <a state for="option">selectedness</a> set to true; otherwise the <a state for="option">selectedness</a> must be set to false, even if the <var>defaultSelected</var> argument is true. The element's <a>node document</a> must be the <a>active
-  document</a> of the <a>browsing context</a> of the <code>Window</code> object on which
-  the interface object of the invoked constructor is found.
-
-  </div>
+  child a {{Text}} node whose data is the value of that argument. Otherwise, it must have no 
+  children. If the <var>value</var> argument is present, the new object must have a
+  <code>value</code> attribute set with the value of the argument as its value. If the 
+  <var>defaultSelected</var> argument is true, the new object must have a <{option/selected}> 
+  attribute set with no value. If the <var>selected</var> argument is true, the new object must have 
+  its <a state for="option">selectedness</a> set to true; otherwise the 
+  <a state for="option">selectedness</a> must be set to false, even if the 
+  <var>defaultSelected</var> argument is true. The element's <a>node document</a> must be the 
+  <a>active document</a> of the <a>browsing context</a> of the {{Window}} object on which the 
+  interface object of the invoked constructor is found.
 
 <h4 id="the-textarea-element">The <dfn element><code>textarea</code></dfn> element</h4>
 
