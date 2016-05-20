@@ -38,6 +38,16 @@ The following considerations should be kept in mind when making a pull request:
 * Normative changes to the spec should aim to improve interoperability amongst browsers. Such changes should be accompanied by a test case to show that the change does this. It may also include links to bug trackers for browsers showing that there is an intent to adopt the new behaviour.
 * Normative changes to the spec should be associated with a bug or issue that describes the reason for the change.
 
+## HTML branching and versioning
+
+The `master` branch of this repository always contains the **work in progress** version of the HTML specification. This branch always welcomes substantive and editorial changes and pull requests.
+
+The `master` branch always is exposed at [https://www.w3.org/TR/html/](https://www.w3.org/TR/html/).
+
+Once a year, the HTML editors create a new `<version>` branch for the HTML specification. It only contains features that the Working Group believes can be shipped as part of the W3C Recommendation. That branch becomes associated with a specific version of the HTML specification. For a *limited period* of time, the Editor Team only accepts editorial changes or removal of features at risks in this branch. It becomes frozen once that version of HTML becomes a W3C Recommendation. Unless you're targetting a specific version of HTML (and really, you shouldn't), pull requests MUST always be made against the `master` branch.
+
+The `<version>` branches are exposed as /TR/html`<version>`/ .
+
 ## Old HTML repository
 
 The [old HTML repo](https://github.com/w3c/html-old) is available for archival purposes.

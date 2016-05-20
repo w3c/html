@@ -114,12 +114,12 @@
 <h4 id="xml">XML</h4>
 
   To ease migration from HTML to XHTML, user agents conforming to this specification will place elements in
-  HTML in the <code>http://www.w3.org/1999/xhtml</code> namespace, at least for the purposes of the
+  HTML in the <code>https://www.w3.org/1999/xhtml</code> namespace, at least for the purposes of the
   DOM and CSS. The term "<dfn lt="html element|html elements">HTML elements</dfn>", when used in this specification, refers to any
   element in that namespace, and thus refers to both HTML and XHTML elements.
 
   Except where otherwise stated, all elements defined or mentioned in this specification are in the
-  <a>HTML namespace</a> ("<code>http://www.w3.org/1999/xhtml</code>"), and all attributes defined or
+  <a>HTML namespace</a> ("<code>https://www.w3.org/1999/xhtml</code>"), and all attributes defined or
   mentioned in this specification have no namespace.
 
   The term <dfn>element type</dfn> is used to refer to the set of elements that have a given local
@@ -179,10 +179,10 @@
   When an attribute value, {{Text}} node, or string is described as <dfn>empty</dfn>, it means that the length of the text is zero (i.e., not even containing spaces or
   <a>control characters</a>).
 
-  An element's <dfn>child text content</dfn> is the concatenation of the <a>data</a> of all the 
-  {{Text}} nodes that are children of the element (ignoring any other nodes such as comments or 
+  An element's <dfn>child text content</dfn> is the concatenation of the <a>data</a> of all the
+  {{Text}} nodes that are children of the element (ignoring any other nodes such as comments or
   elements), in <a>tree order</a>.
-  
+
   A <a for="Node" lt="insert">node <var>A</var> is
   inserted</a> into a node <var>B</var> when the
   <a>insertion steps</a> are invoked with <var>A</var> as the argument and <var>A</var>'s new parent
@@ -261,43 +261,38 @@
 
 <h4 id="encoding-terminology">Character encodings</h4>
 
-  A <dfn lt="character encoding|character encodings">character encoding</dfn>, or just <i>encoding</i> where that is not ambiguous, is a defined
-  way to convert between byte streams and Unicode strings, as defined in the Encoding standard. An
-  <a>encoding</a> has an <dfn>encoding name</dfn> and one or more <dfn>encoding labels</dfn>,
-  referred to as the encoding's <i>name</i> and <i>labels</i> in the Encoding standard.
-  [[!ENCODING]]
+  A <dfn>character encoding</dfn>, or just
+  <i>encoding</i> where that is not ambiguous, is a defined way to convert between byte streams and
+  Unicode strings, as defined in the WHATWG Encoding standard. An <a>encoding</a> has an
+  <dfn>encoding name</dfn> and one or more <dfn>encoding labels</dfn>, referred to as the
+  encoding's <i>name</i> and <i>labels</i> in the Encoding standard. [[!ENCODING]]
 
-  An <dfn lt="ASCII-compatible encoding|ASCII-compatible character encoding">ASCII-compatible character encoding</dfn> is a single-byte or variable-length
-  <a>encoding</a> in which the bytes 0x09, 0x0A, 0x0C, 0x0D, 0x20 - 0x22, 0x26, 0x27, 0x2C - 0x3F,
-  0x41 - 0x5A, and 0x61 - 0x7A, ignoring bytes that are the second and later bytes of multibyte
-  sequences, all correspond to single-byte sequences that map to the same Unicode characters as
-  those bytes in Windows-1252. [[!ENCODING]]
+  A <dfn>UTF-16 encoding</dfn> is <a>UTF-16BE</a> or <a>UTF-16LE</a>. [[!ENCODING]]
+
+  An <dfn>ASCII-compatible encoding</dfn> is any <a>encoding</a> that is not a
+  <a>UTF-16 encoding</a>. [[!ENCODING]]
 
   <p class="note">
-    This includes such encodings as Shift_JIS, HZ-GB-2312, and variants of ISO-2022, even though it
-    is possible in these encodings for bytes like 0x70 to be part of longer sequences that are
-    unrelated to their interpretation as ASCII. It excludes UTF-16 variants, as well as obsolete
-    legacy encodings such as UTF-7, GSM03.38, and EBCDIC variants.
+    Since support for encodings that are not defined in the WHATWG Encoding standard is prohibited,
+    <a>UTF-16 encodings</a> are the only encodings that this specification needs to treat as not
+    being <a>ASCII-compatible encodings</a>.
   </p>
 
-  The term <dfn lt="UTF-16 encoding|a UTF-16 encoding">a UTF-16 encoding</dfn> refers to any variant of UTF-16: UTF-16LE or UTF-16BE,
-  regardless of the presence or absence of a BOM. [[!ENCODING]]
+  The term <dfn>code unit</dfn> is used as defined in the Web IDL specification: a 16 bit unsigned
+  integer, the smallest atomic component of a <code>DOMString</code>. (This is a narrower definition
+  than the one used in Unicode, and is not the same as a <i>code point</i>.) [[!WEBIDL]]
 
-  The term <dfn lt="code unit|code units">code unit</dfn> is used as defined in the Web IDL specification: a 16 bit
-  unsigned integer, the smallest atomic component of a <code>DOMString</code>. (This is a narrower
-  definition than the one used in Unicode, and is not the same as a <i>code point</i>.) [[!WEBIDL]]
-
-  The term <dfn lt="Unicode code point|Unicode code points">Unicode code point</dfn> means a <i>Unicode scalar value</i> where possible, and an
+  The term <dfn>Unicode code point</dfn> means a <i>Unicode scalar value</i> where possible, and an
   isolated surrogate code point when not. When a conformance requirement is defined in terms of
   characters or Unicode code points, a pair of <a>code units</a> consisting of a high surrogate
   followed by a low surrogate must be treated as the single code point represented by the surrogate
   pair, but isolated surrogates must each be treated as the single code point with the value of the
   surrogate. [[!UNICODE]]
 
-  In this specification, the term <dfn lt="character|characters">character</dfn>, when not qualified as <em>Unicode</em>
+  In this specification, the term <dfn>character</dfn>, when not qualified as <em>Unicode</em>
   character, is synonymous with the term <a>Unicode code point</a>.
 
-  The term <dfn lt="Unicode character|Unicode characters">Unicode character</dfn> is used to mean a <i>Unicode scalar value</i> (i.e., any
+  The term <dfn>Unicode character</dfn> is used to mean a <i>Unicode scalar value</i> (i.e. any
   Unicode code point that is not a surrogate code point). [[!UNICODE]]
 
   The <dfn>code-unit length</dfn> of a string is the number of <a>code units</a> in that string.
@@ -577,22 +572,20 @@
 
       The following terms are used as defined in the Encoding standard: [[!ENCODING]]
 
-      * <dfn lt="getting an encoding">Getting an encoding</dfn>
-      * The <dfn>encoder</dfn> and <dfn>decoder</dfn> algorithms for various encodings, including
-        the <dfn>UTF-8 encoder</dfn> and <dfn>UTF-8 decoder</dfn>
-      * The generic <dfn>decode</dfn> algorithm which takes a byte stream and an encoding and
+      * <dfn>Getting an encoding</dfn>
+      * <dfn lt="getting an output encoding">Get an output encoding</dfn>
+      * The generic <a>decode</a> algorithm which takes a byte stream and an encoding and
         returns a character stream
       * The <dfn>UTF-8 decode</dfn> algorithm which takes a byte stream and returns a character
         stream, additionally stripping one leading UTF-8 Byte Order Mark (BOM), if any
+      * The <dfn>UTF-8 decode without BOM</dfn> algorithm which is identical to <a>UTF-8 decode</a>
+        except that it does not strip one leading UTF-8 Byte Order Mark (BOM)
+      * The <dfn>UTF-8 decode without BOM or fail</dfn> algorithm which is identical to
+        <a>UTF-8 decode without BOM</a> except that it returns failure upon encountering an error
+      * The <a lt="encode code point">encode</a> algorithm which takes a character stream and an
+        encoding and returns a byte stream
+      * The <dfn>UTF-8 encode</dfn> algorithm which takes a character stream and returns a byte stream.
 
-      <p class="note">
-        The <a>UTF-8 decoder</a> is distinct from the <i>UTF-8 decode algorithm</i>. The latter
-        first strips a Byte Order Mark (BOM), if any, and then invokes the former.
-      </p>
-
-      For readability, character encodings are sometimes referenced in this specification with a
-      case that differs from the canonical case given in the Encoding standard. (For example,
-      "UTF-16LE" instead of "utf-16le".)
   : XML and related specifications
   :: Implementations that support <a href="#xhtml">the XHTML syntax</a> must support some version of XML, as
       well as its corresponding namespaces specification, because that syntax uses an XML
@@ -687,7 +680,7 @@
       * <a><code>Link</code> header</a>
 
   : Fetch
-  :: The following terms are defined in the WHATWG Fetch specification: [[!FETCH]]
+  :: The following terms are defined in the WHATWG Fetch standard: [[!FETCH]]
 
       * <a scheme><code>about:blank</code></a>
       * <a>HTTPS state value</a>
@@ -818,7 +811,7 @@
         RFC 4329. [[RFC4329]]
       </p>
 
-      The following terms are defined in the JavaScript specification and used in this 
+      The following terms are defined in the JavaScript specification and used in this
       specification [[!ECMA-262]]:
 
        * <a>automatic semicolon insertion</a>
@@ -894,8 +887,8 @@
        * The {{RangeError}} object
        * The {{RegExp}} object
        * The <a>typeof</a> operator
-       * <a>The TypedArray Constructors</a> table  
-      
+       * <a>The TypedArray Constructors</a> table
+
   : DOM
   :: The Document Object Model (DOM) is a representation &mdash; a model &mdash; of a document and
       its content. The DOM is not just an API; the conformance criteria of HTML implementations are
@@ -924,7 +917,6 @@
       * {{HTMLCollection}} interface
       * {{NodeList/item()}} method
       * The terms <a lt="collection">collections</a> and <a>represented by the collection</a>
-      * {{DOMTokenList}} interface
       * {{DOMTokenList}} interface
       * {{createDocument()}} method
       * {{createHTMLDocument()}} method
@@ -1033,7 +1025,7 @@
       * <a event>mouseout</a> event
       * <a event>mouseover</a> event
       * <a event>mouseup</a> event
-      * <a event>mousewheel</a> event
+      * <a event>wheel</a> event
       * <a event>keydown</a> event
       * <a event>keyup</a> event
       * <a event>keypress</a> event
@@ -1053,6 +1045,8 @@
       * {{Element/innerHTML}}
       * {{Element/outerHTML}}
 
+      The {{Selection}} interface is defined in the <cite>Selection API</cite> specification. [[!SELECTION-API]]
+
       <p class="note">
         User agents are also encouraged to implement the features described in the
         <cite>HTML Editing APIs</cite> and <cite><code>UndoManager</code> and DOM Transaction</cite>
@@ -1068,7 +1062,7 @@
       * The <a>fullscreen enabled flag</a>
       * The <a>fully exit fullscreen</a> algorithm
 
-      The <cite>High Resolution Time</cite> specification provides the {{DOMHighResTimeStamp}} 
+      The <cite>High Resolution Time</cite> specification provides the {{DOMHighResTimeStamp}}
       typedef and the {{Performance}} object's {{Performance/now()}} method. [[!HR-TIME-2]]
 
   : File API
@@ -1158,17 +1152,17 @@
       * <a spec="cssom">create a CSS style sheet</a>
       * <a spec="cssom">remove a CSS style sheet</a>
       * <a spec="cssom">associated CSS style sheet</a>
-      * <a>CSS style sheets</a> and their properties: 
-            <a for="stylesheet">type</a>, 
+      * <a>CSS style sheets</a> and their properties:
+            <a for="stylesheet">type</a>,
             <a spec="cssom">location</a>,
-            <a>parent CSS style sheet</a>, 
-            <a>owner node</a>, 
+            <a>parent CSS style sheet</a>,
+            <a>owner node</a>,
             <a>owner CSS rule</a>,
-            <a>media</a>, 
-            <a>title</a>, 
-            <a>alternate flag</a>, 
+            <a>media</a>,
+            <a>title</a>,
+            <a>alternate flag</a>,
             <a>disabled flag</a>,
-            <a>CSS rules</a>, 
+            <a>CSS rules</a>,
             <a>origin-clean flag</a>
       * <a>Alternative style sheet sets</a> and the <a>preferred style sheet set</a>
       * <a>Serializing a CSS value</a>
@@ -1350,8 +1344,8 @@
          <a><code>sandbox</code></a> <a>directives</a>
       * The <a>EnsureCSPDoesNotBlockStringCompilation</a> abstract algorithm
       * The <a>Is base allowed for Document?</a> algorithm
-  :: The following terms are defined in <cite>Content Security Policy: Document Features</code> <!-- [[!CSPDOCUMENT]] when published --> 
-  
+  :: The following terms are defined in <cite>Content Security Policy: Document Features</code> <!-- [[!CSPDOCUMENT]] when published -->
+
       * The <a><code>frame-ancestors</code> directive</a>
       * The <a><code>sandbox</code> directive</a>
 
@@ -1518,7 +1512,7 @@
 
   First, remove this paragraph:
 
-  <blockquote cite="http://www.w3.org/TR/1999/REC-xpath-19991116#node-tests">
+  <blockquote cite="https://www.w3.org/TR/1999/REC-xpath-19991116#node-tests">
     A <a>QName</a> in the node test is expanded into an <a>expanded-name</a> using the namespace
     declarations from the expression context. This is the same way expansion is done for element
     type names in start and end-tags except that the default namespace declared with
@@ -1529,7 +1523,7 @@
 
   Then, insert in its place the following:
 
-  <blockquote cite="http://www.w3.org/Bugs/Public/show_bug.cgi?id=7059#c37">
+  <blockquote cite="https://www.w3.org/Bugs/Public/show_bug.cgi?id=7059#c37">
     A QName in the node test is expanded into an expanded-name using the namespace declarations from
     the expression context. If the QName has a prefix, then there must be a namespace declaration
     for this prefix in the expression context, and the corresponding namespace URI is the one that
@@ -1543,7 +1537,7 @@
     determined in the following way:
 
     1. If the context node is from an HTML DOM, the default element namespace is
-        "http://www.w3.org/1999/xhtml".
+        "https://www.w3.org/1999/xhtml".
     2. Otherwise, the default element namespace URI is null.
 
     <p class="note">
@@ -2023,100 +2017,35 @@
   5. If <var>value</var> is a percentage, return <var>value</var> as a percentage.
   6. Return <var>value</var> as a length.
 
-<h5 id="lists-of-integers">Lists of integers</h5>
+<h5 id="lists-of-floating-point-numbers">Lists of floating-point numbers</h5>
 
-  A <dfn>valid list of integers</dfn> is a number of <a>valid integers</a> separated by U+002C COMMA
-  characters, with no other characters (e.g., no <a>space characters</a>). In addition, there might
-  be restrictions on the number of integers that can be given, or on the range of values allowed.
+  A <dfn>valid list of floating-point numbers</dfn> is a number of
+  <a>valid floating-point numbers</a> separated by U+002C COMMA characters, with no other characters
+  (e.g. no <a>space characters</a>). In addition, there might be restrictions on the number of
+  floating-point numbers that can be given, or on the range of values allowed.
 
-  The <dfn>rules for parsing a list of integers</dfn> are as follows:
+  The <dfn>rules for parsing a list of floating-point numbers</dfn> are as follows:
 
   1. Let <var>input</var> be the string being parsed.
   2. Let <var>position</var> be a pointer into <var>input</var>, initially pointing at the start of
       the string.
-  3. Let <var>numbers</var> be an initially empty list of integers. This list will be the
-      result of this algorithm.
-  4. If there is a character in the string <var>input</var> at position <var>position</var>, and
-      it is either a U+0020 SPACE, U+002C COMMA, or U+003B SEMICOLON character, then advance
-      <var>position</var> to the next character in <var>input</var>, or to beyond the end of the
-      string if there are no more characters.
-  5. If <var>position</var> points to beyond the end of <var>input</var>, return
-      <var>numbers</var> and abort.
-  6. If the character in the string <var>input</var> at position <var>position</var> is a U+0020
-      SPACE, U+002C COMMA, or U+003B SEMICOLON character, then return to step 4.
-  7. Let <var>negated</var> be false.
-  8. Let <var>value</var> be 0.
-  9. Let <var>started</var> be false. This variable is set to true when the parser sees a number
-      or a U+002D HYPHEN-MINUS character (-).
-  10. Let <var>got number</var> be false. This variable is set to true when the parser sees a
-      number.
-  11. Let <var>finished</var> be false. This variable is set to true to switch parser into a mode
-      where it ignores characters until the next separator.
-  12. Let <var>bogus</var> be false.
-  13. <i>Parser</i>: If the character in the string <var>input</var> at position <var>position</var> is:
-      <dl class="switch">
-        <dt>A U+002D HYPHEN-MINUS character</dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>got number</var> is true, let <var>finished</var> be true.
-            2. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            3. If <var>started</var> is true, let <var>negated</var> be false.
-            4. Otherwise, if <var>started</var> is false and if <var>bogus</var> is false, let
-                <var>negated</var> be true.
-            5. Let <var>started</var> be true.
-          </dd>
-
-        <dt>An <a>ASCII digit</a></dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            2. Multiply <var>value</var> by ten.
-            3. Add the value of the digit, interpreted in base ten, to <var>value</var>.
-            4. Let <var>started</var> be true.
-            5. Let <var>got number</var> be true.
-          </dd>
-
-        <dt>A U+0020 SPACE character</dt>
-        <dt>A U+002C COMMA character</dt>
-        <dt>A U+003B SEMICOLON character</dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>got number</var> is false, return the <var>numbers</var> list and abort. This
-                happens if an entry in the list has no digits, as in "<code>1,2,x,4</code>".
-            2. If <var>negated</var> is true, then negate <var>value</var>.
-            3. Append <var>value</var> to the <var>numbers</var> list.
-            4. Jump to step 4 in the overall set of steps.
-          </dd>
-
-        <dt>
-          A character in the range U+0001 to U+001F, U+0021 to U+002B, U+002D to U+002F, U+003A,
-          U+003C to U+0040, U+005B to U+0060, U+007b to U+007F (i.e., any other non-alphabetic
-          ASCII character)
-        </dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>got number</var> is true, let <var>finished</var> be true.
-            2. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            3. Let <var>negated</var> be false.
-          </dd>
-
-        <dt>Any other character</dt>
-          <dd>
-            Follow these substeps:
-            1. If <var>finished</var> is true, skip to the next step in the overall set of steps.
-            2. Let <var>negated</var> be false.
-            3. Let <var>bogus</var> be true.
-            4. If <var>started</var> is true, then return the <var>numbers</var> list, and abort.
-                (The value in <var>value</var> is not appended to the list first; it is dropped.)
-          </dd>
-      </dl>
-  14. Advance <var>position</var> to the next character in <var>input</var>, or to beyond the end
-      of the string if there are no more characters.
-  15. If <var>position</var> points to a character (and not to beyond the end of
-      <var>input</var>), jump to the big <i>Parser</i> step above.
-  16. If <var>negated</var> is true, then negate <var>value</var>.
-  17. If <var>got number</var> is true, then append <var>value</var> to the <var>numbers</var> list.
-  18. Return the <var>numbers</var> list and abort.
+  3. Let <var>numbers</var> be an initially empty list of floating-point numbers. This list will be
+      the result of this algorithm.
+  4. <a>Collect a sequence of characters</a> that are <a>space characters</a>, U+002C COMMA, or
+      U+003B SEMICOLON characters. This skips past any leading delimiters.
+  5. While <var>position</var> is not past the end of <var>input</var>:
+      1. <a>Collect a sequence of characters</a> that are not <a>space characters</a>, U+002C COMMA,
+          U+003B SEMICOLON, <a>ASCII digits</a>, U+002E FULL STOP, or U+002D HYPHEN-MINUS
+          characters. This skips past leading garbage.
+      2. <a>Collect a sequence of characters</a> that are not <a>space characters</a>, U+002C COMMA,
+          or U+003B SEMICOLON characters, and let <var>unparsed number</var> be the result.
+      3. Let <var>number</var> be the result of parsing <var>unparsed number</var> using the
+          <a>rules for parsing floating-point number values</a>.
+      4. If <var>number</var> is an error, set <var>number</var> to zero.
+      5. Append <var>number</var> to <var>numbers</var>.
+      6. <a>Collect a sequence of characters</a> that are <a>space characters</a>, U+002C COMMA, or
+          U+003B SEMICOLON characters. This skips past the delimiter.
+  6. Return <var>numbers</var>.
 
 <h5 id="lists-of-dimensions">Lists of dimensions</h5>
 
@@ -3284,12 +3213,12 @@
   The <dfn>fallback base URL</dfn> of a {{Document}} object is the <a>absolute URL</a>
   obtained by running these substeps:
 
-  1. If <var>document</var> is 
+  1. If <var>document</var> is
       <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>,
       then return the <a>document base URL</a> of the <var>Document</var>'s
       <a>browsing context</a>'s <a>browsing context container</a>'s <a>node document</a>.
-  2. If <var>document</var>'s <a for="url">URL</a> is <code>about:blank</code>, and the 
-      <var>Document</var>'s <a>browsing context</a> has a <a>creator browsing context</a>, then 
+  2. If <var>document</var>'s <a for="url">URL</a> is <code>about:blank</code>, and the
+      <var>Document</var>'s <a>browsing context</a> has a <a>creator browsing context</a>, then
       return the <a>creator base URL</a>.
   3. Return <var>document</var>'s <a for="url">URL</a>.
 
@@ -3305,21 +3234,21 @@
 
 <h4 id="parsing-urls">Parsing URLs</h4>
 
-  Parsing a URL is the process of taking a URL string and obtaining the <a>URL record</a> that it 
+  Parsing a URL is the process of taking a URL string and obtaining the <a>URL record</a> that it
   implies. While this process is defined in the WHATWG URL standard, this specification defines a
   wrapper for convenience. [[URL]]
 
   <p class="note">This wrapper is only useful when the character encoding for the URL parser has to
   match that of the document or environment settings object for legacy reasons. When that is not the
   case the <a>URL parser</a> can be used directly.</p>
-  
+
   To <dfn lt="reparsed|parse a URL|parse|parsing|parsing of relative urls|parsing relative urls">parse a URL</dfn>
-  <var>url</var>, relative to either a <var>document</var> or 
+  <var>url</var>, relative to either a <var>document</var> or
   <var>environment settings object</var>, the user agent must use the following steps. Parsing a URL
   either results in failure or a <a>resulting URL string</a> and <a>resulting URL record</a>.
 
-  1. Let <var>encoding</var> be <var>document</var>'s <a>character encoding</a>, if 
-      <var>document</var> was given, and <var>environment settings object</var>'s 
+  1. Let <var>encoding</var> be <var>document</var>'s <a>character encoding</a>, if
+      <var>document</var> was given, and <var>environment settings object</var>'s
       <a>API URL character encoding</a> otherwise.
   2. Let <var>baseURL</var> be <var>document</var>'s <a>base URL</a>, if <var>document</var> was
       given, and <var>environment settings object</var>'s <a>API base URL</a> otherwise.
@@ -3328,7 +3257,7 @@
   4. If <var>urlRecord</var> is failure, then abort these steps with an error.
   5. Let <var>urlString</var> be the result of applying the <a>URL serializer</a> to
       <var>urlRecord</var>.
-  6. Return <var>urlString</var> as the <dfn>resulting URL string</dfn> and <var>urlRecord</var> as 
+  6. Return <var>urlString</var> as the <dfn>resulting URL string</dfn> and <var>urlRecord</var> as
       the <dfn lt="resulting URL record|resulting URL records">resulting URL record</dfn>.
 
 <h4 id="dynamic-changes-to-base-urls">Dynamic changes to base URLs</h4>
@@ -3343,8 +3272,8 @@
     <dt>If the element creates a <a>hyperlink</a></dt>
     <dd>
       If the <a for="url">URL</a> identified by the hyperlink is being shown to the user, or if any
-      data derived from that <a for="url">URL</a> is affecting the display, then the <{links/href}> 
-      attribute should be <a>reparsed</a> relative to the element's <a>node document</a> and the UI 
+      data derived from that <a for="url">URL</a> is affecting the display, then the <{links/href}>
+      attribute should be <a>reparsed</a> relative to the element's <a>node document</a> and the UI
       updated appropriately.
 
       <p class="example">
@@ -3359,8 +3288,8 @@
     </dt>
     <dd>
       If the <a for="url">URL</a> identified by the <code>cite</code> attribute is being shown to
-      the user, or if any data derived from that <a for="url">URL</a> is affecting the display, then 
-      the <a for="url">URL</a> should be <a>reparsed</a> relative to the element's 
+      the user, or if any data derived from that <a for="url">URL</a> is affecting the display, then
+      the <a for="url">URL</a> should be <a>reparsed</a> relative to the element's
       <a>node document</a> and the UI updated appropriately.
     </dd>
 
@@ -3444,8 +3373,8 @@
   3. While <var>document</var> is <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>, let
       <var>document</var> be <var>document</var>'s <a>browsing context</a>'s
       <a>browsing context container</a>'s {{Document}} instead.
-  4. If the <a for="concept">origin</a> of <var>Document</var> is not a scheme/host/port tuple, then 
-      set <var>referrer</var> to the empty string and jump to the step labeled 
+  4. If the <a for="concept">origin</a> of <var>Document</var> is not a scheme/host/port tuple, then
+      set <var>referrer</var> to the empty string and jump to the step labeled
       <var>Clean referrer</var>.
   5. Let <var>referrer</var> be <a>the document's address</a> of <var>document</var>.
   6. <var>Clean referrer</var>: Apply the <a>URL parser</a> to <var>referrer</var> and let
@@ -3464,6 +3393,10 @@
       would be associated doesn't have an associated <a>browsing context</a>, then abort these
       steps.
   11. This is the <i>main step</i>.
+
+      If the resource is to be obtained from an <a>application cache</a>, then use the data from
+      that <a>application cache</a>, as if it had been obtained in the manner appropriate given
+      its <a for="url">URL</a>.
 
       If the resource is identified by an <a>absolute URL</a>, and the resource is to be obtained
       using an idempotent action (such as an HTTP GET <a>or equivalent</a>), and it is already
@@ -3555,6 +3488,10 @@
   headers.
 
   <p class="note">
+    The <a>application cache</a> processing model introduces some
+    <a href="#changes-to-the-networking-model">changes to the networking model</a> to handle the
+    returning of cached resources.
+
     The <a>navigation</a> processing model handles redirects itself, overriding the redirection
     handling that would be done by the <a>fetching algorithm</a>.
   </p>
@@ -3602,13 +3539,14 @@
 
 <h4 id="content-type-sniffing">Determining the type of a resource</h4>
 
-  The <dfn lt="content-type metadata|associated content-type headers|associated content-type metadata|explicit content-type metadata|content-type|the resource's content-type metadata|type information">Content-Type metadata</dfn> 
+  The <dfn lt="content-type metadata|associated content-type headers|associated content-type metadata|explicit content-type metadata|content-type|the resource's content-type metadata|type information">Content-Type metadata</dfn>
   of a resource must be obtained and interpreted in a manner
   consistent with the requirements of the MIME Sniffing specification. [[!MIMESNIFF]]
 
-  The <dfn lt="sniffed type of the resource|sniffed type of a resource|image sniffing">sniffed type of a resource</dfn> must be found in a manner consistent with the
-  requirements given in the MIME Sniffing specification for finding the <i>sniffed media type</i>
-  of the relevant sequence of octets. [[!MIMESNIFF]]
+  The <dfn lt="sniffed type of the resource|sniffed type of a resource|image sniffing">sniffed type of a resource</dfn>
+  must be found in a manner consistent with the requirements given in the MIME Sniffing
+  specification for finding the <i>sniffed media type</i> of the relevant sequence of octets.
+  [[!MIMESNIFF]]
 
   The <dfn lt="image sniffing rules|rules for sniffing images specifically">rules for sniffing images specifically</dfn> and the <dfn>rules for distinguishing if a
   resource is text or binary</dfn> are also defined in the MIME Sniffing specification. Both sets
@@ -3710,7 +3648,7 @@
   The empty string is also a valid keyword, and maps to the <a state for="cors">Anonymous</a> state. The attribute's
   <i>invalid value default</i> is the <a state for="cors">Anonymous</a> state. For the purposes of <a>reflection</a>,
   the canonical case for the <a state for="cors">Anonymous</a> state is the <a value for="cors"><code>anonymous</code></a> keyword. The
-  <i>missing value default</i>, used when the attribute is omitted, is the 
+  <i>missing value default</i>, used when the attribute is omitted, is the
   <dfn state for="cors">No CORS</dfn> state.
 
 <h3 id="common-dom-interfaces">Common DOM interfaces</h3>
@@ -4403,98 +4341,98 @@
 
 <h3 id="safe-passing-of-structured-data">Safe passing of structured data</h3>
 
-  This section uses the terminology and typographic conventions from the JavaScript specification. 
+  This section uses the terminology and typographic conventions from the JavaScript specification.
   [[ECMA-262]]
-  
+
 <h4 id="section-cloneable-objects"><dfn>Cloneable objects</dfn></h4>
 
-  <a>Cloneable objects</a> support being cloned across <a>event loops</a>. That is, they support 
-  being cloned across {{Document}} and {{Worker}} boundaries, including across {{Document}}s of 
-  different <a for="concept">origins</a>. Not all objects are <a>cloneable objects</a> and not all 
+  <a>Cloneable objects</a> support being cloned across <a>event loops</a>. That is, they support
+  being cloned across {{Document}} and {{Worker}} boundaries, including across {{Document}}s of
+  different <a for="concept">origins</a>. Not all objects are <a>cloneable objects</a> and not all
   aspects of objects that are <a>cloneable objects</a> are necessarily preserved when cloned.
 
   <a>Platform objects</a> have the following internal method:
 
   \[[<dfn for="structured">Clone</dfn>]] ( <var>targetRealm</var>, <var>memory</var> )
 
-  Unless specified otherwise, invoking the \[[<a for="structured">Clone</a>]] internal method must 
-  throw a "{{DataCloneError}}" {{DOMException}}. (By default, <a>platform objects</a> are not 
+  Unless specified otherwise, invoking the \[[<a for="structured">Clone</a>]] internal method must
+  throw a "{{DataCloneError}}" {{DOMException}}. (By default, <a>platform objects</a> are not
   <a>cloneable objects</a>.)
 
-  <a>Platform objects</a> that are <a>cloneable objects</a> have a \[[<a for="structured">Clone</a>]] 
-  internal method which is specified to run a series of steps. The result of running those steps 
-  must be a thrown exception or a clone of <em>this</em>, created in <var>targetRealm</var>. It is 
+  <a>Platform objects</a> that are <a>cloneable objects</a> have a \[[<a for="structured">Clone</a>]]
+  internal method which is specified to run a series of steps. The result of running those steps
+  must be a thrown exception or a clone of <em>this</em>, created in <var>targetRealm</var>. It is
   up such objects to define what cloning means for them.
 
-  Objects defined in the JavaScript specification are handled by the <a>StructuredClone</a> abstract 
+  Objects defined in the JavaScript specification are handled by the <a>StructuredClone</a> abstract
   operation directly.
 
 <h4 id="section-transferable-objects"><dfn>Transferable objects</dfn></h4>
 
-  <a>Transferable objects</a> support being transferred across <a>event loops</a>. Transferring is 
-  effectively recreating the object while sharing a reference to the underlying data and then 
-  detaching the object being transferred. This is useful to transfer ownership of expensive 
-  resources. Not all objects are <a>transferable objects</a> and not all aspects of objects that are 
+  <a>Transferable objects</a> support being transferred across <a>event loops</a>. Transferring is
+  effectively recreating the object while sharing a reference to the underlying data and then
+  detaching the object being transferred. This is useful to transfer ownership of expensive
+  resources. Not all objects are <a>transferable objects</a> and not all aspects of objects that are
   <a>transferable objects</a> are necessarily preserved when transferred.
 
-  <p class="note">Transferring is an irreversible and non-idempotent operation. Once an object has 
+  <p class="note">Transferring is an irreversible and non-idempotent operation. Once an object has
   been transferred, it cannot be transferred, or indeed used, again.</p>
 
-  <a>Platform objects</a> that are <a>transferable objects</a> have a \[[<dfn>Detached</dfn>]] 
+  <a>Platform objects</a> that are <a>transferable objects</a> have a \[[<dfn>Detached</dfn>]]
   internal slot and the following internal method:
 
   \[[<dfn>Transfer</dfn>]] ( <var>targetRealm</var> )
 
-  <p class="note">Whereas all <a>platform objects</a> have a \[[<a for="structured">Clone</a>]] 
-  internal method, not all have a \[[<a>Detached</a>]] internal slot and a \[[<a>Transfer</a>]] 
+  <p class="note">Whereas all <a>platform objects</a> have a \[[<a for="structured">Clone</a>]]
+  internal method, not all have a \[[<a>Detached</a>]] internal slot and a \[[<a>Transfer</a>]]
   internal method.</p>
 
-  <a>Platform objects</a> that are <a>transferable objects</a> must define the \[[<a>Transfer</a>]] 
-  internal method such that it either throws an exception or returns a clone of <em>this</em>, 
-  created in <var>targetRealm</var>, with <em>this</em>'s underlying data shared with the return 
-  value, and <em>this</em>'s \[[<a>Detached</a>]] internal slot value set to true. It is up to such 
+  <a>Platform objects</a> that are <a>transferable objects</a> must define the \[[<a>Transfer</a>]]
+  internal method such that it either throws an exception or returns a clone of <em>this</em>,
+  created in <var>targetRealm</var>, with <em>this</em>'s underlying data shared with the return
+  value, and <em>this</em>'s \[[<a>Detached</a>]] internal slot value set to true. It is up to such
   objects to define what transfering means for them.
 
-  Objects defined in the JavaScript specification are handled by the 
-  <a>StructuredCloneWithTransfer</a> abstract operation directly. (Technically, by 
+  Objects defined in the JavaScript specification are handled by the
+  <a>StructuredCloneWithTransfer</a> abstract operation directly. (Technically, by
   <a>IsTransferable</a> and <a>TransferHelper</a>.)
 
 <h4 id="section-structuredclonewithtransfer"><dfn>StructuredCloneWithTransfer</dfn> ( <var>input</var>, <var>transferList</var>, <var>targetRealm</var> )</h4>
 
   1. Let <var>memory</var> be an empty map.
-      <p class="note">The purpose of the memory map, both here and in the <a>StructuredClone</a> 
-      abstract operation, is to avoid cloning objects twice. This ends up preserving cycles and the 
+      <p class="note">The purpose of the memory map, both here and in the <a>StructuredClone</a>
+      abstract operation, is to avoid cloning objects twice. This ends up preserving cycles and the
       identity of duplicate objects in graphs.</p>
   2. For each object <var>transferable</var> in <var>transferList</var>:
-      1. If <a>IsTransferable</a>(<var>transferable</var>) is false, then throw a 
+      1. If <a>IsTransferable</a>(<var>transferable</var>) is false, then throw a
           "{{DataCloneError}}" {{DOMException}}.
       2. Let <var>placeholder</var> be a user-agent-defined placeholder object.
-      3. Create an entry in <var>memory</var> with key <var>transferable</var> and value 
+      3. Create an entry in <var>memory</var> with key <var>transferable</var> and value
           <var>placeholder</var>.
-  3. Let <var>clone</var> be the result of ? <a>StructuredClone</a>(<var>input</var>, 
+  3. Let <var>clone</var> be the result of ? <a>StructuredClone</a>(<var>input</var>,
       <var>targetRealm</var>, <var>memory</var>).
   4. Let <var>outputTransferList</var> be a new empty <a for="ecma">List</a>.
   5. For each object <var>transferable</var> in <var>transferList</var>:
-      1. Let <var>placeholderResult</var> be the value of the entry in <var>memory</var> whose key 
+      1. Let <var>placeholderResult</var> be the value of the entry in <var>memory</var> whose key
           is <var>transferable</var>.
-      2. Let <var>transferResult</var> be ? <a>TransferHelper</a>(<var>transferable</var>, 
+      2. Let <var>transferResult</var> be ? <a>TransferHelper</a>(<var>transferable</var>,
           <var>targetRealm</var>).
-      3. Within <var>clone</var>, replace references to <var>placeholderResult</var> with 
-          <var>transferResult</var>, such that everything holding a reference to 
+      3. Within <var>clone</var>, replace references to <var>placeholderResult</var> with
+          <var>transferResult</var>, such that everything holding a reference to
           <var>placeholderResult</var>, now holds a reference to <var>transferResult</var>.
-          
+
           <p class="note">This is a rather unusual low-level operation for which no primitives are defined by JavaScript.</p>
       4. Add <var>transferResult</var> as the last element of <var>outputTransferList</var>.
-  6. Return { \[[Clone]]: <var>clone</var>, \[[<var>transferList</var>]]: 
+  6. Return { \[[Clone]]: <var>clone</var>, \[[<var>transferList</var>]]:
       <var>outputTransferList</var> }.
 
-  <p class="note">Originally the <a>StructuredCloneWithTransfer</a> abstract operation was known as 
-  the "structured clone" algorithm. The <a>StructuredClone</a> abstract operation was known as the 
-  "internal structured clone" algorithm. Transferring objects, now handled by the 
-  <a>StructuredCloneWithTransfer</a> abstract operation, were formerly handled by parts of the 
-  algorithm of the <code>postMessage()</code> method on the {{Window}} object and the 
+  <p class="note">Originally the <a>StructuredCloneWithTransfer</a> abstract operation was known as
+  the "structured clone" algorithm. The <a>StructuredClone</a> abstract operation was known as the
+  "internal structured clone" algorithm. Transferring objects, now handled by the
+  <a>StructuredCloneWithTransfer</a> abstract operation, were formerly handled by parts of the
+  algorithm of the <code>postMessage()</code> method on the {{Window}} object and the
   <code>Window/postMessage()</code> method on the {{MessagePort}} object.</p>
-  
+
 <h4 id="section-structuredclone"><dfn>StructuredClone</dfn> ( <var>input</var>, <var>targetRealm</var> [ , <var>memory</var> ] )</h4>
 
   1. If <var>memory</var> was not supplied, let <var>memory</var> be an empty map.
@@ -4504,7 +4442,7 @@
       <var>input</var>.
   4. If <a for="ecma">Type</a>(<var>input</var>) is Symbol, then throw a "{{DataCloneError}}" {{DOMException}}.
   5. Let <var>deepClone</var> be false.
-  6. If <var>input</var> has a \[[BooleanData]] internal slot, then let <var>output</var> be a new 
+  6. If <var>input</var> has a \[[BooleanData]] internal slot, then let <var>output</var> be a new
       Boolean object in <var>targetRealm</var> whose \[[BooleanData]] internal slot value is the
       \[[BooleanData]] internal slot value of <var>input</var>.
   7. Otherwise, if <var>input</var> has a \[[NumberData]] internal slot, then let <var>output</var>
@@ -4527,12 +4465,12 @@
            {{DOMException}}.
        2. Let <var>outputArrayBuffer</var> be the <a>%ArrayBuffer%</a> intrinsic object in
            <var>targetRealm</var>.
-       3. Let <var>output</var> be ? <a>CloneArrayBuffer</a>(<var>input</var>, 0, 
+       3. Let <var>output</var> be ? <a>CloneArrayBuffer</a>(<var>input</var>, 0,
            <var>outputArrayBuffer</var>).
   12. Otherwise, if <var>input</var> has a \[[ViewedArrayBuffer]] internal slot, then:
        1. Let <var>buffer</var> be the value of <var>input</var>'s \[[ViewedArrayBuffer]] internal
            slot.
-       2. Let <var>bufferClone</var> be ? <a>StructuredClone</a>(<var>buffer</var>, 
+       2. Let <var>bufferClone</var> be ? <a>StructuredClone</a>(<var>buffer</var>,
            <var>targetRealm</var>, <var>memory</var>)}}.
        3. If <var>input</var> has a \[[DataView]] internal slot, then let <var>output</var> be a
            new DataView object in <var>targetRealm</var> whose \[[DataView]] internal slot value is
@@ -4547,7 +4485,7 @@
                <var>input</var>'s \[[TypedArrayName]] internal slot in <var>targetRealm</var>.
            3. Let <var>byteOffset</var> be <var>input</var>'s \[[ByteOffset]] internal slot value.
            4. Let <var>length</var> be <var>input</var>'s \[[ArrayLength]] internal slot value.
-           5. Let <var>output</var> be ? <a>TypedArrayCreate</a>(<var>constructor</var>, 
+           5. Let <var>output</var> be ? <a>TypedArrayCreate</a>(<var>constructor</var>,
                « <var>bufferClone</var>, <var>byteOffset</var>, <var>length</var> »).
   13. Otherwise, if <var>input</var> has \[[MapData]] internal slot, then:
        1. Let <var>output</var> be a new Map object in <var>targetRealm</var> whose \[[MapData]]
@@ -4558,16 +4496,16 @@
            internal slot value is a new empty <a for="ecma">List</a>.
        2. Set <var>deepClone</var> to true.
   15. Otherwise, if <var>input</var> is an Array exotic object, then:
-       1. Let <var>inputLen</var> be <a>OrdinaryGetOwnProperty</a>(<var>input</var>, 
+       1. Let <var>inputLen</var> be <a>OrdinaryGetOwnProperty</a>(<var>input</var>,
            "<code>length</code>").\[[Value]].
        2. Let <var>outputProto</var> be the <a>%ArrayPrototype%</a> intrinsic object in
            <var>targetRealm</var>.
-       3. Let <var>output</var> be ! <a>ArrayCreate</a>(<var>inputLen</var>, 
+       3. Let <var>output</var> be ! <a>ArrayCreate</a>(<var>inputLen</var>,
            <var>outputProto</var>).
        4. Set <var>deepClone</var> to true.
-  16. Otherwise, if <var>input</var> has a \[[<a for="structured">Clone</a>]] internal method, then 
-       let <var>output</var> be ? 
-       <var>input</var>.\[[<a for="structured">Clone</a>]](<var>targetRealm</var>, 
+  16. Otherwise, if <var>input</var> has a \[[<a for="structured">Clone</a>]] internal method, then
+       let <var>output</var> be ?
+       <var>input</var>.\[[<a for="structured">Clone</a>]](<var>targetRealm</var>,
        <var>memory</var>).
   17. Otherwise, if <a>IsCallable</a>(<var>input</var>)}} is true, then throw a
        "{{DataCloneError}}" {{DOMException}}.
@@ -4596,10 +4534,10 @@
                slot.
            5. For each <a>Record</a> { \[[Key]], \[[Value]] } <var>entry</var> that is an element of
                <var>copiedList</var>,
-               1. Let <var>outputKey</var> be ? <a>StructuredClone</a>(<var>entry</var>.\[[Key]], 
+               1. Let <var>outputKey</var> be ? <a>StructuredClone</a>(<var>entry</var>.\[[Key]],
                    <var>targetRealm</var>, <var>memory</var>).
-               2. Let <var>outputValue</var> be ? 
-                   <a>StructuredClone</a>(<var>entry</var>.\[[Value]], <var>targetRealm</var>, 
+               2. Let <var>outputValue</var> be ?
+                   <a>StructuredClone</a>(<var>entry</var>.\[[Value]], <var>targetRealm</var>,
                    <var>memory</var>).
                3. Add { \[[Key]]: <var>outputKey</var>, \[[Value]]: <var>outputValue</var> } as the
                    last element of <var>outputList</var>.
@@ -4610,24 +4548,24 @@
                slot.
            3. For each <var>entry</var> that is an element of <var>copiedList</var> that is not
                empty,
-               1. Let <var>outputEntry</var> be ? <a>StructuredClone</a>(<var>entry</var>, 
+               1. Let <var>outputEntry</var> be ? <a>StructuredClone</a>(<var>entry</var>,
                    <var>targetRealm</var>, <var>memory</var>).
                2. Add <var>outputEntry</var> as the last element of <var>outputList</var>.
        3. Otherwise:
            1. Let <var>enumerableKeys</var> be a new empty <a for="ecma">List</a>.
            2. For each <var>key</var> in ! <var>input</var>.\[[OwnPropertyKeys]]():
                1. If <a for="ecma">Type</a>(<var>key</var>) is String, then:
-                   1. Let <var>inputDesc</var> be ! 
+                   1. Let <var>inputDesc</var> be !
                        <var>input</var>.\[[GetOwnProperty]](<var>key</var>).
-                   2. If <var>inputDesc</var>.\[[Enumerable]] is true, then add <var>key</var> as 
+                   2. If <var>inputDesc</var>.\[[Enumerable]] is true, then add <var>key</var> as
                        the last element of <var>enumerableKeys</var>.
            3. For each <var>key</var> in <var>enumerableKeys</var>:
                1. If ! <a>HasOwnProperty</a>(<var>input</var>, <var>key</var>) is true, then:
                    1. Let <var>inputValue</var> be ? <var>input</var>.\[[Get]](<var>key</var>,
                        <var>input</var>).
-                   2. Let <var>outputValue</var> be ? <a>StructuredClone</a>(<var>inputValue</var>, 
+                   2. Let <var>outputValue</var> be ? <a>StructuredClone</a>(<var>inputValue</var>,
                        <var>targetRealm</var>, <var>memory</var>).
-                   3. Perform ? <a>CreateDataProperty</a>(<var>output</var>, <var>key</var>, 
+                   3. Perform ? <a>CreateDataProperty</a>(<var>output</var>, <var>key</var>,
                        <var>outputValue</var>).
   23. Return <var>output</var>.
 
@@ -4637,7 +4575,7 @@
     in a different <a>event loop</a> and not easily accessible to the code that invokes
     <a>StructuredCloneWithTransfer</a> or <a>StructuredClone</a>.
   </p>
-  
+
 <h4 id="section-idistransferable"><dfn>IsTransferable</dfn> ( <var>O</var> )</h4>
 
   1. Assert: <a for="ecma">Type</a>(<var>O</var>) is Object.
@@ -4648,16 +4586,16 @@
       1. If <var>O</var>'s \[[<a>Detached</a>]] internal slot value is true, then return false.
       2. Return true.
   4. Return false.
-  
+
 <h4 id="section-transferhelper"><dfn>TransferHelper</dfn> ( <var>input</var>, <var>targetRealm</var> )</h4>
 
   1. If <var>input</var> has an \[[ArrayBufferData]] internal slot, then:
-      1. Let <var>output</var> be a new {{ArrayBuffer}} object in <var>targetRealm</var> whose 
-          \[[ArrayBufferByteLength]] internal slot value is the \[[ArrayBufferByteLength]] internal 
-          slot value of <var>input</var>, and whose \[[ArrayBufferData]] internal slot value is the 
+      1. Let <var>output</var> be a new {{ArrayBuffer}} object in <var>targetRealm</var> whose
+          \[[ArrayBufferByteLength]] internal slot value is the \[[ArrayBufferByteLength]] internal
+          slot value of <var>input</var>, and whose \[[ArrayBufferData]] internal slot value is the
           \[[ArrayBufferData]] internal slot value of <var>input</var>.
       2. Perform ! <a>DetachArrayBuffer</a>(<var>input</var>).
       3. Return <var>output</var>.
   2. Return ? <var>input</var>.\[[<a>Transfer</a>]](<var>targetRealm</var>).
-  
+
 </section>
