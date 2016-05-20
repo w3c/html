@@ -590,7 +590,7 @@
     <a>Content-Type metadata</a>, then those rules apply. Otherwise, if the resource is expected to
     be an image, user agents may apply the <a>image sniffing rules</a>, with the
     <var>official type</var> being the type determined from the resource's
-    <a>Content-Type metadata</a>, and use the resulting sniffed type of the resource as if it was
+    <a>Content-Type metadata</a>, and use the resulting <a>computed type of the resource</a> as if it was
     the actual type. Otherwise, if neither of these conditions apply or if the user agent opts not
     to apply the image sniffing rules, then the user agent must use the resource's
     <a>Content-Type metadata</a> to determine the type of the resource. If there is no type
@@ -1651,48 +1651,46 @@
       &lt;/html&gt;</pre>
   </div>
 
-  <div class="impl">
-    <h4 id="interactions-of-styling-and-scripting">Interactions of styling and scripting</h4>
+  <h4 id="interactions-of-styling-and-scripting">Interactions of styling and scripting</h4>
 
-    Style sheets, whether added by a <{link}> element, a <{style}> element, an
-    <code>&lt;?xml-stylesheet?&gt;</code> PI, an HTTP <code>Link</code> header, or some other
-    mechanism, have a <dfn>style sheet ready</dfn> flag, which is initially unset.
+  Style sheets, whether added by a <{link}> element, a <{style}> element, an
+  <code>&lt;?xml-stylesheet?&gt;</code> PI, an HTTP <code>Link</code> header, or some other
+  mechanism, have a <dfn>style sheet ready</dfn> flag, which is initially unset.
 
-    When a style sheet is ready to be applied, its <a>style sheet ready</a> flag must be set. If the
-    style sheet referenced no other resources (e.g., it was an internal style sheet given by a
-    <{style}> element with no <code>@import</code> rules), then the style rules must be
-    <a>immediately</a> made available to script; otherwise, the style rules must only be made
-    available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
+  When a style sheet is ready to be applied, its <a>style sheet ready</a> flag must be set. If the
+  style sheet referenced no other resources (e.g., it was an internal style sheet given by a
+  <{style}> element with no <code>@import</code> rules), then the style rules must be
+  <a>immediately</a> made available to script; otherwise, the style rules must only be made
+  available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
 
-    A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or
-    <a>XML parser</a> is said to be <dfn>a style sheet that is blocking scripts</dfn> if the element
-    was created by that {{Document}}'s parser, and the element is either a
-    <{style}> element or a <{link}> element that was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by the parser,
-    and the element's style sheet was enabled when the element was created by the parser, and the
-    element's <a>style sheet ready</a> flag is not yet set, and, the last time the <a>event loop</a>
-    reached step 1, the element was in that <code>Document</code>, and the user agent
-    hasn't given up on that particular style sheet yet. A user agent may give up on a style sheet at
-    any time.
+  A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or
+  <a>XML parser</a> is said to be <dfn>a style sheet that is blocking scripts</dfn> if the element
+  was created by that {{Document}}'s parser, and the element is either a
+  <{style}> element or a <{link}> element that was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by the parser,
+  and the element's style sheet was enabled when the element was created by the parser, and the
+  element's <a>style sheet ready</a> flag is not yet set, and, the last time the <a>event loop</a>
+  reached step 1, the element was in that <code>Document</code>, and the user agent
+  hasn't given up on that particular style sheet yet. A user agent may give up on a style sheet at
+  any time.
 
-    <p class="note">
-      Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
-      still load, means that the script might end up operating with incorrect information. For
-      example, if a style sheet sets the color of an element to green, but a script that inspects
-      the resulting style is executed before the sheet is loaded, the script will find that the
-      element is black (or whatever the default color is), and might thus make poor choices (e.g.,
-      deciding to use black as the color elsewhere on the page, instead of green). Implementors have
-      to balance the likelihood of a script using incorrect information with the performance impact
-      of doing nothing while waiting for a slow network request to finish.
-    </p>
+  <p class="note">
+    Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
+    still load, means that the script might end up operating with incorrect information. For
+    example, if a style sheet sets the color of an element to green, but a script that inspects
+    the resulting style is executed before the sheet is loaded, the script will find that the
+    element is black (or whatever the default color is), and might thus make poor choices (e.g.,
+    deciding to use black as the color elsewhere on the page, instead of green). Implementors have
+    to balance the likelihood of a script using incorrect information with the performance impact
+    of doing nothing while waiting for a slow network request to finish.
+  </p>
 
-    A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if there is either
-    <a>a style sheet that is blocking scripts</a> in the context of that {{Document}}, or
-    if that {{Document}} is in a <a>browsing context</a> that has a
-    <a>parent browsing context</a>, and the <a>active document</a> of that
-    <a>parent browsing context</a> itself <a>has a style sheet that is blocking scripts</a>.
+  A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if there is either
+  <a>a style sheet that is blocking scripts</a> in the context of that {{Document}}, or
+  if that {{Document}} is in a <a>browsing context</a> that has a
+  <a>parent browsing context</a>, and the <a>active document</a> of that
+  <a>parent browsing context</a> itself <a>has a style sheet that is blocking scripts</a>.
 
-    A {{Document}} <dfn>has no style sheet that is blocking scripts</dfn> if it does not
-    <a>have a style sheet that is blocking scripts</a> as defined in the previous paragraph.
-  </div>
+  A {{Document}} <dfn>has no style sheet that is blocking scripts</dfn> if it does not
+  <a>have a style sheet that is blocking scripts</a> as defined in the previous paragraph.
 
 </section>

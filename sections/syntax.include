@@ -1138,16 +1138,14 @@
   Usually, the <a>encoding sniffing algorithm</a> defined below is used to determine the
   character encoding.
 
-  Given a character encoding, the bytes in the <a>input byte stream</a> must be converted
-  to Unicode code points for the tokenizer's <a>input stream</a>, by passing the
-  <a>input byte stream</a> and character encoding to <a>decode</a>.
+  Given a character encoding, the bytes in the <a>input byte stream</a> must be converted to
+  characters for the tokenizer's <a>input stream</a>, by passing the <a>input byte stream</a> and
+  character encoding to <a>decode</a>.
+
+  <p class="note">A leading Byte Order Mark (BOM) causes the character encoding argument to be
+  ignored and will itself be skipped.</p>
 
   <p class="note">
-  Leading Byte Order Marks (BOMs) are not stripped by the decoder algorithms, they
-  are stripped by the algorithm below.
-  </p>
-
-    <p class="note">
   Bytes or sequences of bytes in the original byte stream that did not conform to
   the Encoding standard (e.g., invalid UTF-8 byte sequences in a UTF-8 input byte stream) are errors
   that conformance checkers are expected to report. [[!ENCODING]]
@@ -1226,44 +1224,6 @@
 
     </li>
 
-    <li>
-
-    For each of the rows in the following table, starting with the first one and going down, if
-    there are as many or more bytes available than the number of bytes in the first column, and the
-    first bytes of the file match the bytes given in the first column, then return the encoding
-    given in the cell in the second column of that row, with the <a>confidence</a> <i>certain</i>, and abort these steps:
-
-    <table>
-      <thead>
-      <tr>
-        <th>Bytes in Hexadecimal
-        <th>Encoding
-      <tbody>
-
-      <tr>
-        <td>FE FF
-        <td>Big-endian UTF-16
-      <tr>
-        <td>FF FE
-        <td>Little-endian UTF-16
-      <tr>
-        <td>EF BB BF
-        <td>UTF-8
-
-    </table>
-
-    <p class="note">
-  This step looks for Unicode Byte Order Marks (BOMs).
-  </p>
-
-    <p class="note">
-  That this step happens before the next one honoring the HTTP
-    <code>Content-Type</code> header is a <a>willful violation</a> of the HTTP specification,
-    motivated by a desire to be maximally compatible with legacy content. [[HTTP]]
-  </p>
-
-    </li>
-
     <li>If the transport layer specifies a character encoding, and it is supported, return that
     encoding with the <a>confidence</a> <i>certain</i>, and
     abort these steps.</li>
@@ -1285,7 +1245,7 @@
     <li>
 
     If the <a>HTML parser</a> for which this algorithm is being run is associated with a
-    <code>Document</code> that is itself in a <a>nested browsing context</a>, run these
+    {{Document}} that is itself in a <a>nested browsing context</a>, run these
     substeps:
 
     <ol>
@@ -1600,7 +1560,7 @@
         algorithm, is distinct from an unrecognized encoding or the empty string).</li>
 
         <li><i>Attributes</i>: <a>Get an
-        attribute</a> and its value. If no attribute was sniffed, then jump to the
+        attribute</a> and its value. If no attribute was computed, then jump to the
         <i>processing</i> step below.</li>
 
         <li>If the attribute's name is already in <var>attribute list</var>, then return
@@ -1934,16 +1894,6 @@
 
   The <dfn>input stream</dfn> consists of the characters pushed into it as the <a>input byte
   stream</a> is decoded or from the various APIs that directly manipulate the input stream.
-
-  One leading U+FEFF BYTE ORDER MARK character must be ignored if any are present in the
-  <a>input stream</a>.
-
-  <p class="note">
-  The requirement to strip a U+FEFF BYTE ORDER MARK character regardless of whether
-  that character was used to determine the byte order is a <a>willful violation</a> of
-  Unicode, motivated by a desire to increase the resilience of user agents in the face of na&iuml;ve
-  transcoders.
-  </p>
 
   Any occurrences of any characters in the ranges U+0001 to U+0008,    U+000E to U+001F,
   U+007F  to U+009F, U+FDD0 to U+FDEF, and
