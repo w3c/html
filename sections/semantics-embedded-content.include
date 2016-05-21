@@ -5933,6 +5933,10 @@ zero or more <{track}> elements, then
     enum CanPlayTypeResult { "" /* empty string */, "maybe", "probably" };
   </pre>
 
+  <pre class="idl" data-highlight="webidl" dfn-for="MediaProvider">
+    typedef (MediaStream or MediaSource or Blob) MediaProvider;
+  </pre>
+
   <pre class="idl" data-highlight="webidl" dfn-for="HTMLMediaElement">
     interface HTMLMediaElement : HTMLElement {
 
@@ -5941,6 +5945,7 @@ zero or more <{track}> elements, then
 
       // network state
       attribute DOMString src;
+      attribute MediaProvider? srcObject;
       readonly attribute DOMString currentSrc;
       attribute DOMString? crossOrigin;
       const unsigned short NETWORK_EMPTY = 0;
@@ -6140,40 +6145,34 @@ zero or more <{track}> elements, then
   separate from a <a for="url">URL</a>. <code>MediaStream</code> objects, <code>MediaSource</code>
   objects, <code>Blob</code> objects, and <code>File</code> objects are all <a>media provider objects</a>.
 
-  <div class="impl">
-
   Each <a>media element</a> can have an <dfn>assigned media provider object</dfn>, which is a
   <a>media provider object</a>. When a <a>media element</a> is created, it has no
   <a>assigned media provider object</a>.
 
-  </div>
-
   <dl class="domintro">
+    <dt><var>media</var> . {{HTMLMediaElement/srcObject}} [ = <var>source</var> ]</dt>
+    <dd>Allows the <a>media element</a> to be assigned a <a>media provider object</a>.
 
-    <dt><var>media</var> . <code>currentSrc</code></dt>
+    <dt><var>media</var> . {{HTMLMediaElement/currentSrc}}</dt>
+    <dd>Returns the <a for="url">URL</a> of the current <a>media resource</a>, if any.
 
-    <dd>
-
-    Returns the address of the current <a>media resource</a>.
-
-    Returns the empty string when there is no <a>media resource</a>.
-
-    </dd>
-
+    Returns the empty string when there is no <a>media resource</a>, or it doesn't have a
+    <a for="url">URL</a>.</dd>
   </dl>
-
-  <div class="impl">
 
   The <dfn attribute for="HTMLMediaElement"><code>currentSrc</code></dfn> IDL attribute is initially
   the empty string. Its value is changed by the <a>resource
   selection algorithm</a> defined below.
 
-  </div>
+  The <dfn attribute for="HTMLMediaElement"><code>srcObject</code></dfn> IDL attribute, on getting,
+  must return the element's <a>assigned media provider object</a>, if any, or null otherwise. On
+  setting, it must set the element's <a>assigned media provider object</a> to the new value, and
+  then invoke the element's <a>media element load algorithm</a>.
 
-  <p class="note">
-    There are two ways to specify a <a>media resource</a>, the <code>src</code> attribute, or <{source}> elements. The attribute
-  overrides the elements.
-  </p>
+  <p class="note">There are three ways to specify a <a>media resource</a>, the
+  {{HTMLMediaElement/srcObject}} IDL attribute, the <{media/src}> content attribute, and <{source}>
+  elements. The IDL attribute takes priority, followed by the content attribute, followed by the
+  elements.</p>
 
 <h5 id="mime-types">MIME types</h5>
 
