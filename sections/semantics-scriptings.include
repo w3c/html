@@ -1398,9 +1398,6 @@ o............A....e
           RenderingContext? getContext(DOMString contextId, any... arguments);
           boolean probablySupportsContext(DOMString contextId, any... arguments);
 
-          void setContext(RenderingContext context);
-          CanvasProxy transferControlToProxy();
-
           DOMString toDataURL(optional DOMString type, any... arguments);
           void toBlob(BlobCallback _callback, optional DOMString type, any... arguments);
         };
@@ -1421,7 +1418,7 @@ o............A....e
 
   When authors use the <{canvas}> element, they must also provide content that, when
   presented to the user, conveys essentially the same function or purpose as the
-  <code>canvas</code>' bitmap. This content may be placed as content of the <code>canvas</code>
+  <code>canvas</code>'s bitmap. This content may be placed as content of the <code>canvas</code>
   element. The contents of the <{canvas}> element, if any, are the element's <a>fallback
   content</a>.
 
@@ -1493,7 +1490,11 @@ o............A....e
 
   A <{canvas}> element can have a rendering context bound to it. Initially, it does not
   have a bound rendering context. To keep track of whether it has a rendering context or not, and
-  what kind of rendering context it is, a <code>canvas</code> also has a <dfn mode for="canvas" lt="context mode|canvas context mode">canvas context mode</dfn>, which is initially <dfn context for="canvas">none</dfn> but can be changed to either <dfn context for="canvas">direct-2d</dfn>, <dfn context for="canvas">direct-webgl</dfn>, <dfn context for="canvas">indirect</dfn>, or <dfn context for="canvas">proxied</dfn> by algorithms defined in this specification.
+  what kind of rendering context it is, a <code>canvas</code> also has a <dfn mode for="canvas"
+  lt="context mode|canvas context mode">canvas context mode</dfn>, which is initially
+  <dfn context for="canvas">none</dfn> but can be changed to either <dfn context
+  for="canvas">2d</dfn>, <dfn context for="canvas">webgl</dfn> by algorithms
+  defined in this specification.
 
   When its <a mode for="canvas">canvas context mode</a> is <a context for="canvas">none</a>, a <{canvas}> element has no rendering context,
   and its bitmap must be fully transparent black with an <a>intrinsic width</a> equal to the numeric value
@@ -1507,7 +1508,7 @@ o............A....e
   the element's <a>intrinsic height</a>, and whose appearance is the element's bitmap.
 
   Whenever the <code>width</code> and <code>height</code> content attributes are set, removed, changed, or
-  redundantly set to the value they already have, if the <a mode for="canvas">canvas context mode</a> is <a context for="canvas">direct-2d</a>, the user agent must set bitmap dimensions to the numeric values of
+  redundantly set to the value they already have, if the <a mode for="canvas">canvas context mode</a> is <a context for="canvas">2d</a>, the user agent must set bitmap dimensions to the numeric values of
   the <code>width</code> and <code>height</code> content attributes.
 
   The <dfn attribute for="HTMLCanvasElement"><code>width</code></dfn> and <dfn attribute for="HTMLCanvasElement"><code>height</code></dfn> IDL attributes must <a>reflect</a> the
@@ -1533,9 +1534,6 @@ o............A....e
     Returns null if the given context ID is not supported or if the canvas has already been
     initialized with some other (incompatible) context type (e.g., trying to get a "<code>2d</code>" context after getting a "<code>webgl</code>" context).
 
-    Throws an <code>InvalidStateError</code> exception if the <code>setContext()</code> or <code>transferControlToProxy()</code> methods have been
-    used.
-
     </dd>
 
     <dt><var>supported</var> = <var>canvas</var> . <code>probablySupportsContext</code>(<var>contextId</var> [, ... ] )</dt>
@@ -1548,98 +1546,56 @@ o............A....e
     This return value is not a guarantee that <code>getContext()</code> will or will not return an object, as
     conditions (e.g., availability of system resources) can vary over time.
 
-    Throws an <code>InvalidStateError</code> exception if the <code>setContext()</code> or <code>transferControlToProxy()</code> methods have been
-    used.
-
-    </dd>
-
-    <dt><var>canvas</var> . <code>setContext</code>(<var>context</var>)</dt>
-
-    <dd>
-
-    Sets the <code>canvas</code>' rendering context to the given object.
-
-    Throws an <code>InvalidStateError</code> exception if the <code>getContext()</code> or <code>transferControlToProxy()</code> methods have been
-    used.
-
     </dd>
 
   </dl>
-
-  <div class="impl">
-
-  There are two ways for a <{canvas}> element to acquire a rendering context: the
-  <{canvas}> element can provide one via the <code>getContext()</code> method, and one can be assigned to it via the
-  <code>setContext()</code> method. In addition, the whole issue of a
-  rendering context can be taken out of the <{canvas}> element's hands and passed to a
-  <code>CanvasProxy</code> object, which itself can then be assigned a rendering context using its
-  <code>setContext()</code> method.
-
-  These three methods are mutually exclusive; calling any of the three makes the other two start
-  throwing <code>InvalidStateError</code> exceptions when called.
-
-  Each rendering context has a <dfn for="canvas">context bitmap
-  mode</dfn>, which is one of <dfn context for="canvas">fixed</dfn>, <dfn context for="canvas">unbound</dfn>, or <dfn context for="canvas">bound</dfn>.
-  Initially, rendering contexts must be in the <a context for="canvas">unbound</a>
-  mode.
-
-  <hr />
 
   The <dfn method for="HTMLCanvasElement"><code>getContext(<var>contextId</var>, <var>arguments...</var>)</code></dfn> method of the <{canvas}> element, when invoked,
   must run the steps in the cell of the following table whose column header describes the
   <{canvas}> element's <a mode for="canvas">canvas context mode</a>
   and whose row header describes the method's first argument.
 
-  <table>
+  <table class='data'>
+    <caption>getContext() invocation steps</caption>
     <thead>
     <tr>
       <td>
       </td><th><a context for="canvas">none</a>
-      </th><th><a context for="canvas">direct-2d</a>
-      </th><th><a context for="canvas">direct-webgl</a>
-      </th><th><a context for="canvas">indirect</a>
-      </th><th><a context for="canvas">proxied</a>
+      </th><th><a context for="canvas">2d</a>
+      </th><th><a context for="canvas">webgl</a>
     </th></tr></thead><tbody>
     <tr>
       <th>"<dfn><code>2d</code></dfn>"
       </th><td>
 
-      Set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">direct-2d</a>, obtain a
+      Set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">2d</a>, obtain a
       <code>CanvasRenderingContext2D</code> object as defined in the HTML Canvas 2D Context
       specification [[!CANVAS-2D]], set the obtained
       <code>CanvasRenderingContext2D</code> object's
-      <a>context bitmap mode</a> to
-      <a context for="canvas">fixed</a>, and return the
+      <a mode for="canvas">context mode</a> to
+      <a context for="canvas">2d</a>, and return the
       <code>CanvasRenderingContext2D</code> object
       </td><td>
       Return the same object as was return the last time the method was invoked with this same
       first argument.
       </td><td>
       Return null.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-
-    </td></tr><tr>
+      </td>
+      </tr><tr>
       <th>"<dfn><code>webgl</code></dfn>", if the user agent supports the WebGL feature in its current configuration
       </th><td>
       Follow the instructions given in the WebGL specification's <i>Context Creation</i> section to
       obtain either a <code>WebGLRenderingContext</code> or null; if the returned value is null,
-      then return null and abort these steps, otherwise, set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">direct-webgl</a>, set the new
-      <code>WebGLRenderingContext</code> object's <a>context bitmap mode</a> to <a context for="canvas">fixed</a>, and return the <code>WebGLRenderingContext</code>
+      then return null and abort these steps, otherwise, set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl</a>, set the new
+      <code>WebGLRenderingContext</code> object's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl</a>, and return the <code>WebGLRenderingContext</code>
       object‡ [[!WEBGL]]
       </td><td>
       Return null.
       </td><td>
       Return the same object as was return the last time the method was invoked with this same
       first argument.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-
-    </td></tr><tr>
+      </td>
+      </tr><tr>
       <th>A vendor-specific extension*
       </th><td>
       Behave as defined for the extension.
@@ -1647,12 +1603,8 @@ o............A....e
       Behave as defined for the extension.
       </td><td>
       Behave as defined for the extension.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-
-    </td></tr><tr>
+      </td>
+      </tr><tr>
       <th>An unsupported value†
       </th><td>
       Return null.
@@ -1660,12 +1612,8 @@ o............A....e
       Return null.
       </td><td>
       Return null.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-      </td><td>
-      Throw an <code>InvalidStateError</code> exception.
-
-  </td></tr></tbody></table>
+      </td>
+      </tr></tbody></table>
 
   <small>* Vendors may define experimental contexts using the syntax <code><var>vendorname</var>-<var>context</var></code>, for example, <code>moz-3d</code>.</small>
 
@@ -1682,32 +1630,6 @@ o............A....e
   invoked, must return false if calling <code>getContext()</code> on
   the same object and with the same arguments would definitely return null at this time, and true
   otherwise.
-
-  <hr />
-
-  The <dfn method for="HTMLCanvasElement"><code>setContext(<var>context</var>)</code></dfn> method of the <{canvas}> element, when invoked, must
-  run the following steps:
-
-  <ol>
-
-    <li>If the <{canvas}> element's <a mode for="canvas">canvas context mode</a> is neither <a context for="canvas">none</a> nor <a context for="canvas">indirect</a>, throw an <code>InvalidStateError</code>
-    exception and abort these steps.</li>
-
-    <li>If <var>context</var>'s <a>context
-    bitmap mode</a> is <a context for="canvas">fixed</a>, then throw an
-    <code>InvalidStateError</code> exception and abort these steps.</li>
-
-    <li>If <var>context</var>'s <a>context
-    bitmap mode</a> is <a context for="canvas">bound</a>, then run <var>context</var>'s unbinding steps and
-    set its <var>context</var>'s <a>context
-    bitmap mode</a> to <a context for="canvas">unbound</a>.</li>
-
-    <li>Run <var>context</var>'s binding steps to bind it to this <{canvas}> element.</li>
-
-    <li>Set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">indirect</a> and the <var>context</var>'s <a>context bitmap
-    mode</a> to <a context for="canvas">bound</a>.</li>
-
-  </ol>
 
   <hr />
 
@@ -1802,136 +1724,6 @@ o............A....e
     blob serialization task source</dfn>.</li>
 
   </ol>
-
-  </div>
-
-<h5 id="proxying-canvases-to-workers">Proxying canvases to workers</h5>
-
-  Since DOM nodes cannot be accessed across worker boundaries, a proxy object is needed to enable
-  workers to render to <{canvas}> elements in <code>Document</code>s.
-
-  <pre class="idl" data-highlight="webidl" dfn-for="CanvasProxy">
-    [Exposed=(Window, Worker)]
-    interface CanvasProxy {
-      void setContext(RenderingContext context);
-    };
-    // CanvasProxy implements Transferable;
-  </pre>
-
-  <dl class="domintro">
-
-    <dt><var>canvasProxy</var> = <var>canvas</var> . <code>transferControlToProxy</code>()</dt>
-
-    <dd>
-
-    Returns a <code>CanvasProxy</code> object that can be used to transfer control for this
-    canvas over to another document (e.g., an <code>iframe</code> from another
-    <a for="concept">origin</a>) or to a worker.
-
-    Throws an <code>InvalidStateError</code> exception if the <code>getContext()</code> or <code>setContext()</code> methods have been used.
-
-    </dd>
-
-    <dt><var>canvasProxy</var> . <code>setContext</code>(<var>context</var>)</dt>
-
-    <dd>
-
-    Sets the <code>CanvasProxy</code> object's <{canvas}> element's rendering context to
-    the given object.
-
-    Throws an <code>InvalidStateError</code> exception if the <code>CanvasProxy</code> has been
-    <a lt="transferable objects">transferred</a>.
-
-    </dd>
-
-  </dl>
-
-  <hr />
-
-  The <dfn><code>transferControlToProxy()</code></dfn>
-  method of the <{canvas}> element, when invoked, must run the following steps:
-
-  <ol>
-
-    <li>If the <{canvas}> element's <a mode for="canvas">canvas context mode</a> is not <a context for="canvas">none</a>, throw an
-    <code>InvalidStateError</code> exception and abort these steps.</li>
-
-    <li>Set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">proxied</a>.</li>
-
-    <li>Return a <code>CanvasProxy</code> object bound to this <code>canvas</code>
-    element.</li>
-
-  </ol>
-
-  A <code>CanvasProxy</code> object can be neutered (like any <code>Transferable</code> object),
-  meaning it can no longer be <a lt="transferable objects">transferred</a>, and
-  can be <dfn for="canvas">disabled</dfn>, meaning it can no longer be bound
-  to rendering contexts. When first created, a <code>CanvasProxy</code> object must be neither.
-
-  A <code>CanvasProxy</code> is created with a link to a <{canvas}> element. A
-  <code>CanvasProxy</code> object that has not been disabled must have a strong reference to its canvas
-  element.
-
-  The <dfn><code>setContext(<var>context</var>)</code></dfn> method of <code>CanvasProxy</code> objects, when invoked,
-  must run the following steps:
-
-  <ol>
-
-    <li>If the <code>CanvasProxy</code> object has been disabled, throw an <code>InvalidStateError</code>
-    exception and abort these steps.</li>
-
-    <li>If the <code>CanvasProxy</code> object has not been neutered, then neuter it.</li>
-
-    <li>If <var>context</var>'s <a>context
-    bitmap mode</a> is <a context for="canvas">fixed</a>, then throw an
-    <code>InvalidStateError</code> exception and abort these steps.</li>
-
-    <li>If <var>context</var>'s <a>context
-    bitmap mode</a> is <a context for="canvas">bound</a>, then run <var>context</var>'s unbinding steps and
-    set its <var>context</var>'s <a>context
-    bitmap mode</a> to <a context for="canvas">unbound</a>.</li>
-
-    <li>Run <var>context</var>'s binding steps to bind it to this <code>CanvasProxy</code> object's <code>canvas</code>
-    element.</li>
-
-    <li>Set the <var>context</var>'s <a>context bitmap mode</a> to <a context for="canvas">bound</a>.</li>
-
-  </ol>
-
-  To <a>transfer</a> a <code>CanvasProxy</code> object <var>old</var> to a new owner <var>owner</var>,
-  a user agent must create a new <code>CanvasProxy</code> object linked to the same
-  <{canvas}> element as <var>old</var>, thus obtaining <var>new</var>,
-  must neuter and <a for="canvas">disable</a> the <var>old</var> object, and must
-  finally return <var>new</var>.
-
-  <div class="example">
-    Here is a clock implemented on a worker. First, the main page:
-
-    <pre highlight="html">
-&lt;!DOCTYPE HTML&gt;
-&lt;title&gt;Clock&lt;/title&gt;
-&lt;canvas&gt;&lt;/canvas&gt;
-&lt;script&gt;
-  var canvas = document.getElementsByTagName('canvas')[0];
-  var proxy = canvas.transferControlToProxy();
-  var worker = new Worker('clock.js');
-  worker.postMessage(proxy, [proxy]);
-&lt;/script&gt;
-    </pre>
-
-    Second, the worker:
-
-    <pre highlight="javascript">
-onmessage = function (event) {
-  var context = new CanvasRenderingContext2D();
-  event.data.setContext(context); // event.data is the CanvasProxy object
-  setInterval(function () {
-    context.clearRect(0, 0, context.width, context.height);
-    context.fillText(new Date(), 0, 100);
-    context.commit();
-  }, 1000);
-};
-    </pre>
 
   </div>
 
