@@ -4712,82 +4712,50 @@
 
 <h3 id="animation-frames">Animation Frames</h3>
 
-  <p>Each <code>Document</code> associated with a <a>top-level browsing context</a>
+  Each {{Document}} associated with a <a>top-level browsing context</a>
   has a <dfn>list of animation frame callbacks</dfn>, which must be initially empty,
   and an <dfn>animation frame callback identifier</dfn>, which is a number which must
-  initially be zero.</p>
+  initially be zero.
 
-  <p>When the <dfn method for='Window'>requestAnimationFrame()</dfn> method is called,
-  the user agent must run the following steps:</p>
+  When the <dfn method for='Window'>requestAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
 
-  <ol>
-    <li>
-     Let <var>document</var> be the <code>Window</code> object's <code>Document</code> object.
-    </li>
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
 
-    <li>
-     Increment <var>document</var>'s <a>animation frame callback identifier</a> by one.
-     </li>
+  2. Increment <var>document</var>'s <a>animation frame callback identifier</a> by one.
 
-    <li>
-     Append the method's argument to <var>document</var>'s <a>list of animation frame
+  3. Append the method's argument to <var>document</var>'s <a>list of animation frame
      callbacks</a>, associated with <var>document</var>'s <a>animation frame callback
-     identifier</a>'s current value.
-    </li>
+     identifier</a>'s current value
 
-    <li>
-     Return <var>document</var>'s <a>animation frame callback identifier</a>'s current value.
-    </li>
-  </ol>
+  4. Return <var>document</var>'s <a>animation frame callback identifier</a>'s current value
 
-  <p>When the <dfn method for='Window'>cancelAnimationFrame()</dfn> method is called,
-  the user agent must run the following steps:</p>
+  When the <dfn method for='Window'>cancelAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
 
-  <ol>
-    <li>
-     Let <var>document</var> be the <code>Window</code> object's <code>Document</code> object.
-    </li>
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
 
-    <li>
-     Find the entry in <var>document</var>'s <a>list of animation frame callbacks</a> that
-     is associated with the value given by the method's argument <var>handle</var>.
-    </li>
+  2. Find the entry in <var>document</var>'s <a>list of animation frame callbacks</a> that
+     is associated with the value given by the method's argument <var>handle</var>
 
-    <li>
-     If there is such an entry, remove it from <var>document</var>'s <a>list of animation
-     frame callbacks</a>.
-    </li>
-  </ol>
+  3. If there is such an entry, remove it from <var>document</var>'s <a>list of animation
+     frame callbacks</a>
 
-  <div algorithm='run the animation frame callbacks'>
-    <p>
-    When the user agent is to <dfn>run the animation frame callbacks</dfn> for a
-    <code>Document</code> <var>document</var> with a timestamp <var>now</var>, it must
-    run the following steps:
-    </p>
+  When the user agent is to <dfn>run the animation frame callbacks</dfn> for a
+  {{Document}} <var>document</var> with a timestamp <var>now</var>, it must
+  run the following steps:
 
-    <ol>
-      <li>
-        If the value returned by the <var>document</var> object's {{Document/hidden}}
-        attribute is true, abort these steps. [[!PAGE-VISIBILITY]]
-      </li>
+  1. If the value returned by the <var>document</var> object's {{Document/hidden}}
+     attribute is true, abort these steps. [[!PAGE-VISIBILITY]]
 
-      <li>
-       Let <var>callbacks</var> be a list of the entries in <var>document</var>'s <a>list
-       of animation frame callbacks</a>, in the order in which they were added to the list.
-      </li>
+  2. Let <var>callbacks</var> be a list of the entries in <var>document</var>'s <a>list
+     of animation frame callbacks</a>, in the order in which they were added to the list.
 
-      <li>
-       Set <var>document</var>'s <a>list of animation frame callbacks</a> to the empty list.
-      </li>
+  3. Set <var>document</var>'s <a>list of animation frame callbacks</a> to the empty list.
 
-      <li>
-       For each entry in <var>callbacks</var>, in order: <a>invoke the Web IDL callback
-       function</a>, passing <var>now</var> as the only argument, and if an exception is
-       thrown, <a>report the exception</a>. [[!WEBIDL]]
-      </li>
-    </ol>
-  </div>
+  4. For each entry in <var>callbacks</var>, in order: <a>invoke the Web IDL callback
+     function</a>, passing <var>now</var> as the only argument, and if an exception is
+     thrown, <a>report the exception</a>. [[!WEBIDL]]
 
 </section>
 
