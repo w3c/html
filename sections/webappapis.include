@@ -976,8 +976,9 @@
           <p class="note">Another example of why a browser might skip updating the rendering is to
           ensure certain <a>tasks</a> are executed immediately after each other, with only
           <a>microtask checkpoints</a> interleaved (and without, e.g.,
-          <a>animation frame callbacks</a> interleaved). For example, a user agent might wish to
-          coalesce timer callbacks together, with no intermediate rendering updates.</p>
+          <a lt='run the animation frame callbacks'>animation frame callbacks</a> interleaved).
+          For example, a user agent might wish to coalesce timer callbacks together, with no
+          intermediate rendering updates.</p>
       4. If there are a <a>nested browsing contexts</a> <var>B</var> that the user agent believes
           would not benefit from having their rendering updated at this time, then remove from
           <var>docs</var> all {{Document}} objects whose <a>browsing context</a> is in <var>B</var>.
@@ -4705,6 +4706,53 @@
       loadMySprites().then(runDemo);
     </pre>
   </div>
+
+<h3 id="animation-frames">Animation Frames</h3>
+
+  Each {{Document}} associated with a <a>top-level browsing context</a>
+  has a <dfn>list of animation frame callbacks</dfn>, which must be initially empty,
+  and an <dfn>animation frame callback identifier</dfn>, which is a number which must
+  initially be zero.
+
+  When the <dfn method for='Window'>requestAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
+
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
+
+  2. Increment <var>document</var>'s <a>animation frame callback identifier</a> by one.
+
+  3. Append the method's argument to <var>document</var>'s <a>list of animation frame
+     callbacks</a>, associated with <var>document</var>'s <a>animation frame callback
+     identifier</a>'s current value
+
+  4. Return <var>document</var>'s <a>animation frame callback identifier</a>'s current value
+
+  When the <dfn method for='Window'>cancelAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
+
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
+
+  2. Find the entry in <var>document</var>'s <a>list of animation frame callbacks</a> that
+     is associated with the value given by the method's argument <var>handle</var>
+
+  3. If there is such an entry, remove it from <var>document</var>'s <a>list of animation
+     frame callbacks</a>
+
+  When the user agent is to <dfn>run the animation frame callbacks</dfn> for a
+  {{Document}} <var>document</var> with a timestamp <var>now</var>, it must
+  run the following steps:
+
+  1. If the value returned by the <var>document</var> object's {{Document/hidden}}
+     attribute is true, abort these steps. [[!PAGE-VISIBILITY]]
+
+  2. Let <var>callbacks</var> be a list of the entries in <var>document</var>'s <a>list
+     of animation frame callbacks</a>, in the order in which they were added to the list.
+
+  3. Set <var>document</var>'s <a>list of animation frame callbacks</a> to the empty list.
+
+  4. For each entry in <var>callbacks</var>, in order: <a>invoke the Web IDL callback
+     function</a>, passing <var>now</var> as the only argument, and if an exception is
+     thrown, <a>report the exception</a>. [[!WEBIDL]]
 
 </section>
 
