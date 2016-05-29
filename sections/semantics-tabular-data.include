@@ -1606,9 +1606,12 @@ the cell that corresponds to the values of the two dice.
 
     <li>
 
-    Let <var>pending <{tfoot}> elements</var> be a list of <code>tfoot</code>
-    elements, initially empty.
+    Let <var>table footer</var> be null.
+    </li>
 
+    <li>
+
+    Let <var>table header</var> be null.
     </li>
 
     <li>
@@ -1844,11 +1847,49 @@ the cell that corresponds to the values of the two dice.
 
     </li>
 
+    Run the <a>algorithm for processing row groups</a> for the first <{thead}> child of the <{table}>.
+
     <li>
 
-    If the <var>current element</var> is a <{tr}>, then run the <a>algorithm
-    for processing rows</a>, <a>advance</a> the <var>current element</var> to the next child of the <{table}>, and return to the
-    step labeled <i>rows</i>.
+    If the <var>current element</var> is a <{tfoot}> and the value of
+    <var>table footer</var> is null, then run the following substeps:
+    
+    <ol>
+      <li>
+
+       let <var>table footer</var> be the current element;</li>
+      <li>
+
+        <a>advance</a> the <var>current element</var> to the next child of the <{table}>, and </li>
+      <li>
+
+        return to the step labeled <i>rows</i>.</li></ol>
+
+    </li>
+
+    <li>
+
+    If the <var>current element</var> is a <{thead}> and the value of
+    <var>table header</var> is null, then run the following substeps:
+    
+    <ol>
+      <li>
+
+       let <var>table header</var> be the current element;</li>
+      <li>
+
+        <a>advance</a> the <var>current element</var> to the next child of the <{table}>, and </li>
+      <li>
+
+        return to the step labeled <i>rows</i>.</li></ol>
+
+    </li>
+
+    <li>
+
+    If the <var>current element</var> is a <{tr}> then run the <a>algorithm
+    for processing rows</a>, <a>advance</a> the <var>current element</var> to the next child
+    of the <{table}>, and return to the step labeled <i>rows</i>.
 
     </li>
 
@@ -1860,15 +1901,7 @@ the cell that corresponds to the values of the two dice.
 
     <li>
 
-    If the <var>current element</var> is a <{tfoot}>, then add that element to
-    the list of <var>pending <{tfoot}> elements</var>, <a>advance</a> the <var>current element</var> to the next
-    child of the <{table}>, and return to the step labeled <i>rows</i>.
-
-    </li>
-
-    <li>
-
-    The <var>current element</var> is either a <code>thead</code> or a
+    The <var>current element</var> is either a <code>thead</code>, <{tfoot}>, or a
     <{tbody}>.
 
     Run the <a>algorithm for processing row groups</a>.
@@ -1890,9 +1923,7 @@ the cell that corresponds to the values of the two dice.
 
     <li>
 
-    <i>End</i>: For each <{tfoot}> element in the list of <var>pending
-    <{tfoot}> elements</var>, in <a>tree order</a>, run the <a>algorithm for processing row
-    groups</a>.
+    <i>End</i>: run the <a>algorithm for processing row groups</a> to process <var>table footer</var>.
 
     </li>
 
