@@ -976,8 +976,9 @@
           <p class="note">Another example of why a browser might skip updating the rendering is to
           ensure certain <a>tasks</a> are executed immediately after each other, with only
           <a>microtask checkpoints</a> interleaved (and without, e.g.,
-          <a>animation frame callbacks</a> interleaved). For example, a user agent might wish to
-          coalesce timer callbacks together, with no intermediate rendering updates.</p>
+          <a lt='run the animation frame callbacks'>animation frame callbacks</a> interleaved).
+          For example, a user agent might wish to coalesce timer callbacks together, with no
+          intermediate rendering updates.</p>
       4. If there are a <a>nested browsing contexts</a> <var>B</var> that the user agent believes
           would not benefit from having their rendering updated at this time, then remove from
           <var>docs</var> all {{Document}} objects whose <a>browsing context</a> is in <var>B</var>.
@@ -1003,9 +1004,6 @@
           <var>now</var> as the timestamp. [[!FULLSCREEN]]
       10. For each <a>fully active</a> {{Document}} in <var>docs</var>,
            <a>run the animation frame callbacks</a> for that {{Document}}, passing in
-           <var>now</var> as the timestamp.
-      11. For each <a>fully active</a> {{Document}} in <var>docs</var>,
-           <a>run the update intersection observations steps</a> for that {{Document}}, passing in
            <var>now</var> as the timestamp.
       12. For each <a>fully active</a> {{Document}} in <var>docs</var>, update the rendering or user
            interface of that {{Document}} and its <a>browsing context</a> to reflect the current
@@ -1703,7 +1701,7 @@
   <dfn lt="fire a synthetic mouse event named contextmenu|Firing a synthetic mouse event named e|firing a synthetic mouse event named click">Firing a synthetic mouse event named <var>e</var></dfn>
   means that an event with the name <var>e</var>, which is <a>trusted</a> (except where otherwise
   stated), does not bubble (except where otherwise stated), is not cancelable (except where
-  otherwise stated), and which uses the {{MouseEvent}} interface, must be created and dispatched at
+  otherwise stated), and which uses the {{MouseEvent}} interface, must be created and <a>dispatched</a> at
   the given target. The event object must have its {{MouseEvent/screenX}}, {{MouseEvent/screenY}},
   {{MouseEvent/clientX}, {{MouseEvent/clientY}}, and {{MouseEvent/button}} attributes initialized to
   0, its {{MouseEvent/ctrlKey}}, {{MouseEvent/shiftKey}}, {{MouseEvent/altKey}}, and
@@ -2045,7 +2043,7 @@
   17. <a>Set up a browsing context environment settings object</a> with
        <var>realm execution context</var>.
   18. Replace the {{Document}}'s singleton objects with new instances of those objects, created in
-       <var>window</var>'s <a>Realm</a>. (This includes in particular the {{Window}}, {{Location}},
+       <var>window</var>'s <a>Realm</a>. (This includes in particular the
        {{History}}, {{ApplicationCache}}, and {{Navigator}}, objects, the various {{BarProp}}
        objects, the two <code>Storage</code> objects, the various {{HTMLCollection}} objects, and
        objects defined by other specifications, like <code>Selection</code>. It also includes all
@@ -4424,7 +4422,7 @@
 
     <dd>
 
-    Returns the <a>intrinsic width</a> of the image, in CSS pixels.
+    Returns the <a for="css">intrinsic width</a> of the image, in CSS pixels.
 
     </dd>
 
@@ -4432,7 +4430,7 @@
 
     <dd>
 
-    Returns the <a>intrinsic height</a> of the image, in CSS pixels.
+    Returns the <a for="css">intrinsic height</a> of the image, in CSS pixels.
 
     </dd>
 
@@ -4501,7 +4499,8 @@
       <li>Create a new <code>ImageBitmap</code> object.</li>
 
       <li>Let the <code>ImageBitmap</code> object's bitmap data be a copy of the frame at the
-      <a>current playback position</a>, at the <a>media resource</a>'s <a>intrinsic width</a> and <a>intrinsic height</a> (i.e., after any aspect-ratio
+      <a>current playback position</a>, at the <a>media resource</a>'s <a for="css">intrinsic width</a>
+      and <a for="css">intrinsic height</a> (i.e., after any aspect-ratio
       correction has been applied), <a>cropped to the source rectangle</a>.
 
       <li>If the <a for="concept">origin</a> of the <{video}> element's image is not the
@@ -4546,7 +4545,7 @@
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
       but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
 
-      <li>If the <code>Blob</code> object has been disabled through the <code>close()</code> method, then return a promise rejected with an <code>InvalidStateError</code>
+      <li>If <var>image</var> is <a for="Blob">closed</a>, then return a promise rejected with an <code>InvalidStateError</code>
       exception and abort these steps.</li>
 
       <li>Return a new promise, but continue running these steps
@@ -4708,6 +4707,53 @@
       loadMySprites().then(runDemo);
     </pre>
   </div>
+
+<h3 id="animation-frames">Animation Frames</h3>
+
+  Each {{Document}} associated with a <a>top-level browsing context</a>
+  has a <dfn>list of animation frame callbacks</dfn>, which must be initially empty,
+  and an <dfn>animation frame callback identifier</dfn>, which is a number which must
+  initially be zero.
+
+  When the <dfn method for='Window'>requestAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
+
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
+
+  2. Increment <var>document</var>'s <a>animation frame callback identifier</a> by one.
+
+  3. Append the method's argument to <var>document</var>'s <a>list of animation frame
+     callbacks</a>, associated with <var>document</var>'s <a>animation frame callback
+     identifier</a>'s current value
+
+  4. Return <var>document</var>'s <a>animation frame callback identifier</a>'s current value
+
+  When the <dfn method for='Window'>cancelAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
+
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
+
+  2. Find the entry in <var>document</var>'s <a>list of animation frame callbacks</a> that
+     is associated with the value given by the method's argument <var>handle</var>
+
+  3. If there is such an entry, remove it from <var>document</var>'s <a>list of animation
+     frame callbacks</a>
+
+  When the user agent is to <dfn>run the animation frame callbacks</dfn> for a
+  {{Document}} <var>document</var> with a timestamp <var>now</var>, it must
+  run the following steps:
+
+  1. If the value returned by the <var>document</var> object's {{Document/hidden}}
+     attribute is true, abort these steps. [[!PAGE-VISIBILITY]]
+
+  2. Let <var>callbacks</var> be a list of the entries in <var>document</var>'s <a>list
+     of animation frame callbacks</a>, in the order in which they were added to the list.
+
+  3. Set <var>document</var>'s <a>list of animation frame callbacks</a> to the empty list.
+
+  4. For each entry in <var>callbacks</var>, in order: <a>invoke the Web IDL callback
+     function</a>, passing <var>now</var> as the only argument, and if an exception is
+     thrown, <a>report the exception</a>. [[!WEBIDL]]
 
 </section>
 
