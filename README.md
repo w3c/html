@@ -21,10 +21,10 @@ For the multipage version, one can do as follows:
 There are some conventions for linking to things. For example, 
 * For definitions of standard terms, use `<a>term known to bikeshed</a>`
 * For definitions of elements use `<{img}>`
-* For definitions of attributes use `<{img/alt}>
-* For WebIDL terms use {{HTMLImageElement/alt}}
-* For Normative references use [[!shortname]] where `shortname` is the W3C "shortname" of the spec
-* For informative references use [[shortname]]
+* For definitions of attributes use `<{img/alt}>`
+* For WebIDL terms use `{{HTMLImageElement/alt}}`
+* For Normative references use `[[!shortname]]` where `shortname` is the W3C "shortname" of the spec
+* For informative references use `[[shortname]]`
 
 ## Contributing to this Repository
 
