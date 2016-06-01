@@ -142,102 +142,103 @@
     <dd>Uses {{HTMLElement}}.</dd>
   </dl>
 
-  The <{article}> element <a>represents</a> a complete, or self-contained, composition in a
-  document, page, application, or site and that is, in principle, independently distributable or
-  reusable, e.g., in syndication. This could be a forum post, a magazine or newspaper article, a blog
-  entry, a user-submitted comment, an interactive widget or gadget, or any other independent item of
-  content. Each <{article}> should be identified, typically by including a heading
-  (<{h1}>-<{h6}> element) as a child of the <{article}> element.
-
+  The <{article}> element <a>represents</a> a complete, or self-contained, composition in a document, 
+  page, application, or site. This could be a magazine, newspaper, technical or 
+  scholarly article, an essay or report, a blog or other social media post. 
+  
   A general rule is that the <{article}> element is appropriate only if the element's
-  contents would be listed explicitly in the document's outline.
+  contents would be listed explicitly in the document's outline. Each <{article}> should be 
+  identified, typically by including a heading(<{h1}>-<{h6}> element) as a child of the <{article}> 
+  element.
 
+  <p>The semantics of the <code>article</code> element may be conveyed to users of Assistive Technology. This
+  information can provide a hint to users as to the type of content. For example the <a>role</a> of 
+  the element, which in this case matches the element name "article", can be announced by 
+  screen reader software when a users navigates to an <code>article</code> element. User Agents 
+  may also provide methods to navigate to <code>article</code> elements.</p>
+  
   When <{article}> elements are nested, the inner <{article}> elements represent
   articles that are in principle related to the contents of the outer article. For instance, a blog
-  entry on a site that accepts user-submitted comments could represent the comments as
-  <{article}> elements nested within the <{article}> element for the blog entry.
+  entry on a site could consist of summaries of other blog entries in <{article}> elements nested 
+  within the <{article}> element for the blog entry.
 
   Author information associated with an <{article}> element (q.v. the <code>address</code>
   element) does not apply to nested <{article}> elements.
-
-  <p class="note">
-    When used specifically with content to be redistributed in syndication, the <{article}>
-    element is similar in purpose to the <code>entry</code> element in Atom. [[RFC4287]]
-  </p>
-  <p class="note">
-    The schema.org microdata vocabulary can be used to provide the publication date for an
-    <{article}> element, using one of the CreativeWork subtypes.
-  </p>
-
-  When the main content of the page (i.e., excluding footers, headers, navigation blocks, and
-  sidebars) is all one single self-contained composition, that content may be marked with an
-  <{article}>, but it is technically redundant in that case (since it's self-evident that
-  the page is a single composition, as it is a single document).
-
+  
   <div class="example">
-    This example shows a blog post using the <{article}> element, with some schema.org
-    annotations:
+ <p>The following is an example of a blog post extract, marked up using the <code>article</code> element:</p>
+ <pre highlight="html">
+ &lt;article&gt;
+  &lt;header&gt;
+   &lt;h2&gt;&lt;a href="http://herbert.io"&gt;Short note on wearing shorts&lt;/a&gt;&lt;/h2&gt;
+    &lt;p&gt;Posted on Wednesday, 10 February 2016 by Patrick Lauke.
+    &lt;a href="http://herbert.io/short-note/#comments"&gt;6 comments&lt;/a&gt;&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;p&gt;A fellow traveller posed an interesting question: Why do you wear shorts rather than 
+  longs? The person was wearing <em>culottes</em> as the time, so I considered the question equivocal in nature, 
+  but I attempted to provide an honest answer despite the dubiousness of the questioner's dress.&lt;/p&gt; 
+  &lt;p&gt;The short answer is that I enjoy wearing shorts, the long answer is...&lt;/p&gt;
+  &lt;p&gt;&lt;a href="http://herbert.io/short-note/"&gt;Continue reading: Short note on 
+  wearing shorts&lt;/a&gt;&lt;/p&gt;
+ &lt;/article&gt;</pre>
+ </div>
 
-    <pre highlight="html">
-      &lt;article typeof="schema:BlogPosting"&gt;
+ <p class="note">The schema.org  vocabulary can be used to provide more granular information about 
+  the type of article, using the <a href="http://schema.org/Article">CreativeWork - Article</a> 
+  subtypes, other information such as the publication date for the article can also be provided.</p>
+  
+  <div class="example">
+  <p>This example shows a blog post using the <code>article</code> element, with some schema.org
+  annotations: </p>
+  <pre highlight="html">      
+      &lt;article itemscope <mark>itemtype="http://schema.org/BlogPosting"</mark>&gt;
         &lt;header&gt;
-          &lt;h2 property="schema:headline"&gt;The Very First Rule of Life&lt;/h2&gt;
-          &lt;p&gt;&lt;time property="schema:datePublished" datetime="2009-10-09"&gt;3 days ago&lt;/time&gt;&lt;/p&gt;
-          &lt;link property="schema:url" href="?comments=0"&gt;
+          &lt;h2 itemprop="headline"&gt;The Very First Rule of Life&lt;/h2&gt;
+          &lt;p&gt;&lt;time <mark>itemprop="datePublished"</mark> datetime="2016-02-28"&gt;3 days ago&lt;/time&gt;&lt;/p&gt;
         &lt;/header&gt;
         &lt;p&gt;If there's a microphone anywhere near you, assume it's hot and
         sending whatever you're saying to the world. Seriously.&lt;/p&gt;
         &lt;p&gt;<em>...</em>&lt;/p&gt;
         &lt;footer&gt;
-          &lt;a property="schema:discussionUrl" href="?comments=1"&gt;Show comments...&lt;/a&gt;
+          &lt;a itemprop="discussionUrl" href="?comments=1"&gt;Show comments...&lt;/a&gt;
         &lt;/footer&gt;
       &lt;/article&gt;
     </pre>
 
-    Here is that same blog post, but showing some of the comments:
-
-    <pre highlight="html">
-      &lt;article typeof="schema:BlogPosting"&gt;
+    <p>Here is that same blog post, but showing some of the comments: </p>
+  <pre highlight="html">     &lt;article itemscope itemtype="http://schema.org/BlogPosting"&gt;
         &lt;header&gt;
-          &lt;h2 property="schema:headline"&gt;The Very First Rule of Life&lt;/h2&gt;
-          &lt;p&gt;&lt;time property="schema:datePublished" datetime="2009-10-09"&gt;3 days ago&lt;/time&gt;&lt;/p&gt;
-          &lt;link property="schema:url" href="?comments=0"&gt;
+          &lt;h2 itemprop="headline"&gt;The Very First Rule of Life&lt;/h2&gt;
+          &lt;p&gt;&lt;time itemprop="datePublished" datetime="2009-10-09"&gt;3 days ago&lt;/time&gt;&lt;/p&gt;
         &lt;/header&gt;
-        &lt;p&gt;If there's a microphone anywhere near you, assume it's hot and
-        sending whatever you're saying to the world. Seriously.&lt;/p&gt;
-        &lt;p&gt;<em>...</em>&lt;/p&gt;
+         &lt;p&gt;If there's a microphone anywhere near you, assume it's hot and
+         sending whatever you're saying to the world. Seriously.&lt;/p&gt;
+         &lt;p&gt;<em>...</em>&lt;/p&gt;
         &lt;section&gt;
-          &lt;h2&gt;Comments&lt;/h2&gt;
-          &lt;article property="schema:comment" typeof="schema:UserComments" id="c1"&gt;
-            &lt;link property="schema:url" href="#c1"&gt;
-            &lt;footer&gt;
-              &lt;p&gt;Posted by: &lt;span property="schema:creator" typeof="schema:Person"&gt;
-              &lt;span property="schema:name"&gt;George Washington&lt;/span&gt;
+          &lt;h3&gt;Comments&lt;/h3&gt;
+          &lt;ol&gt;
+           &lt;li itemprop="comment" itemscope itemtype="http://schema.org/UserComments" id="c1"&gt;
+              &lt;p&gt;Posted by: &lt;span itemprop="creator" itemscope itemtype="http://schema.org/Person"&gt;
+              &lt;span itemprop="name"&gt;George Washington&lt;/span&gt;
               &lt;/span&gt;&lt;/p&gt;
-              &lt;p&gt;&lt;time property="schema:commentTime" datetime="2009-10-10"&gt;15 minutes ago&lt;/time&gt;&lt;/p&gt;
-            &lt;/footer&gt;
-            &lt;p&gt;Yeah! Especially when talking about your lobbyist friends!&lt;/p&gt;
-          &lt;/article&gt;
-          &lt;article property="schema:comment" typeof="schema:UserComments" id="c2"&gt;
-            &lt;link property="schema:url" href="#c2"&gt;
-            &lt;footer&gt;
-              &lt;p&gt;Posted by: &lt;span property="schema:creator" typeof="schema:Person"&gt;
-              &lt;span property="schema:name"&gt;George Hammond&lt;/span&gt;
+              &lt;p&gt;&lt;time itemprop="commentTime" datetime="2009-10-10"&gt;15 minutes ago&lt;/time&gt;&lt;/p&gt;
+              &lt;p&gt;Yeah! Especially when talking about your lobbyist friends!&lt;/p&gt;
+           &lt;li itemprop="comment" itemscope itemtype="http://schema.org/UserComments" id="c2"&gt;
+              &lt;p&gt;Posted by: &lt;span itemprop="creator" itemscope itemtype="http://schema.org/Person"&gt;
+              &lt;span itemprop="name"&gt;George Hammond&lt;/span&gt;
               &lt;/span&gt;&lt;/p&gt;
-              &lt;p&gt;&lt;time property="schema:commentTime" datetime="2009-10-10"&gt;5 minutes ago&lt;/time&gt;&lt;/p&gt;
-            &lt;/footer&gt;
-            &lt;p&gt;Hey, you have the same first name as me.&lt;/p&gt;
-          &lt;/article&gt;
+              &lt;p&gt;&lt;time itemprop="commentTime" datetime="2009-10-10"&gt;5 minutes ago&lt;/time&gt;&lt;/p&gt;
+              &lt;p&gt;Hey, you have the same first name as me.&lt;/p&gt;
+           &lt;/li&gt;
+         &lt;/ol&gt;
         &lt;/section&gt;
-      &lt;/article&gt;
+      &lt;/section&gt;
     </pre>
 
-    Notice the use of <{footer}> to give the information for each comment (such as who
-    wrote it and when): the <{footer}> element <em>can</em> appear at the start of its
-    section when appropriate, such as in this case. (Using <code>header</code> in this case wouldn't
-    be wrong either; it's mostly a matter of authoring preference.)
+    <p>Notice the use of an ordered list <code>ol</code> to organize the comments. Also note the 
+	comments are a subsection of the article, identified using a <code>section</code> element.</p>
+</div>
 
-  </div>
 
 <h4 id="the-section-element">The <dfn element><code>section</code></dfn> element</h4>
 
