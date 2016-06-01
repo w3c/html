@@ -27,9 +27,10 @@ More information on contributing is in [CONTRIBUTING.md](CONTRIBUTING.md).
 To make changes to the specification:
 
 1. Edit single-page.bs (or one of the include files it references) in the `master` branch. Do not edit the HTML files in the `gh-pages` branch. These are built automatically.
-2. Ideally run bikeshed on single-page.bs to make sure there are no errors (run `bikeshed spec`).
-3. Create a pull request but do not include the single-page.html file
-4. When the editors merge and commit your pull request Travis-CI will build the HTML files
+2. Edit the [Acknowledgements section](https://github.com/w3c/html/blob/master/sections/acknowledgements.include) in the `master` branch to include your name.
+3. Ideally run bikeshed on single-page.bs to make sure there are no errors (run `bikeshed spec`).
+4. Create a pull request but do not include the single-page.html file
+5. When the editors merge and commit your pull request Travis-CI will build the HTML files
 
 The following considerations should be kept in mind when making a pull request:
 
