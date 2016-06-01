@@ -226,10 +226,7 @@
   contain a <a>valid URL potentially surrounded by spaces</a>.
 
   A <{base}> element, if it has an <{base/href}> attribute, must come before any other elements in
-  the tree that have attributes defined as taking <a for="url">URLs</a>, except the <{html}> element
-  (its <code>manifest</code> attribute isn't affected by <code>xml:base</code> attributes or
-  <{base}> elements). elements in the tree that have attributes defined as taking
-  <a for="url">URLs</a>.
+  the tree that have attributes defined as taking <a for="url">URLs</a>.
 
   <div class="impl">
     <p class="note">
@@ -471,65 +468,64 @@
   for the relevant link type. Some of the attributes control whether or not the external resource is
   to be applied (as defined below).
 
-  <div class="impl">
-    For external resources that are represented in the DOM (for example, style sheets), the DOM
-    representation must be made available (modulo cross-origin restrictions) even if the resource is
-    not applied. To <dfn lt="obtain|obtain the resource">obtain the resource</dfn>, the user agent must
-    run the following steps:
+  For external resources that are represented in the DOM (for example, style sheets), the DOM
+  representation must be made available (modulo cross-origin restrictions) even if the resource is
+  not applied. To <dfn lt="obtain|obtain the resource">obtain the resource</dfn>, the user agent must
+  run the following steps:
 
-    1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
-    2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
-        element.
-    3. If the previous step fails, then abort these steps.
-    4. Let <var>corsAttributeState</var> be the current state of the element's
-        <code>crossorigin</code> content attribute.
-    5. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given the
-        <a for="url">URL</a> and <var>corsAttributeState</var>.
-    6. Set <var>request</var>'s <a>client</a> to the <{link}> element's
-        <a>node document</a>'s <code>Window</code> object's <a>environment settings object</a>.
-    7. <a>Fetch</a> <var>request</var>.
 
-    User agents may opt to only try to obtain such resources when they are needed, instead of
-    pro-actively fetching all the external resources that are not applied.
+  1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
+  2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
+      element's <a>node document</a>. If that fails, then abort these steps. Otherwise, let
+      <var>url</var> be the <a>resulting URL record</a>.
+  3. Let <var>corsAttributeState</var> be the current state of the element's <{link/crossorigin}>
+      content attribute.
+  4. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
+      <var>url</var> and <var>corsAttributeState</var>.
+  5. Set <var>request</var>'s <a>client</a> to the <{link}> element's <a>node document</a>'s
+      {{Window}} object's <a>environment settings object</a>.
+  6. <a>Fetch</a> <var>request</var>.
 
-    The semantics of the protocol used (e.g., HTTP) must be followed when fetching external
-    resources. (For example, redirects will be followed and 404 responses will cause the external
-    resource to not be applied.)
+  User agents may opt to only try to obtain such resources when they are needed, instead of
+  pro-actively fetching all the external resources that are not applied.
 
-    Once the attempts to obtain the resource and its <a>critical subresources</a> are complete, the
-    user agent must, if the loads were successful, <a>queue a task</a> to <a>fire a simple event</a>
-    named <code>load</code> at the <{link}> element, or, if the resource or one of its
-    <a>critical subresources</a> failed to completely load for any reason (e.g., DNS error, HTTP 404
-    response, a connection being prematurely closed, unsupported Content-Type), <a>queue a task</a>
-    to <a>fire a simple event</a> named <code>error</code> at the <{link}> element.
-    Non-network errors in processing the resource or its subresources (e.g., CSS parse errors, PNG
-    decoding errors) are not failures for the purposes of this paragraph.
+  The semantics of the protocol used (e.g., HTTP) must be followed when fetching external
+  resources. (For example, redirects will be followed and 404 responses will cause the external
+  resource to not be applied.)
 
-    The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
+  Once the attempts to obtain the resource and its <a>critical subresources</a> are complete, the
+  user agent must, if the loads were successful, <a>queue a task</a> to <a>fire a simple event</a>
+  named <code>load</code> at the <{link}> element, or, if the resource or one of its
+  <a>critical subresources</a> failed to completely load for any reason (e.g., DNS error, HTTP 404
+  response, a connection being prematurely closed, unsupported Content-Type), <a>queue a task</a>
+  to <a>fire a simple event</a> named <code>error</code> at the <{link}> element.
+  Non-network errors in processing the resource or its subresources (e.g., CSS parse errors, PNG
+  decoding errors) are not failures for the purposes of this paragraph.
 
-    The element must <a>delay the load event</a> of the element's <a>node document</a> until all the
-    attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
-    that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
-    to be needed, do not <a>delay the load event</a>.)
+  The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
 
-    <hr />
+  The element must <a>delay the load event</a> of the element's <a>node document</a> until all the
+  attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
+  that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
+  to be needed, do not <a>delay the load event</a>.)
 
-    Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
-    using the <{link}> element, somewhere within their user interface. The exact interface
-    is not defined by this specification, but it could include the following information (obtained
-    from the element's attributes, again as defined below), in some form or another (possibly
-    simplified), for each hyperlink created with each <{link}> element in the document:
+  <hr />
 
-    * The relationship between this document and the resource (given by the <{link/rel}>
-        attribute)
-    * The title of the resource (given by the <code>title</code> attribute).
-    * The address of the resource (given by the <{link/href}> attribute).
-    * The language of the resource (given by the <code>hreflang</code> attribute).
-    * The optimum media for the resource (given by the <code>media</code> attribute).
+  Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
+  using the <{link}> element, somewhere within their user interface. The exact interface
+  is not defined by this specification, but it could include the following information (obtained
+  from the element's attributes, again as defined below), in some form or another (possibly
+  simplified), for each hyperlink created with each <{link}> element in the document:
 
-    User agents could also include other information, such as the type of the resource (as given by
-    the <code>type</code> attribute).
-  </div>
+  * The relationship between this document and the resource (given by the <{link/rel}>
+      attribute)
+  * The title of the resource (given by the <code>title</code> attribute).
+  * The address of the resource (given by the <{link/href}> attribute).
+  * The language of the resource (given by the <code>hreflang</code> attribute).
+  * The optimum media for the resource (given by the <code>media</code> attribute).
+
+  User agents could also include other information, such as the type of the resource (as given by
+  the <code>type</code> attribute).
 
   <p class="note">
     Hyperlinks created with the <{link}> element and its <{link/rel}> attribute apply
@@ -1662,15 +1658,15 @@
   <a>immediately</a> made available to script; otherwise, the style rules must only be made
   available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
 
-  A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or
-  <a>XML parser</a> is said to be <dfn>a style sheet that is blocking scripts</dfn> if the element
-  was created by that {{Document}}'s parser, and the element is either a
-  <{style}> element or a <{link}> element that was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by the parser,
-  and the element's style sheet was enabled when the element was created by the parser, and the
-  element's <a>style sheet ready</a> flag is not yet set, and, the last time the <a>event loop</a>
-  reached step 1, the element was in that <code>Document</code>, and the user agent
-  hasn't given up on that particular style sheet yet. A user agent may give up on a style sheet at
-  any time.
+  A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or <a>XML parser</a> is
+  said to be <dfn>a style sheet that is blocking scripts</dfn> if the element was created by that
+  {{Document}}'s parser, and the element is either a <{style}> element or a <{link}> element that
+  was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by
+  the parser, and the element's style sheet was enabled when the element was created by the parser,
+  and the element's <a>style sheet ready</a> flag is not yet set, and, the last time the
+  <a>event loop</a> reached step 1, the element was in that {{Document}}, and the user
+  agent hasn't given up on that particular style sheet yet. A user agent may give up on a style
+  sheet at any time.
 
   <p class="note">
     Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
