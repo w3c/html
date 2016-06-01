@@ -860,8 +860,6 @@
           void reset();
           boolean checkValidity();
           boolean reportValidity();
-
-          void requestAutocomplete();
         };
       </pre>
     </dd>
@@ -968,20 +966,6 @@
 
     </dd>
 
-    <dt><var>form</var> . {{HTMLFormElement/requestAutocomplete()}}</dt>
-
-    <dd>
-
-    Triggers a user-agent-specific user interface to help the user fill in any
-    fields that have an <a>autofill field name</a> other than "<code>on</code>" or "<code>off</code>".
-
-    The <{form}> element will subsequently receive an event, either <code>autocomplete</code>, indicating that the fields have been prefilled,
-    or <code>autocompleteerror</code> (using the
-    {{AutocompleteErrorEvent}} interface), indicating that there was some problem (the
-    general class of problem is described by the <code>reason</code> IDL attribute on the event).
-
-    </dd>
-
   </dl>
 
   <div class="impl">
@@ -989,9 +973,6 @@
   The <dfn attribute for="HTMLFormElement"><code>autocomplete</code></dfn> IDL attribute must
   <a>reflect</a> the content attribute of the same name, <a>limited to only known
   values</a>.
-
-  The <dfn method for="HTMLFormElement"><code>requestAutocomplete()</code></dfn> method is part of
-  the <a>autofill mechanism</a>.
 
   The <dfn attribute for="HTMLFormElement"><code>name</code></dfn> IDL attribute must <a>reflect</a>
   the content attribute of the same name.
@@ -12331,8 +12312,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   cause that control to <a>suffer from a type
   mismatch</a>, <a>suffer from being too long</a>,
   <a>suffer from being too short</a>, <a>suffer from an underflow</a>, <a>suffer from an overflow</a>,
-  or <a>suffer from a step mismatch</a>. Except when <a>autofilling</a> for {{HTMLFormElement/requestAutocomplete()}}, a user agent prefilling a form
-  control's <a for="forms">value</a> must not cause that control to <a>suffer from a pattern mismatch</a> either. Where
+  <a>suffer from a step mismatch</a>, or <a>suffer from a pattern mismatch</a>. Where
   possible given the control's constraints, user agents must use the format given as canonical in
   the aforementioned table. Where it's not possible for the canonical format to be used, user agents
   should use heuristics to attempt to convert values so that they can be used.
@@ -12492,286 +12472,6 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   IDL attribute, on getting,
   must return the element's <a>IDL-exposed autofill value</a>, and on setting, must
   <a>reflect</a> the content attribute of the same name.
-
-  </div>
-
-  <div class="impl">
-
-<h6 id="user-interface-for-bulk-autofill">User interface for bulk autofill</h6>
-
-  When the {{HTMLFormElement/requestAutocomplete()}}
-  method on a <{form}> element is invoked, the user agent must run the following steps:
-
-  <ol>
-
-    <li>Let <var>form</var> be the element on which the method was invoked.</li>
-
-    <li>
-
-    If any of the following conditions are met, then <a>queue a task</a> to <a>fail the
-    autofill request</a> on <var>form</var> with the reason "<code>disabled</code>", and abort these steps:
-
-    <ul>
-
-      <li>the algorithm is not <a>allowed to show a popup</a></li>
-
-      <li><var>form</var>'s <a>node document</a> is not <a>fully
-      active</a></li>
-
-      <li><var>form</var>'s <{autocompleteelements/autocomplete}>
-      attribute is in the <code>off</code> state</li>
-
-      <li>the user has disabled this feature for this <var>form</var>'s
-      <a>node document</a>'s <a for="concept">origin</a></li>
-
-      <li>the user agent does not support this <var>form</var>'s fields (e.g., the form
-      has different fields whose <a>autofill scope</a> use different "<code>section-*</code>" tokens)</li>
-
-      <li>the <var>form</var> was obtained via unencrypted channels and the user agent
-      does not support autofill in such situations</li>
-
-      <li>another instance of this algorithm is already being run for <var>form</var></li>
-
-    </ul>
-
-    <p class="note">
-    User agents are encouraged to log the precise cause in a developer console, to
-    aid debugging.
-  </p>
-
-    </li>
-
-    <li>Let <var>pending autofills</var> be an initially empty list of <a>submittable elements</a>, each annotated with a string known as the
-    <i>original autocomplete value</i>.</li>
-
-    <li>
-
-    For each element that matches the following criteria, add the element to <var>pending autofills</var>, with the <i>original autocomplete value</i> annotation being
-    the value of the element's <{autocompleteelements/autocomplete}>
-    attribute:
-
-    <ul>
-
-      <li>the element's <a>form owner</a> is <var>form</var></li>
-
-      <li>the element is <i>mutable</i></li>
-
-      <li>the element is an <{input}> element to which the <{input/autocomplete}> attribute currently <a>applies</a>, or, the element is a <{textarea}>
-      element, or, the element is a <{select}> element</li>
-
-      <li>the element's <{autocompleteelements/autocomplete}> attribute is
-      wearing the <a>autofill expectation mantle</a></li>
-
-      <li>the element's <a>autofill field name</a> is neither "<a attr-value for="forms/autocomplete"><code>off</code></a>" nor "<a attr-value for="forms/autocomplete"><code>on</code></a>"</li>
-
-    </ul>
-
-    </li>
-
-    <li>Return, but continue running these steps <a>in parallel</a>.</li>
-
-    <li>Provide an interface for the user to efficiently fill in some or all of the fields listed
-    in <var>pending autofills</var>. Await the user's input. The user agent may include additional
-    (immutable) information, e.g., <a>data</a> obtained from elements
-    with an <{autocompleteelements/autocomplete}> attribute wearing the
-    <a>autofill anchor mantle</a>.</li>
-
-    <li>
-
-    <a>Queue a task</a> to run the following steps:
-
-    <ol>
-
-      <li>
-
-      If any of the following conditions are met, then <a>fail the autofill request</a> on
-      <var>form</var> with the reason "<code>disabled</code>", and abort these steps:
-
-      <ul>
-
-        <li><var>form</var> is no longer <a>in a <code>Document</code></a></li>
-
-        <li><var>form</var>'s <a>node document</a> is no longer <a>fully
-        active</a></li>
-
-        <li><var>form</var>'s <{autocompleteelements/autocomplete}>
-        attribute is now in the <code>off</code>
-        state</li>
-
-      </ul>
-
-      <p class="note">
-    Again, user agents are encouraged to log the precise cause in a developer
-      console, to aid debugging.
-  </p>
-
-      </li>
-
-      <li>If the user canceled the operation, <a>fail the autofill request</a> on <var>form</var> with the reason "<code>cancel</code>", and abort these steps.</li>
-
-      <li>
-
-      For each element in <var>pending autofills</var>, run the following steps:
-
-      <ol>
-
-        <li>Let <var>candidate</var> be the element in question.</li>
-
-        <li>Let <var>old autocomplete value</var> be the <i>original autocomplete
-        value</i> annotation associated with <var>candidate</var> in <var>pending
-        autofills</var>.</li>
-
-        <li>
-
-        If all of the following conditions are met, then <a>autofill</a> <var>candidate</var>:
-
-        <ul>
-
-          <li><var>candidate</var>'s <a>form owner</a> is <var>form</var></li>
-
-          <li><var>candidate</var> is still <i>mutable</i></li>
-
-          <li><var>candidate</var> is an <{input}> element to which the <{input/autocomplete}> attribute still <a>applies</a>, or, <var>candidate</var> is a
-          <{textarea}> element, or, <var>candidate</var> is a <{select}>
-          element</li>
-
-          <li>the element's <{autocompleteelements/autocomplete}> attribute is
-          still wearing the <a>autofill expectation mantle</a></li>
-
-          <li><var>candidate</var>'s <a>autofill field name</a> is still equal to
-          <var>old autocomplete value</var></li>
-
-          <li>the user provided a value to autofill <var>candidate</var></li>
-
-        </ul>
-
-        </li>
-
-      </ol>
-
-      </li>
-
-      <li>
-
-      <a>Statically validate the constraints</a> of <var>form</var>. If the
-      result was negative, then <a>fail the autofill request</a> on <var>form</var>
-      with the reason "<code>invalid</code>", and abort
-      these steps.
-
-      <p class="note"><a>Statically validating the
-      constraints</a> of a <{form}> involves firing <code>invalid</code> events to each control that does not <a>satisfy its constraints</a>.</p>
-
-      </li>
-
-      <li><a>Fire a simple event</a> that bubbles named <code>autocomplete</code> at <var>form</var>.</li>
-
-    </ol>
-
-    </li>
-
-  </ol>
-
-  When the user agent is required to <dfn>fail the autofill request</dfn> on a <{form}>
-  element <var>target</var> with a reason <var>reason</var>, the user agent must
-  dispatch an event that uses the {{AutocompleteErrorEvent}} interface, with the event type
-  <code>autocompleteerror</code>, which bubbles, is not cancelable, has no default action,
-  has its <code>reason</code> attribute set to <var>reason</var>, and which is <a>trusted</a>, at <var>target</var>.
-
-  The <a>task source</a> for the <a>tasks</a> mentioned in this
-  section is the <a>DOM manipulation task source</a>.
-
-  </div>
-
-<h6 id="the-autocompleteerrorevent-interface">The {{AutocompleteErrorEvent}} interface</h6>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="AutocompleteErrorReason">
-    enum AutocompleteErrorReason {
-      "" /* empty string */,
-      "cancel",
-      "disabled",
-      "invalid"
-    };
-  </pre>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="AutocompleteErrorEvent">
-    [Constructor(DOMString type, optional AutocompleteErrorEventInit eventInitDict)]
-    interface AutocompleteErrorEvent : Event {
-      readonly attribute AutocompleteErrorReason reason;
-    };
-  </pre>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="AutocompleteErrorEventInit">
-    dictionary AutocompleteErrorEventInit : EventInit {
-      AutocompleteErrorReason reason;
-    };
-  </pre>
-
-  <dl class="domintro">
-
-    <dt><var>event</var> . <code>reason</code></dt>
-
-    <dd>
-
-    For the <code>autocompleteerror</code> event, returns the
-    general reason for the failure of the {{HTMLFormElement/requestAutocomplete()}} method, from the list
-    below.
-
-    </dd>
-
-  </dl>
-
-  The defined reason codes are:
-
-  <dl>
-
-    <dt>"" (the empty string)</dt>
-
-    <dd>Reason is unknown.</dd>
-
-    <dt>"<dfn enum for="AutocompleteErrorEvent"><code>cancel</code></dfn>"</dt>
-
-    <dd>The user canceled the autofill interface.</dd>
-
-    <dt>"<dfn enum for="AutocompleteErrorEvent"><code>disabled</code></dfn>"</dt>
-
-    <dd>
-
-    The autofill interface is disabled for this form.
-
-    There are many reasons why this might be the case; the precise reason is not given, to
-    protect the user's privacy. Amongst these reasons are such factors as:
-
-    <ul class="brief">
-
-      <li>The page being delivered over an unencrypted connection (susceptible to
-      man-in-the-middle attacks), when the user agent does not want to risk the user's information
-      being provided to an attacker.</li>
-
-      <li>The form having a combination of fields for which the user agent does not have a
-      dedicated autofill interface.</li>
-
-      <li>The form's <{autocompleteelements/autocomplete}> attribute being in
-      the <code>off</code> state.</li>
-
-      <li>The user having disabled the feature.</li>
-
-    </ul>
-
-    </dd>
-
-    <dt>"<dfn enum for="AutocompleteErrorEvent"><code>invalid</code></dfn>"</dt>
-
-    <dd>The fields have been prefilled, but at least one of the controls in the form does not
-    <a>satisfy its constraints</a>.</dd>
-
-  </dl>
-
-  <div class="impl">
-
-  The <dfn attribute for="AutocompleteErrorEvent"><code>reason</code></dfn> attribute must
-  return the value it was initialized to. When the object is created, this attribute must be
-  initialized to the empty string. It
-  represents the context information for the event.
 
   </div>
 
@@ -14260,9 +13960,9 @@ fur
 
     <li>
 
-    Encode the (now mutated) <var>form data set</var> using the rules described by RFC 2388,
+    Encode the (now mutated) <var>form data set</var> using the rules described by RFC 7578,
     <cite>Returning Values from Forms: <code>multipart/form-data</code></cite>, and return
-    the resulting byte stream. [[!RFC2388]]
+    the resulting byte stream. [[!RFC7578]]
 
     Each entry in the <var>form data set</var> is a <i>field</i>, the name of the entry is the
     <i>field name</i> and the value of the entry is the <i>field value</i>.
@@ -14270,24 +13970,15 @@ fur
     The order of parts must be the same as the order of fields in the <var>form data set</var>.
     Multiple entries with the same name must be treated as distinct fields.
 
-    <p class="note">
-    In particular, this means that multiple files submitted as part of a single
-    <code highlight="html">&lt;input&nbsp;type=file&nbsp;multiple&gt;</code> element will result in each file
-    having its own field; the "sets of files" feature ("<code>multipart/mixed</code>") of RFC 2388
-    is not used.
-  </p>
-
     The parts of the generated <code>multipart/form-data</code> resource that correspond to
     non-file fields must not have a <code>Content-Type</code> header specified. Their names and
-    values must be encoded using the character encoding selected above (field names in particular do
-    not get converted to a 7-bit safe encoding as suggested in RFC 2388).
+    values must be encoded using the character encoding selected above.
 
     File names included in the generated <code>multipart/form-data</code> resource (as part of
     file fields) must use the character encoding selected above, though the precise name may be
     approximated if necessary (e.g., newlines could be removed from file names, quotes could be
     changed to "%22", and characters not expressible in the selected character encoding could be
-    replaced by other characters). User agents must not use the RFC 2231 encoding suggested by
-    RFC 2388.
+    replaced by other characters).
 
     The boundary used by the user agent in generating the return value of this algorithm is the
     <dfn><code>multipart/form-data</code> boundary string</dfn>. (This value is used to generate the
@@ -14299,7 +13990,7 @@ fur
 
   </div>
 
-  For details on how to interpret <code>multipart/form-data</code> payloads, see RFC 2388. [[!RFC2388]]
+  For details on how to interpret <code>multipart/form-data</code> payloads, see RFC 7578. [[!RFC7578]]
 
 <h5 id="plain-text-form-data">Plain text form data</h5>
 
