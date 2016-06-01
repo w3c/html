@@ -1685,6 +1685,15 @@
     };
   </pre>
 
+  <pre class="idl" data-highlight="webidl" dfn-for="DocumentAndElementEventHandlers">
+    [NoInterfaceObject]
+    interface DocumentAndElementEventHandlers {
+      attribute EventHandler oncopy;
+      attribute EventHandler oncut;
+      attribute EventHandler onpaste;
+    };
+  </pre>
+
 <h5 id="event-firing">Event firing</h5>
 
   Certain operations and methods are defined as firing events on elements. For example, the
@@ -4226,129 +4235,6 @@
   The <dfn method for="NavigatorPlugins"><code>javaEnabled()</code></dfn> attribute
   must return true if the user agent supports a <a>plugin</a> that supports the <a>MIME
   type</a> "<code>application/x-java-vm</code>"; otherwise it must return false.
-
-<h4 id="the-external-interface">The <code>External</code> interface</h4>
-
-  The <dfn attribute for="Window"><code>external</code></dfn> attribute of the <code>Window</code>
-  interface must return an instance of the <code>External</code> interface.
-
-  <pre class="idl" data-highlight="webidl" dfn-for="External">
-    interface External {
-      void AddSearchProvider(DOMString engineURL);
-      unsigned long IsSearchProviderInstalled(DOMString engineURL);
-    };
-  </pre>
-
-  <p class="note">
-  For historical reasons, members on this interface are capitalized.
-  </p>
-
-  <dl class="domintro">
-
-    <dt><var>window</var> . <code>external</code> . <code>AddSearchProvider</code>( <var>url</var> )</dt>
-    <dd>
-
-    Adds the search engine described by the OpenSearch description document at <var>url</var>. [[!OPENSEARCH]]
-
-    The OpenSearch description document has to be on the same server as the script that calls
-    this method.
-
-    </dd>
-
-    <dt><var>installed</var> = <var>window</var> . <code>external</code> . <code>IsSearchProviderInstalled</code>( <var>url</var> )</dt>
-    <dd>
-
-    Returns a value based on comparing <var>url</var> to the URLs of the results pages
-    of the installed search engines.
-
-    <dl>
-      <dt>0 <dd>None of the installed search engines match <var>url</var>.
-      <dt>1 <dd>One or more installed search engines match <var>url</var>, but none are the user's default search engine.
-      <dt>2 <dd>The user's default search engine matches <var>url</var>.
-    </dl>
-
-    The <var>url</var> is compared to the URLs of the results pages of the installed
-    search engines using a prefix match. Only results pages on the same domain as the script that
-    calls this method are checked.
-
-    </dd>
-
-  </dl>
-
-  <p class="note">
-  Another way of exposing search engines using OpenSearch description documents is
-  using a <{link}> element with the <code>search</code> link type.
-  </p>
-
-    The <dfn method for="External"><code>AddSearchProvider()</code></dfn> method,
-    when invoked, must run the following steps:
-
-    <ol>
-
-    <li>Optionally, abort these steps. User agents may implement the method as a stub method that
-    never does anything, or may arbitrarily ignore invocations with particular arguments for
-    security, privacy, or usability reasons.</li>
-
-    <li><a>Parse</a> the value of the method's first argument
-    relative to the <a>API base URL</a> specified by the <a>entry settings
-    object</a>.</li>
-
-    <li>If this fails, abort these steps.</li>
-
-    <li>Process the <a>resulting URL string</a> as the <a for="url">URL</a> to an OpenSearch
-    description document. [[!OPENSEARCH]]</li>
-
-    </ol>
-
-    The <dfn method for="External"><code>IsSearchProviderInstalled()</code></dfn>
-    method, when invoked, must run the following steps:
-
-    <ol>
-
-    <li>Optionally, return 0 and abort these steps. User agents may implement the method as a
-    stub method that never returns a non-zero value, or may arbitrarily ignore invocations with
-    particular arguments for security, privacy, or usability reasons.</li>
-
-    <li>If the <a for="concept">origin</a> specified by the <a>entry settings object</a> is an
-    opaque identifier (i.e., it has no host component), then return 0 and abort these steps.</li>
-
-    <li>Let <var>host1</var> be the host component of the <a for="concept">origin</a> specified
-    by the <a>entry settings object</a>.</li>
-
-    <li><a>Parse</a> the <var>scriptURL</var> argument
-    relative to the <a>API base URL</a> specified by the <a>entry settings
-    object</a>.</li>
-
-    <li>If this fails, return 0 and abort these steps.</li>
-
-    <li>Let <var>host2</var> be the <a for="url">host</a> component
-    of the <a>resulting URL string</a>.</li>
-
-    <li>
-
-      If the longest suffix in the Public Suffix List that matches the end of <var>host1</var> is different than the longest suffix in the Public Suffix List that
-      matches the end of <var>host2</var>, then return 0 and abort these steps. [[!PSL]]
-
-      If the next domain component of <var>host1</var> and <var>host2</var>
-      after their common suffix are not the same, then return 0 and abort these steps.
-
-    </li>
-
-    <li>Let <var>search engines</var> be the list of search engines known by the user
-    agent and made available to the user by the user agent for which the resulting
-    <a>absolute URL</a> is a <a>prefix match</a> of the search engine's <a for="url">URL</a>, if any. For
-    search engines registered using OpenSearch description documents, the <a for="url">URL</a> of the
-    search engine corresponds to the URL given in a <code>Url</code> element whose <{links/rel}> attribute is "<code>results</code>" (the default). [[!OPENSEARCH]]</li>
-
-    <li>If <var>search engines</var> is empty, return 0 and abort these steps.</li>
-
-    <li>If the user's default search engine (as determined by the user agent) is one of the
-    search engines in <var>search engines</var>, then return 2 and abort these
-    steps.</li>
-
-    <li>Return 1.</li>
-
-    </ol>
 
 <h3 id="webappapis-images">Images</h3>
 
