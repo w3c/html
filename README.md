@@ -18,11 +18,19 @@ For the multipage version, one can do as follows:
 1. Install [multipage](https://github.com/adrianba/multipage)
 2. Follow the instructions there to regenerate the HTML files
 
+There are some conventions for linking to things. For example, 
+* For definitions of standard terms, use `<a>term known to bikeshed</a>`
+* For definitions of elements use `<{img}>`
+* For definitions of attributes use `<{img/alt}>
+* For WebIDL terms use {{HTMLImageElement/alt}}
+* For Normative references use [[!shortname]] where `shortname` is the W3C "shortname" of the spec
+* For informative references use [[shortname]]
+
 ## Contributing to this Repository
 
 Use the standard fork, branch, and pull request workflow to propose changes to the specification. Please make branch names informative - by including the issue or bug number for example.
 
-More information on contributing is in [CONTRIBUTING.md](CONTRIBUTING.md).
+Please read [CONTRIBUTING.md](CONTRIBUTING.md), about licensing contributions.
 
 To make changes to the specification:
 
