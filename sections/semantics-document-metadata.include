@@ -66,7 +66,7 @@
         &lt;HTML>
         &lt;HEAD>
           &lt;META CHARSET="UTF-8">
-          &lt;BASE HREF="http://www.example.com/">
+          &lt;BASE HREF="https://www.example.com/">
           &lt;TITLE>An application with a long head&lt;/TITLE>
           &lt;LINK REL="STYLESHEET" HREF="default.css">
           &lt;LINK REL="STYLESHEET ALTERNATE" HREF="big.css" TITLE="Big Text">
@@ -222,13 +222,11 @@
   A <{base}> element must have either an <{base/href}> attribute, a <code>target</code>
   attribute, or both.
 
-  The <dfn element-attr for="base"><code>href</code></dfn> content attribute, if specified, must contain a <a>valid URL
-  potentially surrounded by spaces</a>.
+  The <dfn element-attr for="base"><code>href</code></dfn> content attribute, if specified, must
+  contain a <a>valid URL potentially surrounded by spaces</a>.
 
-  A <{base}> element, if it has an <{base/href}> attribute, must come before any other
-  elements in the tree that have attributes defined as taking <a for="url">URLs</a>, except the
-  <{html}> element (its <code>manifest</code> attribute isn't affected by
-  <code>xml:base</code> attributes or <{base}> elements).
+  A <{base}> element, if it has an <{base/href}> attribute, must come before any other elements in
+  the tree that have attributes defined as taking <a for="url">URLs</a>.
 
   <div class="impl">
     <p class="note">
@@ -253,8 +251,8 @@
 
     A <{base}> element that is the first <{base}> element with an
     <{base/href}> content attribute in a particular {{Document}} has a
-    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a> 
-    <a lt="set the frozen base URL">set</a> for an element whenever any of the following situations 
+    <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a>
+    <a lt="set the frozen base URL">set</a> for an element whenever any of the following situations
     occur:
 
     * The <{base}> element becomes the first <{base}> element in <a>tree order</a>
@@ -264,24 +262,24 @@
         <{base/href}> content attribute is changed.
 
     To <dfn>set the frozen base URL</dfn>, for an element <var>element</var>:
-    
+
     1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
-    2. Let <var>urlRecord</var> be the result of <a>parsing</a> the value of 
+    2. Let <var>urlRecord</var> be the result of <a>parsing</a> the value of
         <var>element</var>'s <{base/href}> content attribute with <var>document</var>'s
         <a>fallback base URL</a>, and <var>document</var>'s <a>character encoding</a>. (Thus the
         <{base}> element isn't affected by itself.)
-    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s 
-        <a>fallback base URL</a>, if <var>urlRecord</var> is failure or running 
-        <a>Is base allowed for Document?</a> on the <a>resulting URL record</a> and 
+    3. Set <var>elements</var>'s <a>frozen base URL</a> to <var>document</var>'s
+        <a>fallback base URL</a>, if <var>urlRecord</var> is failure or running
+        <a>Is base allowed for Document?</a> on the <a>resulting URL record</a> and
         <var>document</var> returns "<code>Blocked</code>", and to <var>urlRecord</var> otherwise.
 
-    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must 
+    The <dfn attribute for="HTMLBaseElement"><code>href</code></dfn> IDL attribute, on getting, must
     return the result of running the following algorithm:
 
     1. Let <var>document</var> be <var>element</var>'s <a>node document</a>.
     2. Let <var>url</var> be the value of the <{base/href}> attribute of the <{base}> element, if it
         has one, and the empty string otherwise.
-    3. Let <var>urlRecord</var> be the result of <a>parsing</a> <var>url</var> with 
+    3. Let <var>urlRecord</var> be the result of <a>parsing</a> <var>url</var> with
         <var>document</var>'s <a>fallback base url</a>, and <var>document</var>'s
         <a>character encoding</a>. (Thus, the <{base}> element isn't affected by other <{base}>
         elements or itself).
@@ -303,7 +301,7 @@
       &lt;html>
         &lt;head>
           &lt;title>This is an example for the &amp;lt;base&amp;gt; element&lt;/title>
-          &lt;base href="http://www.example.com/news/index.html">
+          &lt;base href="https://www.example.com/news/index.html">
         &lt;/head>
         &lt;body>
           &lt;p>Visit the &lt;a href="archives.html">archives&lt;/a>.&lt;/p>
@@ -312,7 +310,7 @@
     </pre>
 
     The link in the above example would be a link to
-    "<code>http://www.example.com/news/archives.html</code>".
+    "<code>https://www.example.com/news/archives.html</code>".
   </div>
 
 <h4 id="the-link-element">The <dfn element><code>link</code></dfn> element</h4>
@@ -470,65 +468,64 @@
   for the relevant link type. Some of the attributes control whether or not the external resource is
   to be applied (as defined below).
 
-  <div class="impl">
-    For external resources that are represented in the DOM (for example, style sheets), the DOM
-    representation must be made available (modulo cross-origin restrictions) even if the resource is
-    not applied. To <dfn lt="obtain|obtain the resource">obtain the resource</dfn>, the user agent must
-    run the following steps:
+  For external resources that are represented in the DOM (for example, style sheets), the DOM
+  representation must be made available (modulo cross-origin restrictions) even if the resource is
+  not applied. To <dfn lt="obtain|obtain the resource">obtain the resource</dfn>, the user agent must
+  run the following steps:
 
-    1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
-    2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
-        element.
-    3. If the previous step fails, then abort these steps.
-    4. Let <var>corsAttributeState</var> be the current state of the element's
-        <code>crossorigin</code> content attribute.
-    5. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given the
-        <a for="url">URL</a> and <var>corsAttributeState</var>.
-    6. Set <var>request</var>'s <a>client</a> to the <{link}> element's
-        <a>node document</a>'s <code>Window</code> object's <a>environment settings object</a>.
-    7. <a>Fetch</a> <var>request</var>.
 
-    User agents may opt to only try to obtain such resources when they are needed, instead of
-    pro-actively fetching all the external resources that are not applied.
+  1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
+  2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
+      element's <a>node document</a>. If that fails, then abort these steps. Otherwise, let
+      <var>url</var> be the <a>resulting URL record</a>.
+  3. Let <var>corsAttributeState</var> be the current state of the element's <{link/crossorigin}>
+      content attribute.
+  4. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
+      <var>url</var> and <var>corsAttributeState</var>.
+  5. Set <var>request</var>'s <a>client</a> to the <{link}> element's <a>node document</a>'s
+      {{Window}} object's <a>environment settings object</a>.
+  6. <a>Fetch</a> <var>request</var>.
 
-    The semantics of the protocol used (e.g., HTTP) must be followed when fetching external
-    resources. (For example, redirects will be followed and 404 responses will cause the external
-    resource to not be applied.)
+  User agents may opt to only try to obtain such resources when they are needed, instead of
+  pro-actively fetching all the external resources that are not applied.
 
-    Once the attempts to obtain the resource and its <a>critical subresources</a> are complete, the
-    user agent must, if the loads were successful, <a>queue a task</a> to <a>fire a simple event</a>
-    named <code>load</code> at the <{link}> element, or, if the resource or one of its
-    <a>critical subresources</a> failed to completely load for any reason (e.g., DNS error, HTTP 404
-    response, a connection being prematurely closed, unsupported Content-Type), <a>queue a task</a>
-    to <a>fire a simple event</a> named <code>error</code> at the <{link}> element.
-    Non-network errors in processing the resource or its subresources (e.g., CSS parse errors, PNG
-    decoding errors) are not failures for the purposes of this paragraph.
+  The semantics of the protocol used (e.g., HTTP) must be followed when fetching external
+  resources. (For example, redirects will be followed and 404 responses will cause the external
+  resource to not be applied.)
 
-    The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
+  Once the attempts to obtain the resource and its <a>critical subresources</a> are complete, the
+  user agent must, if the loads were successful, <a>queue a task</a> to <a>fire a simple event</a>
+  named <code>load</code> at the <{link}> element, or, if the resource or one of its
+  <a>critical subresources</a> failed to completely load for any reason (e.g., DNS error, HTTP 404
+  response, a connection being prematurely closed, unsupported Content-Type), <a>queue a task</a>
+  to <a>fire a simple event</a> named <code>error</code> at the <{link}> element.
+  Non-network errors in processing the resource or its subresources (e.g., CSS parse errors, PNG
+  decoding errors) are not failures for the purposes of this paragraph.
 
-    The element must <a>delay the load event</a> of the element's <a>node document</a> until all the
-    attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
-    that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
-    to be needed, do not <a>delay the load event</a>.)
+  The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
 
-    <hr />
+  The element must <a>delay the load event</a> of the element's <a>node document</a> until all the
+  attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
+  that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
+  to be needed, do not <a>delay the load event</a>.)
 
-    Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
-    using the <{link}> element, somewhere within their user interface. The exact interface
-    is not defined by this specification, but it could include the following information (obtained
-    from the element's attributes, again as defined below), in some form or another (possibly
-    simplified), for each hyperlink created with each <{link}> element in the document:
+  <hr />
 
-    * The relationship between this document and the resource (given by the <{link/rel}>
-        attribute)
-    * The title of the resource (given by the <code>title</code> attribute).
-    * The address of the resource (given by the <{link/href}> attribute).
-    * The language of the resource (given by the <code>hreflang</code> attribute).
-    * The optimum media for the resource (given by the <code>media</code> attribute).
+  Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
+  using the <{link}> element, somewhere within their user interface. The exact interface
+  is not defined by this specification, but it could include the following information (obtained
+  from the element's attributes, again as defined below), in some form or another (possibly
+  simplified), for each hyperlink created with each <{link}> element in the document:
 
-    User agents could also include other information, such as the type of the resource (as given by
-    the <code>type</code> attribute).
-  </div>
+  * The relationship between this document and the resource (given by the <{link/rel}>
+      attribute)
+  * The title of the resource (given by the <code>title</code> attribute).
+  * The address of the resource (given by the <{link/href}> attribute).
+  * The language of the resource (given by the <code>hreflang</code> attribute).
+  * The optimum media for the resource (given by the <code>media</code> attribute).
+
+  User agents could also include other information, such as the type of the resource (as given by
+  the <code>type</code> attribute).
 
   <p class="note">
     Hyperlinks created with the <{link}> element and its <{link/rel}> attribute apply
@@ -589,7 +586,7 @@
     <a>Content-Type metadata</a>, then those rules apply. Otherwise, if the resource is expected to
     be an image, user agents may apply the <a>image sniffing rules</a>, with the
     <var>official type</var> being the type determined from the resource's
-    <a>Content-Type metadata</a>, and use the resulting sniffed type of the resource as if it was
+    <a>Content-Type metadata</a>, and use the resulting <a>computed type of the resource</a> as if it was
     the actual type. Otherwise, if neither of these conditions apply or if the user agent opts not
     to apply the image sniffing rules, then the user agent must use the resource's
     <a>Content-Type metadata</a> to determine the type of the resource. If there is no type
@@ -679,14 +676,13 @@
     <a>supported tokens</a> are the keywords defined in
     <a>HTML link types</a> which are allowed on <code>link</code> elements, impact
     the processing model, and are supported by the user agent. The possible supported tokens are
-    <code>alternate</code>, <code>icon</code>, <code>prefetch</code>,
-    <code>stylesheet</code> and <code>next</code>.
-    <{link/rel}>'s
-    <a>supported tokens</a> must only include the tokens from
+    <code>alternate</code>, <a>dns-prefetch</a>, <code>icon</code>, <a>preconnect</a>, <a>prefetch</a>,
+    <a>prerender</a>, and <code>stylesheet</code>.
+    <{link/rel}>'s <a>supported tokens</a> must only include the tokens from
     this list that the user agent implements the processing model for.
 
     Other specifications may add <a>HTML link types</a> as
-    defined in <a>Other link types</a>. These specifications may require
+    defined in <a>Other link types</a>, such as [[!RESOURCE-HINTS]]. These specifications may require
     that their link types be included in <{link/rel}>'s supported
     tokens.
   </div>
@@ -791,8 +787,8 @@
   The <dfn element-attr for="meta"><code>charset</code></dfn> attribute specifies the character
   encoding used by the document. This is a <a>character encoding declaration</a>. If the
   attribute is present in an <a>XML document</a>, its value must be an
-  <a>ASCII case-insensitive</a> match for the string "<code>UTF-8</code>" (and the
-  document is therefore forced to use UTF-8 as its encoding).
+  <a>ASCII case-insensitive</a> match for the string "<code>utf-8</code>" (and the
+  document is therefore forced to use <a>UTF-8</a> as its encoding).
 
   <p class="note">The <code>charset</code> attribute on the
   <{meta}> element has no effect in XML documents, and is only allowed in order to
@@ -1276,39 +1272,39 @@
             attribute's value is the empty string, then abort these steps.
         2. Act as if <a>receiving a set-cookie-string</a> for <a>the document's address</a> via a
             "non-HTTP" API, consisting of the value of the element's <code>content</code> attribute
-            encoded as UTF-8. [[!COOKIES]] [[!ENCODING]]
+            <a>encoded as UTF-8</a>. [[!COOKIES]] [[!ENCODING]]
 
     : <dfn state for="http-equiv">Content security policy state</dfn> (<code>http-equiv="content-security-policy"</code>)
-    :: This pragma <a lt="enforced">enforces</a> a <a>Content Security Policy</a> on a {{Document}}. 
+    :: This pragma <a lt="enforced">enforces</a> a <a>Content Security Policy</a> on a {{Document}}.
         [[CSP3]]
-        
+
         1. If the <{meta}> element is not a child of a <{head}> element, abort these steps.
-        2. If the <{meta}> element has no <{meta/content}> attribute, or if that attribute's value 
+        2. If the <{meta}> element has no <{meta/content}> attribute, or if that attribute's value
             is the empty string, then abort these steps.
-        3. Let <var>policy</var> be the result of executing Content Security Policy's 
-            <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's 
+        3. Let <var>policy</var> be the result of executing Content Security Policy's
+            <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's
             <{meta/content}> attribute's value.
-        4. Remove all occurrences of the <a><code>report-uri</code></a>, 
-            <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a> 
+        4. Remove all occurrences of the <a><code>report-uri</code></a>,
+            <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a>
             from <var>policy</var>.
         5. <a>Enforce the policy</a> <var>policy</var>.
 
-        For <{meta}> elements with an <{meta/http-equiv}> attribute in the 
-        <a state for="http-equiv">Content security policy state</a>, the <{meta/content}> attribute 
-        must have a value consisting of a <a>valid Content Security Policy</a>, but must not contain 
-        any <a><code>report-uri</code></a>, <a><code>frame-ancestors</code></a>, or 
-        <a><code>sandbox</code></a> <a>directives</a>. The <a>Content Security Policy</a> given in 
+        For <{meta}> elements with an <{meta/http-equiv}> attribute in the
+        <a state for="http-equiv">Content security policy state</a>, the <{meta/content}> attribute
+        must have a value consisting of a <a>valid Content Security Policy</a>, but must not contain
+        any <a><code>report-uri</code></a>, <a><code>frame-ancestors</code></a>, or
+        <a><code>sandbox</code></a> <a>directives</a>. The <a>Content Security Policy</a> given in
         the <{meta/content}> attribute will be <a>enforced</a> upon the current document. [[CSP3]]
 
         <div class="example">
-        A page might choose to mitigate the risk of cross-site scripting attacks by preventing the 
-        execution of inline JavaScript, as well as blocking all plugin content, using a policy such 
+        A page might choose to mitigate the risk of cross-site scripting attacks by preventing the
+        execution of inline JavaScript, as well as blocking all plugin content, using a policy such
         as the following:
           <pre highlight="html">
             &lt;meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'">
           </pre>
         </div>
-            
+
   There must not be more than one <{meta}> element with any particular state in the
   document at a time.
 
@@ -1389,29 +1385,20 @@
   <a state for="http-equiv" lt="content-type">encoding declaration state</a>, then the character encoding used must be an
   <a>ASCII-compatible encoding</a>.
 
-  Authors should use UTF-8. Conformance checkers may advise authors against using legacy encodings.
+  Authors should use <a>UTF-8</a>. Conformance checkers may advise authors against using legacy encodings.
   [[!ENCODING]]
 
-  <div class="impl">
-    Authoring tools should default to using UTF-8 for newly-created documents. [[!ENCODING]]
-  </div>
+  Authoring tools should default to using <a>UTF-8</a> for newly-created documents. [[!ENCODING]]
 
-  Encodings in which a series of bytes in the range 0x20 to 0x7E can encode characters other than
-  the corresponding characters in the range U+0020 to U+007E represent a potential security
-  vulnerability: a user agent that does not support the encoding (or does not support the label used
-  to declare the encoding, or does not use the same mechanism to detect the encoding of unlabeled
-  content as another user agent) might end up interpreting technically benign plain text content as
-  HTML tags and JavaScript. Authors should therefore not use these encodings. For example, this
-  applies to encodings in which the bytes corresponding to "<code>&lt;script&gt;</code>" in ASCII
-  can encode a different string. Authors should not use such encodings, which are known to include
-  JIS_C6226-1983, JIS_X0212-1990, HZ-GB-2312, JOHAB (Windows code page 1361), encodings based on
-  ISO-2022, and encodings based on EBCDIC. Furthermore, authors must not use the CESU-8, UTF-7,
-  BOCU-1 and SCSU encodings, which also fall into this category; these encodings were never intended
-  for use for Web content. [[RFC1345]] [[RFC1842]] [[RFC1468]] [[RFC2237]] [[RFC1554]]
-  [[CP50220]] [[RFC1922]] [[RFC1557]] [[CESU8]] [[RFC2152]] [[BOCU1]] [[SCSU]]
+  Authors must not use encodings that are not defined in the WHATWG Encoding standard. Additionally,
+  authors should not use <a>ISO-2022-JP</a>.  [[!ENCODING]]
 
-  Authors should not use UTF-32, as the encoding detection algorithms described in this
-  specification intentionally do not distinguish it from UTF-16. [[!UNICODE]]
+  <p class="note">
+    Some encodings that are not defined in the WHATWG Encoding standard use bytes in the range 0x20
+    to 0x7E, inclusive, to encode characters other than the corresponding characters in the range
+    U+0020 to U+007E, inclusive, and represent a potential security vulnerability: A user agent
+    might end up interpreting supposedly benign plain text content as HTML tags and JavaScript.
+  </p>
 
   <p class="note">
     Using non-UTF-8 encodings can have unexpected results on form submission and URL encodings,
@@ -1514,11 +1501,11 @@
     appearing in the <{head}> of the document.
   </p>
 
-  The <dfn element-attr for="style"><code>nonce</code></dfn> attribute represents a cryptographic 
-  nonce ("number used once") which can be used by <a>Content Security Policy</a> to determine 
-  whether or not the style specified by an element will be applied to the document. The value is 
+  The <dfn element-attr for="style"><code>nonce</code></dfn> attribute represents a cryptographic
+  nonce ("number used once") which can be used by <a>Content Security Policy</a> to determine
+  whether or not the style specified by an element will be applied to the document. The value is
   text. [[CSP3]]
-  
+
   The <dfn element-attr for="style"><code>title</code></dfn> attribute on <{style}> elements defines
   <a>alternative style sheet sets</a>. If the <{style}> element has no <code>title</code>
   attribute, then it has no title; the <code>title</code> attribute of ancestors does not apply to
@@ -1547,7 +1534,7 @@
   <div class="impl">
     The user agent must run the <dfn>update a <code>style</code> block</dfn> algorithm that
     applies for the style sheet language specified by the <{style}> element's <{style/type}>
-    attribute, passing it the element's <dfn>style data</dfn>, whenever one of the following 
+    attribute, passing it the element's <dfn>style data</dfn>, whenever one of the following
     conditions occur:
 
     * the element is popped off the <a>stack of open elements</a> of an <a>HTML parser</a> or
@@ -1572,9 +1559,9 @@
         <a spec="cssom" lt="remove a CSS style sheet">remove the CSS style sheet</a> in question.
     3. If <var>element</var> is not <a>in a <code>Document</code></a>, then abort
         these steps.
-    4. If the <a>Should element's inline behavior be blocked by Content Security Policy?</a> 
-        algorithm returns "<code>Blocked</code>" when executed upon the <{style}> element, 
-        "<code>style</code>", and the <{style}> element's <a>style data</a>, then abort these steps. 
+    4. If the <a>Should element's inline behavior be blocked by Content Security Policy?</a>
+        algorithm returns "<code>Blocked</code>" when executed upon the <{style}> element,
+        "<code>style</code>", and the <{style}> element's <a>style data</a>, then abort these steps.
         [[CSP3]]
     5. <a spec="cssom">create a CSS style sheet</a> with the following properties:
 
@@ -1659,48 +1646,46 @@
       &lt;/html&gt;</pre>
   </div>
 
-  <div class="impl">
-    <h4 id="interactions-of-styling-and-scripting">Interactions of styling and scripting</h4>
+  <h4 id="interactions-of-styling-and-scripting">Interactions of styling and scripting</h4>
 
-    Style sheets, whether added by a <{link}> element, a <{style}> element, an
-    <code>&lt;?xml-stylesheet?&gt;</code> PI, an HTTP <code>Link</code> header, or some other
-    mechanism, have a <dfn>style sheet ready</dfn> flag, which is initially unset.
+  Style sheets, whether added by a <{link}> element, a <{style}> element, an
+  <code>&lt;?xml-stylesheet?&gt;</code> PI, an HTTP <code>Link</code> header, or some other
+  mechanism, have a <dfn>style sheet ready</dfn> flag, which is initially unset.
 
-    When a style sheet is ready to be applied, its <a>style sheet ready</a> flag must be set. If the
-    style sheet referenced no other resources (e.g., it was an internal style sheet given by a
-    <{style}> element with no <code>@import</code> rules), then the style rules must be
-    <a>immediately</a> made available to script; otherwise, the style rules must only be made
-    available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
+  When a style sheet is ready to be applied, its <a>style sheet ready</a> flag must be set. If the
+  style sheet referenced no other resources (e.g., it was an internal style sheet given by a
+  <{style}> element with no <code>@import</code> rules), then the style rules must be
+  <a>immediately</a> made available to script; otherwise, the style rules must only be made
+  available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
 
-    A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or
-    <a>XML parser</a> is said to be <dfn>a style sheet that is blocking scripts</dfn> if the element
-    was created by that {{Document}}'s parser, and the element is either a
-    <{style}> element or a <{link}> element that was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by the parser,
-    and the element's style sheet was enabled when the element was created by the parser, and the
-    element's <a>style sheet ready</a> flag is not yet set, and, the last time the <a>event loop</a>
-    reached step 1, the element was in that <code>Document</code>, and the user agent
-    hasn't given up on that particular style sheet yet. A user agent may give up on a style sheet at
-    any time.
+  A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or <a>XML parser</a> is
+  said to be <dfn>a style sheet that is blocking scripts</dfn> if the element was created by that
+  {{Document}}'s parser, and the element is either a <{style}> element or a <{link}> element that
+  was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by
+  the parser, and the element's style sheet was enabled when the element was created by the parser,
+  and the element's <a>style sheet ready</a> flag is not yet set, and, the last time the
+  <a>event loop</a> reached step 1, the element was in that {{Document}}, and the user
+  agent hasn't given up on that particular style sheet yet. A user agent may give up on a style
+  sheet at any time.
 
-    <p class="note">
-      Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
-      still load, means that the script might end up operating with incorrect information. For
-      example, if a style sheet sets the color of an element to green, but a script that inspects
-      the resulting style is executed before the sheet is loaded, the script will find that the
-      element is black (or whatever the default color is), and might thus make poor choices (e.g.,
-      deciding to use black as the color elsewhere on the page, instead of green). Implementors have
-      to balance the likelihood of a script using incorrect information with the performance impact
-      of doing nothing while waiting for a slow network request to finish.
-    </p>
+  <p class="note">
+    Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
+    still load, means that the script might end up operating with incorrect information. For
+    example, if a style sheet sets the color of an element to green, but a script that inspects
+    the resulting style is executed before the sheet is loaded, the script will find that the
+    element is black (or whatever the default color is), and might thus make poor choices (e.g.,
+    deciding to use black as the color elsewhere on the page, instead of green). Implementors have
+    to balance the likelihood of a script using incorrect information with the performance impact
+    of doing nothing while waiting for a slow network request to finish.
+  </p>
 
-    A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if there is either
-    <a>a style sheet that is blocking scripts</a> in the context of that {{Document}}, or
-    if that {{Document}} is in a <a>browsing context</a> that has a
-    <a>parent browsing context</a>, and the <a>active document</a> of that
-    <a>parent browsing context</a> itself <a>has a style sheet that is blocking scripts</a>.
+  A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if there is either
+  <a>a style sheet that is blocking scripts</a> in the context of that {{Document}}, or
+  if that {{Document}} is in a <a>browsing context</a> that has a
+  <a>parent browsing context</a>, and the <a>active document</a> of that
+  <a>parent browsing context</a> itself <a>has a style sheet that is blocking scripts</a>.
 
-    A {{Document}} <dfn>has no style sheet that is blocking scripts</dfn> if it does not
-    <a>have a style sheet that is blocking scripts</a> as defined in the previous paragraph.
-  </div>
+  A {{Document}} <dfn>has no style sheet that is blocking scripts</dfn> if it does not
+  <a>have a style sheet that is blocking scripts</a> as defined in the previous paragraph.
 
 </section>

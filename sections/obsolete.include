@@ -36,9 +36,10 @@
 
   Authors should not, but may despite requirements to the contrary elsewhere in this specification,
   specify the <{input/maxlength}> and <{input/size}> attributes on <{input}> elements
-  whose <{input/type}> attributes are in the <a>Number</a> state. One valid reason for using
-  these attributes regardless is to help legacy user agents that do not support <{input}>
-  elements with <code>type="number"</code> to still render the text field with a useful width.
+  whose <{input/type}> attributes are in the <a element-state for="input">Number</a> state. One
+  valid reason for using these attributes regardless is to help legacy user agents that do not
+  support <{input}> elements with <code>type="number"</code> to still render the text field with a
+  useful width.
 
   <p class="note">
     In <a href="#syntax">the HTML syntax</a>, specifying a <a>DOCTYPE</a> that is an <a>obsolete permitted
@@ -69,10 +70,10 @@
   * The presence of a <{a/name}> attribute on an <{a}> element, if its value is not the empty string.
 
   * The presence of a <{input/maxlength}> attribute on an <{input}> element whose <{input/type}>
-    attribute is in the <a>Number</a> state.
+    attribute is in the <a element-state for="input">Number</a> state.
 
   * The presence of a <{input/size}> attribute on an <{input}> element whose <{input/type}>
-    attribute is in the <a>Number</a> state.
+    attribute is in the <a element-state for="input">Number</a> state.
 
   Conformance checkers must distinguish between pages that have no conformance errors and have none
   of these obsolete features, and pages that have no conformance errors but do have some of these
@@ -239,6 +240,8 @@
 
   : <dfn element-attr for="object"><code>standby</code></dfn> on <{object}> elements
   :: Optimize the linked resource so that it loads quickly or, at least, incrementally.
+  : <dfn element-attr for="object"><code>usemap</code></dfn> on <{object}> elements
+  :: Use <code>img</code> instead of <code>object</code> for image maps.
 
   : <dfn element-attr for="param"><code>type</code></dfn> on <{param}> elements
   : <dfn element-attr for="param"><code>valuetype</code></dfn> on <{param}> elements
@@ -1260,6 +1263,7 @@
       attribute unsigned long vspace;
       attribute DOMString codeBase;
       attribute DOMString codeType;
+      attribute DOMString useMap;
 
       [TreatNullAs=EmptyString] attribute DOMString border;
     };
@@ -1281,6 +1285,9 @@
 
   The <dfn attribute for="HTMLObjectElement"><code>codeType</code></dfn> IDL attribute of the
   <{object}> element must <a>reflect</a> the element's <{object/codetype}> content attribute.
+
+  The <dfn attribute for="HTMLObjectElement"><code>useMap</code></dfn> IDL attribute of the
+  <{object}> element must <a>reflect</a> the element's <{object/usemap}> content attribute.
 
   <hr />
 
@@ -1622,10 +1629,27 @@
     partial interface Window {
       void captureEvents();
       void releaseEvents();
+
+      [Replaceable, SameObject] readonly attribute External external;
     };
   </pre>
 
-  The <dfn method for="Window"><code>captureEvents()</code></dfn> and <dfn method for="Window"><code>releaseEvents()</code></dfn> methods
+  The <dfn method for="Window"><code>captureEvents()</code></dfn> and
+  <dfn method for="Window"><code>releaseEvents()</code></dfn> methods must do nothing.
+
+  The <dfn attribute for="Window"><code>external</code></dfn> attribute of the {{Window}} interface
+  must return an instance of the {{External}} interface:
+
+  <pre class="idl" data-highlight="webidl" dfn-for="Extenal">
+    [NoInterfaceObject]
+    interface External {
+      void AddSearchProvider();
+      void IsSearchProviderInstalled();
+    };
+  </pre>
+
+  The <dfn method for="External"><code>AddSearchProvider()</code></dfn> and
+  <dfn method for="External"><code>IsSearchProviderInstalled()</code></dfn> methods
   must do nothing.
 
 </section>

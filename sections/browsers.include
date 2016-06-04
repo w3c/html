@@ -11,13 +11,9 @@
 
 <h2 id="browsers">Loading Web pages</h2>
 
-  <div class="impl">
-
   This section describes features that apply most directly to Web browsers. Having said that,
   except where specified otherwise, the requirements defined in this section <em>do</em> apply to
   all user agents, whether they are Web browsers or not.
-
-  </div>
 
 <h3 id="sec-browsing-contexts">Browsing contexts</h3>
 
@@ -65,18 +61,17 @@
 
   If a <a>browsing context</a> <var>A</var> has a <a>creator browsing context</a>, then the
   <dfn>creator origin</dfn>, <dfn>creator URL</dfn>, and <dfn>creator base URL</dfn> are the
-  <a for="concept">origin</a>, <a lt="document url">URL</a>, and <a>base URL</a>, respectively, of 
-  the {{Document}} that was the <a>active document</a> of that <a>creator browsing context</a> at 
+  <a for="concept">origin</a>, <a lt="document url">URL</a>, and <a lt='document base URL'>base URL</a>, respectively, of
+  the {{Document}} that was the <a>active document</a> of that <a>creator browsing context</a> at
   the time <var>A</var> was created.
 
   To <dfn lt="creating a new browsing context|create a new browsing context">create a new browsing context</dfn>:
 
   1. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the following
       customizations:
-
       * For the global object, create a new {{Window}} object <var>window</var>.
       * For the global <em>this</em> value, create a new {{WindowProxy}} object
-         <var>windowProxy</var>, whose \[[{{Window}}]] internal slot value is <var>window</var>.
+         <var>windowProxy</var>, whose [[{{Window}}]] internal slot value is <var>window</var>.
 
          <p class="note">The internal slot value is updated when navigations occur.</p>
       * Let <var>realm execution context</var> be the created <a>JavaScript execution context</a>.
@@ -86,10 +81,9 @@
       <a>character encoding</a> is UTF-8, and which is both <a>ready for post-load tasks</a> and
       <a>completely loaded</a> immediately.
   4. Set the <a for="concept">origin</a> of <var>document</var>:
-
       * If the new <a>browsing context</a> has a <a>creator browsing context</a>, then the
          <a for="concept">origin</a> of <var>document</var> is the <a>creator origin</a>.
-      * Otherwise, the <a for="concept">origin</a> of <var>document</var> is a unique 
+      * Otherwise, the <a for="concept">origin</a> of <var>document</var> is a unique
          <a>opaque origin</a> assigned when the new <a>browsing context</a> is created.
   5. If the new <a>browsing context</a> has a <a>creator browsing context</a>, then set
       <var>document</var>'s <a>referrer</a> to the <a>creator URL</a>.
@@ -155,8 +149,8 @@
   that <a>browsing context</a>, and either its browsing context is a <a>top-level browsing context</a>, or it has a <a>parent browsing context</a> and the {{Document}}
   through which it is nested is itself <a>fully active</a>.
 
-  Because they are nested through an element, <a>child browsing contexts</a> are always tied to a 
-  specific {{Document}} in their <a>parent browsing context</a>. User agents must not allow the user 
+  Because they are nested through an element, <a>child browsing contexts</a> are always tied to a
+  specific {{Document}} in their <a>parent browsing context</a>. User agents must not allow the user
   to interact with <a>child browsing contexts</a> of elements that are in {{Document}}s that are
   not themselves <a>fully active</a>.
 
@@ -216,8 +210,8 @@
   <var>b</var> itself, otherwise (i.e., if it is a <a>top-level browsing context</a> or a detached
   <a>nested browsing context</a>).
 
-  The <dfn attribute for="Window"><code>frameElement</code></dfn> IDL attribute on the {{Window}}
-  object of a {{Document}} <var>d</var>, on getting, must run the following algorithm:
+  The <dfn attribute for="Window"><code>frameElement</code></dfn> IDL attribute, on getting, must
+  run the following algorithm:
 
   1. Let <var>d</var> be the {{Window}} object's
       <a lt="document associated with a window">associated <code>Document</code></a>.
@@ -255,13 +249,6 @@
   \[[Value]]: <var>value</var>, \[[Writable]]: true, \[[Enumerable]]: true,
   \[[Configurable]]: true } as the property descriptor,
   where <var>value</var> is the new value.
-
-<h4 id="sec-secondary-browsing-contexts"><dfn lt="secondary browsing contexts|secondary browsing context">Secondary browsing contexts</dfn></h4>
-
-  User agents may support <a>secondary browsing contexts</a>, which are <a>browsing contexts</a> that form part
-  of the user agent's interface, apart from the main content area.
-
-  <div class="impl">
 
 <h4 id="browsing-context-security">Security</h4>
 
@@ -303,7 +290,7 @@
     browsing context flag</a> set, then abort these steps negatively.</li>
 
     <li>Otherwise, if <var>B</var> is a <a>top-level browsing context</a>, and is
-    one of the <a>ancestor browsing contexts</a> of <var>A</var>, and <var>A</var>'s <a>node document</a>'s <a>active sandboxing
+    one of the <a>ancestor browsing contexts</a> of <var>A</var>, and <var>A</var>'s <a>active document</a>'s <a>active sandboxing
     flag set</a> has its <a>sandboxed top-level navigation browsing context flag</a> set,
     then abort these steps negatively.</li>
 
@@ -329,8 +316,6 @@
   element has a <a>browsing context scope origin</a>, then its value is the
   <a for="concept">origin</a> of the element's <a>node document</a>.
 
-  </div>
-
 <h4 id="groupings-of-browsing-contexts">Groupings of browsing contexts</h4>
 
   Each <a>browsing context</a> is defined as having a list of one or more
@@ -347,11 +332,11 @@
   <a>directly reachable browsing contexts</a> forms a <dfn>unit of related browsing contexts</dfn>.
 
   Each <a>unit of related browsing contexts</a> is then further divided into the smallest number of
-  groups such that every member of each group has an <a>active document</a> with an 
-  <a for="concept">origin</a> that, through appropriate manipulation of the 
-  {{Document/domain|document.domain}} attribute, could be made to be <a>same origin-domain</a> with 
-  other members of the group, but could not be made the same as members of any other group. Each 
-  such group is a 
+  groups such that every member of each group has an <a>active document</a> with an
+  <a for="concept">origin</a> that, through appropriate manipulation of the
+  {{Document/domain|document.domain}} attribute, could be made to be <a>same origin-domain</a> with
+  other members of the group, but could not be made the same as members of any other group. Each
+  such group is a
   <dfn lt="units of related similar-origin browsing contexts|unit of related similar-origin browsing contexts">unit of related similar-origin browsing contexts</dfn>.
 
   <p class="note">There is also at most one <a>event loop</a> per
@@ -371,14 +356,14 @@
   browsing context name</a> or that is an <a>ASCII case-insensitive</a> match for one of:
   <code>_blank</code>, <code>_self</code>, <code>_parent</code>, or <code>_top</code>.
 
-  These values have different meanings based on whether the page is sandboxed or not, as summarized 
+  These values have different meanings based on whether the page is sandboxed or not, as summarized
   in the following (non-normative) table. In this table, "current" means the <a>browsing context</a>
-  that the link or script is in, "parent" means the <a>parent browsing context</a> of the one the 
-  link or script is in, "top" means the <a>top-level browsing context</a> of the one the link or 
-  script is in, "new" means a new <a>top-level browsing context</a> or 
-  <a>auxiliary browsing context</a> is to be created, subject to various user preferences and user 
-  agent policies, "none" means that nothing will happen, and "maybe new" means the same as "new" if 
-  the "<code>allow-popups</code>" keyword is also specified on the <{iframe/sandbox}> attribute 
+  that the link or script is in, "parent" means the <a>parent browsing context</a> of the one the
+  link or script is in, "top" means the <a>top-level browsing context</a> of the one the link or
+  script is in, "new" means a new <a>top-level browsing context</a> or
+  <a>auxiliary browsing context</a> is to be created, subject to various user preferences and user
+  agent policies, "none" means that nothing will happen, and "maybe new" means the same as "new" if
+  the "<code>allow-popups</code>" keyword is also specified on the <{iframe/sandbox}> attribute
   (or if the user overrode the sandboxing), and the same as "none" otherwise.
 
   <table>
@@ -685,7 +670,7 @@
   1. Let <var>realm</var> be the value of <var>execution context</var>'s Realm component.
   2. Let <var>window</var> be <var>realm</var>'s <a>global object</a>.
   3. Let <var>url</var> be a copy of the <a for="url">URL</a> of the {{Document}} with which
-      <var>window</var> associated.
+      <var>window</var> is associated.
   4. Let <var>settings object</var> be a new <a>environment settings object</a> whose algorithms are
       defined as follows:
       : The <a>realm execution context</a>
@@ -711,18 +696,18 @@
           <var>window</var> is currently associated.
 
       : The <a>API base URL</a>
-      :: Return the current <a>base URL</a> of the {{Document}} with which <var>window</var> is
+      :: Return the current <a lt='document base URL'>base URL</a> of the {{Document}} with which <var>window</var> is
           currently associated.
 
       : The <a for="concept">origin</a>
-      :: Return the <a for="concept">origin</a> of the {{Document}} with which <var>window</var> is 
+      :: Return the <a for="concept">origin</a> of the {{Document}} with which <var>window</var> is
           currently associated.
 
       : The <a>creation URL</a>
       :: Return <var>url</var>.
 
       : The <a for="settings">HTTPS state</a>
-      :: Return the <a for="document">HTTPS state</a> of the {{Document}} with which 
+      :: Return the <a for="document">HTTPS state</a> of the {{Document}} with which
           <var>window</var> is currently associated.
   5. Set <var>realm</var>'s \[[HostDefined]] field to <var>settings object</var>.
   6. Return <var>settings object</var>.
@@ -748,14 +733,14 @@
               3. Otherwise, if <var>type</var> is "<code>setter</code>" and
                   <var>e</var>.\[[NeedsSet]] is true, then return.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>platformObject</var>) is false, then throw a
-      "<code>SecurityError</code>" {{DOMException}}.
+      "{{SecurityError}}" {{DOMException}}.
 
 <h4 id="shared-internal-slot-crossoriginpropertydescriptormap">Shared internal slot: \[[CrossOriginPropertyDescriptorMap]]</h4>
 
-  {{Window}} and {{Location}} objects both have a \[[<dfn>CrossOriginPropertyDescriptorMap</dfn>]]
+  {{Window}} and {{Location}} objects both have a [[<dfn>CrossOriginPropertyDescriptorMap</dfn>]]
   internal slot, whose value is initially an empty map.
 
-  <p class="note">The \[[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot contains a map with
+  <p class="note">The [[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot contains a map with
   entries whose keys are (currentOrigin, objectOrigin, propertyKey)-tuples and values are property
   descriptors, as a memoization of what is visible to scripts when currentOrigin inspects a
   {{Window}} or {{Location}} object from objectOrigin. It is filled lazily by
@@ -788,58 +773,73 @@
 <h5 id="crossoriginproperties-algorithm"><dfn>CrossOriginProperties</dfn> ( <var>O</var> )</h5>
 
   1. Assert: <var>O</var> is a {{Location}} or {{Window}} object.
-  2. If <var>O</var> is a {{Location}} object, then return « <pre>{
-        \[[Property]]: "href",
-        \[[NeedsGet]]: false,
-        \[[NeedsSet]]: true
-      }, {
-        \[[Property]]: "replace"
-      }</pre> ».
-  3. Let <var>crossOriginWindowProperties</var> be « <pre>{
-        \[[Property]]: "window",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "self",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "location",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: true
-      }, {
-        \[[Property]]: "close"
-      }, {
-        \[[Property]]: "closed",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "focus"
-      }, {
-        \[[Property]]: "blur"
-      }, {
-        \[[Property]]: "frames",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "length",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "top",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "opener",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "parent",
-        \[[NeedsGet]]: true,
-        \[[NeedsSet]]: false
-      }, {
-        \[[Property]]: "postMessage"
-      }</pre> ».
+  2. If <var>O</var> is a {{Location}} object, then return <pre>
+      « {
+          [[Property]]: "href",
+          [[NeedsGet]]: false,
+          [[NeedsSet]]: true
+        },
+        {
+          [[Property]]: "replace"
+        } »</pre>
+  3. Let <var>crossOriginWindowProperties</var> be <pre>
+      « {
+          [[Property]]: "window",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "self",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "location",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: true
+        },
+        {
+          [[Property]]: "close"
+        },
+        {
+          [[Property]]: "closed",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "focus"
+        },
+        {
+          [[Property]]: "blur"
+        },
+        {
+          [[Property]]: "frames",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "length",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "top",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "opener",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "parent",
+          [[NeedsGet]]: true,
+          [[NeedsSet]]: false
+        },
+        {
+          [[Property]]: "postMessage"
+        } »</pre>
   4. Repeat for each <var>e</var> that is an element of the
       <a>child browsing context name property set</a>:
       1. Add { \[[Property]]: <var>e</var> } as the last element of <var>crossOriginWindowProperties</var>.
@@ -850,32 +850,32 @@
 
 <h5 id="isplatformobjectsameorigin-algorithm"><dfn>IsPlatformObjectSameOrigin</dfn> ( <var>O</var> )</h5>
 
-  1. Return true if the <a>current settings object</a>'s <a for="concept">origin</a> is 
-      <a>same origin-domain</a> with <var>O</var>'s <a>relevant settings object</a>'s 
+  1. Return true if the <a>current settings object</a>'s <a for="concept">origin</a> is
+      <a>same origin-domain</a> with <var>O</var>'s <a>relevant settings object</a>'s
       <a for="concept">origin</a>, and false otherwise.
 
 <h5 id="crossorigingetownpropertyhelper-algorithm"><dfn>CrossOriginGetOwnPropertyHelper</dfn> ( <var>O</var>, <var>P</var> )</h5>
 
   <p class="note">If this abstract operation returns undefined and there is no custom behavior, the
-  caller needs to throw a "<code>SecurityError</code>" {{DOMException}}.</p>
+  caller needs to throw a "{{SecurityError}}" {{DOMException}}.</p>
 
   1. If <var>P</var> is <a>@@toStringTag</a>, <a>@@hasInstance</a>, or <a>@@isConcatSpreadable</a>,
       then return <a>PropertyDescriptor</a>
       { \[[Value]]: undefined, \[[Writable]]: false, \[[Enumerable]]: false,
       \[[Configurable]]: true }.
   2. Let <var>crossOriginKey</var> be a tuple consisting of the <a>current settings object</a>'s
-      <a for="concept">origin</a>'s <a>effective domain</a>, <var>O</var>'s relevant settings 
+      <a for="concept">origin</a>'s <a>effective domain</a>, <var>O</var>'s relevant settings
       object's <a for="concept">origin</a>'s <a>effective domain</a>, and <var>P</var>.
   3. Repeat for each <var>e</var> that is an element of <a>CrossOriginProperties</a>(<var>O</var>):
      1. If <a>SameValue</a>(<var>e</var>.\[[Property]], <var>P</var>) is true, then:
-         1. If the value of the \[[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot of
+         1. If the value of the [[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot of
              <var>O</var> contains an entry whose key is <var>crossOriginKey</var>, then return that
              entry's value.
          2. Let <var>originalDesc</var> be <a>OrdinaryGetOwnProperty</a>(<var>O</var>,
              <var>P</var>).
          3. Let <var>crossOriginDesc</var> be <a>CrossOriginPropertyDescriptor</a>(<var>e</var>,
              <var>originalDesc</var>).
-         4. Create an entry in the value of the \[[<a>CrossOriginPropertyDescriptorMap</a>]]
+         4. Create an entry in the value of the [[<a>CrossOriginPropertyDescriptorMap</a>]]
              internal slot of <var>O</var> with key <var>crossOriginKey</var> and value
              <var>crossOriginDesc</var>.
          5. Return <var>crossOriginDesc</var>.
@@ -907,7 +907,7 @@
       <var>functionToWrap</var>.
 
   A <dfn>cross-origin wrapper function</dfn> is an anonymous built-in function that has a
-  \\[[Wrapped]] internal slot.
+  \[[Wrapped]] internal slot.
 
   When a <a>cross-origin wrapper function</a> <var>F</var> is called with a list of arguments
   <var>argumentsList</var>, the following steps are taken:
@@ -928,7 +928,7 @@
   3. If <a>IsDataDescriptor</a>(<var>desc</var>) is true, then return <var>desc</var>.\[[Value]].
   4. Assert: <a>IsAccessorDescriptor</a>(<var>desc</var>) is true.
   5. Let <var>getter</var> be <var>desc</var>.\[[Get]].
-  6. If <var>getter</var> is undefined, throw a "<code>SecurityError</code>" {{DOMException}}.
+  6. If <var>getter</var> is undefined, throw a "{{SecurityError}}" {{DOMException}}.
   7. Return <a>Call</a>(<var>getter</var>, <var>Receiver</var>).
 
 <h5 id="crossoriginset-algorithm"><dfn>CrossOriginSet</dfn> ( <var>O</var>, <var>P</var>, V, <var>Receiver</var> )</h5>
@@ -987,8 +987,6 @@
 
     // the user agent
     readonly attribute Navigator navigator;
-    [Replaceable, SameObject] readonly attribute External external;
-    readonly attribute ApplicationCache applicationCache;
 
     // user prompts
     void alert();
@@ -997,6 +995,9 @@
     DOMString? prompt(optional DOMString message = "", optional DOMString default = "");
     void print();
     any showModalDialog(DOMString url, optional any argument); // deprecated
+
+    unsigned long requestAnimationFrame(FrameRequestCallback callback);
+    void cancelAnimationFrame(unsigned long handle);
     };
     Window implements GlobalEventHandlers;
     Window implements WindowEventHandlers;
@@ -1034,22 +1035,22 @@
 
   </dl>
 
-  The <dfn attribute for="Window"><code>window</code></dfn>, 
-  <dfn attribute for="Window"><code>frames</code></dfn>, and 
+  The <dfn attribute for="Window"><code>window</code></dfn>,
+  <dfn attribute for="Window"><code>frames</code></dfn>, and
   <dfn attribute for="Window"><code>self</code></dfn>
-  IDL attributes must all return the {{Window}} object's <a>browsing context</a>'s {{WindowProxy}} 
+  IDL attributes must all return the {{Window}} object's <a>browsing context</a>'s {{WindowProxy}}
   object.
 
   The <dfn attribute for="Window"><code>document</code></dfn> IDL attribute must return
   <a lt="document associated with a window">the <code>Window</code> object's newest <code>Document</code> object</a>.
 
-  <p class="note">The {{Document}} object associated with a <code>Window</code> object can change in 
-  exactly one case: when the <a>navigate</a> algorithm initializes a new {{Document}} object for the 
-  first page loaded in a <a>browsing context</a>. In that specific case, the {{Window}} object of 
+  <p class="note">The {{Document}} object associated with a <code>Window</code> object can change in
+  exactly one case: when the <a>navigate</a> algorithm initializes a new {{Document}} object for the
+  first page loaded in a <a>browsing context</a>. In that specific case, the {{Window}} object of
   the original <a scheme>about:blank</a> page is reused and gets a new {{Document}} object.</p>
 
-  The <dfn attribute for="Window"><code>defaultView</code></dfn> IDL attribute of the {{Document}} 
-  interface must return the {{Document}}'s <a>browsing context</a>'s {{WindowProxy}} object, if 
+  The <dfn attribute for="Window"><code>defaultView</code></dfn> IDL attribute of the {{Document}}
+  interface must return the {{Document}}'s <a>browsing context</a>'s {{WindowProxy}} object, if
   there is one, or null otherwise.
 
   <hr />
@@ -1288,8 +1289,8 @@
 
   The <dfn>number of child browsing contexts</dfn> of a {{Window}} object <var>W</var> is the number
   of <a>child browsing contexts</a> that are <a>nested through</a> elements that are in a
-  {{Document}} that is the <a>active document</a> of the {{Window}} object's 
-  <a lt="document associated with a window">associated</a> {{Document}} object's 
+  {{Document}} that is the <a>active document</a> of the {{Window}} object's
+  <a lt="document associated with a window">associated</a> {{Document}} object's
   <a>browsing context</a>.
 
   The <dfn attribute for="Window"><code>length</code></dfn> IDL attribute's getter must return the
@@ -1608,7 +1609,7 @@
 
   There is no {{WindowProxy}} interface object.
 
-  Every {{WindowProxy}} object has a \[[<dfn lt="window slot">Window</dfn>]] internal slot
+  Every {{WindowProxy}} object has a [[<dfn lt="window slot">Window</dfn>]] internal slot
   representing the wrapped {{Window}} object.
 
   <p class="note">Although {{WindowProxy}} is named as a "proxy", it does not do polymorphic
@@ -1633,29 +1634,29 @@
 
   The {{WindowProxy}} object internal methods are described in the subsections below.
 
-<h6 id="windowproxy-getprototypeof-algorithm">\[[<dfn lt="windowproxy getprototypeof">GetPrototypeOf</dfn>]] ( )</h6>
+<h6 id="windowproxy-getprototypeof-algorithm">[[<dfn lt="windowproxy getprototypeof">GetPrototypeOf</dfn>]] ( )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return !
       <a>OrdinaryGetPrototypeOf</a>(<var>W</var>).
   3. Return null.
 
-<h6 id="windowproxy-setprototypeof-algorithm">\[[<dfn lt="windowproxy setprototypeof">SetPrototypeOf</dfn>]] ( V )</h6>
+<h6 id="windowproxy-setprototypeof-algorithm">[[<dfn lt="windowproxy setprototypeof">SetPrototypeOf</dfn>]] ( V )</h6>
 
   1. Return false.
 
-<h6 id="windowproxy-isextensible-algorithm">\[[<dfn lt="windowproxy isextensible">IsExtensible</dfn>]] ( )</h6>
+<h6 id="windowproxy-isextensible-algorithm">[[<dfn lt="windowproxy isextensible">IsExtensible</dfn>]] ( )</h6>
 
   1. Return true.
 
-<h6 id="windowproxy-preventextensions-algorithm">\[[<dfn lt="windowproxy preventextensions">PreventExtensions</dfn>]] ( )</h6>
+<h6 id="windowproxy-preventextensions-algorithm">[[<dfn lt="windowproxy preventextensions">PreventExtensions</dfn>]] ( )</h6>
 
   1. Return false.
 
-<h6 id="windowproxy-getownproperty-algorithm">\[[<dfn lt="windowproxy getownproperty">GetOwnProperty</dfn>]] ( <var>P</var> )</h6>
+<h6 id="windowproxy-getownproperty-algorithm">[[<dfn lt="windowproxy getownproperty">GetOwnProperty</dfn>]] ( <var>P</var> )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <var>P</var> is an <a>array index property name</a>, then:
       1. Let <var>index</var> be <a>ToUint32</a>(<var>P</var>).
@@ -1685,12 +1686,12 @@
           <var>P</var>.
       2. Return <a>PropertyDescriptor</a>{ \[[Value]]: <var>value</var>, \[[Enumerable]]: false,
           \[[Writable]]: false, \[[Configurable]]: true }.
-  7. Throw a "<code>SecurityError</code>" {{DOMException}}.
+  7. Throw a "{{SecurityError}}" {{DOMException}}.
 
-<h6 id="windowproxy-defineownproperty-algorithm">\[[<dfn lt="windowproxy defineownproperty">DefineOwnProperty</dfn>]] ( <var>P</var>, <var>Desc</var> )</h6>
+<h6 id="windowproxy-defineownproperty-algorithm">[[<dfn lt="windowproxy defineownproperty">DefineOwnProperty</dfn>]] ( <var>P</var>, <var>Desc</var> )</h6>
 
   1. If <var>P</var> is an <a>array index property name</a>, return false.
-  2. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  2. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   3. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinaryDefineOwnProperty</a>(<var>W</var>, <var>P</var>, <var>Desc</var>).
@@ -1698,34 +1699,34 @@
       <p class="note">See above about how this violates JavaScript's internal method invariants.</p>
   4. Return false.
 
-<h6 id="windowproxy-get-algorithm">\[[<dfn lt="windowproxy get">Get</dfn>]] ( <var>P</var>, <var>Receiver</var> )</h6>
+<h6 id="windowproxy-get-algorithm">[[<dfn lt="windowproxy get">Get</dfn>]] ( <var>P</var>, <var>Receiver</var> )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinaryGet</a>(this, <var>P</var>, <var>Receiver</var>).
   3. Return ? <a>CrossOriginGet</a>(this, <var>P</var>, <var>Receiver</var>).
 
-<h6 id="windowproxy-set-algorithm">\[[<dfn lt="windowproxy set">Set</dfn>]] ( <var>P</var>, V, <var>Receiver</var> )</h6>
+<h6 id="windowproxy-set-algorithm">[[<dfn lt="windowproxy set">Set</dfn>]] ( <var>P</var>, V, <var>Receiver</var> )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinarySet</a>(<var>W</var>, this, <var>Receiver</var>).
   3. Return <a>CrossOriginSet</a>(this, <var>P</var>, V, <var>Receiver</var>).
 
-<h6 id="windowproxy-delete-algorithm">\[[<dfn lt="windowproxy delete">Delete</dfn>]] ( <var>P</var> )</h6>
+<h6 id="windowproxy-delete-algorithm">[[<dfn lt="windowproxy delete">Delete</dfn>]] ( <var>P</var> )</h6>
 
   1. If <var>P</var> is an <a>array index property name</a>, return false.
-  2. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  2. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   3. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinaryDelete</a>(<var>W</var>, <var>P</var>).
   4. Return false.
 
-<h6 id="windowproxy-ownpropertykeys-algorithm">\[[<dfn lt="windowproxy ownpropertykeys">OwnPropertyKeys</dfn>]] ( )</h6>
+<h6 id="windowproxy-ownpropertykeys-algorithm">[[<dfn lt="windowproxy ownpropertykeys">OwnPropertyKeys</dfn>]] ( )</h6>
 
-  1. Let <var>W</var> be the value of the \[[<a lt="window slot">Window</a>]] internal slot of
+  1. Let <var>W</var> be the value of the [[<a lt="window slot">Window</a>]] internal slot of
       <em>this</em>.
   2. Let <var>keys</var> be a new empty <a for="ecma">List</a>.
   3. Let <var>maxProperties</var> be the <a>number of child browsing contexts</a> of <var>W</var>.
@@ -1747,7 +1748,7 @@
 
   <p class="example">For example, if Example Bank's Web site, hosted at
   <code>bank.example.com</code>, tries to examine the DOM of Example Charity's Web site, hosted at
-  <code>charity.example.org</code>, a "<code>SecurityError</code>" {{DOMException}} will be raised.
+  <code>charity.example.org</code>, a "{{SecurityError}}" {{DOMException}} will be raised.
   </p>
 
   <hr />
@@ -1780,7 +1781,7 @@
       <var>origin</var>'s <a lt="origin domain">domain</a>.
   3. Return <var>origin</var>'s <a lt="origin host">host</a>.
 
-  Various specification objects are defined to have an <a for="concept">origin</a>. These 
+  Various specification objects are defined to have an <a for="concept">origin</a>. These
   <a for="concept">origins</a> are determined as follows:
 
   : For {{Document}} objects
@@ -1793,29 +1794,29 @@
 
         <dt>If the {{Document}}'s <a for="url">URL</a>'s <a for="url">scheme</a> is a
         <a>network scheme</a></dt>
-        <dd>A copy of the {{Document}}'s <a for="url">URL</a>'s <a for="url">origin</a> assigned 
+        <dd>A copy of the {{Document}}'s <a for="url">URL</a>'s <a for="url">origin</a> assigned
         when the {{Document}} is created.
 
         <p class="note">The {{Document/open()|document.open()}} method can change the {{Document}}'s
-        <a for="url">URL</a> to "<code>about:blank</code>". Therefore the 
+        <a for="url">URL</a> to "<code>about:blank</code>". Therefore the
         <a for="concept">origin</a> is assigned when the {{Document}} is created.</p>
         </dd>
 
         <dt>If the {{Document}} is the initial "<code>about:blank</code>" document</dt>
-        <dd><a lt="create a new browsing context">The one it was assigned when its browsing context 
+        <dd><a lt="create a new browsing context">The one it was assigned when its browsing context
         was created</a>.</dd>
 
         <dt>If the {{Document}} is a non-initial "<code>about:blank</code>" document</dt>
         <dt>If the {{Document}} was generated from a <a scheme lt="data:"><code>data:</code> URL</a>
         found in another {{Document}} or in a script</dt>
-        <dd>The <a for="concept">origin</a> of the <a>incumbent settings object</a> when the 
-        <a>navigate</a> algorithm was invoked, or, if no <a for="concept">script</a> was involved, 
+        <dd>The <a for="concept">origin</a> of the <a>incumbent settings object</a> when the
+        <a>navigate</a> algorithm was invoked, or, if no <a for="concept">script</a> was involved,
         of the <a>node document</a> of the element that initiated the <a>navigation</a> to that
         <a for="url">URL</a>.</dd>
 
         <dt>If the {{Document}} was created as part of the processing for
         <a><code>javascript:</code> URLs</a></dt>
-        <dd>The <a for="concept">origin</a> of the <a>active document</a> of the 
+        <dd>The <a for="concept">origin</a> of the <a>active document</a> of the
         <a>browsing context</a> being navigated when the <a>navigate</a> algorithm was invoked.</dd>
 
         <dt>If the {{Document}} is
@@ -1829,7 +1830,7 @@
         {{DOMImplementation/createDocument()}} API, etc)</dt>
         <dd>The default behavior as defined in the DOM standard applies. [[!DOM]].
 
-        <p class="note">The <a for="concept">origin</a> is a unique <a>opaque origin</a> assigned 
+        <p class="note">The <a for="concept">origin</a> is a unique <a>opaque origin</a> assigned
         when the {{Document}} is created.</p>
         </dd>
       </dl>
@@ -1849,16 +1850,16 @@
         <dd>A unique <a>opaque origin</a> assigned when the <a>media data</a> is fetched.</dd>
 
         <dt>If the <a>media data</a> is <a>CORS-same-origin</a></dt>
-        <dd>The <a lt="media elements">media element</a>'s <a>node document</a>'s 
+        <dd>The <a lt="media elements">media element</a>'s <a>node document</a>'s
         <a for="concept">origin</a>.
         </dd>
       </dl>
   : For fonts
-  :: For a downloadable Web font it is a copy of the <a for="url">origin</a> of the 
-      <a>URL record</a> used to obtain the font (after any redirects). [[!CSS-FONTS-3]] 
+  :: For a downloadable Web font it is a copy of the <a for="url">origin</a> of the
+      <a>URL record</a> used to obtain the font (after any redirects). [[!CSS-FONTS-3]]
       [[CSS-FONT-LOADING-3]]
 
-      For a locally installed system font it is the <a for="concept">origin</a> of the {{Document}} 
+      For a locally installed system font it is the <a for="concept">origin</a> of the {{Document}}
       in which that font is being used.
 
   Other specifications can override the above definitions by themselves specifying the origin of
@@ -1867,7 +1868,7 @@
   <hr />
 
   The <dfn lt="unicode serialization|unicode serialization of an origin">Unicode serialization of an origin</dfn>
-  is the string obtained by applying the following algorithm to the given 
+  is the string obtained by applying the following algorithm to the given
   <a for="concept">origin</a> <var>origin</var>:
 
   1. If <var>origin</var> is an <a>opaque origin</a>, then return "<code>null</code>".
@@ -1980,7 +1981,7 @@
 
   1. If this {{Document}} object does not have a <a>browsing context</a>, then return the empty
       string.
-  2. Let <var>effectiveDomain</var> be this {{Document}}'s <a for="concept">origin</a>'s 
+  2. Let <var>effectiveDomain</var> be this {{Document}}'s <a for="concept">origin</a>'s
      <a>effective domain</a>.
   3. If <var>effectiveDomain</var> is an <a>opaque origin</a>, then return the empty string.
   4. Return <var>effectiveDomain</var>, <a lt="host serializer">serialised</a>.
@@ -1988,29 +1989,27 @@
   The {{Document/domain}} attribute on setting must run these steps:
 
   1. If this {{Document}} object has no <a>browsing context</a>, throw a
-      "<code>SecurityError</code>" {{DOMException}}.
+      "{{SecurityError}}" {{DOMException}}.
   2. If this {{Document}} object's <a>active sandboxing flag set</a> has its
       <a>sandboxed <code>document.domain</code> browsing context flag</a> set, then throw a
-      "<code>SecurityError</code>" {{DOMException}}.
-  3. If the given value is the empty string, then throw a "<code>SecurityError</code>"
-      {{DOMException}}.
+      "{{SecurityError}}" {{DOMException}}.
+  3. If the given value is the empty string, then throw a "{{SecurityError}}" {{DOMException}}.
   4. Let <var>host</var> be the result of <a lt="host parser">parsing</a> the given value.
-  5. If <var>host</var> is failure, then throw a "<code>SecurityError</code>" {{DOMException}}.
+  5. If <var>host</var> is failure, then throw a "{{SecurityError}}" {{DOMException}}.
   6. Let <var>effectiveDomain</var> be this {{Document}} object's <a for="concept">origin</a>'s
       <a>effective domain</a>.
   7. If <var>host</var> is not <a lt="host equals">equal</a> to <var>effectiveDomain</var>, then run
       these substeps:
       1. If <var>host</var> or <var>effectiveDomain</var> is not <a for="url">domain</a>, then throw
-          a "<code>SecurityError</code>" {{DOMException}}.
+          a "{{SecurityError}}" {{DOMException}}.
 
-          <p class="note">This is meant to exclude <a lt="origin hosts">hosts</a> that are an 
+          <p class="note">This is meant to exclude <a lt="origin hosts">hosts</a> that are an
           <a lt="ipv4">IPv4 address</a> or an <a lt="ipv6">IPv6 address</a>.
       2. If <var>host</var>, prefixed by a U+002E FULL STOP (.), does not exactly match
-          the <var>effectiveDomain</var>, then throw a "<code>SecurityError</code>"
-          {{DOMException}}.
+          the <var>effectiveDomain</var>, then throw a "{{SecurityError}}" {{DOMException}}.
       3. If <var>host</var> matches a suffix in the Public Suffix List, or, if <var>host</var>,
           prefixed by a U+002E FULL STOP (.), matches the end of a suffix in the Public Suffix List,
-          then throw a "<code>SecurityError</code>" {{DOMException}}. [[!PSL]]
+          then throw a "{{SecurityError}}" {{DOMException}}. [[!PSL]]
 
           Suffixes must be compared after applying the <a>host parser</a> algorithm. [[!URL]]
   8. Set <var>origin</var>'s <a lt="origin domain">domain</a> to <var>host</var>.
@@ -2275,8 +2274,9 @@
   choosing a browsing context given a browsing context name</a>.
 
   Every <a>nested browsing context</a> has an <dfn><code>iframe</code> sandboxing flag
-  set</dfn>, which is a <a>sandboxing flag set</a>. Which flags in a <a>nested browsing context</a>'s <a><code>iframe</code> sandboxing flag set</a> are set at any particular
-  time is determined by the <{iframe}> element's <{iframe/sandbox}> attribute.
+  set</dfn>, which is a <a>sandboxing flag set</a>. Which flags in a
+  <a>nested browsing context</a>'s <a><code>iframe</code> sandboxing flag set</a> are set at any
+  particular time is determined by the <{iframe}> element's <{iframe/sandbox}> attribute.
 
   Every {{Document}} has an <dfn>active sandboxing flag set</dfn>, which is a
   <a>sandboxing flag set</a>. When the {{Document}} is created, its <a>active
@@ -2586,7 +2586,7 @@
   <code>History</code> interface, on getting, must return the number of entries in the
   <a>top-level browsing context</a>'s <a>joint session history</a>. If this
   <code>History</code> object is associated with a {{Document}} that is not
-  <a>fully active</a>, getting must instead throw a <code>SecurityError</code>.
+  <a>fully active</a>, getting must instead throw a "{{SecurityError}}" {{DOMException}}.
 
   The actual entries are not accessible from script.
 
@@ -2595,12 +2595,12 @@
   current entry in the <a>session history</a>. On setting, the <a>scroll restoration mode</a> of the current entry in the <a>session history</a> must be set to the new
   value. If this <code>History</code> object is associated with a {{Document}} that is
   not <a>fully active</a>, both getting and setting must instead throw a
-  <code>SecurityError</code>.</p>
+  "{{SecurityError}}" {{DOMException}}.</p>
 
   The <dfn attribute for="History"><code>state</code></dfn> attribute of the
   <code>History</code> interface, on getting, must return the last value it was set to by the user
   agent. If this <code>History</code> object is associated with a {{Document}} that is
-  not <a>fully active</a>, getting must instead throw a <code>SecurityError</code>.
+  not <a>fully active</a>, getting must instead throw a {{SecurityError}} {{DOMException}}.
   Initially, its value must be null.
 
   When the <dfn method for="History"><code>go(<var>delta</var>)</code></dfn> method is
@@ -2609,17 +2609,17 @@
   the user agent must <a>traverse the history by a delta</a> whose value is
   <var>delta</var> If this <code>History</code> object is associated with a {{Document}}
   that is not <span>fully active</span>, invoking must instead throw a
-  <code>SecurityError</code>.
+  "{{SecurityError}}" {{DOMException}}.
 
   When the <dfn method for="History"><code>back()</code></dfn> method is invoked, the user
   agent must <a>traverse the history by a delta</a> &#x2212;1. If this <code>History</code>
   object is associated with a {{Document}} that is not <a>fully active</a>,
-  invoking must instead throw a <code>SecurityError</code>.
+  invoking must instead throw a "{{SecurityError}}" {{DOMException}}.
 
   When the <dfn method for="History"><code>forward()</code></dfn>method is invoked, the
   user agent must <a>traverse the history by a delta</a> +1. If this <code>History</code>
   object is associated with a {{Document}} that is not <a>fully active</a>,
-  invoking must instead throw a <code>SecurityError</code>.
+  invoking must instead throw a "{{SecurityError}}" {{DOMException}}.
 
   <hr />
 
@@ -2728,7 +2728,7 @@
   When either of these methods is invoked, the user agent must run the following steps:
 
   1. If this {{History}} object is associated with a {{Document}} that is not <a>fully active</a>,
-      throw a "<code>SecurityError</code>" {{DOMException}}.
+      throw a "{{SecurityError}}" {{DOMException}}.
   2. Optionally, abort these steps. (For example, the user agent might disallow calls to these
       methods that are invoked on a timer, or from event listeners that are not triggered in
       response to a clear user action, or that are invoked in rapid succession.)
@@ -2738,17 +2738,17 @@
       <var>targetRealm</var>). Rethrow any exceptions.
   5. If the third argument is not null, run these substeps:
       1. <a>Parse</a> the value of the third argument, relative to the <a>entry settings object</a>.
-      2. If that fails, throw a "<code>SecurityError</code>" {{DOMException}} and abort these steps.
+      2. If that fails, throw a "{{SecurityError}}" {{DOMException}} and abort these steps.
       3. Let <var>new URL</var> be the <a>resulting URL record</a>.
       4. Compare <var>new URL</var> to the document's <a for="url">URL</a>. If any component of
           these two <a>URL records</a> differ other than the <a>path</a>,
           <a for="url">query</a>, and <a for="url">fragment</a> components, then throw a
-          "<code>SecurityError</code>" {{DOMException}} and abort these steps.
-      5. If the <a for="url">origin</a> of <var>new URL</var> is not the same as the 
-          <a for="concept">origin</a> of the <a>responsible document</a> specified by the 
-          <a>entry settings object</a>, and either the <a>path</a> or <a for="url">query</a> 
-          components of the two <a>URL records</a> compared in the previous step differ, throw a 
-          "<code>SecurityError</code>" {{DOMException}} and abort these steps. (This prevents 
+          "{{SecurityError}}" {{DOMException}} and abort these steps.
+      5. If the <a for="url">origin</a> of <var>new URL</var> is not the same as the
+          <a for="concept">origin</a> of the <a>responsible document</a> specified by the
+          <a>entry settings object</a>, and either the <a>path</a> or <a for="url">query</a>
+          components of the two <a>URL records</a> compared in the previous step differ, throw a
+          "{{SecurityError}}" {{DOMException}} and abort these steps. (This prevents
           sandboxed content from spoofing other pages on the same origin.)
   6. If the third argument is null, then let <var>new URL</var> be the <a for="url">URL</a> of the
       <a>current entry</a>.
@@ -2809,7 +2809,7 @@
 
     <pre highlight="html">
   &lt;!DOCTYPE HTML>
-  &lt;!-- this is http://example.com/line?x=5 -->
+  &lt;!-- this is https://example.com/line?x=5 -->
   &lt;title>Line Game - 5&lt;/title>
   &lt;p>You are at coordinate 5 on the line.&lt;/p>
   &lt;p>
@@ -2823,7 +2823,7 @@
 
     <pre highlight="html">
   &lt;!DOCTYPE HTML>
-  &lt;!-- this starts off as http://example.com/line?x=5 -->
+  &lt;!-- this starts off as https://example.com/line?x=5 -->
   &lt;title>Line Game - 5&lt;/title>
   &lt;p>You are at coordinate &lt;span>5&lt;/span> on the line.&lt;/p>
   &lt;p>
@@ -2923,7 +2923,7 @@
   user with just one "Back" button, with a session history that interleaves the navigation of the
   two inner frames and the outer page.
 
-  <em>Security<em>: It is suggested that to avoid letting a page "hijack" the history navigation
+  <em>Security</em>: It is suggested that to avoid letting a page "hijack" the history navigation
   facilities of a UA by abusing {{History/pushState()}}, the UA provide the user with a way to jump
   back to the previous page (rather than just going back to the previous state). For example, the
   back button could have a drop down showing just the pages in the session history, and not showing
@@ -2938,26 +2938,26 @@
 
   Each {{Window}} object is associated with a unique instance of a {{Location}} object, allocated
   when the {{Window}} object is created.
-  
+
   To create a {{Location}} object, run these steps:
 
   1. Let <var>location</var> be a new {{Location}} <a>platform object</a>.
-  2. Perform ! <var>location</var>.\[[DefineOwnProperty]]("<code>toString</code>", { 
-      \[[Value]]: <a>%ObjProto_toString%</a>, \[[Writable]]: false, \[[Enumerable]]: false, 
+  2. Perform ! <var>location</var>.\[[DefineOwnProperty]]("<code>toString</code>", {
+      \[[Value]]: <a>%ObjProto_toString%</a>, \[[Writable]]: false, \[[Enumerable]]: false,
       \[[Configurable]]: false }).
-  3. Perform ! <var>location</var>.\[[DefineOwnProperty]]("<code>toJSON</code>", { 
+  3. Perform ! <var>location</var>.\[[DefineOwnProperty]]("<code>toJSON</code>", {
       \[[Value]]: undefined, \[[Writable]]: false, \[[Enumerable]]: false,
       \[[Configurable]]: false }).
-  4. Perform ! <var>location</var>.\[[DefineOwnProperty]]("<code>valueOf</code>", { 
-      \[[Value]]: <a>%ObjProto_valueOf%</a>, \[[Writable]]: false, \[[Enumerable]]: false, 
+  4. Perform ! <var>location</var>.\[[DefineOwnProperty]]("<code>valueOf</code>", {
+      \[[Value]]: <a>%ObjProto_valueOf%</a>, \[[Writable]]: false, \[[Enumerable]]: false,
       \[[Configurable]]: false }).
-  5. Perform ! <var>location</var>.\[[DefineOwnProperty]](<a>@@toPrimitive</a>, { 
-      \[[Value]]: undefined, \[[Writable]]: false, \[[Enumerable]]: false, 
+  5. Perform ! <var>location</var>.\[[DefineOwnProperty]](<a>@@toPrimitive</a>, {
+      \[[Value]]: undefined, \[[Writable]]: false, \[[Enumerable]]: false,
       \[[Configurable]]: false }).
-  6. Set the value of the \[[<a>DefaultProperties</a>]] internal slot of <var>location</var> to 
+  6. Set the value of the [[<a>DefaultProperties</a>]] internal slot of <var>location</var> to
       <var>location</var>.\[[OwnPropertyKeys]]().
   7. Return <var>location</var>.
-  
+
   <dl class="domintro">
     <dt><var>document</var> . {{Document/location}} [ = <var>value</var> ]</dt>
     <dt><var>window</var> . {{Window/location}} [ = <var>value</var> ]</dt>
@@ -2967,16 +2967,16 @@
     </dd>
   </dl>
 
-  The <dfn attribute for="Document"><code>location</code></dfn> attribute of the {{Document}} 
+  The <dfn attribute for="Document"><code>location</code></dfn> attribute of the {{Document}}
   interface must return the {{Location}} object for that {{Document}} object's <a>global object</a>,
   if it has a <a>browsing context</a>, and null otherwise.
 
-  The <dfn attribute for="Window"><code>location</code></dfn> attribute of the {{Window}} interface 
+  The <dfn attribute for="Window"><code>location</code></dfn> attribute of the {{Window}} interface
   must return the {{Location}} object for that {{Window}} object.
 
-  {{Location}} objects provide a representation of the <a for="url">URL</a> of the 
-  <a>active document</a> of their {{Document}}'s <a>browsing context</a>, and allow the 
-  <a>current entry</a> of the <a>browsing context</a>'s session history to be changed, by adding or 
+  {{Location}} objects provide a representation of the <a for="url">URL</a> of the
+  <a>active document</a> of their {{Document}}'s <a>browsing context</a>, and allow the
+  <a>current entry</a> of the <a>browsing context</a>'s session history to be changed, by adding or
   replacing entries in the {{Window/history}} object.
 
   <pre class="idl" data-highlight="webidl" dfn-for="Location">
@@ -3004,7 +3004,7 @@
     <dt><var>location</var> . <code>toString()</code></dt>
     <dt><var>location</var> . {{Location/href}}</dt>
     <dd>Returns the {{Location}} object's URL.
-    
+
     Can be set, to navigate to the given URL.
     </dd>
 
@@ -3013,47 +3013,47 @@
 
     <dt><var>location</var> . {{Location/protocol}}</dt>
     <dd>Returns the {{Location}} object's URL's scheme.
-    
+
     Can be set, to navigate to the same URL with a changed scheme.
     </dd>
 
     <dt><var>location</var> . {{Location/host}}</dt>
-    <dd>Returns the {{Location}} object's URL's host and port (if different from the default port 
+    <dd>Returns the {{Location}} object's URL's host and port (if different from the default port
     for the scheme).
-    
+
     Can be set, to navigate to the same URL with a changed host and port.
     </dd>
 
     <dt><var>location</var> . {{Location/hostname}}</dt>
     <dd>Returns the {{Location}} object's URL's host.
-    
+
     Can be set, to navigate to the same URL with a changed host.
     </dd>
 
     <dt><var>location</var> . {{Location/port}}</dt>
     <dd>Returns the {{Location}} object's URL's port.
-    
+
     Can be set, to navigate to the same URL with a changed port.
     </dd>
 
     <dt><var>location</var> . {{Location/pathname}}</dt>
     <dd>Returns the {{Location}} object's URL's path.
-    
+
     Can be set, to navigate to the same URL with a changed path.
     </dd>
 
     <dt><var>location</var> . {{Location/search}}</dt>
-    <dd>Returns the {{Location}} object's URL's query (includes leading "<code>?</code>" if 
+    <dd>Returns the {{Location}} object's URL's query (includes leading "<code>?</code>" if
     non-empty).
-    
+
     Can be set, to navigate to the same URL with a changed query (ignores leading "<code>?</code>").
     </dd>
 
     <dt><var>location</var> . {{Location/hash}}</dt>
-    <dd>Returns the {{Location}} object's URL's fragment (includes leading "<code>#</code>" if 
+    <dd>Returns the {{Location}} object's URL's fragment (includes leading "<code>#</code>" if
     non-empty).
-    
-    Can be set, to navigate to the same URL with a changed fragment (ignores leading 
+
+    Can be set, to navigate to the same URL with a changed fragment (ignores leading
     "<code>#</code>").
     </dd>
 
@@ -3067,43 +3067,43 @@
     <dd>Reloads the current page.</dd>
 
     <dt><var>location</var> . {{Location/ancestorOrigins}}</dt>
-    <dd>Returns an array whose values are the origins of the ancestor <a>browsing contexts</a>, from 
+    <dd>Returns an array whose values are the origins of the ancestor <a>browsing contexts</a>, from
     the <a>parent browsing context</a> to the <a>top-level browsing context</a>.</dd>
   </dl>
 
-  A {{Location}} object has an associated <dfn>relevant <code>Document</code></dfn>, which is this 
-  {{Location}} object's associated {{Document}} object's <a>browsing context</a>'s 
+  A {{Location}} object has an associated <dfn>relevant <code>Document</code></dfn>, which is this
+  {{Location}} object's associated {{Document}} object's <a>browsing context</a>'s
   <a>active document</a>.
 
-  A {{Location}} object has an associated <dfn for="Location">url</dfn>, which is this {{Location}} 
+  A {{Location}} object has an associated <dfn for="Location">url</dfn>, which is this {{Location}}
   object's <a>relevant <code>Document</code></a>'s <a lt="document url">URL</a>.
 
-  A {{Location}} object has an associated <dfn>ancestor origins array</dfn>. When a {{Location}} 
-  object is created, its <a>ancestor origins array</a> must be set to a array created from the list 
+  A {{Location}} object has an associated <dfn>ancestor origins array</dfn>. When a {{Location}}
+  object is created, its <a>ancestor origins array</a> must be set to a array created from the list
   of strings that the following steps would produce:
 
   1. Let <var>output</var> be an empty ordered list of strings.
-  2. Let <var>current</var> be the <a>browsing context</a> of the {{Document}} with which the 
+  2. Let <var>current</var> be the <a>browsing context</a> of the {{Document}} with which the
       {{Location}} object is associated.
   3. <var>Loop</var>: If <var>current</var> has no <a>parent browsing context</a>, jump to
     the step labeled <var>End</var>.
   4. Let <var>current</var> be <var>current</var>'s <a>parent browsing context</a>.
-  5. Append the <a>Unicode serialization</a> of <var>current</var>'s <a>active document</a>'s 
+  5. Append the <a>Unicode serialization</a> of <var>current</var>'s <a>active document</a>'s
       <a for="concept">origin</a> to <var>output</var> as a new value.
   6. Return to the step labeled <var>Loop</var>.
   7. <var>End</var>: Return <var>output</var>.
 
-  A {{Location}} object has an associated <dfn><code>Location</code>-object-setter navigate</dfn> 
+  A {{Location}} object has an associated <dfn><code>Location</code>-object-setter navigate</dfn>
   algorithm, which given a <var>url</var>, runs these steps:
 
   1. If any of the following conditions are met, let <var>replacement flag</var> be unset;
       otherwise, let it be set:
-      
-      * This {{Location}} object's <a>relevant <code>Document</code></a> has 
+
+      * This {{Location}} object's <a>relevant <code>Document</code></a> has
          <a>completely loaded</a>, or
-      * In the <a>task</a> in which the algorithm is running, an <a>activation behavior</a> is 
+      * In the <a>task</a> in which the algorithm is running, an <a>activation behavior</a> is
          currently being processed whose <code>click</code> event was <a>trusted</a>, or
-      * In the <a>task</a> in which the algorithm is running, the event listener for a 
+      * In the <a>task</a> in which the algorithm is running, the event listener for a
          <a>trusted</a> <code>click</code> event is being handled.
   2. <a><code>Location</code>-object navigate</a>, given <var>url</var> and
       <var>replacement flag</var>.
@@ -3111,14 +3111,14 @@
   To <dfn><code>Location</code>-object navigate</dfn>, given a <var>url</var> and
   <var>replacement flag</var>, run these steps:
 
-  1. The <a>source browsing context</a> is the <a>responsible browsing context</a> specified by the 
+  1. The <a>source browsing context</a> is the <a>responsible browsing context</a> specified by the
       <a>incumbent settings object</a>.
-  2. <a>Navigate</a> the <a>browsing context</a> to <var>url</var>, with the 
+  2. <a>Navigate</a> the <a>browsing context</a> to <var>url</var>, with the
       <a>exceptions enabled flag</a> set. Rethrow any exceptions.
 
       If the <var>replacement flag</var> is set or the <a>browsing context</a>'s
       <a>session history</a> contains only one {{Document}}, and that was the
-      <code>about:blank</code> {{Document}} created when the <a>browsing context</a> was created, 
+      <code>about:blank</code> {{Document}} created when the <a>browsing context</a> was created,
       then the navigation must be done with <a>replacement enabled</a>.
 
   The <dfn attribute for="Location"><code>href</code></dfn> attribute's getter must return this
@@ -3367,7 +3367,7 @@
     <a>API base URL</a> specified by the <a>entry settings object</a> and let
     <var>parsedURL</var> be the <a>resulting URL string</a>.
 
-    If this is not successful, throw a <code>SyntaxError</code> exception and abort these
+    If this is not successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these
     steps.
 
     </li>
@@ -3387,7 +3387,7 @@
     <a>API base URL</a> specified by the <a>entry settings object</a> and let
     <var>parsedURL</var> be the <a>resulting URL string</a>.
 
-    If this is not successful, throw a <code>SyntaxError</code> exception and abort these
+    If this is not successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these
     steps.
 
     </li>
@@ -3422,9 +3422,9 @@
 
     <dt>Otherwise</dt>
 
-    <dd><a>Navigate</a> the <a>browsing context</a> to the document's <a lt="document url">URL</a> 
-    with the <a>exceptions enabled flag</a> set and <a>replacement enabled</a>. 
-    The <a>source browsing context</a> must be the <a>browsing context</a> being navigated. This is 
+    <dd><a>Navigate</a> the <a>browsing context</a> to the document's <a lt="document url">URL</a>
+    with the <a>exceptions enabled flag</a> set and <a>replacement enabled</a>.
+    The <a>source browsing context</a> must be the <a>browsing context</a> being navigated. This is
     a <a>reload-triggered navigation</a>. Rethrow any exceptions.</dd>
 
   </dl>
@@ -3440,23 +3440,23 @@
   described in this paragraph (with the <a>browsing context</a> being reloaded as the
   <a>source browsing context</a>).
 
-  The <dfn attribute for="Location"><code>ancestorOrigins</code></dfn> attribute's getter must run 
+  The <dfn attribute for="Location"><code>ancestorOrigins</code></dfn> attribute's getter must run
   these steps:
 
-  1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s 
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the 
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a 
-      "<code>SecurityError</code>" {{DOMException}}.
+  1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
+      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      "{{SecurityError}}" {{DOMException}}.
   2. Otherwise, return this {{Location}} object's <a>ancestor origins array</a>.
 
-  The {{Location}} object requires additional logic beyond IDL for security purposes. The internal 
+  The {{Location}} object requires additional logic beyond IDL for security purposes. The internal
   slot and internal methods {{Location}} objects must implement are defined below.
 
-  Every {{Location}} object has a \[[<dfn>DefaultProperties</dfn>]] internal slot representing its 
+  Every {{Location}} object has a [[<dfn>DefaultProperties</dfn>]] internal slot representing its
   own properties at time of its creation.
 
 
-  
+
 <h3 id="browsing-the-web">Browsing the Web</h3>
 
   <div class="impl">
@@ -3503,19 +3503,19 @@
     author's explicit request to sandbox the content.
   </p>
 
-    If the <a>navigate</a> algorithm was invoked optionally with an 
+    If the <a>navigate</a> algorithm was invoked optionally with an
     <dfn>exceptions enabled flag</dfn>, and it
     is aborted on this step, then in addition to aborting this algorithm, the user agent must also
-    throw a <code>SecurityError</code> exception.
+    throw a "{{SecurityError}}" {{DOMException}}.
 
     </li>
 
     <li>If there is a preexisting attempt to navigate the <a>browsing context</a>, and the
     <a>source browsing context</a> is the same as the <a>browsing context</a> being
     navigated, and that attempt is currently running the <a>unload a document</a> algorithm,
-    and the <a for="concept">origin</a> of the <a for="url">URL</a> of the resource being loaded in 
-    that navigation is not the <a>same origin</a> as the <a for="concept">origin</a> of the 
-    <a for="url">URL</a> of the resource being loaded in <em>this</em> navigation, then abort these 
+    and the <a for="concept">origin</a> of the <a for="url">URL</a> of the resource being loaded in
+    that navigation is not the <a>same origin</a> as the <a for="concept">origin</a> of the
+    <a for="url">URL</a> of the resource being loaded in <em>this</em> navigation, then abort these
     steps without affecting the preexisting attempt to navigate the <a>browsing context</a>.</li>
 
     <li>If a <a>task</a> queued by the <a>traverse the history by a
@@ -3660,8 +3660,8 @@
            Otherwise, the result of obtaining the resource for the URL is a <a>response</a> whose
            <a for="response">header list</a> consists of
            <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a> and whose
-           <a for="response">body</a> is <var>result</var>, and whose 
-           <a for="response">HTTPS state</a> is <var>settings</var>'s 
+           <a for="response">body</a> is <var>result</var>, and whose
+           <a for="response">HTTPS state</a> is <var>settings</var>'s
            <a for="settings">HTTPS state</a>.
 
            When it comes time to <a>set the document's address</a> in the
@@ -3678,30 +3678,6 @@
         (if it was not void) would replace that <a>browsing context</a>'s {{Document}}, thus also
         changing the <code>Window</code> object of that <a>browsing context</a>.
       </div>
-
-      </dd>
-
-      <dt>If the new resource is to be fetched using <code>GET</code>, and there are
-      <a>relevant application caches</a> that are
-      identified by a URL with the <a>same origin</a> as the URL in question, and that have
-      this URL as one of their entries, excluding entries marked as <a>foreign</a>, and whose mode is <a>fast</a>, and the user agent is not in a mode where it
-      will avoid using <a>application caches</a></dt>
-
-      <dd>
-
-      Fetch the resource from the <a>most appropriate
-      application cache</a> of those that match.
-
-      <p class="example">
-  For example, imagine an HTML page with an associated application cache
-      displaying an image and a form, where the image is also used by several other application
-      caches. If the user right-clicks on the image and chooses "View Image", then the user agent
-      could decide to show the image from any of those caches, but it is likely that the most useful
-      cache for the user would be the one that was used for the aforementioned HTML page. On the
-      other hand, if the user submits the form, and the form does a POST submission, then the user
-      agent will not use an application cache at all; the submission will be made to the
-      network.
-  </p>
 
       </dd>
 
@@ -3771,7 +3747,7 @@
     must be propagated to the <a for="url">URL</a> of the target of the redirect.
 
     <p class="example">
-  So for instance, if the original URL was "<code>http://example.com/#!sample</code>" and "<code>http://example.com/</code>" is
+  So for instance, if the original URL was "<code>https://example.com/#!sample</code>" and "<code>https://example.com/</code>" is
     found to redirect to "<code>https://example.com/</code>", the URL of the new resource
     will be "<code>https://example.com/#!sample</code>".
   </p>
@@ -3781,69 +3757,6 @@
     the resource is being obtained using a method that is neither the POST method nor a safe method
     (in HTTP terms), then abort these steps. The user agent may indicate to the user that the
     navigation has been aborted for security reasons.
-
-    </li>
-
-    <li>
-
-    <strong>Fallback in prefer-online mode</strong>: If the resource was not fetched from an
-    <a>application cache</a>, and was to be fetched using <code>GET</code>, and
-    there are <a>relevant application caches</a> that are
-    identified by a URL with the <a>same origin</a> as the URL in question, and that have this
-    URL as one of their entries, excluding entries marked as <a>foreign</a>, and whose mode is <a>prefer-online</a>, and the user didn't cancel the
-    navigation attempt during the earlier step, and the navigation attempt failed (e.g., the server
-    returned a 4xx or 5xx status, or there was a DNS error), then:
-
-    Let <var>candidate</var> be the resource identified by the URL in question from the
-    <a>most appropriate application cache</a> of those that
-    match.
-
-    If <var>candidate</var> is not marked as <a>foreign</a>, then the user agent must discard the failed
-    load and instead continue along these steps using <var>candidate</var> as the resource.
-    The user agent may indicate to the user that the original page load failed, and that the page
-    used was a previously cached resource.
-
-    <p class="note">
-  This does not affect the <i>address of the resource from which Request-URIs are
-    obtained</i>, as used to set <a>the document's referrer</a> in the initialize the
-    {{Document}} object steps below; they still use the value as computed by the
-    original fetch algorithm.
-  </p>
-
-    </li>
-
-    <li>
-
-    <strong>Fallback for fallback entries</strong>: If the resource was not fetched from an
-    <a>application cache</a>, and was to be fetched using <code>GET</code>, and
-    its URL <a>matches the fallback namespace</a>
-    of one or more <a>relevant application caches</a>, and
-    the <a>most appropriate application cache</a> of those
-    that match does not have an entry in its <a>online
-    safelist</a> that has the <a>same origin</a> as the resource's URL and that is a
-    <a>prefix match</a> for the resource's URL, and the user didn't cancel the navigation
-    attempt during the earlier step, and the navigation attempt failed (e.g., the server returned a
-    4xx or 5xx status, or there was a DNS error), then:
-
-    Let <var>candidate</var> be the <a>fallback
-    resource</a> specified for the <a>fallback
-    namespace</a> in question. If multiple application caches match, the user agent must use the
-    fallback of the <a>most appropriate application
-    cache</a> of those that match.
-
-    If <var>candidate</var> is not marked as <a>foreign</a>, then the user agent must discard the failed
-    load and instead continue along these steps using <var>candidate</var> as the resource.
-    <a>The document's address</a>, if appropriate, will still be the originally requested URL,
-    not the fallback URL, but the user agent may indicate to the user that the original page load
-    failed, that the page used was a fallback resource, and what the URL of the fallback resource
-    actually is.
-
-    <p class="note">
-  This does not affect the <i>address of the resource from which Request-URIs are
-    obtained</i>, as used to set <a>the document's referrer</a> in the initialize the
-    {{Document}} object steps below; they still use the value as computed by the
-    original fetch algorithm.
-  </p>
 
     </li>
 
@@ -3881,7 +3794,7 @@
 
     </li>
 
-    <li>Let <var>type</var> be the sniffed type of the resource.</li>
+    <li>Let <var>type</var> be the computed type of the resource.</li>
 
     <li>If the user agent has been configured to process resources of the given <var>type</var> using some mechanism other than rendering the content in a <a>browsing
     context</a>, then skip this step. Otherwise, if the <var>type</var> is one of the
@@ -3904,9 +3817,7 @@
       <a>navigate</a> algorithm.</dd>
 
       <dt>a <a>JavaScript MIME type</a></dt>
-      <dt>a <a>JSON MIME type</a> that is not an <a>explicitly supported JSON
-      type</a></dt>
-      <dt>"<code>text/cache-manifest</code>"</dt>
+      <dt>a <a>JSON MIME type</a> that is not an <a>explicitly supported JSON type</a></dt>
       <dt>"<code>text/css</code>"</dt>
       <dt>"<code>text/plain</code>"</dt>
       <dt>"<code>text/vtt</code>"</dt>
@@ -3958,55 +3869,55 @@
     performing <a>an overridden reload</a>.
     </p>
 
-  <dfn>Initializing a new <code>Document</code> object</dfn>: when a {{Document}} is created as part 
-  of the above steps, the user agent will be required to additionally run the following algorithm 
+  <dfn>Initializing a new <code>Document</code> object</dfn>: when a {{Document}} is created as part
+  of the above steps, the user agent will be required to additionally run the following algorithm
   after creating the new object:
 
-  1. If <var>browsingContext</var>'s only entry in its <a>session history</a> is the 
-      <a scheme>about:blank</a> {{Document}} that was added when <var>browsingContext</var> was 
-      <a lt="create a new browsing context">created</a>, and navigation is occurring with 
-      <a>replacement enabled</a>, and that {{Document}} has the <a>same origin</a> as the new 
+  1. If <var>browsingContext</var>'s only entry in its <a>session history</a> is the
+      <a scheme>about:blank</a> {{Document}} that was added when <var>browsingContext</var> was
+      <a lt="create a new browsing context">created</a>, and navigation is occurring with
+      <a>replacement enabled</a>, and that {{Document}} has the <a>same origin</a> as the new
       {{Document}}, then
       1. Let <var>window</var> be the {{Window}} object of that {{Document}}.
-      2. Change the {{Window/document}} attribute of <var>window</var> to point to the new 
+      2. Change the {{Window/document}} attribute of <var>window</var> to point to the new
           {{Document}}.
   2. Otherwise,
-      1. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the 
+      1. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the
           following customizations:
-          
+
           * For the global object, create a new {{Window}} object <var>window</var>.
-          * For the global <em>this<em> value, use <var>browsingContext</var>'s {{WindowProxy}}
+          * For the global <em>this</em> value, use <var>browsingContext</var>'s {{WindowProxy}}
              object.
-          * Let <var>realm execution context</var> be the created 
+          * Let <var>realm execution context</var> be the created
              <a>JavaScript execution context</a>.
           * Do not obtain any source texts for scripts or modules.
-      2. <a>Set up a browsing context environment settings object</a> with 
+      2. <a>Set up a browsing context environment settings object</a> with
           <var>realm execution context</var>, and let <var>settings object</var> be the result.
-      3. Set <var>window</var>'s 
-          <a lt="document associated with a window">associated <code>Document</code></a> to the new 
+      3. Set <var>window</var>'s
+          <a lt="document associated with a window">associated <code>Document</code></a> to the new
           {{Document}}.
-  3. Set <var>browsingContext</var>'s {{WindowProxy}} object's [[Window]] internal slot value to 
+  3. Set <var>browsingContext</var>'s {{WindowProxy}} object's \[[Window]] internal slot value to
       <var>window</var>.
-  4. Set the {{Document}}'s <a for="document">HTTPS state</a> to the 
+  4. Set the {{Document}}'s <a for="document">HTTPS state</a> to the
       <a for="response">HTTPS state</a> of the resource used to generate the document.
   5. Execute the <a>Initialize a <code>Document</code>'s CSP list</a> algorithm on the {{Document}}
       object and the resource used to generate the document. [[CSP3]]
-  6. Set <a>the document's referrer</a> to the 
-      <em>address of the resource from which Request-URIs are obtained</em> as determined when the 
-      fetch algorithm obtained the resource, if that algorithm was used and determined such a value; 
+  6. Set <a>the document's referrer</a> to the
+      <em>address of the resource from which Request-URIs are obtained</em> as determined when the
+      fetch algorithm obtained the resource, if that algorithm was used and determined such a value;
       otherwise, set it to the empty string.
   7. <a>Implement the sandboxing</a> for the {{Document}}.
-  8. If the <a>active sandboxing flag set</a> of the {{Document}}'s <a>browsing context</a> or any 
-      of its <a>ancestor browsing contexts</a> (if any) have the 
+  8. If the <a>active sandboxing flag set</a> of the {{Document}}'s <a>browsing context</a> or any
+      of its <a>ancestor browsing contexts</a> (if any) have the
       <a>sandboxed fullscreen browsing context flag</a> set, then skip this step.
 
-      If the {{Document}}'s <a>browsing context</a> has a <a>browsing context container</a> and 
-      either it is not an <{iframe}> element, or it does not have the <code>allowfullscreen</code> 
-      attribute specified, or its {{Document}} does not have the <a>fullscreen enabled flag</a> set, 
+      If the {{Document}}'s <a>browsing context</a> has a <a>browsing context container</a> and
+      either it is not an <{iframe}> element, or it does not have the <code>allowfullscreen</code>
+      attribute specified, or its {{Document}} does not have the <a>fullscreen enabled flag</a> set,
       then also skip this step.
 
       Otherwise, set the {{Document}}'s <a>fullscreen enabled flag</a>.
-  
+
     </li>
 
     <li>
@@ -4162,7 +4073,7 @@
   The <a>input byte stream</a> converts bytes into characters for use in the
   <a>tokenizer</a>. This process relies, in part, on character encoding
   information found in the real <a>Content-Type metadata</a> of the
-  resource; the "sniffed type" is not used for this purpose.
+  resource; the "computed type" is not used for this purpose.
   </p>
 
   When no more bytes are available, the user agent must <a>queue a task</a> for the parser
@@ -4171,10 +4082,6 @@
   After creating the {{Document}} object, but before any script execution, certainly
   before the parser <a lt="stops parsing">stops</a>, the user agent must <a>update the
   session history with the new page</a>.
-
-  <p class="note">
-  <a>Application cache selection</a> happens <a>in the HTML parser</a>.
-  </p>
 
   The <a>task source</a> for the two tasks mentioned in this section must be the
   <a>networking task source</a>.
@@ -4199,26 +4106,6 @@
   encoding is established, the <a>document's character encoding</a> must be set to that
   character encoding.
 
-  If the root element, as parsed according to the XML specifications cited above, is found to be
-  an <{html}> element with an attribute <code>manifest</code>
-  whose value is not the empty string, then, as soon as the element is
-  <a for="document">inserted into the document</a>, the user agent must <a>parse</a> the value of
-  that attribute relative to that element, and if
-  that is successful, must apply the <a>URL serializer</a>
-  algorithm to the <a>resulting URL record</a> with the <var>exclude fragment flag</var> set to
-  obtain <var>manifest URL</var>, and then run the <a>application
-  cache selection algorithm</a> with <var>manifest URL</var> as the manifest URL, passing in the
-  newly-created {{Document}}. Otherwise, if the attribute is absent, its value is the empty
-  string, or <a>parsing</a> its value fails, then as soon as the root element is <a for="document">inserted into the document</a>, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
-  passing in the {{Document}}.
-
-  <p class="note">
-  Because the processing of the <code>manifest</code>
-  attribute happens only once the root element is parsed, any URLs referenced by processing
-  instructions before the root element (such as <code>&lt;?xml-stylesheet?></code> PIs)
-  will be fetched from the network and cannot be cached.
-  </p>
-
   User agents may examine the namespace of the root {{Element}} node of this
   {{Document}} object to perform namespace-based dispatch to alternative processing tools,
   e.g., determining that the content is actually a syndication feed and passing it to a feed handler.
@@ -4236,7 +4123,7 @@
 <h4 id="page-load-processing-model-for-text-files"><dfn lt="plain text file">Page load processing model for text files</dfn></h4>
 
   When a plain text document is to be loaded in a <a>browsing context</a>, the user agent
-  must <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to the sniffed MIME type of the
+  must <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to the <a>computed MIME type</a> of the
   resource (<var>type</var> in the <a>navigate</a> algorithm), initialize the
   {{Document}} object, create an <a>HTML parser</a>, associate it with the
   {{Document}}, act as if the tokenizer had emitted a start tag token with the tag name
@@ -4248,13 +4135,10 @@
 
   The rules for how to convert the bytes of the plain text document into actual characters, and
   the rules for actually rendering the text to the user, are defined by the specifications for the
-  sniffed MIME type of the resource (<var>type</var> in the <a>navigate</a> algorithm).
+  <a>computed MIME type</a> of the resource (<var>type</var> in the <a>navigate</a> algorithm).
 
   The <a>document's character encoding</a> must be set to the character encoding used to
   decode the document.
-
-  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
-  passing in the newly-created {{Document}}.
 
   When no more bytes are available, the user agent must <a>queue a task</a> for the parser
   to process the implied EOF character, which eventually causes a <code>load</code> event to be fired.
@@ -4263,14 +4147,12 @@
   parsing, the user agent must <a>update the session history with the new page</a>.
 
   User agents may add content to the <{head}> element of the {{Document}}, e.g.,
-  linking to a style sheet or a binding, providing script, giving the document a
-  <code>title</code>, etc.
+  to link to a style sheet, provide a script, give the document a <a element for="html"><code>title</code></a>, etc.
 
   <p class="note">
   In particular, if the user agent supports the <code>Format=Flowed</code>
-  feature of RFC 3676 then the user agent would need to apply extra styling to cause the text to
-  wrap correctly and to handle the quoting feature. This could be performed using, e.g., a
-  binding or a CSS extension.
+  feature of RFC3676 then the user agent would need to apply extra styling to cause the text to
+  wrap correctly and to handle the quoting feature. [[RFC3676]]
   </p>
 
   The <a>task source</a> for the two tasks mentioned in this section must be the
@@ -4302,7 +4184,7 @@
 
   When an image, video, or audio resource is to be loaded in a <a>browsing context</a>, the
   user agent should create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content
-  type</a> to the sniffed MIME type of the resource (<var>type</var> in the
+  type</a> to the <a>computed MIME type</a> of the resource (<var>type</var> in the
   <a>navigate</a> algorithm), initialize the {{Document}} object, append
   an <{html}> element to the {{Document}}, append a <{head}> element and
   a <{body}> element to the <{html}> element, append an element <var>host element</var> for the media, as described below, to the <{body}> element,
@@ -4332,15 +4214,11 @@
   Then, the user agent must act as if it had <a>stopped
   parsing</a>.
 
-  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
-  passing in the newly-created {{Document}}.
-
-  After creating the {{Document}} object, but potentially before the page has finished
+  After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
   User agents may add content to the <{head}> element of the {{Document}}, or
-  attributes to the element <var>host element</var>, e.g., to link to a style sheet or a
-  binding, to provide a script, to give the document a <code>title</code>, to make the media
+  attributes to the element <var>host element</var>, e.g., to link to a style sheet, provide a script, give the document a <a element for="html"><code>title</code></a>, make the media
   <a element-attr for="media">autoplay</a>, etc.
 
 <h4 id="page-load-processing-model-for-content-that-uses-plugins">Page load processing model for content that uses plugins</h4>
@@ -4349,7 +4227,7 @@
   <a>browsing context</a>, the user agent should create a {{Document}} object, mark
   it as being an <a>HTML document</a> and mark it as being a
   <dfn>plugin document</dfn>, set its <a>content
-  type</a> to the sniffed MIME type of the resource (<var>type</var> in the
+  type</a> to the <a>computed MIME type</a> of the resource (<var>type</var> in the
   <a>navigate</a> algorithm), initialize the {{Document}} object, append
   an <{html}> element to the {{Document}}, append a <{head}> element and
   a <{body}> element to the <{html}> element, append an <code>embed</code> to the
@@ -4365,15 +4243,12 @@
   Then, the user agent must act as if it had <a>stopped
   parsing</a>.
 
-  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest, and
-  passing in the newly-created {{Document}}.
-
-  After creating the {{Document}} object, but potentially before the page has finished
+  After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
   User agents may add content to the <{head}> element of the {{Document}}, or
-  attributes to the <{embed}> element, e.g., to link to a style sheet or a binding, or
-  to give the document a <a element for="html"><code>title</code></a>.
+  attributes to the <{embed}> element, e.g., to link to a style sheet,
+  to give the document a <a element for="html"><code>title</code></a>, etc.
 
   <p class="note">
   If the {{Document}}'s <a>active sandboxing
@@ -4393,10 +4268,7 @@
 
   Once the page has been set up, the user agent must act as if it had <a lt="stops parsing">stopped parsing</a>.
 
-  Upon creation of the {{Document}} object, the user agent must run the <a>application cache selection algorithm</a> with no manifest,
-  passing in the newly-created {{Document}}.
-
-  After creating the {{Document}} object, but potentially before the page has been
+  After creating the <code>Document</code> object, but potentially before the page has been
   completely set up, the user agent must <a>update the session history with the new
   page</a>.
 
@@ -4461,7 +4333,7 @@
     <li>Use the <a spec="cssom-view">scroll an element into view</a> algorithm to scroll <var>target</var> into view, with the <var>align to top flag</var> set. [[!CSSOM-VIEW]]</li>
 
     <li>Run the <a>focusing steps</a> for that element, with the {{Document}}'s
-    viewport as the <i>fallback target</i>.</li>
+    <a>viewport</a> as the <i>fallback target</i>.</li>
 
     <li>Move the <a>sequential focus navigation starting point</a> to
     <var>target</var>.
@@ -4474,8 +4346,7 @@
   {{Document}} (for example, the processing of fragment identifiers for <a>XML MIME types</a> is the responsibility of RFC7303). [[!RFC7303]]
 
   For HTML documents (and <a>HTML MIME types</a>), the following
-  processing model must be followed to determine what <a>the indicated part of the
-  document</a> is.
+  processing model must be followed to determine what <a>the indicated part of the document</a> is.
 
   <ol>
 
@@ -4487,10 +4358,9 @@
 
     <li>Let <var>fragid bytes</var> be the result of percent decoding <var>fragid</var>.</li>
 
-    <li>Let <var>decoded fragid</var> be the result of applying the <a>UTF-8
-    decoder</a> algorithm to <var>fragid bytes</var>. If the <a>UTF-8 decoder</a>
-    emits a <a>decoder error</a>, abort the decoder and instead jump to the step labeled <i>no
-    decoded fragid</i>.</li>
+    <li>Let <var>decoded fragid</var> be the result of running
+    <a>UTF-8 decode without BOM or fail</a> on <var>fragid bytes</var>. If <var>decoded fragid</var>
+    is failure, jump to the step labeled no <var>decoded fragid</var>.</li>
 
     <li>If there is an element in the DOM that has an <a>ID</a> exactly
     equal to <var>decoded fragid</var>, then the first such element in <a>tree order</a> is
@@ -4504,8 +4374,7 @@
     string <code>top</code>, then <a>the indicated part of the document</a> is the top
     of the document; stop the algorithm here.</li>
 
-    <li>Otherwise, there is no <a>indicated part of
-    the document</a>.</li>
+    <li>Otherwise, there is no <a>indicated part of the document</a>.</li>
 
   </ol>
 
@@ -4575,8 +4444,8 @@
 
       <li>
 
-      If the <a for="concept">origin</a> of the {{Document}} of the <var>specified entry</var> is not the same as 
-      the <a for="concept">origin</a> of the {{Document}} of the <a>current entry</a>, then run the 
+      If the <a for="concept">origin</a> of the {{Document}} of the <var>specified entry</var> is not the same as
+      the <a for="concept">origin</a> of the {{Document}} of the <a>current entry</a>, then run the
       following sub-sub-steps:
 
       <ol>
@@ -4679,7 +4548,7 @@
     <a>restore persisted user state</a> and update aspects of the document and its rendering.</li>
 
     <li>Let <var>targetRealm</var> be the <a>current Realm Record</a>.</li>
-    
+
     <li>If the entry is a <a>state object</a> entry, let <var>state</var> be
     <a>StructuredClone</a>(that state object, <var>targetRealm</var>) of that state object. Otherwise, let <var>state</var> be
     null.</li>
@@ -5159,2056 +5028,6 @@
   {{Document}} is an <a>active document</a>, the user agent should <a>queue a
   task</a> to <a>fire a simple event</a> named <code>abort</code> at
   that {{Document}}'s <code>Window</code> object before invoking the <a>abort</a> algorithm.
-
-  </div>
-
-<h3 id="offline-web-applications">Offline Web applications</h3>
-
-  <p class="critical">This feature is in the process of being removed from the Web platform. (This
-  is a long process that takes many years.) Using any of the offline Web application features at
-  this time is highly discouraged. Use service workers instead. [[!SERVICE-WORKERS]]
-
-<h4 id="offline-web-applications-introduction">Introduction</h4>
-
-  <em>This section is non-normative.</em>
-
-  In order to enable users to continue interacting with Web applications and documents even when
-  their network connection is unavailable &mdash; for instance, because they are traveling outside
-  of their ISP's coverage area &mdash; authors can provide a manifest which lists the files that are
-  needed for the Web application to work offline and which causes the user's browser to keep a copy
-  of the files for use offline.
-
-  To illustrate this, consider a simple clock applet consisting of an HTML page "<code>clock.html</code>", a CSS style sheet "<code>clock.css</code>", and a JavaScript
-  script "<code>clock.js</code>".
-
-  Before adding the manifest, these three files might look like this:
-
-  <pre>EXAMPLE offline/clock/clock1.html</pre>
-  <pre>EXAMPLE offline/clock/clock1.css</pre>
-  <pre>EXAMPLE offline/clock/clock1.js</pre>
-
-  If the user tries to open the "<code>clock.html</code>" page while offline, though,
-  the user agent (unless it happens to have it still in the local cache) will fail with an
-  error.
-
-  The author can instead provide a manifest of the three files, say "<code>clock.appcache</code>":
-
-  <pre>EXAMPLE offline/clock/clock2.appcache</pre>
-
-  With a small change to the HTML file, the manifest (served as <code>text/cache-manifest</code>)
-  is linked to the application:
-
-  <pre>EXAMPLE offline/clock/clock2.html</pre>
-
-  Now, if the user goes to the page, the browser will cache the files and make them available
-  even when the user is offline.
-
-  <p class="note">
-  Authors are encouraged to include the main page in the manifest also, but in
-  practice the page that referenced the manifest is automatically cached even if it isn't explicitly
-  mentioned.
-  </p>
-
-  <p class="note">
-  With the exception of "no-store" directive, HTTP cache headers and restrictions on
-  caching pages served over TLS (encrypted, using <code>https:</code>) are
-  overridden by manifests. Thus, pages will not expire from an application cache before the user
-  agent has updated it, and even applications served over TLS can be made to work offline.
-  </p>
-
-  <a>View this example online</a>.
-
-<h5 id="supporting-offline-caching-for-legacy-applications">Supporting offline caching for legacy applications</h5>
-
-  <em>This section is non-normative.</em>
-
-  The application cache feature works best if the application logic is separate from the
-  application and user data, with the logic (markup, scripts, style sheets, images, etc) listed in
-  the manifest and stored in the application cache, with a finite number of static HTML pages for
-  the application, and with the application and user data stored in Web Storage or a client-side
-  Indexed Database, updated dynamically using Web Sockets, <code>XMLHttpRequest</code>, server-sent
-  events, or some other similar mechanism.
-
-  This model results in a fast experience for the user: the application immediately loads, and
-  fresh data is obtained as fast as the network will allow it (possibly while stale data shows).
-
-  Legacy applications, however, tend to be designed so that the user data and the logic are mixed
-  together in the HTML, with each operation resulting in a new HTML page from the server.
-
-  <div class="example">
-    For example, consider a news application. The typical architecture of such an application,
-    when not using the application cache feature, is that the user fetches the main page, and the
-    server returns a dynamically-generated page with the current headlines and the user interface
-    logic mixed together.
-
-    A news application designed for the application cache feature, however, would instead have the
-    main page just consist of the logic, and would then have the main page fetch the data separately
-    from the server, e.g., using <code>XMLHttpRequest</code>.
-  </div>
-
-  The mixed-content model does not work well with the application cache feature: since the
-  content is cached, it would result in the user always seeing the stale data from the previous time
-  the cache was updated.
-
-  While there is no way to make the legacy model work as fast as the separated model, it
-  <em>can</em> at least be retrofitted for offline use using the <a>prefer-online</a> <a>application cache mode</a>. To do so, list all the static
-  resources used by the HTML page you want to have work offline in an <a>application cache manifest</a>, use the <code>manifest</code> attribute to select that manifest from the HTML file,
-  and then add the following line at the bottom of the manifest:
-
-  <pre>SETTINGS:
-  prefer-online
-  NETWORK:
-  *</pre>
-
-  This causes the <a>application cache</a> to only be used for <a>master entries</a> when the user is offline, and causes the
-  application cache to be used as an atomic HTTP cache (essentially pinning resources listed in the
-  manifest), while allowing all resources not listed in the manifest to be accessed normally when
-  the user is online.
-
-<h5 id="introduction-event-summary"><dfn lt="drag-and-drop events">Event summary</dfn></h5>
-
-  <em>This section is non-normative.</em>
-
-  When the user visits a page that declares a manifest, the browser will try to update the cache.
-  It does this by fetching a copy of the manifest and, if the manifest has changed since the user
-  agent last saw it, redownloading all the resources it mentions and caching them anew.
-
-  As this is going on, a number of events get fired on the <code>ApplicationCache</code> object
-  to keep the script updated as to the state of the cache update, so that the user can be notified
-  appropriately. The events are as follows:
-
-  <table>
-    <thead>
-    <tr>
-      <th> Event name
-      <th> Interface
-      <th> Fired when...
-      <th> Next events
-    <tbody>
-
-    <tr>
-      <td> <dfn event for="cache"><code>checking</code></dfn>
-      <td> <code>Event</code>
-      <td> The user agent is checking for an update, or attempting to download the manifest for the
-          first time. <strong>This is always the first event in the sequence.</strong>
-      <td> <code>noupdate</code>, <code>downloading</code>, <code>obsolete</code>, <code>error</code>
-
-    <tr>
-      <td> <dfn event for="cache"><code>noupdate</code></dfn>
-      <td> <code>Event</code>
-      <td> The manifest hadn't changed.
-      <td> Last event in sequence.
-
-    <tr>
-      <td> <dfn event for="cache"><code>downloading</code></dfn>
-      <td> <code>Event</code>
-      <td> The user agent has found an update and is fetching it, or is downloading the resources
-          listed by the manifest for the first time.
-      <td> <code>progress</code>, <code>error</code>, <code>cached</code>, <code>updateready</code>
-
-    <tr>
-      <td> <dfn event for="cache"><code>progress</code></dfn>
-      <td> <code>ProgressEvent</code>
-      <td> The user agent is downloading resources listed by the manifest.
-          The event object's <code>total</code> attribute returns the total number of files to be downloaded.
-          The event object's <code>loaded</code> attribute returns the number of files processed so far.
-      <td> <code>progress</code>, <code>error</code>, <code>cached</code>, <code>updateready</code>
-
-    <tr>
-      <td> <dfn event for="cache"><code>cached</code></dfn>
-      <td> <code>Event</code>
-      <td> The resources listed in the manifest have been downloaded, and the application is now cached.
-      <td> Last event in sequence.
-
-    <tr>
-      <td> <dfn event for="cache"><code>updateready</code></dfn>
-      <td> <code>Event</code>
-      <td> The resources listed in the manifest have been newly redownloaded, and the script can use
-          <code>swapCache()</code> to switch to the new cache.
-      <td> Last event in sequence.
-
-    <tr>
-      <td> <dfn event for="cache"><code>obsolete</code></dfn>
-      <td> <code>Event</code>
-      <td> The manifest was found to have become a 404 or 410 page, so the application cache is being deleted.
-      <td> Last event in sequence.
-
-    <tr>
-      <td rowspan=4> <dfn event for="cache"><code>error</code></dfn>
-      <td rowspan=4> <code>Event</code>
-      <td> The manifest was a 404 or 410 page, so the attempt to cache the application has been aborted.
-      <td rowspan=3> Last event in sequence.
-
-    <tr>
-      <td> The manifest hadn't changed, but the page referencing the manifest failed to download properly.
-
-    <tr>
-      <td> A fatal error occurred while fetching the resources listed in the manifest.
-
-    <tr>
-      <td> The manifest changed while the update was being run.
-      <td> The user agent will try fetching the files again momentarily.
-
-  </table>
-
-  These events are cancelable; their default action is for the user agent to show download
-  progress information. If the page shows its own update UI, canceling the events will prevent the
-  user agent from showing redundant progress information.
-
-  <div class="impl">
-
-<h4 id="application-caches">Application caches</h4>
-
-  An <dfn lt="application cache manifest|application cache">application cache</dfn> is a set of cached resources consisting of:
-
-  <ul>
-
-    <li>
-
-    One or more resources (including their out-of-band metadata, such as HTTP headers, if any),
-    identified by URLs, each falling into one (or more) of the following categories:
-
-    <dl>
-
-      <dt><dfn lt="master|master entries">Master entries</dfn>
-
-      <dd><p class="note">
-  These are documents that were added to the cache because a <a>browsing
-      context</a> was <a>navigated</a> to that document and the document
-      indicated that this was its cache, using the <code>manifest</code>
-      attribute.
-  </p>
-
-      <dt><dfn lt="the manifest|manifest">The manifest</dfn>
-
-      <dd><p class="note">
-  This is the resource corresponding to the URL that was given in a master
-      entry's <{html}> element's <code>manifest</code> attribute.
-      The manifest is fetched and processed during the <a>application cache download
-      process</a>. All the <a>master entries</a> have the
-      <a>same origin</a> as the manifest.
-  </p>
-
-      <dt><dfn lt="an explicit entry|explicit entries">Explicit entries</dfn>
-
-      <dd><p class="note">
-  These are the resources that were listed in the cache's <a>manifest</a> in an <a>explicit section</a>.
-  </p>
-
-      <dt><dfn lt="a fallback entry|fallback entries">Fallback entries</dfn>
-
-      <dd><p class="note">
-  These are the resources that were listed in the cache's <a>manifest</a> in a <a>fallback section</a>.
-  </p>
-
-    </dl>
-
-    <a>Explicit entries</a> and <a>Fallback entries</a> can be marked as <dfn>foreign</dfn>, which means that they have a <code>manifest</code> attribute but that it doesn't point at this cache's
-    <a>manifest</a>.
-
-    <p class="note">
-  A URL in the list can be flagged with multiple different types, and thus an
-    entry can end up being categorized as multiple entries. For example, an entry can be a manifest
-    entry and an explicit entry at the same time, if the manifest is listed within the manifest.
-  </p>
-
-    </li>
-
-    <li>
-
-    Zero or more <dfn>fallback namespaces</dfn>, each of
-    which is mapped to a <a>fallback entry</a>.
-
-    <p class="note">
-  These are URLs used as <a>prefix
-    match patterns</a> for resources that are to be fetched from the network if possible, or to
-    be replaced by the corresponding <a>fallback entry</a>
-    if not. Each namespace URL has the <a>same origin</a> as <a>the manifest</a>.
-  </p>
-
-    </li>
-
-    <li>
-
-    Zero or more URLs that form the <dfn>online
-    safelist namespaces</dfn>.
-
-    <p class="note">
-  These are used as prefix match patterns, and declare URLs for which the user
-    agent will ignore the application cache, instead fetching them normally (i.e., from the network
-    or local HTTP cache as appropriate).
-  </p>
-
-    </li>
-
-    <li>
-
-    An <dfn>online safelist wildcard
-    flag</dfn>, which is either <i>open</i> or <i>blocking</i>.
-
-    <p class="note">
-  The <i>open</i> state indicates that any URL not listed as cached is to
-    be implicitly treated as being in the <a>online
-    safelist namespaces</a>; the <i>blocking</i> state indicates that URLs not listed
-    explicitly in the manifest are to be treated as unavailable.
-  </p>
-
-    </li>
-
-    <li>
-
-    A <dfn lt="application cache mode|cache mode flag">cache mode flag</dfn>, which is either in the <dfn><i>fast</i></dfn> state or the <dfn><i>prefer-online</i></dfn> state.
-
-    </li>
-
-  </ul>
-
-  Each <a>application cache</a> has a <dfn>completeness flag</dfn>, which is either <i>complete</i> or
-  <i>incomplete</i>.
-
-  <hr />
-
-  An <dfn>application cache group</dfn> is a group of <a>application
-  caches</a>, identified by the <a>absolute URL</a> of a resource <a>manifest</a> which is used to populate the caches in the
-  group.
-
-  An <a>application cache</a> is <dfn lt="newest|newer">newer</dfn> than
-  another if it was created after the other (in other words, <a>application caches</a> in an <a>application cache group</a> have a chronological
-  order).
-
-  Only the newest <a>application cache</a> in an <a>application cache group</a> can
-  have its <a>completeness flag</a> set to
-  <i>incomplete</i>; the others are always all <i>complete</i>.
-
-  Each <a>application cache group</a> has an <dfn>update status</dfn>, which is one of the following: <i>idle</i>, <i>checking</i>, <i>downloading</i>.
-
-  A <dfn>relevant application cache</dfn> is an <a>application cache</a> that is the <a>newest</a> in its <a>group</a> to be <i>complete</i>.
-
-  Each <a>application cache group</a> has a <dfn>list of pending master entries</dfn>. Each entry in this
-  list consists of a resource and a corresponding {{Document}} object. It is used during
-  the <a>application cache download process</a> to ensure that new master entries are cached
-  even if the <a>application cache download process</a> was already running for their
-  <a>application cache group</a> when they were loaded.
-
-  An <a>application cache group</a> can be marked as <dfn for="ApplicationCache">obsolete</dfn>, meaning that it must be ignored when looking at
-  what <a>application cache groups</a> exist.
-
-  <hr />
-
-  A <dfn>cache host</dfn> is a {{Document}} or a <code>SharedWorkerGlobalScope</code>
-  object. A <a>cache host</a> can be associated with an <a>application cache</a>.
-
-  [[!WEBWORKERS]]
-
-  A {{Document}} initially is not associated with an <a>application cache</a>, but
-  can become associated with one early during the page load process, when steps <a>in the parser</a> and in the <a>navigation</a>
-  sections cause <a>cache selection</a> to occur.
-
-  A <code>SharedWorkerGlobalScope</code> can be associated with an <a>application cache</a>
-  when it is created.
-
-  [[!WEBWORKERS]]
-
-  Each <a>cache host</a> has an associated <code>ApplicationCache</code> object.
-
-  <hr />
-
-  Multiple <a>application caches</a> in different <a>application cache groups</a> can contain the same resource,
-  e.g., if the manifests all reference that resource. If the user agent is to <dfn lt="most appropriate application cache|select an application cache">select an application cache</dfn> from a list of <a>relevant application caches</a> that contain a resource, the
-  user agent must use the application cache that the user most likely wants to see the resource
-  from, taking into account the following:
-
-  <ul>
-
-    <li>which application cache was most recently updated,
-
-    <li>which application cache was being used to display the resource from which the user decided to
-    look at the new resource, and
-
-    <li>which application cache the user prefers.
-
-  </ul>
-
-  <hr />
-
-  A URL <dfn lt="matches the fallback namespace|matches a fallback namespace|prefix match patterns">matches a fallback namespace</dfn> if
-  there exists a <a>relevant application cache</a> whose <a>manifest</a>'s URL has the <a>same origin</a> as the
-  URL in question, and that has a <a>fallback
-  namespace</a> that is a <a>prefix match</a> for the URL being examined. If multiple
-  fallback namespaces match the same URL, the longest one is the one that matches. A URL looking for
-  a fallback namespace can match more than one application cache at a time, but only matches one
-  namespace in each cache.
-
-  <div class="example">
-    If a manifest <code>http://example.com/app1/manifest</code> declares that <code>http://example.com/resources/images</code> is a fallback namespace, and the user
-    navigates to <code>HTTP://EXAMPLE.COM:80/resources/images/cat.png</code>, then the user
-    agent will decide that the application cache identified by <code>http://example.com/app1/manifest</code> contains a namespace with a match for that
-    URL.
-  </div>
-
-  </div>
-
-<h4 id="the-cache-manifest-syntax">The cache manifest syntax</h4>
-
-<h5 id="some-sample-manifests">Some sample manifests</h5>
-
-  <em>This section is non-normative.</em>
-
-  <div class="example">
-    This example manifest requires two images and a style sheet to be cached and safelists a CGI
-    script.
-
-    <pre>CACHE MANIFEST
-  # the above line is required
-
-  # this is a comment
-  # there can be as many of these anywhere in the file
-  # they are all ignored
-  # comments can have spaces before them
-  # but must be alone on the line
-
-  # blank lines are ignored too
-
-  # these are files that need to be cached they can either be listed
-  # first, or a "CACHE:" header could be put before them, as is done
-  # lower down.
-  images/sound-icon.png
-  images/background.png
-  # note that each file has to be put on its own line
-
-  # here is a file for the online safelist -- it isn't cached, and
-  # references to this file will bypass the cache, always hitting the
-  # network (or trying to, if the user is offline).
-  NETWORK:
-  comm.cgi
-
-  # here is another set of files to cache, this time just the CSS file.
-  CACHE:
-  style/default.css</pre>
-
-    It could equally well be written as follows:
-
-    <pre>CACHE MANIFEST
-  NETWORK:
-  comm.cgi
-  CACHE:
-  style/default.css
-  images/sound-icon.png
-  images/background.png</pre>
-  </div>
-
-  <div class="example">
-    Offline application cache manifests can use absolute paths or even absolute URLs:
-
-    <pre>CACHE MANIFEST
-
-  /main/home
-  /main/app.js
-  /settings/home
-  /settings/app.js
-  http://img.example.com/logo.png
-  http://img.example.com/check.png
-  http://img.example.com/cross.png</pre>
-  </div>
-
-  <div class="example">
-    The following manifest defines a catch-all error page that is displayed for any page on the
-    site while the user is offline. It also specifies that the <a>online safelist wildcard flag</a> is <i>open</i>, meaning that accesses to resources on other sites will not be blocked.
-    (Resources on the same site are already not blocked because of the catch-all fallback
-    namespace.)
-
-    So long as all pages on the site reference this manifest, they will get cached locally as they
-    are fetched, so that subsequent hits to the same page will load the page immediately from the
-    cache. Until the manifest is changed, those pages will not be fetched from the server again. When
-    the manifest changes, then all the files will be redownloaded.
-
-    Subresources, such as style sheets, images, etc, would only be cached using the regular HTTP
-    caching semantics, however.
-
-    <pre>CACHE MANIFEST
-  FALLBACK:
-  / /offline.html
-  NETWORK:
-  *</pre>
-  </div>
-
-<h5 id="writing-cache-manifests">Writing cache manifests</h5>
-
-  Manifests must be served using the <code>text/cache-manifest</code> <a>MIME type</a>. All
-  resources served using the <code>text/cache-manifest</code> <a>MIME type</a> must follow the
-  syntax of application cache manifests, as described in this section.
-
-  An application cache manifest is a text file, whose text is encoded using UTF-8. Data in
-  application cache manifests is line-based. Newlines must be represented by U+000A LINE FEED (LF)
-  characters, U+000D CARRIAGE RETURN (CR) characters, or U+000D CARRIAGE RETURN (CR) U+000A LINE
-  FEED (LF) pairs. [[!ENCODING]]
-
-  <p class="note">
-  This is a <a>willful violation</a> of RFC 2046, which requires all <code>text/*</code> types to only allow CRLF line breaks. This requirement, however, is
-  outdated; the use of CR, LF, and CRLF line breaks is commonly supported and indeed sometimes CRLF
-  is <em>not</em> supported by text editors. [[!RFC2046]]
-  </p>
-
-  The first line of an application cache manifest must consist of the string "CACHE", a single
-  U+0020 SPACE character, the string "MANIFEST", and either a U+0020 SPACE character, a U+0009
-  CHARACTER TABULATION (tab) character, a U+000A LINE FEED (LF) character, or a U+000D CARRIAGE
-  RETURN (CR) character. The first line may optionally be preceded by a U+FEFF BYTE ORDER MARK (BOM)
-  character. If any other text is found on the first line, it is ignored.
-
-  Subsequent lines, if any, must all be one of the following:
-
-  <dl>
-    <dt>A blank line
-    <dd>
-    Blank lines must consist of zero or more U+0020 SPACE and
-    U+0009 CHARACTER TABULATION (tab) characters only.
-
-    <dt>A comment
-    <dd>
-    Comment lines must consist of zero or more U+0020 SPACE and U+0009 CHARACTER TABULATION (tab)
-    characters, followed by a single U+0023 NUMBER SIGN character (#), followed by zero or more
-    characters other than U+000A LINE FEED (LF) and U+000D CARRIAGE RETURN (CR) characters.
-
-    <p class="note">
-  Comments must be on a line on their own. If they were to be included on a line
-    with a URL, the "#" would be mistaken for part of a fragment identifier.
-  </p>
-
-    <dt>A section header
-    <dd>
-
-    Section headers change the current section. There are four possible section headers:
-
-    <dl>
-
-      <dt><code>CACHE:</code>
-      <dd>Switches to the <dfn>explicit section</dfn>.
-
-      <dt><code>FALLBACK:</code>
-      <dd>Switches to the <dfn lt="fallback resource|fallback section">fallback section</dfn>.
-
-      <dt><code>NETWORK:</code>
-      <dd>Switches to the <dfn lt="online safelist|online safelist section">online safelist section</dfn>.
-
-      <dt><code>SETTINGS:</code>
-      <dd>Switches to the <dfn>settings section</dfn>.
-
-    </dl>
-
-    Section header lines must consist of zero or more U+0020 SPACE and U+0009 CHARACTER
-    TABULATION (tab) characters, followed by one of the names above (including the U+003A COLON
-    character (:)) followed by zero or more U+0020 SPACE and U+0009 CHARACTER TABULATION (tab)
-    characters.
-
-    Ironically, by default, the current section is the <a>explicit section</a>.
-
-    <dt>Data for the current section
-    <dd>
-
-    The format that data lines must take depends on the current section.
-
-    When the current section is the <a>explicit
-    section</a>, data lines must consist of zero or more U+0020 SPACE and U+0009 CHARACTER
-    TABULATION (tab) characters, a <a>valid URL</a> identifying a resource other than the
-    manifest itself, and then zero or more U+0020 SPACE and U+0009 CHARACTER TABULATION (tab)
-    characters.
-
-    When the current section is the <a>fallback
-    section</a>, data lines must consist of zero or more U+0020 SPACE and U+0009 CHARACTER
-    TABULATION (tab) characters, a <a>valid URL</a> identifying a resource other than the
-    manifest itself, one or more U+0020 SPACE and U+0009 CHARACTER TABULATION (tab) characters,
-    another <a>valid URL</a> identifying a resource other than the manifest itself, and then
-    zero or more U+0020 SPACE and U+0009 CHARACTER TABULATION (tab) characters.
-
-    When the current section is the <a>online
-    safelist section</a>, data lines must consist of zero or more U+0020 SPACE and U+0009
-    CHARACTER TABULATION (tab) characters, either a single U+002A ASTERISK character (*)  or a <a>valid URL</a> identifying a resource
-    other than the manifest itself, and then zero or more U+0020 SPACE and U+0009 CHARACTER
-    TABULATION (tab) characters.
-
-    When the current section is the <a>settings
-    section</a>, data lines must consist of zero or more U+0020 SPACE and U+0009 CHARACTER
-    TABULATION (tab) characters, a <a lt="cache setting">setting</a>,
-    and then zero or more U+0020 SPACE and U+0009 CHARACTER TABULATION (tab) characters.
-
-    Currently only one <dfn lt="cache setting">setting</dfn> is
-    defined:
-
-    <dl>
-
-      <dt>The cache mode setting</dt>
-
-      <dd>This consists of the string "<code>prefer-online</code>". It sets the <a>cache mode</a> to <a>prefer-online</a>. (The <a>cache mode</a> defaults to <a>fast</a>.)</dd>
-
-    </dl>
-
-    Within a <a>settings section</a>, each <a lt="cache setting">setting</a> must occur no more than once.
-
-  </dl>
-
-  Manifests may contain sections more than once. Sections may be empty.
-
-  URLs that are to be fallback pages associated with <a>fallback namespaces</a>, and those namespaces themselves,
-  must be given in <a>fallback sections</a>, with
-  the namespace being the first URL of the data line, and the corresponding fallback page being the
-  second URL. All the other pages to be cached must be listed in <a>explicit sections</a>.
-
-  <a>Fallback namespaces</a> and <a>fallback entries</a> must have the <a>same origin</a>
-  as the manifest itself. <a>Fallback namespaces</a>
-  must also be in the same path as the manifest's URL.
-
-  A <a>fallback namespace</a> must not be listed more
-  than once.
-
-  Namespaces that the user agent is to put into the <a>online safelist</a> must all be specified in <a>online safelist sections</a>. (This is needed for
-  any URL that the page is intending to use to communicate back to the server.) To specify that all
-  URLs are automatically safelisted in this way, a U+002A ASTERISK character (*) may be specified
-  as one of the URLs.
-
-  Authors should not include namespaces in the <a>online safelist</a> for which another namespace in
-  the <a>online safelist</a> is a <a>prefix
-  match</a>.
-
-  <a>Relative URLs</a> must be given relative to the manifest's own
-  URL. All URLs in the manifest must have the same <a for="url">scheme</a> as
-  the manifest itself (either explicitly or implicitly, through the use of <a>relative URLs</a>). [[!URL]]
-
-  URLs in manifests must not have fragment identifiers (i.e., the U+0023 NUMBER SIGN character
-  isn't allowed in URLs in manifests).
-
-  <a>Fallback namespaces</a> and namespaces in the
-  <a>online safelist</a> are matched by <a>prefix
-  match</a>.
-
-  <div class="impl">
-
-<h5 id="parsing-cache-manifests">Parsing cache manifests</h5>
-
-  When a user agent is to <dfn lt="rules for parsing manifests|parse a manifest">parse a manifest</dfn>, it means that the user agent must run the
-  following steps:
-
-  <ol>
-
-    <li>
-
-    <a>UTF-8 decode</a> the byte stream corresponding with the manifest to be parsed.
-
-    <p class="note">
-  The <a>UTF-8 decode</a> algorithm strips a leading BOM, if any.
-  </p>
-
-    </li>
-
-    <li>Let <var>base URL</var> be the <a>absolute URL</a> representing the
-    manifest.</li>
-
-    <li>Apply the <a>URL parser</a> to <var>base URL</var>, and let <var>manifest path</var>
-    be the <a>path</a> component thus obtained.</li>
-
-    <li>Remove all the characters in <var>manifest path</var> after the last U+002F SOLIDUS
-    character (/), if any. (The first character and the last character in <var>manifest path</var>
-    after this step will both be slashes, the URL path separator character.)</li>
-
-    <li>Apply the <a>URL parser</a> steps to the <var>base URL</var>, so that the
-    components from its <a>URL record</a> can be used by the subsequent steps of this
-    algorithm.</li>
-
-    <li>Let <var>explicit URLs</var> be an initially empty list of <a>absolute URLs</a> for <a>explicit
-    entries</a>.</li>
-
-    <li>Let <var>fallback URLs</var> be an initially empty mapping of <a>fallback namespaces</a> to <a>absolute URLs</a> for <a>fallback
-    entries</a>.</li>
-
-    <li>Let <var>online safelist namespaces</var> be an initially empty list of <a>absolute URLs</a> for an <a>online safelist</a>.</li>
-
-    <li>Let <var>online safelist wildcard flag</var> be <i>blocking</i>. </li>
-
-    <li>Let <var>cache mode flag</var> be <i>fast</i>. </li>
-
-    <li>Let <var>input</var> be the decoded text of the manifest's byte stream.</li>
-
-    <li>Let <var>position</var> be a pointer into <var>input</var>, initially
-    pointing at the first character.</li>
-
-    <li>If the characters starting from <var>position</var> are "CACHE", followed by a
-    U+0020 SPACE character, followed by "MANIFEST", then advance <var>position</var> to the
-    next character after those. Otherwise, this isn't a cache manifest; abort this algorithm with a
-    failure while checking for the magic signature.</li>
-
-    <li>If the character at <var>position</var> is neither a U+0020 SPACE character, a
-    U+0009 CHARACTER TABULATION (tab) character, U+000A LINE FEED (LF) character, nor a U+000D
-    CARRIAGE RETURN (CR) character, then this isn't a cache manifest; abort this algorithm with a
-    failure while checking for the magic signature.</li>
-
-    <li>This is a cache manifest. The algorithm cannot fail beyond
-    this point (though bogus lines can get ignored).</li>
-
-    <li><a>Collect a sequence of characters</a> that are <em>not</em> U+000A LINE FEED (LF)
-    or U+000D CARRIAGE RETURN (CR) characters, and ignore those characters. (Extra text on the first
-    line, after the signature, is ignored.)</li>
-
-    <li>Let <var>mode</var> be "explicit".</li>
-
-    <li><var>Start of line</var>: If <var>position</var> is past the end of <var>input</var>, then jump to the last step. Otherwise, <a>collect a sequence of
-    characters</a> that are U+000A LINE FEED (LF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, or
-    U+0009 CHARACTER TABULATION (tab) characters.</li>
-
-    <li>Now, <a>collect a sequence of characters</a> that are <em>not</em> U+000A LINE FEED
-    (LF) or U+000D CARRIAGE RETURN (CR) characters, and let the result be <var>line</var>.</li>
-
-    <li>Drop any trailing U+0020 SPACE and U+0009 CHARACTER TABULATION (tab) characters at the end
-    of <var>line</var>.</li>
-
-    <li>If <var>line</var> is the empty string, then jump back to the step labeled <i>start
-    of line</i>.</li>
-
-    <li>If the first character in <var>line</var> is a U+0023 NUMBER SIGN character (#),
-    then jump back to the step labeled <var>Start of line</var>.</li>
-
-    <li>If <var>line</var> equals "CACHE:" (the word "CACHE" followed by a U+003A COLON
-    character (:)), then set <var>mode</var> to "explicit" and jump back to the step labeled
-    <var>Start of line</var>.</li>
-
-    <li>If <var>line</var> equals "FALLBACK:" (the word "FALLBACK" followed by a U+003A
-    COLON character (:)), then set <var>mode</var> to "fallback" and jump back to the step
-    labeled <var>Start of line</var>.</li>
-
-    <li>If <var>line</var> equals "NETWORK:" (the word "NETWORK" followed by a U+003A
-    COLON character (:)), then set <var>mode</var> to "online safelist" and jump back to
-    the step labeled <var>Start of line</var>.</li>
-
-    <li>If <var>line</var> equals "SETTINGS:" (the word "SETTINGS" followed by a U+003A
-    COLON character (:)), then set <var>mode</var> to "settings" and jump back to the step
-    labeled <var>Start of line</var>.</li>
-
-    <li>If <var>line</var> ends with a U+003A COLON character (:), then set <var>mode</var> to "unknown" and jump back to the step labeled <var>Start of line</var>.</li>
-
-    <li>This is either a data line or it is syntactically incorrect.</li>
-
-    <li>Let <var>position</var> be a pointer into <var>line</var>, initially
-    pointing at the start of the string.</li>
-
-    <li>Let <var>tokens</var> be a list of strings, initially empty.</li>
-
-    <li>
-
-    While <var>position</var> doesn't point past the end of <var>line</var>:
-
-    <ol>
-
-      <li>Let <var>current token</var> be an empty string.</li>
-
-      <li>While <var>position</var> doesn't point past the end of <var>line</var> and the character at <var>position</var> is neither a U+0020 SPACE
-      nor a U+0009 CHARACTER TABULATION (tab) character, add the character at <var>position</var> to <var>current token</var> and advance <var>position</var> to the next character in <var>input</var>.</li>
-
-      <li>Add <var>current token</var> to the <var>tokens</var> list.</li>
-
-      <li>While <var>position</var> doesn't point past the end of <var>line</var> and the character at <var>position</var> is either a U+0020 SPACE
-      or a U+0009 CHARACTER TABULATION (tab) character, advance <var>position</var> to the
-      next character in <var>input</var>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>
-
-    Process <var>tokens</var> as follows:
-
-    <dl class="switch">
-
-      <dt>If <var>mode</var> is "explicit"</dt>
-
-      <dd>
-
-      Let <var>urlRecord</var> be the result of <a lt="url parser">parsing</a> the first item in 
-      <var>tokens</var>, with <var>base URL</var>; ignore the rest.
-
-      If <var>urlRecord</var> is failure, then jump back to the step labeled 
-      <var>Start of line</var>.
-
-      If <var>urlRecord</var> has a different <a for="url">scheme</a> component than 
-      <var>base URL</var> (the manifest's URL), then jump back to the step labeled 
-      <var>Start of line</var>.
-
-      Let <var>new URL</var> be the result of applying the <a>URL serializer</a> algorithm to 
-      <var>urlRecord</var>, with the <var>exclude fragment flag</var> set.
-
-      Add <var>new URL</var> to the <var>explicit URLs</var>.
-
-      </dd>
-
-      <dt>If <var>mode</var> is "fallback"</dt>
-
-      <dd>Let <var>part one</var> be the first token in <var>tokens</var>, and let
-      <var>part two</var> be the second token in <var>tokens</var>.
-
-      Let <var>urlRecordOne</var> be the result of <a lt="url parser">parsing</a> 
-      <var>part one</var> with <var>base URL</var>.
-
-      Let <var>urlRecordTwo</var> be the result of <a lt="url parser">parsing</a> 
-      <var>part two</var> with <var>base URL</var>.
-      
-      If either <var>urlRecordOne</var> or <var>urlRecordTwo</var> is failure, then jump back to the 
-      step labeled <var>Start of line</var>.
-
-      If the <a for="url">origin</a> of either <var>urlRecordOne</var> or <var>urlRecordTwo</var> is
-      not <a>same origin</a> with the manifest's URL <a for="url">origin</a>, then jump back to the 
-      step labeled <var>Start of line</var>.
-
-      Let <var>part one path</var> be the <a>path</a> component of <var>urlRecordOne</var>.
-
-      If <var>manifest path</var> is not a <a>prefix match</a> for <var>part one path</var>, then 
-      jump back to the step labeled <var>Start of line</var>.
-
-      Let <var>part one</var> be the result of applying the <a>URL serializer</a> algorithm to 
-      <var>urlRecordOne</var>, with the <var>exclude fragment flag</var> set.
-
-      Let <var>part two</var> be the result of applying the <a>URL serializer</a> algorithm to 
-      <var>urlRecordTwo</var>, with the <var>exclude fragment flag</var> set.
-
-      If <var>part one</var> is already in the <var>fallback URLs</var> mapping as a 
-      <a>fallback namespace</a>, then jump back to the step labeled <var>Start of line</var>.
-
-      Otherwise, add <var>part one</var> to the <var>fallback URLs</var> mapping as a 
-      <a>fallback namespace</a>, mapped to <var>part two</var> as the <a>fallback entry</a>.
-
-      </dd>
-
-      <dt>If <var>mode</var> is "online safelist"</dt>
-
-      <dd>
-
-      If the first item in <var>tokens</var> is a U+002A ASTERISK character (*), then
-      set <var>online safelist wildcard flag</var> to <i>open</i> and jump back
-      to the step labeled <var>Start of line</var>.
-
-      Otherwise, let <var>urlRecord</var> be the result of <a>parsing</a> the first item in
-      <var>tokens</var> with <var>base URL</var>.
-
-      If <var>urlRecord</var> is failure, then jump back to the step labeled <var>Start of line</var>.
-
-      If <var>urlRecord</var> has a different <a for="url">scheme</a> component than <var>base URL</var> (the
-      manifest's URL), then jump back to the step labeled <var>Start of line</var>.
-
-      Let <var>new URL</var> be the result of applying the <a>URL serializer</a> algorithm to 
-      <var>urlRecord</var>, with the <var>exclude fragment flag</var> set.
-
-      Add <var>new URL</var> to the <var>online safelist namespaces</var>.
-
-      </dd>
-
-      <dt>If <var>mode</var> is "settings"</dt>
-
-      <dd>
-
-      If <var>tokens</var> contains a single token, and that token is a
-      <a>case-sensitive</a> match for the string "<code>prefer-online</code>", then
-      set <var>cache mode flag</var> to <i>prefer-online</i> and jump back to the
-      step labeled <var>Start of line</var>.
-
-      Otherwise, the line is an unsupported setting: do nothing; the line is ignored.
-
-      </dd>
-
-      <dt>If <var>mode</var> is "unknown"</dt>
-
-      <dd>
-
-      Do nothing. The line is ignored.
-
-      </dd>
-
-    </dl>
-
-    </li>
-
-    <li>Jump back to the step labeled <var>Start of line</var>. (That step jumps to the next, and last,
-    step when the end of the file is reached.)</li>
-
-    <li>Return the <var>explicit URLs</var> list, the <var>fallback URLs</var>
-    mapping, the <var>online safelist namespaces</var>, the <var>online safelist
-    wildcard flag</var>, and the <var>cache mode flag</var>.</li>
-
-  </ol>
-
-  <div class="note">
-
-    The resource that declares the manifest (with the <code>manifest</code> attribute) will always get taken from the cache,
-    whether it is listed in the cache or not, even if it is listed in an <a>online safelist namespace</a>.
-
-    If a resource is listed in the <a>explicit
-    section</a> or as a <a>fallback entry</a> in the <a>fallback section</a>, the resource will always be
-    taken from the cache, regardless of any other matching entries in the <a>fallback namespaces</a> or <a>online safelist namespaces</a>.
-
-    When a <a>fallback namespace</a> and an <a>online safelist namespace</a> overlap, the <a>online safelist namespace</a> has priority.
-
-    The <a>online safelist wildcard
-    flag</a> is applied last, only for URLs that match neither the <a>online safelist namespace</a> nor the <a>fallback namespace</a> and that are not listed in the
-    <a>explicit section</a>.
-
-  </div>
-
-<h4 id="downloading-or-updating-an-application-cache">Downloading or updating an application cache</h4>
-
-  When the user agent is required (by other parts of this specification) to start the
-  <dfn>application cache download process</dfn> for an <a>absolute URL</a> purported to
-  identify a <a>manifest</a>, or for an <a>application
-  cache group</a>, potentially given a particular <a>cache host</a>, and potentially given
-  a <a>master</a> resource, the user agent must run the steps
-  below. These steps are always run <a>in parallel</a> with the <a>event loop</a>
-  <a>tasks</a>.
-
-  Some of these steps have requirements that only apply if the user agent <dfn>shows caching
-  progress</dfn>. Support for this is optional. Caching progress UI could consist of a progress bar
-  or message panel in the user agent's interface, or an overlay, or something else. Certain events
-  fired during the <a>application cache download process</a> allow the script to override the
-  display of such an interface. (Such events are delayed until after the <code>load</code> event has fired.)
-
-  The goal of this is to allow Web applications to provide more
-  seamless update mechanisms, hiding from the user the mechanics of the application cache mechanism.
-  User agents may display user interfaces independent of this, but are encouraged to not show
-  prominent update progress notifications for applications that cancel the relevant events.
-
-  The <a>application cache download process</a> steps are as follows:
-
-  <ol>
-
-    <li>Optionally, wait until the permission to start the <a>application cache download
-    process</a> has been obtained from the user and until the user agent is confident that the
-    network is available. This could include doing nothing until the user explicitly opts-in to
-    caching the site, or could involve prompting the user for permission. The algorithm might never
-    get past this point. (This step is particularly intended to be used by user agents running on
-    severely space-constrained devices or in highly privacy-sensitive environments).</li>
-
-    <li>
-
-    Atomically, so as to avoid race conditions, perform the following substeps:
-
-    <ol>
-
-      <li>
-
-      Pick the appropriate substeps:
-
-      <dl class="switch">
-
-        <dt>If these steps were invoked with an <a>absolute URL</a> purported to identify a
-        <a>manifest</a></dt>
-
-        <dd>
-
-        Let <var>manifest URL</var> be that <a>absolute URL</a>.
-
-        If there is no <a>application cache group</a> identified by <var>manifest
-        URL</var>, then create a new <a>application cache group</a> identified by <var>manifest URL</var>. Initially, it has no <a>application caches</a>. One will be created later in this algorithm.
-
-        </dd>
-
-        <dt>If these steps were invoked with an <a>application cache group</a></dt>
-
-        <dd>
-
-        Let <var>manifest URL</var> be the <a>absolute URL</a> of the <a>manifest</a> used to identify the <a>application
-        cache group</a> to be updated.
-
-        If that <a>application cache group</a> is <a>obsolete</a>, then abort this instance of the
-        <a>application cache download process</a>. This can happen if another instance of this
-        algorithm found the manifest to be 404 or 410 while this algorithm was waiting in the first
-        step above.
-
-        </dd>
-
-      </dl>
-
-      </li>
-
-      <li>Let <var>cache group</var> be the <a>application cache group</a>
-      identified by <var>manifest URL</var>.</li>
-
-      <li>If these steps were invoked with a <a>master</a>
-      resource, then add the resource, along with the resource's {{Document}}, to <var>cache group</var>'s <a>list of pending
-      master entries</a>.</li>
-
-      <li>If these steps were invoked with a <a>cache host</a>, and the <a>status</a> of <var>cache group</var> is
-      <i>checking</i> or <i>downloading</i>, then <a>queue a post-load task</a> to <a>fire a
-      simple event</a> named <code>checking</code> that is
-      cancelable at the <code>ApplicationCache</code> singleton of that <a>cache host</a>. The
-      default action of this event must be, if the user agent <a>shows caching progress</a>,
-      the display of some sort of user interface indicating to the user that the user agent is
-      checking to see if it can download the application.</li>
-
-      <li>If these steps were invoked with a <a>cache host</a>, and the <a>status</a> of <var>cache group</var> is
-      <i>downloading</i>, then also <a>queue a post-load task</a> to <a>fire a simple
-      event</a> named <code>downloading</code> that is
-      cancelable at the <code>ApplicationCache</code> singleton of that <a>cache host</a>. The
-      default action of this event must be, if the user agent <a>shows caching progress</a>,
-      the display of some sort of user interface indicating to the user the application is being
-      downloaded.</li>
-
-      <li>If the <a>status</a> of the <var>cache
-      group</var> is either <i>checking</i> or <i>downloading</i>, then abort this instance of the
-      <a>application cache download process</a>, as an update is already in progress.</li>
-
-      <li>Set the <a>status</a> of <var>cache
-      group</var> to <i>checking</i>.
-
-      <li>For each <a>cache host</a> associated with an <a>application cache</a> in
-      <var>cache group</var>, <a>queue a post-load task</a> to <a>fire a simple
-      event</a> that is cancelable named <code>checking</code> at
-      the <code>ApplicationCache</code> singleton of the <a>cache host</a>. The default action
-      of these events must be, if the user agent <a>shows caching progress</a>, the display of
-      some sort of user interface indicating to the user that the user agent is checking for the
-      availability of updates.</li>
-
-    </ol>
-
-    <p class="note">
-  The remainder of the steps run <a>in parallel</a>.
-  </p>
-
-    If <var>cache group</var> already has an <a>application cache</a> in it, then
-    this is an <dfn>upgrade attempt</dfn>. Otherwise, this is a
-    <dfn>cache attempt</dfn>.
-
-    </li>
-
-    <li>If this is a <a>cache attempt</a>, then this
-    algorithm was invoked with a <a>cache host</a>; <a>queue a post-load task</a> to
-    <a>fire a simple event</a> named <code>checking</code> that
-    is cancelable at the <code>ApplicationCache</code> singleton of that <a>cache host</a>. The
-    default action of this event must be, if the user agent <a>shows caching progress</a>, the
-    display of some sort of user interface indicating to the user that the user agent is checking for
-    the availability of updates.</li>
-
-    <li>Let <var>request</var> be a new <a>request</a> whose
-    <a for="url">URL</a> is <var>manifest URL</var>, <a>client</a> is null, <a>destination</a> is "<code>subresource</code>",
-    <a>omit-<code>Origin</code>-header flag</a> is set, <a>referrer</a> is "<code>no-referrer</code>",
-    <a>synchronous flag</a> is set, <a>credentials
-    mode</a> is "<code>include</code>", and whose <a>use-URL-credentials
-    flag</a> is set.</li>
-
-    <li>
-
-    <i>Fetching the manifest</i>: Let <var>manifest</var> be the result of <a>fetching</a> <var>request</var>. HTTP caching semantics should be
-    honored for this request.
-
-    Parse <var>manifest</var>'s <a for="response">body</a> according to the
-    <a>rules for parsing manifests</a>, obtaining a list of
-    <a>explicit entries</a>, <a>fallback entries</a> and the <a>fallback namespaces</a> that map to them, entries for
-    the <a>online safelist</a>, and values for the
-    <a>online safelist wildcard flag</a>
-    and the <a>cache mode flag</a>.
-
-    <p class="note">
-  The <a>MIME type</a> of the resource is ignored &mdash; it is assumed to
-    be <code>text/cache-manifest</code>. In the future, if new manifest formats are supported, the
-    different types will probably be distinguished on the basis of the file signatures (for the
-    current format, that is the "<code>CACHE&nbsp;MANIFEST</code>" string at the top of the
-    file).
-  </p>
-
-    </li>
-
-    <li>
-
-    If <i>fetching the manifest</i> fails due to a 404 or 410 response status, then run these
-    substeps:
-
-    <ol>
-
-      <li>Mark <var>cache group</var> as <a>obsolete</a>. This <var>cache group</var> no
-      longer exists for any purpose other than the processing of {{Document}} objects
-      already associated with an <a>application cache</a> in the <var>cache
-      group</var>.</li>
-
-      <li>Let <var>task list</var> be an empty list of <a>tasks</a>.
-
-      <li>For each <a>cache host</a> associated with an <a>application cache</a> in
-      <var>cache group</var>, create a <a>task</a> to <a>fire
-      a simple event</a> named <code>obsolete</code> that is
-      cancelable at the <code>ApplicationCache</code> singleton of the <a>cache host</a>, and
-      append it to <var>task list</var>. The default action of these events must be, if the
-      user agent <a>shows caching progress</a>, the display of some sort of user interface
-      indicating to the user that the application is no longer available for offline use.</li>
-
-      <li>For each entry in <var>cache group</var>'s <a>list of pending master entries</a>, create a <a>task</a> to <a>fire a simple event</a> that is cancelable named
-      <code>error</code> (not <code>obsolete</code>!) at the <code>ApplicationCache</code>
-      singleton of the {{Document}} for this entry, if there still is one, and append it to
-      <var>task list</var>. The default action of this event must be, if the user agent
-      <a>shows caching progress</a>, the display of some sort of user interface indicating to
-      the user that the user agent failed to save the application for offline use.</li>
-
-      <li>If <var>cache group</var> has an <a>application cache</a> whose <a>completeness flag</a> is <i>incomplete</i>, then
-      discard that <a>application cache</a>.
-
-      <li>If appropriate, remove any user interface indicating that an update for this cache is in
-      progress.</li>
-
-      <li>Let the <a>status</a> of <var>cache
-      group</var> be <i>idle</i>.</li>
-
-      <li>For each <a>task</a> in <var>task list</var>, <a>queue that task as a post-load task</a>.</li>
-
-      <li>Abort the <a>application cache download process</a>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>
-
-    Otherwise, if <i>fetching the manifest</i> fails in some other way (e.g., the server returns
-    another 4xx or 5xx response, or there is a DNS error, or the connection times out, or the user
-    cancels the download, or the parser for manifests fails when checking the magic signature), or
-    if the server returned a redirect, then run the <a>cache failure steps</a>. [[!HTTP]]
-
-    </li>
-
-    <li>
-
-    If this is an <a>upgrade attempt</a> and the newly
-    downloaded <var>manifest</var> is byte-for-byte identical to the manifest found in the
-    <a>newest</a> <a>application cache</a> in <var>cache
-    group</var>, or the response status is <code>304</code>, then run these substeps:
-
-    <ol>
-
-      <li>Let <var>cache</var> be the <a>newest</a>
-      <a>application cache</a> in <var>cache group</var>.</li>
-
-      <li>Let <var>task list</var> be an empty list of <a>tasks</a>.
-
-      <li>
-
-      For each entry in <var>cache group</var>'s <a>list of pending master entries</a>, wait for the
-      resource for this entry to have either completely downloaded or failed.
-
-      If the download failed (e.g., the server returns a 4xx or 5xx response, or there is a DNS
-      error, the connection times out, or the user cancels the download), or if the resource is
-      labeled with the "no-store" cache directive, then create a <a>task</a> to <a>fire a simple event</a> that is cancelable named
-      <code>error</code> at the <code>ApplicationCache</code>
-      singleton of the {{Document}} for this entry, if there still is one, and append it to
-      <var>task list</var>. The default action of this event must be, if the user agent <a>shows
-      caching progress</a>, the display of some sort of user interface indicating to the user
-      that the user agent failed to save the application for offline use.
-
-      Otherwise, associate the {{Document}} for this entry with <var>cache</var>; store the resource for this entry in <var>cache</var>, if it
-      isn't already there, and categorize its entry as a <a>master entry</a>. If applying the <a>URL parser</a>
-      algorithm to the resource's <a for="url">URL</a> results in a <a>resulting URL record</a> that has a
-      non-null <a for="url">fragment</a> component, the <a for="url">URL</a>
-      used for the entry in <var>cache</var> must instead be the <a>absolute URL</a>
-      obtained from applying the <a>URL serializer</a>
-      algorithm to the <a>resulting URL record</a> with the <var>exclude fragment flag</var> set
-      (application caches never include fragment identifiers).
-
-      </li>
-
-      <li>For each <a>cache host</a> associated with an <a>application cache</a> in
-      <var>cache group</var>, create a <a>task</a> to <a>fire
-      a simple event</a> that is cancelable named <code>noupdate</code> at the <code>ApplicationCache</code> singleton
-      of the <a>cache host</a>, and append it to <var>task list</var>. The default
-      action of these events must be, if the user agent <a>shows caching progress</a>, the
-      display of some sort of user interface indicating to the user that the application is up to
-      date.</li>
-
-      <li>Empty <var>cache group</var>'s <a>list of pending master entries</a>.</li>
-
-      <li>If appropriate, remove any user interface indicating that an update for this cache is in
-      progress.</li>
-
-      <li>Let the <a>status</a> of <var>cache
-      group</var> be <i>idle</i>.</li>
-
-      <li>For each <a>task</a> in <var>task list</var>, <a>queue that task as a post-load task</a>.</li>
-
-      <li>Abort the <a>application cache download process</a>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>Let <var>new cache</var> be a newly created <a>application cache</a> in
-    <var>cache group</var>. Set its <a>completeness
-    flag</a> to <i>incomplete</i>.</li>
-
-    <li>For each entry in <var>cache group</var>'s <a>list of pending master entries</a>, associate the
-    {{Document}} for this entry with <var>new cache</var>.</li>
-
-    <li>Set the <a>status</a> of <var>cache
-    group</var> to <i>downloading</i>.</li>
-
-    <li>For each <a>cache host</a> associated with an <a>application cache</a> in <var>cache group</var>, <a>queue a post-load task</a> to <a>fire a simple
-    event</a> that is cancelable named <code>downloading</code>
-    at the <code>ApplicationCache</code> singleton of the <a>cache host</a>. The default action
-    of these events must be, if the user agent <a>shows caching progress</a>, the display of
-    some sort of user interface indicating to the user that a new version is being
-    downloaded.</li>
-
-    <li>Let <var>file list</var> be an empty list of URLs with flags.</li>
-
-    <li>Add all the URLs in the list of <a>explicit
-    entries</a> obtained by parsing <var>manifest</var> to <var>file list</var>,
-    each flagged with "explicit entry".</li>
-
-    <li>Add all the URLs in the list of <a>fallback
-    entries</a> obtained by parsing <var>manifest</var> to <var>file list</var>,
-    each flagged with "fallback entry".</li>
-
-    <li>If this is an <a>upgrade attempt</a>, then add all
-    the URLs of <a>master entries</a> in the <a>newest</a> <a>application cache</a> in <var>cache group</var> whose <a>completeness
-    flag</a> is <i>complete</i> to <var>file list</var>, each flagged with "master
-    entry".</li>
-
-    <li>If any URL is in <var>file list</var> more than once, then merge the entries into
-    one entry for that URL, that entry having all the flags that the original entries had.</li>
-
-    <li>
-
-    For each URL in <var>file list</var>, run the following steps. These steps may be
-    run in parallel for two or more of the URLs at a time. If, while running these steps, the
-    <code>ApplicationCache</code> object's <code>abort()</code> method
-    <a>sends a signal</a> to this instance of the <a>application
-    cache download process</a> algorithm, then run the <a>cache failure steps</a>
-    instead.
-
-    <ol>
-
-      <li>
-
-      If the resource URL being processed was flagged as neither an "explicit entry" nor or a
-      "fallback entry", then the user agent may skip this URL.
-
-      <p class="note">
-  This is intended to allow user agents to expire resources not listed in the
-      manifest from the cache. Generally, implementors are urged to use an approach that expires
-      lesser-used resources first.
-  </p>
-
-      </li>
-
-      <li>For each <a>cache host</a> associated with an <a>application cache</a> in
-      <var>cache group</var>, <a>queue a progress post-load task</a> to <a>fire</a> a <a>trusted</a>
-      event with the name <code>progress</code>, which does not
-      bubble, which is cancelable, and which uses the <code>ProgressEvent</code> interface, at the
-      <code>ApplicationCache</code> singleton of the <a>cache host</a>. The <code>lengthComputable</code> attribute must be set to
-      true, the <code>total</code> attribute must be set to the
-      number of files in <var>file list</var>, and the <code>loaded</code> attribute must be set to the number of files in
-      <var>file list</var> that have been either downloaded or skipped so far. The default
-      action of these events must be, if the user agent <a>shows caching progress</a>, the
-      display of some sort of user interface indicating to the user that a file is being downloaded
-      in preparation for updating the application. [[!XHR]]</li>
-
-      <li>Let <var>request</var> be a new <a>request</a> whose
-      <a for="url">URL</a> is URL, <a>client</a> is null, <a>destination</a> is 
-      "<code>subresource</code>", <a for="request">origin</a> is
-      <var>manifest URL</var>'s <a for="concept">origin</a>, <a>referrer</a> is 
-      "<code>no-referrer</code>", <a>synchronous flag</a> is set, <a>credentials mode</a> is 
-      "<code>include</code>", <a>use-URL-credentials flag</a> is set, and <a>redirect mode</a> is 
-      "<code>manual</code>".</li>
-
-      <li><a>Fetch</a> <var>request</var>. If this is an
-      <a>upgrade attempt</a>, then use the <a>newest</a> <a>application cache</a> in <var>cache
-      group</var> as an HTTP cache, and honor HTTP caching semantics (such as expiration, ETags, and
-      so forth) with respect to that cache. User agents may also have other caches in place that are
-      also honored.</li>
-
-      <li>
-
-      If the previous step fails (e.g., the server returns a 4xx or 5xx response, or there is a
-      DNS error, or the connection times out, or the user cancels the download), or if the server
-      returned a redirect, or if the resource is labeled with the "no-store" cache directive, then
-      run the first appropriate step from the following list: [[!HTTP]]
-
-      <dl class="switch">
-
-        <dt>If the URL being processed was flagged as an "explicit entry" or a "fallback entry"</dt>
-
-        <dd>
-
-        If these steps are being run in parallel for any other URLs in <var>file
-        list</var>, then abort these steps for those other URLs. Run the <a>cache failure
-        steps</a>.
-
-        <p class="note">
-  Redirects are fatal because they are either indicative of a network problem
-        (e.g., a captive portal); or would allow resources to be added to the cache under URLs that
-        differ from any URL that the networking model will allow access to, leaving orphan entries;
-        or would allow resources to be stored under URLs different than their true URLs. All of
-        these situations are bad.
-  </p>
-
-        </dd>
-
-        <dt>If the error was a 404 or 410 HTTP response</dt>
-
-        <dt>If the resource was labeled with the "no-store" cache directive</dt>
-
-        <dd>
-
-        Skip this resource. It is dropped from the cache.
-
-        </dd>
-
-        <dt>Otherwise</dt>
-
-        <dd>
-
-        Copy the resource and its metadata from the <a>newest</a> <a>application cache</a> in <var>cache group</var> whose <a>completeness
-        flag</a> is <i>complete</i>, and act as if that was the fetched resource, ignoring the
-        resource obtained from the network.
-
-        </dd>
-
-      </dl>
-
-      User agents may warn the user of these errors as an aid to development.
-
-      <p class="note">
-  These rules make errors for resources listed in the manifest fatal, while
-      making it possible for other resources to be removed from caches when they are removed from
-      the server, without errors, and making non-manifest resources survive server-side errors.
-  </p>
-
-      <p class="note">
-  Except for the "no-store" directive, HTTP caching rules that would cause a
-      file to be expired or otherwise not cached are ignored for the purposes of the
-      <a>application cache download process</a>.
-  </p>
-
-      </li>
-
-      <li>
-
-      Otherwise, the fetching succeeded. Store the resource in the <var>new
-      cache</var>.
-
-      If the user agent is not able to store the resource (e.g., because of quota restrictions),
-      the user agent may prompt the user or try to resolve the problem in some other manner (e.g.,
-      automatically pruning content in other caches). If the problem cannot be resolved, the user
-      agent must run the <a>cache failure steps</a>.
-
-      </li>
-
-      <li>If the URL being processed was flagged as an "explicit entry" in <var>file
-      list</var>, then categorize the entry as an <a>explicit
-      entry</a>.</li>
-
-      <li>If the URL being processed was flagged as a "fallback entry" in <var>file
-      list</var>, then categorize the entry as a <a>fallback
-      entry</a>.</li>
-
-      <li>If the URL being processed was flagged as an "master entry" in <var>file
-      list</var>, then categorize the entry as a <a>master
-      entry</a>.</li>
-
-      <li>As an optimization, if the resource is an HTML or XML file whose root element is an
-      <{html}> element with a <code>manifest</code> attribute
-      whose value doesn't match the manifest URL of the application cache being processed, then the
-      user agent should mark the entry as being <a>foreign</a>.
-
-    </ol>
-
-    </li>
-
-    <li>For each <a>cache host</a> associated with an <a>application cache</a> in <var>cache group</var>, <a>queue a progress post-load task</a> to <a>fire</a> a <a>trusted</a>
-    event with the name <code>progress</code>, which does not bubble,
-    which is cancelable, and which uses the <code>ProgressEvent</code> interface, at the
-    <code>ApplicationCache</code> singleton of the <a>cache host</a>. The <code>lengthComputable</code> attribute must be set to
-    true, the <code>total</code> and the <code>loaded</code> attributes must be set to the number of files in
-    <var>file list</var>. The default action of these events must be, if the user agent
-    <a>shows caching progress</a>, the display of some sort of user interface indicating to the
-    user that all the files have been downloaded. [[!XHR]]</li>
-
-    <li>Store the list of <a>fallback namespaces</a>,
-    and the URLs of the <a>fallback entries</a> that they map
-    to, in <var>new cache</var>.</li>
-
-    <li>Store the URLs that form the new <a>online
-    safelist</a> in <var>new cache</var>.</li>
-
-    <li>Store the value of the new <a>online
-    safelist wildcard flag</a> in <var>new cache</var>.</li>
-
-    <li>Store the value of the new <a>cache mode flag</a> in
-    <var>new cache</var>.</li>
-
-    <li>
-
-    For each entry in <var>cache group</var>'s <a>list of pending master entries</a>, wait for the
-    resource for this entry to have either completely downloaded or failed.
-
-    If the download failed (e.g., the server returns a 4xx or 5xx response, or there is a DNS
-    error, the connection times out, or the user cancels the download), or if the resource is
-    labeled with the "no-store" cache directive, then run these substeps:
-
-    <ol>
-
-      <li>Unassociate the {{Document}} for this entry from <var>new
-      cache</var>.</li>
-
-      <li><a>Queue a post-load task</a> to <a>fire a simple event</a> that is
-      cancelable named <code>error</code> at the
-      <code>ApplicationCache</code> singleton of the {{Document}} for this entry, if there
-      still is one. The default action of this event must be, if the user agent <a>shows caching
-      progress</a>, the display of some sort of user interface indicating to the user that the
-      user agent failed to save the application for offline use.
-
-      <li>
-
-      If this is a <a>cache attempt</a> and this entry is
-      the last entry in <var>cache group</var>'s <a>list of pending master entries</a>, then run these
-      further substeps:
-
-      <ol>
-
-        <li>Discard <var>cache group</var> and its only <a>application cache</a>,
-        <var>new cache</var>.
-
-        <li>If appropriate, remove any user interface indicating that an update for this cache is
-        in progress.</li>
-
-        <li>Abort the <a>application cache download process</a>.</li>
-
-      </ol>
-
-      </li>
-
-      <li>Otherwise, remove this entry from <var>cache group</var>'s <a>list of pending master entries</a>.</li>
-
-    </ol>
-
-    Otherwise, store the resource for this entry in <var>new cache</var>, if it isn't
-    already there, and categorize its entry as a <a>master
-    entry</a>.
-
-    </li>
-
-    <li>Let <var>request</var> be a new <a>request</a> whose
-    <a for="url">URL</a> is <var>manifest URL</var>, <a>client</a> is null, <a>destination</a> is "<code>subresource</code>",
-    <a>referrer</a> is "<code>no-referrer</code>",
-    <a>synchronous flag</a> is set, <a>credentials
-    mode</a> is "<code>include</code>", and whose <a>use-URL-credentials
-    flag</a> is set.</li>
-
-    <li>
-
-    Let <var>second manifest</var> be the result of <a>fetching</a> <var>request</var>. HTTP caching semantics should again
-    be honored for this request.
-
-    <p class="note">
-  Since caching can be honored, authors are encouraged to avoid setting the cache
-    headers on the manifest in such a way that the user agent would simply not contact the network
-    for this second request; otherwise, the user agent would not notice if the cache had changed
-    during the cache update process.
-  </p>
-
-    </li>
-
-    <li>
-
-    If the previous step failed for any reason, or if the fetching attempt involved a redirect,
-    or if <var>second manifest</var> and <var>manifest</var> are not byte-for-byte
-    identical, then schedule a rerun of the entire algorithm with the same parameters after a short
-    delay, and run the <a>cache failure steps</a>.
-
-    </li>
-
-    <li>
-
-    Otherwise, store <var>manifest</var> in <var>new cache</var>, if it's not
-    there already, and categorize its entry as <a>the
-    manifest</a>.
-
-    </li>
-
-    <li>Set the <a>completeness flag</a> of <var>new cache</var> to <i>complete</i>.</li>
-
-    <li>Let <var>task list</var> be an empty list of <a>tasks</a>.
-
-    <li>
-
-    If this is a <a>cache attempt</a>, then for each
-    <a>cache host</a> associated with an <a>application cache</a> in <var>cache
-    group</var>, create a <a>task</a> to <a>fire a simple event</a>
-    that is cancelable named <code>cached</code> at the
-    <code>ApplicationCache</code> singleton of the <a>cache host</a>, and append it to <var>task list</var>. The default action of these events must be, if the user agent
-    <a>shows caching progress</a>, the display of some sort of user interface indicating to
-    the user that the application has been cached and that they can now use it offline.
-
-    Otherwise, it is an <a>upgrade attempt</a>. For each
-    <a>cache host</a> associated with an <a>application cache</a> in <var>cache
-    group</var>, create a <a>task</a> to <a>fire a simple event</a>
-    that is cancelable named <code>updateready</code> at the
-    <code>ApplicationCache</code> singleton of the <a>cache host</a>, and append it to <var>task list</var>. The default action of these events must be, if the user agent
-    <a>shows caching progress</a>, the display of some sort of user interface indicating to
-    the user that a new version is available and that they can activate it by reloading the
-    page.
-
-    </li>
-
-    <li>If appropriate, remove any user interface indicating that an update for this cache is in
-    progress.</li>
-
-    <li>Set the <a>update status</a> of <var>cache
-    group</var> to <i>idle</i>.</li>
-
-    <li>For each <a>task</a> in <var>task list</var>, <a>queue that task as a post-load task</a>.</li>
-
-  </ol>
-
-  The <dfn>cache failure steps</dfn> are as follows:
-
-  <ol>
-
-    <li>Let <var>task list</var> be an empty list of <a>tasks</a>.
-
-    <li>
-
-    For each entry in <var>cache group</var>'s <a>list of pending master entries</a>, run the
-    following further substeps. These steps may be run in parallel for two or more entries at a
-    time.
-
-    <ol>
-
-      <li>Wait for the resource for this entry to have either completely downloaded or failed.
-
-      <li>Unassociate the {{Document}} for this entry from its <a>application
-      cache</a>, if it has one.</li>
-
-      <li>Create a <a>task</a> to <a>fire a simple event</a> that
-      is cancelable named <code>error</code> at the
-      <code>ApplicationCache</code> singleton of the {{Document}} for this entry, if there
-      still is one, and append it to <var>task list</var>. The default action of these
-      events must be, if the user agent <a>shows caching progress</a>, the display of some sort
-      of user interface indicating to the user that the user agent failed to save the application for
-      offline use.
-
-    </ol>
-
-    </li>
-
-    <li>For each <a>cache host</a> still associated with an <a>application cache</a>
-    in <var>cache group</var>, create a <a>task</a> to <a>fire
-    a simple event</a> that is cancelable named <code>error</code> at
-    the <code>ApplicationCache</code> singleton of the <a>cache host</a>, and append it to <var>task list</var>. The default action of these events must be, if the user agent
-    <a>shows caching progress</a>, the display of some sort of user interface indicating to the
-    user that the user agent failed to save the application for offline use.</li>
-
-    <li>Empty <var>cache group</var>'s <a>list of pending master entries</a>.</li>
-
-    <li>If <var>cache group</var> has an <a>application cache</a> whose <a>completeness flag</a> is <i>incomplete</i>, then discard
-    that <a>application cache</a>.
-
-    <li>If appropriate, remove any user interface indicating that an update for this cache is in
-    progress.</li>
-
-    <li>Let the <a>status</a> of <var>cache
-    group</var> be <i>idle</i>.</li>
-
-    <li>If this was a <a>cache attempt</a>, discard <var>cache group</var> altogether.
-
-    <li>For each <a>task</a> in <var>task list</var>, <a>queue that task as a post-load task</a>.</li>
-
-    <li>Abort the <a>application cache download process</a>.</li>
-
-  </ol>
-
-  Attempts to fetch resources as part of the <a>application cache download process</a> may
-  be done with cache-defeating semantics, to avoid problems with stale or inconsistent intermediary
-  caches.
-
-  <hr />
-
-  User agents may invoke the <a>application cache download process</a>, in the background,
-  for any <a>application cache group</a>, at any time (with no <a>cache host</a>). This
-  allows user agents to keep caches primed and to update caches even before the user visits a
-  site.
-
-  <hr />
-
-  Each {{Document}} has a list of <dfn>pending application cache download process
-  tasks</dfn> that is used to delay events fired by the algorithm above until the document's <code>load</code> event has fired. When the {{Document}} is created, the
-  list must be empty.
-
-  When the steps above say to <dfn lt="queue that task as a post-load task|queue a post-load task">queue a post-load task</dfn> <var>task</var>, where
-  <var>task</var> is a <a>task</a> that dispatches an event on a
-  target <code>ApplicationCache</code> object <var>target</var>, the user agent must run
-  the appropriate steps from the following list:
-
-  <dl>
-
-    <dt>If <var>target</var>'s <a>node document</a> is
-    <a>ready for post-load tasks</a></dt>
-
-    <dd><a lt="queue a task">Queue</a> the task <var>task</var>.</dd>
-
-    <dt>Otherwise</dt>
-
-    <dd>Add <var>task</var> to <var>target</var>'s <a>node document</a>'s list
-    of <a>pending application cache download process tasks</a>.</dd>
-
-  </dl>
-
-  When the steps above say to <dfn>queue a progress post-load task</dfn> <var>task</var>, where
-  <var>task</var> is a <a>task</a> that dispatches an event on a
-  target <code>ApplicationCache</code> object <var>target</var>, the user agent must run
-  the following steps:
-
-  <ol>
-
-    <li>If there is a <var>task</var> in <var>target</var>'s <a>node document</a>'s list
-    of <a>pending application cache download process tasks</a> that is labeled as a
-    <i>progress task</i>, then remove that task from the list.</li>
-
-    <li>Label <var>task</var> as a <i>progress task</i>.</li>
-
-    <li><a>Queue a post-load task</a> <var>task</var>.</li>
-
-  </ol>
-
-  The <a>task source</a> for these <a>tasks</a> is the
-  <a>networking task source</a>.
-
-<h4 id="the-application-cache-selection-algorithm">The application cache selection algorithm</h4>
-
-  When the <dfn lt="has an effect|application cache selection algorithm|application cache selection|cache selection">application cache selection algorithm</dfn>
-  algorithm is invoked with a {{Document}} <var>document</var> and optionally a
-  manifest <a for="url">URL</a> <var>manifest URL</var>, the user agent must run the first
-  applicable set of steps from the following list:
-
-  <dl class="switch">
-
-    <dt>If there is a <var>manifest URL</var>, and <var>document</var> was loaded
-    from an <a>application cache</a>, and the URL of the <a>manifest</a> of that cache's <a>application cache
-    group</a> is <em>not</em> the same as <var>manifest URL</var></dt>
-
-    <dd>
-
-    Mark the entry for the resource from which <var>document</var> was taken in the
-    <a>application cache</a> from which it was loaded as <a>foreign</a>.
-
-    Restart the current navigation from the top of the <a>navigation
-    algorithm</a>, undoing any changes that were made as part of the initial load (changes can be
-    avoided by ensuring that the step to <a>update the session history with the new page</a>
-    is only ever completed <em>after</em> this <a>application cache
-    selection algorithm</a> is run, though this is not required).
-
-    <p class="note">
-  The navigation will not result in the same resource being loaded, because
-    "foreign" entries are never picked during navigation.
-  </p>
-
-    User agents may notify the user of the inconsistency between the cache manifest and the
-    document's own metadata, to aid in application development.
-
-    </dd>
-
-    <dt>If <var>document</var> was loaded from an <a>application cache</a>, and that
-    <a>application cache</a> still exists (it is not now <a>obsolete</a>)</dt>
-
-    <dd>
-
-    Associate <var>document</var> with the <a>application cache</a> from which it
-    was loaded. Invoke, in the background, the <a>application cache download process</a> for
-    that <a>application cache</a>'s <a>application cache group</a>, with <var>document</var> as the <a>cache host</a>.
-
-    </dd>
-
-    <dt>If <var>document</var>  was loaded using <code>GET</code>, and, there is a
-    <var>manifest URL</var>, and <var>manifest URL</var> has the <a>same origin</a> as
-    <var>document</var></dt>
-
-    <dd>
-
-    Invoke, in the background, the <a>application cache download process</a> for <var>manifest URL</var>, with <var>document</var> as the <a>cache host</a>
-    and with the resource from which <var>document</var> was parsed as the <a>master</a> resource.
-
-    If there are <a>relevant application caches</a> that
-    are identified by a URL with the <a>same origin</a> as the URL of <var>document</var>, and that have this URL as one of their entries, excluding entries
-    marked as <a>foreign</a>, then the user agent should use
-    the <a>most appropriate application cache</a> of those
-    that match as an HTTP cache for any subresource loads. User agents may also have other caches in
-    place that are also honored.
-
-    </dd>
-
-    <dt>Otherwise</dt>
-
-    <dd>
-
-    The {{Document}} is not associated with any <a>application cache</a>.
-
-    If there was a <var>manifest URL</var>, the user agent may report to the user that
-    it was ignored, to aid in application development.
-
-    </dd>
-
-  </dl>
-
-<h4 id="changes-to-the-networking-model">Changes to the networking model</h4>
-
-  When a <a>cache host</a> is associated with an <a>application cache</a> whose <a>completeness flag</a> is <i>complete</i>, any and all
-  loads for resources related to that <a>cache host</a> other than those for <a>child browsing contexts</a> must go through the following steps
-  instead of immediately invoking the mechanisms appropriate to that resource's scheme:
-
-  <ol>
-
-    <li>If the resource is not to be fetched using the GET method, or if applying the <a>URL
-    parser</a> algorithm to both its <a for="url">URL</a> and the <a>application cache</a>'s
-    <a>manifest</a>'s URL results in two <a>URL records</a> with different <a for="url">scheme</a> components,
-    then fetch the resource normally and abort these steps.</li>
-
-    <li>If the resource's URL is a <a>master entry</a>,
-    <a>the manifest</a>, <a>an explicit entry</a>, or <a>a fallback entry</a> in the <a>application cache</a>,
-    then get the resource from the cache (instead of fetching it), and abort these steps.</li>
-
-    <li>If there is an entry in the <a>application cache</a>'s <a>online safelist</a> that has the <a>same
-    origin</a> as the resource's URL and that is a <a>prefix match</a> for the resource's
-    URL, then fetch the resource normally and abort these steps.</li>
-
-    <li>
-
-    If the resource's URL has the <a>same origin</a> as the manifest's URL, and there is a
-    <a>fallback namespace</a> <var>f</var> in
-    the <a>application cache</a> that is a <a>prefix match</a> for the resource's URL,
-    then:
-
-    Fetch the resource normally. If this results in a redirect to a resource with another
-    <a for="concept">origin</a> (indicative of a captive portal), or a 4xx or 5xx status code, or if 
-    there were network errors (but not if the user canceled the download), then instead get, from 
-    the cache, the resource of the <a>fallback entry</a> corresponding to the 
-    <a>fallback namespace</a> <var>f</var>. Abort these steps.
-
-    </li>
-
-    <li>If the <a>application cache</a>'s <a>online safelist wildcard flag</a> is
-    <i>open</i>, then fetch the resource normally and abort these steps.</li>
-
-    <li>Fail the resource load as if there had been a generic network error.</li>
-
-  </ol>
-
-  <p class="note">
-  The above algorithm ensures that so long as the <a>online safelist wildcard flag</a> is
-  <i>blocking</i>, resources that are not present in the <a>manifest</a> will always fail to load (at least, after the
-  <a>application cache</a> has been primed the first time), making the testing of offline
-  applications simpler.
-  </p>
-
-  </div>
-
-  <div class="impl">
-
-<h4 id="expiring-application-caches">Expiring application caches</h4>
-
-  As a general rule, user agents should not expire application caches, except on request from the
-  user, or after having been left unused for an extended period of time.
-
-  Application caches and cookies have similar implications with respect to privacy (e.g., if the
-  site can identify the user when providing the cache, it can store data in the cache that can be
-  used for cookie resurrection). Implementors are therefore encouraged to expose application caches
-  in a manner related to HTTP cookies, allowing caches to be expunged together with cookies and
-  other origin-specific data.
-
-  <p class="example">
-  For example, a user agent could have a "delete site-specific data" feature that
-  clears all cookies, application caches, local storage, databases, etc, from an origin all at
-  once.
-  </p>
-
-  </div>
-
-  <div class="impl">
-
-<h4 id="disk-space">Disk space</h4>
-
-  User agents should consider applying constraints on disk usage of <a>application caches</a>, and care should be taken to ensure that the restrictions cannot
-  be easily worked around using subdomains.
-
-  User agents should allow users to see how much space each domain is using, and may offer the
-  user the ability to delete specific <a>application caches</a>.
-
-  For predictability, quotas should be based on the uncompressed size of data stored.
-
-  <p class="note">
-  How quotas are presented to the user is not defined by this specification. User
-  agents are encouraged to provide features such as allowing a user to indicate that certain sites
-  are trusted to use more than the default quota, e.g., by presenting a non-modal user interface
-  while a cache is being updated, or by having an explicit safelist in the user agent's
-  configuration interface.
-  </p>
-
-  </div>
-
-<h4 id="security-concerns-with-offline-applications-caches">Security concerns with offline applications caches</h4>
-
-  <em>This section is non-normative.</em>
-
-  The main risk introduced by offline application caches is that an injection attack can be
-  elevated into persistent site-wide page replacement. This attack involves using an injection
-  vulnerability to upload two files to the victim site. The first file is an application cache
-  manifest consisting of just a fallback entry pointing to the second file, which is an HTML page
-  whose manifest is declared as that first file. Once the user has been directed to that second
-  file, all subsequent accesses to any file covered by the given fallback namespace while either the
-  user or the site is offline will instead show that second file. Targeted denial-of-service
-  attacks or cookie bombing attacks (where the client is made to send so many cookies that the
-  server refuses to process the request) can be used to ensure that the site appears offline.
-
-  To mitigate this, manifests can only specify fallbacks that are in the same path as the
-  manifest itself. This means that a content injection upload vulnerability in a particular
-  directory on a server can only be escalated to a take-over of that directory and its
-  subdirectories. If there is no way to inject a file into the root directory, the entire site
-  cannot be taken over.
-
-  If a site has been attacked in this way, simply removing the offending manifest might eventually
-  clear the problem, since the next time the manifest is updated, a 404 error will be seen, and the
-  user agent will clear the cache. "Eventually" is the key word here, however; while the attack on
-  the user or server is ongoing, such that connections from an affected user to the affected site
-  are blocked, the user agent will simply assume that the user is offline and will continue to use
-  the hostile manifest. Unfortunately, if a cookie bombing attack has also been used, merely
-  removing the manifest is insufficient; in addition, the server has to be configured to return a
-  404 or 410 response instead of the 413 "Request Entity Too Large" response.
-
-  TLS does not inherently protect a site from this attack, since the attack relies on content
-  being served from the server itself. Not using application caches also does not prevent this
-  attack, since the attack relies on an attacker-provided manifest.
-
-<h4 id="application-cache-api">Application cache API</h4>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="ApplicationCache">
-    [Exposed=(Window, SharedWorker)]
-    interface ApplicationCache : EventTarget {
-      // update status
-      const unsigned short UNCACHED = 0;
-      const unsigned short IDLE = 1;
-      const unsigned short CHECKING = 2;
-      const unsigned short DOWNLOADING = 3;
-      const unsigned short UPDATEREADY = 4;
-      const unsigned short OBSOLETE = 5;
-      readonly attribute unsigned short status;
-
-      // updates
-      void update();
-      void abort();
-      void swapCache();
-
-      // events
-      attribute EventHandler onchecking;
-      attribute EventHandler onerror;
-      attribute EventHandler onnoupdate;
-      attribute EventHandler ondownloading;
-      attribute EventHandler onprogress;
-      attribute EventHandler onupdateready;
-      attribute EventHandler oncached;
-      attribute EventHandler onobsolete;
-    };
-  </pre>
-
-  <dl class="domintro">
-
-    <dt><var>cache</var> = <var>window</var> . <code>applicationCache</code></dt>
-    <dd>
-
-    (In a window.) Returns the <code>ApplicationCache</code> object that applies to the
-    <a>active document</a> of that {{Window}}.
-
-    </dd>
-
-    <dt><var>cache</var> = <var>self</var> . <code>applicationCache</code></dt> <dd>
-
-    (In a shared worker.) Returns the <code>ApplicationCache</code> object that applies to the
-    current shared worker.
-
-    </dd>
-
-    <dt><var>cache</var> . <code>status</code></dt>
-    <dd>
-
-    Returns the current status of the application cache, as given by the constants defined
-    below.
-
-    </dd>
-
-    <dt><var>cache</var> . <code>update</code>()</dt>
-    <dd>
-
-    Invokes the <a>application cache download process</a>.
-
-    Throws an <code>InvalidStateError</code> exception if there is no application cache to
-    update.
-
-    Calling this method is not usually necessary, as user agents will generally take care of
-    updating <a>application caches</a> automatically.
-
-    The method can be useful in situations such as long-lived applications. For example, a Web
-    mail application might stay open in a browser tab for weeks at a time. Such an application could
-    want to test for updates each day.
-
-    </dd>
-
-    <dt><var>cache</var> . <code>abort</code>()</dt>
-    <dd>
-
-    Cancels the <a>application cache download process</a>.
-
-    This method is intended to be used by Web application showing their own caching progress UI,
-    in case the user wants to stop the update (e.g., because bandwidth is limited).
-
-    </dd>
-
-    <dt><var>cache</var> . <code>swapCache</code>()</dt>
-    <dd>
-
-    Switches to the most recent application cache, if there is a newer one. If there isn't,
-    throws an <code>InvalidStateError</code> exception.
-
-    This does not cause previously-loaded resources to be reloaded; for example, images do not
-    suddenly get reloaded and style sheets and scripts do not get reparsed or reevaluated. The only
-    change is that subsequent requests for cached resources will obtain the newer copies.
-
-    The <code>updateready</code> event will fire before this
-    method can be called. Once it fires, the Web application can, at its leisure, call this method
-    to switch the underlying cache to the one with the more recent updates. To make proper use of
-    this, applications have to be able to bring the new features into play; for example, reloading
-    scripts to enable new features.
-
-    An easier alternative to <code>swapCache()</code> is just to
-    reload the entire page at a time suitable for the user, using <code>location.reload()</code>.
-
-    </dd>
-
-  </dl>
-
-  <div class="impl">
-
-  There is a one-to-one mapping from <a>cache hosts</a> to
-  <code>ApplicationCache</code> objects. The <dfn attribute for="Window"><code>applicationCache</code></dfn> attribute on <code>Window</code>
-  objects must return the <code>ApplicationCache</code> object associated with the
-  <code>Window</code> object's <a>active document</a>. The <dfn attribute for="SharedWorkerGlobalScope"><code>applicationCache</code></dfn> attribute
-  on <code>SharedWorkerGlobalScope</code> objects must return the <code>ApplicationCache</code>
-  object associated with the worker.
-
-  <p class="note">
-  A <code>Window</code> or <code>SharedWorkerGlobalScope</code> object has an
-  associated <code>ApplicationCache</code> object even if that <a>cache host</a> has no actual
-  <a>application cache</a>.
-  </p>
-
-  <hr />
-
-  The <dfn attribute for="ApplicationCache"><code>status</code></dfn> attribute, on getting, must
-  return the current state of the <a>application cache</a> that the
-  <code>ApplicationCache</code> object's <a>cache host</a> is associated with, if any. This
-  must be the appropriate value from the following list:
-
-  </div>
-
-  <dl>
-
-    <dt><dfn const for="ApplicationCache"><code>UNCACHED</code></dfn> (numeric value 0)</dt>
-
-    <dd>The <code>ApplicationCache</code> object's <a>cache host</a> is not associated with
-    an <a>application cache</a> at this time.</dd>
-
-    <dt><dfn const for="ApplicationCache"><code>IDLE</code></dfn> (numeric value 1)</dt>
-
-    <dd>The <code>ApplicationCache</code> object's <a>cache host</a> is associated with an
-    <a>application cache</a> whose <a>application cache group</a>'s <a>update status</a> is <i>idle</i>, and that <a>application
-    cache</a> is the <a>newest</a> cache in its
-    <a>application cache group</a>, and the <a>application cache group</a> is not marked
-    as <a>obsolete</a>.</dd>
-
-    <dt><dfn const for="ApplicationCache"><code>CHECKING</code></dfn> (numeric value 2)</dt>
-
-    <dd>The <code>ApplicationCache</code> object's <a>cache host</a> is associated with an
-    <a>application cache</a> whose <a>application cache group</a>'s <a>update status</a> is <i>checking</i>.</dd>
-
-    <dt><dfn const for="ApplicationCache"><code>DOWNLOADING</code></dfn> (numeric value 3)</dt>
-
-    <dd>The <code>ApplicationCache</code> object's <a>cache host</a> is associated with an
-    <a>application cache</a> whose <a>application cache group</a>'s <a>update status</a> is <i>downloading</i>.</dd>
-
-    <dt><dfn const for="ApplicationCache"><code>UPDATEREADY</code></dfn> (numeric value 4)</dt>
-
-    <dd>The <code>ApplicationCache</code> object's <a>cache host</a> is associated with an
-    <a>application cache</a> whose <a>application cache group</a>'s <a>update status</a> is <i>idle</i>, and whose <a>application
-    cache group</a> is not marked as <a>obsolete</a>, but
-    that <a>application cache</a> is <em>not</em> the <a>newest</a> cache in its group.</dd>
-
-    <dt><dfn const for="ApplicationCache"><code>OBSOLETE</code></dfn> (numeric value 5)</dt>
-
-    <dd>The <code>ApplicationCache</code> object's <a>cache host</a> is associated with an
-    <a>application cache</a> whose <a>application cache group</a> is marked as <a>obsolete</a>.</dd>
-
-  </dl>
-
-  <div class="impl">
-
-  <hr />
-
-  If the <dfn method for="ApplicationCache"><code>update()</code></dfn> method is invoked, the user
-  agent must invoke the <a>application cache download process</a>, in the background, for the
-  <a>application cache group</a> of the <a>application cache</a> with which the
-  <code>ApplicationCache</code> object's <a>cache host</a> is associated, but without giving
-  that <a>cache host</a> to the algorithm. If there is no such <a>application cache</a>,
-  or if its <a>application cache group</a> is marked as <a>obsolete</a>, then the method must throw an
-  <code>InvalidStateError</code> exception instead.
-
-  If the <dfn method for="ApplicationCache"><code>abort()</code></dfn> method is invoked, the user
-  agent must <dfn lt="sends a signal|send a signal">send a signal</dfn> to the current <a>application cache download process</a>
-  for the <a>application cache group</a> of the <a>application cache</a> with which the
-  <code>ApplicationCache</code> object's <a>cache host</a> is associated, if any. If there is
-  no such <a>application cache</a>, or it does not have a current <a>application cache
-  download process</a>, then do nothing.
-
-  If the <dfn method for="ApplicationCache"><code>swapCache()</code></dfn> method is invoked,
-  the user agent must run the following steps:
-
-  <ol>
-
-    <li>Check that <code>ApplicationCache</code> object's <a>cache host</a> is associated
-    with an <a>application cache</a>. If it is not, then throw an
-    <code>InvalidStateError</code> exception and abort these steps.</li>
-
-    <li>Let <var>cache</var> be the <a>application cache</a> with which the
-    <code>ApplicationCache</code> object's <a>cache host</a> is associated. (By definition,
-    this is the same as the one that was found in the previous step.)</li>
-
-    <li>If <var>cache</var>'s <a>application cache group</a> is marked as <a>obsolete</a>, then unassociate the
-    <code>ApplicationCache</code> object's <a>cache host</a> from <var>cache</var> and
-    abort these steps. (Resources will now load from the network instead of the cache.)</li>
-
-    <li>Check that there is an application cache in the same <a>application cache group</a>
-    as <var>cache</var> whose <a>completeness
-    flag</a> is <i>complete</i> and that is <a>newer</a> than
-    <var>cache</var>. If there is not, then throw an <code>InvalidStateError</code>
-    exception and abort these steps.</li>
-
-    <li>Let <var>new cache</var> be the <a>newest</a> <a>application cache</a> in the same
-    <a>application cache group</a> as <var>cache</var> whose <a>completeness flag</a> is <i>complete</i>.</li>
-
-    <li>Unassociate the <code>ApplicationCache</code> object's <a>cache host</a> from <var>cache</var> and instead associate it with <var>new cache</var>.</li>
-
-  </ol>
-
-  The following are the <a>event handlers</a> (and their corresponding <a>event handler event types</a>) <span class="impl">that must be</span>
-  supported, as <a>event handler IDL attributes</a>, by all objects implementing the
-  <code>ApplicationCache</code> interface:
-
-  <table>
-    <thead>
-    <tr><th><a>Event handler</a> <th><a>Event handler event type</a>
-    <tbody>
-    <tr><td><dfn attribute for="ApplicationCache"><code>onchecking</code></dfn> <td> <code>checking</code>
-    <tr><td><dfn attribute for="ApplicationCache"><code>onerror</code></dfn> <td> <code>error</code>
-    <tr><td><dfn attribute for="ApplicationCache"><code>onnoupdate</code></dfn> <td> <code>noupdate</code>
-    <tr><td><dfn attribute for="ApplicationCache"><code>ondownloading</code></dfn> <td> <code>downloading</code>
-    <tr><td><dfn attribute for="ApplicationCache"><code>onprogress</code></dfn> <td> <code>progress</code>
-    <tr><td><dfn attribute for="ApplicationCache"><code>onupdateready</code></dfn> <td> <code>updateready</code>
-    <tr><td><dfn attribute for="ApplicationCache"><code>oncached</code></dfn> <td> <code>cached</code>
-    <tr><td><dfn attribute for="ApplicationCache"><code>onobsolete</code></dfn> <td> <code>obsolete</code>
-  </table>
 
   </div>
 

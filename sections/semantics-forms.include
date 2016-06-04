@@ -679,6 +679,135 @@
     <li><{textarea}></li>
   </ul>
 
+  The following table is non-normative and summarizes the above categories of form elements:
+
+  <table class="applies">
+    <thead>
+      <tr>
+        <th></th>
+        <th>form-associated</th>
+        <th>listed</th>
+        <th>submittable</th>
+        <th>resettable</th>
+        <th>reassociateable</th>
+        <th>labelable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <td>can have a form owner</td>
+        <td>listed in the {{HTMLFormElement/elements|form.elements}} and {{HTMLFieldSetElement/elements|fieldset.elements}} APIs</td>
+        <td>can be used for constructing the form data set when a form element is submitted</td>
+        <td>can be affected when a form element is reset</td>
+        <td>have a <{formelements/form}> attribute (allows authors to specify an explicit form owner)</td>
+        <td>can be associated with a <{label}> element</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td><{input}></td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes (except "hidden")</td>
+      </tr>
+      <tr>
+        <td><{button}></td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td>no</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+      </tr>
+      <tr>
+        <td><{select}></td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+      </tr>
+      <tr>
+        <td><{textarea}></td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+      </tr>
+      <tr>
+        <td><{fieldset}></td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td>no</td>
+        <td>no</td>
+        <td class="yes">yes</td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td><{output}></td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td>no</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+      </tr>
+      <tr>
+        <td><{object}></td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td class="yes">yes</td>
+        <td>no</td>
+        <td class="yes">yes</td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td><{meter}></td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td class="yes">yes</td>
+      </tr>
+      <tr>
+        <td><{progress}></td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td class="yes">yes</td>
+      </tr>
+      <tr>
+        <td><{label}></td>
+        <td class="yes">yes</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+      </tr>
+      <tr>
+        <td><{img}></td>
+        <td class="yes">yes</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+        <td>no</td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- Special thanks to Šime Vidas (https://twitter.com/simevidas) for the table content -->
+
 <h4 id="the-form-element">The <dfn element><code>form</code></dfn> element</h4>
 
   <dl class="element">
@@ -731,8 +860,6 @@
           void reset();
           boolean checkValidity();
           boolean reportValidity();
-
-          void requestAutocomplete();
         };
       </pre>
     </dd>
@@ -745,8 +872,7 @@
   character encodings that are to be used for the submission. If specified, the value must be an
   <a>ordered set of unique space-separated tokens</a> that are <a>ASCII
   case-insensitive</a>, and each token must be an <a>ASCII case-insensitive</a> match for
-  one of the <a lt="character encoding">labels</a> of an <a>ASCII-compatible
-  encoding</a>. [[!ENCODING]]
+  one of the <a lt="character encoding">labels</a> of an <a>ASCII-compatible encoding</a>. [[!ENCODING]]
 
   The <dfn element-attr for="form"><code>name</code></dfn> content attribute represents the
   <{form}>'s name within the {{Document/forms}} collection. The
@@ -840,20 +966,6 @@
 
     </dd>
 
-    <dt><var>form</var> . {{HTMLFormElement/requestAutocomplete()}}</dt>
-
-    <dd>
-
-    Triggers a user-agent-specific user interface to help the user fill in any
-    fields that have an <a>autofill field name</a> other than "<code>on</code>" or "<code>off</code>".
-
-    The <{form}> element will subsequently receive an event, either <code>autocomplete</code>, indicating that the fields have been prefilled,
-    or <code>autocompleteerror</code> (using the
-    {{AutocompleteErrorEvent}} interface), indicating that there was some problem (the
-    general class of problem is described by the <code>reason</code> IDL attribute on the event).
-
-    </dd>
-
   </dl>
 
   <div class="impl">
@@ -861,9 +973,6 @@
   The <dfn attribute for="HTMLFormElement"><code>autocomplete</code></dfn> IDL attribute must
   <a>reflect</a> the content attribute of the same name, <a>limited to only known
   values</a>.
-
-  The <dfn method for="HTMLFormElement"><code>requestAutocomplete()</code></dfn> method is part of
-  the <a>autofill mechanism</a>.
 
   The <dfn attribute for="HTMLFormElement"><code>name</code></dfn> IDL attribute must <a>reflect</a>
   the content attribute of the same name.
@@ -1044,10 +1153,10 @@
     This example shows two search forms:
 
     <pre highlight="html">
-&lt;form action="http://www.google.com/search" method="get"&gt;
+&lt;form action="https://www.google.com/search" method="get"&gt;
   &lt;label&gt;Google: &lt;input type="search" name="q"&gt;&lt;/label&gt; &lt;input type="submit" value="Search..."&gt;
 &lt;/form&gt;
-&lt;form action="http://www.bing.com/search" method="get"&gt;
+&lt;form action="https://www.bing.com/search" method="get"&gt;
   &lt;label&gt;Bing: &lt;input type="search" name="q"&gt;&lt;/label&gt; &lt;input type="submit" value="Search..."&gt;
 &lt;/form&gt;
     </pre>
@@ -1348,8 +1457,6 @@ part of the form.</p>
           [TreatNullAs=EmptyString] attribute DOMString value;
           attribute object? valueAsDate;
           attribute unrestricted double valueAsNumber;
-          attribute double valueLow;
-          attribute double valueHigh;
           attribute unsigned long width;
 
           void stepUp(optional long n = 1);
@@ -1540,9 +1647,7 @@ part of the form.</p>
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
     {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}},
-    {{HTMLInputElement/valueHigh}}, and
+    {{HTMLInputElement/valueAsNumber}}, and
     {{HTMLInputElement/list}} IDL attributes, the
     {{HTMLInputElement/select()}} method, the
     {{HTMLInputElement/selectionStart}},
@@ -1564,7 +1669,7 @@ part of the form.</p>
   The following table <span class="impl">is non-normative and</span> summarizes which of those
   content attributes, IDL attributes, methods, and events <a>apply</a> to each state:
 
-  <table class="applies" id="input-type-attr-summary">
+  <table class="applies">
     <thead>
     <tr>
       <th>
@@ -1599,23 +1704,23 @@ part of the form.</p>
 
     </th></tr><tr>
       <th> <{input/accept}>
-      </th><td class="no"> ·
-      </td><td class="no"> ·
+      </th><td class="no"> · <!-- Hidden -->
+      </td><td class="no"> · <!-- Text -->
 
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
+      </td><td class="no"> · <!-- URL, Telephone -->
+      </td><td class="no"> · <!-- E-mail -->
+      </td><td class="no"> · <!-- Password -->
+      </td><td class="no"> · <!-- Date and Time, Date, Month, Week, Time -->
 
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
+      </td><td class="no"> · <!-- Number -->
+      </td><td class="no"> · <!-- Range -->
+      </td><td class="no"> · <!-- Color -->
+      </td><td class="no"> · <!-- Checkbox, Radio -->
 
-      </td><td class="yes"> Yes
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
+      </td><td class="yes"> Yes <!-- File -->
+      </td><td class="no"> · <!-- Submit -->
+      </td><td class="no"> · <!-- Image -->
+      </td><td class="no"> · <!-- Reset, Button -->
 
     </td></tr><tr>
       <th> <{input/alt}>
@@ -1948,7 +2053,7 @@ part of the form.</p>
       </td><td class="no"> ·
 
       </td><td class="no"> ·
-      </td><td class="yes"> Yes
+      </td><td class="no"> ·
       </td><td class="no"> ·
       </td><td class="no"> ·
 
@@ -2212,47 +2317,7 @@ part of the form.</p>
       </td><td class="yes"> Yes
 
       </td><td class="yes"> Yes
-      </td><td class="yes"> Yes*
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-
-    </td></tr><tr>
-      <th> {{HTMLInputElement/valueLow}}
-      </th><td class="no"> ·
-      </td><td class="no"> ·
-
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-
-      </td><td class="no"> ·
-      </td><td class="yes"> Yes**
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-
-    </td></tr><tr>
-      <th> {{HTMLInputElement/valueHigh}}
-      </th><td class="no"> ·
-      </td><td class="no"> ·
-
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-      </td><td class="no"> ·
-
-      </td><td class="no"> ·
-      </td><td class="yes"> Yes**
+      </td><td class="yes"> Yes
       </td><td class="no"> ·
       </td><td class="no"> ·
 
@@ -2286,17 +2351,17 @@ part of the form.</p>
       </th><td class="no"> ·
       </td><td class="yes"> Yes
 
+      </td><td class="yes"> Yes&dagger;
       </td><td class="yes"> Yes
-      </td><td class="yes"> Yes
-      </td><td class="yes"> Yes
-      </td><td class="yes"> Yes
+      </td><td class="yes"> Yes&dagger;
+      </td><td class="yes"> Yes&dagger;
 
-      </td><td class="yes"> Yes
+      </td><td class="yes"> Yes&dagger;
       </td><td class="no"> ·
-      </td><td class="no"> ·
+      </td><td class="Yes"> Yes&dagger;
       </td><td class="no"> ·
 
-      </td><td class="yes"> Yes
+      </td><td class="yes"> Yes&dagger;
       </td><td class="no"> ·
       </td><td class="no"> ·
       </td><td class="no"> ·
@@ -2487,13 +2552,10 @@ part of the form.</p>
 
   </td></tr></tbody></table>
 
-  <small>* If the <{input/multiple}> attribute
-  is not specified.</small>
-
-  <small>** If the <{input/multiple}> attribute
-  <em>is</em> specified.</small>
-
-  <div class="impl">
+  <p class="tablenote">
+    <small>&dagger; If the control has no text field, the {{HTMLInputElement/select()}} method
+    results in a no-op, with no "<code>InvalidStateError</code>" <code>DOMException</code>.</small>
+  </p>
 
   Some states of the <{input/type}> attribute define a <dfn>value sanitization algorithm</dfn>.
 
@@ -2504,7 +2566,7 @@ part of the form.</p>
   string</dfn>, an <dfn>algorithm to convert a string to a
   {{Date}} object</dfn>, and an <dfn>algorithm to
   convert a {{Date}} object to a string</dfn>, which are used by <{input/max}>, <{input/min}>, <{input/step}>, {{HTMLInputElement/valueAsDate}},
-  {{HTMLInputElement/valueAsNumber}}, {{HTMLInputElement/valueLow}}, {{HTMLInputElement/valueHigh}},
+  {{HTMLInputElement/valueAsNumber}},
   {{HTMLInputElement/stepDown()}}, and {{HTMLInputElement/stepUp()}}.
 
   Each <{input}> element has a boolean <dfn for="input">dirty value flag</dfn>. The <a for="input">dirty value flag</a> must be
@@ -2512,8 +2574,6 @@ part of the form.</p>
   interacts with the control in a way that changes the <a for="forms">value</a>.
   (It is also set to true when the value is programmatically changed, as described in the definition
   of the {{HTMLInputElement/value}} IDL attribute.)
-
-  </div>
 
   The <dfn element-attr for="input"><code>value</code></dfn> content attribute gives the default
   <a for="forms">value</a> of the <{input}> element. <span class="impl">When the <{input/value}> content attribute is added, set,
@@ -2772,10 +2832,8 @@ part of the form.</p>
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -2901,10 +2959,8 @@ part of the form.</p>
     element:
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/stepDown()}} and
     {{HTMLInputElement/stepUp()}} methods.
 
@@ -3012,10 +3068,8 @@ part of the form.</p>
     element:
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/stepDown()}} and
     {{HTMLInputElement/stepUp()}} methods.
 
@@ -3125,10 +3179,8 @@ part of the form.</p>
     element:
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/stepDown()}} and
     {{HTMLInputElement/stepUp()}} methods.
 
@@ -3141,16 +3193,16 @@ part of the form.</p>
 &lt;input type="url" name="location" list="urls"&gt;
 &lt;datalist id="urls"&gt;
   &lt;option label="MIME: Format of Internet Message Bodies" value="https://tools.ietf.org/html/rfc2045"&gt;
-  &lt;option label="HTML 4.01 Specification" value="http://www.w3.org/TR/html4/"&gt;
-  &lt;option label="Form Controls" value="http://www.w3.org/TR/xforms/slice8.html#ui-commonelems-hint"&gt;
-  &lt;option label="Scalable Vector Graphics (SVG) 1.1 Specification" value="http://www.w3.org/TR/SVG/"&gt;
-  &lt;option label="Feature Sets - SVG 1.1 - 20030114" value="http://www.w3.org/TR/SVG/feature.html"&gt;
-  &lt;option label="The Single UNIX Specification, Version 3" value="http://www.unix-systems.org/version3/"&gt;
+  &lt;option label="HTML 4.01 Specification" value="https://www.w3.org/TR/html4/"&gt;
+  &lt;option label="Form Controls" value="https://www.w3.org/TR/xforms/slice8.html#ui-commonelems-hint"&gt;
+  &lt;option label="Scalable Vector Graphics (SVG) 1.1 Specification" value="https://www.w3.org/TR/SVG/"&gt;
+  &lt;option label="Feature Sets - SVG 1.1 - 20030114" value="https://www.w3.org/TR/SVG/feature.html"&gt;
+  &lt;option label="The Single UNIX Specification, Version 3" value="https://www.unix-systems.org/version3/"&gt;
 &lt;/datalist&gt;
     </pre>
 
     ...and the user had typed "<kbd>www.w3</kbd>", and the user agent had also found that the user
-    had visited <code>http://www.w3.org/Consortium/#membership</code> and <code>http://www.w3.org/TR/XForms/</code> in the recent past, then the rendering might look
+    had visited <code>https://www.w3.org/Consortium/#membership</code> and <code>https://www.w3.org/TR/XForms/</code> in the recent past, then the rendering might look
     like this:
 
     <img src="images/sample-url.png" width="472" height="134" alt="A text box with an icon on the left followed by the text &quot;www.w3&quot; and a cursor, with a drop down button on the right hand side; with, below, a drop down box containing a list of six URLs on the left, with the first four having grayed out labels on the right; and a scroll bar to the right of the drop down box, indicating further values are available." />
@@ -3392,10 +3444,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -3498,10 +3548,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
     {{HTMLInputElement/list}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/stepDown()}} and
     {{HTMLInputElement/stepUp()}} methods.
 
@@ -3619,7 +3667,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     manner in which the Gregorian calendar was phased in, which occurred at different times in
     different countries, ranging from partway through the 16th century all the way to early in the
     20th.) Instead, authors are encouraged to provide fine-grained input controls using the
-    <{select}> element and <{input}> elements with the <a>Number</a> state.
+    <{select}> element and <{input}> elements with the <a element-state for="input">Number</a> state.
 
   </div>
 
@@ -3674,10 +3722,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
     {{HTMLInputElement/selectionStart}},
-    {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionEnd}}, and
+    {{HTMLInputElement/selectionDirection}} IDL attributes;
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
 
@@ -3864,10 +3910,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     element:
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/selectionStart}},
-    {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionEnd}}, and
+    {{HTMLInputElement/selectionDirection}} IDL attributes;
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
 
@@ -4013,10 +4057,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
     {{HTMLInputElement/selectionStart}},
-    {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionEnd}}, and
+    {{HTMLInputElement/selectionDirection}} IDL attributes;
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
 
@@ -4082,7 +4124,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   The <{input/step}> attribute is expressed in weeks. The <a>step scale factor</a> is 604,800,000
   (which converts the weeks to milliseconds, which is the base unit of comparison for the conversion
   algorithms below). The <a>default step</a> is 1 week. The <a>default step base</a> is -259,200,000
-  (the start of week 1970-W01).
+  (the start of week 1970-W01 which is the Monday 3 days before 1970-01-01).
 
   <div class="impl">
 
@@ -4163,10 +4205,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
     {{HTMLInputElement/selectionStart}},
-    {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionEnd}}, and
+    {{HTMLInputElement/selectionDirection}} IDL attributes;
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
 
@@ -4312,10 +4352,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/checked}},
     {{HTMLInputElement/files}},
     {{HTMLInputElement/selectionStart}},
-    {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionEnd}}, and
+    {{HTMLInputElement/selectionDirection}} IDL attributes;
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
 
@@ -4449,10 +4487,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/files}},
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionDirection}}, and
+    {{HTMLInputElement/valueAsDate}} IDL attributes;
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
 
@@ -4502,7 +4538,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a>Number</a> state, the rules in this section apply.
+  the <a element-state for="input">Number</a> state, the rules in this section apply.
 
   </div>
 
@@ -4517,7 +4553,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   agents must not allow the user to set the <a for="forms">value</a> to a
   non-empty string that is not a <a>valid floating-point number</a>. If the user agent
   provides a user interface for selecting a number, then the <a for="forms">value</a> must be set to the
-  <a lt="floating point number">best representation of the number representing the user's selection as a floating-point number</a>. User agents should allow the user to set the <a for="forms">value</a> to the empty string.
+  <a lt="best floating-point number">best representation of the number representing the user's selection as a floating-point number</a>.
+  User agents should allow the user to set the <a for="forms">value</a> to the empty string.
 
   <strong>Constraint validation</strong>: While the user interface describes input that the user
   agent cannot convert to a <a>valid floating-point number</a>, the control is <a>suffering
@@ -4623,10 +4660,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     {{HTMLInputElement/files}},
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionDirection}}, and
+    {{HTMLInputElement/valueAsDate}} IDL attributes;
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
 
@@ -4662,99 +4697,77 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
 <h6 id="range-state-typerange"><dfn element-state for="input">Range</dfn> state (<code>type=range</code>)</h6>
 
-    <div class="note">
-    <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>slider</code></a>
-    (default - <a><em>do not set</em></a>).</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
-    </dl>
-    </div>
+  <div class="note">
+    : Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:
+    :: <a value for="role"><code>slider</code></a> (default - <a><em>do not set</em></a>).
 
-  <div class="impl">
-
-  When an <{input}> element's <{input/type}> attribute is in
-  the <a>Range</a> state, the rules in this section apply.
-
+    : Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:
+    :: <a>Global aria-* attributes</a>
+    :: Any <code>aria-*</code> attributes
+        <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.
   </div>
 
-  How the <a element-state for="input">Range</a> state operates depends on whether the
-  <{input/multiple}> attribute is specified or not.
+  When an <{input}> element's <{input/type}> attribute is in the
+  <a element-state for="input">Range</a> state, the rules in this section apply.
 
-  <dl class="switch">
+  The <{input}> element <a>represents</a> a control for setting the element's
+  <a for="forms">value</a> to a string representing a number, but with the caveat that the exact
+  value is not important, letting user agents provide a simpler interface than they do for the
+  <a element-state for="input">Number</a> state.
 
-    <dt>When the <{input/multiple}> attribute is not specified on the
-    element</dt>
+  If the element is <i>mutable</i>, the user agent should allow the user to change the number
+  represented by its <a for="forms">value</a>, as obtained from applying the
+  <a>rules for parsing floating-point number values</a> to it. User agents must not allow the user
+  to set the <a for="forms">value</a> to a string that is not a <a>valid floating-point number</a>.
+  If the user agent provides a user interface for selecting a number, then the
+  <a for="forms">value</a> must be set to a
+  <a lt="best floating-point number">best representation of the number representing the user's selection as a floating-point number</a>.
+  User agents must not allow the user to set the <a for="forms">value</a> to the empty string.
 
-    <dd>
+  <strong>Constraint validation</strong>: While the user interface describes input that the user
+  agent cannot convert to a <a>valid floating-point number</a>, the control is
+  <a>suffering from bad input</a>.
 
-    The <{input}> element <a>represents</a> a control for setting the element's
-    <a for="forms">value</a> to a string representing a number, but with the
-    caveat that the exact value is not important, letting user agents provide a simpler interface than they
-    do for the <a>Number</a> state.
+  The <{input/value}> attribute, if specified, must have a value that is a
+  <a>valid floating-point number</a>.
 
-    <div class="impl">
+  <strong>The <a>value sanitization algorithm</a> is as follows</strong>: If the
+  <a for="forms">value</a> of the element is not a <a>valid floating-point number</a>, then set it
+  to the
+  <a lt="best floating-point number">best representation, as a floating-point number</a>, of the
+  <a for="range">default value</a>.
 
-    If the element is <i>mutable</i>, the user agent should allow the
-    user to change the number represented by its <a for="forms">value</a>, as
-    obtained from applying the <a>rules for parsing floating-point number values</a> to it.
-    User agents must not allow the user to set the <a for="forms">value</a> to a
-    string that is not a <a>valid floating-point number</a>. If the user agent provides a user
-    interface for selecting a number, then the <a for="forms">value</a> must be
-    set to a <a lt="floating point number">best
-    representation of the number representing the user's selection as a floating-point
-    number</a>. User agents must not allow the user to set the <a for="forms">value</a> to the empty string.
+  The <dfn for="range">default value</dfn> is the <a>minimum</a> plus half the difference between
+  the <a>minimum</a> and the <a>maximum</a>, unless the <a>maximum</a> is less than the
+  <a>minimum</a>, in which case the <a for="range">default value</a> is the <a>minimum</a>.
 
-    <strong>Constraint validation</strong>: While the user interface describes input that the
-    user agent cannot convert to a <a>valid floating-point number</a>, the control is
-    <a>suffering from bad input</a>.
+  When the element is <a>suffering from an underflow</a>, the user agent must set the element's
+  <a for="forms">value</a> to the
+  <a lt="best floating-point number">best representation, as a floating-point number</a>, of the
+  <a>minimum</a>.
 
-    </div>
+  When the element is <a>suffering from an overflow</a>, if the <a>maximum</a> is not less than the
+  <a>minimum</a>, the user agent must set the element's <a for="forms">value</a> to a
+  <a>valid floating-point number</a> that represents the <a>maximum</a>.
 
-    The <{input/value}> attribute, if specified, must have a value
-    that is a <a>valid floating-point number</a>.
+  When the element is <a>suffering from a step mismatch</a>, the user agent must round the element's
+  <a for="forms">value</a> to the nearest number for which the element would not
+  <a>suffer from a step mismatch</a>, and which is greater than or equal to the <a>minimum</a>, and,
+  if the <a>maximum</a> is not less than the <a>minimum</a>, which is less than or equal to the
+  <a>maximum</a>, if there is a number that matches these constraints. If two numbers match these
+  constraints, then user agents must use the one nearest to positive infinity.
 
-    <div class="impl">
+  <p class="example">For example, the markup
+  <code>&lt;input&nbsp;type="range"&nbsp;min=0&nbsp;max=100&nbsp;step=20&nbsp;value=50&gt;</code>
+  results in a range control whose initial value is 60.</p>
 
-    <strong>The <a>value sanitization algorithm</a> is as follows</strong>: If the <a for="forms">value</a> of the element is not a <a>valid floating-point
-    number</a>, then set it to the <a lt="floating point number">best representation, as a floating-point number</a>, of the <a for="range">default value</a>.
+  <div class="example">
+    Here is an example of a range control using an autocomplete list with the <{input/list}>
+    attribute. This could be useful if there are values along the full range of the control that are
+    especially important, such as preconfigured light levels or typical speed limits in a range
+    control used as a speed control. The following markup fragment:
 
-    </div>
-
-    The <dfn for="range">default value</dfn> is the <a>minimum</a> plus half the difference between the <a>minimum</a> and the <a>maximum</a>, unless the <a>maximum</a> is less than the <a>minimum</a>, in which case the <a for="range">default value</a> is the <a>minimum</a>.
-
-    <div class="impl">
-
-    When the element is <a>suffering from an underflow</a>, the user agent must set the
-    element's <a for="forms">value</a> to the <a lt="floating point number">best representation, as a floating-point
-    number</a>, of the <a>minimum</a>.
-
-    When the element is <a>suffering from an overflow</a>, if the <a>maximum</a> is not less than the <a>minimum</a>, the user agent must set the element's <a for="forms">value</a> to a <a>valid floating-point number</a> that
-    represents the <a>maximum</a>.
-
-    When the element is <a>suffering from a step mismatch</a>, the user agent must round
-    the element's <a for="forms">value</a> to the nearest number for which the
-    element would not <a>suffer from a step
-    mismatch</a>, and which is greater than or equal to the <a>minimum</a>, and, if the <a>maximum</a> is not less than the <a>minimum</a>, which is less than or equal to the <a>maximum</a>, if there is a number that matches these constraints.
-    If two numbers match these constraints, then user agents must use the one nearest to positive
-    infinity.
-
-    <p class="example">For example, the markup
-    <code>&lt;input&nbsp;type="range"&nbsp;min=0&nbsp;max=100&nbsp;step=20&nbsp;value=50&gt;</code>
-    results in a range control whose initial value is 60.</p>
-
-    </div>
-
-    <div class="example">
-      Here is an example of a range control using an autocomplete list with the <{input/list}> attribute. This could be useful if there are values along
-      the full range of the control that are especially important, such as preconfigured light levels
-      or typical speed limits in a range control used as a speed control. The following markup
-      fragment:
-
-      <pre highlight="html">
+    <pre highlight="html">
 &lt;input type="range" min="-100" max="100" value="0" step="10" name="power" list="powers"&gt;
 &lt;datalist id="powers"&gt;
   &lt;option value="0"&gt;
@@ -4764,214 +4777,84 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 &lt;/datalist&gt;
     </pre>
 
-      ...with the following style sheet applied:
+    ...with the following style sheet applied:
 
-      <pre highlight="css">
+    <pre highlight="css">
 input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     </pre>
 
-      ...might render as:
+    ...might render as:
 
-      <img src="images/sample-range.png" width="49" height="75" alt="A vertical slider control whose primary color is black and whose background color is beige, with the slider having five tick marks, one long one at each extremity, and three short ones clustered around the midpoint." />
+    <img src="images/sample-range.png" width="49" height="75" alt="A vertical slider control whose primary color is black and whose background color is beige, with the slider having five tick marks, one long one at each extremity, and three short ones clustered around the midpoint." />
 
-      Note how the user agent determined the orientation of the control from the ratio of the
-      style-sheet-specified height and width properties. The colors were similarly derived from the
-      style sheet. The tick marks, however, were derived from the markup. In particular, the <{input/step}> attribute has not affected the placement of tick marks,
-      the user agent deciding to only use the author-specified completion values and then adding longer tick
-      marks at the extremes.
+    Note how the user agent determined the orientation of the control from the ratio of the
+    style-sheet-specified height and width properties. The colors were similarly derived from the
+    style sheet. The tick marks, however, were derived from the markup. In particular, the
+    <{input/step}> attribute has not affected the placement of tick marks, the user agent deciding
+    to only use the author-specified completion values and then adding longer tick marks at the
+    extremes.
 
-      Note also how the invalid value <code>++50</code> was completely ignored.
+    Note also how the invalid value <code>++50</code> was completely ignored.
+  </div>
 
-    </div>
+  <div class="example">
+    For another example, consider the following markup fragment:
 
-    <div class="example">
-      For another example, consider the following markup fragment:
-
-      <pre highlight="html">
+    <pre highlight="html">
 &lt;input name=x type=range min=100 max=700 step=9.09090909 value=509.090909&gt;
     </pre>
 
-      A user agent could display in a variety of ways, for instance:
+    A user agent could display in a variety of ways, for instance:
 
-      <img src="images/sample-range-2a.png" width="231" height="57" alt="As a dial." />
+    <img src="images/sample-range-2a.png" width="231" height="57" alt="As a dial." />
 
-      Or, alternatively, for instance:
+    Or, alternatively, for instance:
 
-      <img src="images/sample-range-2b.png" width="445" height="56" alt="As a long horizontal slider with tick marks." />
+    <img src="images/sample-range-2b.png" width="445" height="56" alt="As a long horizontal slider with tick marks." />
 
-      The user agent could pick which one to display based on the dimensions given in the style
-      sheet. This would allow it to maintain the same resolution for the tick marks, despite the
-      differences in width.
+    The user agent could pick which one to display based on the dimensions given in the style sheet.
+    This would allow it to maintain the same resolution for the tick marks, despite the differences
+    in width.
+  </div>
 
-    </div>
+  <div class="example">
+    Finally, here is an example of a range control with two labeled values:
 
-    <div class="example">
-      Finally, here is an example of a range control with two labeled values:
-
-      <pre highlight="html">
+    <pre highlight="html">
 &lt;input type="range" name="a" list="a-values"&gt;
 &lt;datalist id="a-values"&gt;
-  &lt;option value="10" label="Low"&gt;
-  &lt;option value="90" label="High"&gt;
+&lt;option value="10" label="Low"&gt;
+&lt;option value="90" label="High"&gt;
 &lt;/datalist&gt;
     </pre>
 
-      With styles that make the control draw vertically, it might look as follows:
+    With styles that make the control draw vertically, it might look as follows:
 
-      <img src="images/sample-range-labels.png" width="103" height="164" alt="A vertical slider control with two tick marks, one near the top labeled 'High', and one near the bottom labeled 'Low'." />
-
-    </div>
-
-    </dd>
-
-    <dt>When the <{input/multiple}> attribute <em>is</em> specified on
-    the element</dt>
-
-    <dd>
-
-    The <{input}> element <a>represents</a> a control for setting the element's
-    <a>value<em>s</em></a> to two strings representing numbers, but
-    with the caveat that the exact values are not important, enabling user agents provide a graphical
-    interface rather than requiring the user to type the numbers directly.
-
-    <div class="impl">
-
-    If the element is <i>mutable</i>, the user agent should allow the
-    user to change either the first or second number represented by its <a for="forms">values</a>, as obtained from applying the <a>rules for parsing
-    floating-point number values</a> to them, and ensuring that the first value is never larger
-    than the second value. User agents must not allow the user to set either the first or second of
-    the <a for="forms">values</a> to a string that is not a <a>valid
-    floating-point number</a>. If the user agent provides a user interface for selecting a
-    number, then these <a for="forms">values</a> must be set to the <a lt="floating point number">best representations of
-    the numbers representing the user's selections as floating-point numbers</a>. User agents
-    must not allow the user to set the <a for="forms">values</a> to the empty
-    string.
-
-    <strong>Constraint validation</strong>: While the user interface describes input that the
-    user agent cannot convert to a pair of <a>valid
-    floating-point numbers</a>, the control is <a>suffering from bad input</a>.
-
-    </div>
-
-    The <{input/value}> attribute, if specified, must have a value
-    that is a pair of <a>valid floating-point numbers</a>
-    separated by a single U+002C COMMA character (,).
-
-    <div class="impl">
-
-    <strong>The <a>value sanitization algorithm</a> is as follows</strong>:
-
-    <ol>
-
-      <li><a lt="split a string on commas">Split on commas</a> the element's <a for="forms">value</a>.</li>
-
-      <li>If there are not exactly two values, or if either value is not a <a>valid
-      floating-point number</a>, then let the element's <a for="forms">values</a> be a pair of values consisting of <a lt="floating point number">a best representation, as a
-      floating-point number</a>, of the element's <a>minimum</a>
-      and the element's <a>maximum</a>, with the smaller value
-      first.</li>
-
-      <li>Otherwise, let the element's <a for="forms">values</a> be the two
-      values, with the smaller value first.</li>
-
-      <li>Let the element's <a for="forms">value</a> be the result of
-      concatenating the element's <a for="forms">values</a>, separating them by
-      a single U+002C COMMA character (,), with the lower value coming first.</li>
-
-    </ol>
-
-    Whenever the user changes the element's <a for="forms">values</a>, the
-    user agent must set the element's <a for="forms">value</a> to the result of
-    concatenating the element's <a for="forms">values</a>, separating them by a
-    single U+002C COMMA character (,), with the lower value coming first.
-
-    </div>
-
-    <div class="impl">
-
-    When the element is <a>suffering from an underflow</a>, the user agent must set either
-    of the element's <a for="forms">values</a> that represent values less than
-    the <a>minimum</a> to the <a lt="floating point number">best representation, as a floating-point number</a>,
-    of the <a>minimum</a>.
-
-    When the element is <a>suffering from an overflow</a>, if the <a>maximum</a> is not less than the <a>minimum</a>, the user agent must set either of the element's <a for="forms">values</a> that represent values greater than the <a>maximum</a> to a <a>valid floating-point number</a> that
-    represents the <a>maximum</a>.
-
-    When the element is <a>suffering from a step mismatch</a>, the user agent must round
-    the values represented by the element's <a for="forms">values</a> to, in
-    each case, the nearest number for which the element would not <a>suffer from a step mismatch</a>, and which is greater than or equal to the
-    <a>minimum</a>, and, if the <a>maximum</a> is not less than the <a>minimum</a>, which is less than or equal to the <a>maximum</a>, if there is a number that matches these constraints.
-    If two numbers match these constraints, then user agents must use the one nearest to positive
-    infinity.
-
-    Whenever the user agent changes the element's <a for="forms">values</a>
-    according to the three previous paragraphs, the user agent must set the element's <a for="forms">value</a> to the result of concatenating the element's <a for="forms">values</a>, separating them by a single U+002C COMMA character
-    (,), with the lower value coming first.
-
-    </div>
-
-    <div class="example">
-      Consider a user interface that filters possible flights by departure and arrival time:
-
-      <pre highlight="html">
-&lt;form ...&gt;
-  &lt;fieldset&gt;
-  &lt;legend&gt;Outbound flight time&lt;/legend&gt;
-  &lt;select ...&gt;
-    &lt;option&gt;Departure
-    &lt;option&gt;Arrival
-  &lt;/select&gt;
-  &lt;p&gt;&lt;output name=o1&gt;00:00&lt;/output&gt; – &lt;output name=o2&gt;24:00&lt;/output&gt;&lt;/p&gt;
-  &lt;input type=range multiple min=0 max=24 value=0,24 step=1.0 ...
-          oninput="o1.value = valueLow + ':00'; o2.value = valueHigh + ':00'"&gt;
-  &lt;/fieldset&gt;
-  ...
-&lt;/form&gt;
-    </pre>
-
-      With appropriate styling, this might look like:
-
-      <img src="images/sample-range-multiple.png" alt="A control group with the label 'Outbound flight time', showing a drop-down that lets you select Departure vs Arrival, a two-handled range control that lets you set the start and end time of the range, and a label showing the currently selected times." />
-
-    </div>
-
-    </dd>
-
-  </dl>
-
-  When the <{input/multiple}> attribute is set or removed, the
-  user agent must run the <a>value sanitization algorithm</a>.
-
-  <p class="note">
-    In this state, the range and step constraints are enforced even during user input,
-  and there is no way to set the value to the empty string.
-  </p>
-
-  The <{input/min}> attribute, if specified, must have a value that is
-  a <a>valid floating-point number</a>. The <a>default
-  minimum</a> is 0. The <{input/max}> attribute, if specified, must
-  have a value that is a <a>valid floating-point number</a>. The <a>default maximum</a> is 100.
-
-  <span class="impl">The <a>step scale factor</a> is
-  1.</span> The <a>default step</a> is 1 (allowing only
-  integers, unless the <{input/min}> attribute has a non-integer
-  value).
-
-  <div class="impl">
-
-  <strong>The <a>algorithm to convert a string to a
-  number</a>, given a string <var>input</var>, is as follows</strong>: If applying the
-  <a>rules for parsing floating-point number values</a> to <var>input</var> results
-  in an error, then return an error; otherwise, return the resulting number.
-
-  <strong>The <a>algorithm to convert a number to a
-  string</a>, given a number <var>input</var>, is as follows</strong>: Return the <a lt="floating point number">best representation, as a
-  floating-point number</a>, of <var>input</var>.
-
+    <img src="images/sample-range-labels.png" width="103" height="164" alt="A vertical slider control with two tick marks, one near the top labeled 'High', and one near the bottom labeled 'Low'." />
   </div>
 
-  <div class="bookkeeping">
+  <p class="note">In this state, the range and step constraints are enforced even during user input,
+  and there is no way to set the value to the empty string.</p>
 
+  The <{input/min}> attribute, if specified, must have a value that is a
+  <a>valid floating-point number</a>. The <a>default minimum</a> is 0. The <{input/max}> attribute,
+  if specified, must have a value that is a <a>valid floating-point number</a>. The
+  <a>default maximum</a> is 100.
+
+  The <a>step scale factor</a> is 1. The <a>default step</a> is 1 (allowing only integers, unless
+  the <{input/min}> attribute has a non-integer value).
+
+  <strong>The <a>algorithm to convert a string to a number</a>, given a string <var>input</var>, is
+  as follows</strong>: If applying the <a>rules for parsing floating-point number values</a> to
+  <var>input</var> results in an error, then return an error; otherwise, return the resulting
+  number.
+
+  <strong>The <a>algorithm to convert a number to a string</a>, given a number <var>input</var>, is
+  as follows</strong>: Return the
+  <a lt="best floating-point number">best representation, as a floating-point number</a>, of
+  <var>input</var>.
+
+  <div class="bookkeeping">
     The following common <{input}> element content attributes, IDL attributes, and
     methods <a>apply</a> to the element:
     <{input/autocomplete}>,
@@ -4985,13 +4868,6 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/stepDown()}} and
     {{HTMLInputElement/stepUp()}} methods.
-
-    The following common <{input}> IDL attribute <a>applies</a> to the element if the <{input/multiple}> content attribute is not specified:
-    {{HTMLInputElement/valueAsNumber}}.
-
-    The following common <{input}> IDL attributes <a>apply</a> to the element if the <{input/multiple}> content attribute <em>is</em> specified:
-    {{HTMLInputElement/valueLow}} and
-    {{HTMLInputElement/valueHigh}}.
 
     The {{HTMLInputElement/value}} IDL attribute is in mode <a for="forms">value</a>.
 
@@ -5025,24 +4901,11 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/files}},
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
-    {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/selectionDirection}}, and
+    {{HTMLInputElement/valueAsDate}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}}, and
     {{HTMLInputElement/setSelectionRange()}} methods.
-
-    The following common <{input}> IDL attributes <a>do not apply</a> to the
-    element if the <{input/multiple}> content
-    attribute is not specified:
-    {{HTMLInputElement/valueLow}} and
-    {{HTMLInputElement/valueHigh}}.
-
-    The following common <{input}> IDL attribute <a>does not
-    apply</a> to the element if the <{input/multiple}> content attribute <em>is</em> specified:
-    {{HTMLInputElement/valueAsNumber}}.
-
   </div>
 
 <h6 id="color-state-typecolor"><dfn element-state for="input">Color</dfn> state (<code>type=color</code>)</h6>
@@ -5147,15 +5010,12 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
     {{HTMLInputElement/stepDown()}}, and
     {{HTMLInputElement/stepUp()}} methods.
-
   </div>
 
 <h6 id="checkbox-state-typecheckbox"><dfn element-state for="input">Checkbox</dfn> state (<code>type=checkbox</code>)</h6>
@@ -5266,10 +5126,8 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -5422,10 +5280,8 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -5675,10 +5531,8 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
     {{HTMLInputElement/stepDown()}}, and
@@ -5785,10 +5639,8 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -6028,10 +5880,8 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -6156,10 +6006,8 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -6254,10 +6102,8 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/selectionStart}},
     {{HTMLInputElement/selectionEnd}},
     {{HTMLInputElement/selectionDirection}},
-    {{HTMLInputElement/valueAsDate}},
-    {{HTMLInputElement/valueAsNumber}},
-    {{HTMLInputElement/valueLow}}, and
-    {{HTMLInputElement/valueHigh}} IDL attributes;
+    {{HTMLInputElement/valueAsDate}}, and
+    {{HTMLInputElement/valueAsNumber}} IDL attributes;
     {{HTMLInputElement/select()}},
     {{HTMLInputElement/setRangeText()}},
     {{HTMLInputElement/setSelectionRange()}},
@@ -6753,80 +6599,45 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   attribute as described below.</span>
 
   The <{input/step}> attribute, if specified, must either have a
-  value that is a <a>valid floating-point number</a> that <a lt="parse it as an integer">parses</a> 
+  value that is a <a>valid floating-point number</a> that <a lt="parse it as an integer">parses</a>
   to a number that is greater than zero, or must have a
   value that is an <a>ASCII case-insensitive</a> match for the string "<code>any</code>".
-
-  <div class="impl">
 
   The attribute provides the <dfn>allowed value step</dfn> for the
   element, as follows:
 
-  <ol>
+  1. If the <{input/step}> attribute is absent, then the <a>allowed value step</a> is the
+      <a>default step</a> multiplied by the <a>step scale factor</a>.
+  2. Otherwise, if the attribute's value is an <a>ASCII case-insensitive</a> match for the string
+      "<code>any</code>", then there is no <a>allowed value step</a>.
+  3. Otherwise, let <var>step value</var> be the result of running the
+      <a>rules for parsing floating-point number values</a>, when they are applied to the
+      <{input/step}> attribute's value.
+  4. If the previous step returned an error, or <var>step value</var> is zero, or a number less than
+      zero, then the <a>allowed value step</a> is the <a>default step</a> multiplied by the
+      <a>step scale factor</a>.
+  5. If the element's <{input/type}> attribute is in the
+      <a element-state for="input">Date and Time</a>,
+      <a element-state for="input">Date</a>,
+      <a element-state for="input">Month</a>,
+      <a element-state for="input">Week</a>, or
+      <a element-state for="input">Time</a> state, then round <var>step value</var> to the nearest
+      whole number using the "round to nearest + round half up" technique, unless the value is
+      less-than one, in which case let <var>step value</var> be 1.
+  6. The <a>allowed value step</a> is <var>step value</var> multiplied by the
+      <a>step scale factor</a>.
 
-    <li>If the attribute is absent, then the <a>allowed value
-    step</a> is the <a>default step</a> multiplied by the
-    <a>step scale factor</a>.</li>
+  The <dfn>step base</dfn> is the value returned by the following algorithm:
 
-    <li>Otherwise, if the attribute's value is an <a>ASCII case-insensitive</a> match for the
-    string "<code>any</code>", then there is no <a>allowed
-    value step</a>.</li>
-
-    <li>Otherwise, if the <a>rules for parsing floating-point number values</a>, when they are
-    applied to the attribute's value, return an error, zero, or a number less than zero, then the
-    <a>allowed value step</a> is the <a>default step</a> multiplied by the <a>step scale factor</a>.</li>
-
-    <li>Otherwise, the <a>allowed value step</a> is the number
-    returned by the <a>rules for parsing floating-point number values</a> when they are applied
-    to the attribute's value, multiplied by the <a>step scale
-    factor</a>.</li>
-
-  </ol>
-
-  The <dfn>step base</dfn> is the value returned by the following
-  algorithm:
-
-  <ol>
-
-    <li>If the element has a <{input/min}> content attribute, and the
-    result of applying the <a>algorithm to convert a
-    string to a number</a> to the value of the <{input/min}> content
-    attribute is not an error, then return that result and abort these steps.</li>
-
-    <li>
-
-    If the element does not have a <code>multiple</code> attribute
-    specified or if the <code>multiple</code> attribute <a>does not apply</a>, then: if the element has a <code>value</code> content attribute, and the result of applying the <a>algorithm to convert a string to a number</a> to
-    the value of the <code>value</code> content attribute is not an error,
-    then return that result and abort these steps.
-
-    Otherwise, the element's <{input/type}> attribute is in the <a>Range</a> state and the element has a <code>multiple</code> attribute specified: run these substeps:
-
-    <ol>
-
-      <li>If the element does not have a <code>value</code> content
-      attribute, skip these substeps.</li>
-
-      <li><a lt="split a string on commas">Split on commas</a> the value of the <code>value</code> content attribute.</li>
-
-      <li>If the result of the previous step was not exactly two values, or if either gets an
-      error when you apply the <a>algorithm to convert
-      a string to a number</a>, then skip these substeps.</li>
-
-      <li>Return the lower of the two numbers obtained in the previous step, and abort these
-      steps.</li>
-
-    </ol>
-
-    </li>
-
-    <li>If a <a>default step base</a> is defined for
-    this element given its <{input/type}> attribute's state, then return
-    it and abort these steps.
-
-    </li><li>Return zero.</li>
-
-  </ol>
+  1. If the element has a <{input/min}> content attribute, and the result of applying the
+      <a>algorithm to convert a string to a number</a> to the value of the <{input/min}> content
+      attribute is not an error, then return that result and abort these steps.
+  2. If the element has a <code>value</code> content attribute, and the result of applying the
+      <a>algorithm to convert a string to a number</a> to the value of the <{input/value}> content
+      attribute is not an error, then return that result and abort these steps.
+  3. If a <a>default step base</a> is defined for this element given its <{input/type}> attribute's
+      state, then return it and abort these steps.
+  4. Return zero.
 
   How these range limitations apply depends on whether the element has a <code>multiple</code> attribute.
 
@@ -6837,10 +6648,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     <dd>
 
-    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and the result of applying the <a>algorithm to convert a string to a number</a> to
-    the string given by the element's <a for="forms">value</a> is a number, and
-    that number subtracted from the <a>step base</a> is not an
-    integral multiple of the <a>allowed value step</a>, the
+    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and
+    the result of applying the <a>algorithm to convert a string to a number</a> to the string given
+    by the <a for="forms">value</a> is a number, and that number <a>is not step aligned</a>, the
     element is <a>suffering from a step mismatch</a>.
 
     </dd>
@@ -6850,10 +6660,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     <dd>
 
-    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and the result of applying the <a>algorithm to convert a string to a number</a> to
-    any of the strings in the element's <a for="forms">values</a> is a number
-    that, when subtracted from the <a>step base</a>, is not an
-    integral multiple of the <a>allowed value step</a>, the
+    <strong>Constraint validation</strong>: When the element has an <a>allowed value step</a>, and
+    the result of applying the <a>algorithm to convert a string to a number</a> to any of the
+    strings in the <a for="forms">values</a> is a number that <a>is not step aligned</a>, the
     element is <a>suffering from a step mismatch</a>.
 
     </dd>
@@ -6965,8 +6774,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <pre highlight="html">
 &lt;label&gt;Homepage: &lt;input name=hp type=url list=hpurls&gt;&lt;/label&gt;
 &lt;datalist id=hpurls&gt;
-  &lt;option value="http://www.google.com/" label="Google"&gt;
-  &lt;option value="http://www.reddit.com/" label="Reddit"&gt;
+  &lt;option value="https://www.google.com/" label="Google"&gt;
+  &lt;option value="https://www.reddit.com/" label="Reddit"&gt;
 &lt;/datalist&gt;
     </pre>
 
@@ -7103,173 +6912,91 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 <h5 id="common-input-element-apis">Common <{input}> element <dfn>APIs</dfn></h5>
 
   <dl class="domintro">
-
-    <dt><var>input</var> . <code>value</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns the current <a for="forms">value</a> of the form control.
+    <dt><var>input</var> . {{HTMLInputElement/value}} [ = <var>value</var> ]</dt>
+    <dd>Returns the current <a for="forms">value</a> of the form control.
 
     Can be set, to change the value.
 
-    Throws an <code>InvalidStateError</code> exception if it is set to any value other than the
-    empty string when the control is a <a element-state for="input" lt="file upload">file upload</a> control.
-
-    </dd>
+    Throws an "{{InvalidStateError}}" {{DOMException}} if it is set to any value other than the empty
+    string when the control is a <a element-state for="input">file upload</a> control.</dd>
 
     <dt><var>input</var> . {{HTMLInputElement/checked}} [ = <var>value</var> ]</dt>
+    <dd>Returns the current <a for="forms">checkedness</a> of the form control.
 
-    <dd>
+    Can be set, to change the <a for="forms">checkedness</a>.</dd>
 
-    Returns the current <a for="forms">checkedness</a> of the form
+    <dt><var>input</var> . {{HTMLInputElement/files}}</dt>
+    <dd>Returns a <code>FileList</code> object listing the <a>selected files</a> of the form
     control.
 
-    Can be set, to change the <a for="forms">checkedness</a>.
+    Returns null if the control isn't a file control.</dd>
 
-    </dd>
-
-    <dt><var>input</var> . <code>files</code> </dt>
-
-    <dd>
-
-    Returns a <code>FileList</code> object listing the <a>selected files</a> of the form control.
-
-    Returns null if the control isn't a file control.
-
-    </dd>
-
-    <dt><var>input</var> . <code>valueAsDate</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns a {{Date}} object representing the form control's <a for="forms">value</a>, if applicable; otherwise, returns null.
+    <dt><var>input</var> . {{HTMLInputElement/valueAsDate}} [ = <var>value</var> ]</dt>
+    <dd>Returns a {{Date}} object representing the form control's <a for="forms">value</a>, if
+    applicable; otherwise, returns null.
 
     Can be set, to change the value.
 
-    Throws an <code>InvalidStateError</code> exception if the control isn't date- or
-    time-based.
-
+    Throws an "{{InvalidStateError}}" {{DOMException}} if the control isn't date- or time-based.
     </dd>
 
-    <dt><var>input</var> . <code>valueAsNumber</code> [ = <var>value</var> ]</dt>
-
-    <dd>
-
-    Returns a number representing the form control's <a for="forms">value</a>,
-    if applicable; otherwise, returns NaN.
+    <dt><var>input</var> . {{HTMLInputElement/valueAsNumber}} [ = <var>value</var> ]</dt>
+    <dd>Returns a number representing the form control's <a for="forms">value</a>, if applicable;
+    otherwise, returns NaN.
 
     Can be set, to change the value. Setting this to NaN will set the underlying value to the
     empty string.
 
-    Throws an <code>InvalidStateError</code> exception if the control is neither date- or
-    time-based nor numeric.
+    Throws an "{{InvalidStateError}}" {{DOMException}} if the control is neither date- or time-based
+    nor numeric.</dd>
 
-    </dd>
+    <dt><var>input</var> . {{HTMLInputElement/stepUp()|stepUp}}( [ <var>n</var> ] )</dt>
+    <dt><var>input</var> . {{HTMLInputElement/stepDown()|stepDown}}( [ <var>n</var> ] )</dt>
+    <dd>Changes the form control's <a for="forms">value</a> by the value given in the <{input/step}>
+    attribute, multiplied by <var>n</var>. The default value for <var>n</var> is 1.
 
-    <dt><var>input</var> . <code>valueLow</code> [ = <var>value</var> ]</dt>
-    <dt><var>input</var> . <code>valueHigh</code> [ = <var>value</var> ]</dt>
+    Throws "{{InvalidStateError}}" {{DOMException}} if the control is neither date- or time-based
+    nor numeric, or if the <{input/step}> attribute's value is "<code>any</code>".</dd>
 
-    <dd>
-
-    Returns a number representing the low and high components of form control's <a for="forms">value</a> respectively, if applicable; otherwise, returns NaN.
-
-    Can be set, to change the value.
-
-    Throws an <code>InvalidStateError</code> exception if the control is not a two-handle range
-    control.
-
-    </dd>
-
-    <dt><var>input</var> . <code>stepUp</code>( [ <var>n</var> ] )</dt>
-    <dt><var>input</var> . <code>stepDown</code>( [ <var>n</var> ] )</dt>
-
-    <dd>
-
-    Changes the form control's <a for="forms">value</a> by the value given in
-    the <{input/step}> attribute, multiplied by <var>n</var>.
-    The default value for <var>n</var> is 1.
-
-    Throws <code>InvalidStateError</code> exception if the control is neither date- or time-based
-    nor numeric, or if the <{input/step}> attribute's value is "<code>any</code>".
-
-    </dd>
-
-    <dt><var>input</var> . <code>list</code></dt>
-
-    <dd>
-
-    Returns the <{datalist}> element indicated by the <code>list</code> attribute.
-
-    </dd>
-
+    <dt><var>input</var> . {{HTMLInputElement/list}}</dt>
+    <dd>Returns the <{datalist}> element indicated by the <code>list</code> attribute.</dd>
   </dl>
-
-  <div class="impl">
 
   The <dfn attribute for="HTMLInputElement"><code>value</code></dfn> IDL attribute allows scripts to
   manipulate the <a for="forms">value</a> of an <{input}> element. The
   attribute is in one of the following modes, which define its behavior:
 
-  <dl>
+  : <dfn mode for="input">value</dfn>
+  :: On getting, it must return the current <a for="forms">value</a> of the element. On setting, it
+      must set the element's <a for="forms">value</a> to the new value, set the element's
+      <a for="input">dirty value flag</a> to true, invoke the <a>value sanitization algorithm</a>,
+      if the element's <{input/type}> attribute's current state defines one, and then, if the
+      element has a text entry cursor position, should move the text entry cursor position to the
+      end of the text field, unselecting any selected text and resetting the selection direction to
+      <em>none</em>.
 
-    <dt><dfn mode for="input">value</dfn>
+  : <dfn mode for="input">default</dfn>
+  :: On getting, if the element has a <{input/value}> attribute, it must return that attribute's
+      value; otherwise, it must return the empty string. On setting, it must set the element's
+      <{input/value}> attribute to the new value.
 
-    </dt><dd>
+  : <dfn mode for="input">default/on</dfn>
+  :: On getting, if the element has a <{input/value}> attribute, it must return that attribute's
+      value; otherwise, it must return the string "<code>on</code>". On setting, it must set the
+      element's <{input/value}> attribute to the new value.
 
-    On getting, it must return the current <a for="forms">value</a> of the
-    element. On setting, it must set the element's <a for="forms">value</a> to
-    the new value, set the element's <a for="input">dirty value flag</a> to true, invoke the <a>value sanitization algorithm</a>, if the element's
-    <{input/type}> attribute's current state defines one, and then, if
-    the element has a text entry cursor position, should move the text entry cursor position to the
-    end of the text field, unselecting any selected text and resetting the selection direction to
-    <i>none</i>.
+  : <dfn mode for="input">filename</dfn>
+  :: On getting, it must return the string "<code>C:\fakepath\</code>" followed by the name of the
+      first file in the list of <a>selected files</a>, if any, or the empty string if the list is
+      empty. On setting, if the new value is the empty string, it must empty the list of
+      <a>selected files</a>; otherwise, it must throw an "{{InvalidStateError}}" {{DOMException}}.
 
-    </dd>
+      <p class="note">This "fakepath" requirement is a sad accident of history. See the example in
+      the <a element-state for="input">File Upload</a> state section for more information.</p>
 
-    <dt><dfn mode for="input">default</dfn>
-
-    </dt><dd>
-
-    On getting, if the element has a <code>value</code> attribute, it
-    must return that attribute's value; otherwise, it must return the empty string. On setting, it
-    must set the element's <code>value</code> attribute to the new
-    value.
-
-    </dd>
-
-    <dt><dfn mode for="input">default/on</dfn>
-
-    </dt><dd>
-
-    On getting, if the element has a <code>value</code> attribute, it
-    must return that attribute's value; otherwise, it must return the string "<code>on</code>". On setting, it must set the element's <code>value</code> attribute to the new value.
-
-    </dd>
-
-    <dt><dfn mode for="input">filename</dfn>
-
-    </dt><dd id="fakepath-orly">
-
-    On getting, it must return the string "<code>C:\fakepath\</code>" followed by the
-    name of the first file in the list of <a>selected
-    files</a>, if any, or the empty string if the list is empty. On setting, if the new value is
-    the empty string, it must empty the list of <a>selected files</a>; otherwise, it must throw an
-    <code>InvalidStateError</code> exception.
-
-    <p class="note">
-    This "fakepath" requirement is a sad accident of history. See the example in the <a element-state for="input">File Upload</a> state section for more
-    information.
-  </p>
-
-    <p class="note">
-    Since <a>path components</a> are not
-    permitted in file names in the list of <a>selected
-    files</a>, the "\fakepath\" cannot be mistaken for a path component.
-  </p>
-
-    </dd>
-
-  </dl>
+      <p class="note">Since <a>path components</a> are not permitted in file names in the list of
+      <a>selected files</a>, the "<code>\fakepath\</code>" cannot be mistaken for a path component.
+      </p>
 
   <hr />
 
@@ -7336,150 +7063,127 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   <hr />
 
-  The <dfn attribute for="HTMLInputElement"><code>valueLow</code></dfn> and <dfn attribute for="HTMLInputElement"><code>valueHigh</code></dfn> IDL attributes represent the <a for="forms">value</a> of the element, interpreted as a comma-separated pair of
-  numbers.
-
-  On getting, if the attributes <a>do not apply</a>, as defined for the <{input}>
-  element's <{input/type}> attribute's current state, then return zero;
-  otherwise, run the following steps:
-
-  <ol>
-
-    <li>Let <var>values</var> be the <a for="forms">values</a> of
-    the element, interpreted according to the <a>algorithm to convert a string to a number</a>, as
-    defined by the <{input}> element's <{input/type}>
-    attribute's current state.</li>
-
-    <li>If the attribute in question is <code>valueLow</code>, return
-    the lowest of the values in <var>values</var>; otherwise, return the highest of the
-    values in <var>values</var>.</li>
-
-  </ol>
-
-  On setting, if the attributes <a>do not apply</a>, as defined for the <{input}>
-  element's <{input/type}> attribute's current state, then throw an
-  <code>InvalidStateError</code> exception. Otherwise, run the following steps:
-
-  <ol>
-
-    <li>Let <var>values</var> be the <a for="forms">values</a> of
-    the element, interpreted according to the <a>algorithm to convert a string to a number</a>, as
-    defined by the <{input}> element's <{input/type}>
-    attribute's current state.</li>
-
-    <li>Let <var>new value</var> be the result of running the <a>algorithm to convert a number to a string</a>, as
-    defined for that state, on the new value.</li>
-
-    <li>If the attribute in question is <code>valueLow</code>, replace
-    the lower value in <var>values</var> with <var>new value</var>; otherwise,
-    replace the higher value in <var>values</var> with <var>new
-    value</var>.</li>
-
-    <li>Sort <var>values</var> in increasing numeric order.</li>
-
-    <li>Let <a for="forms">values</a> be the result of running the <a>algorithm to convert a number to a string</a>, as
-    defined by the <{input}> element's <{input/type}>
-    attribute's current state, to the values in <var>values</var>.</li>
-
-    <li>Set the element's <a for="forms">value</a> to the concatenation of the
-    strings in <a for="forms">values</a>, separating each value from the next
-    by a U+002C COMMA character (,).</li>
-
-  </ol>
-
-  <hr />
-
   The
   <dfn method for="HTMLInputElement"><code>stepDown(<var>n</var>)</code></dfn> and
   <dfn method for="HTMLInputElement"><code>stepUp(<var>n</var>)</code></dfn>
   methods, when invoked, must run the following algorithm:
 
-  <ol>
+  1. If the <code>stepDown()</code> and <code>stepUp()</code> methods <a>do not apply</a>, as
+      defined for the <{input}> element's <{input/type}> attribute's current state, then throw an
+      "{{InvalidStateError}}" {{DOMException}}, and abort these steps.
+  2. If the element has no <a>allowed value step</a>, then throw an "{{InvalidStateError}}"
+      {{DOMException}}, and abort these steps.
+  3. If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and the
+      <a for="min">minimum</a> is greater than the <a for="max">maximum</a>, then abort these steps.
+  4. If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and there is no
+      <a lt="is step aligned">step aligned</a> value greater than or equal to the element's
+      <a for="min">minimum</a> and less than or equal to the element's <a for="max">maximum</a>,
+      then abort these steps.
+  5. If applying the <a>algorithm to convert a string to a number</a> to the string given by the
+      element's <a for="forms">value</a> does not result in an error, then let <var>value</var> be
+      the result of that algorithm. Otherwise, let <var>value</var> be zero.
+  6. Let <var>valueBeforeStepping</var> be <var>value</var>.
+  7. If <var>value</var> <a>is not step aligned</a>, then:
+      1. If the method invoked was the <code>stepDown()</code> method, then <a>step-align</a>
+          <var>value</var> with <var>negative preference</var>. Otherwise <a>step-align</a>
+          <var>value</var> with <var>positive preference</var>. In either case, let <var>value</var>
+          be the result.
 
-    <li>If the <code>stepDown()</code> and <code>stepUp()</code> methods <a>do not apply</a>, as defined for the
-    <{input}> element's <{input/type}> attribute's current state,
-    then throw an <code>InvalidStateError</code> exception, and abort these steps.</li>
+          <div class="example">
+            This ensures that the value first snaps to a <a>step-aligned</a> value when it doesn't
+            start step-aligned. For example, starting with the following <{input}> with
+            <{input/value}> of 3:
 
-    <li>If the element has no <a>allowed value step</a>, then
-    throw an <code>InvalidStateError</code> exception, and abort these steps.</li>
+            <pre highlight="html">
+              &lt;input type="number" value="3" min="1" max="10" step="2.6">
+            </pre>
+            Invoking the {{HTMLInputElement/stepUp()}} method will snap the <{input/value}> to 3.6;
+            subsequent invocations will increment the value by 2.6 (e.g., 6.2, then 8.8). Likewise,
+            the following <{input}> element in the <a element-state for="input">Week</a> state will
+            also <a>step-align</a> in similar fashion, though in this state, the <{input/step}>
+            value is rounded to 3, per the derivation of the <a>allowed value step</a>.
 
-    <li>If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and the <a for="min">minimum</a>
-    is greater than the <a for="max">maximum</a>, then abort these steps.
+            <pre highlight="html">
+              &lt;input type="week" value="2016-W20" min="2016-W01" max="2017-W01" step="2.6">
+            </pre>
+            Invoking {{HTMLInputElement/stepUp()}} will result in a <{input/value}> of
+            "<code>2016-W22</code>" because the nearest <a>step-aligned</a> value from the
+            <a>step base</a> of "<code>2016-W01</code>" (the <{input/min}> value) with 3 week
+            <{input/step}>s that is greater than the <{input/value}> of "<code>2016-W20</code>" is
+            "<code>2016-W22</code>" (i.e.: W01, W04, W07, W10, W13, W16, W19, W22).
+          </div>
 
-    </li><li>If the element has a <a for="min">minimum</a> and a <a for="max">maximum</a> and there is no value greater than or equal to the
-    element's <a for="min">minimum</a> and less than or equal to the element's
-    <a for="max">maximum</a> that, when subtracted from the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, then abort these steps.
+      Otherwise (<var>value</var> <a>is step aligned</a>), run the following substeps:
 
-    </li><li>If applying the <a>algorithm to convert a
-    string to a number</a> to the string given by the element's <a for="forms">value</a> does not result in an error, then let <var>value</var> be the result of that algorithm. Otherwise, let <var>value</var>
-    be zero.</li>
+      1. Let <var>n</var> be the argument.
+      2. Let <var>delta</var> be the <a>allowed value step</a> multiplied by <var>n</var>.
+      3. If the method invoked was the <code>stepDown()</code> method, negate <var>delta</var>.
+      4. Let <var>value</var> be the result of adding <var>delta</var> to <var>value</var>.
+  8. If the element has a <a for="min">minimum</a>, and <var>value</var> is less than that
+      <a for="min">minimum</a>, then set <var>value</var> to the <a>step-aligned</a>
+      <a for="min">minimum</a> value with <var>positive preference</var>.
+  9. If the element has a <a for="max">maximum</a>, and <var>value</var> is greater than that
+      <a for="max">maximum</a>, then set <var>value</var> to the <a>step-aligned</a>
+      <a for="max">maximum</a> value with <var>negative preference</var>.
+  10. If either the method invoked was the {{HTMLInputElement/stepDown()}} method and
+       <var>value</var> is greater than <var>valueBeforeStepping</var>, or the method invoked was
+       the {{HTMLInputElement/stepUp()}} method and <var>value</var> is less than
+       <var>valueBeforeStepping</var>, then abort these steps.
 
-    <li>Let <var>valueBeforeStepping</var> be <var>value</var>.</li>
+       <div class="example">
+         This ensures that invoking the {{HTMLInputElement/stepUp()}} method on the <{input}>
+         element in the following example does not change the <a for="forms">value</a> of that
+         element:
 
-    <li>
+         <pre highlight="html">
+           &lt;input type=number value=1 max=0&gt;
+         </pre>
+       </div>
+  11. Let <var>value as string</var> be the result of running the
+       <a>algorithm to convert a number to a string</a>, as defined for the <{input}> element's
+       <{input/type}> attribute's current state, on <var>value</var>.
+  12. Set the <a for="forms">value</a> of the element to <var>value as string</var>.
 
-    If <var>value</var> subtracted from the <a>step
-    base</a> is not an integral multiple of the <a>allowed value
-    step</a>, then set <var>value</var> to the nearest value that, when subtracted from
-    the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, and that is less than <var>value</var> if
-    the method invoked was the <code>stepDown()</code> method, and more
-    than <var>value</var> otherwise.
+  To determine if a value <var>v</var> <dfn>is step aligned</dfn> do the following:
 
-    Otherwise (<var>value</var> subtracted from the <a>step base</a> is an integral multiple of the <a>allowed value step</a>), run the following substeps:
+  <p class="note">This algorithm checks to see if a value falls along an <{input}> element's
+  defined <{input/step}> intervals, with the interval's origin at the <a>step base</a> value. It is
+  used to determine if the element's <a for="forms">value</a> is
+  <a>suffering from a step mismatch</a> and for various checks in the {{HTMLInputElement/stepUp()}}
+  and {{HTMLInputElement/stepDown()}} methods.</p>
 
-    <ol>
+  1. Subtract the <a>step base</a> from <var>v</var> and let the result be
+      <var>relative distance</var>.
+  2. If dividing the <var>relative distance</var> by the <a>allowed value step</a> results in a
+      value with a remainder then <var>v</var> <dfn>is not step aligned</dfn>. Otherwise it is step
+      aligned.
 
-      <li>Let <var>n</var> be the argument.</li>
+  To <dfn lt="step-align|step-aligned|step-aligns">step-align</dfn> a value <var>v</var> with either
+  <var>negative preference</var> or <var>positive preference</var>, do the following:
 
-      <li>Let <var>delta</var> be the <a>allowed value
-      step</a> multiplied by <var>n</var>.</li>
+  <p class="note"><var>negative preference</var> selects a <a>step-aligned</a> value that is less
+  than or equal to <var>v</var>, while <var>positive preference</var> <a>step-aligns</a> with a
+  value greater than or equal to <var>v</var>.</p>
 
-      <li>If the method invoked was the <code>stepDown()</code> method,
-      negate <var>delta</var>.</li>
+  1. Subtract the <a>step base</a> from <var>v</var> and let the result be
+      <var>relative distance</var>.
+  2. Let <var>step interval count</var> be the result of integer dividing (or divide and throw out
+      any remainder) <var>relative distance</var> by the <a>allowed value step</a>.
+  3. Let <var>candidate</var> be the <var>step interval count</var> multiplied by the
+      <a>allowed value step</a>.
+  4. If this algorithm was invoked with <var>negative preference</var> and the value of <var>v</var>
+      is less than <var>candidate</var>, then decrement <var>candidate</var> by the
+      <a>allowed value step</a>.
 
-      <li>Let <var>value</var> be the result of adding <var>delta</var> to <var>value</var>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>If the element has a <a for="min">minimum</a>, and <var>value</var> is less than that <a for="min">minimum</a>, then set
-    <var>value</var> to the smallest value that, when subtracted from the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, and that is more than or equal to <var>minimum</var>.</li>
-
-    <li>If the element has a <a for="max">maximum</a>, and <var>value</var> is greater than that <a for="max">maximum</a>, then
-    set <var>value</var> to the largest value that, when subtracted from the <a>step base</a>, is an integral multiple of the <a>allowed value step</a>, and that is less than or equal to <var>maximum</var>.</li>
-
-    <li>
-    If either the method invoked was the <code>stepDown()</code>
-    method and <var>value</var> is greater than <var>valueBeforeStepping</var>, or the method
-    invoked was the <code>stepUp()</code> method and <var>value</var> is
-    less than <var>valueBeforeStepping</var>, then abort these steps.
-
-    <div class="example">
-      This ensures that invoking the <code>stepUp()</code> method on the
-      <{input}> element in the following example does not change the <a for="forms">value</a> of that element:
-
-      <pre highlight="html">
-&lt;input type=number value=1 max=0&gt;
-    </pre>
-    </div>
-    </li>
-
-    <li>Let <var>value as string</var> be the result of running the <a>algorithm to convert a number to a string</a>, as
-    defined for the <{input}> element's <{input/type}>
-    attribute's current state, on <var>value</var>.</li>
-
-    <li>Set the <a for="forms">value</a> of the element to <var>value
-    as string</var>.</li>
-
-  </ol>
+      Otherwise, if this algorithm was invoked with <var>positive preference</var> and the value of
+      <var>v</var> is greater than <var>candidate</var>, then increment <var>candidate</var> by the
+      <a>allowed value step</a>.
+  5. The <a>step-aligned</a> value is <var>candidate</var>. Return <var>candidate</var>.
 
   <hr />
 
-  The <dfn attribute for="HTMLInputElement"><code>list</code></dfn> IDL attribute must return the current
-  <a>suggestions source element</a>, if any, or null otherwise.
-
-  </div>
+  The <dfn attribute for="HTMLInputElement"><code>list</code></dfn> IDL attribute must return the
+  current <a>suggestions source element</a>, if any, or null otherwise.
 
   <div class="impl">
 
@@ -7506,7 +7210,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   <{input}> element.
 
   <p class="example">An example of a user interface involving both interactive manipulation and a
-  commit action would be a <a>Range</a> controls that use a
+  commit action would be a <a element-state for="input">Range</a> controls that use a
   slider, when manipulated using a pointing device. While the user is dragging the control's knob,
   <code>input</code> events would fire whenever the position changed,
   whereas the <code>change</code> event would only fire when the user
@@ -7551,7 +7255,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   changes to the value, e.g., hitting the "delete" key in an empty text field, or replacing some text
   in the field with text from the clipboard that happens to be exactly the same text.</p>
 
-  <p class="example">A <a>Range</a> control in the form of a
+  <p class="example">A <a element-state for="input">Range</a> control in the form of a
   slider that the user has <a>focused</a> and is interacting with using a keyboard would be
   another example of the user changing the element's <a for="forms">value</a>
   without a commit step.</p>
@@ -8187,7 +7891,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   have their <a state for="option">selectedness</a> set to true.
 
   The <dfn attribute for="HTMLSelectElement"><code>selectedIndex</code></dfn> IDL attribute, on
-  getting, must return the <a>index</a> of the first
+  getting, must return the <a for="option">index</a> of the first
   <{option}> element in the <a>list of
   options</a> in <a>tree order</a> that has its <a state for="option">selectedness</a> set to true, if any. If there isn't one,
   then it must return -1.
@@ -8196,7 +7900,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   the <a state for="option">selectedness</a> of all the <{option}>
   elements in the <a>list of options</a> to false, and
   then the <{option}> element in the <a>list of
-  options</a> whose <a>index</a> is the given new value, if
+  options</a> whose <a for="option">index</a> is the given new value, if
   any, must have its <a state for="option">selectedness</a> set to true and
   its <a state for="option">dirtiness</a> set to true.
 
@@ -8542,7 +8246,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dt><a>Content model</a>:</dt>
     <dd>If the element has a <{option/label}> attribute and a <{option/value}> attribute: <a>Nothing</a>.</dd>
     <dd>If the element has a <{option/label}> attribute but no <{option/value}> attribute: <a>Text</a>.</dd>
-    <dd>If the element has no <{option/label}> attribute: <a>Text</a> that is not <a>inter-element whitespace</a>.</dd>
+    <dd>If the element has no <{option/label}> attribute: <a>Text</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>An <{option}> element's <a>end tag</a> may be omitted if
     the <{option}> element is immediately followed by another <{option}> element, or
@@ -8583,195 +8287,152 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     </dd>
   </dl>
 
-  The <{option}> element <a>represents</a> an option in a <{select}>
-  element or as part of a list of suggestions in a <{datalist}> element.
+  The <{option}> element <a>represents</a> an option in a <{select}> element or as part of a list of
+  suggestions in a <{datalist}> element.
 
-  In certain circumstances described in the definition of the <{select}> element, an
-  <{option}> element can be a <{select}> element's <a>placeholder label
-  option</a>. A <a>placeholder label option</a> does not represent an actual option, but
-  instead represents a label for the <{select}> control.
+  In certain circumstances described in the definition of the <{select}> element, an <{option}>
+  element can be a <{select}> element's <a>placeholder label option</a>. A
+  <a>placeholder label option</a> does not represent an actual option, but instead represents a
+  label for the <{select}> control.
 
-  The <dfn element-attr for="option"><code>disabled</code></dfn> content attribute is a <a>boolean
-  attribute</a>. An <{option}> element is disabled if its <{option/disabled}> attribute is present or if it is a child of an
-  <{optgroup}> element whose <{optgroup/disabled}> attribute
-  is present.
+  The <dfn element-attr for="option"><code>disabled</code></dfn> content attribute is a
+  <a>boolean attribute</a>. An <{option}> element is disabled if its <{option/disabled}> attribute
+  is present or if it is a child of an <{optgroup}> element whose <{optgroup/disabled}> attribute is
+  present.
 
-  <div class="impl">
-
-  An <{option}> element that is disabled must
-  prevent any <code>click</code> events that are <a>queued</a> on the <a>user interaction task source</a> from being dispatched on the
+  An <{option}> element that is disabled must prevent any <a event><code>click</code></a> events
+  that are <a>queued</a> on the <a>user interaction task source</a> from being dispatched on the
   element.
 
-  </div>
-
   The <dfn element-attr for="option"><code>label</code></dfn> content attribute provides a label for
-  element. The <dfn>label</dfn> of an <{option}> element is
-  the value of the <{option/label}> content attribute, if there is one and its value is not the empty string,
-  or, otherwise, the value of the element's <code>text</code> IDL
-  attribute.
+  the element. The <dfn>label</dfn> of an <{option}> element is the value of the <{option/label}>
+  content attribute, if there is one and its value is not the empty string, or, otherwise, the value
+  of the element's {{HTMLOptionElement/text}} IDL attribute if its value is not the empty string.
 
-  The <{option/label}> content attribute, if specified, must not be
-  empty.
+  The <{option/label}> content attribute, if specified, must not be empty.
 
   The <dfn element-attr for="option"><code>value</code></dfn> content attribute provides a value for
-  element. The <i>value</i> of an <{option}> element is
-  the value of the <code>value</code> content attribute, if there is one,
-  or, if there is not, the value of the element's <code>text</code> IDL
-  attribute.
+  element. The <i>value</i> of an <{option}> element is the value of the <code>value</code> content
+  attribute, if there is one, or, if there is not, the value of the element's
+  {{HTMLOptionElement/text}} IDL attribute (which may be the empty string).
 
-  The <dfn element-attr for="option"><code>selected</code></dfn> content attribute is a <a>boolean
-  attribute</a>. It represents the default <a state for="option">selectedness</a> of the element.
+  The <dfn element-attr for="option"><code>selected</code></dfn> content attribute is a
+  <a>boolean attribute</a>. It represents the default <a state for="option">selectedness</a> of the
+  element.
 
-  <div class="impl">
+  The <dfn state for="option">dirtiness</dfn> of an <{option}> element is a boolean state, initially
+  false. It controls whether adding or removing the <{option/selected}> content attribute has any
+  effect.
 
-  The <dfn state for="option">dirtiness</dfn> of an <{option}> element is
-  a boolean state, initially false. It controls whether adding or removing the <code>selected</code> content attribute has any effect.
+  The <dfn state for="option">selectedness</dfn> of an <{option}> element is a boolean state,
+  initially false. Except where otherwise specified, when the element is created, its
+  <a state for="option">selectedness</a> must be set to true if the element has a
+  <{option/selected}> attribute. Whenever an <{option}> element's <{option/selected}> attribute is
+  added, if its <a state for="option">dirtiness</a> is false, its
+  <a state for="option">selectedness</a> must be set to true. Whenever an <{option}> element's
+  <{option/selected}> attribute is <em>removed</em>, if its <a state for="option">dirtiness</a> is
+  false, its <a state for="option">selectedness</a> must be set to false.
 
-  The <dfn state for="option">selectedness</dfn> of an <{option}>
-  element is a boolean state, initially false. Except where otherwise specified, when the element is
-  created, its <a state for="option">selectedness</a> must be set to true if
-  the element has a <code>selected</code> attribute. Whenever an
-  <{option}> element's <code>selected</code> attribute is
-  added, if its <a state for="option">dirtiness</a> is false, its <a state for="option">selectedness</a> must be set to true. Whenever an
-  <{option}> element's <code>selected</code> attribute is
-  <em>removed</em>, if its <a state for="option">dirtiness</a> is false, its
-  <a state for="option">selectedness</a> must be set to false.
+  <p class="note">The <a constructor for="HTMLOptionElement"><code>Option()</code></a> constructor,
+  when called with three or fewer arguments, overrides the initial state of the
+  <a state for="option">selectedness</a> state to always be false even if the third argument is true
+  (implying that a <{option/selected}> attribute is to be set). The fourth argument can be used to
+  explicitly set the initial <a state for="option">selectedness</a> state when using the
+  constructor.</p>
 
-  <p class="note" id='option'>
-    The <a constructor for="HTMLOptionElement"><code>Option()</code></a> constructor, when called with three
-  or fewer arguments, overrides the initial state of the <a state for="option">selectedness</a> state to always be false even if the third
-  argument is true (implying that a <code>selected</code> attribute is
-  to be set). The fourth argument can be used to explicitly set the initial <a state for="option">selectedness</a> state when using the constructor.
-  </p>
+  A <{select}> element whose <{select/multiple}> attribute is not specified must not have more than
+  one descendant <{option}> element with its <{option/selected}> attribute set.
 
-  </div>
-
-  A <{select}> element whose <code>multiple</code>
-  attribute is not specified must not have more than one descendant <{option}> element with
-  its <code>selected</code> attribute set.
-
-  <div class="impl">
-
-  An <{option}> element's {{HTMLOptionElement/index}} is the number of
-  <{option}> elements that are in the same <a>list of
-  options</a> but that come before it in <a>tree order</a>. If the <{option}>
-  element is not in a <a>list of options</a>, then the
-  <{option}> element's {{HTMLOptionElement/index}} is zero.
-
-  </div>
+  An <{option}> element's <dfn for="option">index</dfn> is the number of <{option}> elements that are
+  in the same <a>list of options</a> but that come before it in <a>tree order</a>. If the <{option}>
+  element is not in a <a>list of options</a>, then the <{option}> element's
+  {{HTMLOptionElement/index}} is zero.
 
   <dl class="domintro">
+    <dt><var>option</var> . {{HTMLOptionElement/selected}}</dt>
+    <dd>Returns true if the element is selected, and false otherwise.
 
-    <dt><var>option</var> . <code>selected</code></dt>
-
-    <dd>
-
-    Returns true if the element is selected, and false otherwise.
-
-    Can be set, to override the current state of the element.
-
-    </dd>
+    Can be set, to override the current state of the element.</dd>
 
     <dt><var>option</var> . {{HTMLOptionElement/index}}</dt>
-
-    <dd>
-
-    Returns the index of the element in its <{select}> element's <code>options</code> list.
-
-    </dd>
+    <dd>Returns the index of the element in its <{select}> element's {{HTMLSelectElement/options}}
+    list.</dd>
 
     <dt><var>option</var> . {{HTMLOptionElement/form}}</dt>
+    <dd>Returns the element's <{form}> element, if any, or null otherwise.</dd>
 
-    <dd>
+    <dt><var>option</var> . {{HTMLOptionElement/text}}</dt>
+    <dd>Same as {{Node/textContent}}, except that spaces are collapsed and <{script}> elements are
+    skipped.</dd>
 
-    Returns the element's <{form}> element, if any, or null otherwise.
-
-    </dd>
-
-    <dt><var>option</var> . <code>text</code></dt>
-
-    <dd>
-
-    Same as {{Node/textContent}}, except that spaces are collapsed and <{script}> elements are skipped.
-
-    </dd>
-
-    <dt><var>option</var> = new <code>Option</code>( [ <var>text</var> [, <var>value</var> [, <var>defaultSelected</var> [, <var>selected</var> ] ] ] ] )</dt>
-
-    <dd>
-
-    Returns a new <{option}> element.
+    <dt><var>option</var> = new {{Option()}}( [ <var>text</var> [, <var>value</var> [, <var>defaultSelected</var> [, <var>selected</var> ] ] ] ] )</dt>
+    <dd>Returns a new <{option}> element.
 
     The <var>text</var> argument sets the contents of the element.
 
-    The <var>value</var> argument sets the <code>value</code>
-    attribute.
+    The <var>value</var> argument sets the <{option/value}> attribute.
 
-    The <var>defaultSelected</var> argument sets the <code>selected</code> attribute.
+    The <var>defaultSelected</var> argument sets the <{option/selected}> attribute.
 
-    The <var>selected</var> argument sets whether or not the element is selected. If it
-    is omitted, even if the <var>defaultSelected</var> argument is true, the element is not
-    selected.
-
-    </dd>
-
+    The <var>selected</var> argument sets whether or not the element is selected. If it is omitted,
+    even if the <var>defaultSelected</var> argument is true, the element is not selected.</dd>
   </dl>
 
-  <div class="impl">
-
   The <dfn attribute for="HTMLOptionElement"><code>disabled</code></dfn> IDL attribute must
-  <a>reflect</a> the content attribute of the same name. The <dfn attribute for="HTMLOptionElement"><code>defaultSelected</code></dfn> IDL attribute must
-  <a>reflect</a> the <code>selected</code> content attribute.
+  <a>reflect</a> the content attribute of the same name. The
+  <dfn attribute for="HTMLOptionElement"><code>defaultSelected</code></dfn> IDL attribute must
+  <a>reflect</a> the <{option/selected}> content attribute.
 
-  The <dfn attribute for="HTMLOptionElement"><code>label</code></dfn> IDL attribute, on getting, if there
-  is a <{option/label}> content attribute, must return that attribute's
-  value; otherwise, it must return the element's <a>label</a>.
-  On setting, the element's <{option/label}> content attribute must be
-  set to the new value.
+  The <dfn attribute for="HTMLOptionElement"><code>label</code></dfn> IDL attribute, on getting, if
+  there is a <{option/label}> content attribute, must return that attribute's value; otherwise, it
+  must return the element's <a>label</a>. On setting, the element's <{option/label}> content
+  attribute must be set to the new value.
 
-  The <dfn attribute for="HTMLOptionElement"><code>value</code></dfn> IDL attribute, on getting, must
-  return the element's <a for="forms">value</a>. On setting, the element's
-  <code>value</code> content attribute must be set to the new value.
+  The <dfn attribute for="HTMLOptionElement"><code>value</code></dfn> IDL attribute, on getting,
+  must return the element's <a for="forms">value</a>. On setting, the element's <{option/value}>
+  content attribute must be set to the new value.
 
   The <dfn attribute for="HTMLOptionElement"><code>selected</code></dfn> IDL attribute, on getting,
-  must return true if the element's <a state for="option">selectedness</a>
-  is true, and false otherwise. On setting, it must set the element's <a state for="option">selectedness</a> to the new value, set its <a state for="option">dirtiness</a> to true, and then cause the element to
+  must return true if the element's <a state for="option">selectedness</a> is true, and false
+  otherwise. On setting, it must set the element's <a state for="option">selectedness</a> to the new
+  value, set its <a state for="option">dirtiness</a> to true, and then cause the element to
   <a>ask for a reset</a>.
 
   The <dfn attribute for="HTMLOptionElement"><code>index</code></dfn> IDL attribute must return the
-  element's {{HTMLOptionElement/index}}.
+  element's <a>index</a>.
 
   The <dfn attribute for="HTMLOptionElement"><code>text</code></dfn> IDL attribute, on getting, must
-  return the result of <a>stripping and collapsing
-  whitespace</a> from the concatenation of <a>data</a> of all the
-  <code>Text</code> node descendants of the <{option}> element, in <a>tree order</a>,
-  excluding any that are descendants of descendants of the <{option}> element that are
-  themselves <{script}> elements in the <a>HTML namespace</a> or <{script}> elements in the <a>SVG namespace</a>.
+  return the result of <a>stripping and collapsing whitespace</a> from the concatenation of
+  <a>data</a> of all the {{Text}} node descendants of the <{option}> element, in <a>tree order</a>,
+  excluding any that are descendants of descendants of the <{option}> element that are themselves
+  <{script}> elements in the <a>HTML namespace</a> or <{script}> elements in the
+  <a>SVG namespace</a>.
 
-  On setting, the <code>text</code> attribute must act as if the
-  {{Node/textContent}} IDL attribute on the element had been set to the new value.
+  On setting, the {{HTMLOptionElement/text}} attribute must act as if the {{Node/textContent}} IDL
+  attribute on the element had been set to the new value.
 
-  The {{HTMLOptionElement/form}} IDL attribute's behavior depends on
-  whether the <{option}> element is in a <{select}> element or not. If the
-  <{option}> has a <{select}> element as its parent, or has an
-  <{optgroup}> element as its parent and that <{optgroup}> element has a
-  <{select}> element as its parent, then the {{HTMLOptionElement/form}} IDL
-  attribute must return the same value as the {{HTMLSelectElement/form}} IDL attribute
-  on that <{select}> element. Otherwise, it must return null.
+  The {{HTMLOptionElement/form}} IDL attribute's behavior depends on whether the <{option}> element
+  is in a <{select}> element or not. If the <{option}> has a <{select}> element as its parent, or
+  has an <{optgroup}> element as its parent and that <{optgroup}> element has a <{select}> element
+  as its parent, then the {{HTMLOptionElement/form}} IDL attribute must return the same value as the
+  {{HTMLSelectElement/form}} IDL attribute on that <{select}> element. Otherwise, it must return
+  null.
 
-  A constructor is provided for creating <code>HTMLOptionElement</code> objects (in addition to
-  the factory methods from DOM such as <code>createElement()</code>): <dfn><code>Option(<var>text</var>, <var>value</var>, <var>defaultSelected</var>, <var>selected</var>)</code></dfn>. When invoked as a
-  constructor, it must return a new <code>HTMLOptionElement</code> object (a new <{option}>
+  A constructor is provided for creating {{HTMLOptionElement}} objects (in addition to the factory
+  methods from DOM such as {{Document/createElement()}}):
+  <dfn constructor for="HTMLOptionElement"><code>Option(<var>text</var>, <var>value</var>, <var>defaultSelected</var>, <var>selected</var>)</code></dfn>.
+  When invoked as a constructor, it must return a new {{HTMLOptionElement}} object (a new <{option}>
   element). If the first argument is not the empty string, the new object must have as its only
-  child a <code>Text</code> node whose data is the value of that argument. Otherwise, it must have
-  no children. If the <var>value</var> argument is present, the new object must have a
-  <code>value</code> attribute set with the value of the argument as its
-  value. If the <var>defaultSelected</var> argument is true, the new object must have a
-  <code>selected</code> attribute set with no value. If the <var>selected</var> argument is true, the new object must have its <a state for="option">selectedness</a> set to true; otherwise the <a state for="option">selectedness</a> must be set to false, even if the <var>defaultSelected</var> argument is true. The element's <a>node document</a> must be the <a>active
-  document</a> of the <a>browsing context</a> of the <code>Window</code> object on which
-  the interface object of the invoked constructor is found.
-
-  </div>
+  child a {{Text}} node whose data is the value of that argument. Otherwise, it must have no
+  children. If the <var>value</var> argument is present, the new object must have a
+  <code>value</code> attribute set with the value of the argument as its value. If the
+  <var>defaultSelected</var> argument is true, the new object must have a <{option/selected}>
+  attribute set with no value. If the <var>selected</var> argument is true, the new object must have
+  its <a state for="option">selectedness</a> set to true; otherwise the
+  <a state for="option">selectedness</a> must be set to false, even if the
+  <var>defaultSelected</var> argument is true. The element's <a>node document</a> must be the
+  <a>active document</a> of the <a>browsing context</a> of the {{Window}} object on which the
+  interface object of the invoked constructor is found.
 
 <h4 id="the-textarea-element">The <dfn element><code>textarea</code></dfn> element</h4>
 
@@ -9852,9 +9513,9 @@ Daddy"&gt;&lt;/textarea&gt;
 
   If the progress bar is an indeterminate progress bar, then the <dfn attribute for="HTMLProgressElement"><code>value</code></dfn> IDL attribute, on getting, must return 0.
   Otherwise, it must return the <a for="progress">current value</a>. On
-  setting, the given value must be converted to the <a lt="floating point number">best representation of the number as a
-  floating-point number</a> and then the <{progress/value}> content
-  attribute must be set to that string.
+  setting, the given value must be converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{progress/value}> content attribute must be set to that string.
 
   <p class="note">
     Setting the {{HTMLProgressElement/value}} IDL attribute to itself
@@ -10215,36 +9876,39 @@ and a height of &lt;meter value=2&gt;2cm&lt;/meter&gt;.&lt;/p&gt; &lt;!-- BAD! -
 
   The <dfn attribute for="HTMLMeterElement"><code>value</code></dfn> IDL attribute, on getting, must
   return the <a for="meter">actual value</a>. On setting, the given value
-  must be converted to the <a lt="floating point number">best representation of the number as a floating-point number</a>
-  and then the <{meter/value}> content attribute must be set to that
-  string.
+  must be converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{meter/value}> content attribute must be set to that string.
 
   The <dfn attribute for="HTMLMeterElement"><code>min</code></dfn> IDL attribute, on getting, must return
   the <a for="meter">minimum value</a>. On setting, the given value must be
-  converted to the <a lt="floating point number">best representation of the number as a floating-point number</a> and
-  then the <{meter/min}> content attribute must be set to that string.
+  converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{meter/min}> content attribute must be set to that string.
 
   The <dfn attribute for="HTMLMeterElement"><code>max</code></dfn> IDL attribute, on getting, must return
   the <a for="meter">maximum value</a>. On setting, the given value must be
-  converted to the <a lt="floating point number">best representation of the number as a floating-point number</a> and
-  then the <{meter/max}> content attribute must be set to that string.
+  converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{meter/max}> content attribute must be set to that string.
 
   The <dfn attribute for="HTMLMeterElement"><code>low</code></dfn> IDL attribute, on getting, must return
   the <a for="meter">low boundary</a>. On setting, the given value must be
-  converted to the <a lt="floating point number">best representation of the number as a floating-point number</a> and
-  then the <{meter/low}> content attribute must be set to that string.
+  converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{meter/low}> content attribute must be set to that string.
 
   The <dfn attribute for="HTMLMeterElement"><code>high</code></dfn> IDL attribute, on getting, must return
   the <a for="meter">high boundary</a>. On setting, the given value must be
-  converted to the <a lt="floating point number">best representation of the number as a floating-point number</a> and
-  then the <{meter/high}> content attribute must be set to that
-  string.
+  converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{meter/high}> content attribute must be set to that string.
 
   The <dfn attribute for="HTMLMeterElement"><code>optimum</code></dfn> IDL attribute, on getting, must
   return the <a for="meter">optimum value</a>. On setting, the given value
-  must be converted to the <a lt="floating point number">best representation of the number as a floating-point number</a>
-  and then the <{meter/optimum}> content attribute must be set to that
-  string.
+  must be converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{meter/optimum}> content attribute must be set to that string.
 
   The {{HTMLMeterElement/labels}} IDL attribute provides a list of the element's <{label}>s.
 
@@ -11111,13 +10775,13 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     <li>If <var>target</var>'s <a>active sandboxing flag set</a> has the
     <a>sandboxed automatic features browsing context flag</a>, abort these steps.</li>
 
-    <li>If <var>target</var>'s <a for="concept">origin</a> is not the same as the 
+    <li>If <var>target</var>'s <a for="concept">origin</a> is not the same as the
     <a for="concept">origin</a> of the <a>node document</a> of the currently
     focused element in <var>target</var>'s <a>top-level browsing context</a>, abort
     these steps.</li>
 
-    <li>If <var>target</var>'s <a for="concept">origin</a> is not the same as the 
-    <a for="concept">origin</a> of the <a>active document</a> of <var>target</var>'s 
+    <li>If <var>target</var>'s <a for="concept">origin</a> is not the same as the
+    <a for="concept">origin</a> of the <a>active document</a> of <var>target</var>'s
     <a>top-level browsing context</a>, abort these steps.</li>
 
     <li>If the user agent has already reached the last step of this list of steps in response to
@@ -11880,13 +11544,13 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       <td colspan="4">"<code>url</code>"
       </td><td>Home page or other Web page corresponding to the company, person, address, or contact information in the other fields associated with this field
       </td><td><a>Valid URL</a>
-      </td><td>http://www.w3.org/People/Berners-Lee/
+      </td><td>https://www.w3.org/People/Berners-Lee/
       </td><td><a element-state for="input">URL</a>
     </td></tr><tr>
       <td colspan="4">"<code>photo</code>"
       </td><td>Photograph, icon, or other image corresponding to the company, person, address, or contact information in the other fields associated with this field
       </td><td> <a>Valid URL</a>
-      </td><td>http://www.w3.org/Press/Stock/Berners-Lee/2001-europaeum-eighth.jpg
+      </td><td>https://www.w3.org/Press/Stock/Berners-Lee/2001-europaeum-eighth.jpg
       </td><td> <a element-state for="input">URL</a>
     </td></tr></tbody><tbody>
     <tr>
@@ -12648,8 +12312,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   cause that control to <a>suffer from a type
   mismatch</a>, <a>suffer from being too long</a>,
   <a>suffer from being too short</a>, <a>suffer from an underflow</a>, <a>suffer from an overflow</a>,
-  or <a>suffer from a step mismatch</a>. Except when <a>autofilling</a> for {{HTMLFormElement/requestAutocomplete()}}, a user agent prefilling a form
-  control's <a for="forms">value</a> must not cause that control to <a>suffer from a pattern mismatch</a> either. Where
+  <a>suffer from a step mismatch</a>, or <a>suffer from a pattern mismatch</a>. Where
   possible given the control's constraints, user agents must use the format given as canonical in
   the aforementioned table. Where it's not possible for the canonical format to be used, user agents
   should use heuristics to attempt to convert values so that they can be used.
@@ -12809,286 +12472,6 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   IDL attribute, on getting,
   must return the element's <a>IDL-exposed autofill value</a>, and on setting, must
   <a>reflect</a> the content attribute of the same name.
-
-  </div>
-
-  <div class="impl">
-
-<h6 id="user-interface-for-bulk-autofill">User interface for bulk autofill</h6>
-
-  When the {{HTMLFormElement/requestAutocomplete()}}
-  method on a <{form}> element is invoked, the user agent must run the following steps:
-
-  <ol>
-
-    <li>Let <var>form</var> be the element on which the method was invoked.</li>
-
-    <li>
-
-    If any of the following conditions are met, then <a>queue a task</a> to <a>fail the
-    autofill request</a> on <var>form</var> with the reason "<code>disabled</code>", and abort these steps:
-
-    <ul>
-
-      <li>the algorithm is not <a>allowed to show a popup</a></li>
-
-      <li><var>form</var>'s <a>node document</a> is not <a>fully
-      active</a></li>
-
-      <li><var>form</var>'s <{autocompleteelements/autocomplete}>
-      attribute is in the <code>off</code> state</li>
-
-      <li>the user has disabled this feature for this <var>form</var>'s
-      <a>node document</a>'s <a for="concept">origin</a></li>
-
-      <li>the user agent does not support this <var>form</var>'s fields (e.g., the form
-      has different fields whose <a>autofill scope</a> use different "<code>section-*</code>" tokens)</li>
-
-      <li>the <var>form</var> was obtained via unencrypted channels and the user agent
-      does not support autofill in such situations</li>
-
-      <li>another instance of this algorithm is already being run for <var>form</var></li>
-
-    </ul>
-
-    <p class="note">
-    User agents are encouraged to log the precise cause in a developer console, to
-    aid debugging.
-  </p>
-
-    </li>
-
-    <li>Let <var>pending autofills</var> be an initially empty list of <a>submittable elements</a>, each annotated with a string known as the
-    <i>original autocomplete value</i>.</li>
-
-    <li>
-
-    For each element that matches the following criteria, add the element to <var>pending autofills</var>, with the <i>original autocomplete value</i> annotation being
-    the value of the element's <{autocompleteelements/autocomplete}>
-    attribute:
-
-    <ul>
-
-      <li>the element's <a>form owner</a> is <var>form</var></li>
-
-      <li>the element is <i>mutable</i></li>
-
-      <li>the element is an <{input}> element to which the <{input/autocomplete}> attribute currently <a>applies</a>, or, the element is a <{textarea}>
-      element, or, the element is a <{select}> element</li>
-
-      <li>the element's <{autocompleteelements/autocomplete}> attribute is
-      wearing the <a>autofill expectation mantle</a></li>
-
-      <li>the element's <a>autofill field name</a> is neither "<a attr-value for="forms/autocomplete"><code>off</code></a>" nor "<a attr-value for="forms/autocomplete"><code>on</code></a>"</li>
-
-    </ul>
-
-    </li>
-
-    <li>Return, but continue running these steps <a>in parallel</a>.</li>
-
-    <li>Provide an interface for the user to efficiently fill in some or all of the fields listed
-    in <var>pending autofills</var>. Await the user's input. The user agent may include additional
-    (immutable) information, e.g., <a>data</a> obtained from elements
-    with an <{autocompleteelements/autocomplete}> attribute wearing the
-    <a>autofill anchor mantle</a>.</li>
-
-    <li>
-
-    <a>Queue a task</a> to run the following steps:
-
-    <ol>
-
-      <li>
-
-      If any of the following conditions are met, then <a>fail the autofill request</a> on
-      <var>form</var> with the reason "<code>disabled</code>", and abort these steps:
-
-      <ul>
-
-        <li><var>form</var> is no longer <a>in a <code>Document</code></a></li>
-
-        <li><var>form</var>'s <a>node document</a> is no longer <a>fully
-        active</a></li>
-
-        <li><var>form</var>'s <{autocompleteelements/autocomplete}>
-        attribute is now in the <code>off</code>
-        state</li>
-
-      </ul>
-
-      <p class="note">
-    Again, user agents are encouraged to log the precise cause in a developer
-      console, to aid debugging.
-  </p>
-
-      </li>
-
-      <li>If the user canceled the operation, <a>fail the autofill request</a> on <var>form</var> with the reason "<code>cancel</code>", and abort these steps.</li>
-
-      <li>
-
-      For each element in <var>pending autofills</var>, run the following steps:
-
-      <ol>
-
-        <li>Let <var>candidate</var> be the element in question.</li>
-
-        <li>Let <var>old autocomplete value</var> be the <i>original autocomplete
-        value</i> annotation associated with <var>candidate</var> in <var>pending
-        autofills</var>.</li>
-
-        <li>
-
-        If all of the following conditions are met, then <a>autofill</a> <var>candidate</var>:
-
-        <ul>
-
-          <li><var>candidate</var>'s <a>form owner</a> is <var>form</var></li>
-
-          <li><var>candidate</var> is still <i>mutable</i></li>
-
-          <li><var>candidate</var> is an <{input}> element to which the <{input/autocomplete}> attribute still <a>applies</a>, or, <var>candidate</var> is a
-          <{textarea}> element, or, <var>candidate</var> is a <{select}>
-          element</li>
-
-          <li>the element's <{autocompleteelements/autocomplete}> attribute is
-          still wearing the <a>autofill expectation mantle</a></li>
-
-          <li><var>candidate</var>'s <a>autofill field name</a> is still equal to
-          <var>old autocomplete value</var></li>
-
-          <li>the user provided a value to autofill <var>candidate</var></li>
-
-        </ul>
-
-        </li>
-
-      </ol>
-
-      </li>
-
-      <li>
-
-      <a>Statically validate the constraints</a> of <var>form</var>. If the
-      result was negative, then <a>fail the autofill request</a> on <var>form</var>
-      with the reason "<code>invalid</code>", and abort
-      these steps.
-
-      <p class="note"><a>Statically validating the
-      constraints</a> of a <{form}> involves firing <code>invalid</code> events to each control that does not <a>satisfy its constraints</a>.</p>
-
-      </li>
-
-      <li><a>Fire a simple event</a> that bubbles named <code>autocomplete</code> at <var>form</var>.</li>
-
-    </ol>
-
-    </li>
-
-  </ol>
-
-  When the user agent is required to <dfn>fail the autofill request</dfn> on a <{form}>
-  element <var>target</var> with a reason <var>reason</var>, the user agent must
-  dispatch an event that uses the {{AutocompleteErrorEvent}} interface, with the event type
-  <code>autocompleteerror</code>, which bubbles, is not cancelable, has no default action,
-  has its <code>reason</code> attribute set to <var>reason</var>, and which is <a>trusted</a>, at <var>target</var>.
-
-  The <a>task source</a> for the <a>tasks</a> mentioned in this
-  section is the <a>DOM manipulation task source</a>.
-
-  </div>
-
-<h6 id="the-autocompleteerrorevent-interface">The {{AutocompleteErrorEvent}} interface</h6>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="AutocompleteErrorReason">
-    enum AutocompleteErrorReason {
-      "" /* empty string */,
-      "cancel",
-      "disabled",
-      "invalid"
-    };
-  </pre>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="AutocompleteErrorEvent">
-    [Constructor(DOMString type, optional AutocompleteErrorEventInit eventInitDict)]
-    interface AutocompleteErrorEvent : Event {
-      readonly attribute AutocompleteErrorReason reason;
-    };
-  </pre>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="AutocompleteErrorEventInit">
-    dictionary AutocompleteErrorEventInit : EventInit {
-      AutocompleteErrorReason reason;
-    };
-  </pre>
-
-  <dl class="domintro">
-
-    <dt><var>event</var> . <code>reason</code></dt>
-
-    <dd>
-
-    For the <code>autocompleteerror</code> event, returns the
-    general reason for the failure of the {{HTMLFormElement/requestAutocomplete()}} method, from the list
-    below.
-
-    </dd>
-
-  </dl>
-
-  The defined reason codes are:
-
-  <dl>
-
-    <dt>"" (the empty string)</dt>
-
-    <dd>Reason is unknown.</dd>
-
-    <dt>"<dfn enum for="AutocompleteErrorEvent"><code>cancel</code></dfn>"</dt>
-
-    <dd>The user canceled the autofill interface.</dd>
-
-    <dt>"<dfn enum for="AutocompleteErrorEvent"><code>disabled</code></dfn>"</dt>
-
-    <dd>
-
-    The autofill interface is disabled for this form.
-
-    There are many reasons why this might be the case; the precise reason is not given, to
-    protect the user's privacy. Amongst these reasons are such factors as:
-
-    <ul class="brief">
-
-      <li>The page being delivered over an unencrypted connection (susceptible to
-      man-in-the-middle attacks), when the user agent does not want to risk the user's information
-      being provided to an attacker.</li>
-
-      <li>The form having a combination of fields for which the user agent does not have a
-      dedicated autofill interface.</li>
-
-      <li>The form's <{autocompleteelements/autocomplete}> attribute being in
-      the <code>off</code> state.</li>
-
-      <li>The user having disabled the feature.</li>
-
-    </ul>
-
-    </dd>
-
-    <dt>"<dfn enum for="AutocompleteErrorEvent"><code>invalid</code></dfn>"</dt>
-
-    <dd>The fields have been prefilled, but at least one of the controls in the form does not
-    <a>satisfy its constraints</a>.</dd>
-
-  </dl>
-
-  <div class="impl">
-
-  The <dfn attribute for="AutocompleteErrorEvent"><code>reason</code></dfn> attribute must
-  return the value it was initialized to. When the object is created, this attribute must be
-  initialized to the empty string. It
-  represents the context information for the event.
 
   </div>
 
@@ -14224,8 +13607,8 @@ fur
         with the resulting doubly-escaped string. [[!URL]]
 
         Otherwise, if <var>action</var> contains the string "<code>%%</code>"
-        (two U+0025 PERCENT SIGN characters in a row, but not four), then <a>UTF-8 percent
-        encode</a> all characters in <var>data</var> that, if interpreted as US-ASCII, are
+        (two U+0025 PERCENT SIGN characters in a row, but not four), then
+        <a>UTF-8 percent encode</a> all characters in <var>data</var> that, if interpreted as US-ASCII, are
         not characters in the URL <a>default encode set</a>, and then, treating the result as a
         US-ASCII string, replace the first occurrence of "<code>%%</code>" in <var>action</var>
         with the resulting escaped string. [[!URL]]
@@ -14493,274 +13876,37 @@ fur
 
   </div>
 
-  <div class="impl">
-
 <h5 id="selecting-a-form-submission-encoding">Selecting a <a>form submission</a> encoding</h5>
 
-  If the user agent is to <dfn lt="picking an encoding for the form|pick an encoding for a form">pick an encoding for a form</dfn>, optionally with an <i>allow non-ASCII-compatible encodings</i> flag set, it must run
-  the following substeps:
+  If the user agent is to <dfn lt="picking an encoding for the form|pick an encoding for a form">pick an encoding for a form</dfn>,
+  it must run the following steps:
 
-  <ol>
-
-    <li>Let <var>input</var> be the value of the <{form}> element's <{form/accept-charset}> attribute.</li>
-
-    <li>Let <var>candidate encoding labels</var> be the result of <a lt="split a string on spaces">splitting <var>input</var> on spaces</a>.</li>
-
-    <li>Let <var>candidate encodings</var> be an empty list of <a>character encodings</a>.</li>
-
-    <li>For each token in <var>candidate encoding labels</var> in turn (in the order in
-    which they were found in <var>input</var>), <a>get an
-    encoding</a> for the token and, if this does not result in failure, append the
-    <a>encoding</a> to <var>candidate encodings</var>.</li>
-
-    <li>If the <i>allow non-ASCII-compatible encodings</i> flag is not set, remove any encodings
-    that are not <a>ASCII-compatible encodings</a> from
-    <var>candidate encodings</var>.</li>
-
-    <li>If <var>candidate encodings</var> is empty, return UTF-8 and abort these
-    steps.</li>
-
-    <li>
-
-    Each character encoding in <var>candidate encodings</var> can represent a finite
-    number of characters. (For example, UTF-8 can represent all 1.1 million or so Unicode code
-    points, while Windows-1252 can only represent 256.)
-
-    For each encoding in <var>candidate encodings</var>, determine how many of the
-    characters in the names and values of the entries in the <var>form data set</var> the
-    encoding can represent (without ignoring duplicates). Let <var>max</var> be the
-    highest such count. (For UTF-8, <var>max</var> would equal the number of characters
-    in the names and values of the entries in the <var>form data set</var>.)
-
-    Return the first encoding in <var>candidate encodings</var> that can encode <var>max</var> characters in the names and values of the entries in the <var>form
-    data set</var>.
-
-    </li>
-
-  </ol>
-
-  </div>
+  1. Let <var>encoding</var> be the <a>document's character encoding</a>.
+  2. If the <code>form</code> element has an <code>accept-charset</code> attribute, set
+      <var>encoding</var> to the return value of running these substeps:
+      1. Let <var>input</var> be the value of the <code>form</code> element's
+          <code>accept-charset</code> attribute.
+      2. Let <var>candidate encoding labels</var> be the result of
+          <a lt="split a string on spaces">splitting <var>input</var> on spaces</a>.
+      3. Let <var>candidate encodings</var> be an empty list of <a>character encodings</a>.
+      4. For each token in <var>candidate encoding labels</var> in turn (in the order in which they
+          were found in <var>input</var>), <a>get an encoding</a> for the token and, if this does
+          not result in failure, append the <a>encoding</a> to <var>candidate encodings</var>.
+      5. If <var>candidate encodings</var> is empty, return <a>UTF-8</a>.
+      6. Return the first encoding in <var>candidate encodings</var>.
+  3. Return the result of <a>getting an output encoding</a> from <var>encoding</var>.
 
 <h5 id="urlencoded-form-data">URL-encoded form data</h5>
 
-  <p class="note">
-    This form data set encoding is in many ways an aberrant monstrosity, the result of
-  many years of implementation accidents and compromises leading to a set of requirements necessary
-  for interoperability, but in no way representing good design practices. In particular, readers are
-  cautioned to pay close attention to the twisted details involving repeated (and in some cases
-  nested) conversions between character encodings and byte sequences.
-  </p>
-
-  <div class="impl">
-
-  The <dfn lt="encoding algorithm|application/x-www-form-urlencoded encoding algorithm"><code>application/x-www-form-urlencoded</code> encoding algorithm</dfn> is as
-  follows:
-
-  <ol>
-
-    <li>Let <var>result</var> be the empty string.</li>
-
-    <li>
-
-    If the <{form}> element has an <{form/accept-charset}> attribute, let the selected character
-    encoding be the result of <a>picking an encoding for the form</a>.
-
-    Otherwise, if the <{form}> element has no <{form/accept-charset}> attribute, but the <a>document's
-    character encoding</a> is an <a>ASCII-compatible encoding</a>, then that is the
-    selected character encoding.
-
-    Otherwise, let the selected character encoding be UTF-8.
-
-    </li>
-
-    <li>Let <var>charset</var> be the name of the
-    selected <a>character encoding</a>.</li>
-
-    <li>
-
-    For each entry in the <var>form data set</var>, perform these substeps:
-
-    <ol>
-
-      <li>If the entry's name is "<code>_charset_</code>" and its
-      type is "<code>hidden</code>", replace its value with <var>charset</var>.</li>
-
-      <li>If the entry's type is "<code>file</code>", replace its value with the file's
-      name only.</li>
-
-      <li>For each character in the entry's name and value that cannot be expressed using the
-      selected character encoding, replace the character by a string consisting of a U+0026 AMPERSAND
-      character (&amp;), a U+0023 NUMBER SIGN character (#), one or more <a>ASCII digits</a>
-      representing the Unicode code point of the character in base ten, and finally a U+003B
-      SEMICOLON character (;).</li>
-
-      <li>
-
-      Encode the entry's name and value using the <a>encoder</a> for the selected character
-      encoding. The entry's name and value are now byte strings.
-
-      </li>
-
-      <li>
-
-      For each byte in the entry's name and value, apply the appropriate subsubsteps from the
-      following list:
-
-      <dl class="switch">
-
-        <dt>If the byte is 0x20 (U+0020 SPACE if interpreted as ASCII)</dt>
-
-        <dd>Replace the byte with a single 0x2B byte (U+002B PLUS SIGN character (+) if interpreted
-        as ASCII).</dd>
-
-        <dt>If the byte is in the range 0x2A, 0x2D, 0x2E, 0x30 to 0x39, 0x41 to 0x5A, 0x5F, 0x61 to
-        0x7A</dt>
-
-        <dd>Leave the byte as is.</dd>
-
-        <dt>Otherwise</dt>
-
-        <dd>
-
-        <ol>
-
-          <li>Let <var>s</var> be a string consisting of a U+0025 PERCENT SIGN character
-          (%) followed by <a>uppercase ASCII hex digits</a> representing the hexadecimal value
-          of the byte in question (zero-padded if necessary).</li>
-
-          <li>Encode the string <var>s</var> as US-ASCII, so that it is now a byte
-          string.
-
-          </li><li>Replace the byte in question in the name or value being processed by the bytes in
-          <var>s</var>, preserving their relative order.</li>
-
-        </ol>
-
-        </dd>
-
-      </dl>
-
-      </li>
-
-      <li>
-
-      Interpret the entry's name and value as Unicode strings encoded in US-ASCII. (All of the
-      bytes in the string will be in the range 0x00 to 0x7F; the high bit will be zero throughout.)
-      The entry's name and value are now Unicode strings again.
-
-      </li>
-
-      <li>Append a single U+0026 AMPERSAND character (&amp;) to
-      <var>result</var>.</li>
-
-      <li>Append the entry's name to <var>result</var>.</li>
-
-      <li>Append a single U+003D EQUALS SIGN character (=) to <var>result</var>.</li>
-
-      <li>Append the entry's value to <var>result</var>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>Encode <var>result</var> as US-ASCII and return the resulting byte
-    stream.</li>
-
-  </ol>
-
-  </div>
-
-  To <dfn lt="decoding algorithm">decode <code>application/x-www-form-urlencoded</code> payloads</dfn>, the following algorithm should be
-  used. This algorithm uses as inputs the payload itself, <var>payload</var>, consisting of
-  a Unicode string using only characters in the range U+0000 to U+007F; a default character encoding
-  <var>encoding</var>. The output of this algorithm is a sorted list
-  of name-value pairs.
-
-  Which default character encoding to use can only be determined on a case-by-case basis, but
-  generally the best character encoding to use as a default is the one that was used to encode the
-  page on which the form used to create the payload was itself found. In the absence of a better
-  default, UTF-8 is suggested.
-
-  <ol>
-
-    <li>Let <var>strings</var> be the result of <a>strictly splitting the string</a> <var>payload</var> on U+0026 AMPERSAND
-    characters (&amp;).</li>
-
-    <li>Let <var>pairs</var> be an empty list of name-value pairs.</li>
-
-    <li>
-
-    For each string <var>string</var> in <var>strings</var>, run these
-    substeps:
-
-    <ol>
-
-      <li>
-
-      If <var>string</var> contains a U+003D EQUALS SIGN character (=), then let <var>name</var> be the substring of <var>string</var> from the start of <var>string</var> up to but excluding its first U+003D EQUALS SIGN character (=), and let
-      <var>value</var> be the substring from the first character, if any, after the first
-      U+003D EQUALS SIGN character (=) up to the end of <var>string</var>. If the first
-      U+003D EQUALS SIGN character (=) is the first character, then <var>name</var> will be
-      the empty string. If it is the last character, then <var>value</var> will be the
-      empty string.
-
-      Otherwise, <var>string</var> contains no U+003D EQUALS SIGN characters (=). Let
-      <var>name</var> have the value of <var>string</var> and let <var>value</var> be the empty string.
-
-      </li>
-
-      <li>
-
-      Replace any U+002B PLUS SIGN characters (+) in <var>name</var> and <var>value</var> with U+0020 SPACE characters.
-
-      </li>
-
-      <li>
-
-      Replace any escape in <var>name</var> and <var>value</var> with the
-      character represented by the escape. This replacement must not be recursive.
-
-      An escape is a U+0025 PERCENT SIGN character (%) followed by two <a>ASCII hex
-      digits</a>.
-
-      The character represented by an escape is the Unicode character whose code point is equal
-      to the value of the two characters after the U+0025 PERCENT SIGN character (%), interpreted as
-      a hexadecimal number (in the range 0..255).
-
-      <p class="example">So for instance the string "<code>A%2BC</code>" would become
-      "<code>A+C</code>". Similarly, the string "<code>100%25AA%21</code>" becomes
-      the string "<code>100%AA!</code>".</p>
-
-      </li>
-
-      <li>Convert the <var>name</var> and <var>value</var> strings to their byte
-      representation in ISO-8859-1 (i.e., convert the Unicode string to a byte string, mapping code
-      points to byte values directly).</li>
-
-      <li>Add a pair consisting of <var>name</var> and <var>value</var> to <var>pairs</var>.</li>
-
-    </ol>
-
-    </li>
-
-    <li>If any of the name-value pairs in <var>pairs</var> have a name component
-    consisting of the string "<code>_charset_</code>" encoded in US-ASCII, and the value
-    component of the first such pair, when decoded as US-ASCII, is the name of a supported character
-    encoding, then let <var>encoding</var> be that character encoding (replacing the default
-    passed to the algorithm).</li>
-
-    <li>Convert the name and value components of each name-value pair in <var>pairs</var>
-    to Unicode by interpreting the bytes according to the encoding <var>encoding</var>.</li>
-
-    <li>Return <var>pairs</var>.</li>
-
-  </ol>
-
-  <p class="note">
-    Parameters on the <code>application/x-www-form-urlencoded</code> MIME type are
-  ignored. In particular, this MIME type does not support the <code>charset</code>
-  parameter.
-  </p>
+  See the WHATWG URL standard for details on <code>application/x-www-form-urlencoded</code>. [[!URL]]
+
+  The <dfn><code>application/x-www-form-urlencoded</code> encoding algorithm</dfn> is as follows:
+
+  1. Let <var>encoding</var> be the result of <a>picking an encoding for the form</a>.
+  2. Let <var>serialized</var> be the result of running the
+      <a><code>application/x-www-form-urlencoded</code> serializer</a> given
+      <var>form data set</var> and <var>encoding</var>.
+  3. Return the result of <a>encoding</a> <var>serialized</var>.
 
 <h5 id="multipart-form-data">Multipart form data</h5>
 
@@ -14814,9 +13960,9 @@ fur
 
     <li>
 
-    Encode the (now mutated) <var>form data set</var> using the rules described by RFC 2388,
+    Encode the (now mutated) <var>form data set</var> using the rules described by RFC 7578,
     <cite>Returning Values from Forms: <code>multipart/form-data</code></cite>, and return
-    the resulting byte stream. [[!RFC2388]]
+    the resulting byte stream. [[!RFC7578]]
 
     Each entry in the <var>form data set</var> is a <i>field</i>, the name of the entry is the
     <i>field name</i> and the value of the entry is the <i>field value</i>.
@@ -14824,24 +13970,15 @@ fur
     The order of parts must be the same as the order of fields in the <var>form data set</var>.
     Multiple entries with the same name must be treated as distinct fields.
 
-    <p class="note">
-    In particular, this means that multiple files submitted as part of a single
-    <code highlight="html">&lt;input&nbsp;type=file&nbsp;multiple&gt;</code> element will result in each file
-    having its own field; the "sets of files" feature ("<code>multipart/mixed</code>") of RFC 2388
-    is not used.
-  </p>
-
     The parts of the generated <code>multipart/form-data</code> resource that correspond to
     non-file fields must not have a <code>Content-Type</code> header specified. Their names and
-    values must be encoded using the character encoding selected above (field names in particular do
-    not get converted to a 7-bit safe encoding as suggested in RFC 2388).
+    values must be encoded using the character encoding selected above.
 
     File names included in the generated <code>multipart/form-data</code> resource (as part of
     file fields) must use the character encoding selected above, though the precise name may be
     approximated if necessary (e.g., newlines could be removed from file names, quotes could be
     changed to "%22", and characters not expressible in the selected character encoding could be
-    replaced by other characters). User agents must not use the RFC 2231 encoding suggested by
-    RFC 2388.
+    replaced by other characters).
 
     The boundary used by the user agent in generating the return value of this algorithm is the
     <dfn><code>multipart/form-data</code> boundary string</dfn>. (This value is used to generate the
@@ -14853,7 +13990,7 @@ fur
 
   </div>
 
-  For details on how to interpret <code>multipart/form-data</code> payloads, see RFC 2388. [[!RFC2388]]
+  For details on how to interpret <code>multipart/form-data</code> payloads, see RFC 7578. [[!RFC7578]]
 
 <h5 id="plain-text-form-data">Plain text form data</h5>
 
@@ -14865,19 +14002,9 @@ fur
 
     <li>Let <var>result</var> be the empty string.</li>
 
-    <li>
+    <li>Let <var>encoding</var> be the result of <a>picking an encoding for the form</a>.
 
-    If the <{form}> element has an <{form/accept-charset}> attribute, let the selected character
-    encoding be the result of <a>picking an encoding for the form</a>, with the <i>allow
-    non-ASCII-compatible encodings</i> flag unset.
-
-    Otherwise, if the <{form}> element has no <{form/accept-charset}> attribute, then that is the selected
-    character encoding.
-
-    </li>
-
-    <li>Let <var>charset</var> be the name of the
-    selected <a>character encoding</a>.</li>
+    <li>Let <var>charset</var> be the name of <var>encoding</var>.</li>
 
     <li>If the entry's name is "<code>_charset_</code>" and its type
     is "<code>hidden</code>", replace its value with <var>charset</var>.</li>
@@ -14903,8 +14030,8 @@ fur
 
     </li>
 
-    <li>Encode <var>result</var> using the <a>encoder</a> for the selected
-    character encoding and return the resulting byte stream.</li>
+    <li>Return the result of <a>encoding</a> <var>result</var> using
+    <var>encoding</var>.</li>
 
   </ol>
 

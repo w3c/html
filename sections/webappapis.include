@@ -143,9 +143,9 @@
       <code>history.pushState()</code>.
 
   : An <dfn for="settings">HTTPS state</a>
-  :: An <a>HTTPS state value</a> representing the security properties of the network channel used to 
+  :: An <a>HTTPS state value</a> representing the security properties of the network channel used to
      deliver the resource with which the <a>environment settings object</a> is associated.
-     
+
   An <a>environment settings object</a> also has an
   <dfn>outstanding rejected promises weak set</dfn> and an
   <dfn>about-to-be-notified rejected promises list</dfn>, used to track
@@ -166,8 +166,6 @@
   <p class="note">Service Workers is an example of a specification that runs these algorithms with
   its own options for the hooks. [[SERVICE-WORKERS]]</p>
 
-  <hr />
-
   To <dfn lt="fetching a classic script|fetch a classic script">fetch a classic script</dfn>
   for a <{script}> element <var>element</var>, given a
   <var>url</var>, a <var>CORS setting</var>, a <var>cryptographic nonce</var>, a
@@ -187,8 +185,10 @@
   5. Return from this algorithm, and run the remaining steps as part of the fetch's <a>process
       response</a> for the <a>response</a> <var>response</var>.
 
-      <p class="note"><var>response</var> can be either <a>CORS-same-origin</a> or
-      <a>CORS-cross-origin</a>. This only affects how error reporting happens.
+      <p class="note">
+        <var>response</var> can be either <a>CORS-same-origin</a> or <a>CORS-cross-origin</a>. This
+        only affects how error reporting happens.
+      </p>
   6. If <var>response</var>'s <a for="response">type</a> is "<code>error</code>", or
       <var>response</var>'s <a>status</a> is not an <a>ok status</a>, asynchronously complete this
       algorithm with null, and abort these steps.
@@ -202,8 +202,10 @@
       <a for="response">body</a> to Unicode, using <var>character encoding</var> as the fallback
       encoding.
 
-      <p class="note">The <a>decode</a> algorithm overrides <var>character encoding</var> if the
-      file contains a BOM.</p>
+      <p class="note">
+        The <a>decode</a> algorithm overrides <var>character encoding</var> if the file contains a
+        BOM.
+      </p>
   10. Let <var>script</var> be the result of <a>creating a classic script</a> using <var>source
        text</var> and <var>settings object</var>.
 
@@ -419,7 +421,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
       element of <var>result</var> and go to the step labeled <var>error</var>.
   7. Let <var>evaluationStatus</var> be <a>ScriptEvaluation</a>(<var>result</var>).
   8. If <var>evaluationStatus</var> is an abrupt completion, set <var>result</var> to
-      <var>evaluationStatus</var>.\[[Value]] and go to the next step (labeled <var>Error</var>). If
+      <var>evaluationStatus</var>.\[[value]] and go to the next step (labeled <var>Error</var>). If
       <var>evaluationStatus</var> is a normal completion, or if <a>ScriptEvaluation</a> does not
       complete because the user agent has <a>aborted the running script</a>, skip to the step
       labeled <var>Cleanup</var>.
@@ -434,7 +436,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
           <var>result</var> for the script <var>s</var>.
   10. <var>Cleanup</var>: <a>Clean up after running script</a> with <var>settings</var>.
   11. If <var>evaluationStatus</var> exists and is a normal completion, return
-       <var>evaluationStatus</var>.\[[Value]]. Otherwise, script execution was unsuccessful, either
+       <var>evaluationStatus</var>.\[[value]]. Otherwise, script execution was unsuccessful, either
        because an error occurred during parsing, or an exception occurred during evaluation, or
        because it was <a>aborted prematurely</a>.
 
@@ -676,7 +678,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 <h6 id="concept-entry">Entry</h6>
 
   All <a>realm execution contexts</a> must contain, as part of their code evaluation state, an
-  <dfn>entrance counter</dfn> value, which is initially zero. In the process of <a>calling scripts</a>, 
+  <dfn>entrance counter</dfn> value, which is initially zero. In the process of <a>calling scripts</a>,
   this value will be incremented and decremented.
 
   With this in hand, we define the <dfn>entry execution context</dfn> to be the most recently pushed
@@ -878,7 +880,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
 <h5 id="sec-runtime-script-errors"><dfn>Runtime script errors</dfn></h5>
 
-  When the user agent is required to 
+  When the user agent is required to
   <dfn lt="report the error|report an error">report an error</dfn> for a
   particular <a for="concept">script</a> <var>script</var> with a particular
   position <var>line</var>:<var>col</var>, using a particular target <var>target</var>, it must run
@@ -1069,14 +1071,14 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
   The <dfn attribute for="PromiseRejectionEvent"><code>reason</code></dfn> attribute must return
   the value it was initialized to. It represents the rejection reason for the promise.
-  
+
 <h5 id="section-hostensurecancompilestrings">HostEnsureCanCompileStrings(<var>callerRealm</var>, <var>calleeRealm</var>)</h5>
 
-  JavaScript contains an implementation-defined 
-  <a>HostEnsureCanCompileStrings</a>(<var>callerRealm</var>, <var>calleeRealm</var>) abstract operation. 
+  JavaScript contains an implementation-defined
+  <a>HostEnsureCanCompileStrings</a>(<var>callerRealm</var>, <var>calleeRealm</var>) abstract operation.
   User agents must use the following implementation: [[ECMA-262]]
 
-  1. Perform ? <a>EnsureCSPDoesNotBlockStringCompilation</a>(<var>callerRealm</var>, 
+  1. Perform ? <a>EnsureCSPDoesNotBlockStringCompilation</a>(<var>callerRealm</var>,
       <var>calleeRealm</var>). [[CSP3]]
 
 <h4 id="event-loops">Event loops</h4>
@@ -1217,9 +1219,10 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
           <p class="note">Another example of why a browser might skip updating the rendering is to
           ensure certain <a>tasks</a> are executed immediately after each other, with only
-          <a>microtask checkpoints</a> interleaved (and without, e.g., 
-          <a>animation frame callbacks</a> interleaved). For example, a user agent might wish to 
-          coalesce timer callbacks together, with no intermediate rendering updates.</p>
+          <a>microtask checkpoints</a> interleaved (and without, e.g.,
+          <a lt='run the animation frame callbacks'>animation frame callbacks</a> interleaved).
+          For example, a user agent might wish to coalesce timer callbacks together, with no
+          intermediate rendering updates.</p>
       4. If there are a <a>nested browsing contexts</a> <var>B</var> that the user agent believes
           would not benefit from having their rendering updated at this time, then remove from
           <var>docs</var> all {{Document}} objects whose <a>browsing context</a> is in <var>B</var>.
@@ -1237,17 +1240,14 @@ a credentials mode, a cryptographic nonce, and a parser state:
       7. For each <a>fully active</a> {{Document}} in <var>docs</var>, <a>evaluate media queries and
           report changes</a> for that {{Document}}, passing in <var>now</var> as the timestamp.
           [[!CSSOM-VIEW]]
-      8. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
-          <dfn>run CSS animations and send events</dfn> for that {{Document}}, passing in 
+      8. For each <a>fully active</a> {{Document}} in <var>docs</var>,
+          <dfn>run CSS animations and send events</dfn> for that {{Document}}, passing in
           <var>now</var> as the timestamp. [[CSS3-ANIMATIONS]]
-      9. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
-          <dfn>run the fullscreen rendering steps</dfn> for that {{Document}}, passing in 
+      9. For each <a>fully active</a> {{Document}} in <var>docs</var>,
+          <dfn>run the fullscreen rendering steps</dfn> for that {{Document}}, passing in
           <var>now</var> as the timestamp. [[!FULLSCREEN]]
-      10. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
-           <a>run the animation frame callbacks</a> for that {{Document}}, passing in 
-           <var>now</var> as the timestamp.
-      11. For each <a>fully active</a> {{Document}} in <var>docs</var>, 
-           <a>run the update intersection observations steps</a> for that {{Document}}, passing in 
+      10. For each <a>fully active</a> {{Document}} in <var>docs</var>,
+           <a>run the animation frame callbacks</a> for that {{Document}}, passing in
            <var>now</var> as the timestamp.
       12. For each <a>fully active</a> {{Document}} in <var>docs</var>, update the rendering or user
            interface of that {{Document}} and its <a>browsing context</a> to reflect the current
@@ -1702,8 +1702,6 @@ a credentials mode, a cryptographic nonce, and a parser state:
     <tr><th><a>Event handler</a> <th><a>Event handler event type</a>
     <tbody>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onabort</code></dfn> <td> <code>abort</code>
-    <tr><td><dfn attribute for="GlobalEventHandlers"><code>onautocomplete</code></dfn> <td> <code>autocomplete</code>
-    <tr><td><dfn attribute for="GlobalEventHandlers"><code>onautocompleteerror</code></dfn> <td> <code>autocompleteerror</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>oncancel</code></dfn> <td> <code>cancel</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>oncanplay</code></dfn> <td> <code>canplay</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>oncanplaythrough</code></dfn> <td> <code>canplaythrough</code>
@@ -1739,7 +1737,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onmouseout</code></dfn> <td> <code>mouseout</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onmouseover</code></dfn> <td> <code>mouseover</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onmouseup</code></dfn> <td> <code>mouseup</code>
-    <tr><td><dfn attribute for="GlobalEventHandlers"><code>onmousewheel</code></dfn> <td> <code>mousewheel</code>
+    <tr><td><dfn attribute for="GlobalEventHandlers"><code>onwheel</code></dfn> <td> <code>wheel</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onpause</code></dfn> <td> <code>pause</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onplay</code></dfn> <td> <code>play</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onplaying</code></dfn> <td> <code>playing</code>
@@ -1846,8 +1844,6 @@ a credentials mode, a cryptographic nonce, and a parser state:
     [NoInterfaceObject]
     interface GlobalEventHandlers {
       attribute EventHandler onabort;
-      attribute EventHandler onautocomplete;
-      attribute EventHandler onautocompleteerror;
       attribute EventHandler onblur;
       attribute EventHandler oncancel;
       attribute EventHandler oncanplay;
@@ -1887,7 +1883,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
       attribute EventHandler onmouseout;
       attribute EventHandler onmouseover;
       attribute EventHandler onmouseup;
-      attribute EventHandler onmousewheel;
+      attribute EventHandler onwheel;
       attribute EventHandler onpause;
       attribute EventHandler onplay;
       attribute EventHandler onplaying;
@@ -1931,6 +1927,15 @@ a credentials mode, a cryptographic nonce, and a parser state:
     };
   </pre>
 
+  <pre class="idl" data-highlight="webidl" dfn-for="DocumentAndElementEventHandlers">
+    [NoInterfaceObject]
+    interface DocumentAndElementEventHandlers {
+      attribute EventHandler oncopy;
+      attribute EventHandler oncut;
+      attribute EventHandler onpaste;
+    };
+  </pre>
+
 <h5 id="event-firing">Event firing</h5>
 
   Certain operations and methods are defined as firing events on elements. For example, the
@@ -1945,7 +1950,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
   <dfn lt="fire a synthetic mouse event named contextmenu|Firing a synthetic mouse event named e|firing a synthetic mouse event named click">Firing a synthetic mouse event named <var>e</var></dfn>
   means that an event with the name <var>e</var>, which is <a>trusted</a> (except where otherwise
   stated), does not bubble (except where otherwise stated), is not cancelable (except where
-  otherwise stated), and which uses the {{MouseEvent}} interface, must be created and dispatched at
+  otherwise stated), and which uses the {{MouseEvent}} interface, must be created and <a>dispatched</a> at
   the given target. The event object must have its {{MouseEvent/screenX}}, {{MouseEvent/screenY}},
   {{MouseEvent/clientX}, {{MouseEvent/clientY}}, and {{MouseEvent/button}} attributes initialized to
   0, its {{MouseEvent/ctrlKey}}, {{MouseEvent/shiftKey}}, {{MouseEvent/altKey}}, and
@@ -2196,27 +2201,27 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
 <h4 id="opening-the-input-stream">Opening the input stream</h4>
 
-  The 
+  The
   <dfn method for="Document" id="dom-document-_open" lt="open()|open(type)|open(type, replace)|open(url, name, features)|open(url, name, features, replace)"><code>open()</code></dfn>
   method comes in several variants with different numbers of arguments.
 
   <dl class="domintro">
     <dt><var>document</var> = <var>document</var> . {{Document/open()|open}}( [ <var>type</var> [, <var>replace</var> ] ] )</dt>
-    <dd>Causes the {{Document}} to be replaced in-place, as if it was a new {{Document}} object, but 
+    <dd>Causes the {{Document}} to be replaced in-place, as if it was a new {{Document}} object, but
     reusing the previous object, which is then returned.
 
     If the <var>type</var> argument is omitted or has the value
-    "<a href="#text-html"><code>text/html</code></a>", then the resulting {{Document}} has an HTML 
-    parser associated with it, which can be given data to parse using 
-    {{Document/write()|document.write()}}. Otherwise, all content passed to 
+    "<a href="#text-html"><code>text/html</code></a>", then the resulting {{Document}} has an HTML
+    parser associated with it, which can be given data to parse using
+    {{Document/write()|document.write()}}. Otherwise, all content passed to
     {{Document/write()|document.write()}} will be parsed as plain text.
 
-    If the <var>replace</var> argument is present and has the value "<code>replace</code>", the 
+    If the <var>replace</var> argument is present and has the value "<code>replace</code>", the
     existing entries in the session history for the {{Document}} object are removed.
 
     The method has no effect if the {{Document}} is still being parsed.
 
-    Throws an "{{InvalidStateError}}" {{DOMException}} if the {{Document}} is an 
+    Throws an "{{InvalidStateError}}" {{DOMException}} if the {{Document}} is an
     <a>XML document</a>.
     </dd>
 
@@ -2224,134 +2229,134 @@ a credentials mode, a cryptographic nonce, and a parser state:
     <dd>Works like the {{Window/open()|window.open()}} method.</dd>
   </dl>
 
-  {{Document}} objects have an <dfn>ignore-opens-during-unload counter</dfn>, which is used to 
-  prevent scripts from invoking the {{Document/open()|document.open()}} method (directly or 
-  indirectly) while the document is <a>being unloaded</a>. Initially, the counter must be set to 
+  {{Document}} objects have an <dfn>ignore-opens-during-unload counter</dfn>, which is used to
+  prevent scripts from invoking the {{Document/open()|document.open()}} method (directly or
+  indirectly) while the document is <a>being unloaded</a>. Initially, the counter must be set to
   zero.
 
-  When called with two arguments (or fewer), the {{Document/open()|document.open()}} method must act 
+  When called with two arguments (or fewer), the {{Document/open()|document.open()}} method must act
   as follows:
 
   1. If the {{Document}} object is an <a>XML document</a>, then throw an "{{InvalidStateError}}"
       {{DOMException}} and abort these steps.
   2. If the {{Document}} object is not an <a>active document</a>, then abort these steps.
-  3. If the <a for="concept">origin</a> of the {{Document}} is not equal to the 
-      <a for="concept">origin</a> of the <a>responsible document</a> specified by the 
-      <a>entry settings object</a>, throw a "{{SecurityError}}" {{DOMException}} and abort these 
+  3. If the <a for="concept">origin</a> of the {{Document}} is not equal to the
+      <a for="concept">origin</a> of the <a>responsible document</a> specified by the
+      <a>entry settings object</a>, throw a "{{SecurityError}}" {{DOMException}} and abort these
       steps.
   4. Let <var>type</var> be the value of the first argument.
-  5. If the second argument is an <a>ASCII case-insensitive</a> match for the value 
+  5. If the second argument is an <a>ASCII case-insensitive</a> match for the value
       "<code>replace</code>", then let <var>replace</var> be true.
 
-      Otherwise, if the <a>browsing context</a>'s <a>session history</a> contains only one 
-      {{Document}}, and that was the <a scheme><code>about:blank</code></a> {{Document}} created 
-      when the <a>browsing context</a> was <a lt="create a new browsing context">created</a>, and 
-      that {{Document}} has never had the <a>unload a document</a> algorithm invoked on it (e.g., 
+      Otherwise, if the <a>browsing context</a>'s <a>session history</a> contains only one
+      {{Document}}, and that was the <a scheme><code>about:blank</code></a> {{Document}} created
+      when the <a>browsing context</a> was <a lt="create a new browsing context">created</a>, and
+      that {{Document}} has never had the <a>unload a document</a> algorithm invoked on it (e.g.,
       by a previous call to {{Document/open()|document.open()}}), then let <var>replace</var> be
       true.
 
       Otherwise, let <var>replace</var> be false.
-  6. If the {{Document}} has an <a>active parser</a> whose <a>script nesting level</a> is greater 
-      than zero, then the method does nothing. Abort these steps and return the {{Document}} object 
+  6. If the {{Document}} has an <a>active parser</a> whose <a>script nesting level</a> is greater
+      than zero, then the method does nothing. Abort these steps and return the {{Document}} object
       on which the method was invoked.
 
-      <p class="note">This basically causes {{Document/open()|document.open()}} to be ignored when 
-      it's called in an inline script found during parsing, while still letting it have an effect 
+      <p class="note">This basically causes {{Document/open()|document.open()}} to be ignored when
+      it's called in an inline script found during parsing, while still letting it have an effect
       when called from a non-parser task such as a timer callback or event handler.</p>
-  7. Similarly, if the {{Document}}'s <a>ignore-opens-during-unload counter</a> is greater than 
-      zero, then the method does nothing. Abort these steps and return the {{Document}} object on 
+  7. Similarly, if the {{Document}}'s <a>ignore-opens-during-unload counter</a> is greater than
+      zero, then the method does nothing. Abort these steps and return the {{Document}} object on
       which the method was invoked.
 
-      <p class="note">This basically causes {{Document/open()|document.open()}} to be ignored when 
-      it's called from a <code>beforeunload</code> <code>pagehide</code>, or <code>unload</code> 
+      <p class="note">This basically causes {{Document/open()|document.open()}} to be ignored when
+      it's called from a <code>beforeunload</code> <code>pagehide</code>, or <code>unload</code>
       event handler while the {{Document}} is being unloaded.</p>
   8. Set the {{Document}}'s <i>salvageable</i> state to false.
-  9. <a>Prompt to unload</a> the {{Document}} object. If the user 
-      <a>refused to allow the document to be unloaded</a>, then abort these steps and return the 
+  9. <a>Prompt to unload</a> the {{Document}} object. If the user
+      <a>refused to allow the document to be unloaded</a>, then abort these steps and return the
       {{Document}} object on which the method was invoked.
   10. <a>Unload</a> the {{Document}} object, with the <var>recycle</var> parameter set to true.
   11. <a>Abort</a> the {{Document}}.
   12. Unregister all event listeners registered on the {{Document}} node and its descendants.
   13. Remove any <a>tasks</a> associated with the {{Document}} in any <a>task source</a>.
   14. Remove all child nodes of the document, without firing any mutation events.
-  15. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the following 
+  15. Call the JavaScript <a>InitializeHostDefinedRealm</a>() abstract operation with the following
        customizations:
 
        * For the global object, create a new {{Window}} object <var>window</var>.
-       * For the global <em>this</em> value, use the current <a>browsing context</a>'s associated 
+       * For the global <em>this</em> value, use the current <a>browsing context</a>'s associated
           {{WindowProxy}}.
        * Let <var>realm execution context</var> be the created <a>JavaScript execution context</a>.
-  16. Set <var>window</var>'s 
-       <a lt="document associated with a window">associated <code>Document</code></a> to the 
+  16. Set <var>window</var>'s
+       <a lt="document associated with a window">associated <code>Document</code></a> to the
        {{Document}}.
-  17. <a>Set up a browsing context environment settings object</a> with 
+  17. <a>Set up a browsing context environment settings object</a> with
        <var>realm execution context</var>.
   18. Replace the {{Document}}'s singleton objects with new instances of those objects, created in
-       <var>window</var>'s <a>Realm</a>. (This includes in particular the {{Window}}, {{Location}},
-       {{History}}, {{ApplicationCache}}, and {{Navigator}}, objects, the various {{BarProp}} 
-       objects, the two <code>Storage</code> objects, the various {{HTMLCollection}} objects, and 
-       objects defined by other specifications, like <code>Selection</code>. It also includes all 
-       the Web IDL prototypes in the JavaScript binding, including the {{Document}} object's 
+       <var>window</var>'s <a>Realm</a>. (This includes in particular the
+       {{History}} and {{Navigator}} objects, the various {{BarProp}}
+       objects, the two <code>Storage</code> objects, the various {{HTMLCollection}} objects, and
+       objects defined by other specifications, like <code>Selection</code>. It also includes all
+       the Web IDL prototypes in the JavaScript binding, including the {{Document}} object's
        prototype.)
   19. Change the <a>document's character encoding</a> to UTF-8.
-  20. If the {{Document}} is <a>ready for post-load tasks</a>, then set the {{Document}} object's 
-       <a>reload override flag</a> and set the {{Document}}'s <a>reload override buffer</a> to the 
+  20. If the {{Document}} is <a>ready for post-load tasks</a>, then set the {{Document}} object's
+       <a>reload override flag</a> and set the {{Document}}'s <a>reload override buffer</a> to the
        empty string.
   21. Set the {{Document}}'s <i>salvageable</i> state back to true.
-  22. Change the document's <a lt="document url">URL</a> to the <a lt="document url">URL</a> of the 
+  22. Change the document's <a lt="document url">URL</a> to the <a lt="document url">URL</a> of the
        <a>responsible document</a> specified by the <a>entry settings object</a>.
-  23. If the {{Document}}'s <a>iframe load in progress</a> flag is set, set the {{Document}}'s 
+  23. If the {{Document}}'s <a>iframe load in progress</a> flag is set, set the {{Document}}'s
        <a>mute iframe load</a> flag.
   24. Create a new <a>HTML parser</a> and associate it with the document. This is a
-       <dfn>script-created parser</dfn> (meaning that it can be closed by the 
-       {{Document/open()|document.open()}} and {{Document/close()|document.close()}} methods, and 
+       <dfn>script-created parser</dfn> (meaning that it can be closed by the
+       {{Document/open()|document.open()}} and {{Document/close()|document.close()}} methods, and
        that the tokenizer will wait for an explicit call to {{Document/close()|document.close()}}
        before emitting an end-of-file token). The encoding <a>confidence</a> is <i>irrelevant</i>.
   25. Set the <a>current document readiness</a> of the document to "<code>loading</code>".
   26. If <var>type</var> is an <a>ASCII case-insensitive</a> match for the string
-       "<code>replace</code>", then, for historical reasons, set it to the string 
+       "<code>replace</code>", then, for historical reasons, set it to the string
        "<a href="#text-html"><code>text/html</code></a>".
 
        Otherwise:
 
-       If the <var>type</var> string contains a U+003B SEMICOLON character (;), remove the first 
+       If the <var>type</var> string contains a U+003B SEMICOLON character (;), remove the first
        such character and all characters from it up to the end of the string.
 
        <a>Strip leading and trailing whitespace</a> from <var>type</var>.
-  27. If <var>type</var> is <em>not</em> now an <a>ASCII case-insensitive</a> match for the string 
-       "<a href="#text-html"><code>text/html</code></a>", then act as if the tokenizer had emitted a 
-       start tag token with the tag name "pre" followed by a single U+000A LINE FEED (LF) character, 
+  27. If <var>type</var> is <em>not</em> now an <a>ASCII case-insensitive</a> match for the string
+       "<a href="#text-html"><code>text/html</code></a>", then act as if the tokenizer had emitted a
+       start tag token with the tag name "pre" followed by a single U+000A LINE FEED (LF) character,
        then switch the <a>HTML parser</a>'s tokenizer to the [[#plaintext-state]].
-  28. Remove all the entries in the <a>browsing context</a>'s <a>session history</a> after the 
-       <a>current entry</a>. If the <a>current entry</a> is the last entry in the session history, 
+  28. Remove all the entries in the <a>browsing context</a>'s <a>session history</a> after the
+       <a>current entry</a>. If the <a>current entry</a> is the last entry in the session history,
        then no entries are removed.
 
-       <p class="note">This <a>doesn't necessarily have to affect</a> the user agent's user 
+       <p class="note">This <a>doesn't necessarily have to affect</a> the user agent's user
        interface.</p>
-  29. Remove any <a>tasks</a> queued by the <a>history traversal task source</a> that are associated 
-       with any {{Document}} objects in the <a>top-level browsing context</a>'s 
+  29. Remove any <a>tasks</a> queued by the <a>history traversal task source</a> that are associated
+       with any {{Document}} objects in the <a>top-level browsing context</a>'s
        <a>document family</a>.
   30. Remove any earlier entries that share the same {{Document}}.
-  31. If <var>replace</var> is false, then add a new entry, just before the last entry, and 
+  31. If <var>replace</var> is false, then add a new entry, just before the last entry, and
        associate with the new entry the text that was parsed by the previous parser associated with
-       the {{Document}} object, as well as the state of the document at the start of these steps. 
-       This allows the user to step backwards in the session history to see the page before it was 
-       blown away by the {{Document/open()|document.open()}} call. This new entry does not have a 
-       {{Document}} object, so a new one will be created if the session history is traversed to that 
+       the {{Document}} object, as well as the state of the document at the start of these steps.
+       This allows the user to step backwards in the session history to see the page before it was
+       blown away by the {{Document/open()|document.open()}} call. This new entry does not have a
+       {{Document}} object, so a new one will be created if the session history is traversed to that
        entry.
-  32. Set the {{Document}}'s <a>fired unload</a> flag to false. (It could have been set to true 
+  32. Set the {{Document}}'s <a>fired unload</a> flag to false. (It could have been set to true
        during the unload step above.)
   33. Finally, set the <a>insertion point</a> to point at just before the end of the
        <a>input stream</a> (which at this point will be empty).
   34. Return the {{Document}} on which the method was invoked.
 
-  <p class="note">The {{Document/open()|document.open()}} method does not affect whether a 
+  <p class="note">The {{Document/open()|document.open()}} method does not affect whether a
   {{Document}} is <a>ready for post-load tasks</a> or <a>completely loaded</a>.</p>
 
-  When called with four arguments, the {{Document/open()}} method on the {{Document}} object must 
-  call the {{Window/open()}} method on the {{Window}} object of the {{Document}} object, with the 
-  same arguments as the original call to the {{Document/open()}} method, and return whatever that 
-  method returned. If the {{Document}} object has no {{Window}} object, then the method must throw 
+  When called with four arguments, the {{Document/open()}} method on the {{Document}} object must
+  call the {{Window/open()}} method on the {{Window}} object of the {{Document}} object, with the
+  same arguments as the original call to the {{Document/open()}} method, and return whatever that
+  method returned. If the {{Document}} object has no {{Window}} object, then the method must throw
   an "{{InvalidAccessError}}" {{DOMException}}.
 
 <h4 id="closing-the-input-stream">Closing the input stream</h4>
@@ -2656,9 +2661,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
     <li>If <var>previous handle</var> was not provided, add an entry to the <a>list of
     active timers</a> for <var>handle</var>.</li>
 
-    <li>Let <var>callerRealm</var> be the <span>current Realm Record</span>, and 
-    <var>calleeRealm</var> be <var>method context</var>'s <a>JavaScript realm</a>.</li>  
-  
+    <li>Let <var>callerRealm</var> be the <span>current Realm Record</span>, and
+    <var>calleeRealm</var> be <var>method context</var>'s <a>JavaScript realm</a>.</li>
+
     <li>
 
     Let <var>task</var> be a <a>task</a> that runs the
@@ -2690,7 +2695,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
         <dd>
 
         <ol>
-          <li>Perform <a>HostEnsureCanCompileStrings</a>(<var>callerRealm</var>, 
+          <li>Perform <a>HostEnsureCanCompileStrings</a>(<var>callerRealm</var>,
           <var>calleeRealm</var>). If this throws an exception, <a>report the exception</a>.</li>
 
           <li>Let <var>script source</var> be the first method argument.</li>
@@ -3065,7 +3070,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
     <a>Parse</a> <var>url</var> relative to the
     <a>API base URL</a> specified by the <a>entry settings object</a>.
 
-    If this fails, then throw a <code>SyntaxError</code> exception and abort these steps.
+    If this fails, then throw a "{{SyntaxError}}" {{DOMException}} and abort these steps.
 
     </li>
 
@@ -3269,8 +3274,8 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
   The <dfn attribute for="WindowModal"><code>dialogArguments</code></dfn> IDL
   attribute, on getting, must check whether its browsing context's <a>active document</a>'s
-  <a for="concept">origin</a> is the <a>same origin-domain</a> as the <a>dialog arguments' origin</a>. If it is, 
-  then the browsing context's <a>dialog arguments</a> must be returned unchanged. Otherwise, the 
+  <a for="concept">origin</a> is the <a>same origin-domain</a> as the <a>dialog arguments' origin</a>. If it is,
+  then the browsing context's <a>dialog arguments</a> must be returned unchanged. Otherwise, the
   IDL attribute must return <i>undefined</i>.
 
   These browsing contexts also have an associated <dfn>return value</dfn> and
@@ -3278,11 +3283,11 @@ a credentials mode, a cryptographic nonce, and a parser state:
   browsing context is created.
 
   The <dfn attribute for="WindowModal"><code>returnValue</code></dfn> IDL attribute, on
-  getting, must check whether its browsing context's <a>active document</a>'s 
-  <a for="concept">origin</a> is the <a>same origin-domain</a> as the current <a>return value origin</a>. If it 
-  is, then the <a>browsing context</a>'s <a>return value</a> must be returned unchanged. Otherwise, 
-  the IDL attribute must return <i>undefined</i>. On setting, the attribute must set the 
-  <a>return value</a> to the given new value, and the <a>return value origin</a> to the 
+  getting, must check whether its browsing context's <a>active document</a>'s
+  <a for="concept">origin</a> is the <a>same origin-domain</a> as the current <a>return value origin</a>. If it
+  is, then the <a>browsing context</a>'s <a>return value</a> must be returned unchanged. Otherwise,
+  the IDL attribute must return <i>undefined</i>. On setting, the attribute must set the
+  <a>return value</a> to the given new value, and the <a>return value origin</a> to the
   <a>browsing context</a>'s <a>active document</a>'s <a for="concept">origin</a>.
 
   <p class="note">
@@ -3532,10 +3537,10 @@ a credentials mode, a cryptographic nonce, and a parser state:
     The string "<code>%s</code>" in the URL is used as a placeholder for where to put
     the URL of the content to be handled.
 
-    Throws a <code>SecurityError</code> exception if the user agent blocks the registration (this
+    Throws a "{{SecurityError}}" {{DOMException}} if the user agent blocks the registration (this
     might happen if trying to register as a handler for "http", for instance).
 
-    Throws a <code>SyntaxError</code> exception if the "<code>%s</code>" string is
+    Throws a "{{SyntaxError}}" {{DOMException}} if the "<code>%s</code>" string is
     missing in the URL.
 
     </dd>
@@ -3576,8 +3581,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
     method is invoked with a scheme that is neither a <a>safelisted scheme</a> nor a scheme
     whose value starts with the substring "<code>web+</code>" and otherwise contains only
     <a>lowercase ASCII letters</a>, and whose length is at least five characters (including
-    the "<code>web+</code>" prefix), the user agent must throw a <code>SecurityError</code>
-    exception.
+    the "<code>web+</code>" prefix), the user agent must throw a "{{SyntaxError}}" {{DOMException}}.
 
     The following schemes are the <dfn>safelisted schemes</dfn>:
 
@@ -3641,10 +3645,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
     If the <code>registerContentHandler()</code>
     method is invoked with a <a>MIME type</a> that is in the <a>type blocklist</a> or
     that the user agent has deemed a privileged type, the user agent must throw a
-    <code>SecurityError</code> exception.
+    "{{SecurityError}}" {{DOMException}}.
 
-    The following <a>MIME types</a> are in the <dfn>type
-    blocklist</dfn>:
+    The following <a>MIME types</a> are in the <dfn>type blocklist</dfn>:
 
     <ul class="brief">
 
@@ -3656,7 +3659,6 @@ a credentials mode, a cryptographic nonce, and a parser state:
       <li><code>image/png</code></li>
       <li><code>image/svg+xml</code></li>
       <li><code>multipart/x-mixed-replace</code></li>
-      <li><code>text/cache-manifest</code></li>
       <li><code>text/css</code></li>
       <li><a href="#text-html"><code>text/html</code></a></li>
       <li><code>text/ping</code></li>
@@ -3680,11 +3682,11 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
     A string used to build the <a for="url">URL</a> of the page that will handle the requests.
 
-    User agents must throw a <code>SyntaxError</code> exception if the <var>url</var>
+    User agents must throw a "{{SyntaxError}}" {{DOMException}} if the <var>url</var>
     argument passed to one of these methods does not contain the exact literal string
     "<code>%s</code>".
 
-    User agents must throw a <code>SyntaxError</code> exception if <a>parsing</a> the <var>url</var>
+    User agents must throw a "{{SyntaxError}}" {{DOMException}} if <a>parsing</a> the <var>url</var>
     argument relative to the <a>API base URL</a> specified by the <a>entry settings object</a> is
     not successful.
 
@@ -3694,8 +3696,8 @@ a credentials mode, a cryptographic nonce, and a parser state:
     component in a URL.
   </p>
 
-    User agents must throw a <code>SecurityError</code> exception if the resulting
-    <a>absolute URL</a> has an <a for="url">origin</a> that differs from the 
+    User agents must throw a "{{SecurityError}}" {{DOMException}} if the resulting
+    <a>absolute URL</a> has an <a for="url">origin</a> that differs from the
     <a for="concept">origin</a> specified by the <a>entry settings object</a>.
 
     <p class="note">
@@ -3719,12 +3721,12 @@ a credentials mode, a cryptographic nonce, and a parser state:
     character in the URL <a>default encode set</a> with the result of <a lt="utf-8 percent encode">UTF-8 percent encoding</a> that character.
 
     <div class="example">
-      If the user had visited a site at <code>http://example.com/</code> that made the
+      If the user had visited a site at <code>https://example.com/</code> that made the
       following call:
 
       <pre highlight="javascript">navigator.registerContentHandler('application/x-soup', 'soup?url=%s', 'SoupWeb&trade;')</pre>
 
-      ...and then, much later, while visiting <code>http://www.example.net/</code>,
+      ...and then, much later, while visiting <code>https://www.example.net/</code>,
       clicked on a link such as:
 
       <pre highlight="html">
@@ -3735,7 +3737,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
       <a>MIME type</a> <code>application/x-soup</code>, the user agent might navigate to the
       following URL:
 
-      <pre>http://example.com/soup?url=http://www.example.net/chickenk%C3%AFwi.soup</pre>
+      <pre>https://example.com/soup?url=https://www.example.net/chickenk%C3%AFwi.soup</pre>
 
       This site could then fetch the <code>chickenk&#xEF;wi.soup</code> file and do
       whatever it is that it does with soup (synthesize it and ship it to the user, or whatever).
@@ -3933,10 +3935,10 @@ a credentials mode, a cryptographic nonce, and a parser state:
   1. If the string does not contain the substring "<code>%s</code>", abort these steps. There's no
       matching handler.
   2. <a>Parse</a> the string relative to the <a>entry settings object</a>. If this fails, then
-      throw a "<code>SyntaxError</code>" {{DOMException}}.
-  3. If the resulting URL record's <a for="url">origin</a> is not the <a>same origin</a> as the 
-      <a for="concept">origin</a> specified by the <a>entry settings object</a>, throw a 
-      "<code>SecurityError</code>" {{DOMException}}.
+      throw a "{{SyntaxError}}" {{DOMException}}.
+  3. If the resulting URL record's <a for="url">origin</a> is not the <a>same origin</a> as the
+      <a for="concept">origin</a> specified by the <a>entry settings object</a>, throw a
+      "{{SecurityError}}" {{DOMException}}.
   4. Return the <a>resulting URL string</a> as the result of preprocessing the argument.
 
     <h6 id="security-and-privacy">Security and privacy</h6>
@@ -3988,7 +3990,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
       </ol>
 
       No actual confidential file data is leaked in this manner, but the URLs themselves could
-      contain confidential information. For example, the URL could be <code>http://www.corp.example.com/upcoming-aquisitions/the-sample-company.egf</code>, which
+      contain confidential information. For example, the URL could be <code>https://www.corp.example.com/upcoming-aquisitions/the-sample-company.egf</code>, which
       might tell the third party that Example Corporation is intending to merge with The Sample Company.
       Implementors might wish to consider allowing administrators to disable this feature for certain
       subdomains, content types, or schemes.
@@ -4026,12 +4028,12 @@ a credentials mode, a cryptographic nonce, and a parser state:
   The <code>registerContentHandler()</code> method
   could display a modal dialog box:
 
-  <img src="images/sample-content-handler-registration.png" width="534" height="374" alt="The modal dialog box could have the title 'Content Handler Registration', and could say 'This Web page: Kittens at work http://kittens.example.org/ ...would like permission to handle files of type: application/x-meowmeow using the following Web-based application: Kittens-at-work displayer http://kittens.example.org/?show=%s Do you trust the administrators of the &quot;kittens.example.org&quot; domain?' with two buttons, 'Trust kittens.example.org' and 'Cancel'." />
+  <img src="images/sample-content-handler-registration.png" width="534" height="374" alt="The modal dialog box could have the title 'Content Handler Registration', and could say 'This Web page: Kittens at work https://kittens.example.org/ ...would like permission to handle files of type: application/x-meowmeow using the following Web-based application: Kittens-at-work displayer https://kittens.example.org/?show=%s Do you trust the administrators of the &quot;kittens.example.org&quot; domain?' with two buttons, 'Trust kittens.example.org' and 'Cancel'." />
 
   In this dialog box, "Kittens at work" is the title of the page that invoked the method,
-  "http://kittens.example.org/" is the URL of that page, "application/x-meowmeow" is the string that
+  "https://kittens.example.org/" is the URL of that page, "application/x-meowmeow" is the string that
   was passed to the <code>registerContentHandler()</code> method as its first
-  argument (<var>mimeType</var>), "http://kittens.example.org/?show=%s" was the second
+  argument (<var>mimeType</var>), "https://kittens.example.org/?show=%s" was the second
   argument (<var>url</var>), and "Kittens-at-work displayer" was the third argument (<var>title</var>).
 
   If the user clicks the Cancel button, then nothing further happens. If the user clicks the
@@ -4047,7 +4049,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
   If the user does select that option, then the browser, in accordance with the requirements
   described in the previous two sections, will redirect the user to
-  "http://kittens.example.org/?show=data%3Aapplication/x-meowmeow;base64,S2l0dGVucyBhcmUgdGhlIGN1dGVzdCE%253D".
+  "https://kittens.example.org/?show=data%3Aapplication/x-meowmeow;base64,S2l0dGVucyBhcmUgdGhlIGN1dGVzdCE%253D".
 
   The <code>registerProtocolHandler()</code> method
   would work equivalently, but for schemes instead of unknown content types.
@@ -4476,129 +4478,6 @@ a credentials mode, a cryptographic nonce, and a parser state:
   must return true if the user agent supports a <a>plugin</a> that supports the <a>MIME
   type</a> "<code>application/x-java-vm</code>"; otherwise it must return false.
 
-<h4 id="the-external-interface">The <code>External</code> interface</h4>
-
-  The <dfn attribute for="Window"><code>external</code></dfn> attribute of the <code>Window</code>
-  interface must return an instance of the <code>External</code> interface.
-
-  <pre class="idl" data-highlight="webidl" dfn-for="External">
-    interface External {
-      void AddSearchProvider(DOMString engineURL);
-      unsigned long IsSearchProviderInstalled(DOMString engineURL);
-    };
-  </pre>
-
-  <p class="note">
-  For historical reasons, members on this interface are capitalized.
-  </p>
-
-  <dl class="domintro">
-
-    <dt><var>window</var> . <code>external</code> . <code>AddSearchProvider</code>( <var>url</var> )</dt>
-    <dd>
-
-    Adds the search engine described by the OpenSearch description document at <var>url</var>. [[!OPENSEARCH]]
-
-    The OpenSearch description document has to be on the same server as the script that calls
-    this method.
-
-    </dd>
-
-    <dt><var>installed</var> = <var>window</var> . <code>external</code> . <code>IsSearchProviderInstalled</code>( <var>url</var> )</dt>
-    <dd>
-
-    Returns a value based on comparing <var>url</var> to the URLs of the results pages
-    of the installed search engines.
-
-    <dl>
-      <dt>0 <dd>None of the installed search engines match <var>url</var>.
-      <dt>1 <dd>One or more installed search engines match <var>url</var>, but none are the user's default search engine.
-      <dt>2 <dd>The user's default search engine matches <var>url</var>.
-    </dl>
-
-    The <var>url</var> is compared to the URLs of the results pages of the installed
-    search engines using a prefix match. Only results pages on the same domain as the script that
-    calls this method are checked.
-
-    </dd>
-
-  </dl>
-
-  <p class="note">
-  Another way of exposing search engines using OpenSearch description documents is
-  using a <{link}> element with the <code>search</code> link type.
-  </p>
-
-    The <dfn method for="External"><code>AddSearchProvider()</code></dfn> method,
-    when invoked, must run the following steps:
-
-    <ol>
-
-    <li>Optionally, abort these steps. User agents may implement the method as a stub method that
-    never does anything, or may arbitrarily ignore invocations with particular arguments for
-    security, privacy, or usability reasons.</li>
-
-    <li><a>Parse</a> the value of the method's first argument
-    relative to the <a>API base URL</a> specified by the <a>entry settings
-    object</a>.</li>
-
-    <li>If this fails, abort these steps.</li>
-
-    <li>Process the <a>resulting URL string</a> as the <a for="url">URL</a> to an OpenSearch
-    description document. [[!OPENSEARCH]]</li>
-
-    </ol>
-
-    The <dfn method for="External"><code>IsSearchProviderInstalled()</code></dfn>
-    method, when invoked, must run the following steps:
-
-    <ol>
-
-    <li>Optionally, return 0 and abort these steps. User agents may implement the method as a
-    stub method that never returns a non-zero value, or may arbitrarily ignore invocations with
-    particular arguments for security, privacy, or usability reasons.</li>
-
-    <li>If the <a for="concept">origin</a> specified by the <a>entry settings object</a> is an
-    opaque identifier (i.e., it has no host component), then return 0 and abort these steps.</li>
-
-    <li>Let <var>host1</var> be the host component of the <a for="concept">origin</a> specified
-    by the <a>entry settings object</a>.</li>
-
-    <li><a>Parse</a> the <var>scriptURL</var> argument
-    relative to the <a>API base URL</a> specified by the <a>entry settings
-    object</a>.</li>
-
-    <li>If this fails, return 0 and abort these steps.</li>
-
-    <li>Let <var>host2</var> be the <a for="url">host</a> component
-    of the <a>resulting URL string</a>.</li>
-
-    <li>
-
-      If the longest suffix in the Public Suffix List that matches the end of <var>host1</var> is different than the longest suffix in the Public Suffix List that
-      matches the end of <var>host2</var>, then return 0 and abort these steps. [[!PSL]]
-
-      If the next domain component of <var>host1</var> and <var>host2</var>
-      after their common suffix are not the same, then return 0 and abort these steps.
-
-    </li>
-
-    <li>Let <var>search engines</var> be the list of search engines known by the user
-    agent and made available to the user by the user agent for which the resulting
-    <a>absolute URL</a> is a <a>prefix match</a> of the search engine's <a for="url">URL</a>, if any. For
-    search engines registered using OpenSearch description documents, the <a for="url">URL</a> of the
-    search engine corresponds to the URL given in a <code>Url</code> element whose <{links/rel}> attribute is "<code>results</code>" (the default). [[!OPENSEARCH]]</li>
-
-    <li>If <var>search engines</var> is empty, return 0 and abort these steps.</li>
-
-    <li>If the user's default search engine (as determined by the user agent) is one of the
-    search engines in <var>search engines</var>, then return 2 and abort these
-    steps.</li>
-
-    <li>Return 1.</li>
-
-    </ol>
-
 <h3 id="webappapis-images">Images</h3>
 
   <pre class="idl" data-highlight="webidl" dfn-for="ImageBitmap">
@@ -4659,8 +4538,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
     Rejects the promise with an <code>InvalidStateError</code> exception if the source image is not in a valid
     state (e.g., an <{img}> element that hasn't finished loading, or a
     <code>CanvasRenderingContext2D</code> object whose bitmap data has zero length along one or both
-    dimensions, or an <code>ImageData</code> object whose data is <code>data</code> attribute has been neutered). Rejects the promise with a <code>SecurityError</code>
-    exception if the script is not allowed to access the image data of the source image (e.g., a
+    dimensions, or an <code>ImageData</code> object whose data is <code>data</code> attribute has been neutered). Rejects the promise with a "{{SyntaxError}}" {{DOMException}} if the script is not allowed to access the image data of the source image (e.g., a
     <code>video</code> that is <a>CORS-cross-origin</a>, or a <code>canvas</code> being drawn
     on by a script in a worker from another <a for="concept">origin</a>).
 
@@ -4670,7 +4548,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
     <dd>
 
-    Returns the <a>intrinsic width</a> of the image, in CSS pixels.
+    Returns the <a for="css">intrinsic width</a> of the image, in CSS pixels.
 
     </dd>
 
@@ -4678,7 +4556,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
 
     <dd>
 
-    Returns the <a>intrinsic height</a> of the image, in CSS pixels.
+    Returns the <a for="css">intrinsic height</a> of the image, in CSS pixels.
 
     </dd>
 
@@ -4721,9 +4599,9 @@ a credentials mode, a cryptographic nonce, and a parser state:
       supported or is disabled), or, if there is no such image, the first frame of the
       animation.</li>
 
-      <li>If the <a for="concept">origin</a> of the <{img}> element's image is not the 
-      <a>same origin</a> as the <a for="concept">origin</a> specified by the 
-      <a>entry settings object</a>, then set the <a>origin-clean</a> flag of the 
+      <li>If the <a for="concept">origin</a> of the <{img}> element's image is not the
+      <a>same origin</a> as the <a for="concept">origin</a> specified by the
+      <a>entry settings object</a>, then set the <a>origin-clean</a> flag of the
       <code>ImageBitmap</code> object's bitmap to false.</li>
 
       <li>Return a new promise, but continue running these steps
@@ -4747,12 +4625,13 @@ a credentials mode, a cryptographic nonce, and a parser state:
       <li>Create a new <code>ImageBitmap</code> object.</li>
 
       <li>Let the <code>ImageBitmap</code> object's bitmap data be a copy of the frame at the
-      <a>current playback position</a>, at the <a>media resource</a>'s <a>intrinsic width</a> and <a>intrinsic height</a> (i.e., after any aspect-ratio
+      <a>current playback position</a>, at the <a>media resource</a>'s <a for="css">intrinsic width</a>
+      and <a for="css">intrinsic height</a> (i.e., after any aspect-ratio
       correction has been applied), <a>cropped to the source rectangle</a>.
 
-      <li>If the <a for="concept">origin</a> of the <{video}> element's image is not the 
-      <a>same origin</a> as the <a for="concept">origin</a> specified by the 
-      <a>entry settings object</a>, then set the <a>origin-clean</a> flag of the 
+      <li>If the <a for="concept">origin</a> of the <{video}> element's image is not the
+      <a>same origin</a> as the <a for="concept">origin</a> specified by the
+      <a>entry settings object</a>, then set the <a>origin-clean</a> flag of the
       <code>ImageBitmap</code> object's bitmap to false.</li>
 
       <li>Return a new promise, but continue running these steps
@@ -4777,7 +4656,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
       <{canvas}> element's bitmap data, <a>cropped to the source
       rectangle</a>.</li>
 
-      <li>Set the <a for="concept">origin</a> of the <code>ImageBitmap</code> object's bitmap to the 
+      <li>Set the <a for="concept">origin</a> of the <code>ImageBitmap</code> object's bitmap to the
       same value as the <a>origin-clean</a> flag of the <{canvas}> element's bitmap.</li>
 
       <li>Return a new promise, but continue running these steps
@@ -4792,7 +4671,7 @@ a credentials mode, a cryptographic nonce, and a parser state:
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
       but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
 
-      <li>If the <code>Blob</code> object has been disabled through the <code>close()</code> method, then return a promise rejected with an <code>InvalidStateError</code>
+      <li>If <var>image</var> is <a for="Blob">closed</a>, then return a promise rejected with an <code>InvalidStateError</code>
       exception and abort these steps.</li>
 
       <li>Return a new promise, but continue running these steps
@@ -4954,6 +4833,53 @@ a credentials mode, a cryptographic nonce, and a parser state:
       loadMySprites().then(runDemo);
     </pre>
   </div>
+
+<h3 id="animation-frames">Animation Frames</h3>
+
+  Each {{Document}} associated with a <a>top-level browsing context</a>
+  has a <dfn>list of animation frame callbacks</dfn>, which must be initially empty,
+  and an <dfn>animation frame callback identifier</dfn>, which is a number which must
+  initially be zero.
+
+  When the <dfn method for='Window'>requestAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
+
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
+
+  2. Increment <var>document</var>'s <a>animation frame callback identifier</a> by one.
+
+  3. Append the method's argument to <var>document</var>'s <a>list of animation frame
+     callbacks</a>, associated with <var>document</var>'s <a>animation frame callback
+     identifier</a>'s current value
+
+  4. Return <var>document</var>'s <a>animation frame callback identifier</a>'s current value
+
+  When the <dfn method for='Window'>cancelAnimationFrame()</dfn> method is called,
+  the user agent must run the following steps:
+
+  1. Let <var>document</var> be the {{Window}} object's {{Document}} object
+
+  2. Find the entry in <var>document</var>'s <a>list of animation frame callbacks</a> that
+     is associated with the value given by the method's argument <var>handle</var>
+
+  3. If there is such an entry, remove it from <var>document</var>'s <a>list of animation
+     frame callbacks</a>
+
+  When the user agent is to <dfn>run the animation frame callbacks</dfn> for a
+  {{Document}} <var>document</var> with a timestamp <var>now</var>, it must
+  run the following steps:
+
+  1. If the value returned by the <var>document</var> object's {{Document/hidden}}
+     attribute is true, abort these steps. [[!PAGE-VISIBILITY]]
+
+  2. Let <var>callbacks</var> be a list of the entries in <var>document</var>'s <a>list
+     of animation frame callbacks</a>, in the order in which they were added to the list.
+
+  3. Set <var>document</var>'s <a>list of animation frame callbacks</a> to the empty list.
+
+  4. For each entry in <var>callbacks</var>, in order: <a>invoke the Web IDL callback
+     function</a>, passing <var>now</var> as the only argument, and if an exception is
+     thrown, <a>report the exception</a>. [[!WEBIDL]]
 
 </section>
 

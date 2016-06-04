@@ -51,17 +51,17 @@
       <a>reload override buffer</a>.
   2. Let <var>address</var> be the <a>browsing context</a>'s <a>active document</a>'s
       <a lt="document url">URL</a>.
-  3. Let <var>HTTPS state</var> be the <a for="document">HTTPS state</a> of the 
+  3. Let <var>HTTPS state</var> be the <a for="document">HTTPS state</a> of the
       <a>browsing context</a>'s <a>active document</a>.
   4. Let <var>CSP list</var> be the <a for="document">CSP list</a> of the <a>browsing context</a>'s
       <a>active document</a>.
-  5. <a>Navigate</a> the <a>browsing context</a> to a new <a>response</a> whose 
-      <a for="response">body</a> is <var>source</var>, <a for="response">CSP list</a> is 
-      <var>CSP list</var> and <a for="response">HTTPS state</a> is <var>HTTPS state</var>, with the 
-      <a>exceptions enabled flag</a> and <a>replacement enabled</a>. The 
-      <a>source browsing context</a> is that given to the <a>overridden reload</a> algorithm. When 
-      the <a>navigate</a> algorithm creates a {{Document}} object for this purpose, set that 
-      {{Document}}'s <a>reload override flag</a> and set its <a>reload override buffer</a> to 
+  5. <a>Navigate</a> the <a>browsing context</a> to a new <a>response</a> whose
+      <a for="response">body</a> is <var>source</var>, <a for="response">CSP list</a> is
+      <var>CSP list</var> and <a for="response">HTTPS state</a> is <var>HTTPS state</var>, with the
+      <a>exceptions enabled flag</a> and <a>replacement enabled</a>. The
+      <a>source browsing context</a> is that given to the <a>overridden reload</a> algorithm. When
+      the <a>navigate</a> algorithm creates a {{Document}} object for this purpose, set that
+      {{Document}}'s <a>reload override flag</a> and set its <a>reload override buffer</a> to
       <var>source</var>. Rethrow any exceptions.
 
       When it comes time to <a>set the document's address</a> in the <a>navigation algorithm</a>,
@@ -123,14 +123,15 @@
       [LenientThis] attribute EventHandler onreadystatechange;
     };
     Document implements GlobalEventHandlers;
+    Document implements DocumentAndElementEventHandlers;
   </pre>
 
-  The {{Document}} has an <dfn for="document">HTTPS state</dfn> (an <a>HTTPS state value</a>), 
-  initially "<code>none</code>", which represents the security properties of the network channel 
+  The {{Document}} has an <dfn for="document">HTTPS state</dfn> (an <a>HTTPS state value</a>),
+  initially "<code>none</code>", which represents the security properties of the network channel
   used to deliver the {{Document}}'s data.
 
-  The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of 
-  <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise 
+  The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of
+  <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise
   specified.
 
   The {{Document}} has a <dfn lt="document module map">module map</dfn>, which is a 
@@ -164,12 +165,12 @@
       Can be set, to add a new cookie to the element's set of HTTP cookies.
 
       If the contents are <a>sandboxed into a unique origin</a> (e.g., in an <code>iframe</code> with
-      the <{iframe/sandbox}> attribute), a <code>SecurityError</code> exception will be thrown on
+      the <{iframe/sandbox}> attribute), a "{{SecurityError}}" {{DOMException}} will be thrown on
       getting and setting.
     </dd>
   </dl>
 
-  The <dfn attribute for="Document"><code>cookie</code></dfn> attribute represents the cookies of 
+  The <dfn attribute for="Document"><code>cookie</code></dfn> attribute represents the cookies of
   the resource identified by <a>the document's address</a>.
 
   A {{Document}} object that falls into one of the following conditions is a
@@ -177,23 +178,22 @@
 
   * A {{Document}} that has no <a>browsing context</a>.
 
-  * A {{Document}} whose <a>address</a> does not use a server-based naming
-      authority.
+  * A {{Document}} whose <a>address</a> does not use a server-based naming authority.
 
   On getting, if the document is a <a lt="cookie-averse">cookie-averse <code>Document</code> object</a>, then
   the user agent must return the empty string. Otherwise, if the {{Document}}'s
   <a for="concept">origin</a> is an <a>opaque origin</a>, the user agent must throw a
-  <code>SecurityError</code> exception. Otherwise, the user agent must return the
+  "{{SecurityError}}" {{DOMException}}. Otherwise, the user agent must return the
   <a>cookie-string</a> for <a>the document's address</a> for a "non-HTTP" API, decoded
-  using the <a>UTF-8 decoder</a>.
+  using <a>UTF-8 decode without BOM</a>.
   [[!COOKIES]]
   <a class="fingerprint" href="#fingerprinting-vector"><img height="21" src="images/fingerprint.png" width="15" alt="(This is a fingerprinting vector.)" /></a>
 
   On setting, if the document is a <a lt="cookie-averse">cookie-averse <code>Document</code> object</a>, then
   the user agent must do nothing. Otherwise, if the {{Document}}'s <a for="concept">origin</a> is
-  an <a>opaque origin</a>, the user agent must throw a <code>SecurityError</code> exception.
+  an <a>opaque origin</a>, the user agent must throw a "{{SecurityError}}" {{DOMException}}.
   Otherwise, the user agent must act as it would when <a>receiving a set-cookie-string</a> for <a>the document's address</a>
-  via a "non-HTTP" API, consisting of the new value encoded as UTF-8. [[!COOKIES]] [[!ENCODING]]
+  via a "non-HTTP" API, consisting of the new value <a>encoded as UTF-8</a>. [[!COOKIES]] [[!ENCODING]]
 
   <p class="note">
     Since the <code>cookie</code> attribute is accessible across frames, the path restrictions on
@@ -574,18 +574,18 @@
 
     1. Let <var>document</var> be the {{XMLDocument}} object on which the method was
         invoked.
-    2. <a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If this is not 
-        successful, throw a "<code>SyntaxError</code>" {{DOMException}} and abort these steps. 
+    2. <a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If this is not
+        successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these steps.
         Otherwise, let <var>urlRecord</var> be the <a>resulting URL record</a>.
-    3. If <var>urlRecord</var>'s <a for="url">origin</a> is not the same as the 
-        <a for="concept">origin</a> of <var>document</var>, throw a "<code>SecurityError</code>" 
+    3. If <var>urlRecord</var>'s <a for="url">origin</a> is not the same as the
+        <a for="concept">origin</a> of <var>document</var>, throw a "{{SecurityError}}"
         {{DOMException}} and abort these steps.
     4. Remove all child nodes of <var>document</var>, without firing any mutation events.
     5. Set the <a>current document readiness</a> of <var>document</var> to "<code>loading</code>".
     6. Run the remainder of these steps <a>in parallel</a>, and return true from the method.
     7. Let <var>result</var> be a {{Document}} object.
     8. Let <var>success</var> be false.
-    9. Let <var>request</var> be a new <a>request</a> whose <a for="url">URL</a> is 
+    9. Let <var>request</var> be a new <a>request</a> whose <a for="url">URL</a> is
         <var>urlRecord</var>,
         <a>client</a> is <a>entry settings object</a>, <a>destination</a> is
         "<code>subresource</code>", <a>synchronous flag</a> is set, <a for="request">mode</a> is
@@ -741,6 +741,7 @@
       void forceSpellCheck();
     };
     HTMLElement implements GlobalEventHandlers;
+    HTMLElement implements DocumentAndElementEventHandlers;
     HTMLElement implements ElementContentEditable;
   </pre>
 
@@ -810,8 +811,8 @@
 <h4 id="content-models">Content models</h4>
 
   Each element defined in this specification has a content model: a description of the element's
-  expected <a>contents</a>. An <a>HTML element</a> must have contents that match the requirements
-  described in the element's content model. The <dfn>contents</dfn> of an element are its children
+  expected <a lt='html-contents'>contents</a>. An <a>HTML element</a> must have contents that match the requirements
+  described in the element's content model. The <dfn lt='html-contents'>contents</dfn> of an element are its children
   in the DOM, except for <{template}> elements, where the children are those in the
   <a>template contents</a> (a separate <code>DocumentFragment</code> assigned to the element when
   the element is created).
@@ -930,12 +931,12 @@
     Thus, in the XML serialization, one can use RDF, like this:
 
     <pre highlight="html">
-      &lt;html xmlns="http://www.w3.org/1999/xhtml" xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      &lt;html xmlns="https://www.w3.org/1999/xhtml" xmlns:r="https://www.w3.org/1999/02/22-rdf-syntax-ns#">
         &lt;head>
           &lt;title>Hedral's Home Page&lt;/title>
           &lt;r:RDF>
-            &lt;Person xmlns="http://www.w3.org/2000/10/swap/pim/contact#"
-                       r:about="http://hedral.example.com/#">
+            &lt;Person xmlns="https://www.w3.org/2000/10/swap/pim/contact#"
+                       r:about="https://hedral.example.com/#">
               &lt;fullName>Cat Hedral&lt;/fullName>
               &lt;mailbox r:resource="mailto:hedral@damowmow.com"/>
               &lt;personalTitle>Sir&lt;/personalTitle>
@@ -1212,7 +1213,6 @@
     </li>
     <li><{keygen}></li>
     <li><{label}></li>
-    <li><{object}> (if the <{object/usemap}> attribute is present)</li>
     <li><{select}></li>
     <li><{textarea}></li>
     <li><{video}> (if the <{video/controls}> attribute is present)</li>
@@ -1223,7 +1223,7 @@
 <h6 id="sec-palpable-content">Palpable content</h6>
 
   As a general rule, elements whose content model allows any <a>flow content</a> or
-  <a>phrasing content</a> should have at least one node in its <a>contents</a> that is
+  <a>phrasing content</a> should have at least one node in its <a lt='html-contents'>contents</a> that is
   <a>palpable content</a> and that does not have the <code>hidden</code> attribute specified.
 
   <p class="note">
@@ -1435,7 +1435,7 @@
   <div class="impl">
     Let <var>view</var> be a view of the DOM that replaces all <{a}>, <{ins}>,
     <{del}>, and <{map}> elements in the document with their
-    <a>contents</a>. Then, in <var>view</var>, for each run of sibling <a>phrasing content</a>
+    <a lt='html-contents'>contents</a>. Then, in <var>view</var>, for each run of sibling <a>phrasing content</a>
     nodes uninterrupted by other types of content, in an element that accepts content other than
     <a>phrasing content</a> as well as <a>phrasing content</a>, let <var>first</var> be the first
     node of the run, and let <var>last</var> be the last node of the run. For each such run that
@@ -1500,7 +1500,7 @@
           To see the cat simulator, use one of the following links:
           &lt;ul>
             &lt;li>&lt;a href="cats.sim">Download simulator file&lt;/a>
-            &lt;li>&lt;a href="http://sims.example.com/watch?v=LYds5xY4INU">Use online simulator&lt;/a>
+            &lt;li>&lt;a href="https://sims.example.com/watch?v=LYds5xY4INU">Use online simulator&lt;/a>
           &lt;/ul>
           Alternatively, upgrade to the Mellblom Browser.
         &lt;/object>
@@ -1533,7 +1533,7 @@
           &lt;p>To see the cat simulator, use one of the following links:&lt;/p>
           &lt;ul>
             &lt;li>&lt;a href="cats.sim">Download simulator file&lt;/a>
-            &lt;li>&lt;a href="http://sims.example.com/watch?v=LYds5xY4INU">Use online simulator&lt;/a>
+            &lt;li>&lt;a href="https://sims.example.com/watch?v=LYds5xY4INU">Use online simulator&lt;/a>
           &lt;/ul>
           &lt;p>Alternatively, upgrade to the Mellblom Browser.&lt;/p>
         &lt;/object>
@@ -1548,13 +1548,13 @@
   The following attributes are common to and may be specified on all <a>html elements</a>
   <span class="impl"> (even those not defined in this specification)</span>:
 
-  * <code>accesskey</code>
+  * <{global/accesskey}>
   * <code>class</code>
-  * <code>contenteditable</code>
+  * <{global/contenteditable}>
   * <{global/contextmenu}>
   * <{global/dir}>
-  * <code>draggable</code>
-  * <code>dropzone</code>
+  * <{global/draggable}>
+  * <{global/dropzone}>
   * <code>hidden</code>
   * <{global/id}>
   * <{global/lang}>
@@ -1578,7 +1578,7 @@
 
     <pre class="bad">
       &lt;div xmlns="http://www.w3.org/1999/xhtml" dir="rtl">
-        &lt;bogus xmlns="http://example.net/ns" dir="ltr">
+        &lt;bogus xmlns="https://example.net/ns" dir="ltr">
           &lt;span xmlns="http://www.w3.org/1999/xhtml">
           &lt;/span>
         &lt;/bogus>
@@ -1600,8 +1600,6 @@
   The following <a>event handler content attributes</a> may be specified on any <a>HTML element</a>:
 
   * <code>onabort</code>
-  * <code>onautocomplete</code>
-  * <code>onautocompleteerror</code>
   * <code>onblur</code>*
   * <code>oncancel</code>
   * <code>oncanplay</code>
@@ -1610,7 +1608,9 @@
   * <code>onclick</code>
   * <code>onclose</code>
   * <code>oncontextmenu</code>
+  * <code>oncopy</code>
   * <code>oncuechange</code>
+  * <code>oncut</code>
   * <code>ondblclick</code>
   * <code>ondrag</code>
   * <code>ondragend</code>
@@ -1641,7 +1641,8 @@
   * <code>onmouseout</code>
   * <code>onmouseover</code>
   * <code>onmouseup</code>
-  * <code>onmousewheel</code>
+  * <code>onwheel</code>
+  * <code>onpaste</code>
   * <code>onpause</code>
   * <code>onplay</code>
   * <code>onplaying</code>
@@ -1670,8 +1671,8 @@
 
   <p class="note">
     While these attributes apply to all elements, they are not useful on all elements. For example,
-    only <a>media elements</a> will ever receive a <code>volumechange</code> event fired by the user
-    agent.
+    only <a>media elements</a> will ever receive a
+    <a event for="media"><code>volumechange</code></a> event fired by the user agent.
   </p>
 
   <hr />
@@ -1872,7 +1873,7 @@
       that does not itself have a <{global/lang}> attribute nor any ancestor of that element, the
       fallback language for the element will be English. If the value of the
       <code>Content-Language</code> header was "<code>de, fr, it</code>" then the language of the
-      node is unknown. <a href="http://www.w3.org/International/questions/qa-http-and-lang">This
+      node is unknown. <a href="https://www.w3.org/International/questions/qa-http-and-lang">This
       article</a> provides some additional guidance on the use of HTTP headers, and <{meta}>
       elements for providing language information.
     </p>
@@ -1959,8 +1960,8 @@
   * <code>style</code> on <a>html elements</a>; must be parsed and recursively processed (e.g., for
     the values of &quot;content&quot; properties)
   * <code>title</code> on all <a>html elements</a>
-  * <code>value</code> on <{input}> elements with a <code>type</code> attribute in the
-    <a element-state for="input">Button</a> state or the <a element-state for="input">reset button</a> state
+  * <code>value</code> on <{input}> elements with a <{input/type}> attribute in the
+    <a element-state for="input">Button</a>, <a element-state for="input">submit button</a>, or <a element-state for="input">reset button</a> state
 
   <div class="impl">
     <hr />
@@ -1999,9 +2000,9 @@
   Authors must not use the <code>xml:base</code> attribute on <a>html elements</a> in
   <a>HTML documents</a>.
 
-<h5 id="the-dir-attribute">The <dfn element-attr for="global"><code>dir</code></dfn> attribute</h5>
+<h5 id="the-dir-attribute">The <code>dir</code> attribute</h5>
 
-  The <code>dir</code> attribute specifies the element's text directionality. The attribute is an
+  The <dfn element-attr for="global"><code>dir</code></dfn> attribute specifies the element's text directionality. The attribute is an
   <a>enumerated attribute</a> with the following keywords and states:
 
   : The <dfn attr-value for="global/dir"><code>ltr</code></dfn> keyword, which maps to the <dfn state for="dir">ltr</dfn> state
@@ -2265,8 +2266,8 @@
     added or has its value changed, according to the rules given for <a>CSS styling attributes</a>.
     [[!CSS-STYLE-ATTR]]
 
-    However, if the 
-    <a>Should element's inline behavior be blocked by Content Security Policy?</a> algorithm returns 
+    However, if the
+    <a>Should element's inline behavior be blocked by Content Security Policy?</a> algorithm returns
     "<code>Blocked</code>" when executed upon the
     attribute's element and "<code>style attribute</code>", then the style
     rules defined in the attribute's value must not be applied to the element. [[!CSP3]]
@@ -2403,7 +2404,7 @@
     :: 1. Let <var>name</var> be the name passed to the algorithm.
         2. Let <var>value</var> be the value passed to the algorithm.
         3. If <var>name</var> contains a U+002D HYPHEN-MINUS character (-) followed by a
-            <a>lowercase ASCII letter</a>, throw a <code>SyntaxError</code> exception and abort
+            <a>lowercase ASCII letter</a>, throw a "{{SyntaxError}}" {{DOMException}} and abort
             these steps.
         4. For each <a>uppercase ASCII letter</a> in <var>name</var>, insert a U+002D HYPHEN-MINUS
             character (-) before the character and replace the character with the same character
@@ -2477,7 +2478,7 @@
   Authoring conformance criteria for bidirectional-algorithm formatting characters
 </h5>
 
-  <a>Text content</a> in <a>html elements</a> with <code>Text</code> nodes in their <a>contents</a>,
+  <a>Text content</a> in <a>html elements</a> with <code>Text</code> nodes in their <a lt='html-contents'>contents</a>,
   and text in attributes of <a>html elements</a> that allow free-form text, may contain characters
   in the ranges U+202A to U+202E and U+2066 to U+2069 (the bidirectional-algorithm formatting
   characters). However, the use of these characters is restricted so that any embedding or overrides
@@ -2611,10 +2612,10 @@
     <p>Authors are encouraged to make use of the following documents for guidance on using ARIA in
   HTML beyond that which is provided in this section:</p>
     <ul>
-      <li><a href="http://w3c.github.io/aria-in-html/">Notes on Using ARIA in HTML</a> - A practical
+      <li><a href="https://w3c.github.io/aria-in-html/">Notes on Using ARIA in HTML</a> - A practical
     guide for developers on how to to add accessibility information to HTML elements using the
     Accessible Rich Internet Applications specification [[!WAI-ARIA]].</li>
-      <li><a href="http://w3c.github.io/aria/practices/aria-practices.html">WAI-ARIA 1.1 Authoring Practices</a> -
+      <li><a href="https://w3c.github.io/aria/practices/aria-practices.html">WAI-ARIA 1.1 Authoring Practices</a> -
     An author's guide to understanding and implementing Accessible Rich Internet Applications.</li>
     </ul>
   </div>

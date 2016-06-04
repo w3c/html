@@ -157,19 +157,19 @@
     <tbody>
     <tr>
       <td> <code>-//W3C//DTD&nbsp;HTML&nbsp;4.0//EN</code>
-      <td> <code>http://www.w3.org/TR/REC-html40/strict.dtd</code>
+      <td> <code>https://www.w3.org/TR/REC-html40/strict.dtd</code>
       <td> Yes
     <tr>
       <td> <code>-//W3C//DTD&nbsp;HTML&nbsp;4.01//EN</code>
-      <td> <code>http://www.w3.org/TR/html4/strict.dtd</code>
+      <td> <code>https://www.w3.org/TR/html4/strict.dtd</code>
       <td> Yes
     <tr>
       <td> <code>-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN</code>
-      <td> <code>http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</code>
+      <td> <code>https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</code>
       <td> No
     <tr>
       <td> <code>-//W3C//DTD&nbsp;XHTML&nbsp;1.1//EN</code>
-      <td> <code>http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd</code>
+      <td> <code>https://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd</code>
       <td> No
   </table>
 
@@ -220,7 +220,7 @@
   either have a start tag and an end tag, or a start tag that is marked as self-closing, in which
   case they must not have an end tag.
 
-  The <a>contents</a> of the element must be placed between
+  The <a lt='html-contents'>contents</a> of the element must be placed between
   just after the start tag (which <a lt="omitted">might be implied, in certain
   cases</a>) and just before the end tag (which again, <a lt="omitted">might be
   implied, in certain cases</a>). The exact allowed contents of each individual element depend on
@@ -241,8 +241,8 @@
   (since, again, as there's no end tag, no content can be put between the start tag and the end
   tag). <a>Foreign elements</a> whose start tag is <em>not</em> marked as self-closing can
   have <a>text</a>, <a>character
-  references</a>, <a>CDATA sections</a>, other <a lt="kind of element">elements</a>, and 
-  <a>comments</a>, but the text must not contain the character U+003C LESS-THAN SIGN (&lt;) or an 
+  references</a>, <a>CDATA sections</a>, other <a lt="kind of element">elements</a>, and
+  <a>comments</a>, but the text must not contain the character U+003C LESS-THAN SIGN (&lt;) or an
   <a>ambiguous ampersand</a>.
 
   <div class="note">
@@ -257,7 +257,7 @@
   &lt;svg>
   &lt;metadata>
     &lt;!-- this is invalid -->
-    &lt;cdr:license xmlns:cdr="http://www.example.com/cdr/metadata" name="MIT"/>
+    &lt;cdr:license xmlns:cdr="https://www.example.com/cdr/metadata" name="MIT"/>
   &lt;/metadata>
   &lt;/svg>
   &lt;/p>
@@ -271,9 +271,9 @@
 
   </div>
 
-  <a>Normal elements</a> can have <a>text</a>, <a>character references</a>, other 
+  <a>Normal elements</a> can have <a>text</a>, <a>character references</a>, other
   <a lt="kind of element">elements</a>, and <a>comments</a>, but
-  the text must not contain the character U+003C LESS-THAN SIGN (&lt;) or an 
+  the text must not contain the character U+003C LESS-THAN SIGN (&lt;) or an
   <a>ambiguous ampersand</a>. Some <a>normal elements</a>
   also have <a>yet more restrictions</a> on what content they are
   allowed to hold, beyond the restrictions imposed by the content model and those described in this
@@ -1138,19 +1138,17 @@
   Usually, the <a>encoding sniffing algorithm</a> defined below is used to determine the
   character encoding.
 
-  Given a character encoding, the bytes in the <a>input byte stream</a> must be converted
-  to Unicode code points for the tokenizer's <a>input stream</a>, as described by the rules
-  for that encoding's <a>decoder</a>.
+  Given a character encoding, the bytes in the <a>input byte stream</a> must be converted to
+  characters for the tokenizer's <a>input stream</a>, by passing the <a>input byte stream</a> and
+  character encoding to <a>decode</a>.
+
+  <p class="note">A leading Byte Order Mark (BOM) causes the character encoding argument to be
+  ignored and will itself be skipped.</p>
 
   <p class="note">
   Bytes or sequences of bytes in the original byte stream that did not conform to
   the Encoding standard (e.g., invalid UTF-8 byte sequences in a UTF-8 input byte stream) are errors
   that conformance checkers are expected to report. [[!ENCODING]]
-  </p>
-
-  <p class="note">
-  Leading Byte Order Marks (BOMs) are not stripped by the decoder algorithms, they
-  are stripped by the algorithm below.
   </p>
 
   <p class="warning">The decoder algorithms describe how to handle invalid input; for security
@@ -1226,44 +1224,6 @@
 
     </li>
 
-    <li>
-
-    For each of the rows in the following table, starting with the first one and going down, if
-    there are as many or more bytes available than the number of bytes in the first column, and the
-    first bytes of the file match the bytes given in the first column, then return the encoding
-    given in the cell in the second column of that row, with the <a>confidence</a> <i>certain</i>, and abort these steps:
-
-    <table>
-      <thead>
-      <tr>
-        <th>Bytes in Hexadecimal
-        <th>Encoding
-      <tbody>
-
-      <tr>
-        <td>FE FF
-        <td>Big-endian UTF-16
-      <tr>
-        <td>FF FE
-        <td>Little-endian UTF-16
-      <tr>
-        <td>EF BB BF
-        <td>UTF-8
-
-    </table>
-
-    <p class="note">
-  This step looks for Unicode Byte Order Marks (BOMs).
-  </p>
-
-    <p class="note">
-  That this step happens before the next one honoring the HTTP
-    <code>Content-Type</code> header is a <a>willful violation</a> of the HTTP specification,
-    motivated by a desire to be maximally compatible with legacy content. [[HTTP]]
-  </p>
-
-    </li>
-
     <li>If the transport layer specifies a character encoding, and it is supported, return that
     encoding with the <a>confidence</a> <i>certain</i>, and
     abort these steps.</li>
@@ -1285,7 +1245,7 @@
     <li>
 
     If the <a>HTML parser</a> for which this algorithm is being run is associated with a
-    <code>Document</code> that is itself in a <a>nested browsing context</a>, run these
+    {{Document}} that is itself in a <a>nested browsing context</a>, run these
     substeps:
 
     <ol>
@@ -1367,27 +1327,27 @@
       <tr>
         <td>ar
         <td>Arabic
-        <td>windows-1256
+        <td><a>windows-1256</a>
 
       <tr>
         <td>ba
         <td>Bashkir
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>be
         <td>Belarusian
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>bg
         <td>Bulgarian
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>cs
         <td>Czech
-        <td>windows-1250
+        <td><a>windows-1250</a>
 
       <tr>
         <td>el
@@ -1397,12 +1357,12 @@
       <tr>
         <td>et
         <td>Estonian
-        <td>windows-1257
+        <td><a>windows-1257</a>
 
       <tr>
         <td>fa
         <td>Persian
-        <td>windows-1256
+        <td><a>windows-1256</a>
 
       <tr>
         <td>he
@@ -1412,87 +1372,87 @@
       <tr>
         <td>hr
         <td>Croatian
-        <td>windows-1250
+        <td><a>windows-1250</a>
 
       <tr>
         <td>hu
         <td>Hungarian
-        <td>ISO-8859-2
+        <td><a>ISO-8859-2</a>
 
       <tr>
         <td>ja
         <td>Japanese
-        <td>Shift_JIS
+        <td><a>Shift_JIS</a>
 
       <tr>
         <td>kk
         <td>Kazakh
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>ko
         <td>Korean
-        <td>euc-kr
+        <td><a>euc-kr</a>
 
       <tr>
         <td>ku
         <td>Kurdish
-        <td>windows-1254
+        <td><a>windows-1254</a>
 
       <tr>
         <td>ky
         <td>Kyrgyz
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>lt
         <td>Lithuanian
-        <td>windows-1257
+        <td><a>windows-1257</a>
 
       <tr>
         <td>lv
         <td>Latvian
-        <td>windows-1257
+        <td><a>windows-1257</a>
 
       <tr>
         <td>mk
         <td>Macedonian
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>pl
         <td>Polish
-        <td>ISO-8859-2
+        <td><a>ISO-8859-2</a>
 
       <tr>
         <td>ru
         <td>Russian
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>sah
         <td>Yakut
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>sk
         <td>Slovak
-        <td>windows-1250
+        <td><a>windows-1250</a>
 
       <tr>
         <td>sl
         <td>Slovenian
-        <td>ISO-8859-2
+        <td><a>ISO-8859-2</a>
 
       <tr>
         <td>sr
         <td>Serbian
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>tg
         <td>Tajik
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>th
@@ -1502,17 +1462,17 @@
       <tr>
         <td>tr
         <td>Turkish
-        <td>windows-1254
+        <td><a>windows-1254</a>
 
       <tr>
         <td>tt
         <td>Tatar
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>uk
         <td>Ukrainian
-        <td>windows-1251
+        <td><a>windows-1251</a>
 
       <tr>
         <td>vi
@@ -1522,16 +1482,16 @@
       <tr>
         <td>zh-CN
         <td>Chinese (People's Republic of China)
-        <td>GB18030
+        <td><a>GB18030</a>
 
       <tr>
         <td>zh-TW
         <td>Chinese (Taiwan)
-        <td>Big5
+        <td><a>Big5</a>
 
       <tr>
         <td colspan="2">All other locales
-        <td>windows-1252
+        <td><a>windows-1252</a>
 
     </table>
 
@@ -1600,13 +1560,13 @@
         algorithm, is distinct from an unrecognized encoding or the empty string).</li>
 
         <li><i>Attributes</i>: <a>Get an
-        attribute</a> and its value. If no attribute was sniffed, then jump to the
+        attribute</a> and its value. If no attribute was computed, then jump to the
         <i>processing</i> step below.</li>
 
         <li>If the attribute's name is already in <var>attribute list</var>, then return
-        to the step labeled <i>attributes</i>.
+        to the step labeled <i>attributes</i>.</li>
 
-        <li>Add the attribute's name to <var>attribute list</var>.
+        <li>Add the attribute's name to <var>attribute list</var>.</li>
 
         <li>
 
@@ -1643,17 +1603,16 @@
         <li>If <var>need pragma</var> is true but <var>got pragma</var> is
         false, then jump to the step below labeled <i>next byte</i>.</li>
 
-        <li>If <var>charset</var> is a <a>UTF-16 encoding</a>, change the value of
-        <var>charset</var> to UTF-8.</li>
+        <li>If <var>charset</var> is failure, then jump to the step below labeled <i>next byte</i>.</li>
 
-        <li>If <var>charset</var> is the x-user-defined encoding, change the value of
-        <var>charset</var> to Windows-1252. [[!ENCODING]]</li>
+        <li>If <var>charset</var> is a <a>UTF-16 encoding</a>, then set <var>charset</var>
+        to <a>UTF-8</a>.</li>
 
-        <li>If <var>charset</var> is not a supported character encoding, then jump to the
-        step below labeled <i>next byte</i>.</li>
+        <li><p>If <var>charset</var> is <a>x-user-defined</a>, then set <var>charset</var> to
+        <a>windows-1252</a>.</p></li>
 
-        <li>Abort the <a>prescan a byte stream to determine its encoding</a> algorithm,
-        returning the encoding given by <var>charset</var>.</li>
+        <li><p>Abort the <a>prescan a byte stream to determine its encoding</a> algorithm,
+        returning the encoding given by <var>charset</var>.</p></li>
 
       </ol>
 
@@ -1853,8 +1812,27 @@
 
 <h5 id="character-encodings">Character encodings</h5>
 
-  User agents must support the encodings defined in the WHATWG Encoding standard. User agents
-  must not support other encodings.
+  User agents must support the encodings defined in the WHATWG Encoding standard, including, but not
+  limited to,
+
+  <dfn>UTF-8</dfn>,
+  <dfn>ISO-8859-2</dfn>,
+  <dfn>ISO-8859-8</dfn>,
+  <dfn>windows-1250</dfn>,
+  <dfn>windows-1251</dfn>,
+  <dfn>windows-1252</dfn>,
+  <dfn>windows-1254</dfn>,
+  <dfn>windows-1256</dfn>,
+  <dfn>windows-1257</dfn>,
+  <dfn>gb18030</dfn>,
+  <dfn>Big5</dfn>,
+  <dfn>ISO-2022-JP</dfn>,
+  <dfn>Shift_JIS</dfn>,
+  <dfn>EUC-KR</dfn>,
+  <dfn>UTF-16BE</dfn>,
+  <dfn>UTF-16LE</dfn>, and
+  <dfn>x-user-defined</dfn>.
+  User agents must not support other encodings.
 
   <p class="note">
   The above prohibits supporting, for example, CESU-8, UTF-7, BOCU-1, SCSU, EBCDIC,
@@ -1876,9 +1854,10 @@
     <i>certain</i> and abort these steps. The new encoding is ignored; if it was anything but the
     same encoding, then it would be clearly incorrect.</li>
 
-    <li>If the new encoding is a <a>UTF-16 encoding</a>, change it to UTF-8.</li>
+    <li>If the new encoding is a <a>UTF-16 encoding</a>, then change it to <a>UTF-8</a>.</li>
 
-    <li>If the new encoding is the x-user-defined encoding, change it to Windows-1252. [[!ENCODING]]</li>
+    <li>If the new encoding is the <a>x-user-defined</a> encoding, then change it to
+    <a>Windows-1252</a>. [[!ENCODING]]</li>
 
     <li>If the new encoding is identical or equivalent to the encoding that is already being used
     to interpret the input stream, then set the <a>confidence</a> to <i>certain</i> and abort these steps.
@@ -1916,16 +1895,6 @@
 
   The <dfn>input stream</dfn> consists of the characters pushed into it as the <a>input byte
   stream</a> is decoded or from the various APIs that directly manipulate the input stream.
-
-  One leading U+FEFF BYTE ORDER MARK character must be ignored if any are present in the
-  <a>input stream</a>.
-
-  <p class="note">
-  The requirement to strip a U+FEFF BYTE ORDER MARK character regardless of whether
-  that character was used to determine the byte order is a <a>willful violation</a> of
-  Unicode, motivated by a desire to increase the resilience of user agents in the face of na&iuml;ve
-  transcoders.
-  </p>
 
   Any occurrences of any characters in the ranges U+0001 to U+0008,    U+000E to U+001F,
   U+007F  to U+009F, U+FDD0 to U+FDEF, and
@@ -4720,7 +4689,7 @@
     <li>
 
     If the <var>adjusted insertion location</var> is inside a <code>template</code>
-    element, let it instead be inside the <{template}> element's <a>template contents</a>, after its 
+    element, let it instead be inside the <{template}> element's <a>template contents</a>, after its
     last child (if any).
 
     </li>
@@ -5270,7 +5239,7 @@
 
     <dt>A comment token</dt>
     <dd>
-    <a>Insert a comment</a> as the last child of the <code>Document</code> object.
+    <a>Insert a comment</a> as the last child of the {{Document}} object.
     </dd>
 
     <dt>A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
@@ -5283,37 +5252,8 @@
     <dd>
 
     <a>Create an element for the token</a> in the <a>HTML namespace</a>, with the
-    <code>Document</code> as the intended parent. Append it to the <code>Document</code> object. Put
+    {{Document}} as the intended parent. Append it to the {{Document}} object. Put
     this element in the <a>stack of open elements</a>.
-
-    If the <code>Document</code> is being loaded as part of <a>navigation</a> of a <a>browsing context</a>, run these steps:
-
-    <ol>
-
-      <li>If the result of running <a>match service worker
-      registration</a> for <a>the <code>Document</code>'s address</a> is non-null, run the
-      <a>application cache selection algorithm</a> passing the
-      <code>Document</code> object with no manifest.</li>
-
-      <li>
-
-      Otherwise, run these substeps:
-
-      <ol>
-
-        <li>If the newly created element has a <code>manifest</code>
-        attribute whose value is not the empty string, then <a>parse</a> the value of that attribute, relative to the newly created element, and
-        if that is successful, run the <a>application cache selection algorithm</a> passing the {{Document}} object with the result of
-        applying the <a>URL serializer</a> algorithm to the
-        <a>resulting URL string</a> with the <i>exclude fragment flag</i> set.</li>
-
-        <li>Otherwise, run the <a>application cache selection algorithm</a> passing the {{Document}} object with no manifest.</li>
-
-      </ol>
-
-      </li>
-
-    </ol>
 
     Switch the <a>insertion mode</a> to "<a>before
     head</a>".
@@ -5333,21 +5273,17 @@
     <dt>Anything else</dt>
     <dd>
 
-    Create an <{html}> element whose <a>node document</a> is the <code>Document</code> object. Append
-    it to the <code>Document</code> object. Put this element in the <a>stack of open
+    Create an <{html}> element whose <a>node document</a> is the {{Document}} object. Append
+    it to the {{Document}} object. Put this element in the <a>stack of open
     elements</a>.
 
-    If the <code>Document</code> is being loaded as part of <a>navigation</a> of a <a>browsing context</a>, then: run the <a>application cache selection algorithm</a> with no manifest,
-    passing it the <code>Document</code> object.
-
-    Switch the <a>insertion mode</a> to "<a>before
-    head</a>", then reprocess the token.
+    Switch the <a>insertion mode</a> to "<a>before head</a>", then reprocess the token.
 
     </dd>
 
   </dl>
 
-  The root element can end up being removed from the <code>Document</code> object, e.g., by
+  The root element can end up being removed from the {{Document}} object, e.g., by
   scripts; nothing in particular happens in such cases, content continues being appended to the
   nodes as described in the next section.
 
@@ -8711,11 +8647,6 @@
 
     </li>
 
-    <li>If the <code>Document</code> has any <a>pending application cache download process
-    tasks</a>, then <a lt="queue a task">queue</a> each such <a>task</a> in the order they were added to the list of <a>pending
-    application cache download process tasks</a>, and then empty the list of <a>pending
-    application cache download process tasks</a>. The <a>task source</a> for these <a>tasks</a> is the <a>networking task source</a>.</li>
-
     <li>If the <code>Document</code>'s <a>print when loaded</a> flag is set, then run the
     <a>printing steps</a>.</li>
 
@@ -9020,8 +8951,8 @@
   <em>This section is non-normative.</em>
 
   Consider the following markup, which for this example we will assume is the document with
-  <a for="url">URL</a> <code>http://example.com/inner</code>, being rendered as the content of
-  an <code>iframe</code> in another document with the <a for="url">URL</a> <code>http://example.com/outer</code>:
+  <a for="url">URL</a> <code>https://example.com/inner</code>, being rendered as the content of
+  an <code>iframe</code> in another document with the <a for="url">URL</a> <code>https://example.com/outer</code>:
 
   <pre highlight="html">
   &lt;div id=a>
@@ -9064,7 +8995,7 @@
 
   <ul class="domTree"><li class="t1"><{html}><ul><li class="t1"><{head}></li><li class="t1"><{body}><ul><li class="t1"><{script}><ul><li class="t3"><code>#text</code>: alert(document.URL);</li></ul></li></ul></li></ul></li></ul>
 
-  This script does execute, resulting in an alert that says "http://example.com/inner".
+  This script does execute, resulting in an alert that says "https://example.com/inner".
 
 <h5 id="the-execution-of-scripts-that-are-moving-across-multiple-documents">The execution of scripts that are moving across multiple documents</h5>
 
@@ -9116,9 +9047,8 @@
 <h3 id="serializing-html-fragments">Serializing HTML fragments</h3>
 
   The following steps form the <dfn>HTML fragment serialization algorithm</dfn>. The algorithm
-  takes as input a DOM {{Element}}, {{Document}}, or <code>DocumentFragment</code>
-  referred to as <var>the node</var>, and either returns a string or throws an
-  exception.
+  takes as input a DOM {{Element}}, {{Document}}, or {{DocumentFragment}}
+  referred to as <var>the node</var>, and either returns a string.
 
   <p class="note">
   This algorithm serializes the <em>children</em> of the node being serialized, not
@@ -9129,7 +9059,7 @@
 
     <li>Let <var>s</var> be a string, and initialize it to the empty string.</li>
 
-    <li>If <var>the node</var> is a <{template}> element, then let <var>the node</var> instead be the <{template}> element's 
+    <li>If <var>the node</var> is a <{template}> element, then let <var>the node</var> instead be the <{template}> element's
     <a>template contents</a> (a <code>DocumentFragment</code> node).</li>
 
     <li>
