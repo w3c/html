@@ -18,7 +18,7 @@ For the multipage version, one can do as follows:
 1. Install [multipage](https://github.com/adrianba/multipage)
 2. Follow the instructions there to regenerate the HTML files
 
-There are some conventions for linking to things. For example, 
+There are some conventions for linking to things. For example,
 * For definitions of standard terms, use `<a>term known to bikeshed</a>`
 * For definitions of elements use `<{img}>`
 * For definitions of attributes use `<{img/alt}>`
@@ -30,32 +30,36 @@ And we try to follow these best-practices:
 * Line wrap at column `100` to keep lines easily readable
 * Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
 * Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
+
    ```html
    here is a
-   <a>link that is not broken across lines</a> 
+   <a>link that is not broken across lines</a>
    making it easy to search/replace :)
    ```
-   vs. 
+
+   vs.
+
    ```html
-   here is a <a>link that is sadly broken across 
+   here is a <a>link that is sadly broken across
    lines</a> making it much harder to search/replace
    ```
+
 * Prefer markdown syntax for its brevity and readability. In particular:
-   * Prefer 
+   * Prefer
       ```
       * unordered list item
-      ``` 
-      vs. 
+      ```
+      vs.
       ```html
       <ul>
         <li>unordered list item</li>
       </ul>
       ```
-   * Prefer 
+   * Prefer
       ```
       1. ordered list item
-      ``` 
-      vs. 
+      ```
+      vs.
       ```html
       <ol>
         <li>ordered list item</li>
@@ -66,7 +70,7 @@ And we try to follow these best-practices:
       : define term
       :: term's definition
       ```
-      vs. 
+      vs.
       ```html
       <dl>
         <dt>define term</dt>
@@ -77,16 +81,16 @@ And we try to follow these best-practices:
    * Prefer:
       ```
       newline separator
-      
+
       between paragraphs
       ```
-      vs. 
+      vs.
       ```html
       <p>newline separator</p>
-      
+
       <p>between paragraphs</p>
       ```
-      
+
 ## Contributing to this Repository
 
 Use the standard fork, branch, and pull request workflow to propose changes to the specification. Please make branch names informative - by including the issue or bug number for example.
