@@ -939,11 +939,12 @@
     <ol>
 
       <li><a>Parse</a> <var>selected source</var>, relative
-      to the element, and let the result be <var>absolute URL</var>. If that is not successful, then
-      abort these inner set of steps.</li>
+      to the element's <a>node document</a>. If that is not successful, then
+      abort these inner set of steps. Otherwise, let <var>urlString</var> be the 
+      <a>resulting URL string</a>.</li>
 
-      <li>Let <var>key</var> be a tuple consisting of the resulting <a>absolute URL</a>, the
-      <{img}> element's <code>crossorigin</code>
+      <li>Let <var>key</var> be a tuple consisting of <var>urlString</var>, the
+      <{img}> element's <{img/crossorigin}>
       attribute's mode, and, if that mode is not <a state for="cors">No CORS</a>,
       the <a>node document</a>'s <a for="concept">origin</a>.</li>
 
@@ -970,7 +971,7 @@
           <var>selected pixel density</var>.</li>
 
           <li><a>Queue a task</a> to <a>restart the animation</a> if <i>restart
-          animation</i> is set, change <a>current request</a>'s <a>current URL</a> to <var>absolute URL</var>, and then <a>fire a simple event</a> named <code>load</code> at the <{img}>
+          animation</i> is set, change <a>current request</a>'s <a>current URL</a> to <var>urlString</var>, and then <a>fire a simple event</a> named <code>load</code> at the <{img}>
           element.</li>
 
           <li>Abort the <a>update the image data</a> algorithm.</li>
@@ -1040,7 +1041,7 @@
     </li>
 
     &#x231B; <a>Parse</a> <var>selected source</var>, relative
-    to the element's <a>node document</a>, and let <var>absolute URL</var> be the
+    to the element's <a>node document</a>, and let <var>urlString</var> be the
     <a>resulting URL string</a>. If
     that is not successful, run these substeps:
 
@@ -1064,10 +1065,10 @@
     <li>
 
     &#x231B; If the <a>pending request</a> is not null,
-    and <var>absolute URL</var> is the same as the <a>pending request</a>'s <a>current URL</a>,
+    and <var>urlString</var> is the same as the <a>pending request</a>'s <a>current URL</a>,
     then abort these steps.
 
-    &#x231B; If <var>absolute URL</var> is the same as the <a>current request</a>'s <a>current URL</a>,
+    &#x231B; If <var>urlString</var> is the same as the <a>current request</a>'s <a>current URL</a>,
     and <a>current request</a> is in the <a state for="img">partially available</a> state,
     then <a>abort the image request</a> for the <a>pending request</a>,
     <a>queue a task</a> to <a>restart the animation</a> if <i>restart animation</i> is set,
@@ -1077,7 +1078,7 @@
     <a>abort the image request</a> for the <a>pending request</a>.
 
     &#x231B; Let <var>image request</var> be a new <a>image request</a>
-    whose <a>current URL</a> is <var>absolute URL</var>.
+    whose <a>current URL</a> is <var>urlString</var>.
 
     &#x231B; If <a>current request</a> is in the <a state for="img">unavailable</a> state
     or the <a state for="img">broken</a> state,
@@ -1085,7 +1086,7 @@
     Otherwise, let the <a>pending request</a> be <var>image request</var>.
 
     &#x231B; Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
-    <var>absolute URL</var> and the current state of the element's <code>crossorigin</code> content attribute.
+    <var>urlString</var> and the current state of the element's <code>crossorigin</code> content attribute.
 
     &#x231B; Set <var>request</var>'s <a>client</a> to the
     element's <a>node document</a>'s <code>Window</code> object's <a>environment settings
@@ -1927,7 +1928,7 @@
     pixel density</a>, then abort these steps.</li>
 
     <li>&#x231B; <a>Parse</a> <var>selected source</var>,
-    relative to the element's <a>node document</a>, and let <var>absolute URL</var> be the
+    relative to the element's <a>node document</a>, and let <var>urlString</var> be the
     <a>resulting URL string</a>.
     If that is not successful, abort these steps.</li>
 
@@ -1940,12 +1941,12 @@
     <li>&#x231B; Let <var>client</var> be the <{img}> element's <a>node
     document</a>'s <code>Window</code> object's <a>environment settings object</a>.</li>
 
-    <li>&#x231B; Let <var>key</var> be a tuple consisting of <var>absolute URL</var>,
+    <li>&#x231B; Let <var>key</var> be a tuple consisting of <var>urlString</var>,
     <var>corsAttributeState</var>, and, if <var>corsAttributeState</var> is not
     <a state for="cors">No CORS</a>, <var>origin</var>.</li>
 
     <li>&#x231B; Let <var>image request</var> be a new <a>image request</a>
-    whose <a>current URL</a> is <var>absolute URL</var></li>
+    whose <a>current URL</a> is <var>urlString</var></li>
 
     <li>&#x231B; Let the element's <a>pending request</a> be <var>image request</var>.</li>
 
@@ -1962,7 +1963,7 @@
 
     <ol>
       <li>Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
-      <var>absolute URL</var> and <var>corsAttributeState</var>.</li>
+      <var>urlString</var> and <var>corsAttributeState</var>.</li>
 
       <li>Set <var>request</var>'s <a>client</a> to
       <var>client</var>, <a for="request">type</a> to "<code>image</code>", and set <var>request</var>'s <a>synchronous flag</a>.</li>
@@ -3728,7 +3729,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   <p class="note">
     If, when the element is created, the <code>srcdoc</code> attribute is not set, and the <code>src</code> attribute is either also not set or set but its value cannot be
-  <a>resolved</a>, the browsing context will remain at the initial
+  <a>parsed</a>, the browsing context will remain at the initial
   <code>about:blank</code> page.
   </p>
 
@@ -6511,25 +6512,24 @@ zero or more <{track}> elements, then
         attribute's value is the empty string, then end the <a>synchronous section</a>, and jump
         down to the <i>failed with attribute</i> step below.</li>
 
-        <li>&#x231B; Let <var>absolute URL</var> be the <a>absolute URL</a> that
+        <li>&#x231B; Let <var>urlString</var> be the <a>resulting URL string</a> that
         would have resulted from <a>parsing</a> the <a for="url">URL</a>
         specified by the <code>src</code> attribute's value relative to the
-        <a>media element</a> when the <code>src</code> attribute was last
+        <a>media element</a>'s <a>node document</a> when the <code>src</code> attribute was last
       changed.
 
-        </li><li>&#x231B; If <var>absolute URL</var> was obtained successfully, set the <code>currentSrc</code> attribute to <var>absolute
-        URL</var>.</li>
+        </li><li>&#x231B; If <var>urlString</var> was obtained successfully, set the <code>currentSrc</code> attribute to <var>urlString</var>.</li>
 
         <li>End the <a>synchronous section</a>, continuing the remaining steps
         <a>in parallel</a>.</li>
 
-        <li>If <var>absolute URL</var> was obtained successfully, run the <a>resource fetch algorithm</a> with <var>absolute
-        URL</var>. If that algorithm returns without aborting <em>this</em> one, then the load
+        <li>If <var>urlString</var> was obtained successfully, run the <a>resource fetch algorithm</a> with 
+        <var>urlString</var>. If that algorithm returns without aborting <em>this</em> one, then the load
         failed.</li>
 
         <li><i>Failed with attribute</i>: Reaching this step indicates that the media resource
-        failed to load or that the given <a for="url">URL</a> could not be <a>resolved</a>. <a>Queue a task</a> to run the <a>dedicated media source
-        failure steps</a>.</li>
+        failed to load or that the given <a for="url">URL</a> could not be <a>parsed</a>. 
+        <a>Queue a task</a> to run the <a>dedicated media source failure steps</a>.</li>
 
         <li>Wait for the <a>task</a> queued by the previous step to have
         executed.</li>
@@ -6586,13 +6586,13 @@ zero or more <{track}> elements, then
         <a>synchronous section</a>, and jump down to the <i>failed with elements</i> step
         below.</li>
 
-        <li>&#x231B; Let <var>absolute URL</var> be the <a>absolute URL</a> that
+        <li>&#x231B; Let <var>urlString</var> be the <a>resulting URL string</a> that
         would have resulted from <a>parsing</a> the <a for="url">URL</a>
       specified by <var>candidate</var>'s <code>src</code>
-      attribute's value relative to the <var>candidate</var> when the <code>src</code> attribute was last changed.
+      attribute's value relative to the <var>candidate</var>'s <a>node document</a> when the <code>src</code> attribute was last changed.
 
-        </li><li>&#x231B; If <var>absolute URL</var> was not obtained successfully, then end the
-        <a>synchronous section</a>, and jump down to the <i>failed with elements</i> step
+        </li><li>&#x231B; If <var>urlString</var> was not obtained successfully, then end the
+        <a>synchronous section</a>, and jump down to the <var>Failed with elements</var> step
         below.</li>
 
         <li>&#x231B; If <var>candidate</var> has a <code>type</code> attribute whose value, when parsed as a <a>MIME
@@ -6600,16 +6600,16 @@ zero or more <{track}> elements, then
         types that define that parameter), represents <a>a type that the user agent knows it cannot
         render</a>, then end the <a>synchronous section</a>, and jump down to the <i>failed with elements</i> step below.</li>
 
-        <li>&#x231B; Set the <code>currentSrc</code> attribute to <var>absolute URL</var>.</li>
+        <li>&#x231B; Set the <code>currentSrc</code> attribute to <var>urlString</var>.</li>
 
         <li>End the <a>synchronous section</a>, continuing the remaining steps
         <a>in parallel</a>.</li>
 
         <li>Run the <a>resource fetch algorithm</a> with
-        <var>absolute URL</var>. If that algorithm returns without aborting <em>this</em> one,
+        <var>urlString</var>. If that algorithm returns without aborting <em>this</em> one,
         then the load failed.</li>
 
-        <li><i>Failed with elements</i>: <a>Queue a task</a> to <a>fire a simple
+        <li><var>Failed with elements</var>: <a>Queue a task</a> to <a>fire a simple
         event</a> named <code>error</code> at the <var>candidate</var> element.</li>
 
         <li><a>Await a stable state</a>. The <a>synchronous section</a>
@@ -9216,8 +9216,9 @@ zero or more <{track}> elements, then
       </dt><dd>
 
       Indicates that the text track was enabled, but when the user agent attempted to obtain it,
-      this failed in some way (e.g., <a for="url">URL</a> could not be <a>resolved</a>, network error, unknown text track format). Some or all of the cues are
-      likely missing and will not be obtained.
+      this failed in some way (e.g., <a for="url">URL</a> could not be <a>parsed</a>, network error, 
+      unknown text track format). Some or all of the cues are likely missing and will not be 
+      obtained.
 
       </dd>
 
