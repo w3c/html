@@ -27,24 +27,59 @@ There are some conventions for linking to things. For example,
 * For informative references use `[[shortname]]`
 
 And we try to follow these best-practices:
-
-* Try to line wrap at column 100 to keep lines easily readable
+* Line wrap at column `100` to keep lines easily readable
+* Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
 * Please do not break definitions or links to definitions across line breaks (these are the exception to the above expectation). E.g., avoid this:
-
+   ```html
+   here is a <a>link that is
+   broken across lines</a> making it much harder to search/replace :(
    ```
-   Line 1 | here is a <a>link that is
-   Line 2 | broken across lines</a> making it much harder to search/replace :(
-   ```
-
 * Prefer markdown syntax for its brevity and readability. In particular:
-   * Prefer `* unordered list item` vs. `<ul><li>unordered list item</li></ul>`
-   * Prefer `1. ordered list item` vs. `<ol><li>ordered list item</li></ol>`
+   * Prefer 
+      ```
+      * unordered list item
+      ``` 
+      vs. 
+      ```html
+      <ul>
+        <li>unordered list item</li>
+      </ul>
+      ```
+   * Prefer 
+      ```
+      1. ordered list item
+      ``` 
+      vs. 
+      ```html
+      <ol>
+        <li>ordered list item</li>
+      </ol>
+      ```
    * Prefer:
-      ```: define term
-         :: term's definition```
-      vs. `<dl><dt>define term</dt><dd>term's definition</dd></dl>`
+      ```
+      : define term
+      :: term's definition
+      ```
+      vs. 
+      ```html
+      <dl>
+        <dt>define term</dt>
+        <dd>term's definition</dd>
+      </dl>
+      ```
       (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
-   * Prefer newline separator for paragraphs vs. `<p>a paragraph</p>`
+   * Prefer:
+      ```
+      newline separator
+      
+      between paragraphs
+      ```
+      vs. 
+      ```html
+      <p>newline separator</p>
+      
+      <p>between paragraphs</p>
+      ```
       
 ## Contributing to this Repository
 
