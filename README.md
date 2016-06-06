@@ -59,7 +59,6 @@ And we try to follow these best-practices:
       ```
       (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
 * Prefer markdown syntax for its brevity and readability. In particular:
-   * Prefer
    
       ```markdown
       * unordered list item
@@ -83,7 +82,7 @@ And we try to follow these best-practices:
         <li>ordered list item</li>
       </ol>
       ```
-   * Prefer:
+      ----
       
       ```markdown
       newline separator
