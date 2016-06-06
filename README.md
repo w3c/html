@@ -26,6 +26,22 @@ There are some conventions for linking to things. For example,
 * For Normative references use `[[!shortname]]` where `shortname` is the W3C "shortname" of the spec
 * For informative references use `[[shortname]]`
 
+And we try to follow these best-practices:
+
+* Try to line wrap at column 100 to keep lines easily readable
+* Please do not break definitions or links to definitions across line breaks (these are the exception to the above expectations). E.g., avoid this:
+   ```Line 1 | here is a <a>link that is
+      Line 2 | broken across lines</a> making it much harder to search/replace :(```
+* Prefer markdown syntax for its brevity and readability. In particular:
+   * Prefer `* unordered list item` vs. `<ul><li>unordered list item</li></ul>`
+   * Prefer `1. ordered list item` vs. `<ol><li>ordered list item</li></ol>`
+   * Prefer:
+      ```: define term
+         :: term's definition```
+      vs. `<dl><dt>define term</dt><dd>term's definition</dd></dl>`
+      (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
+   * Prefer newline separator for paragraphs vs. `<p>a paragraph</p>`
+      
 ## Contributing to this Repository
 
 Use the standard fork, branch, and pull request workflow to propose changes to the specification. Please make branch names informative - by including the issue or bug number for example.
