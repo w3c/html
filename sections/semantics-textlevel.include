@@ -51,7 +51,7 @@
           attribute DOMString download;
           attribute DOMString rel;
           attribute DOMString rev;
-          readonly attribute DOMTokenList relList;
+          [SameObject, PutForwards=value] readonly attribute DOMTokenList relList;
           attribute DOMString hreflang;
           attribute DOMString type;
           attribute DOMString text;
@@ -697,9 +697,9 @@ affected by the heat source (upper left) and the food source (lower right).&lt;/
   has one, may be cited in the <dfn element-attr for="q"><code>cite</code></dfn> attribute. The source may be fictional,
   as when quoting characters in a novel or screenplay.
 
-  If the <code>cite</code> attribute is present, it must be a
-  <a>valid URL potentially surrounded by spaces</a>. <span class="impl">To obtain the corresponding
-  citation link, the value of the attribute must be <a>resolved</a> relative to the element.</span>
+  If the <{q/cite}> attribute is present, it must be a
+  <a>valid URL potentially surrounded by spaces</a>. To obtain the corresponding citation link, the 
+  value of the attribute must be <a>parsed</a> relative to the element's <a>node document</a>.
   User agents may allow users to follow such citation links, but they are primarily intended for
   private use (e.g., by server-side scripts collecting statistics about a site's use of quotations),
   not for readers.
@@ -1876,8 +1876,10 @@ affected by the heat source (upper left) and the food source (lower right).&lt;/
   descendants.
 
   The <dfn>datetime value</dfn> of a <{time}> element is the value of the element's
-  <code>datetime</code> content attribute, if it has one, or the
-  element's {{Node/textContent}}, if it does not.
+  <{time/datetime}> content attribute, if it has one, otherwise the concatenation of the contents of
+  all the {{Text}} nodes that are children of the <{time}> element (ignoring any other
+  nodes such as comments or elements), in <a>tree order</a>.
+
 
   The <a>datetime value</a> of a <{time}> element must match one of the following
   syntaxes.

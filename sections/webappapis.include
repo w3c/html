@@ -104,12 +104,12 @@
       the <a>environment settings object</a> has no <a>responsible document</a>.
 
   : An <dfn>API URL character encoding</dfn>
-  :: A character encoding used to encode URLs by APIs called by scripts that use this <a>environment
-      settings object</a>.
+  :: A character encoding used to encode URLs by APIs called by scripts that use this 
+      <a>environment settings object</a>.
 
   : An <dfn>API base URL</dfn>
-  :: An <a>absolute URL</a> used by APIs called by scripts that use this <a>environment settings
-      object</a> to resolve <a>relative URLs</a>.
+  :: An <a for="url">URL</a> used by APIs called by scripts that use this 
+      <a>environment settings object</a> to <a lt="parse a URL">parse URLs</a>.
 
   : An <a for="concept">origin</a>
   :: An instrument used in security checks.
@@ -574,10 +574,10 @@
     few seconds, prompt the user to either terminate the script or let it continue.
 
     <pre highlight="html">
-  &lt;script>
-  while (true) { /* loop */ }
-  &lt;/script>
-  </pre>
+      &lt;script>
+        while (true) { /* loop */ }
+      &lt;/script>
+    </pre>
   </div>
 
   User agents are encouraged to allow users to disable scripting whenever the user is prompted
@@ -686,8 +686,9 @@
   15. If <var>event</var> was canceled, then the error is <a for="script">handled</a>. Otherwise,
        the error is <a for="script">not handled</a>.
 
-       <p class="note">Returning true cancels event per <a>the event handler processing
-       algorithm</a>.</p>
+       <p class="note">
+         Returning true cancels <var>event</var> per <a>the event handler processing algorithm</a>.
+       </p>
 
 <h6 id="runtime-script-errors-in-documents">Runtime script errors in documents</h6>
 
@@ -2634,6 +2635,17 @@
   loading their <a>media data</a>, are stalled when these methods are invoked.
   </p>
 
+  To <dfn lt="optionally truncated|optionally truncating|optionally truncate a simple dialog string">optionally truncate a simple dialog string</dfn>
+  <var>s</var>, return either <var>s</var> itself or some string derived from <var>s</var> that is
+  shorter. User agents should not provide UI for displaying the elided portion of <var>s</var>, as
+  this makes it too easy for abusers to create dialogs of the form "Important security alert! Click
+  'Show More' for full details!".
+
+  <p class="note">For example, a user agent might want to only display the first 100 characters of a
+  message. Or, a user agent might replace the middle of the string with "&hellip;". These types of
+  modifications can be useful in limiting the abuse potential of unnaturally large,
+  trustworthy-looking system dialogs.</p>
+
   The <dfn method for="Window" lt="alert()|alert(message)"><code>alert(<var>message</var>)</code></dfn>
   method, when invoked, must run the following steps:
 
@@ -2680,8 +2692,10 @@
     the user the option to ignore all prompts, and would thus abort at this step whenever the method
     was invoked.)</li>
 
-    <li>Show the given <var>message</var> to the user, and ask the user to respond with a
-    positive or negative response.</li>
+    <li>Set <var>message</var> to the result of <a>optionally truncating</a> <var>message</var>.</li>
+
+    <li>Show <var>message</var> to the user, and ask the user to respond with a positive or
+    negative response.</li>
 
     <li><a state for="useragent">Pause</a> until the user responds either positively or negatively.</li>
 
@@ -2708,9 +2722,12 @@
     user the option to ignore all prompts, and would thus abort at this step whenever the method was
     invoked.)</li>
 
-    <li>Show the given <var>message</var> to the user, and ask the user to either respond
-    with a string value or abort. The response must be defaulted to the value given by
-    <var>default</var>.</li>
+    <li>Set <var>message</var> to the result of <a>optionally truncating</a> <var>message</var>.</li>
+
+    <li>Set <var>default</var> to the result of <a>optionally truncating</a> <var>default</var>.</li>
+
+    <li>Show <var>message</var> to the user, and ask the user to either respond with a string
+    value or abort. The response must be defaulted to the value given by <var>default</var>.</li>
 
     <li><a state for="useragent">Pause</a> while waiting for the user's response.</li>
 

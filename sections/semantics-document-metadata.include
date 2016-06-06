@@ -353,11 +353,11 @@
           attribute DOMString? crossOrigin;
           attribute DOMString rel;
           attribute DOMString rev;
-          readonly attribute DOMTokenList relList;
+          [SameObject, PutForwards=value]readonly attribute DOMTokenList relList;
           attribute DOMString media;
           attribute DOMString hreflang;
           attribute DOMString type;
-          [PutForwards=value] readonly attribute DOMTokenList sizes;
+          [SameObject, PutForwards=value] readonly attribute DOMTokenList sizes;
         };
         HTMLLinkElement implements LinkStyle;
       </pre>
@@ -1138,7 +1138,6 @@
 
   : <dfn state for="http-equiv" lt="refresh">Refresh state</dfn> (<code>http-equiv="refresh"</code>)
   :: This pragma acts as timed redirect.
-      <div class="impl">
         1. If another <{meta}> element with an <code>http-equiv</code> attribute in the
             <a state for="http-equiv" lt="refresh">Refresh state</a> has already been successfully processed (i.e., when it was inserted
             the user agent processed it and reached the step labeled <i>end</i>), then abort
@@ -1154,7 +1153,8 @@
             parsed; abort these steps. Otherwise, let <var>time</var> be the parsed number.
         7. <a>Collect a sequence of characters</a> that are <a>ASCII digits</a> and U+002E FULL STOP
             characters (.). Ignore any collected characters.
-        8. Let <var>url</var> be the address of the current page.
+        8. Let <var>url</var> be the <{meta}> element's <a>node document</a>'s 
+            <a for="url">URL</a>.
         9. If <var>position</var> is past the end of <var>input</var>, jump to the step labeled
             <i>end</i>.
         10. If the character in <var>input</var> pointed to by <var>position</var> is not a U+003B
@@ -1176,15 +1176,15 @@
         17. If the character in <var>input</var> pointed to by <var>position</var> is a U+0052 LATIN
             CAPITAL LETTER R character (R) or a U+0072 LATIN SMALL LETTER R character (r), then
             advance <var>position</var> to the next character. Otherwise, jump to the step labeled
-            <i>trim</i>.
+            <var>Parse</var>.
         18. If the character in <var>input</var> pointed to by <var>position</var> is s U+004C LATIN
             CAPITAL LETTER L character (L) or a U+006C LATIN SMALL LETTER L character (l), then
             advance <var>position</var> to the next character. Otherwise, jump to the step labeled
-            <i>trim</i>.
+            <var>Parse</var>.
         19. <a>Skip whitespace</a>.
         20. If the character in <var>input</var> pointed to by <var>position</var> is a U+003D
             EQUALS SIGN (=), then advance <var>position</var> to the next character. Otherwise, jump
-            to the step step labeled <i>trim</i>.
+            to the step step labeled <var>Parse</var>.
         21. <a>Skip whitespace</a>.
         22. <i>Skip quotes</i>: If the character in <var>input</var> pointed to by
             <var>position</var> is either a U+0027 APOSTROPHE character (') or U+0022 QUOTATION MARK
@@ -1196,40 +1196,34 @@
         24. If <var>quote</var> is not the empty string, and there is a character in <var>url</var>
             equal to <var>quote</var>, then truncate <var>url</var> at that character, so that it
             and all subsequent characters are removed.
-        25. <i>Trim</i>: Strip any trailing <a>space characters</a> from the end of <var>url</var>.
-        26. Strip any U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), and U+000D CARRIAGE RETURN (CR) characters from <var>url</var>.
-        27. <a>Parse</a> the <var>url</var> value, relative to the <{meta}> element. If this
-            fails, abort these steps.
-        28. Otherwise, let <var>parsed url</var> be the <a>resulting URL string</a>.
-        29. <i>End</i>: Perform one or more of the following steps:
-
+        25. <var>Parse</var>: <a>Parse</a> <var>url</var> relative to the <{meta}> element's 
+            <a>node document</a>. If that fails, abort these steps. Otherwise, let 
+            <var>urlRecord</var> be the <a>resulting URL record</a>.
+        26. <i>End</i>: Perform one or more of the following steps:
             * After the refresh has come due (as defined below), if the user has not canceled the
                 redirect and if the <{meta}> element's <a>node document</a>'s <a>active
                 sandboxing flag set</a> does not have the <a>sandboxed automatic features browsing
                 context flag</a> set, <a>navigate</a> the {{Document}}'s
-                <a>browsing context</a> to <var>parsed url</var>, with <a>replacement enabled</a>, and with
-                the {{Document}}'s <a>browsing context</a> as the
+                <a>browsing context</a> to <var>urlRecord</var>, with <a>replacement enabled</a>, 
+                and with the {{Document}}'s <a>browsing context</a> as the
                 <a>source browsing context</a>.
 
                 For the purposes of the previous paragraph, a refresh is said to have come due as
                 soon as the <em>later</em> of the following two conditions occurs:
-
-              * At least <var>time</var> seconds have elapsed since the document has
-                  <a>completely loaded</a>, adjusted to take into account user or user agent
-                  preferences.
-              * At least <var>time</var> seconds have elapsed since the <{meta}> element
-                  was <a for="document">inserted into the document</a>, adjusted to take into account
-                  user or user agent preferences.
-
+                * At least <var>time</var> seconds have elapsed since the document has
+                    <a>completely loaded</a>, adjusted to take into account user or user agent
+                    preferences.
+                * At least <var>time</var> seconds have elapsed since the <{meta}> element
+                    was <a for="document">inserted into the document</a>, adjusted to take into account
+                    user or user agent preferences.
             * Provide the user with an interface that, when selected, <a>navigates</a> a
-                <a>browsing context</a> to <var>parsed url</var>, with the {{Document}}'s
+                <a>browsing context</a> to <var>urlRecord</var>, with the {{Document}}'s
                 <a>browsing context</a> as the <a>source browsing context</a>.
             * Do nothing.
 
             In addition, the user agent may, as with anything, inform the user of any and all
             aspects of its operation, including the state of any timers, the destinations of any
             timed redirects, and so forth.
-      </div>
 
       For <{meta}> elements with an <code>http-equiv</code> attribute in the
       <a state for="http-equiv" lt="refresh">Refresh state</a>, the <code>content</code> attribute must have a value consisting either
