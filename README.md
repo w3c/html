@@ -31,8 +31,10 @@ And we try to follow these best-practices:
 * Try to line wrap at column 100 to keep lines easily readable
 * Please do not break definitions or links to definitions across line breaks (these are the exception to the above expectation). E.g., avoid this:
 
-   ```Line 1 | here is a <a>link that is
-      Line 2 | broken across lines</a> making it much harder to search/replace :(```
+   ```
+   Line 1 | here is a <a>link that is
+   Line 2 | broken across lines</a> making it much harder to search/replace :(
+   ```
 
 * Prefer markdown syntax for its brevity and readability. In particular:
    * Prefer `* unordered list item` vs. `<ul><li>unordered list item</li></ul>`
