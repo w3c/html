@@ -42,6 +42,22 @@ And we try to follow these best-practices:
    here is a <a>link that is sadly broken across
    lines</a> making it much harder to search/replace
    ```
+* Use [bikeshed definition list syntax](https://github.com/tabatkins/bikeshed/blob/master/docs/markup.md) where possible. E.g.,
+   * Prefer:
+
+      ```bikeshed
+      : define term
+      :: term's definition
+      ```
+      vs.
+
+      ```html
+      <dl>
+        <dt>define term</dt>
+        <dd>term's definition</dd>
+      </dl>
+      ```
+      (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
 * Prefer markdown syntax for its brevity and readability. In particular:
    * Prefer
    
@@ -55,7 +71,7 @@ And we try to follow these best-practices:
         <li>unordered list item</li>
       </ul>
       ```
-      * Prefer
+   * Prefer
 
       ```markdown
       1. ordered list item
@@ -68,21 +84,6 @@ And we try to follow these best-practices:
       </ol>
       ```
    * Prefer:
-
-      ```markdown
-      : define term
-      :: term's definition
-      ```
-      vs.
-
-      ```html
-      <dl>
-        <dt>define term</dt>
-        <dd>term's definition</dd>
-      </dl>
-      ```
-      (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
-   * Prefer:
       
       ```markdown
       newline separator
@@ -90,6 +91,7 @@ And we try to follow these best-practices:
       between paragraphs
       ```
       vs.
+      
       ```html
       <p>newline separator</p>
 
