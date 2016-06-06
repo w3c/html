@@ -71,7 +71,7 @@ And we try to follow these best-practices:
         <li>unordered list item</li>
       </ul>
       ```
-   * Prefer
+      ----
 
       ```markdown
       1. ordered list item
