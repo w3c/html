@@ -29,10 +29,16 @@ There are some conventions for linking to things. For example,
 And we try to follow these best-practices:
 * Line wrap at column `100` to keep lines easily readable
 * Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
-* Please do not break definitions or links to definitions across line breaks (these are the exception to the above expectation). E.g., avoid this:
+* Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
    ```html
-   here is a <a>link that is
-   broken across lines</a> making it much harder to search/replace :(
+   here is a
+   <a>link that is not broken across lines</a> 
+   making it easy to search/replace :)
+   ```
+   vs. 
+   ```html
+   here is a <a>link that is sadly broken across 
+   lines</a> making it much harder to search/replace
    ```
 * Prefer markdown syntax for its brevity and readability. In particular:
    * Prefer 
