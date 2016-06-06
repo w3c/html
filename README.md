@@ -42,8 +42,7 @@ And we try to follow these best-practices:
    here is a <a>link that is sadly broken across
    lines</a> making it much harder to search/replace
    ```
-* Use [bikeshed definition list syntax](https://github.com/tabatkins/bikeshed/blob/master/docs/markup.md) where possible. E.g.,
-   * Prefer:
+* Use [bikeshed definition list syntax](https://github.com/tabatkins/bikeshed/blob/master/docs/markup.md) where possible. E.g., prefer:
 
       ```bikeshed
       : define term
