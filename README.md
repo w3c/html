@@ -36,41 +36,45 @@ And we try to follow these best-practices:
    <a>link that is not broken across lines</a>
    making it easy to search/replace :)
    ```
-
    vs.
 
    ```html
    here is a <a>link that is sadly broken across
    lines</a> making it much harder to search/replace
    ```
-
 * Prefer markdown syntax for its brevity and readability. In particular:
    * Prefer
-      ```
+   
+      ```markdown
       * unordered list item
-      ```
+      ```  
       vs.
+
       ```html
       <ul>
         <li>unordered list item</li>
       </ul>
       ```
-   * Prefer
-      ```
+      * Prefer
+
+      ```markdown
       1. ordered list item
       ```
       vs.
+
       ```html
       <ol>
         <li>ordered list item</li>
       </ol>
       ```
    * Prefer:
-      ```
+
+      ```markdown
       : define term
       :: term's definition
       ```
       vs.
+
       ```html
       <dl>
         <dt>define term</dt>
@@ -79,7 +83,8 @@ And we try to follow these best-practices:
       ```
       (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
    * Prefer:
-      ```
+      
+      ```markdown
       newline separator
 
       between paragraphs
