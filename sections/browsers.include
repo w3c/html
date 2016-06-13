@@ -196,11 +196,11 @@
 
   </dl>
 
-  The <dfn><code>top</code></dfn> IDL attribute on the <code>Window</code> object
+  The <dfn attribute for="Window"><code>top</code></dfn> IDL attribute on the {{Window}} object
   of a {{Document}} in a <a>browsing context</a> <var>b</var> must return
-  the <code>WindowProxy</code> object of its <a>top-level browsing context</a> (which would be
-  its own <code>WindowProxy</code> object if it was a <a>top-level browsing context</a>
-  itself), if it has one, or its own <code>WindowProxy</code> object otherwise (e.g., if it was a
+  the {{WindowProxy}} object of its <a>top-level browsing context</a> (which would be
+  its own {{WindowProxy}} object if it was a <a>top-level browsing context</a>
+  itself), if it has one, or its own {{WindowProxy}} object otherwise (e.g., if it was a
   detached <a>nested browsing context</a>).
 
   The <dfn attribute for="Window"><code>parent</code></dfn> IDL attribute on the {{Window}} object
@@ -236,16 +236,17 @@
 
 <h5 id="navigating-auxiliary-browsing-contexts-in-the-dom">Navigating auxiliary browsing contexts in the DOM</h5>
 
-  The <dfn><code>opener</code></dfn> IDL attribute on the <code>Window</code>
-  object, on getting, must return the <code>WindowProxy</code> object of the <a>browsing
-  context</a> from which the current <a>browsing context</a> was created (its <a>opener
-  browsing context</a>), if there is one, if it is still available, and if the current
-  <a>browsing context</a> has not <i>disowned its opener</i>;
-  otherwise, it must return null. On setting, if the new value is null then the current
-  <a>browsing context</a> must <dfn>disown its opener</dfn>; if
-  the new value is anything else then the user agent must
-  call the \[[DefineOwnProperty]] internal method of the <code>Window</code> object, passing the
-  property name "<code>opener</code>" as the property key, and the Property Descriptor {
+  The <dfn attribute for="Window"><code>opener</code></dfn> IDL attribute on the {{Window}} object, 
+  on getting, must return the {{WindowProxy}} object of the <a>browsing context</a> from which the 
+  current <a>browsing context</a> was created (its <a>opener browsing context</a>), if there is one, 
+  if it is still available, and if the current <a>browsing context</a> has not 
+  <a>disowned its opener</a>; otherwise, it must return null. 
+  
+  On setting the {{Window/opener}} attribute, if the new value is null then the current
+  <a>browsing context</a> must <dfn lt="disowned its opener">disown its opener</dfn>; if the new 
+  value is anything else then the user agent must call the \[[DefineOwnProperty]] internal method of 
+  the {{Window}} object, passing the property name "<code>opener</code>" as the property key, and 
+  the Property Descriptor {
   \[[Value]]: <var>value</var>, \[[Writable]]: true, \[[Enumerable]]: true,
   \[[Configurable]]: true } as the property descriptor,
   where <var>value</var> is the new value.
@@ -1045,7 +1046,7 @@
   first page loaded in a <a>browsing context</a>. In that specific case, the {{Window}} object of
   the original <a scheme>about:blank</a> page is reused and gets a new {{Document}} object.</p>
 
-  The <dfn attribute for="Window"><code>defaultView</code></dfn> IDL attribute of the {{Document}}
+  The <dfn attribute for="Document"><code>defaultView</code></dfn> IDL attribute of the {{Document}}
   interface must return the {{Document}}'s <a>browsing context</a>'s {{WindowProxy}} object, if
   there is one, or null otherwise.
 
@@ -3053,10 +3054,10 @@
     "<code>#</code>").
     </dd>
 
-    <dt><var>location</var> . {{Location/assign(<var>url</var>)}}</dt>
+    <dt><var>location</var> . {{Location/assign()|assign}}(<var>url</var>)</dt>
     <dd>Navigates to the given URL.</dd>
 
-    <dt><var>location</var> . {{Location/replace(<var>url</var>)}}</dt>
+    <dt><var>location</var> . {{Location/replace()|replace}}(<var>url</var>)</dt>
     <dd>Removes the current page from the session history and navigates to the given URL.</dd>
 
     <dt><var>location</var> . {{Location/reload()}}</dt>
@@ -3123,12 +3124,10 @@
   The <code>href</code> attribute's setter must run these steps:
 
   <ol>
-    <li>Let <var>newURL</var> be the <a>resulting URL string</a> of <a>parsing</a> the given value relative to the <a>entry settings object</a>'s
-    <a>API base URL</a>.</li>
+    <li><a>Parse</a> the given value relative to the <a>entry settings object</a>. If that failed, throw 
+    a <code>TypeError</code> exception.</li>
 
-    <li>If that aborted with an error, throw a <code>TypeError</code> exception.</li>
-
-    <li><a><code>Location</code>-object-setter navigate</a> to <var>newURL</var>.</li>
+    <li><a><code>Location</code>-object-setter navigate</a> to the <a>resulting URL record</a>.</li>
   </ol>
 
   The <dfn attribute for="Location"><code>origin</code></dfn> attribute's getter must return
@@ -3357,18 +3356,10 @@
 
   <ol>
 
-    <li>
+    <li><a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If that failed, throw 
+    a "{{SyntaxError}}" {{DOMException}}.</li>
 
-    <a>Parse</a> <var>url</var>, relative to the
-    <a>API base URL</a> specified by the <a>entry settings object</a> and let
-    <var>parsedURL</var> be the <a>resulting URL string</a>.
-
-    If this is not successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these
-    steps.
-
-    </li>
-
-    <li><a><code>Location</code>-object navigate</a> to <var>parsedURL</var>.</li>
+    <li><a><code>Location</code>-object navigate</a> to the <a>resulting URL record</a>.</li>
 
   </ol>
 
@@ -3377,18 +3368,10 @@
 
   <ol>
 
-    <li>
+    <li><a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If that failed,
+    throw a "{{SyntaxError}}" {{DOMException}}.</li>
 
-    <a>Parse</a> <var>url</var>, relative to the
-    <a>API base URL</a> specified by the <a>entry settings object</a> and let
-    <var>parsedURL</var> be the <a>resulting URL string</a>.
-
-    If this is not successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these
-    steps.
-
-    </li>
-
-    <li><a><code>Location</code>-object navigate</a> to <var>parsedURL</var> with the
+    <li><a><code>Location</code>-object navigate</a> to the <a>resulting URL record</a> with the
     <var>replacement flag</var> set.</li>
 
   </ol>
@@ -4802,12 +4785,12 @@
     agent should ask the user to confirm that they wish to unload the document.
 
     The prompt shown by the user agent may include the string of the
-    {{BeforeUnloadEvent/returnValue}} attribute, or some leading subset thereof. (A user agent may
-    want to truncate the string to 1024 characters for display, for instance.)
+    {{BeforeUnloadEvent/returnValue}} attribute, or <a>optionally truncated</a>.
 
     The user agent must <a state for="useragent">pause</a> while waiting for the user's response.
 
-    If the user did not confirm the page navigation, then the user agent <dfn lt="refused to allow the document to be unloaded|refused to allow this document to be unloaded">refused to allow the document to be unloaded</dfn>.
+    If the user did not confirm the page navigation, then the user agent
+    <dfn lt="refused to allow the document to be unloaded|refused to allow this document to be unloaded">refused to allow the document to be unloaded</dfn>.
 
     </li>
 
