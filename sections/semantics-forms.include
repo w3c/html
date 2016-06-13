@@ -644,13 +644,6 @@
 
     <dd>
 
-    <p class="warning">
-    The status of <{label}> as a reassociatable element is "at risk". If testing during the Candidate Recommendation phase
-    shows that there are not at least two interoperable independent currently shipping browsers
-    implementing <{label}> as a reassociatable element,
-    it will be removed from this category.
-  </p>
-
     Denotes elements that have a <{formelements/form}> content attribute, and a
     matching {{FormIDLAttribute/form}} IDL attribute, that allow authors to specify an
     explicit <a>form owner</a>.
@@ -12485,27 +12478,19 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 <h4 id="apis-for-the-text-field-selections">APIs for text field selections</h4>
 
   The <{input}> and <{textarea}> elements define the following members in their
-  DOM interfaces for handling their selection:
+  DOM interfaces for handling their selection: {{HTMLInputElement/select()}}, 
+  {{HTMLInputElement/selectionStart}}, {{HTMLInputElement/selectionEnd}}, 
+  {{HTMLInputElement/selectionDirection}}, {{HTMLInputElement/setRangeText(replacement)}}, 
+  {{HTMLInputElement/setSelectionRange(start, end)}}  
 
-  <pre class="idl-ignore" data-no-idl data-highlight="webidl">
-    void {{selectionapielements/select()}};
-    attribute unsigned long selectionStart;
-    attribute unsigned long selectionEnd;
-    attribute DOMString selectionDirection;
-    void setRangeText(DOMString replacement);
-    void setRangeText(DOMString replacement, unsigned long start, unsigned long end, optional SelectionMode selectionMode = "preserve");
-    void setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction = "preserve");
-  </pre>
-
-  The <code>setRangeText</code> method uses the following
-  enumeration:
+  The {{HTMLInputElement/setRangeText()}} method uses the following enumeration:
 
   <pre class="idl" data-highlight="webidl" dfn-for="SelectionMode">
     enum SelectionMode {
       "select",
       "start",
       "end",
-      "preserve", // default
+      "preserve" // default
     };
   </pre>
 
@@ -12668,7 +12653,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   attribute as the second argument, and the new value as the third argument.
 
   The
-  <dfn method for="selectionapielements,HTMLInputElement,HTMLTextAreaElement"><code>setSelectionRange(<var>start</var>, <var>end</var>, <var>direction</var>)</code></dfn>
+  <dfn method for="selectionapielements,HTMLInputElement,HTMLTextAreaElement" lt="setSelectionRange()|setSelectionRange(start, end)|setSelectionRange(start, end, direction)"><code>setSelectionRange(<var>start</var>, <var>end</var>, <var>direction</var>)</code></dfn>
   method
   must set the selection of the text field to the sequence of characters starting with the character
   at the <var>start</var>th position (in logical order) and ending with the character at
@@ -12847,7 +12832,7 @@ var selectionText = control.value.substring(control.selectionStart, control.sele
 var oldStart = control.selectionStart;
 var oldEnd = control.selectionEnd;
 var oldDirection = control.selectionDirection;
-var prefix = "http://";
+var prefix = "https://";
 control.value = prefix + control.value;
 control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldDirection);
     </pre>
@@ -13168,21 +13153,17 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
 
   </dl>
 
-  <div class="impl">
-
   The
-  <dfn attribute for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>willValidate</code></dfn>
+  <dfn attribute for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>willValidate</code></dfn>
   IDL attribute must return
   true if an element is a <a>candidate for constraint validation</a>, and false otherwise
   (i.e., false if any conditions are <a>barring it from
   constraint validation</a>).
 
   The
-  <dfn method for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement" lt="setCustomValidity()|setCustomValidity(error)"><code>setCustomValidity(<var>message</var>)</code></dfn>,
+  <dfn method for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement" lt="setCustomValidity()|setCustomValidity(error)"><code>setCustomValidity(<var>message</var>)</code></dfn>,
   when invoked, must set the <a>custom validity error message</a> to the value of the given
   <var>message</var> argument.
-
-  </div>
 
   <div class="example">
     In the following example, a script checks the value of a form control each time it is edited,
@@ -13210,7 +13191,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   <div class="impl">
 
   The
-  <dfn attribute for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validity</code></dfn>
+  <dfn attribute for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validity</code></dfn>
   IDL attribute must return a {{ValidityState}} object that represents
   the <a>validity states</a> of the element.
   This object is <a>live</a>.
@@ -13258,7 +13239,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   :: None of the other conditions are true.
 
   When the
-  <dfn method for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>checkValidity()</code></dfn>
+  <dfn method for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>checkValidity()</code></dfn>
   method is
   invoked, if the element is a <a>candidate for constraint validation</a> and does not <a>satisfy its constraints</a>, the user agent must <a>fire a simple
   event</a> named <code>invalid</code> that is cancelable (but in this case
@@ -13266,7 +13247,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   without doing anything else.
 
   When the
-  <dfn method for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>reportValidity()</code></dfn>
+  <dfn method for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>reportValidity()</code></dfn>
   method is
   invoked, if the element is a <a>candidate for constraint validation</a> and does not <a>satisfy its constraints</a>, the user agent must: <a>fire a simple
   event</a> named <code>invalid</code> that is cancelable at the element,
@@ -13280,7 +13261,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   user, report a script error.
 
   The
-  <dfn attribute for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validationMessage</code></dfn>
+  <dfn attribute for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validationMessage</code></dfn>
   attribute must
   return the empty string if the element is not a <a>candidate for constraint validation</a>
   or if it is one but it <a>satisfies its constraints</a>; otherwise,
