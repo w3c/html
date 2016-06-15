@@ -635,21 +635,28 @@
 <h4 id="the-tabindex-attribute">The <code>tabindex</code> attribute</h4>
 
   The <dfn element-attr for="global"><code>tabindex</code></dfn> content attribute allows authors to
-  indicate that an element is supposed to be <a>focusable</a>, and
-  whether it is supposed to be reachable using <a>sequential focus navigation</a> and, if so,
-  what is to be the relative order of the element for the purposes of sequential focus navigation.
+  indicate that an element is supposed to be <a>focusable</a>,
+  whether it is supposed to be reachable using <a>sequential focus navigation</a> and, optionally,
+  to suggest where in the sequential focus navigation order the element appears.
+
+  <p class="warning">
+    Using a positive value for <{global/tabindex}> to specify the element's position in the
+    <a>sequential focus navigation</a> order interacts with the order of all focusable elements.
+    It is error-prone, and therefore not recommended. Authors should generally
+    leave elements to appear in their default order, specifying <code>tabindex="0"</code> to make an element <a>focusable</a>.
+  </p>
+
   The name "tab index" comes from the common use of the "tab" key to navigate through the focusable
-  elements. The term "tabbing" refers to moving forward through the focusable elements that can be
-  reached using sequential focus navigation.
+  elements. The term "tabbing" refers to moving between focusable elements using sequential focus navigation.
 
   When the attribute is omitted, the user agent applies defaults. (There is no way to make an
   element that is <a>being rendered</a> be not focusable at all without <a>disabling</a> it or making it <a>inert</a>.)
 
   The <code>tabindex</code> attribute, if specified, must have a value
-  that is a <a>valid integer</a>. Positive numbers specify the relative position of the
-  element's <a>focusable areas</a> in the <a>sequential focus
-  navigation order</a>, and negative numbers indicate that the control is to be unreachable by
-  <a>sequential focus navigation</a>.
+  that is a <a>valid integer</a>. Any valid value indicates that an element should be focusable. 
+  Positive number values also affect the relative position of the element's <a>focusable areas</a>
+  in the <a>sequential focus navigation order</a>, as defined below.
+  Negative number values indicate that the control should be unreachable by <a>sequential focus navigation</a>.
 
   <div class="impl">
 
@@ -658,8 +665,7 @@
   <a>focusable area</a>, as described in the previous section.
 
   If the <code>tabindex</code> attribute is specified on an element, it
-  must be parsed using the <a>rules for parsing integers</a>. The attribute's values, or lack
-  thereof, must be interpreted as follows:
+  must be parsed using the <a>rules for parsing integers</a>. The attribute's value must be interpreted as follows:
 
   <dl>
 
@@ -668,7 +674,8 @@
     <dd>
 
     The user agent should follow platform conventions to determine if the element's
-    <a>tabindex focus flag</a> is set and, if so, whether the element and any <a>focusable areas</a> that have the element as their <a>DOM anchor</a> can
+    <a>tabindex focus flag</a> is set and, if so, whether the element and any <a>focusable areas</a>
+    that have the element as their <a>DOM anchor</a> can
     be reached using <a>sequential focus navigation</a>, and if so, what their relative
     position in the <a>sequential focus navigation order</a> is to be.
 
@@ -677,8 +684,7 @@
 
     <ul>
 
-      <li><{a}> elements that have an <{links/href}>
-      attribute</li>
+      <li><{a}> elements that have an <{links/href}> attribute</li>
 
       <li><{link}> elements that have an <{link/href}> attribute</li>
 
@@ -696,6 +702,8 @@
       <li>Elements with a <{global/draggable}> attribute set, if that would
       enable the user agent to allow the user to begin a drag operations for those elements without
       the use of a pointing device</li>
+
+      <li><{audio}> and <{video}> elements with a <code>controls</code> attribute</li>
 
       <li><a>Editing hosts</a></li>
 
@@ -720,7 +728,7 @@
     element from the <a>sequential focus navigation order</a>.
 
     <p class="note">
-  One valid reason to ignore the requirement that sequential focus navigation not
+    One valid reason to ignore the requirement that sequential focus navigation not
     allow the author to lead to the element would be if the user's only mechanism for moving the
     focus is sequential focus navigation. For instance, a keyboard-only user would be unable to
     click on a text field with a negative <code>tabindex</code>, so that
@@ -749,7 +757,8 @@
     The user agent must set the element's <a>tabindex focus flag</a>, should allow the
     element and any <a>focusable areas</a> that have the element as their
     <a>DOM anchor</a> to be reached using sequential focus navigation, and should place the element
-    &mdash; referenced as <var>candidate</var> below &mdash; and the aforementioned <a>focusable areas</a> in the <a>sequential focus navigation</a>
+    &mdash; referenced as <var>candidate</var> below &mdash; and the aforementioned <a>focusable areas</a>
+    in the <a>sequential focus navigation</a>
     order so that, relative to other <a>focusable areas</a> in the
     <a>sequential focus navigation order</a>, they are:
 
