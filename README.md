@@ -18,13 +18,83 @@ For the multipage version, one can do as follows:
 1. Install [multipage](https://github.com/adrianba/multipage)
 2. Follow the instructions there to regenerate the HTML files
 
-There are some conventions for linking to things. For example, 
+There are some conventions for linking to things. For example,
 * For definitions of standard terms, use `<a>term known to bikeshed</a>`
 * For definitions of elements use `<{img}>`
 * For definitions of attributes use `<{img/alt}>`
 * For WebIDL terms use `{{HTMLImageElement/alt}}`
 * For Normative references use `[[!shortname]]` where `shortname` is the W3C "shortname" of the spec
 * For informative references use `[[shortname]]`
+
+And we try to follow these best-practices:
+* Line wrap at column `100` to keep lines easily readable
+* Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
+* Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
+
+   ```html
+   here is a
+   <a>link that is not broken across lines</a>
+   making it easy to search/replace :)
+   ```
+   vs.
+
+   ```html
+   here is a <a>link that is sadly broken across
+   lines</a> making it much harder to search/replace
+   ```
+* Use [bikeshed definition list syntax](https://github.com/tabatkins/bikeshed/blob/master/docs/markup.md) where possible. E.g., prefer:
+
+      ```bikeshed
+      : define term
+      :: term's definition
+      ```
+      vs.
+
+      ```html
+      <dl>
+        <dt>define term</dt>
+        <dd>term's definition</dd>
+      </dl>
+      ```
+      (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
+* Prefer markdown syntax for its brevity and readability. In particular:
+   
+      ```markdown
+      * unordered list item
+      ```  
+      vs.
+
+      ```html
+      <ul>
+        <li>unordered list item</li>
+      </ul>
+      ```
+      ----
+
+      ```markdown
+      1. ordered list item
+      ```
+      vs.
+
+      ```html
+      <ol>
+        <li>ordered list item</li>
+      </ol>
+      ```
+      ----
+      
+      ```markdown
+      newline separator
+
+      between paragraphs
+      ```
+      vs.
+      
+      ```html
+      <p>newline separator</p>
+
+      <p>between paragraphs</p>
+      ```
 
 ## Contributing to this Repository
 
