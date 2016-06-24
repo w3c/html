@@ -87,6 +87,10 @@
      top-level production. Classic scripts are affected by the <{script/charset}>, <{script/async}>,
      and <{script/defer}> attributes. Authors should omit the attribute, instead of redundantly
      giving a <a>JavaScript MIME type</a>.
+  * Setting the attribute to an <a>ASCII case-insensitive</a> match for the string
+     "<code>module</code>" means that the script is a <a>module script</a>, to be interpreted
+     according to the JavaScript <a>Module</a> top-level production. Module scripts are
+     not affected by the <{script/charset}> and <{script/defer}> attributes.
   * Setting the attribute to any other value means that the script is a
      <dfn lt="data block|data blocks">data block</dfn>, which is not processed. None of the
      <{script}> attributes (except <{script/type}> itself) have any effect on <a>data blocks</a>.
@@ -96,17 +100,18 @@
   <p class="note">The requirement that <a>data blocks</a> must be denoted using a
   <a>valid MIME type</a> is in place to avoid potential future collisions. If this specification
   ever adds additional types of <a for="concept">script</a>, they will be triggered by setting the
-  <{script/type}> attribute to something which is not a MIME type.
-  By using a valid MIME type now, you ensure that your data block
+  <{script/type}> attribute to something which is not a MIME type, like how the "<code>module</code>"
+  value denotes <a>module scripts</a>. By using a valid MIME type now, you ensure that your data block
   will not ever be reinterpreted as a different script type, even in future user agents.</p>
 
-  <a>Classic scripts</a> may either be embedded inline or may be imported
+  <a>Classic scripts</a> and <a>module scripts</a> may either be embedded inline or may be imported
   from an external file using the <dfn element-attr for="script"><code>src</code></dfn> attribute,
   which if specified gives the <a for="url">URL</a> of the external script resource to use. If <{script/src}>
   is specified, it must be a <a>valid non-empty URL potentially surrounded by spaces</a>. The
   contents of inline <{script}> elements, or the external script resource, must conform with the
-  requirements of the JavaScript specification's <a for="ecma">Script</a>
-  production for <a>classic scripts</a>. [[ECMA-262]]
+  requirements of the JavaScript specification's <a for="ecma">Script</a> or
+  <a>Module</a> productions, for <a>classic scripts</a> and <a>module scripts</a>
+  respectively. [[ECMA-262]]
 
   When used to include <a>data blocks</a>, the data must be embedded inline, the format of the data
   must be given using the <{script/type}> attribute, and the contents of the <{script}> element must
@@ -117,7 +122,7 @@
   The <dfn element-attr for="script"><code>charset</code></dfn> attribute gives the character
   encoding of the external script resource. The attribute must not be specified if the
   <{script/src}> attribute is not present, or if the script is not a <a>classic script</a>.
-  If the attribute is set, its value
+  (<a>Module scripts</a> are always interpreted as UTF-8.) If the attribute is set, its value
   must be an <a>ASCII case-insensitive</a> match for one of the
   <a lt="character encoding">labels</a> of an <a>encoding</a>, and must specify the same
   <a>encoding</a> as the <code>charset</code> parameter of the <a>Content-Type metadata</a> of the external
@@ -126,7 +131,7 @@
   The <dfn element-attr for="script"><code>async</code></dfn> and
   <dfn element-attr for="script"><code>defer</code></dfn> attributes are <a>boolean attributes</a>
   that indicate how the script should be executed. <a>Classic scripts</a> may specify
-  <{script/defer}> or <{script/async}>.
+  <{script/defer}> or <{script/async}>; <a>module scripts</a> may specify <{script/async}>.
 
   There are several possible modes that can be selected using these attributes, and depending on the
   script's <{script/type}>.
@@ -139,9 +144,16 @@
   present, then the script is fetched and evaluated immediately, blocking parsing until these are
   both complete.
 
+  For <a>module scripts</a>, if the <{script/async}> attribute is present, then the module script
+  and all its dependencies will be fetched <a>in parallel</a> to parsing, and the module script will
+  be evaluated as soon as it is available (potentially before parsing completes). Otherwise, the
+  module script and its dependencies will be fetched <a>in parallel</a> to parsing and evaluated
+  when the page has finished parsing. (The <{script/defer}> attribute has no effect on module
+  scripts.)
+
   This is all summarized in the following schematic diagram:
 
-  <img src="images/asyncdefer.svg" style="width: 80%; min-width: 690px;" alt="With &lt;script>, parsing is interrupted by fetching and execution. With &lt;script defer>, fetching is parallel to parsing and execution takes place after all parsing has finished. And with &lt;script async>, fetching is parallel to parsing but once it finishes parsing is interrupted to execute the script." />
+  <img src="images/asyncdefer.svg" style="width: 80%; min-width: 690px;" alt="With &lt;script>, parsing is interrupted by fetching and execution. With &lt;script defer>, fetching is parallel to parsing and execution takes place after all parsing has finished. And with &lt;script async>, fetching is parallel to parsing but once it finishes parsing is interrupted to execute the script. The story for &lt;script type=&quot;module&quot;> is similar to &lt;script defer>, but the dependencies will be fetched as well, and the story for &lt;script type=&quot;module&quot; async> is similar to &lt;script async> with the extra dependency fetching." />
 
   <p class="note">
     The exact processing details for these attributes are, for mostly historical
@@ -160,7 +172,11 @@
 
   The <dfn element-attr for="script"><code>crossorigin</code></dfn> attribute is a
   <a>CORS settings attribute</a>. For <a>classic scripts</a>, it controls whether error information
-  will be exposed, when the script is obtained from other <a for="concept">origins</a>.
+  will be exposed, when the script is obtained from other <a for="concept">origins</a>. For 
+  <a>module scripts</a>, it controls the <a>credentials mode</a> used for cross-origin requests.
+
+  <p class="note">Unlike <a>classic scripts</a>, <a>module scripts</a> require the use of the
+  <a>CORS protocol</a> for cross-origin fetching.</p>
 
   The <dfn element-attr for="script"><code>nonce</code></dfn> attribute represents a
   cryptographic nonce ("number used once") which can be used by <em>Content Security Policy </em> to
@@ -269,6 +285,62 @@ o............A....e
     </pre>
   </div>
 
+  <div class="example">
+    The following sample shows how a <{script}> element can be used to include an external
+    <a>module script</a>.
+
+    <pre highlight="html">
+      &lt;script type="module" src="app.js">&lt;/script>
+    </pre>
+
+    This module, and all its dependencies (expressed through JavaScript `import` statements in the
+    source file), will be fetched. Once the entire resulting module tree has been imported, and the
+    document has finished parsing, the contents of `app.js` will be evaluated.
+  </div>
+
+  <div class="example">
+    The following sample shows how a <{script}> element can be used to write an inline
+    <a>module script</a> that performs a number of substitutions on the document's text, in order to
+    make for a more interesting reading experience (e.g. on a news site): [[XKCD-1288]]
+
+    <pre highlight="html">
+      &lt;script type="module">
+       import { walkAllTextNodeDescendants } from "./dom-utils.js";
+
+       const substitutions = new Map([
+         ["witnesses", "these dudes I know"]
+         ["allegedly", "kinda probably"]
+         ["new study", "Tumblr post"]
+         ["rebuild", "avenge"]
+         ["space", "spaaace"]
+         ["Google glass", "Virtual Boy"]
+         ["smartphone", "Pokédex"]
+         ["electric", "atomic"]
+         ["Senator", "Elf-Lord"]
+         ["car", "cat"]
+         ["election", "eating contest"]
+         ["Congressional leaders", "river spirits"]
+         ["homeland security", "Homestar Runner"]
+         ["could not be reached for comment", "is guilty and everyone knows it"]
+       ]);
+
+       function substitute(textNode) {
+         for (const [before, after] of substitutions.entries()) {
+           textNode.data = textNode.data.replace(new RegExp(`\\b${before}\\b`, "ig"), after);
+         }
+       }
+
+       walkAllTextNodeDescendants(document.body, substitute);
+      &lt;/script>
+    </pre>
+
+    Some notable features gained by using a <a>module script</a> include the ability to import
+    functions from other JavaScript modules, strict mode by default, and how top-level declarations
+    do not introduce new properties onto the <a>global object</a>. Also note that no matter where
+    this <{script}> element appears in the document, it will not be evaluated until both document
+    parsing has complete and its dependency (`dom-utils.js`) has been fetched and evaluated.
+  </div>
+
   <h5 id="script-processing-model">Processing model</h5>
 
   A <{script}> element has several associated pieces of state.
@@ -295,9 +367,10 @@ o............A....e
   elements that are also <a>"parser-inserted"</a>, to let the parser know when to execute the
   script.
 
-  The fifth is <dfn>the script's type</dfn>, which is "<code>classic</code>". It is
-  determined when the script is <a>prepared</a>, based on the <{script/type}> attribute of the
-  element at that time. Initially, <{script}> elements must have this flag unset.
+  The fifth is <dfn>the script's type</dfn>, which is either "<code>classic</code>" or 
+  "<code>module</code>". It is determined when the script is <a>prepared</a>, based on the 
+  <{script/type}> attribute of the element at that time. Initially, <{script}> elements must have 
+  this flag unset.
 
   The sixth is a flag indicating whether or not the script is <dfn>from an external file</dfn>. It
   is determined when the script is <a>prepared</a>, based on the <{script/src}> attribute of the
@@ -305,7 +378,7 @@ o............A....e
 
   Finally, a <{script}> element has <dfn>the script's script</dfn>, which is a
   <{script}> resulting from <a>preparing</a> the element. This is set asynchronously after the
-  <a>classic script</a> is fetched. Once it is set, either to a <{script}> in the
+  <a>classic script</a> or module tree is fetched. Once it is set, either to a <{script}> in the
   case of success or to null in the case of failure, the fetching algorithms will note that
   <dfn>the script is ready</dfn>, which can trigger other actions. The user agent must
   <a>delay the load event</a> of the element's <a>node document</a> until
@@ -373,6 +446,8 @@ o............A....e
 
       * If <var>the script block's type string</var> is an <a>ASCII case-insensitive</a> match for
          any <a>JavaScript MIME type</a>, <a>the script's type</a> is "<code>classic</code>".
+      * If <var>the script block's type string</var> is an <a>ASCII case-insensitive</a> match for
+         the string "<code>module</code>", <a>the script's type</a> is "<code>module</code>".
       * If neither of the above conditions are true, then abort these steps at this point. No script
          is executed.
   7. If <var>was-parser-inserted</var> is true, then flag the element as <a>"parser-inserted"</a>
@@ -411,6 +486,9 @@ o............A....e
        If the <{script}> element does not have a <{script/charset}> attribute, or if
        <a>getting an encoding</a> failed, let <var>encoding</var> be the same as
        <a lt="encoding">the encoding of the document itself</a>.
+
+       <p class="note">If <a>the script's type</a> is "<code>module</code>", this encoding will be 
+       ignored.</p>
   14. Let <var>CORS setting</var> be the current state of the element's <{script/crossorigin}>
        content attribute.
   15. If the <{script}> element has a <{script/nonce}> attribute, then let
@@ -438,11 +516,30 @@ o............A....e
              <dd><a>Fetch a classic script</a> given <var>url</var>, <var>CORS setting</var>,
              <var>cryptographic nonce</var>, <var>parser state</var>, <var>settings</var>, and
              <var>encoding</var>.
+
+             <dt><code>"module"</code></dt>
+             <dd>
+                   1. Let <var>credentials mode</var> be determined by switching on
+                       <var>CORS setting</var>:
+                       <dl class="switch">
+                         <dt><a state for="cors">No CORS</a></dt>
+                         <dd><code>"omit"</code></dd>
+
+                         <dt><a state for="cors">Anonymous</a></dt>
+                         <dd><code>"same-origin"</code></dd>
+
+                         <dt><a state for="cors">Use Credentials</a></dt>
+                         <dd><code>"include"</code></dd>
+                       </dl>
+                   2. <a>Fetch a module script tree</a> given <var>url</var>,
+                       <var>credentials mode</var>, <var>cryptographic nonce</var>,
+                       <var>parser state</var>, "<code>script</code>", and <var>settings</var>.
+             </dd>
            </dl>
            When the chosen algorithm asynchronously completes, set <a>the script's script</a> to the
            result. At that time, <a>the script is ready</a>.
 
-           For performance reasons, user agents may start fetching the classic script
+           For performance reasons, user agents may start fetching the classic script or module tree
            (as defined above) as the <{script/src}> attribute is set, instead, in the hope that the
            element will be <a for="document">inserted into the document</a> (and that the
            <{script/crossorigin}> attribute won't change value in the meantime). Either way, once
@@ -464,6 +561,20 @@ o............A....e
                   2. Set <a>the script's script</a> to <var>script</var>.
                   3. <a>The script is ready</a>.
              </dd>
+
+             <dt><code>"module"</code></dt>
+             <dd>
+                  1. Let <var>base URL</var> be the <{script}> element's <a>node document</a>'s
+                      <a>document base URL</a>.
+                  2. Let <var>script</var> be the result of <a>creating a module script</a> using
+                      <var>source text</var>, <var>settings</var>, <var>base URL</var>, and
+                      <var>CORS setting</var>.
+                  3. If this returns null, set <a>the script's script</a> to null and abort these
+                      substeps; <a>the script is ready</a>.
+                  4. <a>Fetch the descendants</a> of <var>script</var>. When this asynchronously
+                      completes, set <a>the script's script</a> to the result. At that time,
+                      <a>the script is ready</a>.
+             </dd>
            </dl>
   20. Then, follow the first of the following options that describes the situation:
        <dl class="switch">
@@ -484,6 +595,13 @@ o............A....e
                <td>`"classic"`
                <td>yes
                <td>yes
+               <td>no
+               <td>element flagged as <a>"parser-inserted"</a>
+             </tr>
+             <tr>
+               <td><code>"module"</code>
+               <td>yes or no
+               <td>n/a
                <td>no
                <td>element flagged as <a>"parser-inserted"</a>
              </tr>
@@ -546,6 +664,13 @@ o............A....e
                <td>no
                <td><a>"non-blocking"</a> flag not set on element
              </tr>
+             <tr>
+               <td><code>"module"</code>
+               <td>yes or no
+               <td>n/a
+               <td>no
+               <td><a>"non-blocking"</a> flag not set on element
+             </tr>
            </tbody>
          </table>
          Add the element to the end of the <dfn>list of scripts that will execute in order
@@ -588,6 +713,13 @@ o............A....e
                <td>yes or no
                <td>n/a
              </tr>
+             <tr>
+               <td><code>"module"</code>
+               <td>yes or no
+               <td>n/a
+               <td>yes or no
+               <td>n/a
+             </tr>
            </tbody>
          </table>
          The element must be added to the
@@ -611,7 +743,7 @@ o............A....e
            </thead>
            <tbody>
              <tr>
-               <td>`"classic"`
+               <td><code>"classic"</code> or <code>"module"</code>
                <td>no
                <td>yes or no
                <td>yes or no
@@ -654,7 +786,7 @@ o............A....e
       is not the {{Document}} of the parser that created the element, then abort these steps.
   2. If <a>the script's script</a> is null, <a>fire a simple event</a> named <code>error</code> at the element,
       and abort these steps.
-  3. If the script is <a>from an external file</a>, then
+  3. If the script is <a>from an external file</a>, or <a>the script's type</a> is "<code>module</code>", then
       increment the <a>ignore-destructive-writes counter</a> of the <{script}> element's
       <a>node document</a>. Let <var>neutralized doc</var> be that {{Document}}.
   4. Let <var>old script element</var> be the value to which the <{script}> element's
@@ -672,6 +804,12 @@ o............A....e
              2. <a>Run the classic script</a> given by <a>the script's script</a>.
         </dd>
 
+        <dt><code>"module"</code></dt>
+        <dd>
+             1. Set the <{script}> element's <a>node document</a>'s {{Document/currentScript}}
+                 attribute to null.
+             2. <a>Run the module script</a> given by <a>the script's script</a>.
+        </dd>
   6. Set the <{script}> element's <a>node document</a>'s {{Document/currentScript}} object to
       <var>old script element</var>.
   7. Decrement the <a>ignore-destructive-writes counter</a> of <var>neutralized doc</var>, if it was

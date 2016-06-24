@@ -69,6 +69,25 @@
   :: A flag which, if set, means that error information will not be provided for errors in this
     script (used to mute errors for cross-origin scripts, since that can leak private information).
 
+  A <dfn>module script</dfn> additionally has:
+
+  : A <dfn>module record</dfn>
+  :: A <a>Source Text Module Record</a> representing the parsed module, ready to be evaluated.
+
+  : A <dfn>base URL</dfn>
+  :: A base URL used for resolving module specifiers when <a>resolving a module specifier</a>. This
+      will either be the URL from which the script was obtained, for external module scripts, or the
+      <a>document base URL</a> of the containing document, for inline module scripts.
+
+  : A <a>credentials mode</a>
+  :: A <a>credentials mode</a> used to fetch imported modules.
+
+  : A <dfn>cryptographic nonce</dfn>
+  :: A <a>cryptographic nonce</a> used to fetch imported modules.
+
+  : A <dfn>parser state</dfn>
+  :: The <a>parser metadata</a> used to fetch imported modules.
+
   <hr />
 
   An <dfn>environment settings object</dfn> specifies algorithms for obtaining the following:
@@ -76,10 +95,13 @@
   : A <dfn>realm execution context</dfn>
   :: A <a>JavaScript execution context</a> shared by all <{script}> elements that use this settings
       object, i.e. all scripts in a given <a>JavaScript realm</a>. When we <a>run a classic
-      script</a> this execution context becomes the top of the
+      script</a> or <a>run a module script</a>, this execution context becomes the top of the
       <a>JavaScript execution context stack</a>, on top of which another execution context specific
-      to the script in question is pushed. (This setup ensures <a>ParseScript</a>
-      knows which Realm to use.)
+      to the script in question is pushed. (This setup ensures <a>ParseScript</a> and
+      </a>ModuleEvaluation</a> know which Realm to use.)
+
+  : A <a>module map</a>
+  :: Used when importing JavaScript modules.
 
   : A <dfn>responsible browsing context</dfn>
   :: A <a>browsing context</a> that is assigned responsibility for actions taken by the scripts that
@@ -219,6 +241,129 @@
       text</var> and <var>settings object</var>.
   9. Asynchronously complete this algorithm with <var>script</var>.
 
+  To <dfn lt="fetching a module script tree|fetch a module script tree">fetch a module script tree</dfn>
+  given a <var>url</var>, a <var>credentials mode</var>, a
+  <var>cryptographic nonce</var>, a <var>parser state</var>, a <var>destination</var>, a
+  <var>fetch client settings object</var>, and an optional <var>ancestor list</var>, run these
+  steps. The algorithm will asynchronously complete with either null (on failure) or a new
+  <a>module script</a> (on success).
+
+  1. If <var>ancestor list</var> is not given, let it be an empty list.
+  2. If <var>module map settings object</var> is not given, let it be <var>fetch client settings
+      object</var>.
+  3. <a>Fetch a single module script</a> given <var>url</var>, <var>credentials mode</var>,
+      <var>cryptographic nonce</var>, <var>parser state</var>, <var>destination</var>, and
+      <var>module map settings object</var>. If the caller of this algorithm specified custom
+      <a>set up the request</a> or <a>process the response</a> steps, pass those along while
+      <a>fetching a single module script</a>.
+  4. Return from this algorithm and run the following steps when <a>fetching a single module
+      script</a> asynchronously completes with <var>result</var>:
+  5. If <var>result</var> is null, asynchronously complete this algorithm with null and abort these
+      steps.
+  6. Otherwise, <var>result</var> is a <a>module script</a>. <a>Fetch the descendants</a> of
+      <var>result</var> given <var>destination</var> and an ancestor list obtained by appending
+      <var>url</var> to <var>ancestor list</var>.
+  7. When <a>fetching the descendants of a module script</a> asynchronously completes with
+      <var>descendants result</var>, asynchronously complete this algorithm with <var>descendants
+      result</var>.
+
+  <hr />
+
+  The following algorithms are used when <a>fetching a module script tree</a>, and are not meant to
+  be used directly by other specifications (or by other parts of this specification).
+
+  To <dfn lt="fetching the descendants of a module script|fetch the descendants of a module script|fetch the descendants">fetch the descendants of a module script</dfn>
+  <var>module script</var>, given a
+  <var>destination</var> and an <var>ancestor list</var>, run these steps. The algorithm will
+  asynchronously complete with either null (on failure) or with <var>module script</var>
+  (on success).
+
+  1. Let <var>record</var> be <var>module script</var>'s <a>module record</a>.
+  2. If <var>record</var>.\[[RequestedModules]] is empty, asynchronously complete this algorithm
+      with <var>module script</var>.
+  3. Let <var>urls</var> be a new empty list.
+  4. For each string <var>requested</var> of <var>record</var>.\[[RequestedModules]]:
+      1. Let <var>url</var> be the result of <a>resolving a module specifier</a> given
+          <var>module script</var> and <var>requested</var>.
+      2. If the result is error:
+          1. Let <var>error</var> be a new {{TypeError}} exception.
+          2. <a>Report the exception</a> <var>error</var> for <var>module script</var>.
+          3. Abort this algorithm, and asynchronously complete it with null.
+      3. Otherwise, if <var>url</var> is not in <var>ancestor list</var>, add <var>url</var> to
+          <var>urls</var>.
+  5. For each <var>url</var> in <var>urls</var>, <a>fetch a module script tree</a> given
+      <var>url</var>, <var>module script</var>'s <a>credentials mode</a>,
+      <var>module script</var>'s <a>cryptographic nonce</a>, <var>module script</var>'s
+      <a>parser state</a>, <var>destination</var>, <var>module script</var>'s
+      <a>settings object</a>, and <var>ancestor list</var>.
+
+      <p class="note">It is intentional that no custom <a>set up the request</a> or <a>process the
+      response</a> steps are passed along here. Those hooks only apply to the top-level fetch at
+      the root of the module script tree.</p>
+
+      If any of the <a>fetch a module script tree</a> invocations asynchronously complete with
+      null, the user agent may <a>terminate</a> any or all of the other fetches, and must then
+      asynchronously complete this algorithm with null.
+
+      Once all of the <a>fetch a module script tree</a> invocations asynchronously complete with a
+      <a>module script</a>, asynchronously complete this algorithm with <var>module script</var>.
+
+  To <dfn lt="fetching a single module script|fetch a single module script">fetch a single module script</dfn>,
+  given a <var>url</var>, a
+  <var>credentials mode</var>, a <var>cryptographic nonce</var>, a <var>parser state</var>,
+  a <var>destination</var>, and a <var>settings object</var>, run these steps. The algorithm will
+  asynchronously complete with either null (on failure) or a <a>module script</a> (on success).
+
+  1. Let <var>module map</var> be <var>settings object</var>'s <a>module map</a>.
+  2. If <var>module map</var> contains an entry with key <var>url</var> whose value is
+      "<code>fetching</code>", wait (<a>in parallel</a>) until that entry's value changes, then
+      proceed to the next step.
+  3. If <var>module map</var> contains an entry with key <var>url</var>, asynchronously complete
+      this algorithm with that entry's value, and abort these steps.
+  4. Create an entry in <var>module map</var> with key <var>url</var> and value
+      "<code>fetching</code>".
+  5. Let <var>request</var> be a new <a>request</a> whose <a for="request">url</a> is
+      <var>url</var>, <a>destination</a> is <var>destination</var>, <a for="request">type</a> is
+      "<code>script</code>", <a for="request">mode</a> is "<code>cors</code>",
+      <a>credentials mode</a> is <var>credentials mode</var>, <a>cryptographic nonce metadata</a>
+      is <var>cryptographic nonce</var>, <a>parser metadata</a> is <var>parser state</var> and
+      <a>client</a> is <var>settings object</var>.
+  6. If the caller specified custom steps to <a>set up the request</a>, perform them on
+      <var>request</var>.
+  7. <a>Fetch</a> <var>request</var>.
+  8. Return from this algorithm, and run the remaining steps as part of the fetch's
+      <a>process response</a> for the <a>response</a> <var>response</var>.
+
+      <p class="note"><var>response</var> is always <a>CORS-same-origin</a>.</p>
+  9. If any of the following conditions are met, set the value of the entry in
+      <var>module map</var> whose key is <var>url</var> to null, asynchronously complete this
+      algorithm with null, and abort these steps:
+
+      * <var>response</var>'s <a for="response">type</a> is "<code>error</code>"
+      * <var>response</var>'s <a>status</a> is not an <a>ok status</a>
+      * The result of <a>extracting a MIME type</a> from <var>response</var>'s
+         <a for="response">header list</a> (ignoring parameters) is not a
+         <a>JavaScript MIME type</a>.
+
+         <p class="note">For historical reasons, <a>fetching a classic script</a> does not include
+         MIME type checking. In contrast, module scripts will fail to load if they are not of a
+         correct MIME type.</p>
+      * The caller specified custom steps to <a>process the response</a>, which when performed on
+         <var>response</var> return false.
+  10. Let <var>source text</var> be the result of <a>UTF-8 decoding</a> <var>response</var>'s
+       <a for="response">body</a>.
+  11. Let <var>module script</var> be the result of <a>creating a module script</a> given
+       <var>source text</var>, <var>settings object</var>, <var>response</var>'s
+       <a for="response">url</a>, <var>credentials mode</var>, and <var>cryptographic nonce</var>.
+  12. Set the value of the entry in <var>module map</var> whose key is <var>url</var> to
+       <var>module script</var>, and asynchronously complete this algorithm with
+       <var>module script</var>.
+
+       <p class="note">It is intentional that the <a>module map</a> is keyed by the
+       <a>request URL</a>, whereas the <a>base URL</a> for the <a>module script</a> is set to the
+       <a>response URL</a>. The former is used to deduplicate fetches, while the latter is used for
+       URL resolution.
+
 <h5 id="sec-creating-scripts"><dfn lt="create a script|creating scripts">Creating scripts</dfn></h5>
 
   To <dfn lt="create a classic script|creating a classic script">create a classic script</dfn>,
@@ -235,6 +380,30 @@
   4. If the <var>muted errors</var> flag was set, then set <var>script</var>'s <a>muted errors</a>
       flag.
   5. Return <var>script</var>.
+
+  To <dfn lt="creating a module script|create a module script">create a module script</dfn>,
+  given some script source, an <a>environment settings object</a>, a script base URL,
+  a credentials mode, a cryptographic nonce, and a parser state:
+
+  1. Let <var>script</var> be a new <a>module script</a> that this algorithm will subsequently
+      initialise.
+  2. Set <var>script</var>'s <a>settings object</a> to the <a>environment settings object</a>
+      provided.
+  3. Let <var>realm</var> be the provided <a>environment settings object</a>'s <a>Realm</a>.
+  4. If <a>scripting is disabled</a> for the given <a>environment settings object</a>'s
+      <a>responsible browsing context</a>, then let <var>script source</var> be the empty string.
+      Otherwise, let <var>script source</var> be the provided script source.
+  5. Let <var>result</var> be <a>ParseModule</a>(<var>script source</var>, <var>realm</var>,
+      <var>script</var>).
+  6. If <var>result</var> is a <a for="ecma">List</a> of errors, <a>report the exception</a> given
+      by the first element of <var>result</var> for <var>script</var>, return null, and abort these
+      steps.
+  7. Set <var>script</var>'s <a>module record</a> to <var>result</var>.
+  8. Set <var>script</var>'s <a>base URL</a> to the script base URL provided.
+  9. Set <var>script</var>'s <a>credentials mode</a> to the credentials mode provided.
+  10. Set <var>script</var>'s <a>cryptographic nonce</a> to the cryptographic nonce provided.
+  11. Set <var>script</var>'s <a>parser state</a> to the parser state.
+  12. Return <var>script</var>.
 
 <h5 id="section-calling-scripts">Calling scripts</h5>
 
@@ -270,6 +439,29 @@
        <var>evaluationStatus</var>.\[[value]]. Otherwise, script execution was unsuccessful, either
        because an error occurred during parsing, or an exception occurred during evaluation, or
        because it was <a>aborted prematurely</a>.
+
+  To <dfn lt="run a module script|run the module script">run a module script</dfn> given a
+  <a>module script</a> <var>s</var>:
+
+  1. Let <var>settings</var> be the <a>settings object</a> of <var>s</var>.
+  2. <a>Check if we can run script</a> with <var>settings</var>. If this returns "do not run" then
+      abort these steps.
+  3. Let <var>record</var> be <var>s</var>'s <a>module record</a>.
+  4. Let <var>instantiationStatus</var> be
+      <var>record</var>.<a>ModuleDeclarationInstantiation</a>().
+
+      <p class="note">This step will recursively instantiate all of the module's dependencies.</p>
+  5. If <var>instantiationStatus</var> is an abrupt completion, <a>report the exception</a> given by
+      <var>instantiationStatus</var>.\[[Value]] for <var>s</var> and abort these steps.
+  6. <a>Prepare to run script</a> given <var>settings</var>.
+  7. Let <var>evaluationStatus</var> be <var>record</var>.<a>ModuleEvaluation</a>().
+
+     <p class="note">This step will recursively evaluate all of the module's dependencies.</p>
+  8. If <var>evaluationStatus</var> is an abrupt completion, <a>report the exception</a> given by
+      <var>evaluationStatus</var>.\[[Value]] for <var>s</var>. (Do not perform this step if
+      <a>ScriptEvaluation</a> fails to complete as a result of the user agent <a>aborting the
+      running script</a>.)
+  9. <a>Clean up after running script</a> with <var>settings</var>.
 
   The steps to <dfn>check if we can run script</dfn> with an <a>environment settings object</a>
   <var>settings</var> are as follows. They return either "run" or "do not run".
@@ -309,7 +501,7 @@
   event listeners registered.
   </p>
 
-  The <dfn>running script</dfn> is the script in the \[[HostDefined]] field in the Script
+  The <dfn>running script</dfn> is the script in the \[[HostDefined]] field in the ScriptOrModule
   component of the <a>running JavaScript execution context</a>.
 
   Each <a>unit of related similar-origin browsing contexts</a> has a <dfn>global script
@@ -323,7 +515,7 @@
 
 <h5 id="realms-settings-objects-global-objects">Realms, settings objects, and global objects</h5>
 
-  A <dfn>global object</dfn> is a JavaScript object that is the \[[globalObject]] field of a
+  A <dfn>global object</dfn> is a JavaScript object that is the \[[GlobalObject]] field of a
   <a>JavaScript realm</a>.
 
   <p class="note">In this specification, all <a>JavaScript realms</a> are <a>initialized</a> with
@@ -334,7 +526,7 @@
 
   * A <a>JavaScript realm</a> has a \[[HostDefined]] field, which contains <dfn>the Realm's settings
      object</dfn>.
-  * A <a>JavaScript realm</a> has a \[[globalObject]] field, which contains <dfn>the Realm's global
+  * A <a>JavaScript realm</a> has a \[[GlobalObject]] field, which contains <dfn>the Realm's global
      object</dfn>.
   * Each <a>global object</a> in this specification is created during the
      <a lt="InitializeHostDefinedRealm">initialization</a> of a corresponding
@@ -343,7 +535,7 @@
      <a>environment settings object</a>, known as its <a>relevant settings object</a>.
   * An <a>environment settings object</a>'s <a>realm execution context</a>'s Realm component is
      <dfn>the environment settings object's Realm</dfn>.
-  * An <a>environment settings object</a>'s <a>Realm</a> then has a \[[globalObject]] field, which
+  * An <a>environment settings object</a>'s <a>Realm</a> then has a \[[GlobalObject]] field, which
      contains <dfn>the environment settings object's global object</dfn>.
 
   When defining algorithm steps throughout this specification, it is often important to indicate
@@ -504,11 +696,11 @@
 
   The <dfn>incumbent settings object</dfn> is determined as follows:
 
-  1. Let <var>script</var> be the result of JavaScript's <a>GetActiveScriptOrModule</a>()
+  1. Let <var>scriptOrModule</var> be the result of JavaScript's <a>GetActiveScriptOrModule</a>()
       abstract operation.
-  2. If <var>script</var> is null, abort these steps; there is no <a>incumbent settings
+  2. If <var>scriptOrModule</var> is null, abort these steps; there is no <a>incumbent settings
       object</a>.
-  3. Return the <a>settings object</a> of the <{script}> in <var>script</var>'s
+  3. Return the <a>settings object</a> of the <{script}> in <var>scriptOrModule</var>'s
       \[[HostDefined]] field.
 
   Then, the <dfn>incumbent Realm</dfn> is the <a>Realm</a> of the <a>incumbent settings object</a>.
@@ -560,7 +752,7 @@
   Although the JavaScript specification does not account for this possibility, it's sometimes
   necessary to
   <dfn lt="abort a running script|aborted the running script|aborting the running script|aborted prematurely|abort the script">abort a running script</dfn>.
-  This causes any <a>ScriptEvaluation</a> to cease immediately, emptying
+  This causes any <a>ScriptEvaluation</a> or <a>ModuleEvaluation</a> to cease immediately, emptying
   the <a>JavaScript execution context stack</a> without triggering any of the normal mechanisms like
   <code>finally</code> blocks. [[ECMA-262]]
 
@@ -634,7 +826,57 @@
           <var>job</var>, using the elements of <var>arguments</var> as its arguments.
       4. <a>Clean up after running script</a> with <var>settings</var>.
       5. If <var>result</var> is an abrupt completion, <a>report the exception</a> given by
-          <var>result</var>.\[[value]].
+          <var>result</var>.\[[Value]].
+
+<h5 id="integration-with-the-javascript-module-system">Integration with the JavaScript module system</h5>
+
+  The JavaScript specification defines a syntax for modules, as well as some host-agnostic parts of
+  their processing model. This specification defines the rest of their processing model: how the
+  module system is bootstrapped, via the <{script}> element with <{script/type}> attribute set to
+  "<code>module</code>", and how modules are fetched, resolved, and executed. [[ECMA-262]]
+
+  <p class="note">Although the JavaScript specification speaks in terms of "scripts" versus
+  "modules", in general this specification speaks in terms of <a>classic scripts</a> versus
+  <a>module scripts</a>, since both of them use the <{script}> element.</p>
+
+  A <dfn>module map</dfn> is a map of <a>absolute URLs</a> to values that are either a <a>module
+  script</a>, null, or a placeholder value "<code>fetching</code>". <a>Module maps</a> are used to
+  ensure that imported JavaScript modules are only fetched, parsed, and evaluated once per
+  {{Document}} or {{Worker}}.
+
+  To <dfn lt="resolve a module specifier|resolving a module specifier">resolve a module specifier</dfn>
+  given a <a>module script</a> <var>script</var> and a string <var>specifier</var>, perform the
+  following steps. It will return either an <a>absolute URL</a> or failure.
+
+  1. Apply the <a>URL parser</a> to <var>specifier</var>. If the result is not failure, return the
+      result.
+  2. If <var>specifier</var> does not start with the character U+002F SOLIDUS (/), the two-character
+      sequence U+002E FULL STOP, U+002F SOLIDUS (./), or the three-character sequence
+      U+002E FULL STOP, U+002E FULL STOP, U+002F SOLIDUS (../), return failure and abort these
+      steps.
+
+      <p class="note">This restriction is in place so that in the future we can allow custom module
+      loaders to give special meaning to "bare" import specifiers, like <code>import "jquery"</code>
+      or <code>import "web/crypto"</code>. For now any such imports will fail, instead of being
+      treated as relative URLs.</p>
+  3. Return the result of applying the <a>URL parser</a> to <var>specifier</var> with
+      <var>script</var>'s <a>base URL</a> as the base URL.
+
+<h6 id="hostresolveimportedmodule(referencingModule,-specifier)">HostResolveImportedModule(<var>referencingModule</var>, <var>specifier</var>)</h6>
+
+  JavaScript contains an implementation-defined <a>HostResolveImportedModule</a> abstract operation.
+  User agents must use the following implementation: [[ECMA-262]]
+
+  1. Let <var>referencing module script</var> be <var>referencingModule</var>.\[[HostDefined]].
+  2. Let <var>module map</var> be <var>referencing module script</var>'s <a>settings object</a>'s
+      <a>module map</a>.
+  3. Let <var>url</var> be the result of <a>resolving a module specifier</a> given <var>referencing
+      module script</var> and <var>specifier</var>. If the result is failure, throw a {{TypeError}}
+      exception and abort these steps.
+  4. Let <var>resolved module script</var> be the value of the entry in <var>module map</var> whose
+      key is <var>url</var>. If no such entry exists, or if the value is null or
+      "<code>fetching</code>", throw a {{TypeError}} exception and abort these steps.
+  5. Return <var>resolved module script</var>'s <a>module record</a>.
 
 <h5 id="sec-runtime-script-errors"><dfn>Runtime script errors</dfn></h5>
 
