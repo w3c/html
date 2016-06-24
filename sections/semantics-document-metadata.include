@@ -226,10 +226,7 @@
   contain a <a>valid URL potentially surrounded by spaces</a>.
 
   A <{base}> element, if it has an <{base/href}> attribute, must come before any other elements in
-  the tree that have attributes defined as taking <a for="url">URLs</a>, except the <{html}> element
-  (its <code>manifest</code> attribute isn't affected by <code>xml:base</code> attributes or
-  <{base}> elements). elements in the tree that have attributes defined as taking
-  <a for="url">URLs</a>.
+  the tree that have attributes defined as taking <a for="url">URLs</a>.
 
   <div class="impl">
     <p class="note">
@@ -321,9 +318,12 @@
   <dl class="element">
     <dt><a>Categories</a>:</dt>
     <dd><a>Metadata content</a>.</dd>
+    <dd>If the element is <a>allowed in the body</a>: <a>flow content</a>.</dd>
+    <dd>If the element is <a>allowed in the body</a>: <a>phrasing content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>Where <a>metadata content</a> is expected.</dd>
     <dd>In a <{noscript}> element that is a child of a <{head}> element.</dd>
+    <dd>If the element is <a>allowed in the body</a>: where <a>phrasing content</a> is expected.</dd>
     <dt><a>Content model</a>:</dt>
     <dd><a>Nothing</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
@@ -356,11 +356,11 @@
           attribute DOMString? crossOrigin;
           attribute DOMString rel;
           attribute DOMString rev;
-          readonly attribute DOMTokenList relList;
+          [SameObject, PutForwards=value]readonly attribute DOMTokenList relList;
           attribute DOMString media;
           attribute DOMString hreflang;
           attribute DOMString type;
-          [PutForwards=value] readonly attribute DOMTokenList sizes;
+          [SameObject, PutForwards=value] readonly attribute DOMTokenList sizes;
         };
         HTMLLinkElement implements LinkStyle;
       </pre>
@@ -387,6 +387,10 @@
   meanings</a> are defined in a later section. If the <{link/rel}> attribute is absent, has no
   keywords, or if none of the keywords used are allowed according to the definitions in this
   specification, then the element does not create any links.
+
+  If a <code>link</code> element has a <code>rel</code> attribute that contains only keywords that are
+  <a>body-ok</a>, then the element is said to be <dfn>allowed in the body</dfn>. This means
+  that the element can be used where <a>phrasing content</a> is expected.</p>
 
   Two categories of links can be created using the <{link}> element:
   <a>Links to external resources</a> and <a>hyperlinks</a>. The [[#sec-link-types]] section defines
@@ -471,65 +475,64 @@
   for the relevant link type. Some of the attributes control whether or not the external resource is
   to be applied (as defined below).
 
-  <div class="impl">
-    For external resources that are represented in the DOM (for example, style sheets), the DOM
-    representation must be made available (modulo cross-origin restrictions) even if the resource is
-    not applied. To <dfn lt="obtain|obtain the resource">obtain the resource</dfn>, the user agent must
-    run the following steps:
+  For external resources that are represented in the DOM (for example, style sheets), the DOM
+  representation must be made available (modulo cross-origin restrictions) even if the resource is
+  not applied. To <dfn lt="obtain|obtain the resource">obtain the resource</dfn>, the user agent must
+  run the following steps:
 
-    1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
-    2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
-        element.
-    3. If the previous step fails, then abort these steps.
-    4. Let <var>corsAttributeState</var> be the current state of the element's
-        <code>crossorigin</code> content attribute.
-    5. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given the
-        <a for="url">URL</a> and <var>corsAttributeState</var>.
-    6. Set <var>request</var>'s <a>client</a> to the <{link}> element's
-        <a>node document</a>'s <code>Window</code> object's <a>environment settings object</a>.
-    7. <a>Fetch</a> <var>request</var>.
 
-    User agents may opt to only try to obtain such resources when they are needed, instead of
-    pro-actively fetching all the external resources that are not applied.
+  1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
+  2. <a>Parse</a> the <a for="url">URL</a> given by the <{link/href}> attribute, relative to the
+      element's <a>node document</a>. If that fails, then abort these steps. Otherwise, let
+      <var>url</var> be the <a>resulting URL record</a>.
+  3. Let <var>corsAttributeState</var> be the current state of the element's <{link/crossorigin}>
+      content attribute.
+  4. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
+      <var>url</var> and <var>corsAttributeState</var>.
+  5. Set <var>request</var>'s <a>client</a> to the <{link}> element's <a>node document</a>'s
+      {{Window}} object's <a>environment settings object</a>.
+  6. <a>Fetch</a> <var>request</var>.
 
-    The semantics of the protocol used (e.g., HTTP) must be followed when fetching external
-    resources. (For example, redirects will be followed and 404 responses will cause the external
-    resource to not be applied.)
+  User agents may opt to only try to obtain such resources when they are needed, instead of
+  pro-actively fetching all the external resources that are not applied.
 
-    Once the attempts to obtain the resource and its <a>critical subresources</a> are complete, the
-    user agent must, if the loads were successful, <a>queue a task</a> to <a>fire a simple event</a>
-    named <code>load</code> at the <{link}> element, or, if the resource or one of its
-    <a>critical subresources</a> failed to completely load for any reason (e.g., DNS error, HTTP 404
-    response, a connection being prematurely closed, unsupported Content-Type), <a>queue a task</a>
-    to <a>fire a simple event</a> named <code>error</code> at the <{link}> element.
-    Non-network errors in processing the resource or its subresources (e.g., CSS parse errors, PNG
-    decoding errors) are not failures for the purposes of this paragraph.
+  The semantics of the protocol used (e.g., HTTP) must be followed when fetching external
+  resources. (For example, redirects will be followed and 404 responses will cause the external
+  resource to not be applied.)
 
-    The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
+  Once the attempts to obtain the resource and its <a>critical subresources</a> are complete, the
+  user agent must, if the loads were successful, <a>queue a task</a> to <a>fire a simple event</a>
+  named <code>load</code> at the <{link}> element, or, if the resource or one of its
+  <a>critical subresources</a> failed to completely load for any reason (e.g., DNS error, HTTP 404
+  response, a connection being prematurely closed, unsupported Content-Type), <a>queue a task</a>
+  to <a>fire a simple event</a> named <code>error</code> at the <{link}> element.
+  Non-network errors in processing the resource or its subresources (e.g., CSS parse errors, PNG
+  decoding errors) are not failures for the purposes of this paragraph.
 
-    The element must <a>delay the load event</a> of the element's <a>node document</a> until all the
-    attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
-    that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
-    to be needed, do not <a>delay the load event</a>.)
+  The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
 
-    <hr />
+  The element must <a>delay the load event</a> of the element's <a>node document</a> until all the
+  attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
+  that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
+  to be needed, do not <a>delay the load event</a>.)
 
-    Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
-    using the <{link}> element, somewhere within their user interface. The exact interface
-    is not defined by this specification, but it could include the following information (obtained
-    from the element's attributes, again as defined below), in some form or another (possibly
-    simplified), for each hyperlink created with each <{link}> element in the document:
+  <hr />
 
-    * The relationship between this document and the resource (given by the <{link/rel}>
-        attribute)
-    * The title of the resource (given by the <code>title</code> attribute).
-    * The address of the resource (given by the <{link/href}> attribute).
-    * The language of the resource (given by the <code>hreflang</code> attribute).
-    * The optimum media for the resource (given by the <code>media</code> attribute).
+  Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
+  using the <{link}> element, somewhere within their user interface. The exact interface
+  is not defined by this specification, but it could include the following information (obtained
+  from the element's attributes, again as defined below), in some form or another (possibly
+  simplified), for each hyperlink created with each <{link}> element in the document:
 
-    User agents could also include other information, such as the type of the resource (as given by
-    the <code>type</code> attribute).
-  </div>
+  * The relationship between this document and the resource (given by the <{link/rel}>
+      attribute)
+  * The title of the resource (given by the <code>title</code> attribute).
+  * The address of the resource (given by the <{link/href}> attribute).
+  * The language of the resource (given by the <code>hreflang</code> attribute).
+  * The optimum media for the resource (given by the <code>media</code> attribute).
+
+  User agents could also include other information, such as the type of the resource (as given by
+  the <code>type</code> attribute).
 
   <p class="note">
     Hyperlinks created with the <{link}> element and its <{link/rel}> attribute apply
@@ -590,7 +593,7 @@
     <a>Content-Type metadata</a>, then those rules apply. Otherwise, if the resource is expected to
     be an image, user agents may apply the <a>image sniffing rules</a>, with the
     <var>official type</var> being the type determined from the resource's
-    <a>Content-Type metadata</a>, and use the resulting sniffed type of the resource as if it was
+    <a>Content-Type metadata</a>, and use the resulting <a>computed type of the resource</a> as if it was
     the actual type. Otherwise, if neither of these conditions apply or if the user agent opts not
     to apply the image sniffing rules, then the user agent must use the resource's
     <a>Content-Type metadata</a> to determine the type of the resource. If there is no type
@@ -661,7 +664,7 @@
       and thus their semantics can be different from same-named HTML types.
     </p>
 
-    The IDL attributes <dfn attribute for="HTMLLinkElement"><code>link/href</code></dfn>, <dfn attribute for="HTMLLinkElement"><code>rel</code></dfn>,
+    The IDL attributes <dfn attribute for="HTMLLinkElement"><code>href</code></dfn>, <dfn attribute for="HTMLLinkElement"><code>rel</code></dfn>,
     <dfn attribute for="HTMLLinkElement"><code>rev</code></dfn>, <dfn attribute for="HTMLLinkElement"><code>media</code></dfn>, <dfn attribute for="HTMLLinkElement"><code>hreflang</code></dfn>,
     <dfn attribute for="HTMLLinkElement"><code>type</code></dfn>, and <dfn attribute for="HTMLLinkElement"><code>sizes</code></dfn> each must <a>reflect</a> the
     respective content attributes of the same name.
@@ -680,14 +683,13 @@
     <a>supported tokens</a> are the keywords defined in
     <a>HTML link types</a> which are allowed on <code>link</code> elements, impact
     the processing model, and are supported by the user agent. The possible supported tokens are
-    <code>alternate</code>, <code>icon</code>, <code>prefetch</code>,
-    <code>stylesheet</code> and <code>next</code>.
-    <{link/rel}>'s
-    <a>supported tokens</a> must only include the tokens from
+    <code>alternate</code>, <a>dns-prefetch</a>, <code>icon</code>, <a>preconnect</a>, <a>prefetch</a>,
+    <a>prerender</a>, and <code>stylesheet</code>.
+    <{link/rel}>'s <a>supported tokens</a> must only include the tokens from
     this list that the user agent implements the processing model for.
 
     Other specifications may add <a>HTML link types</a> as
-    defined in <a>Other link types</a>. These specifications may require
+    defined in <a>Other link types</a>, such as [[!RESOURCE-HINTS]]. These specifications may require
     that their link types be included in <{link/rel}>'s supported
     tokens.
   </div>
@@ -815,12 +817,10 @@
   <code>content</code> attribute, then the value part of the metadata name-value pair is the empty
   string.
 
-  <div class="impl">
-    The <dfn attribute for="HTMLMetaElement"><code>name</code></dfn> and <dfn attribute for="HTMLMetaElement"><code>content</code></dfn> IDL attributes must
-    <a>reflect</a> the respective content attributes of the same name. The IDL attribute
-    <dfn><code>httpEquiv</code></dfn> must <a>reflect</a> the content attribute
-    <code>http-equiv</code>.
-  </div>
+  The <dfn attribute for="HTMLMetaElement"><code>name</code></dfn> and <dfn attribute for="HTMLMetaElement"><code>content</code></dfn> IDL attributes must
+  <a>reflect</a> the respective content attributes of the same name. The IDL attribute
+  <dfn attribute for="HTMLMetaElement"><code>httpEquiv</code></dfn> must <a>reflect</a> the content attribute
+  <{meta/http-equiv}>.
 
 <h5 id="standard-metadata-names">Standard metadata names</h5>
 
@@ -1102,8 +1102,9 @@
             </p>
 
         <p class="note">
-          This pragma is almost, but not quite, entirely unlike the HTTP
-          <code>Content-Language</code> header of the same name. [[!HTTP]]
+          This pragma is not the same as the HTTP <code>Content-Language</code> header of the same name.
+          HTTP <code>Content-Language</code> values with more than one language tag will be rejected as invalid by this pragma.
+          [[!HTTP]]
         </p>
   </div>
 
@@ -1145,7 +1146,6 @@
 
   : <dfn state for="http-equiv" lt="refresh">Refresh state</dfn> (<code>http-equiv="refresh"</code>)
   :: This pragma acts as timed redirect.
-      <div class="impl">
         1. If another <{meta}> element with an <code>http-equiv</code> attribute in the
             <a state for="http-equiv" lt="refresh">Refresh state</a> has already been successfully processed (i.e., when it was inserted
             the user agent processed it and reached the step labeled <i>end</i>), then abort
@@ -1161,7 +1161,8 @@
             parsed; abort these steps. Otherwise, let <var>time</var> be the parsed number.
         7. <a>Collect a sequence of characters</a> that are <a>ASCII digits</a> and U+002E FULL STOP
             characters (.). Ignore any collected characters.
-        8. Let <var>url</var> be the address of the current page.
+        8. Let <var>url</var> be the <{meta}> element's <a>node document</a>'s
+            <a for="url">URL</a>.
         9. If <var>position</var> is past the end of <var>input</var>, jump to the step labeled
             <i>end</i>.
         10. If the character in <var>input</var> pointed to by <var>position</var> is not a U+003B
@@ -1183,15 +1184,15 @@
         17. If the character in <var>input</var> pointed to by <var>position</var> is a U+0052 LATIN
             CAPITAL LETTER R character (R) or a U+0072 LATIN SMALL LETTER R character (r), then
             advance <var>position</var> to the next character. Otherwise, jump to the step labeled
-            <i>trim</i>.
+            <var>Parse</var>.
         18. If the character in <var>input</var> pointed to by <var>position</var> is s U+004C LATIN
             CAPITAL LETTER L character (L) or a U+006C LATIN SMALL LETTER L character (l), then
             advance <var>position</var> to the next character. Otherwise, jump to the step labeled
-            <i>trim</i>.
+            <var>Parse</var>.
         19. <a>Skip whitespace</a>.
         20. If the character in <var>input</var> pointed to by <var>position</var> is a U+003D
             EQUALS SIGN (=), then advance <var>position</var> to the next character. Otherwise, jump
-            to the step step labeled <i>trim</i>.
+            to the step step labeled <var>Parse</var>.
         21. <a>Skip whitespace</a>.
         22. <i>Skip quotes</i>: If the character in <var>input</var> pointed to by
             <var>position</var> is either a U+0027 APOSTROPHE character (') or U+0022 QUOTATION MARK
@@ -1203,40 +1204,34 @@
         24. If <var>quote</var> is not the empty string, and there is a character in <var>url</var>
             equal to <var>quote</var>, then truncate <var>url</var> at that character, so that it
             and all subsequent characters are removed.
-        25. <i>Trim</i>: Strip any trailing <a>space characters</a> from the end of <var>url</var>.
-        26. Strip any U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), and U+000D CARRIAGE RETURN (CR) characters from <var>url</var>.
-        27. <a>Parse</a> the <var>url</var> value, relative to the <{meta}> element. If this
-            fails, abort these steps.
-        28. Otherwise, let <var>parsed url</var> be the <a>resulting URL string</a>.
-        29. <i>End</i>: Perform one or more of the following steps:
-
+        25. <var>Parse</var>: <a>Parse</a> <var>url</var> relative to the <{meta}> element's
+            <a>node document</a>. If that fails, abort these steps. Otherwise, let
+            <var>urlRecord</var> be the <a>resulting URL record</a>.
+        26. <i>End</i>: Perform one or more of the following steps:
             * After the refresh has come due (as defined below), if the user has not canceled the
                 redirect and if the <{meta}> element's <a>node document</a>'s <a>active
                 sandboxing flag set</a> does not have the <a>sandboxed automatic features browsing
                 context flag</a> set, <a>navigate</a> the {{Document}}'s
-                <a>browsing context</a> to <var>parsed url</var>, with <a>replacement enabled</a>, and with
-                the {{Document}}'s <a>browsing context</a> as the
+                <a>browsing context</a> to <var>urlRecord</var>, with <a>replacement enabled</a>,
+                and with the {{Document}}'s <a>browsing context</a> as the
                 <a>source browsing context</a>.
 
                 For the purposes of the previous paragraph, a refresh is said to have come due as
                 soon as the <em>later</em> of the following two conditions occurs:
-
-              * At least <var>time</var> seconds have elapsed since the document has
-                  <a>completely loaded</a>, adjusted to take into account user or user agent
-                  preferences.
-              * At least <var>time</var> seconds have elapsed since the <{meta}> element
-                  was <a for="document">inserted into the document</a>, adjusted to take into account
-                  user or user agent preferences.
-
+                * At least <var>time</var> seconds have elapsed since the document has
+                    <a>completely loaded</a>, adjusted to take into account user or user agent
+                    preferences.
+                * At least <var>time</var> seconds have elapsed since the <{meta}> element
+                    was <a for="document">inserted into the document</a>, adjusted to take into account
+                    user or user agent preferences.
             * Provide the user with an interface that, when selected, <a>navigates</a> a
-                <a>browsing context</a> to <var>parsed url</var>, with the {{Document}}'s
+                <a>browsing context</a> to <var>urlRecord</var>, with the {{Document}}'s
                 <a>browsing context</a> as the <a>source browsing context</a>.
             * Do nothing.
 
             In addition, the user agent may, as with anything, inform the user of any and all
             aspects of its operation, including the state of any timers, the destinations of any
             timed redirects, and so forth.
-      </div>
 
       For <{meta}> elements with an <code>http-equiv</code> attribute in the
       <a state for="http-equiv" lt="refresh">Refresh state</a>, the <code>content</code> attribute must have a value consisting either
@@ -1622,7 +1617,9 @@
   </p>
 
   <div class="impl">
-    The {{HTMLStyleElement/media}}, {{HTMLStyleElement/nonce}}, and {{HTMLStyleElement/type}}
+    The <dfn attribute for="HTMLStyleElement"><code>media</code></dfn>,
+    <dfn attribute for="HTMLStyleElement"><code>nonce</code></dfn>, and
+    <dfn attribute for="HTMLStyleElement"><code>type</code></dfn>
     IDL attributes must <a>reflect</a> the respective content
     attributes of the same name.
   </div>
@@ -1651,48 +1648,46 @@
       &lt;/html&gt;</pre>
   </div>
 
-  <div class="impl">
-    <h4 id="interactions-of-styling-and-scripting">Interactions of styling and scripting</h4>
+  <h4 id="interactions-of-styling-and-scripting">Interactions of styling and scripting</h4>
 
-    Style sheets, whether added by a <{link}> element, a <{style}> element, an
-    <code>&lt;?xml-stylesheet?&gt;</code> PI, an HTTP <code>Link</code> header, or some other
-    mechanism, have a <dfn>style sheet ready</dfn> flag, which is initially unset.
+  Style sheets, whether added by a <{link}> element, a <{style}> element, an
+  <code>&lt;?xml-stylesheet?&gt;</code> PI, an HTTP <code>Link</code> header, or some other
+  mechanism, have a <dfn>style sheet ready</dfn> flag, which is initially unset.
 
-    When a style sheet is ready to be applied, its <a>style sheet ready</a> flag must be set. If the
-    style sheet referenced no other resources (e.g., it was an internal style sheet given by a
-    <{style}> element with no <code>@import</code> rules), then the style rules must be
-    <a>immediately</a> made available to script; otherwise, the style rules must only be made
-    available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
+  When a style sheet is ready to be applied, its <a>style sheet ready</a> flag must be set. If the
+  style sheet referenced no other resources (e.g., it was an internal style sheet given by a
+  <{style}> element with no <code>@import</code> rules), then the style rules must be
+  <a>immediately</a> made available to script; otherwise, the style rules must only be made
+  available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
 
-    A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or
-    <a>XML parser</a> is said to be <dfn>a style sheet that is blocking scripts</dfn> if the element
-    was created by that {{Document}}'s parser, and the element is either a
-    <{style}> element or a <{link}> element that was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by the parser,
-    and the element's style sheet was enabled when the element was created by the parser, and the
-    element's <a>style sheet ready</a> flag is not yet set, and, the last time the <a>event loop</a>
-    reached step 1, the element was in that <code>Document</code>, and the user agent
-    hasn't given up on that particular style sheet yet. A user agent may give up on a style sheet at
-    any time.
+  A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or <a>XML parser</a> is
+  said to be <dfn>a style sheet that is blocking scripts</dfn> if the element was created by that
+  {{Document}}'s parser, and the element is either a <{style}> element or a <{link}> element that
+  was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by
+  the parser, and the element's style sheet was enabled when the element was created by the parser,
+  and the element's <a>style sheet ready</a> flag is not yet set, and, the last time the
+  <a>event loop</a> reached step 1, the element was in that {{Document}}, and the user
+  agent hasn't given up on that particular style sheet yet. A user agent may give up on a style
+  sheet at any time.
 
-    <p class="note">
-      Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
-      still load, means that the script might end up operating with incorrect information. For
-      example, if a style sheet sets the color of an element to green, but a script that inspects
-      the resulting style is executed before the sheet is loaded, the script will find that the
-      element is black (or whatever the default color is), and might thus make poor choices (e.g.,
-      deciding to use black as the color elsewhere on the page, instead of green). Implementors have
-      to balance the likelihood of a script using incorrect information with the performance impact
-      of doing nothing while waiting for a slow network request to finish.
-    </p>
+  <p class="note">
+    Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
+    still load, means that the script might end up operating with incorrect information. For
+    example, if a style sheet sets the color of an element to green, but a script that inspects
+    the resulting style is executed before the sheet is loaded, the script will find that the
+    element is black (or whatever the default color is), and might thus make poor choices (e.g.,
+    deciding to use black as the color elsewhere on the page, instead of green). Implementors have
+    to balance the likelihood of a script using incorrect information with the performance impact
+    of doing nothing while waiting for a slow network request to finish.
+  </p>
 
-    A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if there is either
-    <a>a style sheet that is blocking scripts</a> in the context of that {{Document}}, or
-    if that {{Document}} is in a <a>browsing context</a> that has a
-    <a>parent browsing context</a>, and the <a>active document</a> of that
-    <a>parent browsing context</a> itself <a>has a style sheet that is blocking scripts</a>.
+  A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if there is either
+  <a>a style sheet that is blocking scripts</a> in the context of that {{Document}}, or
+  if that {{Document}} is in a <a>browsing context</a> that has a
+  <a>parent browsing context</a>, and the <a>active document</a> of that
+  <a>parent browsing context</a> itself <a>has a style sheet that is blocking scripts</a>.
 
-    A {{Document}} <dfn>has no style sheet that is blocking scripts</dfn> if it does not
-    <a>have a style sheet that is blocking scripts</a> as defined in the previous paragraph.
-  </div>
+  A {{Document}} <dfn>has no style sheet that is blocking scripts</dfn> if it does not
+  <a>have a style sheet that is blocking scripts</a> as defined in the previous paragraph.
 
 </section>

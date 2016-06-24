@@ -8,4 +8,4 @@ pushd ./tools
 npm install
 popd
 
-node ./tools/multipage.js single-page.html ./out/
+node --max_old_space_size=2048 ./tools/multipage.js single-page.html ./out/

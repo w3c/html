@@ -87,9 +87,8 @@
   <a>HTML link types</a> which are allowed on <{a}> and
   <{area}> elements, impact the processing model, and are supported by the user agent. The
   possible supported tokens are
-  <code>noreferrer</code>,
-  <code>noopener</code>, and
-  <code>prefetch</code>.
+  <code>noreferrer</code>, and
+  <code>noopener</code>.
   <{links/rel}>'s
   <a>supported tokens</a> must only include the tokens from
   this list that the user agent implements the processing model for.
@@ -866,19 +865,17 @@
   element representing the link, and the term <i>current document</i> refers to the resource within
   which the element representing the link finds itself.
 
-  <div class="impl">
-
-  To determine which link types apply to a <{link}>, <{a}>, or
-  <{area}> element, the element's <{links/rel}> attribute must be <a lt="split a string on spaces">split on spaces</a>. The resulting tokens are the link types
-  that apply to that element.
-
-  </div>
+  To determine which link types apply to a <{link}>, <{a}>, or <{area}> element, the element's
+  <{links/rel}> attribute must be <a lt="split a string on spaces">split on spaces</a>. The
+  resulting tokens are the link types that apply to that element.
 
   Except where otherwise specified, a keyword must not be specified more than once per <{link/rel}>
   attribute.
 
-  Link types are always <a>ASCII case-insensitive</a><span class="impl">, and must be
-  compared as such</span>.
+  Link types are always <a>ASCII case-insensitive</a>, and must be compared as such.
+
+  Certain keywords are said to be <dfn>body-ok</dfn>. This affects whether <{link}>
+  elements are <a>allowed in the body</a>
 
   <p class="example">Thus, <code>rel="next"</code> is the same as <code>rel="NEXT"</code>.</p>
 
@@ -891,7 +888,7 @@
     </tr>
     <tr>
       <th><code>link</code></th>
-      <th><{a}> and <code>area</code></th>
+      <th><{a}> and <{area}></th>
     </tr>
     </thead>
     <tbody>
@@ -960,13 +957,6 @@
     </tr>
 
     <tr>
-      <td><code>prefetch</code></td>
-      <td><a>External Resource</a></td>
-      <td><a>External Resource</a></td>
-      <td>Specifies that the target resource should be preemptively cached.</td>
-    </tr>
-
-    <tr>
       <td><code>prev</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
@@ -1032,8 +1022,9 @@
 
     <div class="impl">
 
-    The first <code>link</code> or <{a}> element in the document (in <a>tree
-    order</a>) with the <code>alternate</code> keyword used with the <code>type</code> attribute set to the value <code>application/rss+xml</code> or the value <code>application/atom+xml</code>
+    The first <{link}> or <{a}> element in the document (in <a>tree order</a>) with the
+    <code>alternate</code> keyword used with the <code>type</code> attribute set to the value
+    <code>application/rss+xml</code> or the value <code>application/atom+xml</code>
     must be treated as the default syndication feed for the purposes of feed autodiscovery.
 
     <div class="example">
@@ -1279,8 +1270,6 @@
   The keywords specified on the <code>sizes</code> attribute must not
   represent icon sizes that are not actually available in the linked resource.
 
-  <div class="impl">
-
   In the absence of a <code>link</code> with the <code>icon</code> keyword, for
   {{Document}} objects obtained over HTTP or HTTPS, user agents may instead run these
   steps <a>in parallel</a>:
@@ -1300,8 +1289,6 @@
     <li>Use <var>response</var>'s unsafe response as an icon as if it had been
     declared using the <code>icon</code> keyword.</li>
   </ol>
-
-  </div>
 
   <div class="example">
     The following snippet shows the top part of an application with several icons.
@@ -1428,18 +1415,6 @@
 
   </div>
 
-<h5 id="link-type-prefetch">Link type "<dfn attr-value for="link/type"><code>prefetch</code></dfn>"</h5>
-
-  The <code>prefetch</code> keyword may be used with <{link}>,
-  <{a}>, and <{area}> elements. This keyword creates an <a>external resource link</a>.
-
-  The <code>prefetch</code> keyword indicates that preemptively fetching and
-  caching the specified resource is likely to be beneficial, as it is highly likely that the user
-  will require this resource.
-
-  There is no default type for resources given by the <code>prefetch</code>
-  keyword.
-
 <h5 id="link-type-search">Link type "<dfn attr-value for="link/type"><code>search</code></dfn>"</h5>
 
   The <code>search</code> keyword may be used with <{link}>,
@@ -1456,16 +1431,16 @@
 
 <h5 id="link-type-stylesheet">Link type "<dfn attr-value for="link/type"><code>stylesheet</code></dfn>"</h5>
 
-  The <code>stylesheet</code> keyword may be used with <code>link</code>
-  elements. This keyword creates an <a>external resource
-  link</a> that contributes to the styling processing model.
+  The <code>stylesheet</code> keyword may be used with <{link}> elements. This keyword creates an
+  <a>external resource link</a> that contributes to the styling processing model. This keyword is
+  <a>body-ok</a>.
 
   The specified resource is a resource that describes how to present the document. Exactly how
   the resource is to be processed depends on the actual type of the resource.
 
   If the <code>alternate</code> keyword is also specified on the
   <{link}> element, then <dfn lt="an alternative stylesheet|the link is an alternative stylesheet">the link is an alternative stylesheet</dfn>; in this case,
-  the <code>title</code> attribute must be specified on the <code>link</code>
+  the <code>title</code> attribute must be specified on the <{link}>
   element, with a non-empty value.
 
   The default type for resources given by the <code>stylesheet</code> keyword is

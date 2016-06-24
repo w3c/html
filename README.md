@@ -18,18 +18,97 @@ For the multipage version, one can do as follows:
 1. Install [multipage](https://github.com/adrianba/multipage)
 2. Follow the instructions there to regenerate the HTML files
 
+There are some conventions for linking to things. For example,
+* For definitions of standard terms, use `<a>term known to bikeshed</a>`
+* For definitions of elements use `<{img}>`
+* For definitions of attributes use `<{img/alt}>`
+* For WebIDL terms use `{{HTMLImageElement/alt}}`
+* For Normative references use `[[!shortname]]` where `shortname` is the W3C "shortname" of the spec
+* For informative references use `[[shortname]]`
+
+And we try to follow these best-practices:
+* Line wrap at column `100` to keep lines easily readable
+* Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
+* Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
+
+   ```html
+   here is a
+   <a>link that is not broken across lines</a>
+   making it easy to search/replace :)
+   ```
+   vs.
+
+   ```html
+   here is a <a>link that is sadly broken across
+   lines</a> making it much harder to search/replace
+   ```
+* Use [bikeshed definition list syntax](https://github.com/tabatkins/bikeshed/blob/master/docs/markup.md) where possible. E.g., prefer:
+
+      ```bikeshed
+      : define term
+      :: term's definition
+      ```
+      vs.
+
+      ```html
+      <dl>
+        <dt>define term</dt>
+        <dd>term's definition</dd>
+      </dl>
+      ```
+      (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
+* Prefer markdown syntax for its brevity and readability. In particular:
+   
+      ```markdown
+      * unordered list item
+      ```  
+      vs.
+
+      ```html
+      <ul>
+        <li>unordered list item</li>
+      </ul>
+      ```
+      ----
+
+      ```markdown
+      1. ordered list item
+      ```
+      vs.
+
+      ```html
+      <ol>
+        <li>ordered list item</li>
+      </ol>
+      ```
+      ----
+      
+      ```markdown
+      newline separator
+
+      between paragraphs
+      ```
+      vs.
+      
+      ```html
+      <p>newline separator</p>
+
+      <p>between paragraphs</p>
+      ```
+
 ## Contributing to this Repository
 
 Use the standard fork, branch, and pull request workflow to propose changes to the specification. Please make branch names informative - by including the issue or bug number for example.
 
-More information on contributing is in [CONTRIBUTING.md](CONTRIBUTING.md).
+Please read [CONTRIBUTING.md](CONTRIBUTING.md), about licensing contributions.
 
 To make changes to the specification:
 
 1. Edit single-page.bs (or one of the include files it references) in the `master` branch. Do not edit the HTML files in the `gh-pages` branch. These are built automatically.
-2. Ideally run bikeshed on single-page.bs to make sure there are no errors (run `bikeshed spec`).
-3. Create a pull request but do not include the single-page.html file
-4. When the editors merge and commit your pull request Travis-CI will build the HTML files
+2. Edit the [Acknowledgements section](https://github.com/w3c/html/blob/master/sections/acknowledgements.include) in the `master` branch to include your name.
+3. Ideally run bikeshed on single-page.bs to make sure there are no errors (run `bikeshed spec`).
+4. Create a pull request but do not include the single-page.html file
+5. When the editors merge and commit your pull request Travis-CI will build the HTML files
 
 The following considerations should be kept in mind when making a pull request:
 
@@ -42,7 +121,7 @@ The following considerations should be kept in mind when making a pull request:
 
 The `master` branch of this repository always contains the **work in progress** version of the HTML specification. This branch always welcomes substantive and editorial changes and pull requests.
 
-The `master` branch always is exposed at [https://www.w3.org/TR/html/](https://www.w3.org/TR/html/).
+The `master` branch is always exposed at [https://www.w3.org/TR/html/](https://www.w3.org/TR/html/).
 
 Once a year, the HTML editors create a new `<version>` branch for the HTML specification. It only contains features that the Working Group believes can be shipped as part of the W3C Recommendation. That branch becomes associated with a specific version of the HTML specification. For a *limited period* of time, the Editor Team only accepts editorial changes or removal of features at risks in this branch. It becomes frozen once that version of HTML becomes a W3C Recommendation. Unless you're targetting a specific version of HTML (and really, you shouldn't), pull requests MUST always be made against the `master` branch.
 
