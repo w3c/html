@@ -16,11 +16,11 @@
   Every XML and HTML document in an HTML user agent is represented by a {{Document}} object.
   [[!DOM]]
 
-  <dfn lt="the document address|address|the document's address|the address">The document's address</dfn> is the <i>URL associated with a {{Document}}</i> (as
-  defined in the DOM standard). It is initially set when the {{Document}} is created, but
-  that can change during the lifetime of the {{Document}}; for example, it changes when
-  the user <a>navigates</a> to a <a>fragment identifier</a> on the page and when the
-  <code>pushState()</code> method is called with a new <a for="url">URL</a>. [[!DOM]]
+  <dfn lt="the document address|address|the document's address|the address">The document's address</dfn>
+  is the <i>URL associated with a {{Document}}</i> (as defined in the DOM standard). It is initially
+  set when the {{Document}} is created, but that can change during the lifetime of the {{Document}};
+  for example, it changes when the user <a>navigates</a> to a <a for="url">fragment</a> on the page and when
+  the <code>pushState()</code> method is called with a new <a for="url">URL</a>. [[!DOM]]
 
   <p class="warning">
     Interactive user agents typically expose <a>the document's address</a> in their user interface.
@@ -133,6 +133,9 @@
   The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of
   <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise
   specified.
+
+  The {{Document}} has a <dfn lt="document module map">module map</dfn>, which is a
+  <a>module map</a>, initially empty.
 
 <h4 id="resource-metadata-management">Resource metadata management</h4>
 
@@ -471,7 +474,7 @@
   </dl>
 
   <div class="impl">
-    The <dfn><code>getElementsByName(<var>name</var>)</code></dfn> method takes a string
+    The <dfn method for="Document" lt="getElementsByName()|getElementsByName(elementName)"><code>getElementsByName(<var>name</var>)</code></dfn> method takes a string
     <var>name</var>, and must return a <a>live</a> <code>NodeList</code> containing all the
     <a>html elements</a> in that document that have a <code>name</code> attribute whose value is
     equal to the <var>name</var> argument (in a <a>case-sensitive</a> manner), in <a>tree order</a>.
@@ -567,7 +570,7 @@
       };
     </pre>
 
-    The <dfn><code>load(<var>url</var>)</code></dfn> method must run the following steps:
+    The <dfn method for="XMLDocument" lt="load()|load(url)"><code>load(<var>url</var>)</code></dfn> method must run the following steps:
 
     1. Let <var>document</var> be the {{XMLDocument}} object on which the method was
         invoked.
@@ -616,9 +619,9 @@
   documents and applications consistently in different contexts.
 
   <div class="example">
-  In this example the HTML headings may be presented as large text in a desktop browser, or standard
-  size text in bold in a mobile browser. In both cases the semantic information remains the same -
-  that the <{h1}> and <{h2}> elements represent headings.
+    In this example the HTML headings may be presented as large text in a desktop browser, or
+    standard size text in bold in a mobile browser. In both cases the semantic information remains
+    the same - that the <{h1}> and <{h2}> elements represent headings.
 
     <pre highlight="html">
       &lt;!doctype html&gt;
@@ -655,9 +658,9 @@
   valuable semantic information.
 
   <div class="example">
-  In this example styling may be used to create a visual representation of headings and other
-  components, but because the appropriate HTML elements have not been used there is little semantic
-  information available to web browsers, search engines and assistive technologies.
+    In this example styling may be used to create a visual representation of headings and other
+    components, but because the appropriate HTML elements have not been used there is little
+    semantic information available to web browsers, search engines and assistive technologies.
 
     <pre highlight="html">
       &lt;!doctype html&gt;
@@ -689,14 +692,14 @@
   document to reflect these changes.
 
   <div class="example">
-  In this example the <{audio}> element is used to play a music track. The
-  <dfn attribute for="Document"><code>controls</code></dfn> attribute is used to show the user
-  agent player, and as the music plays the controls are updated to indicate progress. The available
-  semantic information is updated in response to these changes.
+    In this example the <{audio}> element is used to play a music track. The
+    <dfn attribute for="Document"><code>controls</code></dfn> attribute is used to show the user
+    agent player, and as the music plays the controls are updated to indicate progress. The
+    available semantic information is updated in response to these changes.
 
-  <pre highlight="html">
-    &lt;audio src="comfortablynumb.mp3" controls&gt;
-  </pre>
+    <pre highlight="html">
+      &lt;audio src="comfortablynumb.mp3" controls&gt;
+    </pre>
   </div>
 
 <h4 id="elements-in-the-dom">Elements in the DOM</h4>
@@ -732,7 +735,7 @@
       void blur();
       attribute DOMString accessKey;
       attribute boolean draggable;
-      [PutForwards=value] readonly attribute DOMTokenList dropzone;
+      [SameObject, PutForwards=value] readonly attribute DOMTokenList dropzone;
       attribute HTMLMenuElement? contextMenu;
       attribute boolean spellcheck;
       void forceSpellCheck();
@@ -1003,6 +1006,7 @@
     <li><{kbd}></li>
     <li><{keygen}></li>
     <li><{label}></li>
+    <li><{link}> (if it is <a>allowed in the body</a>)</li>
     <li><{main}></li>
     <li><{map}></li>
     <li><{mark}></li>
@@ -1110,6 +1114,7 @@
     <li><{kbd}></li>
     <li><{keygen}></li>
     <li><{label}></li>
+    <li><{link}> (if it is <a>allowed in the body</a>)</li>
     <li><{map}></li>
     <li><{mark}></li>
     <li><{math}></li>
@@ -1574,9 +1579,9 @@
     indirectly through the "<code>bogus</code>" element.
 
     <pre class="bad">
-      &lt;div xmlns="https://www.w3.org/1999/xhtml" dir="rtl">
+      &lt;div xmlns="http://www.w3.org/1999/xhtml" dir="rtl">
         &lt;bogus xmlns="https://example.net/ns" dir="ltr">
-          &lt;span xmlns="https://www.w3.org/1999/xhtml">
+          &lt;span xmlns="http://www.w3.org/1999/xhtml">
           &lt;/span>
         &lt;/bogus>
       &lt;/div>
@@ -1681,13 +1686,13 @@
 
   In <a>HTML documents</a>, elements in the <a>HTML namespace</a> may have an <code>xmlns</code>
   attribute specified, if, and only if, it has the exact value
-  "<code>https://www.w3.org/1999/xhtml</code>". This does not apply to <a>XML documents</a>.
+  "<code>http://www.w3.org/1999/xhtml</code>". This does not apply to <a>XML documents</a>.
 
   <p class="note">
     In HTML, the <code>xmlns</code> attribute has absolutely no effect. It is basically a talisman.
     It is allowed merely to make migration to and from XHTML mildly easier. When parsed by an
     <a>HTML parser</a>, the attribute ends up in no namespace, not the
-    "<code>https://www.w3.org/2000/xmlns/</code>" namespace like namespace declaration attributes in
+    "<code>http://www.w3.org/2000/xmlns/</code>" namespace like namespace declaration attributes in
     XML do.
   </p>
 
@@ -1720,9 +1725,9 @@
   </p>
 
   <p class="note">
-    An element's <a lt="id">unique identifier</a> can be used for a variety of purposes, most notably as a
-    way to link to specific parts of a document using fragment identifiers, as a way to target an
-    element when scripting, and as a way to style a specific element from CSS.
+    An element's <a lt="id">unique identifier</a> can be used for a variety of purposes, most
+    notably as a way to link to specific parts of a document using <a for="url">fragment</a>, as a way to
+    target an element when scripting, and as a way to style a specific element from CSS.
   </p>
 
   <div class="impl">
@@ -1790,7 +1795,7 @@
 
     <hr />
 
-    The <code>title</code> IDL attribute must <a>reflect</a> the <code>title</code>
+    The <dfn attribute for="HTMLElement"><code>title</code></dfn> IDL attribute must <a>reflect</a> the <code>title</code>
     content attribute.
   </div>
 
@@ -1907,11 +1912,11 @@
 
     <hr />
 
-    The <{global/lang}> IDL attribute must <a>reflect</a> the <{global/lang}> content
+    The <dfn attribute for="HTMLElement"><code>lang</code></dfn> IDL attribute must <a>reflect</a> the <{global/lang}> content
     attribute in no namespace.
   </div>
 
-<h5 id="the-translate-attribute">The <code>translate</code> attribute</h5>
+<h5 id="the-translate-attribute">The <{global/translate}> attribute</h5>
 
   The <dfn element-attr for="global"><code>translate</code></dfn> attribute is an <a>enumerated attribute</a> that is used to
   specify whether an element's attribute values and the values of its <code>Text</code> node
@@ -1963,7 +1968,7 @@
   <div class="impl">
     <hr />
 
-    The <code>translate</code> IDL attribute must, on getting, return true if the
+    The <dfn attribute for="HTMLElement"><code>translate</code></dfn> IDL attribute must, on getting, return true if the
     element's <a>translation mode</a> is <a>translate-enabled</a>, and false otherwise. On setting,
     it must set the content attribute's value to "<code>yes</code>" if the new value is true, and
     set the content attribute's value to "<code>no</code>" otherwise.
@@ -2170,7 +2175,7 @@
   <hr />
 
   <dl class="domintro">
-    <dt><var>document</var> . <code>dir</code> [ = <var>value</var> ]</dt>
+    <dt><var>document</var> . {{Document/dir}} [ = <var>value</var> ]</dt>
     <dd>
       Returns the <{html}> element's <{global/dir}> attribute's value, if any.
 
@@ -2183,10 +2188,10 @@
   </dl>
 
   <div class="impl">
-    The <code>dir</code> IDL attribute on an element must <a>reflect</a> the
+    The <dfn attribute for="HTMLElement"><code>dir</code></dfn> IDL attribute on an element must <a>reflect</a> the
     <{global/dir}> content attribute of that element, <a>limited to only known values</a>.
 
-    The {{Document/dir}} IDL attribute on {{Document}} objects must
+    The <dfn attribute for="Document"><code>dir</code></dfn> IDL attribute on {{Document}} objects must
     <a>reflect</a> the <{global/dir}> content attribute of the <{html}> element,
     if any, <a>limited to only known values</a>. If there is no such element, then the attribute
     must return the empty string and do nothing on setting.
@@ -2366,7 +2371,7 @@
   <hr />
 
   <dl class="domintro">
-    <dt><var>element</var> . <code>dataset</code></dt>
+    <dt><var>element</var> . {{HTMLElement/dataset}}</dt>
     <dd>
       Returns a <code>DOMStringMap</code> object for the element's <code>data-*</code> attributes.
 
@@ -2377,9 +2382,9 @@
   </dl>
 
   <div class="impl">
-    The {{HTMLElement/dataset}} IDL attribute provides convenient
+    The <dfn attribute for="HTMLElement"><code>dataset</code></dfn> IDL attribute provides convenient
     accessors for all the <code>data-*</code> attributes on an element. On
-    getting, the <code>dataset</code> IDL attribute must return a
+    getting, the {{HTMLElement/dataset}} IDL attribute must return a
     <code>DOMStringMap</code> object, associated with the following algorithms, which expose these
     attributes on their element:
 
@@ -3048,7 +3053,7 @@
         <td><code>log</code></td>
         <td>
           A type of live region where new information is added in meaningful order and old
-          information may disappear. See related <code>marquee</code>.
+          information may disappear. See related <{marquee}>.
         </td>
         <td>none</td>
         <td>

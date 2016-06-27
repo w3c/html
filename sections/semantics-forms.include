@@ -1083,46 +1083,39 @@
 
   The properties exposed in this way must be <a>unenumerable</a>.
 
-  When a <{form}> element is <dfn>indexed for named property
-  retrieval</dfn>, the user agent must run the following steps:
+  When a <{form}> element is <dfn>indexed for named property retrieval</dfn>, the user agent must
+  run the following steps:
 
-  <ol>
+    1. Let <var>candidates</var> be a <a>live</a> <code>RadioNodeList</code> object containing all
+        the <a>listed elements</a> whose <a>form owner</a> is the <{form}> element that have either
+        an <{global/id}> attribute or a <{formelements/name}> attribute equal to <var>name</var>,
+        with the exception of <{input}> elements whose <{input/type}> attribute is in the
+        <a element-state for="input">Image Button</a> state, in <a>tree order</a>.
+    2. If <var>candidates</var> is empty, let <var>candidates</var> be a <a>live</a>
+        <code>RadioNodeList</code> object containing all the <{img}> elements that are descendants
+        of the <{form}> element and that have either an <code>id</code> attribute or a
+        <{formelements/name}> attribute equal to <var>name</var>, in <a>tree order</a>.
+    3. If <var>candidates</var> is empty, <var>name</var> is the name of one of the entries in the
+        <{form}> element's <a>past names map</a>: return the object associated with <var>name</var>
+        in that map.
+    4. If <var>candidates</var> contains more than one node, return <var>candidates</var> and abort
+        these steps.
+    5. Otherwise, <var>candidates</var> contains exactly one node. Add a mapping from
+        <var>name</var> to the node in <var>candidates</var> in the <{form}> element's
+        <a>past names map</a>, replacing the previous entry with the same name, if any.
+    6. Return the node in <var>candidates</var>.
 
-    <li>Let <var>candidates</var> be a <a>live</a> <code>RadioNodeList</code>
-    object containing all the <a>listed elements</a> whose <a>form
-    owner</a> is the <{form}> element that have either an <code>id</code>
-    attribute or a <{formelements/name}> attribute equal to <var>name</var>, with the exception of <{input}> elements whose <{input/type}> attribute is in the <a element-state for="input">Image Button</a> state, in <a>tree order</a>.</li>
-
-    <li>If <var>candidates</var> is empty, let <var>candidates</var> be a
-    <a>live</a> <code>RadioNodeList</code> object containing all the <{img}> elements
-    that are descendants of the <{form}> element and that have either an <code>id</code> attribute or a <{formelements/name}> attribute equal
-    to <var>name</var>, in <a>tree order</a>.</li>
-
-    <li>If <var>candidates</var> is empty, <var>name</var> is the name of one of
-    the entries in the <{form}> element's <a>past names map</a>: return the object
-    associated with <var>name</var> in that map.</li>
-
-    <li>If <var>candidates</var> contains more than one node, return <var>candidates</var> and abort these steps.</li>
-
-    <li>Otherwise, <var>candidates</var> contains exactly one node. Add a mapping from
-    <var>name</var> to the node in <var>candidates</var> in the <{form}>
-    element's <a>past names map</a>, replacing the previous entry with the same name, if
-    any.</li>
-
-    <li>Return the node in <var>candidates</var>.</li>
-
-  </ol>
-
-  If an element listed in a <{form}> element's <a>past names map</a> changes
-  <a>form owner</a>, then its entries must be removed from that map.
+  If an element listed in a <{form}> element's <a>past names map</a> changes <a>form owner</a>, then
+  its entries must be removed from that map.
 
   <hr />
 
-  The <dfn method for="HTMLFormElement"><code>submit()</code></dfn> method, when invoked, must <a>submit</a> the <{form}> element from the <{form}>
-  element itself, with the <var>submitted from {{HTMLFormElement/submit()}} method</var> flag set.
+  The <dfn method for="HTMLFormElement"><code>submit()</code></dfn> method, when invoked, must
+  <a>submit</a> the <{form}> element from the <{form}> element itself, with the <var>submitted from
+  {{HTMLFormElement/submit()}} method</var> flag set.
 
-  The <dfn method for="HTMLFormElement"><code>reset()</code></dfn> method, when invoked, must run the
-  following steps:
+  The <dfn method for="HTMLFormElement"><code>reset()</code></dfn> method, when invoked, must run
+  the following steps:
 
   <ol>
 
@@ -1561,6 +1554,11 @@ part of the form.</p>
       </td><td> <a element-state for="input">Time</a>
       </td><td> A time (hour, minute, seconds, fractional seconds) with no time zone
       </td><td> A time control
+    </td></tr><tr>
+      <td> <dfn attr-value for="input/type"><code>datetime-local</code></dfn>
+      </td><td> <a element-state for="input">Local Date and Time</a>
+      </td><td> A date and time (year, month, day, hour, minute, second, fraction of a second) with no timezone offset
+      </td><td> A date and time control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>number</code></dfn>
       </td><td> <a element-state for="input">Number</a>
@@ -5719,7 +5717,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   then unless the user agent cannot support images, or its support for images has been disabled,
   or the user agent only fetches images on demand, or the <{input/src}>
   attribute's value is the empty string, the user agent must <a>parse</a> the value of the <{input/src}>
-  attribute value, relative to the element, and if that is successful, run these substeps:
+  attribute value, relative to the element's <a>node document</a>, and if that is successful, run these substeps:
 
   <ol>
     <li>Let <var>request</var> be a new <a>request</a> whose
@@ -9210,7 +9208,7 @@ Daddy"&gt;&lt;/textarea&gt;
     <dd>
       <pre class="idl" data-highlight="webidl" dfn-for="HTMLOutputElement">
         interface HTMLOutputElement : HTMLElement {
-          [PutForwards=value] readonly attribute DOMTokenList htmlFor;
+          [SameObject, PutForwards=value] readonly attribute DOMTokenList htmlFor;
           readonly attribute HTMLFormElement? form;
           attribute DOMString name;
 
@@ -12478,27 +12476,19 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 <h4 id="apis-for-the-text-field-selections">APIs for text field selections</h4>
 
   The <{input}> and <{textarea}> elements define the following members in their
-  DOM interfaces for handling their selection:
+  DOM interfaces for handling their selection: {{HTMLInputElement/select()}},
+  {{HTMLInputElement/selectionStart}}, {{HTMLInputElement/selectionEnd}},
+  {{HTMLInputElement/selectionDirection}}, {{HTMLInputElement/setRangeText(replacement)}},
+  {{HTMLInputElement/setSelectionRange(start, end)}}
 
-  <pre class="idl-ignore" data-no-idl data-highlight="webidl">
-    void {{selectionapielements/select()}};
-    attribute unsigned long selectionStart;
-    attribute unsigned long selectionEnd;
-    attribute DOMString selectionDirection;
-    void setRangeText(DOMString replacement);
-    void setRangeText(DOMString replacement, unsigned long start, unsigned long end, optional SelectionMode selectionMode = "preserve");
-    void setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction = "preserve");
-  </pre>
-
-  The <code>setRangeText</code> method uses the following
-  enumeration:
+  The {{HTMLInputElement/setRangeText()}} method uses the following enumeration:
 
   <pre class="idl" data-highlight="webidl" dfn-for="SelectionMode">
     enum SelectionMode {
       "select",
       "start",
       "end",
-      "preserve", // default
+      "preserve" // default
     };
   </pre>
 
@@ -12661,7 +12651,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   attribute as the second argument, and the new value as the third argument.
 
   The
-  <dfn method for="selectionapielements,HTMLInputElement,HTMLTextAreaElement"><code>setSelectionRange(<var>start</var>, <var>end</var>, <var>direction</var>)</code></dfn>
+  <dfn method for="selectionapielements,HTMLInputElement,HTMLTextAreaElement" lt="setSelectionRange()|setSelectionRange(start, end)|setSelectionRange(start, end, direction)"><code>setSelectionRange(<var>start</var>, <var>end</var>, <var>direction</var>)</code></dfn>
   method
   must set the selection of the text field to the sequence of characters starting with the character
   at the <var>start</var>th position (in logical order) and ending with the character at
@@ -12840,7 +12830,7 @@ var selectionText = control.value.substring(control.selectionStart, control.sele
 var oldStart = control.selectionStart;
 var oldEnd = control.selectionEnd;
 var oldDirection = control.selectionDirection;
-var prefix = "http://";
+var prefix = "https://";
 control.value = prefix + control.value;
 control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldDirection);
     </pre>
@@ -13161,21 +13151,17 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
 
   </dl>
 
-  <div class="impl">
-
   The
-  <dfn attribute for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>willValidate</code></dfn>
+  <dfn attribute for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>willValidate</code></dfn>
   IDL attribute must return
   true if an element is a <a>candidate for constraint validation</a>, and false otherwise
   (i.e., false if any conditions are <a>barring it from
   constraint validation</a>).
 
   The
-  <dfn method for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement" lt="setCustomValidity()|setCustomValidity(error)"><code>setCustomValidity(<var>message</var>)</code></dfn>,
+  <dfn method for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement" lt="setCustomValidity()|setCustomValidity(error)"><code>setCustomValidity(<var>message</var>)</code></dfn>,
   when invoked, must set the <a>custom validity error message</a> to the value of the given
   <var>message</var> argument.
-
-  </div>
 
   <div class="example">
     In the following example, a script checks the value of a form control each time it is edited,
@@ -13203,7 +13189,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   <div class="impl">
 
   The
-  <dfn attribute for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validity</code></dfn>
+  <dfn attribute for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validity</code></dfn>
   IDL attribute must return a {{ValidityState}} object that represents
   the <a>validity states</a> of the element.
   This object is <a>live</a>.
@@ -13251,7 +13237,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   :: None of the other conditions are true.
 
   When the
-  <dfn method for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>checkValidity()</code></dfn>
+  <dfn method for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>checkValidity()</code></dfn>
   method is
   invoked, if the element is a <a>candidate for constraint validation</a> and does not <a>satisfy its constraints</a>, the user agent must <a>fire a simple
   event</a> named <code>invalid</code> that is cancelable (but in this case
@@ -13259,7 +13245,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   without doing anything else.
 
   When the
-  <dfn method for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>reportValidity()</code></dfn>
+  <dfn method for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>reportValidity()</code></dfn>
   method is
   invoked, if the element is a <a>candidate for constraint validation</a> and does not <a>satisfy its constraints</a>, the user agent must: <a>fire a simple
   event</a> named <code>invalid</code> that is cancelable at the element,
@@ -13273,7 +13259,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
   user, report a script error.
 
   The
-  <dfn attribute for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validationMessage</code></dfn>
+  <dfn attribute for="HTMLObjectElement,HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement,HTMLKeygenElement,HTMLOutputElement,HTMLFieldSetElement"><code>validationMessage</code></dfn>
   attribute must
   return the empty string if the element is not a <a>candidate for constraint validation</a>
   or if it is one but it <a>satisfies its constraints</a>; otherwise,
@@ -13433,7 +13419,7 @@ fur
 
     </li>
 
-    <li><a>Parse</a> the <a for="url">URL</a> <var>action</var>, relative to the <var>submitter</var> element. If this fails,
+    <li><a>Parse</a> the <a for="url">URL</a> <var>action</var>, relative to the <var>submitter</var> element's <a>node document</a>. If this fails,
     abort these steps.</li>
 
     <li>Let <var>action</var> be the <a>resulting URL string</a>.</li>

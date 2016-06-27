@@ -196,11 +196,11 @@
 
   </dl>
 
-  The <dfn><code>top</code></dfn> IDL attribute on the <code>Window</code> object
+  The <dfn attribute for="Window"><code>top</code></dfn> IDL attribute on the {{Window}} object
   of a {{Document}} in a <a>browsing context</a> <var>b</var> must return
-  the <code>WindowProxy</code> object of its <a>top-level browsing context</a> (which would be
-  its own <code>WindowProxy</code> object if it was a <a>top-level browsing context</a>
-  itself), if it has one, or its own <code>WindowProxy</code> object otherwise (e.g., if it was a
+  the {{WindowProxy}} object of its <a>top-level browsing context</a> (which would be
+  its own {{WindowProxy}} object if it was a <a>top-level browsing context</a>
+  itself), if it has one, or its own {{WindowProxy}} object otherwise (e.g., if it was a
   detached <a>nested browsing context</a>).
 
   The <dfn attribute for="Window"><code>parent</code></dfn> IDL attribute on the {{Window}} object
@@ -236,16 +236,17 @@
 
 <h5 id="navigating-auxiliary-browsing-contexts-in-the-dom">Navigating auxiliary browsing contexts in the DOM</h5>
 
-  The <dfn><code>opener</code></dfn> IDL attribute on the <code>Window</code>
-  object, on getting, must return the <code>WindowProxy</code> object of the <a>browsing
-  context</a> from which the current <a>browsing context</a> was created (its <a>opener
-  browsing context</a>), if there is one, if it is still available, and if the current
-  <a>browsing context</a> has not <i>disowned its opener</i>;
-  otherwise, it must return null. On setting, if the new value is null then the current
-  <a>browsing context</a> must <dfn>disown its opener</dfn>; if
-  the new value is anything else then the user agent must
-  call the \[[DefineOwnProperty]] internal method of the <code>Window</code> object, passing the
-  property name "<code>opener</code>" as the property key, and the Property Descriptor {
+  The <dfn attribute for="Window"><code>opener</code></dfn> IDL attribute on the {{Window}} object,
+  on getting, must return the {{WindowProxy}} object of the <a>browsing context</a> from which the
+  current <a>browsing context</a> was created (its <a>opener browsing context</a>), if there is one,
+  if it is still available, and if the current <a>browsing context</a> has not
+  <a>disowned its opener</a>; otherwise, it must return null.
+
+  On setting the {{Window/opener}} attribute, if the new value is null then the current
+  <a>browsing context</a> must <dfn lt="disowned its opener">disown its opener</dfn>; if the new
+  value is anything else then the user agent must call the \[[DefineOwnProperty]] internal method of
+  the {{Window}} object, passing the property name "<code>opener</code>" as the property key, and
+  the Property Descriptor {
   \[[Value]]: <var>value</var>, \[[Writable]]: true, \[[Enumerable]]: true,
   \[[Configurable]]: true } as the property descriptor,
   where <var>value</var> is the new value.
@@ -676,6 +677,10 @@
       : The <a>realm execution context</a>
       :: Return <var>execution context</var>.
 
+      : The <a>module map</a>
+      :: Return the <a lt="document module map">module map</a> of the {{Document}} with which
+          <var>window</var> is currently associated.
+
       : The <a>responsible browsing context</a>
       :: Return the <a>browsing context</a> with which <var>window</var> is associated.
 
@@ -1048,7 +1053,7 @@
   first page loaded in a <a>browsing context</a>. In that specific case, the {{Window}} object of
   the original <a scheme>about:blank</a> page is reused and gets a new {{Document}} object.</p>
 
-  The <dfn attribute for="Window"><code>defaultView</code></dfn> IDL attribute of the {{Document}}
+  The <dfn attribute for="Document"><code>defaultView</code></dfn> IDL attribute of the {{Document}}
   interface must return the {{Document}}'s <a>browsing context</a>'s {{WindowProxy}} object, if
   there is one, or null otherwise.
 
@@ -2430,7 +2435,7 @@
   Entries that consist of <a>state objects</a> share the same
   {{Document}} as the entry for the page that was active when they were added.
 
-  Contiguous entries that differ just by fragment identifier also share the same
+  Contiguous entries that differ just by <a for="url">fragment</a> also share the same
   {{Document}}.
 
   <p class="note">
@@ -3055,10 +3060,10 @@
     "<code>#</code>").
     </dd>
 
-    <dt><var>location</var> . {{Location/assign(<var>url</var>)}}</dt>
+    <dt><var>location</var> . {{Location/assign()|assign}}(<var>url</var>)</dt>
     <dd>Navigates to the given URL.</dd>
 
-    <dt><var>location</var> . {{Location/replace(<var>url</var>)}}</dt>
+    <dt><var>location</var> . {{Location/replace()|replace}}(<var>url</var>)</dt>
     <dd>Removes the current page from the session history and navigates to the given URL.</dd>
 
     <dt><var>location</var> . {{Location/reload()}}</dt>
@@ -3554,7 +3559,7 @@
 
     <p class="note">
   The <i>handle redirects</i> step later in
-    this algorithm can in certain cases jump back to the step labeled <a><i>fragment identifiers</i></a>. Since, between those two steps,
+    this algorithm can in certain cases jump back to the step labeled <i>fragments</i>. Since, between those two steps,
     this algorithm goes from operating immediately in the context of the calling <a>task</a> to operating <a>in parallel</a> independent of the <a>event loop</a>, some of the intervening steps need to be able to handle both being run as part of a <a>task</a> and
     running <a>in parallel</a>. The <var>gone async</var> flag is thus used to make these steps
     aware of which mode they are operating in.
@@ -3562,14 +3567,14 @@
 
     </li>
 
-    <li><dfn lt="the step labeled fragment identifiers"></dfn><i>Fragment identifiers</i>: If this is not a
+    <li><dfn lt="the step labeled fragments"><i>Fragments</i></dfn>: If this is not a
     <dfn>reload-triggered navigation</dfn>: apply the <a>URL parser</a> algorithm to the
     <a>absolute URL</a> of the new resource and the <a>address</a> of the <a>active document</a> of the <a>browsing context</a>
     being navigated; if all the components of the resulting <a>parsed
     URLs</a>, ignoring any <a for="url">fragment</a> components, are
     identical, and the new resource is to be fetched using <code>GET</code>, and the
     <a>URL record</a> of the new resource has a <a for="url">fragment</a> component that is not null (even if it is empty),
-    then <a lt="fragment identifier">navigate to that fragment identifier</a> and abort these
+    then <a lt="navigate fragment">navigate to that fragment</a> and abort these
     steps.</li>
 
     <li>If <var>gone async</var> is false, cancel any preexisting but not yet <a>mature</a> attempt to navigate the <a>browsing
@@ -3760,10 +3765,9 @@
     <i>Handle redirects</i>: If fetching the resource results in a redirect, and either the
     <a for="url">URL</a> of the target of the redirect has the <a>same origin</a> as the original
     resource, or the resource is being obtained using the POST method or a safe method (in HTTP
-    terms), return to <a>the step labeled <i>fragment
-    identifiers</i></a> with the new resource, except that if the <a for="url">URL</a> of the target of
-    the redirect does not have a fragment identifier and the <a for="url">URL</a> of the resource that
-    led to the redirect does, then the fragment identifier of the resource that led to the redirect
+    terms), return to <a>the step labeled <i>fragment</i></a> with the new resource, except that if the <a for="url">URL</a> of the target of
+    the redirect does not have a <a for="url">fragment</a> and the <a for="url">URL</a> of the resource that
+    led to the redirect does, then the <a for="url">fragment</a> of the resource that led to the redirect
     must be propagated to the <a for="url">URL</a> of the target of the redirect.
 
     <p class="example">
@@ -3910,7 +3914,7 @@
              object.
           * Let <var>realm execution context</var> be the created
              <a>JavaScript execution context</a>.
-          * Do not obtain any source texts for scripts.
+          * Do not obtain any source texts for scripts or modules.
       2. <a>Set up a browsing context environment settings object</a> with
           <var>realm execution context</var>, and let <var>settings object</var> be the result.
       3. Set <var>window</var>'s
@@ -4062,16 +4066,15 @@
 
     <li>The <a>navigation algorithm</a> has now <dfn>matured</dfn>.</li>
 
-    <li><i>Fragment identifier loop</i>: <a>Spin the event loop</a> for a user-agent-defined
+    <li><i><a for="url">fragment</a> loop</i>: <a>Spin the event loop</a> for a user-agent-defined
     amount of time, as desired by the user agent implementor. (This is intended to allow the user
     agent to optimize the user experience in the face of performance concerns.)</li>
 
     <li>If the {{Document}} object has no parser, or its parser has <a>stopped parsing</a>, or the user agent has reason to believe the user is no longer
-    interested in scrolling to the fragment identifier, then abort these steps.</li>
+    interested in scrolling to the <a for="url">fragment</a>, then abort these steps.</li>
 
-    <li><a>Scroll to the fragment identifier</a> given in <a>the document's
-    address</a>. If this fails to find <a>an
-    indicated part of the document</a>, then return to the <i>fragment identifier loop</i>
+    <li><a>Scroll to the fragment</a> given in <a>the document's address</a>. If this fails to find <a>an
+    indicated part of the document</a>, then return to the <i><a for="url">fragment</a> loop</i>
     step.</li>
 
   </ol>
@@ -4292,10 +4295,10 @@
   completely set up, the user agent must <a>update the session history with the new
   page</a>.
 
-<h4 id="navigating-to-a-fragment-identifier">Navigating to a <dfn lt="fragment identifier|fragment identifiers">fragment identifier</dfn></h4>
+<h4 id="navigating-to-a-fragment-identifier">Navigating to a <dfn lt="navigate fragment">fragment</dfn></h4>
 
-  When a user agent is supposed to navigate to a fragment identifier, then the user agent must
-  run the following steps:
+  When a user agent is supposed to navigate to a fragment, then the user agent must run the
+  following steps:
 
   <ol>
 
@@ -4321,8 +4324,7 @@
    agent was <a>navigating</a>. The title must be left unset.</li>
 
     <li><a>Traverse the history</a> to the new entry, with the <i>non-blocking events</i> flag
-    set. This will <a>scroll to the fragment
-    identifier</a> given in what is now <a>the document's address</a>.</li>
+    set. This will <a>scroll to the fragment</a> given in what is now <a>the document's address</a>.</li>
 
   </ol>
 
@@ -4335,7 +4337,7 @@
 
   <hr />
 
-  When the user agent is required to <dfn>scroll to the fragment identifier</dfn> and <a>the
+  When the user agent is required to <dfn>scroll to the fragment</dfn> and <a>the
   indicated part of the document</a>, if any, is <a>being rendered</a>, the user agent must
   either change the scrolling position of the document using the following algorithm, or perform
   some other action such that <a>the indicated part of the document</a> is brought to the
@@ -4360,10 +4362,10 @@
 
   </ol>
 
-  <dfn lt="an indicated part of the document|the indicated part of the document|indicated part of the document">The indicated part of the document</dfn> is the one that the fragment identifier, if any,
-  identifies. The semantics of the fragment identifier in terms of mapping it to a specific DOM Node
+  <dfn lt="an indicated part of the document|the indicated part of the document|indicated part of the document">The indicated part of the document</dfn> is the one that the <a for="url">fragment</a>, if any,
+  identifies. The semantics of the <a for="url">fragment</a> in terms of mapping it to a specific DOM Node
   is defined by the specification that defines the <a>MIME type</a> used by the
-  {{Document}} (for example, the processing of fragment identifiers for <a>XML MIME types</a> is the responsibility of RFC7303). [[!RFC7303]]
+  {{Document}} (for example, the processing of <a for="url">fragment</a> for <a>XML MIME types</a> is the responsibility of RFC7303). [[!RFC7303]]
 
   For HTML documents (and <a>HTML MIME types</a>), the following
   processing model must be followed to determine what <a>the indicated part of the document</a> is.
@@ -4400,7 +4402,7 @@
 
   For the purposes of the interaction of HTML with Selectors' <dfn><code>:target</code></dfn> pseudo-class, the <dfn><i>target element</i></dfn>
   is <a>the indicated part of the document</a>, if that is an element; otherwise there is no
-  <i>target element</i>. [[!CSS3-SELECTORS]]
+  <i>target element</i>. [[!SELECTORS4]]
 
   The <a>task source</a> for the task mentioned in this section must be the <a>DOM
   manipulation task source</a>.
@@ -4550,7 +4552,7 @@
     <li>Set <a>the document's address</a> to the URL of the <var>specified
     entry</var>.</li>
 
-    <li>If the <var>specified entry</var> has a URL whose fragment identifier differs
+    <li>If the <var>specified entry</var> has a URL whose <a for="url">fragment</a> differs
     from that of the <a>current entry</a>'s when compared in a <a>case-sensitive</a>
     manner, and the two share the same {{Document}} object, then let <var>hash
     changed</var> be true, and let <var>old URL</var> be the URL of the <a>current
@@ -4560,9 +4562,8 @@
     <li>If the traversal was initiated with <dfn lt="replacement must be enabled|replacement enabled">replacement enabled</dfn>, remove the entry
     immediately before the <var>specified entry</var> in the session history.</li>
 
-    <li>If the <var>specified entry</var> is not <a>an entry with persisted user
-    state</a>, but its URL has a fragment identifier, <a>scroll to the fragment
-    identifier</a>.</li>
+    <li>If the <var>specified entry</var> is not <a>an entry with persisted user state</a>, but its
+    URL has a <a for="url">fragment</a>, <a>scroll to the fragment</a>.</li>
 
     <li>If the entry is <a>an entry with persisted user state</a>, the user agent may
     <a>restore persisted user state</a> and update aspects of the document and its rendering.</li>
@@ -4826,12 +4827,12 @@
     agent should ask the user to confirm that they wish to unload the document.
 
     The prompt shown by the user agent may include the string of the
-    {{BeforeUnloadEvent/returnValue}} attribute, or some leading subset thereof. (A user agent may
-    want to truncate the string to 1024 characters for display, for instance.)
+    {{BeforeUnloadEvent/returnValue}} attribute, or <a>optionally truncated</a>.
 
     The user agent must <a state for="useragent">pause</a> while waiting for the user's response.
 
-    If the user did not confirm the page navigation, then the user agent <dfn lt="refused to allow the document to be unloaded|refused to allow this document to be unloaded">refused to allow the document to be unloaded</dfn>.
+    If the user did not confirm the page navigation, then the user agent
+    <dfn lt="refused to allow the document to be unloaded|refused to allow this document to be unloaded">refused to allow the document to be unloaded</dfn>.
 
     </li>
 

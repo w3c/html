@@ -114,12 +114,12 @@
 <h4 id="xml">XML</h4>
 
   To ease migration from HTML to XHTML, user agents conforming to this specification will place elements in
-  HTML in the <code>https://www.w3.org/1999/xhtml</code> namespace, at least for the purposes of the
+  HTML in the <code>http://www.w3.org/1999/xhtml</code> namespace, at least for the purposes of the
   DOM and CSS. The term "<dfn lt="html element|html elements">HTML elements</dfn>", when used in this specification, refers to any
   element in that namespace, and thus refers to both HTML and XHTML elements.
 
   Except where otherwise stated, all elements defined or mentioned in this specification are in the
-  <a>HTML namespace</a> ("<code>https://www.w3.org/1999/xhtml</code>"), and all attributes defined or
+  <a>HTML namespace</a> ("<code>http://www.w3.org/1999/xhtml</code>"), and all attributes defined or
   mentioned in this specification have no namespace.
 
   The term <dfn>element type</dfn> is used to refer to the set of elements that have a given local
@@ -656,6 +656,9 @@
       * The <dfn scheme><code>sms:</code></dfn> scheme [[!RFC5724]]
       * The <dfn scheme><code>urn:</code></dfn> scheme [[!URN]]
 
+      <dfn>Media fragment syntax</dfn> is defined in the <cite>Media Fragments URI</cite>
+      specification. [[!MEDIA-FRAGS]]
+
   : HTTP and related specifications
   :: The following terms are defined in the HTTP specifications: [[!HTTP]]
 
@@ -831,11 +834,14 @@
           * <a>%ObjProto_toString%</a>
           * <a>%ObjProto_valueOf%</a>
        * The <a>FunctionBody</a> production
+       * The <a>Module</a> production
        * The <a>Pattern</a> production
        * The <a for="ecma">Script</a> production
        * The <a for="ecma">Type</a> notation
        * The <a for="ecma">List</a> and <a>Record</a> specification types
        * The <a>Property Descriptor</a> specification type
+       * The <a>Source Text Module Record</a> specification type and its <a>ModuleEvaluation</a>
+          and <a>ModuleDeclarationInstantiation</a> methods
        * The <a>ArrayCreate</a> abstract operation
        * The <a>Call</a> abstract operation
        * The <a>CloneArrayBuffer</a> abstract operation
@@ -850,6 +856,7 @@
        * The <a>HasOwnProperty</a> abstract operation
        * The <a>HostEnsureCanCompileStrings</a> abstract operation
        * The <a>HostPromiseRejectionTracker</a> abstract operation
+       * The <a>HostResolveImportedModule</a> abstract operation
        * The <a>InitializeHostDefinedRealm</a> abstract operation
        * The <a>IsAccessorDescriptor</a> abstract operation
        * The <a>IsCallable</a> abstract operation
@@ -867,6 +874,7 @@
        * The <a>OrdinarySet</a> abstract operation
        * The <a>OrdinaryDelete</a> abstract operation
        * The <a>OrdinaryOwnPropertyKeys</a> abstract operation
+       * The <a>ParseModule</a> abstract operation
        * The <a>ParseScript</a> abstract operation
        * The <a>RunJobs</a> abstract operation
        * The <a>SameValue</a> abstract operation
@@ -1102,6 +1110,7 @@
 
   : Media Queries
   :: Implementations must support the Media Queries language. [[!MEDIAQ]]
+  :: <<media-condition>>
 
   : CSS modules
   :: While support for CSS as a whole is not required of implementations of this specification
@@ -1180,9 +1189,15 @@
       * <a lt="consume a component value">Parse a comma-separated list of component values</a>
       * <a>component value</a>
       * <a>environment encoding</a>
-      * <a type lt="whitespace">&lt;whitespace-token></a>
+      * <<whitespace-token>>
 
-      The feature <a>&lt;length></a> is defined in the <cite>CSS Values and Units</cite>
+      The following terms are defined in the <cite>Selectors</cite> specification: [[!SELECTORS4]]
+
+      * <a>type selector</a>
+      * <a>attribute selector</a>
+      * <a>pseudo-class</a>
+
+      The feature <<length>> is defined in the <cite>CSS Values and Units</cite>
       specification. [[!CSS-VALUES]]
 
       The term <a>CSS styling attribute</a> is defined in the <cite>CSS Style Attributes</cite>
@@ -1536,7 +1551,7 @@
     determined in the following way:
 
     1. If the context node is from an HTML DOM, the default element namespace is
-        "https://www.w3.org/1999/xhtml".
+        "http://www.w3.org/1999/xhtml".
     2. Otherwise, the default element namespace URI is null.
 
     <p class="note">
@@ -3770,8 +3785,7 @@
 
   If a reflecting IDL attribute has the type {{DOMTokenList}}, then on getting it must return a
   {{DOMTokenList}} object whose associated element is the element in question and whose associated
-  attribute's local name is the name of the attribute in question. The same {{DOMTokenList}}
-  object must be returned every time for each attribute.
+  attribute's local name is the name of the attribute in question.
 
   If a reflecting IDL attribute has the type {{HTMLElement}}, or an interface that
   descends from {{HTMLElement}}, then, on getting, it must run the following algorithm
@@ -3948,7 +3962,7 @@
       those elements is returned.
     </dd>
 
-    <dt><var>radioNodeList</var> . <var>value</var> [ = <var>value</var> ]</dt>
+    <dt><var>radioNodeList</var> . {{RadioNodeList/value}} [ = <var>value</var> ]</dt>
     <dd>
       Returns the value of the first checked radio button represented by the object.
 
@@ -3989,7 +4003,7 @@
   Members of the <code>RadioNodeList</code> interface inherited from the <code>NodeList</code>
   interface must behave as they would on a <code>NodeList</code> object.
 
-  The {{RadioNodeList/value}} IDL attribute on the <code>RadioNodeList</code> object, on
+  The <dfn attribute for="RadioNodeList"><code>value</code></dfn> IDL attribute on the <code>RadioNodeList</code> object, on
   getting, must return the value returned by running the following steps:
 
   1. Let <var>element</var> be the first element in <a>tree order</a> represented by the
