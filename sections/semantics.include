@@ -91,7 +91,8 @@ path: sections/semantics-common-idioms.include
   </ul>
 
   <p class="note">
-    This definition is used to determine what elements <a>can be focused</a> and which elements match the <code>:disabled</code> <a>pseudo-class</a>.
+    This definition is used to determine what elements <a>can be focused</a> and which elements
+    match the '':disabled'' <a>pseudo-class</a>.
   </p>
 
 </section>
@@ -116,9 +117,9 @@ path: sections/semantics-common-idioms.include
 
   When comparing the name part of a CSS <a>attribute selector</a> to the names of namespace-less
   attributes on <a>html elements</a> in <a>HTML documents</a>, the name part of the CSS
-  <a>attribute selector</a> must first be <a>converted to ASCII lowercase</a>. The same selector when
-  compared to other attributes must be compared according to its original case. In both cases, the
-  comparison is <a>case-sensitive</a>.
+  <a>attribute selector</a> must first be <a>converted to ASCII lowercase</a>. The same selector
+  when compared to other attributes must be compared according to its original case. In both cases,
+  the comparison is <a>case-sensitive</a>.
 
   Attribute selectors on an <a>HTML element</a> in an <a>HTML document</a> must treat the
   <em>values</em> of attributes with the following names as <a>ASCII case-insensitive</a>, with one
@@ -190,447 +191,239 @@ path: sections/semantics-common-idioms.include
   There are a number of dynamic selectors that can be used with HTML. This section defines when
   these selectors match HTML elements. [[!SELECTORS4]] [[!CSSUI]]
 
-  <dl>
-
-    <dt><dfn noexport><code>:link</code></dfn></dt>
-    <dt><dfn noexport><code>:visited</code></dfn></dt>
-
-    <dd>
-
-    All <{a}> elements that have an <{links/href}>
-    attribute, all <{area}> elements that have an <{links/href}> attribute, and all <{link}> elements that have
-    an <{link/href}> attribute, must match one of <code>:link</code> and <code>:visited</code>.
-
-    Other specifications might apply more specific rules regarding how these elements are to
-    match these <a>pseudo-classes</a>, to mitigate some privacy concerns that apply with straightforward
-    implementations of this requirement.
-
-    </dd>
-
-    <dt><dfn noexport><code>:active</code></dfn></dt>
-
-    <dd>
-
-    The <code>:active</code> <a>pseudo-class</a> is defined to match an element
-    <q cite="https://drafts.csswg.org/selectors3/#the-user-action-pseudo-classes-hover-act">while an
-    element is <dfn><i>being activated</i></dfn> by the user</q>.
-
-    To determine whether a particular element is <i>being activated</i> for the purposes of
-    defining the <code>:active</code> <a>pseudo-class</a> only, an HTML user agent
-    must use the first relevant entry in the following list.
-
-    <dl>
-
-      <dt>If the element has a descendant that is currently matching the <code>:active</code> <a>pseudo-class</a></dt>
-
-      <dd>The element is <i>being activated</i>.</dd>
-
-      <dt>If the element is the <a>labeled control</a> of a <{label}> element that is
-      currently matching <a>:active</a></dt>
-
-      <dd>The element is <i>being activated</i>.</dd>
-
-      <dt>If the element is a <{button}> element</dt>
-
-      <dt>If the element is an <{input}> element whose <code>type</code> attribute is in the
-      <a element-state for="input">submit button</a>, <a element-state for="input">image button</a>,
-      <a element-state for="input">Reset Button</a>, or <a element-state for="input">Button</a> state</dt>
-
-      <dd>
-
-      The element is <i>being activated</i> if it is <a>in a formal activation state</a>
-      and it is not disabled.
-
-      <p class="example">For example, if the user is using a keyboard to push a <code>button</code>
-      element by pressing the space bar, the element would match this <a>pseudo-class</a> in between the
-      time that the element received the <code>keydown</code> event and the
-      time the element received the <code>keyup</code> event.</p>
-
-      </dd>
-
-      <dt>If the element is a <{menuitem}> element</dt>
-
-      <dd>The element is <i>being activated</i> if it is <a>in a formal activation state</a>
-      and it does not have a <code>disabled</code>
-      attribute.</dd>
-
-      <dt>If the element is an <{a}> element that has an <{links/href}> attribute</dt>
-
-      <dt>If the element is an <{area}> element that has an <{links/href}> attribute</dt>
-
-      <dt>If the element is a <{link}> element that has an <{link/href}> attribute</dt>
-
-      <dt>If the element has its <a>tabindex focus flag</a> set</dt>
-
-      <dd>The element is <i>being activated</i> if it is <a>in a formal activation
-      state</a>.</dd>
-
-      <dt>If the element is <a>being actively pointed at</a></dt>
-
-      <dd>The element is <i>being activated</i>.</dd>
-
-    </dl>
-
-    An element is said to be <dfn>in a formal activation state</dfn> between the time the user
-    begins to indicate an intent to trigger the element's <a>activation behavior</a> and
-    either the time the user stops indicating an intent to trigger the element's <a>activation
-    behavior</a>, or the time the element's <a>activation behavior</a> has finished
-    running, which ever comes first.
-
-    An element is said to be <dfn>being actively pointed at</dfn> while the user indicates the
-    element using a pointing device while that pointing device is in the "down" state (e.g., for a
-    mouse, between the time the mouse button is pressed and the time it is depressed; for a finger
-    in a multitouch environment, while the finger is touching the display surface).
-
-    </dd>
-
-    <dt><dfn noexport><code>:hover</code></dfn></dt>
-
-    <dd>
-
-    The <code>:hover</code> <a>pseudo-class</a> is defined to match an element <q cite="https://drafts.csswg.org/selectors3/#the-user-action-pseudo-classes-hover-act">while the
-    user <i>designates</i> an element with a pointing device</q>. For the purposes of defining the
-    <code>:hover</code> <a>pseudo-class</a> only, an HTML user agent must consider
-    an element as being one that the user <i>designates</i> if it is:
-
-    <ul>
-
-      <li>
-
-      An element that the user indicates using a pointing device.
-
-      </li>
-
-      <li>
-
-      An element that has a descendant that the user indicates using a pointing device.
-
-      </li>
-
-      <li>
-
-      An element that is the <a>labeled control</a> of a <{label}> element that is
-      currently matching <a>:hover</a>.
-
-      </li>
-
-    </ul>
-
-    <div class="example">
-      Consider in particular a fragment such as:
-
-      <pre highlight="html">
-        &lt;p&gt; &lt;label for=c&gt; &lt;input id=a&gt; &lt;/label&gt; &lt;span id=b&gt; &lt;input id=c&gt; &lt;/span&gt; &lt;/p&gt;
-      </pre>
-
-      If the user designates the element with ID "<{a}>" with their pointing
-      device, then the <{p}> element (and all its ancestors not shown in the snippet above),
-      the <{label}> element, the element with ID "<{a}>", and the element
-      with ID "<code>c</code>" will match the <a>:hover</a>
-      <a>pseudo-class</a>. The element with ID "<{a}>" matches it from condition 1, the
-      <code>label</code> and <{p}> elements match it because of condition 2 (one of their
-      descendants is designated), and the element with ID "<code>c</code>" matches it
-      through condition 3 (its <{label}> element matches <a>:hover</a>). However, the element with ID "<code>b</code>"
-      does <em>not</em> match <a>:hover</a>: its descendant is not
-      designated, even though it matches <a>:hover</a>.
-
-    </div>
-
-    </dd>
-
-    <dt><dfn noexport><code>:focus</code></dfn></dt>
-
-    <dd>
-
-    For the purposes of the CSS ':focus' <a>pseudo-class</a>, an <dfn>element has the focus</dfn> when
-    its <a>top-level browsing context</a> has the system focus, it is not itself a
-    <a>browsing context container</a>, and it is one of the elements listed in the <a>focus
-    chain</a> of the <a>currently focused area of the top-level browsing context</a>.
-
-    </dd>
-
-    <dt><dfn noexport><code>:enabled</code></dfn></dt>
-
-    <dd>
-
-    The <code>:enabled</code> <a>pseudo-class</a> must match any element
-    that is one of the following:
-
-    <ul>
-
-      <li>a <{button}> element that is not disabled</li>
-
-      <li>an <{input}> element that is not disabled</li>
-
-      <li>a <{select}> element that is not disabled</li>
-
-      <li>a <{textarea}> element that is not disabled</li>
-
-      <li>an <{optgroup}> element that does not have a <code>disabled</code> attribute</li>
-
-      <li>an <{option}> element that is not disabled</li>
-
-      <li>a <{menuitem}> element that does not have a <code>disabled</code> attribute</li>
-
-      <li>a <{fieldset}> element that is not a <a>disabled fieldset</a></li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:disabled</code></dfn></dt>
-
-    <dd>
-
-    The <code>:disabled</code> <a>pseudo-class</a> must match any element that
-    is <a>actually disabled</a>.
-
-    </dd>
-
-    <dt><dfn noexport><code>:checked</code></dfn></dt>
-
-    <dd>
-
-    The <code>:checked</code> <a>pseudo-class</a> must match any element
-    falling into one of the following categories:
-
-    <ul>
-
-      <li><{input}> elements whose <code>type</code> attribute is in
-      the <a element-state for="input">Checkbox</a> state and whose <a for="forms">checkedness</a> state is true</li>
-
-      <li><{input}> elements whose <code>type</code> attribute is in
-      the <a element-state for="input">Radio Button</a> state and whose <a for="forms">checkedness</a> state is true</li>
-
-      <li><{option}> elements whose <a state for="option">selectedness</a> is true</li>
-
-      <li><{menuitem}> elements whose <code>type</code> attribute
-      is in the <a state for="menuitem">Checkbox</a> state and that have a
-      <code>checked</code> attribute</li>
-
-      <li><{menuitem}> elements whose <code>type</code> attribute
-      is in the <a state for="menuitem">Radio</a> state and that have a <code>checked</code> attribute</li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:indeterminate</code></dfn></dt>
-
-    <dd>
-
-    The <code>:indeterminate</code> <a>pseudo-class</a> must match any
-    element falling into one of the following categories:
-
-    <ul>
-
-      <li><{input}> elements whose <code>type</code> attribute is in
-      the <a element-state for="input">Checkbox</a> state and whose <code>indeterminate</code> IDL attribute is set to true</li>
-
-      <li><{input}> elements whose <code>type</code> attribute is in
-      the <a element-state for="input">Radio Button</a> state and whose <a>radio button
-      group</a> contains no <{input}> elements whose <a for="forms">checkedness</a> state is true.</li>
-
-      <li><{progress}> elements with no <code>value</code>
-      content attribute</li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:default</code></dfn></dt>
-
-    <dd>
-
-    The <code>:default</code> <a>pseudo-class</a> must match any element
-    falling into one of the following categories:
-
-    <ul>
-
-      <li><{button}> elements that are their form's <a>default button</a></li>
-
-      <li><{input}> elements whose <code>type</code> attribute is in
-      the <a element-state for="input">submit button</a> or <a element-state for="input">image button</a> state, and that are their form's
-      <a>default button</a></li>
-
-      <li><{input}> elements to which the <code>checked</code>
-      attribute applies and that have a <code>checked</code>
-      attribute</li>
-
-      <li><{option}> elements that have a <code>selected</code>
-      attribute</li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:valid</code></dfn></dt>
-
-    <dd>
-
-    The <code>:valid</code> <a>pseudo-class</a> must match any element falling
-    into one of the following categories:
-
-    <ul>
-
-      <li>elements that are <a>candidates for
-      constraint validation</a> and that <a>satisfy their constraints</a></li>
-
-      <li><{form}> elements that are not the <a>form owner</a> of any elements that
-      themselves are <a>candidates for constraint
-      validation</a> but do not <a>satisfy their constraints</a></li>
-
-      <li><{fieldset}> elements that have no descendant elements that themselves are <a>candidates for constraint validation</a> but do
-      not <a>satisfy their constraints</a></li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:invalid</code></dfn></dt>
-
-    <dd>
-
-    The <code>:invalid</code> <a>pseudo-class</a> must match any element
-    falling into one of the following categories:
-
-    <ul>
-
-      <li>elements that are <a>candidates for
-      constraint validation</a> but that do not <a>satisfy their constraints</a></li>
-
-      <li><{form}> elements that are the <a>form owner</a> of one or more elements
-      that themselves are <a>candidates for constraint
-      validation</a> but do not <a>satisfy their constraints</a></li>
-
-      <li><{fieldset}> elements that have of one or more descendant elements that themselves
-      are <a>candidates for constraint
-      validation</a> but do not <a>satisfy their constraints</a></li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:in-range</code></dfn></dt>
-
-    <dd>
-
-    The <code>:in-range</code> <a>pseudo-class</a> must match all elements
-    that are <a>candidates for constraint
-    validation</a>, <a>have range limitations</a>, and that are neither <a>suffering
-    from an underflow</a> nor <a>suffering from an overflow</a>.
-
-    </dd>
-
-    <dt><dfn noexport><code>:out-of-range</code></dfn></dt>
-
-    <dd>
-
-    The <code>:out-of-range</code> <a>pseudo-class</a> must match all
-    elements that are <a>candidates for constraint
-    validation</a>, <a>have range limitations</a>, and that are either <a>suffering from
-    an underflow</a> or <a>suffering from an overflow</a>.
-
-    </dd>
-
-    <dt><dfn noexport><code>:required</code></dfn></dt>
-
-    <dd>
-
-    The <code>:required</code> <a>pseudo-class</a> must match any element
-    falling into one of the following categories:
-
-    <ul>
-
-      <li><{input}> elements that are <i>required</i></li>
-
-      <li><{select}> elements that have a <code>required</code>
-      attribute</li>
-
-      <li><{textarea}> elements that have a <code>required</code> attribute</li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:optional</code></dfn></dt>
-
-    <dd>
-
-    The <code>:optional</code> <a>pseudo-class</a> must match any element
-    falling into one of the following categories:
-
-    <ul>
-
-      <li><{input}> elements to which the <code>required</code>
-      attribute applies that are not <i>required</i></li>
-
-      <li><{select}> elements that do not have a <code>required</code> attribute</li>
-
-      <li><{textarea}> elements that do not have a <code>required</code> attribute</li>
-
-    </ul>
-
-    </dd>
-
-    <dt><dfn noexport><code>:read-only</code></dfn></dt>
-    <dt><dfn noexport><code>:read-write</code></dfn></dt>
-
-    <dd>
-
-    The <code>:read-write</code> <a>pseudo-class</a> must match any element
-    falling into one of the following categories, which for the purposes of Selectors are thus
-    considered <i>user-alterable</i>: [[!SELECTORS4]]
-
-    <ul>
-
-      <li><{input}> elements to which the <code>readonly</code>
-      attribute applies, and that are <i>mutable</i> (i.e., that do not
-      have the <code>readonly</code> attribute specified and that are not
-      disabled)</li>
-
-      <li><{textarea}> elements that do not have a <code>readonly</code> attribute, and that are not disabled</li>
-
-      <li>elements that are <a>editing hosts</a> or <a>editable</a>
-      and are neither <{input}> elements nor <{textarea}> elements</li>
-
-    </ul>
-
-    The <code>:read-only</code> <a>pseudo-class</a> must match all other
-    <a>html elements</a>.
-
-    </dd>
-
-    <dt><dfn noexport><code>:dir(ltr)</code></dfn></dt>
-
-    <dd>
-
-    The <code>:dir(ltr)</code> <a>pseudo-class</a> must match all elements whose
-    <a>directionality</a> is '<a state for="dir">ltr</a>'.
-
-    </dd>
-
-    <dt><dfn noexport><code>:dir(rtl)</code></dfn></dt>
-
-    <dd>
-
-    The <code>:dir(rtl)</code> <a>pseudo-class</a> must match all elements whose
-    <a>directionality</a> is '<a state for="dir">rtl</a>'.
-
-    </dd>
-
-  </dl>
-
-  <p class="note">
-    Another section of this specification defines the <i>target element</i> used with the
-    <code>:target</code> <a>pseudo-class</a>.
-  </p>
-
-  <p class="note">
-    This specification does not define when an element matches the <code>:lang()</code> dynamic
-    <a>pseudo-class</a>, as it is defined in sufficient detail in a language-agnostic fashion in the
-    Selectors specification. [[!SELECTORS4]]
-  </p>
+  : '':link''
+  : '':visited''
+  :: All <{a}> elements that have an <{links/href}> attribute, all <{area}> elements that have an
+      <{links/href}> attribute, and all <{link}> elements that have an <{link/href}> attribute, must
+      match one of '':link'' and '':visited''.
+
+      Other specifications might apply more specific rules regarding how these elements are to match
+      these <a>pseudo-classes</a>, to mitigate some privacy concerns that apply with straightforward
+      implementations of this requirement.
+
+  : '':active''
+  :: The '':active'' <a>pseudo-class</a> is defined to match an element
+      <q cite="https://drafts.csswg.org/selectors3/#the-user-action-pseudo-classes-hover-act">while
+      an element is <dfn>being activated</dfn> by the user</q>.
+
+      To determine whether a particular element is <a>being activated</a> for the purposes of
+      defining the '':active'' <a>pseudo-class</a> only, an HTML user agent must use the first
+      relevant entry in the following list.
+
+      : If the element has a descendant that is currently matching the '':active'' <a>pseudo-class</a>
+      :: The element is <a>being activated</a>.
+
+      : If the element is the <a>labeled control</a> of a <{label}> element that is currently
+         matching '':active''
+      :: The element is <a>being activated</a>.
+
+      : If the element is a <{button}> element
+      : If the element is an <{input}> element whose <code>type</code> attribute is in the
+         <a element-state for="input">submit button</a>,
+         <a element-state for="input">image button</a>,
+         <a element-state for="input">Reset Button</a>, or
+         <a element-state for="input">Button</a> state
+      :: The element is <a>being activated</a> if it is <a>in a formal activation state</a> and it
+          is not disabled.
+
+          <p class="example">For example, if the user is using a keyboard to push a <{button}>
+          element by pressing the space bar, the element would match this <a>pseudo-class</a> in
+          between the time that the element received the <code>keydown</code> event and the time the
+          element received the <code>keyup</code> event.</p>
+
+      : If the element is a <{menuitem}> element
+      :: The element is <a>being activated</a> if it is <a>in a formal activation state</a> and it
+          does not have a <{disabledformelements/disabled}> attribute.
+
+      : If the element is an <{a}> element that has an <{links/href}> attribute
+      : If the element is an <{area}> element that has an <{links/href}> attribute
+      : If the element is a <{link}> element that has an <{link/href}> attribute
+      : If the element has its <a>tabindex focus flag</a> set
+      :: The element is <a>being activated</a> if it is <a>in a formal activation state</a>.
+
+      : If the element is <a>being actively pointed at</a>
+      :: The element is <a>being activated</a>.
+
+      An element is said to be <dfn>in a formal activation state</dfn> between the time the user
+      begins to indicate an intent to trigger the element's <a>activation behavior</a> and either
+      the time the user stops indicating an intent to trigger the element's
+      <a>activation behavior</a>, or the time the element's <a>activation behavior</a> has finished
+      running, which ever comes first.
+
+      An element is said to be <dfn>being actively pointed at</dfn> while the user indicates the
+      element using a pointing device while that pointing device is in the "down" state (e.g., for a
+      mouse, between the time the mouse button is pressed and the time it is depressed; for a finger
+      in a multitouch environment, while the finger is touching the display surface).
+
+  : '':hover''
+  :: The '':hover'' <a>pseudo-class</a> is defined to match an element
+      <q cite="https://drafts.csswg.org/selectors3/#the-user-action-pseudo-classes-hover-act">while
+      the user <dfn>designates</dfn> an element with a pointing device</q>. For the purposes of
+      defining the '':hover'' <a>pseudo-class</a> only, an HTML user agent must consider an element as
+      being one that the user <a>designates</a> if it is:
+
+      * An element that the user indicates using a pointing device.
+      * An element that has a descendant that the user indicates using a pointing device.
+      * An element that is the <a>labeled control</a> of a <{label}> element that is currently
+         matching '':hover''.
+
+      <div class="example">Consider in particular a fragment such as:
+        <pre highlight="html">
+          &lt;p&gt; &lt;label for=c&gt; &lt;input id=a&gt; &lt;/label&gt; &lt;span id=b&gt; &lt;input id=c&gt; &lt;/span&gt; &lt;/p&gt;
+        </pre>
+
+        If the user designates the element with ID "<code>a</code>" with their pointing device, then
+        the <{p}> element (and all its ancestors not shown in the snippet above), the <{label}>
+        element, the element with ID "<code>a</code>", and the element with ID "<code>c</code>" will
+        match the '':hover'' <a>pseudo-class</a>. The element with ID "<code>a</code>" matches it from
+        condition 1, the <{label}> and <{p}> elements match it because of condition 2 (one of their
+        descendants is designated), and the element with ID "<code>c</code>" matches it through
+        condition 3 (its <{label}> element matches '':hover''). However, the element with ID
+        "<code>b</code>" does <em>not</em> match '':hover'': its descendant is not
+        <a lt="designates">designated</a>, even though it matches '':hover''.
+      </div>
+
+  : '':focus''
+  :: For the purposes of the CSS '':focus'' <a>pseudo-class</a>, an <dfn>element has the focus</dfn>
+      when its <a>top-level browsing context</a> has the system focus, it is not itself a
+      <a>browsing context container</a>, and it is one of the elements listed in the
+      <a>focus chain</a> of the <a>currently focused area of the top-level browsing context</a>.
+
+  : '':enabled''
+  :: The '':enabled'' <a>pseudo-class</a> must match any element that is one of the following:
+
+      * a <{button}> element that is not disabled
+      * an <{input}> element that is not disabled
+      * a <{select}> element that is not disabled
+      * a <{textarea}> element that is not disabled
+      * an <{optgroup}> element that does not have a <{optgroup/disabled}> attribute
+      * an <{option}> element that is not disabled
+      * a <{menuitem}> element that does not have a <{menuitem/disabled}> attribute
+      * a <{fieldset}> element that is not a <a>disabled fieldset</a>
+
+  : '':disabled''
+  :: The '':disabled'' <a>pseudo-class</a> must match any element that is <a>actually disabled</a>.
+
+  : '':checked''
+  :: The '':checked'' <a>pseudo-class</a> must match any element falling into one of the following
+      categories:
+
+      * <{input}> elements whose <{input/type}> attribute is in the
+         <a element-state for="input">Checkbox</a> state and whose <a for="forms">checkedness</a>
+         state is true
+      * <{input}> elements whose <{input/type}> attribute is in the
+         <a element-state for="input">Radio Button</a> state and whose
+         <a for="forms">checkedness</a> state is true
+      * <{option}> elements whose <a state for="option">selectedness</a> is true
+      * <{menuitem}> elements whose <{menuitem/type}> attribute is in the
+         <a state for="menuitem">Checkbox</a> state and that have a <{menuitem/checked}> attribute
+      * <{menuitem}> elements whose <{menuitem/type}> attribute is in the
+         <a state for="menuitem">Radio</a> state and that have a <{menuitem/checked}> attribute
+
+  : '':indeterminate''
+  :: The '':indeterminate'' <a>pseudo-class</a> must match any element falling into one of the
+      following categories:
+
+      * <{input}> elements whose <{input/type}> attribute is in the
+         <a element-state for="input">Checkbox</a> state and whose
+         {{HTMLInputElement/indeterminate}} IDL attribute is set to true
+      * <{input}> elements whose <{input/type}> attribute is in the
+         <a element-state for="input">Radio Button</a> state and whose <a>radio button group</a>
+         contains no <{input}> elements whose <a for="forms">checkedness</a> state is true.
+      * <{progress}> elements with no <{progress/value}> content attribute
+
+  : '':default''
+  :: The '':default'' <a>pseudo-class</a> must match any element falling into one of the following
+      categories:
+
+      * <{button}> elements that are their form's <a>default button</a>
+      * <{input}> elements whose <{input/type}> attribute is in the
+         <a element-state for="input">submit button</a> or
+         <a element-state for="input">image button</a> state, and that are their form's
+         <a>default button</a>
+      * <{input}> elements to which the <{input/checked}> attribute applies and that have a
+         <{input/checked}> attribute
+      * <{option}> elements that have a <{option/selected}> attribute
+
+  : '':valid''
+  :: The '':valid'' <a>pseudo-class</a> must match any element falling into one of the following
+      categories:
+
+      * elements that are <a>candidates for constraint validation</a> and that
+         <a>satisfy their constraints</a>
+      * <{form}> elements that are not the <a>form owner</a> of any elements that themselves are
+         <a>candidates for constraint validation</a> but do not <a>satisfy their constraints</a>
+      * <{fieldset}> elements that have no descendant elements that themselves are
+         <a>candidates for constraint validation</a> but do not <a>satisfy their constraints</a>
+
+  : '':invalid''
+  :: The '':invalid'' <a>pseudo-class</a> must match any element falling into one of the following
+      categories:
+
+      * elements that are <a>candidates for constraint validation</a> but that do not
+         <a>satisfy their constraints</a>
+      * <{form}> elements that are the <a>form owner</a> of one or more elements that themselves are
+         <a>candidates for constraint validation</a> but do not <a>satisfy their constraints</a>
+      * <{fieldset}> elements that have of one or more descendant elements that themselves are
+         <a>candidates for constraint validation</a> but do not <a>satisfy their constraints</a>
+
+  : '':in-range''
+  :: The '':in-range'' <a>pseudo-class</a> must match all elements that are
+      <a>candidates for constraint validation</a>, <a>have range limitations</a>, and that are
+      neither <a>suffering from an underflow</a> nor <a>suffering from an overflow</a>.
+
+  : '':out-of-range''
+  :: The '':out-of-range'' <a>pseudo-class</a> must match all elements that are
+      <a>candidates for constraint validation</a>, <a>have range limitations</a>, and that are
+      either <a>suffering from an underflow</a> or <a>suffering from an overflow</a>.
+
+  : '':required''
+  :: The '':required'' <a>pseudo-class</a> must match any element falling into one of the following
+      categories:
+
+      * <{input}> elements that are <a>required</a>
+      * <{select}> elements that have a <{select/required}> attribute
+      * <{textarea}> elements that have a <{textarea/required}> attribute
+
+  : '':optional''
+  :: The '':optional'' <a>pseudo-class</a> must match any element falling into one of the following
+      categories:
+
+      * <{input}> elements to which the <{input/required}> attribute applies that are not
+         <a>required</a>
+      * <{select}> elements that do not have a <{select/required}> attribute
+      * <{textarea}> elements that do not have a <{textarea/required}> attribute
+
+  : '':read-only''
+  : '':read-write''
+  :: The '':read-write'' <a>pseudo-class</a> must match any element falling into one of the following
+      categories, which for the purposes of Selectors are thus considered <em>user-alterable</em>:
+      [[!SELECTORS4]]
+
+      * <{input}> elements to which the <{input/readonly}> attribute applies, and that are
+         <a>mutable</a> (i.e., that do not have the <{input/readonly}> attribute specified and that
+         are not disabled)
+      * <{textarea}> elements that do not have a <{textarea/readonly}> attribute, and that are not
+         disabled
+      * elements that are <a>editing hosts</a> or <a>editable</a> and are neither <{input}> elements
+         nor <{textarea}> elements
+
+      The '':read-only'' <a>pseudo-class</a> must match all other <a>html elements</a>.
+
+  : '':dir(ltr)''
+  :: The '':dir(ltr)'' <a>pseudo-class</a> must match all elements whose <a>directionality</a> is
+      '<a state for="dir">ltr</a>'.
+
+  : '':dir(rtl)''
+  :: The '':dir(rtl)'' <a>pseudo-class</a> must match all elements whose <a>directionality</a> is
+      '<a state for="dir">rtl</a>'.
+
+  <p class="note">Another section of this specification defines the <a>target element</a> used with
+  the '':target'' <a>pseudo-class</a>.</p>
+
+  <p class="note">This specification does not define when an element matches the '':lang()'' dynamic
+  <a>pseudo-class</a>, as it is defined in sufficient detail in a language-agnostic fashion in the
+  Selectors specification. [[!SELECTORS4]]</p>
 
 </section>
 
