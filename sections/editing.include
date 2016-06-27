@@ -17,10 +17,10 @@
   <code>hidden</code> attribute is a <a>boolean attribute</a>. When specified on an element, it
   indicates that the element is not yet, or is no longer, directly relevant to the page's current
   state, or that it is being used to declare content to be reused by other parts of the page as
-  opposed to being directly accessed by the user. <span class="impl">User agents should not render
+  opposed to being directly accessed by the user. User agents should not render
   elements that have the <code>hidden</code> attribute specified. This requirement may be
   implemented indirectly through the style layer. For example, an HTML+CSS user agent could
-  implement these requirements using the rules suggested in [[#rendering]].</span>
+  implement these requirements using the rules suggested in [[#rendering]].
 
   <p class="note">
     Because this attribute is typically implemented using CSS, it's also possible to override it
@@ -124,10 +124,8 @@
   active, e.g., scripts and form controls in such sections still execute and submit respectively.
   Only their presentation to the user changes.
 
-  <div class="impl">
-    The <dfn attribute for="HTMLElement"><code>hidden</code></dfn> IDL attribute must <a>reflect</a> the
-    content attribute of the same name.
-  </div>
+  The <dfn attribute for="HTMLElement"><code>hidden</code></dfn> IDL attribute must <a>reflect</a>
+  the content attribute of the same name.
 
 <h3 id="inert-subtrees">Inert subtrees</h3>
 
@@ -179,9 +177,7 @@
 
   Certain elements in HTML have an <a>activation behavior</a>, which means that the user
   can activate them. This triggers a sequence of events dependent on the activation mechanism, and
-  normally culminating in a <code>click</code> event<span class="impl">, as described below</span>.
-
-  <div class="impl">
+  normally culminating in a <code>click</code> event, as described below.
 
   The user agent should allow the user to manually trigger elements that have an <a>activation
   behavior</a>, for instance using keyboard or voice input, or through mouse clicks. When the
@@ -296,8 +292,6 @@
   the <dfn>activation behavior</dfn> defined for that element, if any. Activation behaviors can
   refer to the <code>click</code> event that was fired by the steps above
   leading up to this point.
-
-  </div>
 
   <dl class="domintro">
     <dt><var>element</var> . <code>click</code>()</dt>
@@ -580,9 +574,8 @@
   <a>focusable area</a> of the <a>currently focused area of a top-level browsing context</a>, it is
   <dfn>focused</dfn>.
 
-  <div class="impl">
-    The <dfn>focus chain</dfn> of a <a>focusable area</a> or <a>control group owner object</a>
-    <var>subject</var> is the ordered list constructed as follows:
+  The <dfn>focus chain</dfn> of a <a>focusable area</a> or <a>control group owner object</a>
+  <var>subject</var> is the ordered list constructed as follows:
 
   <ol>
 
@@ -630,36 +623,38 @@
 
   </ol>
 
-  </div>
-
 <h4 id="the-tabindex-attribute">The <code>tabindex</code> attribute</h4>
 
   The <dfn element-attr for="global"><code>tabindex</code></dfn> content attribute allows authors to
-  indicate that an element is supposed to be <a>focusable</a>, and
-  whether it is supposed to be reachable using <a>sequential focus navigation</a> and, if so,
-  what is to be the relative order of the element for the purposes of sequential focus navigation.
+  indicate that an element is supposed to be <a>focusable</a>,
+  whether it is supposed to be reachable using <a>sequential focus navigation</a> and, optionally,
+  to suggest where in the sequential focus navigation order the element appears.
+
+  <p class="warning">
+    Using a positive value for <{global/tabindex}> to specify the element's position in the
+    <a>sequential focus navigation</a> order interacts with the order of all focusable elements.
+    It is error-prone, and therefore not recommended. Authors should generally
+    leave elements to appear in their default order, specifying <code>tabindex="0"</code> to make an element <a>focusable</a>.
+  </p>
+
   The name "tab index" comes from the common use of the "tab" key to navigate through the focusable
-  elements. The term "tabbing" refers to moving forward through the focusable elements that can be
-  reached using sequential focus navigation.
+  elements. The term "tabbing" refers to moving between focusable elements using sequential focus navigation.
 
   When the attribute is omitted, the user agent applies defaults. (There is no way to make an
   element that is <a>being rendered</a> be not focusable at all without <a>disabling</a> it or making it <a>inert</a>.)
 
   The <code>tabindex</code> attribute, if specified, must have a value
-  that is a <a>valid integer</a>. Positive numbers specify the relative position of the
-  element's <a>focusable areas</a> in the <a>sequential focus
-  navigation order</a>, and negative numbers indicate that the control is to be unreachable by
-  <a>sequential focus navigation</a>.
-
-  <div class="impl">
+  that is a <a>valid integer</a>. Any valid value indicates that an element should be focusable. 
+  Positive number values also affect the relative position of the element's <a>focusable areas</a>
+  in the <a>sequential focus navigation order</a>, as defined below.
+  Negative number values indicate that the control should be unreachable by <a>sequential focus navigation</a>.
 
   Each element can have a <dfn lt="can be focused|tabindex focus flag">tabindex focus flag</dfn> set, as defined
   below. This flag is a factor that contributes towards determining whether an element is a
   <a>focusable area</a>, as described in the previous section.
 
   If the <code>tabindex</code> attribute is specified on an element, it
-  must be parsed using the <a>rules for parsing integers</a>. The attribute's values, or lack
-  thereof, must be interpreted as follows:
+  must be parsed using the <a>rules for parsing integers</a>. The attribute's value must be interpreted as follows:
 
   <dl>
 
@@ -668,7 +663,8 @@
     <dd>
 
     The user agent should follow platform conventions to determine if the element's
-    <a>tabindex focus flag</a> is set and, if so, whether the element and any <a>focusable areas</a> that have the element as their <a>DOM anchor</a> can
+    <a>tabindex focus flag</a> is set and, if so, whether the element and any <a>focusable areas</a>
+    that have the element as their <a>DOM anchor</a> can
     be reached using <a>sequential focus navigation</a>, and if so, what their relative
     position in the <a>sequential focus navigation order</a> is to be.
 
@@ -677,8 +673,7 @@
 
     <ul>
 
-      <li><{a}> elements that have an <{links/href}>
-      attribute</li>
+      <li><{a}> elements that have an <{links/href}> attribute</li>
 
       <li><{link}> elements that have an <{link/href}> attribute</li>
 
@@ -696,6 +691,8 @@
       <li>Elements with a <{global/draggable}> attribute set, if that would
       enable the user agent to allow the user to begin a drag operations for those elements without
       the use of a pointing device</li>
+
+      <li><{audio}> and <{video}> elements with a <code>controls</code> attribute</li>
 
       <li><a>Editing hosts</a></li>
 
@@ -720,7 +717,7 @@
     element from the <a>sequential focus navigation order</a>.
 
     <p class="note">
-  One valid reason to ignore the requirement that sequential focus navigation not
+    One valid reason to ignore the requirement that sequential focus navigation not
     allow the author to lead to the element would be if the user's only mechanism for moving the
     focus is sequential focus navigation. For instance, a keyboard-only user would be unable to
     click on a text field with a negative <code>tabindex</code>, so that
@@ -749,7 +746,8 @@
     The user agent must set the element's <a>tabindex focus flag</a>, should allow the
     element and any <a>focusable areas</a> that have the element as their
     <a>DOM anchor</a> to be reached using sequential focus navigation, and should place the element
-    &mdash; referenced as <var>candidate</var> below &mdash; and the aforementioned <a>focusable areas</a> in the <a>sequential focus navigation</a>
+    &mdash; referenced as <var>candidate</var> below &mdash; and the aforementioned <a>focusable areas</a>
+    in the <a>sequential focus navigation</a>
     order so that, relative to other <a>focusable areas</a> in the
     <a>sequential focus navigation order</a>, they are:
 
@@ -797,10 +795,6 @@
 
   <p class="warning">
   Most current browsers instead give the {{HTMLElement/tabIndex}} IDL attribute a value of 0 for some list of elements that are by default a <a>focusable area</a>, and -1 for other elements, if there is no <{global/tabindex}> content attribute set. This behaviour is not well-defined and will hopefully be improved in the future.</p>
-
-  </div>
-
-  <div class="impl">
 
 <h4 id="focus-processing-model">Processing model</h4>
 
@@ -1463,8 +1457,6 @@
 
   </ol>
 
-  </div>
-
 <h4 id="focus-management-apis">Focus management APIs</h4>
 
   <dl class="domintro">
@@ -1542,8 +1534,6 @@
     </dd>
 
   </dl>
-
-  <div class="impl">
 
   The <dfn attribute for="Document"><code>activeElement</code></dfn> attribute on
   <code>Document</code> objects must return the value returned by the following steps:
@@ -1631,8 +1621,6 @@
   page.
   </p>
 
-  </div>
-
 <h3 id="assigning-keyboard-shortcuts">Assigning keyboard shortcuts</h3>
 
 <h4 id="assigning-keyboard-shortcuts-introduction">Introduction</h4>
@@ -1689,8 +1677,6 @@
       &lt;/nav>
     </pre>
   </div>
-
-  <div class="impl">
 
 <h4 id="assigning-keyboard-shortcuts-processing-model">Processing model</h4>
 
@@ -1752,8 +1738,6 @@
   The <dfn attribute for="HTMLElement"><code>accessKey</code></dfn> IDL attribute must
   <a>reflect</a> the <{global/accesskey}> content attribute.
 
-  </div>
-
 <h3 id="user-interaction-editing">Editing</h3>
 
 <h4 id="making-document-regions-editable-the-contenteditable-content-attribute">Making document regions editable: The <code>contenteditable</code> content attribute</h4>
@@ -1800,8 +1784,6 @@
 
   </dl>
 
-  <div class="impl">
-
   The <dfn attribute for="ElementContentEditable"><code>contentEditable</code></dfn> IDL attribute, on
   getting, must return the string "<code>true</code>" if the content attribute is set to
   the true state, "<code>false</code>" if the content attribute is set to the false state,
@@ -1818,16 +1800,10 @@
   getting, must return true if the element is either an <a>editing host</a> or
   <a>editable</a>, and false otherwise.
 
-  </div>
-
 <h4 id="making-entire-documents-editable-the-designmode-idl-attribute">Making entire documents editable: The <code>designMode</code> IDL attribute</h4>
-
-  <div class="impl">
 
   Documents have a <dfn attribute for="Document"><code>designMode</code></dfn>, which can be either enabled or
   disabled.
-
-  </div>
 
   <dl class="domintro">
 
@@ -1843,8 +1819,6 @@
     </dd>
 
   </dl>
-
-  <div class="impl">
 
   The <code>designMode</code> IDL attribute on the
   <code>Document</code> object takes two values, "<code>on</code>" and "<code>off</code>". On setting, the new value must be compared in an <a>ASCII
@@ -1865,8 +1839,6 @@
   being enabled, the user agent must <a>immediately</a> reset the document's <a>active range</a>'s
   start and end boundary points to be at the start of the <code>Document</code> and then run the
   <a>focusing steps</a> for the root element of the {{Document}}, if any.
-
-  </div>
 
 <h4 id="best-practices-for-in-page-editors">Best practices for in-page editors</h4>
 
@@ -1912,8 +1884,6 @@
 
 <h4 id="spelling-and-grammar-checking">Spelling and grammar checking</h4>
 
-  <div class="impl">
-
   User agents can support the checking of spelling and grammar of editable text, either in form
   controls (such as the value of <{textarea}> elements), or in elements in an <a>editing
   host</a> (e.g., using <{global/contenteditable}>).
@@ -1943,8 +1913,6 @@
 
   <hr />
 
-  </div>
-
   The <dfn element-attr for="global"><code>spellcheck</code></dfn> attribute is an <a>enumerated
   attribute</a> whose keywords are the empty string, <code>true</code> and <code>false</code>. The empty string and the <code>true</code> keyword map to the
   <i>true</i> state. The <code>false</code> keyword maps to the <i>false</i> state. In
@@ -1957,11 +1925,7 @@
   indicates that the element is not to be checked.
   </p>
 
-  <div class="impl">
-
   <hr />
-
-  </div>
 
   <dl class="domintro">
 
@@ -1987,8 +1951,6 @@
     </dd>
 
   </dl>
-
-  <div class="impl">
 
   The <dfn attribute for="HTMLElement"><code>spellcheck</code></dfn> IDL attribute, on getting, must
   return true if the element's <{global/spellcheck}> content attribute is
@@ -2105,8 +2067,6 @@
   &lt;/p></pre>
   </div>
 
-  </div>
-
   <p class="note">
   This specification does not define the user interface for spelling and grammar
   checkers. A user agent could offer on-demand checking, could perform continuous checking while the
@@ -2128,8 +2088,6 @@
   explicitly indicate their intention to perform a drag-and-drop operation, stating what they wish
   to drag and where they wish to drop it, respectively.
 
-  <div class="impl">
-
   However it is implemented, drag-and-drop operations must have a starting point (e.g., where the
   mouse was clicked, or the start of the selection or element that was selected for the drag), may
   have any number of intermediate steps (elements that the mouse moves over during a drag, or
@@ -2138,8 +2096,6 @@
   that was finally selected), or be canceled. The end point must be the last element selected as a
   possible drop point before the drop occurs (so if the operation is not canceled, there must be at
   least one element in the middle step).
-
-  </div>
 
 <h4 id="drag-and-drop-introduction">Introduction</h4>
 
@@ -2485,8 +2441,6 @@
 
   {{DataTransfer}} objects are used during the <a>drag-and-drop events</a>, and are only valid while those events are being fired.
 
-  <div class="impl">
-
   A {{DataTransfer}} object is associated with a <a>drag data store</a> while it
   is valid.
 
@@ -2687,8 +2641,6 @@
   drag.
   </p>
 
-  </div>
-
 <h5 id="the-datatransferitemlist-interface">The <code>DataTransferItemList</code> interface</h5>
 
   Each {{DataTransfer}} object is associated with a {{DataTransferItemList}}
@@ -2748,8 +2700,6 @@
     </dd>
 
   </dl>
-
-  <div class="impl">
 
   While the {{DataTransferItemList}} object's {{DataTransfer}} object is
   associated with a <a>drag data store</a>, the {{DataTransferItemList}} object's
@@ -2841,8 +2791,6 @@
   must remove all the items from the <a>drag data store</a>. Otherwise, it must do
   nothing.
 
-  </div>
-
 <h5 id="the-datatransferitem-interface">The <code>DataTransferItem</code> interface</h5>
 
   Each {{DataTransferItem}} object is associated with a {{DataTransfer}}
@@ -2892,8 +2840,6 @@
     </dd>
 
   </dl>
-
-  <div class="impl">
 
   While the {{DataTransferItem}} object's {{DataTransfer}} object is associated
   with a <a>drag data store</a> and that <a>drag data store</a>'s <a>drag data store
@@ -2962,8 +2908,6 @@
     by the {{DataTransferItem}} object.
 
   </ol>
-
-  </div>
 
 <h4 id="the-dragevent-interface">The <code>DragEvent</code> interface</h4>
 
@@ -3137,10 +3081,6 @@
     store</a>.</li>
 
   </ol>
-
-  </div>
-
-  <div class="impl">
 
 <h4 id="drag-and-drop-processing-model">Drag-and-drop processing model</h4>
 
@@ -3809,7 +3749,6 @@
       the events are fired as described above and the rest of the processing model runs as described
       above, irrespective of how many documents are involved in the operation.
     </p>
-  </div>
 
 <h4 id="events-summary"><dfn lt="drag-and-drop events">Events summary</dfn></h4>
 
@@ -3978,68 +3917,65 @@
   An element with a <{global/dropzone}> attribute should also have a <code>title</code> attribute
   that names the element for the purpose of non-visual interactions.
 
-  <div class="impl">
-    A <{global/dropzone}> attribute <dfn>matches a drag data store</dfn> if the
-    <a><code>dropzone</code> processing steps</a> result in a match.
+  A <{global/dropzone}> attribute <dfn>matches a drag data store</dfn> if the
+  <a><code>dropzone</code> processing steps</a> result in a match.
 
-    A <{global/dropzone}> attribute <dfn lt="specified|specifies an operation|specify an operation">specifies an operation</dfn> if the
-    <a><code>dropzone</code> processing steps</a> result in a specified operation. The specified
-    operation is as given by those steps.
+  A <{global/dropzone}> attribute <dfn lt="specified|specifies an operation|specify an operation">specifies an operation</dfn> if the
+  <a><code>dropzone</code> processing steps</a> result in a specified operation. The specified
+  operation is as given by those steps.
 
-    The <dfn><{global/dropzone}> processing steps</dfn> are as follows. They either result in a
-    match or not, and separate from this result either in a specified operation or not, as defined
-    below.
+  The <dfn><{global/dropzone}> processing steps</dfn> are as follows. They either result in a
+  match or not, and separate from this result either in a specified operation or not, as defined
+  below.
 
-    1. Let <var>value</var> be the value of the <{global/dropzone}> attribute.
-    2. Let <var>keywords</var> be the result of <a lt="split a string on spaces">splitting <var>value</var> on spaces</a>.
-    3. Let <var>matched</var> be false.
-    4. Let <var>operation</var> be unspecified.
-    5. For each value in <var>keywords</var>, if any, in the order that they were found in
-        <var>value</var>, run the following steps.
-        1. Let <var>keyword</var> be the keyword.
-        2. If <var>keyword</var> is one of "<code>copy</code>", "<code>move</code>", or
-            "<code>link</code>", then: run the following substeps:
-            1. If <var>operation</var> is still unspecified, then let <var>operation</var> be the
-                string given by <var>keyword</var>.
-            2. Skip to the step labeled <i>end of keyword</i> below.
-        3. If <var>keyword</var> does not contain a U+003A COLON character (:), or if the first such
-            character in <var>keyword</var> is either the first character or the last character in
-            the string, then skip to the step labeled <i>end of keyword</i> below.
-        4. Let <var>kind code</var> be the substring of <var>keyword</var> from the first character
-            in the string to the last character in the string that is before the first U+003A COLON
-            character (:) in the string, <a>converted to ASCII lowercase</a>.
-        5. Jump to the appropriate step from the list below, based on the value of
-            <var>kind code</var>:
-            <dl class="switch">
-              <dt>If <var>kind code</var> is the string "<code>string</code>"</dt>
-              <dd>Let <var>kind</var> be <i>Plain Unicode string</i>.</dd>
-              <dt>If <var>kind code</var> is the string "<code>file</code>"</dt>
-              <dd>Let <var>kind</var> be <i>File</i>.</dd>
-              <dt>Otherwise</dt>
-              <dd>Skip to the step labeled <i>end of keyword</i> below.</dd>
-            </dl>
-        6. Let <var>type</var> be the substring of <var>keyword</var> from the first character after
-            the first U+003A COLON character (:) in the string, to the last character in the string,
-            <a>converted to ASCII lowercase</a>.
-        7. If there exist any items in the <a>drag data store item list</a> whose
-            <a>drag data item kind</a> is  the kind given in <var>kind</var> and whose
-            <a>drag data item type string</a> is <var>type</var>, then let <var>matched</var> be
-            true.
-        8. <i>End of keyword</i>: Go on to the next keyword, if any, or the next step in the overall
-            algorithm, if there are no more.
-    6. The algorithm results in a match if <var>matched</var> is true, and does not otherwise.
+  1. Let <var>value</var> be the value of the <{global/dropzone}> attribute.
+  2. Let <var>keywords</var> be the result of <a lt="split a string on spaces">splitting <var>value</var> on spaces</a>.
+  3. Let <var>matched</var> be false.
+  4. Let <var>operation</var> be unspecified.
+  5. For each value in <var>keywords</var>, if any, in the order that they were found in
+      <var>value</var>, run the following steps.
+      1. Let <var>keyword</var> be the keyword.
+      2. If <var>keyword</var> is one of "<code>copy</code>", "<code>move</code>", or
+          "<code>link</code>", then: run the following substeps:
+          1. If <var>operation</var> is still unspecified, then let <var>operation</var> be the
+              string given by <var>keyword</var>.
+          2. Skip to the step labeled <i>end of keyword</i> below.
+      3. If <var>keyword</var> does not contain a U+003A COLON character (:), or if the first such
+          character in <var>keyword</var> is either the first character or the last character in
+          the string, then skip to the step labeled <i>end of keyword</i> below.
+      4. Let <var>kind code</var> be the substring of <var>keyword</var> from the first character
+          in the string to the last character in the string that is before the first U+003A COLON
+          character (:) in the string, <a>converted to ASCII lowercase</a>.
+      5. Jump to the appropriate step from the list below, based on the value of
+          <var>kind code</var>:
+          <dl class="switch">
+            <dt>If <var>kind code</var> is the string "<code>string</code>"</dt>
+            <dd>Let <var>kind</var> be <i>Plain Unicode string</i>.</dd>
+            <dt>If <var>kind code</var> is the string "<code>file</code>"</dt>
+            <dd>Let <var>kind</var> be <i>File</i>.</dd>
+            <dt>Otherwise</dt>
+            <dd>Skip to the step labeled <i>end of keyword</i> below.</dd>
+          </dl>
+      6. Let <var>type</var> be the substring of <var>keyword</var> from the first character after
+          the first U+003A COLON character (:) in the string, to the last character in the string,
+          <a>converted to ASCII lowercase</a>.
+      7. If there exist any items in the <a>drag data store item list</a> whose
+          <a>drag data item kind</a> is  the kind given in <var>kind</var> and whose
+          <a>drag data item type string</a> is <var>type</var>, then let <var>matched</var> be
+          true.
+      8. <i>End of keyword</i>: Go on to the next keyword, if any, or the next step in the overall
+          algorithm, if there are no more.
+  6. The algorithm results in a match if <var>matched</var> is true, and does not otherwise.
 
-        The algorithm results in a specified operation if <var>operation</var> is not unspecified.
-        The specified operation, if one is specified, is the one given by <var>operation</var>.
+      The algorithm results in a specified operation if <var>operation</var> is not unspecified.
+      The specified operation, if one is specified, is the one given by <var>operation</var>.
 
-    The <dfn attribute for="HTMLElement"><code>dropzone</code></dfn> IDL attribute must <a>reflect</a> the content attribute of
-    the same name.
+  The <dfn attribute for="HTMLElement"><code>dropzone</code></dfn> IDL attribute must <a>reflect</a> the content attribute of
+  the same name.
 
-    The <a>supported tokens</a> for
-    {{HTMLElement/dropzone}} are the allowed values defined for the
-    <{global/dropzone}> attribute that are supported by the user agent.
-
-  </div>
+  The <a>supported tokens</a> for
+  {{HTMLElement/dropzone}} are the allowed values defined for the
+  <{global/dropzone}> attribute that are supported by the user agent.
 
   <div class="example">
     In this example, a <{div}> element is made into a drop target for image files using the
@@ -4064,37 +4000,35 @@
     </pre>
   </div>
 
-  <div class="impl">
-    <h4 id="security-risks-in-the-drag-and-drop-model">Security risks in the drag-and-drop model</h4>
+  <h4 id="security-risks-in-the-drag-and-drop-model">Security risks in the drag-and-drop model</h4>
 
-    User agents must not make the data added to the {{DataTransfer}} object during the
-    <code>dragstart</code> event available to scripts until the <code>drop</code> event, because
-    otherwise, if a user were to drag sensitive information from one document to a second document,
-    crossing a hostile third document in the process, the hostile document could intercept the data.
+  User agents must not make the data added to the {{DataTransfer}} object during the
+  <code>dragstart</code> event available to scripts until the <code>drop</code> event, because
+  otherwise, if a user were to drag sensitive information from one document to a second document,
+  crossing a hostile third document in the process, the hostile document could intercept the data.
 
-    For the same reason, user agents must consider a drop to be successful only if the user
-    specifically ended the drag operation &mdash; if any scripts end the drag operation, it must be
-    considered unsuccessful (canceled) and the <code>drop</code> event must not be fired.
+  For the same reason, user agents must consider a drop to be successful only if the user
+  specifically ended the drag operation &mdash; if any scripts end the drag operation, it must be
+  considered unsuccessful (canceled) and the <code>drop</code> event must not be fired.
 
-    User agents should take care to not start drag-and-drop operations in response to script
-    actions. For example, in a mouse-and-window environment, if a script moves a window while the
-    user has his mouse button depressed, the user agent would not consider that to start a drag. This is
-    important because otherwise user agents could cause data to be dragged from sensitive sources and
-    dropped into hostile documents without the user's consent.
+  User agents should take care to not start drag-and-drop operations in response to script
+  actions. For example, in a mouse-and-window environment, if a script moves a window while the
+  user has his mouse button depressed, the user agent would not consider that to start a drag. This is
+  important because otherwise user agents could cause data to be dragged from sensitive sources and
+  dropped into hostile documents without the user's consent.
 
-    User agents should filter potentially active (scripted) content (e.g., HTML) when it is dragged
-    and when it is dropped, using a safelist of known-safe features. Similarly, <a>relative URLs</a>
-    should be turned into absolute URLs to avoid references changing in unexpected ways. This
-    specification does not specify how this is performed.
+  User agents should filter potentially active (scripted) content (e.g., HTML) when it is dragged
+  and when it is dropped, using a safelist of known-safe features. Similarly, <a>relative URLs</a>
+  should be turned into absolute URLs to avoid references changing in unexpected ways. This
+  specification does not specify how this is performed.
 
-    <div class="example">
-      Consider a hostile page providing some content and getting the user to select and drag and
-      drop (or indeed, copy and paste) that content to a victim page's <{global/contenteditable}>
-      region. If the browser does not ensure that only safe content is dragged, potentially unsafe
-      content such as scripts and event handlers in the selection, once dropped (or pasted) into the
-      victim site, get the privileges of the victim site. This would thus enable a cross-site
-      scripting attack.
-    </div>
+  <div class="example">
+    Consider a hostile page providing some content and getting the user to select and drag and
+    drop (or indeed, copy and paste) that content to a victim page's <{global/contenteditable}>
+    region. If the browser does not ensure that only safe content is dragged, potentially unsafe
+    content such as scripts and event handlers in the selection, once dropped (or pasted) into the
+    victim site, get the privileges of the victim site. This would thus enable a cross-site
+    scripting attack.
   </div>
 
 </section>
