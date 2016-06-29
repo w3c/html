@@ -8,18 +8,18 @@ branches:
 before_install:
 - chmod 755 ./.deploy-output.sh
 - chmod 755 ./.multipage-split.sh
-- nvm install 5.11.1
+- nvm install stable
 install:
 - pip install pygments cssselect html5lib lxml
 - git clone --depth=100 --branch=master https://github.com/tabatkins/bikeshed.git ./bikeshed
 # Use stable copy of bikeshed
-#- pushd ./bikeshed
-#- git checkout 08075e7d3a9fd232f3ab09b4fe8f7b22abfe1345
-#- popd
+- pushd ./bikeshed
+- git checkout ef1ed8caf38d3c56a981cced49fd7d64f7fd4ed4
+- popd
 - pip install --editable ./bikeshed
-- bikeshed update
 # Use cached copy of bikeshed data files to give consistent builds
-#- cp -R .spec-data/* ./bikeshed/bikeshed/spec-data
+#- bikeshed update
+- cp -R .spec-data/* ./bikeshed/bikeshed/spec-data
 script: 'bikeshed spec && ./.multipage-split.sh'
 after_success:
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./.deploy-output.sh'
