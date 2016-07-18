@@ -168,12 +168,7 @@
   "protect" a node from being marked <a>inert</a>.)
 
   Only one element at a time can mark a <code>Document</code> as being <a>blocked by a modal
-  dialog</a>. When a new <{dialog}> is made to block a {{Document}}, the previous element, if any, stops blocking the
-  {{Document}}.
-
-  <p class="note">
-    The <{dialog}> element's <code>showModal()</code> method makes use of this mechanism.
-  </p>
+  dialog</a>.
 
 <h3 id="activation">Activation</h3>
 
@@ -319,7 +314,7 @@
 
   An HTML user interface typically consists of multiple interactive widgets, such as form
   controls, scrollable regions, links, dialog boxes, browser tabs, and so forth. These widgets form
-  a hierarchy, with some (e.g., browser tabs, dialog boxes) containing others (e.g., links, form
+  a hierarchy, with some (e.g., browser tabs) containing others (e.g., links, form
   controls).
 
   When interacting with an interface using a keyboard, key input is channeled from the system,
@@ -484,9 +479,6 @@
 
   <ul class="brief">
     <li>{{Document}} object that have <a>browsing contexts</a>.</li>
-
-    <li><{dialog}> elements that have an <code>open</code>
-    attribute specified and that are <a>being rendered</a>.</li>
   </ul>
 
   Each <a>control group owner object</a> owns one <a>control group</a> (though that group might be
@@ -500,8 +492,8 @@
   <div class="example">
     Thus, a <a>viewport</a> always belongs to the <a>control group</a> of the <code>Document</code>
     for which the <a>viewport</a> was created, an <{input}> control belongs to the <a>control
-    group</a> of its nearest ancestor <{dialog}> or {{Document}}, and an image
-    map's shapes belong to the nearest ancestor <code>dialog</code> or <code>Document</code> of the
+    group</a> of its nearest ancestor {{Document}}, and an image
+    map's shapes belong to the nearest ancestor <code>Document</code> of the
     <{img}> elements (not the <{area}> elements &mdash; this means one
     <{area}> element might create multiple shapes in different <a>control groups</a>).
   </div>
@@ -511,27 +503,8 @@
   ancestor <a>control group owner object</a> is not <a>inert</a>.
 
   One <a>focusable area</a> in each non-empty <a>control group</a> is designated the
-  <dfn lt="focused area|focused area of the control group|focused dialog|focused area of that focus group|focused area of a control group|focused dialog of a dialog group|focused dialog of its dialog group">focused area of the control group</dfn>. Which control is so designated changes over time,
+  <dfn lt="focused area|focused area of the control group|focused dialog|focused area of that focus group|focused area of a control group">focused area of the control group</dfn>. Which control is so designated changes over time,
   based on algorithms in this specification. If a <a>control group</a> is empty, it has no <a>focused area</a>.
-
-  Each <a>control group owner object</a> can also act as the <dfn lt="dialog group manager|manager">manager</dfn> of a <dfn>dialog group</dfn>.
-
-  Each <{dialog}> element that has an <code>open</code>
-  attribute specified and that is <a>being rendered</a> (i.e., that is a <a>control group
-  owner object</a>) and is not <a for="dialog">expressly inert</a>
-  belongs to the <a>dialog group</a> whose <a>manager</a> is
-  the <{dialog}> element's nearest ancestor <a>control group owner object</a>.
-
-  A <code>dialog</code> is <dfn for="dialog">expressly inert</dfn> if it is
-  <a>inert</a> but its nearest ancestor <a>control group owner object</a> is not.
-
-  If no <{dialog}> element has a particular <a>control group owner object</a> as
-  its nearest ancestor <a>control group owner object</a>, then that <a>control group owner
-  object</a> has no <a>dialog group</a>.
-
-  Each <a>dialog group</a> can have a <code>dialog</code> designated as the <dfn>focused
-  dialog of the dialog group</dfn>. Which <code>dialog</code> is so designated changes over time,
-  based on algorithms in this specification.
 
   <hr />
 
@@ -541,13 +514,10 @@
   <a>control group</a> are ordered relative to their CSS box's relative positions in a pre-order,
   depth-first traversal of the box tree. [[!CSS-2015]]
 
-  Elements in <a>dialog groups</a> are ordered in <a>tree
-  order</a>.
-
   <hr />
 
   The <dfn lt="currently focused area of the top-level browsing context|currently focused area of a top-level browsing context">currently focused area of a top-level browsing context</dfn> at any particular time is
-  the <a>focusable area</a> or <code>dialog</code> returned by this algorithm:
+  the <a>focusable area</a> returned by this algorithm:
 
   <ol>
 
@@ -556,11 +526,7 @@
 
     <li>
 
-    If <var>candidate</var> has a <a>dialog group</a> with a designated
-    <a>focused dialog of the dialog group</a>, then let <var>candidate</var> be the
-    designated <a>focused dialog of the dialog group</a>, and redo this step.
-
-    Otherwise, if <var>candidate</var> has a non-empty <a>control group</a>, and the
+    If <var>candidate</var> has a non-empty <a>control group</a>, and the
     designated <a>focused area of the control group</a> is a <a>browsing context
     container</a>, then let <var>candidate</var> be the <a>active document</a> of
     that <a>browsing context container</a>'s <a>nested browsing context</a>, and redo
@@ -607,10 +573,7 @@
 
     <li>
 
-    If <var>current object</var> is a <code>dialog</code> object in a <a>dialog group</a>,
-    let <var>current object</var> be that <a>dialog group</a>'s <a>manager</a>, and return to the step labeled <i>loop</i>.
-
-    Otherwise, if <var>current object</var> is a <a>focusable area</a>, let <var>current
+    If <var>current object</var> is a <a>focusable area</a>, let <var>current
     object</var> be that <a>focusable area</a>'s <a>control group</a>'s <a>owner</a>, and return to the step labeled <i>loop</i>.
 
     Otherwise, if <var>current object</var> is a <code>Document</code> in a <a>nested browsing context</a>, let <var>current object</var> be its <a>browsing context container</a>,
@@ -814,9 +777,7 @@
 
     <li>
 
-    If <var>new focus target</var> is neither a <{dialog}> element that has an
-    <code>open</code> attribute specified and that is <a>being
-    rendered</a> (i.e., that is a <a>control group owner object</a>), nor a <a>focusable
+    If <var>new focus target</var> is not a <a>focusable
     area</a>, then run the first matching set of steps from the following list:
 
     <dl class="switch">
@@ -885,25 +846,13 @@
 
     <li>
 
-    If <var>new focus target</var> is a <a>control group owner object</a> that is
-    not a <a>focusable area</a>, but does have a <a>dialog group</a>, and that <a>dialog group</a>
-    has a designated <a>focused dialog</a>, then
-    let <var>new focus target</var> be the <a>focused dialog of the dialog
-    group</a>, and redo this step.
-
-    Otherwise, if <var>new focus target</var> is a <a>control group owner
+    If <var>new focus target</var> is a <a>control group owner
     object</a> that is not a <a>focusable area</a>, and its <a>control group</a> is not empty,
     then designate <var>new focus target</var> as the <a>focused area of the control
     group</a>, and redo this step.
 
     Otherwise, if <var>new focus target</var> is a <a>browsing context
     container</a>, then let <var>new focus target</var> be the <a>nested browsing context</a>'s <a>active document</a>, and redo this step.
-
-    <p class="note">
-  A <{dialog}> element can be both a <a>control group owner
-    object</a> and a <a>focusable area</a>, if it has both an <code>open</code> attribute specified and a <code>tabindex</code> attribute specified and is <a>being
-    rendered</a>.
-  </p>
 
     </li>
 
@@ -925,7 +874,7 @@
   </ol>
 
   User agents must <a>immediately</a> run the <a>focusing steps</a> for a <a>focusable area</a>,
-  <{dialog}>, or <a>browsing context</a> <var>candidate</var> whenever the
+  or <a>browsing context</a> <var>candidate</var> whenever the
   user attempts to move the focus to <var>candidate</var>.
 
   The <dfn>unfocusing steps</dfn> for an object <var>old focus target</var> that is
@@ -955,11 +904,7 @@
 
     <li>
 
-    If <var>old focus target</var> is a <code>dialog</code> in a <a>dialog group</a>, and
-    the <a>dialog group manager</a> has a non-empty <a>control group</a>, then let
-    <var>new focus target</var> be the designated <a>focused area of that focus group</a>.
-
-    Otherwise, if <var>old focus target</var> is a <a>focusable area</a>, then let <var>new
+    If <var>old focus target</var> is a <a>focusable area</a>, then let <var>new
     focus target</var> be the first <a>focusable area</a> of its <a>control group</a>
     (if the <a>control group owner</a> is a {{Document}}, this will always be a
     <a>viewport</a>).
@@ -990,12 +935,6 @@
   When a <a>focusable area</a> is added to an empty <a>control group</a>, it must be designated
   the <a>focused area of the control group</a>.
 
-  When a <a>dialog group</a> is formed, if the <a>dialog group manager</a> has an empty
-  <a>control group</a>, the first non-<a>inert</a> <code>dialog</code> in the <a>dialog
-  group</a>, if any, or else the first <code>dialog</code> in the <a>dialog group</a> regardless of
-  <a>inertness</a>, must be designated the <a>focused dialog of the dialog
-  group</a>.
-
   <dfn>Focus fixup rule one</dfn>: When the designated <a>focused area of a control group</a> is removed from that <a>control group</a> in
   some way (e.g., it stops being a <a>focusable area</a>, it is removed from the DOM, it
   becomes <a for="/">expressly inert</a>, etc), and the <a>control
@@ -1013,27 +952,8 @@
   also happen to an <{input}> element when the element gets disabled.
   </p>
 
-  <dfn>Focus fixup rule two</dfn>: When a <a>dialog group</a> has no designed <a>focused
-  dialog of the dialog group</a>, and its <a>dialog group manager</a>'s <a>control
-  group</a> changes from being non-empty to being empty, the first non-<a>inert</a>
-  <code>dialog</code> in the <a>dialog group</a>, if any, or else the first <code>dialog</code> in
-  the <a>dialog group</a> regardless of <a>inertness</a>, must be designated
-  the <a>focused dialog of the dialog group</a>.
-
-  <dfn>Focus fixup rule three</dfn>: When the designated <a>focused dialog of a dialog group</a> is removed from that <a>dialog group</a> in
-  some way (e.g., it stops <a>being rendered</a>, it loses its <code>open</code> attribute, it becomes <a for="/">expressly inert</a>, etc), and there is still a <a>dialog group</a> (because the
-  <code>dialog</code> in question was not the last <code>dialog</code> in that <a>dialog group</a>):
-  if the <a>dialog group</a>'s <a>manager</a>'s <a>control
-  group</a> is non-empty, let there be no designated <a>focused dialog of the dialog group</a>
-  any more; otherwise (in the case that the <a>control group</a> is empty), designate the first
-  non-<a>inert</a> <code>dialog</code> in the <a>dialog group</a> to be the <a>focused
-  dialog of the dialog group</a>, or, if they are all <a>inert</a>, designate the first
-  <code>dialog</code> in the <a>dialog group</a> to be the <a>focused dialog of the dialog
-  group</a> regardless of <a>inertness</a>.
-
   When the <a>currently focused area of a top-level browsing context</a> was a <a>focusable
-  area</a> but stops being a <a>focusable area</a>, or when it was a <code>dialog</code> in a
-  <a>dialog group</a> and stops being part of that <a>dialog group</a>, or when it
+  area</a> but stops being a <a>focusable area</a>, or when it
   starts being <a>inert</a>, the user agent must run the following steps:
 
   <ol>
@@ -1130,19 +1050,9 @@
 
     <ol>
 
-      <li>If <var>entry</var> is a <{dialog}> element: Let <var>entry</var> be the designated <a>focused dialog of its dialog group</a>.</li>
-
       <li>
 
-      If <var>entry</var> is a <a>focusable area</a>: Designate <var>entry</var> as the <a>focused area of the control group</a>. If its <a>control
-      group</a>'s <a>owner</a> is also a <a>dialog group
-      manager</a>, then let there be no designated <a>focused dialog</a> in that <a>dialog group</a>.
-
-      <p class="note">
-  It is possible for <var>entry</var> to be both a <code>dialog</code>
-      element and a <a>focusable area</a>, in which case it is its own <a>control group
-      owner</a>.
-  </p>
+      If <var>entry</var> is a <a>focusable area</a>: Designate <var>entry</var> as the <a>focused area of the control group</a>.
 
       </li>
 
@@ -1202,8 +1112,7 @@
     context</a>.</li>
 
     <li>If <var>target area</var> is a <a>focusable area</a>, let <var>target
-    node</var> be <var>target area</var>'s <a>DOM anchor</a>. Otherwise, <var>target area</var> is a <code>dialog</code>; let <var>target node</var> be
-    <var>target area</var>.</li>
+    node</var> be <var>target area</var>'s <a>DOM anchor</a>.</li>
 
     <li>
 
@@ -1221,8 +1130,7 @@
 
     <p class="note">
   It is possible for the <a>currently focused area of a top-level browsing
-    context</a> to be <a>inert</a>, for example if a <a>modal dialog is shown</a>, and then that <code>dialog</code>
-    element is made <a>inert</a>. It is likely to be the result of a logic error in the
+    context</a> to be <a>inert</a>. It is likely to be the result of a logic error in the
     application, though.
   </p>
 
@@ -1246,13 +1154,7 @@
 
     <li>If <var>candidate</var> is <var>target</var>, return true and abort these steps.</li>
 
-    <li>
-
-    If <var>candidate</var> has a <a>dialog group</a> with a designated <a>focused
-    dialog of the dialog group</a>, then let <var>candidate</var> be the designated
-    <a>focused dialog of the dialog group</a>, and redo this step.
-
-    Otherwise, if <var>candidate</var> has a non-empty <a>control group</a>, and the
+    <li>If <var>candidate</var> has a non-empty <a>control group</a>, and the
     designated <a>focused area of the control group</a> is a <a>browsing context
     container</a>, and the <a>active document</a> of that <a>browsing context
     container</a>'s <a>nested browsing context</a> is <var>target</var>, then
@@ -1432,10 +1334,7 @@
     anchor</a> is not <a>inert</a> and that is in its <a>control group</a>'s <a>sequential
     focus navigation order</a>.
 
-    The <dfn>primary control group</dfn> of a <a>control group owner object</a> <var>X</var> is the <a>control group</a> of <var>X</var> if <var>X</var> has no <a>dialog group</a> or if its <a>dialog group</a> has no
-    designated <a>focused dialog of the dialog group</a>, otherwise, it is the <a>primary
-    control group</a> of <var>X</var>'s <a>dialog group</a>'s designated
-    <a>focused dialog of the dialog group</a>.
+    The <dfn>primary control group</dfn> of a <a>control group owner object</a> <var>X</var> is the <a>control group</a> of <var>X</var>.
 
     The <dfn>home control group</dfn> is the <a>control group</a> to which <var>starting point</var> belongs.
 
@@ -1556,10 +1455,6 @@
 
     <li>Let <var>candidate</var> be the <code>Document</code> on which the method was
     invoked.</li>
-
-    <li>If <var>candidate</var> has a <a>dialog group</a> with a designated
-    <a>focused dialog of the dialog group</a>, then let <var>candidate</var> be the
-    designated <a>focused dialog of the dialog group</a>, and redo this step.</li>
 
     <li>If <var>candidate</var> has a non-empty <a>control group</a>, let <var>candidate</var> be the designated <a>focused area of the control
     group</a>.

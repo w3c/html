@@ -10567,11 +10567,6 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     <li>The keyword <dfn attr-value for="form/method"><code>post</code></dfn>, mapping to the
     state <dfn for="http">POST</dfn>, indicating the HTTP POST method.</li>
 
-    <li>The keyword <dfn attr-value for="form/method"><code>dialog</code></dfn>, mapping to
-    the state <dfn for="state">dialog</dfn>, indicating that submitting the
-    <{form}> is intended to close the <code>dialog</code> box in which the form finds
-    itself, if any, and otherwise not submit.</li>
-
   </ul>
 
   The <i>invalid value default</i> for these attributes is the <a for="http">GET</a> state. The <i>missing value default</i> for the <{form/method}> attribute is also the <a for="http">GET</a> state. (There is no <i>missing value default</i> for the
@@ -10607,31 +10602,6 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   &lt;p&gt;&lt;input type=submit value="Submit message"&gt;&lt;/p&gt;
 &lt;/form&gt;
     </pre>
-
-  </div>
-
-  <div class="example">
-    In this example, a <{form}> is used with a <{dialog}>. The <{form/method}> attribute's "<a attr-value for="form/method">dialog</a>" keyword is used to have the dialog
-    automatically close when the form is submitted.
-
-    <pre lang="en-GB">&lt;dialog id="ship"&gt;
-  &lt;form method=dialog&gt;
-  &lt;p&gt;A ship has arrived in the harbour.&lt;/p&gt;
-  &lt;button type=submit value="board"&gt;Board the ship&lt;/button&gt;
-  &lt;button type=submit value="call"&gt;Call to the captain&lt;/button&gt;
-  &lt;/form&gt;
-&lt;/dialog&gt;
-&lt;script&gt;
-  var ship = document.getElementById('ship');
-  ship.showModal();
-  ship.onclose = function (event) {
-    if (ship.returnValue == 'board') {
-      // ...
-    } else {
-      // ...
-    }
-  };
-&lt;/script&gt;</pre>
 
   </div>
 
@@ -10741,15 +10711,13 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 <h6 id="autofocusing-a-form-control-the-autofocus-attribute">Autofocusing a form control: the <code>autofocus</code> attribute</h6>
 
   The <dfn element-attr for="formelements,input,button,keygen,select,textarea"><code>autofocus</code></dfn> content attribute allows the
-  author to indicate that a control is to be focused as soon as the page is loaded or as soon as the
-  <code>dialog</code> within which it finds itself is shown, allowing the user to just start typing
+  author to indicate that a control is to be focused as soon as the page is loaded, allowing the user to just start typing
   without having to manually focus the main control.
 
   The <{formelements/autofocus}> attribute is a <a>boolean attribute</a>.
 
   An element's <dfn>nearest ancestor autofocus scoping root element</dfn> is the element itself
-  if the element is a <{dialog}> element, or else is the element's nearest ancestor
-  <{dialog}> element, if any, or else is the element's <a>root element</a>.
+  if it is the element's <a>root element</a>.
 
   There must not be two elements with the same <a>nearest ancestor autofocus scoping root
   element</a> that both have the <{formelements/autofocus}> attribute
@@ -10799,11 +10767,6 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     <a>user interaction task source</a>.</li>
 
   </ol>
-
-  <p class="note">
-    This handles the automatic focusing during document load. The <code>show()</code> and <code>showModal()</code>
-  methods of <{dialog}> elements also processes the <{formelements/autofocus}> attribute.
-  </p>
 
   <p class="note">
     Focusing the control does not imply that the user agent must focus the browser
@@ -13452,9 +13415,6 @@ fur
 
     <li>
 
-    If the value of <var>method</var> is <a>dialog</a> then jump to the <a>submit
-    dialog</a> steps.
-
     Otherwise, select the appropriate row in the table below based on the value of <var>scheme</var> as given by the first cell of each row. Then, select the appropriate cell
     on that row based on the value of <var>method</var> as given in the first cell of each
     column. Then, jump to the steps named in that cell and defined below the table.
@@ -13640,27 +13600,6 @@ fur
         Append <var>body</var>, interpreted as a US-ASCII string, to <var>destination</var>.
 
         <a>Plan to navigate</a> to <var>destination</var>.
-
-    : <dfn>Submit dialog</dfn>
-    :: Let <var>subject</var> be the nearest ancestor <{dialog}> element of <var>form</var>, if any.
-
-        If there isn't one, or if it does not have an <code>open</code>
-        attribute, do nothing. Otherwise, proceed as follows:
-
-        If <var>submitter</var> is an <{input}> element whose <{input/type}> attribute is in
-        the <a element-state for="input">image button</a> state, then let <var>result</var>
-        be the string formed by concatenating the <a>selected coordinate</a>'s
-        <var>x</var>-component, expressed as a base-ten number using <a>ASCII digits</a>, a
-        U+002C COMMA character (,), and the <a>selected coordinate</a>'s <var>y</var>-component,
-        expressed in the same way as the <var>x</var>-component.
-
-        Otherwise, if <var>submitter</var> has a <a for="forms">value</a>, then let
-        <var>result</var> be that <a for="forms">value</a>.
-
-        Otherwise, there is no <var>result</var>.
-
-        Then, <a>close the dialog</a> <var>subject</var>. If there is a <var>result</var>,
-        let that be the return value.
 
     The <dfn>appropriate form encoding algorithm</dfn> is determined as follows:
 
