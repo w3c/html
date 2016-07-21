@@ -438,7 +438,7 @@
 
   <em>This section is non-normative.</em>
 
-  The <code>type</code>, <{autocompleteelements/autocomplete}>, and <code>inputmode</code> attributes can seem confusingly similar. For instance,
+  The <{input/type}>, <{autocompleteelements/autocomplete}>, and <{input/inputmode}> attributes can seem confusingly similar. For instance,
   in all three cases, the string "<code>email</code>" is a valid value. This section
   attempts to illustrate the difference between the three attributes and provides advice suggesting
   how to use them.
@@ -484,7 +484,7 @@
   different form controls used for the purpose: a free text field (<code>&lt;input type=text&gt;</code>), a drop-down list (<code>&lt;select&gt;</code>), radio buttons (<code>&lt;input
   type=radio&gt;</code>), etc. It only depends on what kind of interface is desired.
 
-  The <code>inputmode</code> decides what kind of input modality (e.g.,
+  The <{input/inputmode}> decides what kind of input modality (e.g.,
   keyboard) to use, when the control is a free-form text field.
 
   Consider names. If a page just wants one name from the user, then the relevant control is <code>&lt;input type=text&gt;</code>. If the page is asking for the user's
@@ -520,31 +520,34 @@
 
   In some locales, however, times are often expressed differently when presented to users. For
   example, in the United States, it is still common to use the 12-hour clock with an am/pm
-  indicator, as in "2pm". In France, it is common to separate the hours from the minutes using an
-  "h" character, as in "14h00".
+  indicator, as in "2pm". In France, it is common to use the 24-hour clock, and separate the
+  hours from the minutes using an "h" character, as in "14h00".
 
   Similar issues exist with dates, with the added complication that even the order of the
   components is not always consistent — for example, in Cyprus the first of February 2003
-  would typically be written "1/2/03", while that same date in Japan would typically be written as
-  "2003年02月01日" — and even with numbers, where locales differ, for
-  example, in what punctuation is used as the decimal separator and the thousands separator.
+  would typically be written "1/2/03", while that same date in Japan would typically be written
+  as "2003年02月01日".
 
-  It is therefore important to distinguish the time, date, and number formats used in HTML and in
-  <a>form submissions</a>, which are always the formats defined in this specification (and based on
-  the well-established ISO 8601 standard for computer-readable date and time formats), from the time,
-  date, and number formats presented to the user by the browser and accepted as input from the user
-  by the browser.
+  The same applies to the way numbers are written in different places. For example, in some
+  locales, such as US English, "1,234" usually means "one thousand two hundred and thirty-four",
+  while "1.234" means "one and two hundred and thirty-four thousandths", or "one point two
+  three four", while in many other locales the meanings are exactly reversed.
 
-  The format used "on the wire", i.e., in HTML markup and in <a>form submissions</a>, is intended to
-  be computer-readable and consistent irrespective of the user's locale. Dates, for instance, are
-  always written in the format "YYYY-MM-DD", as in "2003-02-01". Users are not expected to ever see
-  this format.
+  The format used "on the wire", i.e., in HTML markup and as the values for <a>form
+  submissions</a>, is intended to be computer-readable and consistent irrespective of the
+  user's locale, to allow scripts in pages and on servers to process times, dates, and
+  numbers in a consistent manner with minimal work.
 
-  The time, date, or number given by the page in the wire format is then translated to the user's
-  preferred presentation (based on user preferences or on the locale of the page itself), before
-  being displayed to the user. Similarly, after the user inputs a time, date, or number using their
-  preferred format, the user agent converts it back to the wire format before putting it in the DOM
-  or submitting it.
+  In HTML markup and form submission dates and times are always written in a locale-neutral format derived from the ISO-8601 standard. For example, dates are generally in a format such as 2016-06-19.
+
+  Likewise, in markup and <a>form submission</a> numbers are always written without grouping
+  separators, and a FULL STOP character "." @@ as a decimal separator.
+
+  The time, date, or number may be translated to the user's preferred presentation
+  (based on expressed preferences or on the locale of the page itself), before being
+  displayed to the user. Similarly, user agents may allow a user to input a time, date,
+  or number using their preferred format, then converts it back to the wire format
+  before putting it in the DOM or submitting it.
 
   This allows scripts in pages and on servers to process times, dates, and numbers in a
   consistent manner without needing to support dozens of different formats, while still supporting
@@ -4075,7 +4078,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   </div>
 
   The <{input}> element <a>represents</a> a control for setting the element's
-  <a for="forms">value</a> to a string representing a specific <a>week</a>.
+  <a for="forms">value</a> to a string representing a specific <a>week</a> beginning on a Monday, at midnight UTC.
 
   <div class="impl">
 
@@ -4554,16 +4557,17 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
   </div>
 
-  <p class="note">
+  <div class="note">
     This specification does not define what user interface user agents are to use;
   user agent vendors are encouraged to consider what would best serve their users' needs. For
   example, a user agent in Persian or Arabic markets might support Persian and Arabic numeric input
   (converting it to the format required for submission as described above). Similarly, a user agent
-  designed for Romans might display the value in Roman numerals rather than in decimal; or (more
-  realistically) a user agent designed for the French market might display the value with
-  apostrophes between thousands and commas before the decimals, and allow the user to enter a value
-  in that manner, internally converting it to the submission format described above.
-  </p>
+  designed for the French market might display the value with apostrophes between thousands and
+  commas before the decimals, and allow the user to enter a value in that manner, internally
+  converting it to the submission format described above.
+
+  See [[#date-time-and-number-formats]] for a discussion of the difference between the input format and submission format for date, time, and number form controls<span class="impl">, and the <a>implementation notes</a> regarding localization of form controls</span>.
+  </div>
 
   The <{input/value}> attribute, if specified and not empty, must
   have a value that is a <a>valid floating-point number</a>.
