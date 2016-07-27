@@ -3285,7 +3285,6 @@
     interface NavigatorContentUtils {
       // content handler registration
       void registerProtocolHandler(DOMString scheme, DOMString url, DOMString title);
-      DOMString isProtocolHandlerRegistered(DOMString scheme, DOMString url);
       void unregisterProtocolHandler(DOMString scheme, DOMString url);
     };
   </pre>
@@ -3456,43 +3455,12 @@
   where these methods are relevant, but in general user agents may use this information wherever they would
   otherwise consider handing content to native plugins or helper applications.
 
-  user agents must not use registered content handlers to handle content that was returned as part of a
-  non-GET transaction (or rather, as part of any non-idempotent transaction), as the remote site
-  would not be able to fetch the same data.
 
   <hr />
 
-  In addition to the registration method, there is also a method for determining if particular
-  handler has been registered, and for unregistering a handler.
+  In addition to the registration method, there is also a method for unregistering a handler.
 
   <dl class="domintro">
-
-    <dt><var>state</var> = <var>window</var> . <code>navigator</code> . <code>isProtocolHandlerRegistered</code>(<var>scheme</var>, <var>url</var>)</dt>
- 
-    <dd>
-
-    Returns one of the following strings describing the state of the handler given by the
-    arguments:
-
-    <dl>
-
-      <dt><code>new</code>
-
-      <dd>Indicates that no attempt has been made to register the given handler (or that the handler
-      has been unregistered). It would be appropriate to promote the availability of the handler or
-      to just automatically register the handler.
-
-      <dt><code>registered</code>
-
-      <dd>Indicates that the given handler has been registered or that the site is blocked from
-      registering the handler. Trying to register the handler again would have no effect.
-
-      <dt><code>declined</code>
-
-      <dd>Indicates that the given handler has been offered but was rejected. Trying to register the
-      handler again may prompt the user again.
-
-    </dl>
 
     </dd>
 
@@ -3506,74 +3474,6 @@
 
   </dl>
 
-  The <dfn method for="NavigatorContentUtils"><code>isProtocolHandlerRegistered()</code></dfn>
-  method must return the <a>handler state string</a> that most closely describes the current
-  state of the handler described by the two arguments to the method, where the first argument gives
-  the scheme and the second gives the string used to build the <a for="url">URL</a> of the page that
-  will handle the requests.
-
-  The first argument must be compared to the schemes for which custom protocol handlers are
-  registered in an <a>ASCII case-insensitive</a> manner to find the relevant handlers.
-
-  The second argument must be preprocessed as described below, and if that is successful, must
-  then be matched against the <a>proto-URLs</a> of the relevant handlers to
-  find the described handler.
-
-  <hr />
-
-  The <dfn>handler state strings</dfn> are the following strings.
-  Each string describes several situations, as given by the following list.
-
-  <dl>
-
-    <dt><code>new</code>
-
-    <dd>The described handler has never been registered for the given scheme or type.
-
-    <dd>The described handler was once registered for the given scheme or type, but the site has
-    since unregistered it. If the handler were to be reregistered, the user would be notified
-    accordingly.
-
-    <dd>The described handler was once registered for the given scheme or type, but the site has
-    since unregistered it, but the user has indicated that the site is to be blocked from registering
-    the type again, so the user agent would ignore further registration attempts.
-
-    <dt><code>registered</code>
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user has not yet been notified, and the user agent would ignore further registration attempts.
-    (Maybe the user agent batches registration requests to display them when the user requests to be
-    notified about them, and the user has not yet requested that the user agent notify it of the
-    previous registration attempt.)
-
-    <dd>The described handler is registered for the given scheme or type (maybe, or maybe not, as the
-    default handler).
-
-    <dd>The described handler is permanently blocked from being (re)registered. (Maybe the user
-    marked the registration attempt as spam, or blocked the site for other reasons.)
-
-    <dt><code>declined</code>
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user has not yet been notified; however, the user might be notified if another registration
-    attempt were to be made. (Maybe the last registration attempt was made while the page was in the
-    background and the user closed the page without looking at it, and the user agent requires
-    confirmation for this registration attempt.)
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user has not yet responded.
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user declined the offer. The user has not indicated that the handler is to be permanently
-    blocked, however, so another attempt to register the described handler might result in the user
-    being prompted again.
-
-    <dd>The described handler was once registered for the given scheme or type, but the user has
-    since removed it. The user has not indicated that the handler is to be permanently blocked,
-    however, so another attempt to register the described handler might result in the user being
-    prompted again.
-
-  </dl>
 
   <hr />
 
