@@ -578,7 +578,6 @@
     <dd><code>ismap</code> - Whether the image is a server-side image map</dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
-    <dd><{img/longdesc}> - A url that provides a link to an expanded description of the image, defined in [[!html-longdesc]]</dd>
     <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
     <dd><a value for="role"><code>presentation</code></a> role only, for an
     <{img}> element whose <code>alt</code> attribute's value is empty (<code>alt=""</code>), otherwise
@@ -598,7 +597,6 @@
           attribute DOMString sizes;
           attribute DOMString? crossOrigin;
           attribute DOMString useMap;
-          attribute DOMString longDesc;
           attribute boolean isMap;
           attribute unsigned long width;
           attribute unsigned long height;
@@ -617,9 +615,8 @@
   and any previous sibling <{source}> elements'
   <code>srcset</code> attributes if the parent is a <{picture}> element,
   is the embedded content; the value of
-  the <dfn element-attr for="img"><code>alt</code></dfn> attribute and the content referred to by
-  the <{img/longdesc}> attribute are the
-  <{img}> element's <a>fallback content</a>, and provide equivalent content for
+  the <dfn element-attr for="img"><code>alt</code></dfn> attribute is the
+  <{img}> element's <a>fallback content</a>, and provides equivalent content for
   users and user agents who cannot process images or have image loading disabled.
 
   Requirements for alternative representations of the image are described
@@ -2167,9 +2164,6 @@
   The <dfn attribute for="HTMLImageElement"><code>isMap</code></dfn> IDL attribute must <a>reflect</a>
   the <code>ismap</code> content attribute.
 
-  The <dfn attribute for="HTMLImageElement"><code>longDesc</code></dfn> IDL attribute is defined in [[!html-longdesc]]. The IDL attribute must <a>reflect</a>
-  the <{img/longdesc}> content attribute.
-
   </div>
 
   <dl class="domintro">
@@ -2300,11 +2294,6 @@
   Authoring useful <code>alt</code> attribute content requires the author to
   carefully consider the context in which the image appears and the function that
   image may have in that context.
-
-  The <{img/longdesc}> attribute on images is likely to be read far less often by users
-  and is necessary for far fewer images. Nevertheless it provides an important way for
-  users who cannot see an image or cannot see it clearly, and user agents that cannot automatically process images,
-  to understand what it shows. The <{img/longdesc}> attribute's use cases are more fully described in [[!html-longdesc]]
 
   The guidance included here addresses the most common ways authors use images.
   Additional guidance and techniques are available in <a>Resources on Alternative Text for Images</a>.
@@ -2447,14 +2436,13 @@
   </div>
 
   <div class="example">
-    In the case where an image repeats the previous paragraph in graphical form. The
-    <{img/alt}> attribute content labels the image and the <{img/longdesc}> attribute identifies it as a description.
+    In the case where an image repeats the previous paragraph in graphical form. The <{img/alt}>
+    attribute content labels the image.
 
     <pre highlight="html">
       &lt;p id="graph7"&gt;According to a recent study Firefox has a 40% browser share,
         Internet Explorer has 25%, Chrome has 25%, Safari has 6% and Opera has 4%.&lt;/p&gt;
-      &lt;p&gt;&lt;img src="piechart.gif" alt="The browser shares as a pie chart."
-        longdesc="graph7"&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;img src="piechart.gif" alt="The browser shares as a pie chart."&gt;&lt;/p&gt;
     </pre>
 
     It can be seen that when the image is not available, for example because the <code>src</code>
@@ -2480,7 +2468,7 @@
 
   <pre highlight="html">
   &lt;a href="#desc"&gt;</strong>&lt;img src="flowchart.gif"
-    alt="Flowchart: Dealing with a broken lamp." longdesc="#desc"&gt;&lt;/a&gt;
+    alt="Flowchart: Dealing with a broken lamp."&gt;&lt;/a&gt;
 
   ...
 
@@ -2522,7 +2510,7 @@
   &lt;figure&gt;
   &lt;figcaption&gt;Rainfall Data&lt;/figcaption&gt;
   &lt;img src="rainchart.gif" alt="Bar chart: average rainfall by Country and Season.
-  Full description in Table below." longdesc="table-4"&gt;
+  Full description in Table below."&gt;
   &lt;table id="table-4"&gt;
   &lt;caption&gt;Rainfall in millimetres by Country and Season.&lt;/caption&gt;
   &lt;tr&gt;&lt;td&gt;&lt;th scope="col"&gt;UK &lt;th scope="col"&gt;Japan&lt;th scope="col"&gt;Australia&lt;/tr&gt;
@@ -2648,16 +2636,6 @@ Only <img width="21" height="18" src="images/euro.png" alt="euro " />5.99!
     </pre>
   </div>
 
-  <div class="example">
-    Where the design of the illuminated letter is important, the primary text alternative in
-    is the character that the image represents, and <{img/longdesc}> can provide a link to a more detailed description:
-    <img width="24" height="32" src="images/drop_o.jpg" alt="O" longdesc="http://www.reusableart.com/drop_o.html"/>nce upon a time and a long long time ago...
-    <pre highlight="html">
-&lt;p&gt;&lt;img src="initials/story-o.jpg" <mark>alt="O"</mark> longdesc="letters/story-0.html"&gt;nce
-  upon a time and a long long time ago...
-    </pre>
-  </div>
-
 <h6 id="images-that-include-text">Images that include text</h6>
 
   Sometimes, an image consists of a graphics such as a chart and associated text.
@@ -2723,7 +2701,7 @@ Only <img width="21" height="18" src="images/euro.png" alt="euro " />5.99!
   &lt;p&gt;A poem by Alfred Lord Tennyson&lt;/p&gt;
   &lt;/header&gt;
 
-  &lt;img src="shalott.jpeg" alt="Painting - a young woman with long hair, sitting in a wooden boat. Full description below." longdesc="#des"&gt;
+  &lt;img src="shalott.jpeg" alt="Painting - a young woman with long hair, sitting in a wooden boat. Full description below."&gt;
   &lt;p&gt;&lt;a href="#des"&gt;Description of the painting&lt;/a&gt;.&lt;/p&gt;
 
   &lt;!-- Full Recitation of Alfred, Lord Tennyson's Poem.  --&gt;
@@ -2778,7 +2756,7 @@ Only <img width="21" height="18" src="images/euro.png" alt="euro " />5.99!
   &lt;header&gt;&lt;h1&gt;The Lady of Shalott&lt;/h1&gt;
   &lt;p&gt;A poem by Alfred Lord Tennyson&lt;/p&gt;&lt;/header&gt;
   &lt;figure&gt;
-  &lt;img src="shalott.jpeg" alt="Painting: a woman in a white flowing dress, sitting in a small boat." longdesc="https://bit.ly/5HJvVZ"&gt;
+  &lt;img src="shalott.jpeg" alt="Painting: a woman in a white flowing dress, sitting in a small boat."&gt;
   &lt;p&gt;&lt;a href="https://bit.ly/5HJvVZ"&gt;About this painting.&lt;/a&gt;&lt;/p&gt;
   &lt;/figure&gt;
   &lt;!-- Full Recitation of Alfred, Lord Tennyson's Poem.  --&gt;
