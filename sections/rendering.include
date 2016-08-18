@@ -225,26 +225,26 @@
   'background-color' property to the resulting color.
 
   When a <{body}> element has a <{body/text}> attribute, its
-  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and if 
-  that does not return an error, the user agent is expected to treat the attribute as a 
+  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and if
+  that does not return an error, the user agent is expected to treat the attribute as a
   <a>presentational hint</a> setting the element's 'color' property to the resulting color.
 
   When a <{body}> element has a <{body/link}> attribute, its
-  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and if 
-  that does not return an error, the user agent is expected to treat the attribute as a 
-  <a>presentational hint</a> setting the 'color' property of any element in the {{Document}} 
+  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and if
+  that does not return an error, the user agent is expected to treat the attribute as a
+  <a>presentational hint</a> setting the 'color' property of any element in the {{Document}}
   matching the '':link'' <a>pseudo-class</a> to the resulting color.
 
-  When a <{body}> element has a <{body/vlink}> attribute, its value is expected to be parsed using 
-  the <a>rules for parsing a legacy color value</a>, and if that does not return an error, the user 
-  agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color' 
-  property of any element in the {{Document}} matching the '':visited'' <a>pseudo-class</a> to the 
+  When a <{body}> element has a <{body/vlink}> attribute, its value is expected to be parsed using
+  the <a>rules for parsing a legacy color value</a>, and if that does not return an error, the user
+  agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color'
+  property of any element in the {{Document}} matching the '':visited'' <a>pseudo-class</a> to the
   resulting color.
 
-  When a <{body}> element has an <{body/alink}> attribute, its value is expected to be parsed using 
-  the <a>rules for parsing a legacy color value</a>, and if that does not return an error, the user 
-  agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color' 
-  property of any element in the {{Document}} matching the '':active'' <a>pseudo-class</a> and either 
+  When a <{body}> element has an <{body/alink}> attribute, its value is expected to be parsed using
+  the <a>rules for parsing a legacy color value</a>, and if that does not return an error, the user
+  agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color'
+  property of any element in the {{Document}} matching the '':active'' <a>pseudo-class</a> and either
   the '':link'' <a>pseudo-class</a> or the '':visited'' <a>pseudo-class</a> to the resulting color.
 
 <h4 id="non-replaced-elements-flow-content">Flow content</h4>
@@ -253,7 +253,7 @@
     @namespace url(http://www.w3.org/1999/xhtml);
 
     address, blockquote, center, div, figure, figcaption, footer, form, header, hr,
-    legend, listing, main, p, plaintext, pre, summary, xmp {
+    legend, listing, main, p, plaintext, pre, xmp {
       display: block;
     }
 
@@ -1123,7 +1123,7 @@ path: includes/cldr.include
   if that does not return an error, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'color' property to
   the resulting color.
 
-<h4 id="the-fieldset-and-legend-elements">The <code>fieldset</code> and <{legend}> elements</h4>
+<h4 id="the-fieldset-and-legend-elements">The <{fieldset}> and <{legend}> elements</h4>
 
   <pre highlight="css">
 @namespace url(http://www.w3.org/1999/xhtml);
@@ -1463,24 +1463,28 @@ path: includes/cldr.include
   indicate that activating the element will display a menu, e.g., by displaying a down-pointing
   triangle after the button's label.
 
-<h4 id="the-details-element-rendering">The <{details}> element</h4>
+<h4 id="the-details-element-rendering">The <{details}>  and <{summary}> elements</h4>
+
+  <pre highlight="css">
+    summary {
+      display: list-item;
+      list-style: disclosure-closed;
+    }
+    details[open] > summary {
+      list-style: disclosure-open;
+    }
+  </pre>
 
   When the <i>details</i> binding applies to a <{details}> element, the element
-  is expected to render as a ''block'' box with its 'padding-left' property set to &quot;40px&quot; for
-  left-to-right elements (<a>LTR-specific</a>) and with its 'padding-right' property set to
-  &quot;40px&quot; for right-to-left elements. The element's shadow tree is expected to take the element's
-  first child <{summary}> element, if any, and place it in a first ''block'' box container,
-  and then take the element's remaining descendants, if any, and place them in a second ''block'' box
-  container.
+  is expected to render as a ''block'' box. The element's shadow tree is expected to take the
+  element's first child <{summary}> element, if any, and place it in a first ''block'' box
+  container, and then take the element's remaining descendants, if any, and place them in a second
+  ''block'' box container.
 
-  The first container is expected to contain at least one <a>line box</a>, and that <a>line box</a>
-  is expected to contain a disclosure widget (typically a triangle), horizontally positioned within 
-  the left padding of the <{details}> element. That widget is expected to allow the user to request
-  that the details be shown or hidden.
+  The first container is expected to allow the user to request the details be shown or hidden.
 
-  The second container is expected to have its 'overflow' property set to ''hidden''. When the
-  <{details}> element does not have an <{details/open}>
-  attribute, this second container is expected to be removed from the rendering.
+  The second container is expected to be removed from the rendering when the <{details}> element
+  does not have an <{details/open}> attribute.
 
 <h4 id="the-input-element-as-a-text-entry-widget">The <{input}> element as a text entry widget</h4>
 
@@ -2232,7 +2236,7 @@ path: includes/cldr.include
 
   <p class="note">
     This means that even an empty block can have the caret inside it, and that when
-    the caret is in such an element, it prevents 
+    the caret is in such an element, it prevents
     <a lt="margin collapsing">margins from collapsing</a> through the element.</p>
 
 <h4 id="text-rendered-in-native-user-interfaces">Text rendered in native user interfaces</h4>
