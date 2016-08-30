@@ -857,9 +857,9 @@
 
 <h4 id="sec-link-types"><dfn lt="allowed keywords and their meanings|link types|link type|html link types">Link types</dfn></h4>
 
-  The following table summarizes the link types that are defined by this specification. This
-  table is non-normative; the actual definitions for the link types are given in the next few
-  sections.
+  The following table summarizes the link types that are defined by this specification, by their
+  coresponding keywords. This table is non-normative; the actual definitions for the link types are
+  given in the next few sections.
 
   In this section, the term <i>referenced document</i> refers to the resource identified by the
   element representing the link, and the term <i>current document</i> refers to the resource within
@@ -867,23 +867,30 @@
 
   To determine which link types apply to a <{link}>, <{a}>, or <{area}> element, the element's
   <{links/rel}> attribute must be <a lt="split a string on spaces">split on spaces</a>. The
-  resulting tokens are the link types that apply to that element.
+  resulting tokens are the keywords for the link types that apply to that element.
 
   Except where otherwise specified, a keyword must not be specified more than once per <{link/rel}>
   attribute.
 
-  Link types are always <a>ASCII case-insensitive</a>, and must be compared as such.
+  Some of the sections that follow the table below list synonyms for certain keywords. The indicated
+  synonyms are to be handled as specified by user agents, but must not be used in documents (for
+  example, the keyword "<code>copyright</code>").
 
-  Certain keywords are said to be <dfn>body-ok</dfn>. This affects whether <{link}>
-  elements are <a>allowed in the body</a>
+  Keywords are always <a>ASCII case-insensitive</a>, and must be compared as such.
 
   <p class="example">Thus, <code>rel="next"</code> is the same as <code>rel="NEXT"</code>.</p>
+
+  Keywords that are <dfn>body-ok</dfn> affect whether <{link}> elements are
+  <a>allowed in the body</a>. The <a>body-ok</a> keywords defined by this specification are
+  <code>prefetch</code>, and <code>stylesheet</code>. Other specifications
+  can also define <span>body-ok</span> keywords.
 
   <table>
     <thead>
     <tr>
       <th rowspan="2">Link type</th>
       <th colspan="2">Effect on...</th>
+      <th rowspan="2"><a>body-ok</a></th>
       <th rowspan="2">Brief description</th>
     </tr>
     <tr>
@@ -897,6 +904,7 @@
       <td><code>alternate</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Gives alternate representations of the current document.</td>
     </tr>
 
@@ -904,6 +912,7 @@
       <td><code>author</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Gives a link to the author of the current document or article.</td>
     </tr>
 
@@ -911,13 +920,23 @@
       <td><code>bookmark</code></td>
       <td><em>not allowed</em></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Gives the permalink for the nearest ancestor section.</td>
+    </tr>
+
+    <tr>
+      <td><code data-x="rel-external">external</code></td>
+      <td><em>not allowed</em></td>
+      <td><span data-x="hyperlink annotation">Annotation</span></td>
+      <td class="no"> &middot; </td>
+      <td>Indicates that the referenced document is not part of the same site as the current document.</td>
     </tr>
 
     <tr>
       <td><code>help</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Provides a link to context-sensitive help.</td>
     </tr>
 
@@ -925,6 +944,7 @@
       <td><code>icon</code></td>
       <td><a>External Resource</a></td>
       <td><em>not allowed</em></td>
+      <td class="no"> &middot; </td>
       <td>Imports an icon to represent the current document.</td>
     </tr>
 
@@ -932,6 +952,7 @@
       <td><code>license</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Indicates that the main content of the current document is covered by the copyright license described by the referenced document.</td>
     </tr>
 
@@ -939,6 +960,7 @@
       <td><code>next</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Indicates that the current document is a part of a series, and that the next document in the series is the referenced document.</td>
     </tr>
 
@@ -946,6 +968,7 @@
       <td><code>nofollow</code></td>
       <td><em>not allowed</em></td>
       <td><a>Annotation</a></td>
+      <td class="no"> &middot; </td>
       <td>Indicates that the current document's original author or publisher does not endorse the referenced document.</td>
     </tr>
 
@@ -953,13 +976,31 @@
       <td><code>noreferrer</code></td>
       <td><em>not allowed</em></td>
       <td><a>Annotation</a></td>
+      <td class="no"> &middot; </td>
       <td>Requires that the user agent not send an HTTP <code>Referer</code> (sic) header if the user follows the hyperlink.</td>
+    </tr>
+
+    <tr>
+      <td><code>noopener</code></td>
+      <td><em>not allowed</em></td>
+      <td><a>Annotation</a></td>
+      <td class="no"> &middot; </td>
+      <td>Requires that any <a>browsing context</a> created by following the hyperlink must not have an <a>opener browsing context</a>.</td>
+    </tr>
+
+    <tr>
+      <td><code>prefetch</code></td>
+      <td><a>External Resource</a></td>
+      <td><a>External Resource</a></td>
+      <td class="yes"> Yes </td>
+      <td>Specifies that the target resource should be preemptively cached.</td>
     </tr>
 
     <tr>
       <td><code>prev</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Indicates that the current document is a part of a series, and that the previous document in the series is the referenced document.</td>
     </tr>
 
@@ -967,6 +1008,7 @@
       <td><code>search</code></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Gives a link to a resource that can be used to search through the current document and its related pages.</td>
     </tr>
 
@@ -974,6 +1016,7 @@
       <td><code>stylesheet</code></td>
       <td><a>External Resource</a></td>
       <td><em>not allowed</em></td>
+      <td class="no"> &middot; </td>
       <td>Imports a stylesheet.</td>
     </tr>
 
@@ -981,18 +1024,12 @@
       <td><code>tag</code></td>
       <td><em>not allowed</em></td>
       <td><a>hyperlink</a></td>
+      <td class="no"> &middot; </td>
       <td>Gives a tag (identified by the given address) that applies to the current document.</td>
     </tr>
 
     </tbody>
   </table>
-
-  <div class="impl">
-
-  Some of the types described below list synonyms for these values. These are to be handled as specified by user agents, but must not be used
-  in documents.
-
-  </div>
 
 <h5 id="link-type-alternate">Link type "<dfn attr-value for="link/type"><code>alternate</code></dfn>"</h5>
 
