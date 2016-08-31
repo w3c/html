@@ -3671,22 +3671,24 @@
   if the content attribute's value is the empty string; and on setting, if the content attribute
   is not present, it must first be added.
 
-  If a reflecting IDL attribute is a <code>DOMString</code> attribute whose content attribute is
-  defined to contain a <a for="url">URL</a>, then on getting, the IDL attribute must <a>parse</a> the
-  value of the content attribute relative to the element and return the resulting
-  <a>absolute URL</a> if that was successful, or the empty string otherwise; and on setting, must
-  set the content attribute to the specified literal value. If the content attribute is absent,
-  the IDL attribute must return the default value, if the content attribute has one, or else the
-  empty string.
+  If a reflecting IDL attribute is a <a type><code>USVString</code></a> attribute whose content attribute
+  is defined to contain a <a for="url">URLs</a>, then on getting, if the content attribute is
+  absent, the IDL attribute must return the empty string. Otherwise, the IDL attribute must
+  <a>parse</a> the value of the content attribute relative to the element's <a>node document</a> and
+  if that is successful, return the <a>resulting URL string</a>. If parsing fails, then the value of
+  the content attribute must be returned instead, <a>converted</a> to a
+  <a type><code>USVString</code></a>. On setting, the content attribute must be set to the specified new
+  value.
 
-  If a reflecting IDL attribute is a <code>DOMString</code> attribute whose content attribute is
-  defined to contain one or more <a for="url">URLs</a>, then on getting, the IDL attribute must <a lt="split a string on spaces">split the
-  content attribute on spaces</a> and return the concatenation of <a>parsing</a> each token URL
-  to an <a>absolute URL</a> relative to the element, with a single U+0020 SPACE character between
-  each URL, ignoring any tokens that did not resolve successfully. If the content attribute is
-  absent, the IDL attribute must return the default value, if the content attribute has one, or
-  else the empty string. On setting, the IDL attribute must set the content attribute to the
-  specified literal value.
+  If a reflecting IDL attribute is a <a type><code>USVString</code></a> attribute whose content attribute
+  is defined to contain a <a for="url">URLs</a> and is also required to contain a
+  <a>valid non-empty URL potentially surrounded by spaces</a>, then on getting, if the content
+  attribute is absent or if it is present and its value is the empty string, the IDL attribute must
+  return the empty string. Otherwise, the IDL attribute must <a>parse</a> the value of the content
+  attribute relative to the element's <a>node document</a> and if that is successful, return the
+  <a>resulting URL string</a>. If parsing fails, then the value of the content attribute must be
+  returned instead, <a>converted</a> to a <a type><code>USVString</code></a>. On setting, the content
+  attribute must be set to the specified new value.
 
   If a reflecting IDL attribute is a <code>DOMString</code> attribute whose content attribute is
   an <a>enumerated attribute</a>, and the IDL attribute is <dfn>limited to only known values</dfn>,
