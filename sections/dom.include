@@ -75,6 +75,8 @@
   <pre class="idl" data-highlight="webidl" dfn-for="Document">
     enum DocumentReadyState { "loading", "interactive", "complete" };
 
+    typedef (HTMLScriptElement or SVGScriptElement) HTMLOrSVGScriptElement;
+
     [OverrideBuiltins]
     partial /*sealed*/ interface Document {
       // resource metadata management
@@ -98,7 +100,7 @@
       [SameObject] readonly attribute HTMLCollection forms;
       [SameObject] readonly attribute HTMLCollection scripts;
       NodeList getElementsByName(DOMString elementName);
-      readonly attribute HTMLScriptElement? currentScript;
+      readonly attribute HTMLOrSVGScriptElement? currentScript;
 
       // dynamic markup insertion
       Document open(optional DOMString type = "text/html", optional DOMString replace = "");
@@ -488,12 +490,13 @@
   <dl class="domintro">
     <dt><var>document</var> . <code>currentScript</code></dt>
     <dd>
-      Returns the <{script}> element that is currently executing. In the case of reentrant
-      <code>script</code> execution, returns the one that most recently started executing amongst
-      those that have not yet finished executing.
+      Returns the <{script}> element, or the <a>SVG <code>script</code></a> element, that is
+      currently executing. In the case of reentrant script execution, returns the one that most
+      recently started executing amongst those that have not yet finished executing.
 
       Returns null if the {{Document}} is not currently executing a <code>script</code>
-      element (e.g., because the running script is an event handler, or a timeout).
+      element or <a>SVG <code>script</code></a> element (e.g., because the running script is an
+      event handler, or a timeout).
     </dd>
   </dl>
 
