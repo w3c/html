@@ -18,13 +18,9 @@
 
 <h3 id="writing-html-documents">Writing HTML documents</h3>
 
-  <div class="impl">
-
   <i>This section only applies to documents, authoring tools, and markup generators. In
   particular, it does not apply to conformance checkers; conformance checkers must use the
   requirements given in the next section ("parsing HTML documents").</i>
-
-  </div>
 
   Documents must consist of the following parts, in the given
   order:
@@ -242,21 +238,21 @@
     For instance, consider the following HTML fragment:
 
     <pre highlight="html">
-  &lt;p>
-  &lt;svg>
-  &lt;metadata>
-    &lt;!-- this is invalid -->
-    &lt;cdr:license xmlns:cdr="https://www.example.com/cdr/metadata" name="MIT"/>
-  &lt;/metadata>
-  &lt;/svg>
-  &lt;/p>
-  </pre>
+      &lt;p>
+      &lt;svg>
+      &lt;metadata>
+        &lt;!-- this is invalid -->
+        &lt;cdr:license xmlns:cdr="https://www.example.com/cdr/metadata" name="MIT"/>
+      &lt;/metadata>
+      &lt;/svg>
+      &lt;/p>
+    </pre>
 
-    The innermost element, <code>cdr:license</code>, is actually in the SVG namespace, as
+    The innermost element, <code>cdr:license</code>, is actually in the <a>SVG namespace</a>, as
     the "<code>xmlns:cdr</code>" attribute has no effect (unlike in XML). In fact, as the
     comment in the fragment above says, the fragment is actually non-conforming. This is because the
     SVG specification does not define any elements called "<code>cdr:license</code>" in the
-    SVG namespace.
+    <a>SVG namespace</a>.
 
   </div>
 
@@ -976,7 +972,7 @@
 
   <div class="example">
     CDATA sections can only be used in foreign content (MathML or SVG). In this example, a CDATA
-    section is used to escape the contents of an <{ms}> element:
+    section is used to escape the contents of an <a>MathML <code>ms</code></a> element:
 
     <pre highlight="html">
   &lt;p>You can add a string to a number, but this stringifies the number:&lt;/p>
@@ -2120,88 +2116,66 @@
 
   Elements in the <a>stack of open elements</a> fall into the following categories:
 
-  <dl>
+  : <dfn>Special</dfn>
+  :: The following elements have varying levels of special parsing rules: HTML's
+      <{address}>, <{applet}>, <{area}>, <{article}>, <{aside}>, <{base}>, <{basefont}>,
+      <{bgsound}>, <{blockquote}>, <{body}>, <{br}>, <{button}>, <{caption}>, <{center}>, <{col}>,
+      <{colgroup}>, <{dd}>, <{details}>, <{dir}>, <{div}>, <{dl}>, <{dt}>, <{embed}>, <{fieldset}>,
+      <{figcaption}>, <{figure}>, <{footer}>, <{form}>, <{frame}>, <{frameset}>, <{h1}>, <{h2}>,
+      <{h3}>, <{h4}>, <{h5}>, <{h6}>, <{head}>, <{header}>, <{hr}>, <{html}>, <{iframe}>, <{img}>,
+      <{input}>, <{}>, <{link}>, <{listing}>, <{main}>, <{marquee}>, <{menu}>, <{menuitem}>,
+      <{meta}>, <{nav}>, <{noembed}>, <{noframes}>, <{noscript}>, <{object}>, <{ol}>, <{p}>,
+      <{param}>, <{plaintext}>, <{pre}>, <{script}>, <{section}>, <{select}>, <{source}>, <{style}>,
+      <{summary}>, <{table}>, <{tbody}>, <{td}>, <{template}>, <{textarea}>, <{tfoot}>, <{th}>,
+      <{thead}>, <a element for="html"><code>title</code></a>, <{tr}>, <{track}>, <{ul}>, <{wbr}>,
+      and <{xmp}>; <a>MathML <code>mi</code></a>, <a>MathML <code>mo</code></a>,
+      <a>MathML <code>mn</code></a>, <a>MathML <code>ms</code></a>,
+      <a>MathML <code>mtext</code></a>, and <a>MathML <code>annotation-xml</code></a>; and
+      <a>SVG <code>foreignObject</code></a>, <a>SVG <code>desc</code></a>, and
+      <a>SVG <code>title</code></a>.
 
-    <dt><dfn>Special</dfn></dt>
+  : <dfn lt="formatting element tags|formatting">Formatting</dfn>
+  :: The following HTML elements are those that end up in the
+      <a>list of active formatting elements</a>: <{a}>, <{b}>, <{big}>, <{code}>, <{em}>, <{font}>,
+      <{i}>, <{nobr}>, <{s}>, <{small}>, <{strike}>, <{strong}>, <{tt}>, and <{u}>.
 
-    <dd>The following elements have varying levels of special parsing rules: HTML's
-    <{address}>, <{applet}>, <{area}>, <{article}>,
-    <{aside}>, <{base}>, <{basefont}>, <{bgsound}>,
-    <{blockquote}>, <{body}>, <{br}>, <{button}>,
-    <{caption}>, <{center}>, <{col}>, <{colgroup}>,
-    <{dd}>, <{details}>, <{dir}>, <{div}>, <{dl}>,
-    <{dt}>, <{embed}>, <{fieldset}>, <{figcaption}>,
-    <{figure}>, <{footer}>, <{form}>, <{frame}>,
-    <{frameset}>, <{h1}>, <{h2}>, <{h3}>, <{h4}>,
-    <{h5}>, <{h6}>, <{head}>, <{header}>,
-    <{hr}>, <{html}>, <{iframe}>,
-    <{img}>, <{input}>, <{li}>, <{link}>,
-    <{listing}>, <{main}>, <{marquee}>, <{menu}>,
-    <{menuitem}>, <{meta}>, <{nav}>, <{noembed}>,
-    <{noframes}>, <{noscript}>, <{object}>, <{ol}>,
-    <{p}>, <{param}>, <{plaintext}>, <{pre}>,
-    <{script}>, <{section}>, <{select}>, <{source}>,
-    <{style}>, <{summary}>, <{table}>, <{tbody}>,
-    <{td}>, <{template}>, <{textarea}>, <{tfoot}>,
-    <{th}>, <{thead}>, <a element for="html"><code>title</code></a>, <{tr}>, <{track}>,
-    <{ul}>, <{wbr}>, and <{xmp}>; MathML's <{mi}>, <{mo}>, <{mn}>,
-    <{ms}>, <{mtext}>, and <{annotation-xml}>; and SVG's <{foreignObject}>, <{desc}>, and <a element for="html"><code>title</code></a>.</dd>
-
-    <dt><dfn lt="formatting element tags|formatting">Formatting</dfn></dt>
-    <dd>The following HTML elements are those that end up in the <a>list of active formatting
-    elements</a>: <{a}>, <{b}>, <{big}>, <{code}>,
-    <{em}>, <{font}>, <{i}>, <{nobr}>, <{s}>,
-    <{small}>, <{strike}>, <{strong}>, <{tt}>, and
-    <{u}>.</dd>
-
-    <dt><dfn>Ordinary</dfn></dt>
-    <dd>All other elements found while parsing an HTML document.</dd>
-
-  </dl>
+  : <dfn>Ordinary</dfn>
+  :: All other elements found while parsing an HTML document.
 
   The <a>stack of open elements</a> is said to <dfn lt="as that element in the specific scope|have an element target node in a specific scope|has that element in the specific scope">have an element <var>target node</var> in a specific scope</dfn> consisting of a
-  list of element types <var>list</var> when the following algorithm terminates in a match
-  state:
+  list of element types <var>list</var> when the following algorithm terminates in a match state:
 
-  <ol>
-
-    <li>Initialize <var>node</var> to be the <a>current node</a> (the bottommost
-    node of the stack).</li>
-
-    <li>If <var>node</var> is the target node, terminate in a match state.</li>
-
-    <li>Otherwise, if <var>node</var> is one of the element types in <var>list</var>, terminate in a failure state.</li>
-
-    <li>Otherwise, set <var>node</var> to the previous entry in the <a>stack of open
-    elements</a> and return to step 2. (This will never fail, since the loop will always terminate
-    in the previous step if the top of the stack &mdash; an <{html}> element &mdash; is
-    reached.)</li>
-
-  </ol>
+  1. Initialize <var>node</var> to be the <a>current node</a> (the bottommost node of the stack).
+  2. If <var>node</var> is the target node, terminate in a match state.
+  3. Otherwise, if <var>node</var> is one of the element types in <var>list</var>, terminate in a
+      failure state.
+  4. Otherwise, set <var>node</var> to the previous entry in the <a>stack of open elements</a> and
+      return to step 2. (This will never fail, since the loop will always terminate in the previous
+      step if the top of the stack &mdash; an <{html}> element &mdash; is reached.)
 
   The <a>stack of open elements</a> is said to <dfn lt="in scope">have a
   particular element in scope</dfn> when it <a>has
   that element in the specific scope</a> consisting of the following element types:
 
   <ul class="brief">
-    <li><{applet}> in the <a>HTML namespace</a></li>
-    <li><{caption}> in the <a>HTML namespace</a></li>
-    <li><{html}> in the <a>HTML namespace</a></li>
-    <li><{table}> in the <a>HTML namespace</a></li>
-    <li><{td}> in the <a>HTML namespace</a></li>
-    <li><{th}> in the <a>HTML namespace</a></li>
-    <li><{marquee}> in the <a>HTML namespace</a></li>
-    <li><{object}> in the <a>HTML namespace</a></li>
-    <li><{template}> in the <a>HTML namespace</a></li>
-    <li><{mi}> in the <a>MathML namespace</a></li>
-    <li><{mo}> in the <a>MathML namespace</a></li>
-    <li><{mn}> in the <a>MathML namespace</a></li>
-    <li><{ms}> in the <a>MathML namespace</a></li>
-    <li><{mtext}> in the <a>MathML namespace</a></li>
-    <li><{annotation-xml}> in the <a>MathML namespace</a></li>
-    <li><{foreignObject}> in the <a>SVG namespace</a></li>
-    <li><{desc}> in the <a>SVG namespace</a></li>
-    <li><a element for="svg"><code>title</code></a> in the <a>SVG namespace</a></li>
+    <li><{applet}></li>
+    <li><{caption}></li>
+    <li><{html}></li>
+    <li><{table}></li>
+    <li><{td}></li>
+    <li><{th}></li>
+    <li><{marquee}></li>
+    <li><{object}></li>
+    <li><{template}></li>
+    <li><a>MathML <code>mi</code></a></li>
+    <li><a>MathML <code>mo</code></a></li>
+    <li><a>MathML <code>mn</code></a></li>
+    <li><a>MathML <code>ms</code></a></li>
+    <li><a>MathML <code>mtext</code></a></li>
+    <li><a>MathML <code>annotation-xml</code></a></li>
+    <li><a>SVG <code>foreignObject</code></a></li>
+    <li><a>SVG <code>desc</code></a></li>
+    <li><a>SVG <code>title</code></a></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn>have a particular element in list item scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following
@@ -2209,8 +2183,8 @@
 
   <ul class="brief">
     <li>All the element types listed above for the <a lt="in scope">has an element in scope</a> algorithm.</li>
-    <li><{ol}> in the <a>HTML namespace</a></li>
-    <li><{ul}> in the <a>HTML namespace</a></li>
+    <li><{ol}></li>
+    <li><{ul}></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have a p element in button scope|has a p element in button scope|have a particular element in button scope">have a particular element in button scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following element
@@ -2218,16 +2192,16 @@
 
   <ul class="brief">
     <li>All the element types listed above for the <a lt="in scope">has an element in scope</a> algorithm.</li>
-    <li><{button}> in the <a>HTML namespace</a></li>
+    <li><{button}></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have a particular element in table scope|have an element in table scope|in table scope">have a particular element in table scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following element
   types:
 
   <ul class="brief">
-    <li><{html}> in the <a>HTML namespace</a></li>
-    <li><{table}> in the <a>HTML namespace</a></li>
-    <li><{template}> in the <a>HTML namespace</a></li>
+    <li><{html}></li>
+    <li><{table}></li>
+    <li><{template}></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have an li element in list item scope|have a particular element in select scope">have a particular element in select scope</dfn> when it <a>has that element in the specific scope</a> consisting of all element types
@@ -2235,7 +2209,7 @@
 
   <ul class="brief">
 
-    <li><{optgroup}> in the <a>HTML namespace</a></li>
+    <li><{optgroup}></li>
     <li><{option}> in the <a>HTML namespace</a></li>
   </ul>
 
@@ -4526,7 +4500,7 @@
     <dt>If the <a>adjusted current node</a> is an element in the <a>HTML namespace</a></dt>
     <dt>If the <a>adjusted current node</a> is a <a>MathML text integration point</a> and the token is a start tag whose tag name is neither "mglyph" nor "malignmark"</dt>
     <dt>If the <a>adjusted current node</a> is a <a>MathML text integration point</a> and the token is a character token</dt>
-    <dt>If the <a>adjusted current node</a> is an <{annotation-xml}> element in the <a>MathML namespace</a> and the token is a start tag whose tag name is "svg"</dt>
+    <dt>If the <a>adjusted current node</a> is an <a>MathML <code>annotation-xml</code></a> element and the token is a start tag whose tag name is "svg"</dt>
     <dt>If the <a>adjusted current node</a> is an <a>HTML integration point</a> and the token is a start tag</dt>
     <dt>If the <a>adjusted current node</a> is an <a>HTML integration point</a> and the token is a character token</dt>
     <dt>If the token is an end-of-file token</dt>
@@ -4547,25 +4521,25 @@
   elements:
 
   <ul class="brief">
-    <li>An <{mi}> element in the <a>MathML namespace</a></li>
-    <li>An <{mo}> element in the <a>MathML namespace</a></li>
-    <li>An <{mn}> element in the <a>MathML namespace</a></li>
-    <li>An <{ms}> element in the <a>MathML namespace</a></li>
-    <li>An <{mtext}> element in the <a>MathML namespace</a></li>
+    <li>An <a>MathML <code>mi</code></a> element</li>
+    <li>An <a>MathML <code>mo</code></a> element</li>
+    <li>An <a>MathML <code>mn</code></a> element</li>
+    <li>An <a>MathML <code>ms</code></a> element</li>
+    <li>An <a>MathML <code>mtext</code></a> element</li>
   </ul>
 
   A node is an <dfn>HTML integration point</dfn> if it is one of the following elements:
 
   <ul class="brief">
-    <li>An <{annotation-xml}> element in the <a>MathML
-    namespace</a> whose start tag token had an attribute with the name "encoding" whose value was
+    <li>An <a>MathML <code>annotation-xml</code></a> element in the <a>MathML namespace</a> whose
+    start tag token had an attribute with the name "encoding" whose value was
     an <a>ASCII case-insensitive</a> match for the string "<a href="#text-html"><code>text/html</code></a>"</li>
-    <li>An <{annotation-xml}> element in the <a>MathML
-    namespace</a> whose start tag token had an attribute with the name "encoding" whose value was
+    <li>An <a>MathML <code>annotation-xml</code></a> element in the <a>MathML namespace</a> whose
+    start tag token had an attribute with the name "encoding" whose value was
     an <a>ASCII case-insensitive</a> match for the string "<code>application/xhtml+xml</code>"</li>
-    <li>A <{foreignObject}> element in the <a>SVG namespace</a></li>
-    <li>A <{desc}> element in the <a>SVG namespace</a></li>
-    <li>A <a element for="svg"><code>title</code></a> element in the <a>SVG namespace</a></li>
+    <li>A <a>SVG <code>foreignObject</code></a> element</li>
+    <li>A <a>SVG <code>desc</code></a> element</li>
+    <li>A <a>SVG <code>title</code></a> element</li>
   </ul>
 
   <p class="note">
@@ -6619,8 +6593,7 @@
     <a>Adjust foreign attributes</a> for the token. (This fixes the use of namespaced
     attributes, in particular XLink.)
 
-    <a>Insert a foreign element</a> for the token, in the <a>MathML
-    namespace</a>.
+    <a>Insert a foreign element</a> for the token, in the <a>MathML namespace</a>.
 
     If the token has its <i>self-closing flag</i> set, pop the <a>current node</a> off the
     <a>stack of open elements</a> and <a>acknowledge
@@ -8363,10 +8336,10 @@
     <a for="parser">parse error</a>. Ignore the token.
     </dd>
 
-    <dt>A start tag whose tag name is one of:  "b", "big", "blockquote", "body", "br", "center", "code", "dd", "div", "dl", "dt", "em", "embed", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "i", "img",
-    "li", "listing",
-    "menu", "meta", "nobr", "ol", "p", "pre", "ruby", "s",  "small", "span", "strong", "strike",  "sub",
-    "sup", "table", "tt", "u", "ul", "var"</dt>
+    <dt>A start tag whose tag name is one of:  "b", "big", "blockquote", "body", "br", "center",
+    "code", "dd", "div", "dl", "dt", "em", "embed", "h1", "h2", "h3", "h4", "h5", "h6", "head",
+    "hr", "i", "img", "li", "listing", "menu", "meta", "nobr", "ol", "p", "pre", "ruby", "s",
+    "small", "span", "strong", "strike", "sub", "sup", "table", "tt", "u", "ul", "var"</dt>
     <dt>A start tag whose tag name is "font", if the token has any attributes named "color", "face",
     or "size"</dt>
 
@@ -8481,7 +8454,7 @@
 
     </dd>
 
-    <dt>An end tag whose tag name is "script", if the <a>current node</a> is a <{script}> element in the <a>SVG namespace</a></dt>
+    <dt>An end tag whose tag name is "script", if the <a>current node</a> is a <a>SVG <code>script</code></a> element</dt>
     <dd>
 
     Pop the <a>current node</a> off the <a>stack of open elements</a>.

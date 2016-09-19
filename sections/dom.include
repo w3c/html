@@ -311,63 +311,52 @@
     <dt><var>document</var> . <code>title</code> [ = <var>value</var> ]</dt>
     <dd>
       Returns the document's title, as given by the <a element for="html"><code>title</code></a> element for HTML and
-      as given by the SVG <a element for="svg"><code>title</code></a> element for SVG.
+      as given by the <a>SVG <code>title</code></a> element for SVG.
 
       Can be set, to update the document's title. If there is no appropriate element to update, the
       new value is ignored.
     </dd>
   </dl>
 
-  The <a element for="html"><code>title</code></a> element of a document is the first <a element for="html"><code>title</code></a> element
-  in the document (in <a>tree order</a>), if there is one, or null otherwise.
+  The <a element for="html"><code>title</code></a> element of a document is the first
+  <a element for="html"><code>title</code></a> element in the document (in <a>tree order</a>), if
+  there is one, or null otherwise.
 
-  <div class="impl">
-    The <dfn attribute for="Document"><code>title</code></dfn> attribute must, on getting, run the following algorithm:
+  The <dfn attribute for="Document"><code>title</code></dfn> attribute must, on getting, run the
+  following algorithm:
 
-    1. If the <a>root element</a> is an <{svg}> element in the <a>SVG namespace</a>, then let
-        <var>value</var> be the <a>child text content</a> of the first
-        <a element for="svg"><code>title</code></a> element in the <a>SVG namespace</a> that is a
-        child of the <a>root element</a>. [[!SVG]]
-    2. Otherwise, let <var>value</var> be the <a>child text content</a> of the
-        <a element for="html"><code>title</code></a> element, in <a>tree order</a>, or
-        the empty string if the <a element for="html"><code>title</code></a> element is null.
-    3. <a>Strip and collapse whitespace</a> in <var>value</var>.
-    4. Return <var>value</var>.
+  1. If the <a>root element</a> is an <a>SVG svg</a> element, then let
+      <var>value</var> be the <a>child text content</a> of the first
+      <a>SVG <code>title</code></a> element that is a child of the <a>root element</a>. [[!SVG]]
+  2. Otherwise, let <var>value</var> be the <a>child text content</a> of the
+      <a element for="html"><code>title</code></a> element, in <a>tree order</a>, or
+      the empty string if the <a element for="html"><code>title</code></a> element is null.
+  3. <a>Strip and collapse whitespace</a> in <var>value</var>.
+  4. Return <var>value</var>.
 
-    On setting, the steps corresponding to the first matching condition in the following list must
-    be run:
+  On setting, the steps corresponding to the first matching condition in the following list must
+  be run:
 
-    <dl class="switch">
-      <dt>
-        If the <a>root element</a> is an <{svg}> element in the <a>SVG namespace</a>
-        [[!SVG]]
-      </dt>
-      <dd>
-        1. Let <var>element</var> be the first <a element for="svg"><code>title</code></a> element in the
-            <a>SVG namespace</a> that is a child of the <a>root element</a>, if any. If there isn't
-            one, create a <a element for="svg"><code>title</code></a> element in the <a>SVG namespace</a>, insert it as the
-            first child of the <a>root element</a>, and let <var>element</var> be that element.
-            [[!SVG]]
-        2. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the
-            new value being assigned.
-      </dd>
+  : If the <a>root element</a> is an <a>SVG svg</a> element [[!SVG]]
+  :: 1. Let <var>element</var> be the first <a>SVG <code>title</code></a> element that is a child
+          of the <a>root element</a>, if any. If there isn't one, create a
+          <a>SVG <code>title</code></a> element, insert it as the first child of the
+          <a>root element</a>, and let <var>element</var> be that element. [[!SVG]]
+      2. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the new
+          value being assigned.
 
-      <dt>If the <a>root element</a> is in the <a>HTML namespace</a></dt>
-      <dd>
-        1. If the <a element for="html"><code>title</code></a> element is null and the <{head}> element
-            is null, then abort these steps.
-        2. If the <a element for="html"><code>title</code></a> element is null, then create a new <code>title</code>
-            element and <a>append</a> it to the <{head}> element, and let
-            <var>element</var> be the newly created element; otherwise, let <var>element</var> be
-            the <a element for="html"><code>title</code></a> element.
-        3. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the
-            new value being assigned.
-      </dd>
+  : If the <a>root element</a> is in the <a>HTML namespace</a>
+  :: 1. If the <a element for="html"><code>title</code></a> element is null and the <{head}> element
+          is null, then abort these steps.
+      2. If the <a element for="html"><code>title</code></a> element is null, then create a new
+          <a element for="html"><code>title</code></a> element and <a>append</a> it to the <{head}>
+          element, and let <var>element</var> be the newly created element; otherwise, let
+          <var>element</var> be the <a element for="html"><code>title</code></a> element.
+      3. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the
+          new value being assigned.
 
-      <dt>Otherwise</dt>
-      <dd>Do nothing.</dd>
-    </dl>
-  </div>
+  : Otherwise
+  :: Do nothing.
 
   <hr />
 
@@ -1012,7 +1001,7 @@
     <li><{main}></li>
     <li><{map}></li>
     <li><{mark}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{menu}></li>
     <li><{meter}></li>
     <li><{nav}></li>
@@ -1036,7 +1025,7 @@
     <li><{strong}></li>
     <li><{sub}></li>
     <li><{sup}></li>
-    <li><{svg}></li>
+    <li><a>SVG svg</a></li>
     <li><{table}></li>
     <li><{template}></li>
     <li><{textarea}></li>
@@ -1118,7 +1107,7 @@
     <li><{link}> (if it is <a>allowed in the body</a>)</li>
     <li><{map}></li>
     <li><{mark}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{meter}></li>
     <li><{noscript}></li>
     <li><{object}></li>
@@ -1136,7 +1125,7 @@
     <li><{strong}></li>
     <li><{sub}></li>
     <li><{sup}></li>
-    <li><{svg}></li>
+    <li><a>SVG svg</a></li>
     <li><{template}></li>
     <li><{textarea}></li>
     <li><{time}></li>
@@ -1182,10 +1171,10 @@
     <li><{embed}></li>
     <li><{iframe}></li>
     <li><{img}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{object}></li>
     <li><{picture}></li>
-    <li><{svg}></li>
+    <li><a>SVG <code>svg</code></a></li>
     <li><{video}></li>
   </ul>
 
@@ -1291,7 +1280,7 @@
     <li><{main}></li>
     <li><{map}></li>
     <li><{mark}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{menu}> (if the <code>type</code> attribute is in the <a state for="menu">toolbar</a> state)</li>
     <li><{meter}></li>
     <li><{nav}></li>
@@ -1314,7 +1303,7 @@
     <li><{strong}></li>
     <li><{sub}></li>
     <li><{sup}></li>
-    <li><{svg}></li>
+    <li><a>SVG <code>svg</code></a></li>
     <li><{table}></li>
     <li><{textarea}></li>
     <li><{time}></li>
@@ -1448,7 +1437,7 @@
     Conformance checkers may warn authors of cases where they have paragraphs that overlap each
     other (this can happen with <{object}>, <{video}>, <{audio}>, and
     <{canvas}> elements, and indirectly through elements in other namespaces that allow
-    HTML to be further embedded therein, like <{svg}> or <{math}>).
+    HTML to be further embedded therein, like <a>SVG svg</a> or <a>MathML <code>math</code></a>).
   </div>
 
   A <a>paragraph</a> is also formed explicitly by <{p}> elements.
@@ -3094,7 +3083,7 @@
         </td>
       </tr>
       <tr>
-        <td><code>math</code></td>
+        <td>MathML <code>math</code></td>
         <td>Content that represents a mathematical expression. </td>
         <td>none</td>
         <td>
