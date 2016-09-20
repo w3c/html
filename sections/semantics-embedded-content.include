@@ -3622,71 +3622,50 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
     <a>Queue a task</a> to run the <a>iframe load event steps</a>.
 
-    The <a>task source</a> for this <a>task</a> is the
-    <a>DOM manipulation task source</a>.
+    The <a>task source</a> for this <a>task</a> is the <a>DOM manipulation task source</a>.
 
     </dd>
 
     <dt>Otherwise</dt>
 
-    <dd>
-
-    <ol>
-
-      <li>
-
-      If the element has no <code>src</code> attribute specified, or its value is the empty string,
-      let <var>url</var> be the string "<code>about:blank</code>".
-
-      Otherwise, <a>parse</a> the value of the <code>src</code> attribute, relative to the <{iframe}> element.
-
-      If that is not successful, then let <var>url</var> be the string
-      "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting URL string</a>.
-
-      </li>
-
-      <li>
-
-      If there exists an <a>ancestor browsing context</a> whose <a>active document</a>'s
-      <a>address</a>, ignoring <a for="url">fragment</a>, is equal to <var>url</var>, then abort these
-      steps.
-
-      </li>
-
-      <li>
-
-      <a>Navigate</a> the element's <a>child browsing context</a>
-      to <var>url</var>.
-
-      </li>
-
-    </ol>
-
-    </dd>
+    <dd>Run the <a>otherwise steps for iframe or frame elements</a>.</dd>
 
   </dl>
 
-  Furthermore, if the <a>active document</a> of the element's <a>child browsing
-  context</a> before such a <a>navigation</a> was not <a>completely
-  loaded</a> at the time of the new <a>navigation</a>, then the <a>navigation</a> must be completed with <a>replacement enabled</a>.
+  The <dfn>otherwise steps for iframe or frame elements</dfn> are as follows:
 
-  Similarly, if the <a>child browsing context</a>'s <a>session history</a> contained
-  only one {{Document}} when the <a>process the <code>iframe</code> attributes</a>
-  algorithm was invoked, and that was the <code>about:blank</code> {{Document}} created
-  when the <a>child browsing context</a> was created, then any <a>navigation</a> required of the user agent in that algorithm must be completed
-  with <a>replacement enabled</a>.
+  1: If the element has no <code data-x="attr-iframe-src">src</code> attribute specified, or its
+      value is the empty string, let <var>url</var> be the <a>URL</a> "<code>about:blank</code>".
 
-  When a {{Document}} in an <code>iframe</code> is marked as <a>completely
-  loaded</a>, the user agent must run the <a>iframe load event steps</a> <a>in parallel</a>.
+      Otherwise, <a>parse</a> the value of the <code>src</code> attribute, relative to the element's
+      <a>node document</a>.
+
+      If that is not successful, then let <var>url</var> be the <a>URL</a>
+      "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting URL record</a>.
+  2. If there exists an <a>ancestor browsing context</a> whose <a>active document</a>'s
+      <a>address</a>, ignoring <a>fragments</a>, is equal to <var>url</var>, then abort these steps.
+  3. <a>Navigate</a> the element's <a>child browsing context</a> to <var>url</var>.
+
+  Furthermore, if the <a>active document</a> of the element's <a>child browsing context</a> before
+  such a <a>navigation</a> was not <a>completely loaded</a> at the time of the new
+  <a>navigation</a>, then the <a>navigation</a> must be completed with <a>replacement enabled</a>.
+
+  Similarly, if the <a>child browsing context</a>'s <a>session history</a> contained only one
+  {{Document}} when the <a>process the <code>iframe</code> attributes</a> algorithm was invoked, and
+  that was the <code>about:blank</code> {{Document}} created when the <a>child browsing context</a>
+  was created, then any <a>navigation</a> required of the user agent in that algorithm must be
+  completed with <a>replacement enabled</a>.
+
+  When a {{Document}} in an <code>iframe</code> is marked as <a>completely loaded</a>, the user
+  agent must run the <a>iframe load event steps</a> <a>in parallel</a>.
 
   <p class="note">
-    A <code>load</code> event is also fired at the
-  <{iframe}> element when it is created if no other data is loaded in it.
+    A <code>load</code> event is also fired at the <{iframe}> element when it is created if no other
+    data is loaded in it.
   </p>
 
-  Each {{Document}} has an <dfn>iframe load in progress</dfn> flag and a <dfn>mute
-  iframe load</dfn> flag. When a {{Document}} is created, these flags must be unset for
-  that {{Document}}.
+  Each {{Document}} has an <dfn>iframe load in progress</dfn> flag and a <dfn>mute iframe load</dfn>
+  flag. When a {{Document}} is created, these flags must be unset for that {{Document}}.
 
   The <dfn>iframe load event steps</dfn> are as follows:
 
