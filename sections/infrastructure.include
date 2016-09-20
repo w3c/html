@@ -4196,8 +4196,8 @@
   The object's <a>supported property indices</a> are as defined for <code>HTMLCollection</code>
   objects.
 
-  On getting, the <dfn attribute for="HTMLOptionsCollection"><code>length</code></dfn> attribute must return the number of nodes
-  <a>represented by the collection</a>.
+  On getting, the <dfn attribute for="HTMLOptionsCollection"><code>length</code></dfn> attribute
+  must return the number of nodes <a>represented by the collection</a>.
 
   On setting, the behavior depends on whether the new value is equal to, greater than, or less than
   the number of nodes <a>represented by the collection</a> at that time. If the number is the same,
@@ -4211,8 +4211,8 @@
   the two numbers (old value minus new value).
 
   <p class="note">
-    Setting <code>length</code> never removes or adds any <{optgroup}> elements, and never
-    adds new children to existing <{optgroup}> elements (though it can remove children from
+    Setting {{HTMLOptionsCollection/length}} never removes or adds any <{optgroup}> elements, and
+    never adds new children to existing <{optgroup}> elements (though it can remove children from
     them).
   </p>
 
@@ -4260,8 +4260,8 @@
   6. Act as if the DOM <code>insertBefore()</code> method was invoked on the <var>parent</var> node,
       with <var>element</var> as the first argument and <var>reference</var> as the second argument.
 
-  The <dfn method for="HTMLOptionsCollection"><code>remove(<var>index</var>)</code></dfn> method must act according to the following
-  algorithm:
+  The <dfn method for="HTMLOptionsCollection"><code>remove(<var>index</var>)</code></dfn> method
+  must act according to the following algorithm:
 
   1. If the number of nodes <a>represented by the collection</a> is zero, abort these steps.
   2. If <var>index</var> is not a number greater than or equal to 0 and less than the number of
@@ -4269,18 +4269,18 @@
   3. Let <var>element</var> be the <var>index</var>th element in the collection.
   4. Remove <var>element</var> from its parent node.
 
-  The <dfn attribute for="HTMLOptionsCollection"><code>selectedIndex</code></dfn> IDL attribute must act like the identically named
-  attribute on the <{select}> element on which the <code>HTMLOptionsCollection</code> is
-  rooted
+  The <dfn attribute for="HTMLOptionsCollection"><code>selectedIndex</code></dfn> IDL attribute must
+  act like the identically named attribute on the <{select}> element on which the
+  {{HTMLOptionsCollection}} is rooted
 
-<h4 id="the-domstringmap-interface">The <code>DOMStringMap</code> interface</h4>
+<h4 id="the-domstringmap-interface">The {{DOMStringMap}} interface</h4>
 
-  The <code>DOMStringMap</code> interface represents a set of name-value pairs. It exposes these
-  using the scripting language's native mechanisms for property access.
+  The <dfn interface><code>DOMStringMap</code></dfn> interface represents a set of name-value pairs. It exposes
+  these using the scripting language's native mechanisms for property access.
 
-  When a <code>DOMStringMap</code> object is instantiated, it is associated with three algorithms,
-  one for getting the list of name-value pairs, one for setting names to certain values, and one for
-  deleting names.
+  When a {{DOMStringMap}} object is instantiated, it is associated with three algorithms,
+  one for <dfn>getting the list of name-value pairs</dfn>, one for
+  <dfn>setting names to certain values</dfn>, and one for <dfn>deleting names</dfn>.
 
   <pre class="idl" data-highlight="webidl" dfn-for="DOMStringMap">
     [OverrideBuiltins]
@@ -4291,66 +4291,60 @@
     };
   </pre>
 
-  The <a spec="webidl">supported property names</a> on a <code>DOMStringMap</code> object at any instant are the
-  names of each pair returned from the algorithm for getting the list of name-value pairs at that
-  instant, in the order returned.
+  The <a spec="webidl">supported property names</a> on a {{DOMStringMap}} object at any
+  instant are the names of each pair returned from the algorithm for
+  <a>getting the list of name-value pairs</a> at that instant, in the order returned.
 
   To <a spec="webidl">determine the value of a named property</a> <var>name</var> in a
   {{DOMStringMap}}, the user agent must return the value component of the name-value pair
-  whose name component is <var>name</var> in the list returned by the algorithm for getting the list
-  of name-value pairs.
+  whose name component is <var>name</var> in the list returned by the algorithm for
+  <a>getting the list of name-value pairs</a>.
 
-  To <a for="values" lt="setting">set</a> the value of a named property <var>name</var> to value <var>value</var>, the
-  algorithm for setting names to certain values must be run, passing <var>name</var> as the name and
-  <var>value</var> as the value.
+  To <a for="values" lt="setting">set</a> the value of a named property <var>name</var> to value
+  <var>value</var>, the algorithm for <a>setting names to certain values</a> must be run, passing
+  <var>name</var> as the name and <var>value</var> as the value.
 
-  To <dfn>delete an existing named property</dfn> <var>name</var>, the algorithm for deleting names
-  must be run, passing <var>name</var> as the name.
+  To <dfn>delete an existing named property</dfn> <var>name</var>, the algorithm for
+  <a>deleting names</a> must be run, passing <var>name</var> as the name.
 
-  <p class="note">
-    The <code>DOMStringMap</code> interface definition here is only intended for JavaScript
-    environments. Other language bindings will need to define how <code>DOMStringMap</code> is to be
-    implemented for those languages.
-  </p>
+  <div class="example">
+    The <code>dataset</code> attribute on elements exposes the <code>data-*</code> attributes on the
+    element.
 
-<div class="example">
-  The <code>dataset</code> attribute on elements exposes the <code>data-*</code> attributes on the
-  element.
+    Given the following fragment and elements with similar constructions:
 
-  Given the following fragment and elements with similar constructions:
+    <pre highlight="html">&lt;img class="tower" id="tower5" data-x="12" data-y="5" data-ai="robotarget" data-hp="46" data-ability="flames" src="towers/rocket.png" alt="Rocket Tower"></pre>
 
-  <pre highlight="html">&lt;img class="tower" id="tower5" data-x="12" data-y="5" data-ai="robotarget" data-hp="46" data-ability="flames" src="towers/rocket.png" alt="Rocket Tower"></pre>
+    ...one could imagine a function <code>splashDamage()</code> that takes some arguments, the first
+    of which is the element to process:
 
-  ...one could imagine a function <code>splashDamage()</code> that takes some arguments, the first
-  of which is the element to process:
-
-  <pre highlight="javascript">
-    function splashDamage(node, x, y, damage) {
-      if (node.classList.contains('tower') && // checking the 'class' attribute
-          node.dataset.x == x && // reading the 'data-x' attribute
-          node.dataset.y == y) { // reading the 'data-y' attribute
-        var hp = parseInt(node.dataset.hp); // reading the 'data-hp' attribute
-        hp = hp - damage;
-        if (hp &lt; 0) {
-          hp = 0;
-          node.dataset.ai = 'dead'; // setting the 'data-ai' attribute
-          delete node.dataset.ability; // removing the 'data-ability' attribute
+    <pre highlight="javascript">
+      function splashDamage(node, x, y, damage) {
+        if (node.classList.contains('tower') && // checking the 'class' attribute
+            node.dataset.x == x && // reading the 'data-x' attribute
+            node.dataset.y == y) { // reading the 'data-y' attribute
+          var hp = parseInt(node.dataset.hp); // reading the 'data-hp' attribute
+          hp = hp - damage;
+          if (hp &lt; 0) {
+            hp = 0;
+            node.dataset.ai = 'dead'; // setting the 'data-ai' attribute
+            delete node.dataset.ability; // removing the 'data-ability' attribute
+          }
+          node.dataset.hp = hp; // setting the 'data-hp' attribute
         }
-        node.dataset.hp = hp; // setting the 'data-hp' attribute
       }
-    }
-  </pre>
-</div>
+    </pre>
+  </div>
 
-<h4 id="the-domelementmap-interface">The <code>DOMElementMap</code> interface</h4>
+<h4 id="the-domelementmap-interface">The {{DOMElementMap}} interface</h4>
 
-  The <code>DOMElementMap</code> interface represents a set of name-element mappings. It exposes
-  these using the scripting language's native mechanisms for property access.
+  The <dfn interface><code>DOMElementMap</code></dfn> interface represents a set of name-element
+  mappings. It exposes these using the scripting language's native mechanisms for property access.
 
 
-  When a <code>DOMElementMap</code> object is instantiated, it is associated with three algorithms,
-  one for getting the list of name-element mappings, one for mapping a name to a certain element,
-  and one for deleting mappings by name.
+  When a {{DOMElementMap}} object is instantiated, it is associated with three algorithms, one for
+  getting the list of name-element mappings, one for mapping a name to a certain element, and one
+  for deleting mappings by name.
 
   <pre class="idl" data-highlight="webidl" dfn-for="DOMElementMap">
     interface DOMElementMap {
@@ -4360,12 +4354,12 @@
     };
   </pre>
 
-  The <a spec="webidl">supported property names</a> on a <code>DOMElementMap</code> object at any instant are the
-  names for each mapping returned from the algorithm for getting the list of name-element mappings
-  at that instant, in the order returned.
+  The <a spec="webidl">supported property names</a> on a {{DOMElementMap}} object at any instant are
+  the names for each mapping returned from the algorithm for getting the list of name-element
+  mappings at that instant, in the order returned.
 
   To <a spec="webidl">determine the value of a named property</a> <var>name</var> in a
-  <code>DOMElementMap</code>, the user agent must return the element component of the name-element
+  {{DOMElementMap}}, the user agent must return the element component of the name-element
   mapping whose name component is <var>name</var> in the list returned by the algorithm for getting
   the list of name-element mappings.
 
@@ -4377,9 +4371,9 @@
   mappings must be run, passing <var>name</var> as the name component of the mapping to be deleted.
 
   <p class="note">
-    The <code>DOMElementMap</code> interface definition here is only intended for JavaScript
-    environments. Other language bindings will need to define how <code>DOMElementMap</code> is to
-    be implemented for those languages.
+    The {{DOMElementMap}} interface definition here is only intended for JavaScript environments.
+    Other language bindings will need to define how {{DOMElementMap}} is to be implemented for those
+    languages.
   </p>
 
 <h4 id="garbage-collection">Garbage collection</h4>
@@ -4388,7 +4382,7 @@
   object to that object.
 
   <div class="example">
-    For example, the <code>window.document</code> attribute on the {{Window}} object means that there is a strong reference
+    For example, the {{Window/document|window.document}} attribute on the {{Window}} object means that there is a strong reference
     from a {{Window}} object to its {{Document}} object. Similarly, there is
     always a strong reference from a {{Document}} to any descendant nodes, and from any
     node to its owner <a>node document</a>.
