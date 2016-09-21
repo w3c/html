@@ -2146,9 +2146,8 @@
     specifically, while <a>ordinary</a> elements' tokens fall into "any other start tag" and "any
     other end tag" clauses, and some parts of the tree builder check if a particular element in the
     <a>stack of open elements</a> is in the <a>special</a> category. However, some elements (e.g.,
-    the <code>option</code> element) have their start or end tag tokens handled specifically, but
-    are still not in the <a>special</a> category, so that they get the <a>ordinary</a> handling
-    elsewhere.
+    the <{option}> element) have their start or end tag tokens handled specifically, but are still
+    not in the <a>special</a> category, so that they get the <a>ordinary</a> handling elsewhere.
   </p>
 
   The <a>stack of open elements</a> is said to <dfn lt="as that element in the specific scope|have an element target node in a specific scope|has that element in the specific scope">have an element <var>target node</var> in a specific scope</dfn> consisting of a
@@ -2217,7 +2216,6 @@
   <em>except</em> the following:
 
   <ul class="brief">
-
     <li><{optgroup}></li>
     <li><{option}> in the <a>HTML namespace</a></li>
   </ul>
@@ -2228,8 +2226,8 @@
   to be appended to nodes that are no longer in the DOM.
 
   <p class="note">
-  In some cases (namely, when <a>closing misnested formatting
-  elements</a>), the stack is manipulated in a random-access fashion.
+    In some cases (namely, when <a>closing misnested formatting elements</a>), the stack is
+    manipulated in a random-access fashion.
   </p>
 
 <h5 id="the-list-of-active-formatting-elements">The list of active formatting elements</h5>
@@ -2237,109 +2235,79 @@
   Initially, the <dfn>list of active formatting elements</dfn> is empty. It is used to handle
   mis-nested <a>formatting element tags</a>.
 
-  The list contains elements in the <a>formatting</a> category, and <a>markers</a>. The <dfn>markers</dfn> are inserted when entering <code>applet</code>
-  elements, buttons, <{object}> elements, marquees, table cells, and table captions, and
-  are used to prevent formatting from "leaking" <em>into</em> <{applet}> elements, buttons,
-  <{object}> elements, marquees, and tables.
+  The list contains elements in the <a>formatting</a> category, and <a>markers</a>. The
+  <dfn>markers</dfn> are inserted when entering <{applet}> elements, buttons, <{object}> elements,
+  marquees, table cells, and table captions, and are used to prevent formatting from "leaking"
+  <em>into</em> <{applet}> elements, buttons, <{object}> elements, marquees, and tables.
 
-  In addition, each element in the <a>list of active formatting elements</a> is associated
-  with the token for which it was created, so that further elements can be created for that token if
+  In addition, each element in the <a>list of active formatting elements</a> is associated with the
+  token for which it was created, so that further elements can be created for that token if
   necessary.
 
-  When the steps below require the user agent to <dfn>push onto the list of active formatting
-  elements</dfn> an element <var>element</var>, the user agent must perform the following
-  steps:
+  When the steps below require the user agent to <dfn>push onto the list of active formatting elements</dfn>
+  an element <var>element</var>,the user agent must perform the following steps:
 
-  <ol>
+  1. If there are already three elements in the <a>list of active formatting elements</a> after the
+      last <a>marker</a>, if any, or anywhere in the list if there are no <a>markers</a>, that have
+      the same tag name, namespace, and attributes as <var>element</var>, then remove the earliest
+      such element from the <a>list of active formatting elements</a>. For these purposes, the
+      attributes must be compared as they were when the elements were created by the parser; two
+      elements have the same attributes if all their parsed attributes can be paired such that the
+      two attributes in each pair have identical names, namespaces, and values (the order of the
+      attributes does not matter).
 
-    <li>If there are already three elements in the <a>list of active formatting elements</a>
-    after the last <a>marker</a>, if any, or anywhere in the
-    list if there are no <a>markers</a>, that have the same tag
-    name, namespace, and attributes as <var>element</var>, then remove the earliest such
-    element from the <a>list of active formatting elements</a>. For these purposes, the
-    attributes must be compared as they were when the elements were created by the parser; two
-    elements have the same attributes if all their parsed attributes can be paired such that the two
-    attributes in each pair have identical names, namespaces, and values (the order of the attributes
-    does not matter).
-
-    <p class="note">
-  This is the Noah's Ark clause. But with three per family instead of two.
-  </li>
-
-    <li>Add <var>element</var> to the <a>list of active formatting
-    elements</a>.</li>
-
-  </ol>
+      <p class="note">This is the Noah's Ark clause. But with three per family instead of two.</p>
+  2. Add <var>element</var> to the <a>list of active formatting elements</a>.
 
   When the steps below require the user agent to <dfn for="elements" lt="reconstruct the active formatting element|reconstruct the active formatting elements|reconstruction of the active formatting element|reconstruction of the active formatting elements">reconstruct the active formatting elements</dfn>,
   the user agent must perform the following steps:
 
-  <ol>
-
-    <li>If there are no entries in the <a>list of active formatting elements</a>, then there
-    is nothing to reconstruct; stop this algorithm.</li>
-
-    <li>If the last (most recently added) entry in the <a>list of active formatting
-    elements</a> is a <a>marker</a>, or if it is an element
-    that is in the <a>stack of open elements</a>, then there is nothing to reconstruct; stop
-    this algorithm.</li>
-
-    <li>Let <var>entry</var> be the last (most recently added) element in the <a>list
-    of active formatting elements</a>.</li>
-
-    <li><i>Rewind</i>: If there are no entries before <var>entry</var> in the <a>list
-    of active formatting elements</a>, then jump to the step labeled <i>create</i>.</li>
-
-    <li>Let <var>entry</var> be the entry one earlier than <var>entry</var> in
-    the <a>list of active formatting elements</a>.</li>
-
-    <li>If <var>entry</var> is neither a <a>marker</a> nor an element that is also in the <a>stack of
-    open elements</a>, go to the step labeled <i>rewind</i>.</li>
-
-    <li><i>Advance</i>: Let <var>entry</var> be the element one later than <var>entry</var> in the <a>list of active formatting elements</a>.</li>
-
-    <li><i>Create</i>: <a>Insert an HTML element</a> for the token for which the element
-    <var>entry</var> was created, to obtain <var>new element</var>.</li>
-
-    <li>Replace the entry for <var>entry</var> in the list with an entry for <var>new element</var>.</li>
-
-    <li>If the entry for <var>new element</var> in the <a>list of active formatting
-    elements</a> is not the last entry in the list, return to the step labeled
-    <i>advance</i>.</li>
-
-  </ol>
+  1. If there are no entries in the <a>list of active formatting elements</a>, then there is nothing
+      to reconstruct; stop this algorithm.
+  2. If the last (most recently added) entry in the <a>list of active formatting elements</a> is a
+      <a>marker</a>, or if it is an element that is in the <a>stack of open elements</a>, then there
+      is nothing to reconstruct; stop this algorithm.
+  3. Let <var>entry</var> be the last (most recently added) element in the
+      <a>list of active formatting elements</a>.
+  4. <i>Rewind</i>: If there are no entries before <var>entry</var> in the
+      <a>list of active formatting elements</a>, then jump to the step labeled <i>create</i>.
+  5. Let <var>entry</var> be the entry one earlier than <var>entry</var> in the
+      <a>list of active formatting elements</a>.
+  6. If <var>entry</var> is neither a <a>marker</a> nor an element that is also in the
+      <a>stack of open elements</a>, go to the step labeled <i>rewind</i>.
+  7. <i>Advance</i>: Let <var>entry</var> be the element one later than <var>entry</var> in the
+      <a>list of active formatting elements</a>.
+  8. <i>Create</i>: <a>Insert an HTML element</a> for the token for which the element
+      <var>entry</var> was created, to obtain <var>new element</var>.
+  9. Replace the entry for <var>entry</var> in the list with an entry for <var>new element</var>.
+  10. If the entry for <var>new element</var> in the <a>list of active formatting elements</a> is
+      not the last entry in the list, return to the step labeled <i>advance</i>.
 
   This has the effect of reopening all the formatting elements that were opened in the current
   body, cell, or caption (whichever is youngest) that haven't been explicitly closed.
 
   <p class="note">
-  The way this specification is written, the <a>list of active formatting
-  elements</a> always consists of elements in chronological order with the least recently added
-  element first and the most recently added element last (except for while steps 7 to 10 of the
-  above algorithm are being executed, of course).
+    The way this specification is written, the <a>list of active formatting elements</a> always
+    consists of elements in chronological order with the least recently added element first and the
+    most recently added element last (except for while steps 7 to 10 of the above algorithm are
+    being executed, of course).
   </p>
 
-  When the steps below require the user agent to <dfn>clear the list of active formatting elements up to
-  the last marker</dfn>, the user agent must perform the following steps:
+  When the steps below require the user agent to
+  <dfn>clear the list of active formatting elements up to the last marker</dfn>, the user agent must
+  perform the following steps:
 
-  <ol>
-
-    <li>Let <var>entry</var> be the last (most recently added) entry in the <a>list of
-    active formatting elements</a>.</li>
-
-    <li>Remove <var>entry</var> from the <a>list of active formatting
-    elements</a>.</li>
-
-    <li>If <var>entry</var> was a <a>marker</a>,
-    then stop the algorithm at this point. The list has been cleared up to the last <a>marker</a>.</li>
-
-    <li>Go to step 1.</li>
-
-  </ol>
+  1. Let <var>entry</var> be the last (most recently added) entry in the
+      <a>list of active formatting elements</a>.
+  2. Remove <var>entry</var> from the <a>list of active formatting elements</a>.
+  3. If <var>entry</var> was a <a>marker</a>, then stop the algorithm at this point. The list has
+      been cleared up to the last <a>marker</a>.
+  4. Go to step 1.
 
 <h5 id="the-element-pointers">The element pointers</h5>
 
-  Initially, the <dfn><code>head</code> element pointer</dfn> and the <dfn><code>form</code> element pointer</dfn> are both null.
+  Initially, the <dfn><code>head</code> element pointer</dfn> and the
+  <dfn><code>form</code> element pointer</dfn> are both null.
 
   Once a <{head}> element has been parsed (whether implicitly or explicitly) the
   <a><code>head</code> element pointer</a> gets set to point to this node.
