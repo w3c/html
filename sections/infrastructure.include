@@ -143,38 +143,6 @@
 
 <h4 id="dom-trees">DOM trees</h4>
 
-  The <dfn for="document">root element of a {{Document}} object</dfn> is that {{Document}}'s
-  first element child, if any. If it does not have one then the {{Document}} has no root
-  element.
-
-  The term <dfn lt="root element|root elements">root element</dfn>, when not referring to a
-  {{Document}} object's root element, means the furthest ancestor element node of whatever node is
-  being discussed, or the node itself if it has no ancestors. When the node is a part of the
-  document, then the node's <a>root element</a> is indeed the document's root element; however, if
-  the node is not currently part of the document tree, the root element will be an orphaned node.
-
-  When an element's <a>root element</a> is the <a>root element of a <code>Document</code> object</a>,
-  it is said to be <dfn lt="in the document|in a document">in a {{Document}}</dfn>. An element is said to have been
-  <dfn for="document" lt="inserted into the document|inserted into a document|inserted into">inserted into a document</dfn> when its <a>root element</a> changes and is now the document's
-  <a>root element</a>. Analogously, an element is said to have been
-  <dfn for="document" lt="removed from a document|removed from">removed from a document</dfn> when its <a>root element</a> changes from being the document's
-  <a>root element</a> to being another element.
-
-  A node's <dfn lt="home subtree|home subtrees">home subtree</dfn> is the subtree rooted at that node's <a>root element</a>. When a
-  node is <a>in a <code>Document</code></a>, its <a>home subtree</a> is that {{Document}}'s tree.
-
-  The {{Document}} of a {{Node}} (such as an element) is the {{Document}}
-  that the {{Node}}'s {{Node/ownerDocument}} IDL attribute returns. When a
-  {{Node}} is <a>in a <code>Document</code></a> then that {{Document}} is
-  always the {{Node}}'s {{Document}}, and the {{Node}}'s
-  {{Node/ownerDocument}} IDL attribute thus always returns that {{Document}}.
-
-  The {{Document}} of a content attribute is the {{Document}} of the attribute's
-  element.
-
-  The term <dfn>tree order</dfn> means a pre-order, depth-first traversal of DOM nodes involved
-  (through the {{Node/parentNode}}/{{Node/childNodes}} relationship).
-
   When it is stated that some element or attribute is <dfn>ignored</dfn>, or treated as some other
   value, or handled as if it was something else, this refers only to the processing of the node
   after it is in the DOM. A user agent must not mutate the DOM in such situations.
@@ -182,19 +150,25 @@
   A content attribute is said to <dfn>change</dfn> value only if its new value is different than its
   previous value; setting an attribute to a value it already has does not change it.
 
-  When an attribute value, {{Text}} node, or string is described as <dfn>empty</dfn>, it means that
+  The term <dfn>empty</dfn>, when used for an attribute value, {{Text}} node, or string  means that
   the length of the text is zero (i.e., not even containing spaces or <a>control characters</a>).
 
-  A <a for="Node" lt="insert">node <var>A</var> is
-  inserted</a> into a node <var>B</var> when the
+  An element's <dfn>child text content</dfn> is the concatenation of the <a>data</a> of all the
+  {{Text}} nodes that are children of the element (ignoring any other nodes such as comments or
+  elements), in <a>tree order</a>.
+
+  A <a for="Node" lt="insert">node <var>A</var> is inserted</a> into a node <var>B</var> when the
   <a>insertion steps</a> are invoked with <var>A</var> as the argument and <var>A</var>'s new parent
   is <var>B</var>. Similarly, a <dfn>node <var>A</var> is removed</dfn> from a node <var>B</var>
   when the <a>removing steps</a> are invoked with <var>A</var> as the <var>removedNode</var>
   argument and <var>B</var> as the <var>oldParent</var> argument.
 
-  An element's <dfn>child text content</dfn> is the concatenation of the <a>data</a> of all the
-  {{Text}} nodes that are children of the element (ignoring any other nodes such as comments or
-  elements), in <a>tree order</a>.
+  A <dfn for="document" lt="inserted into|inserted into the document|inserted into a document">node is inserted into a document</dfn>
+  when the <a>insertion steps</a> are invoked with it as the argument and it is now
+  <a>in a document tree</a>. Analogously, a
+  <dfn for="document" lt="remove an element from a document|removed from a document|removed from">node is removed from a document</dfn>
+  when the <a>removing steps</a> are invoked with it as the argument and it is now no longer in a
+  <a>document tree</a>.
 
 <h4 id="scripting">Scripting</h4>
 
@@ -934,21 +908,23 @@
       * {{createElementNS()}} method
       * {{getElementById()}} method
       * {{Element/getElementsByClassName()}} method
-      * {{insertBefore()}} method
       * {{appendChild()}} method
       * {{cloneNode()}} method
       * {{importNode()}} method
-      * {{childNodes}} attribute
-      * {{Element/localName}} attribute
-      * {{parentNode}} attribute
-      * {{Element/namespaceURI}} attribute
-      * {{tagName}} attribute
       * {{Element/id}} attribute
       * {{Node/textContent}} attribute
-      * The <a for="Node">insert</a>, <a for="Node">append</a>, <a for="Node">remove</a>, <a for="Node">replace</a>, and
-        <a for="Node">adopt</a> algorithms for nodes
-      * The <a for="Node" lt="insert">insertion steps</a>, <a for="Node" lt="remove">removing steps</a>, and <a for="Node" lt="adopt">adopting steps</a>
-        hooks
+      * The <dfn>tree</dfn> concept
+      * The <dfn>tree order</dfn> concept
+      * The <dfn>root</dfn> concept
+      * The <dfn>inclusive ancestor</dfn> concept
+      * The <dfn>document element</dfn> concept
+      * The <dfn>in a document </dfn> concept
+      * The <a for="Node">pre-insert</a>, <a for="Node">insert</a>, <a for="Node">append</a>,
+        <a for="Node">remove</a>, <a for="Node">replace</a>, and <a for="Node">adopt</a> algorithms
+        for nodes
+      * The <a for="Node" lt="insert">insertion steps</a>,
+        <a for="Node" lt="remove">removing steps</a>, and
+        <a for="Node" lt="adopt">adopting steps</a> hooks
       * The <a lt="element attribute">attribute list</a> concept.
       * The <a lt="cd data">data</a> of a text node.
       * {{Event}} interface
@@ -3886,10 +3862,10 @@
       the IDL attribute must return null.
   4. Otherwise, it must return <var>candidate</var>.
 
-  On setting, if the given element has an <code>id</code> attribute, and has the same
-  <a>home subtree</a> as the element of the attribute being set, and the given element is the
-  first element in that <a>home subtree</a> whose <a>ID</a> is the value of that <code>id</code>
-  attribute, then the content attribute must be set to the value of that <code>id</code>
+  On setting, if the given element has an <{global/id}> attribute, and has the same
+  <a>tree</a> as the element of the attribute being set, and the given element is the
+  first element in that <a>tree</a> whose <a>ID</a> is the value of that <{global/id}>
+  attribute, then the content attribute must be set to the value of that <{global/id}>
   attribute. Otherwise, the content attribute must be set to the empty string.
 
 <h4 id="collections">Collections</h4>
@@ -3907,7 +3883,7 @@
   function (<code>legacycaller</code>).
 
   <p class="note">
-    All <code>HTMLAllCollection</code> objects are rooted at a {{Document}} and have a filter that
+    All {{HTMLAllCollection}} objects are rooted at a {{Document}} and have a filter that
     matches all elements, so the elements <a>represented by the collection</a> of an
     {{HTMLAllCollection}} object consist of all the descendant elements of the root {{Document}}.
   </p>
@@ -4263,8 +4239,7 @@
   5. If <var>reference</var> is not null, let <var>parent</var> be the parent node of
       <var>reference</var>. Otherwise, let <var>parent</var> be the <{select}> element on
       which the <code>HTMLOptionsCollection</code> is rooted.
-  6. Act as if the DOM <code>insertBefore()</code> method was invoked on the <var>parent</var> node,
-      with <var>element</var> as the first argument and <var>reference</var> as the second argument.
+  6. <a>Pre-insert</a> <var>element</var> into <var>parent</var> node before <var>reference</var>.
 
   The <dfn method for="HTMLOptionsCollection"><code>remove(<var>index</var>)</code></dfn> method
   must act according to the following algorithm:
