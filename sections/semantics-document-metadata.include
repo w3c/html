@@ -334,6 +334,7 @@
     <dd><{link/rel}> — Relationship of this document (or subsection/topic) to the destination resource</dd>
     <dd><{link/rev}> — <a>Reverse link</a> relationship of the destination resource to this document (or subsection/topic)</dd>
     <dd><code>media</code> — Applicable media</dd>
+	<dd><code>nonce</code> —  Cryptographic nonce used in Content Security Policy checks [[CSP3]]</dd>
     <dd><code>hreflang</code> — Language of the linked resource</dd>
     <dd><code>type</code> — Hint for the type of the referenced resource</dd>
     <dd><code>sizes</code> — Sizes of the icons (for <{link/rel}>="<code>icon</code>")</dd>
@@ -466,6 +467,11 @@
   which indicates that the current document is the table of contents document for every chapter.
 
   </div>
+  
+  <p>The <dfn element-attr for="nonce"><code>nonce</code></dfn> attribute represents a
+  cryptographic nonce ("number used once") which can be used by <cite>Content Security Policy</cite>
+  to determine whether or not an external resource specified by the link will be loaded and applied
+  to the document. The value is text. [[CSP3]]</p>
 
   The <dfn element-attr for="link"><code>crossorigin</code></dfn> attribute is a
   <a>CORS settings attribute</a>. It is intended for use with external resource links.
@@ -490,7 +496,9 @@
       <var>url</var> and <var>corsAttributeState</var>.
   5. Set <var>request</var>'s <a>client</a> to the <{link}> element's <a>node document</a>'s
       {{Window}} object's <a>environment settings object</a>.
-  6. <a>Fetch</a> <var>request</var>.
+  6. Set <var>request</var>'s <span>cryptographic
+      nonce metadata</span> to the current state of the <{link}> element's <a>nonce<a> content attribute.	  
+  7. <a>Fetch</a> <var>request</var>.
 
   User agents may opt to only try to obtain such resources when they are needed, instead of
   pro-actively fetching all the external resources that are not applied.
@@ -667,6 +675,7 @@
     <dfn attribute for="HTMLLinkElement"><code>rel</code></dfn>,
     <dfn attribute for="HTMLLinkElement"><code>rev</code></dfn>,
     <dfn attribute for="HTMLLinkElement"><code>media</code></dfn>,
+	<dfn attribute for="HTMLLinkElement"><code>nonce</code></dfn>,
     <dfn attribute for="HTMLLinkElement"><code>hreflang</code></dfn>,
     <dfn attribute for="HTMLLinkElement"><code>type</code></dfn>, and
     <dfn attribute for="HTMLLinkElement"><code>sizes</code></dfn> each must <a>reflect</a> the
