@@ -704,8 +704,8 @@
 
   <p class="note">
     The requirements above imply that images can be static bitmaps (e.g., PNGs, GIFs, JPEGs),
-    single-page vector documents (single-page PDFs, XML files with an SVG root element), animated
-    bitmaps (APNGs, animated GIFs), animated vector graphics (XML files with an SVG root element
+    single-page vector documents (single-page PDFs, XML files with an SVG <a>document element</a>), animated
+    bitmaps (APNGs, animated GIFs), animated vector graphics (XML files with an SVG <a>document element</a>
     that use declarative SMIL animation), and so forth. However, these definitions preclude SVG
     files with script, multipage PDF files, interactive MNG files, HTML documents, plain text
     documents, and so forth. [[!PNG]] [[!GIF]] [[!JPEG]] [[!PDF]] [[!XML]] [[!APNG]] [[!SVG]] [[!MNG]]
@@ -1344,12 +1344,13 @@
     This allows servers to return images with error responses, and have them displayed.
   </p>
 
-  The user agent should apply the <a>image sniffing rules</a> to determine the type of the image, with the image's <a>associated Content-Type headers</a> giving the <var>official
-  type</var>. If these rules are not applied, then the type of the image must be the type given by
-  the image's <a>associated Content-Type headers</a>.
+  The user agent should apply the <a>image sniffing rules</a> to determine the type of the image,
+  with the image's <a>associated Content-Type headers</a> giving the <var>official type</var>. If
+  these rules are not applied, then the type of the image must be the type given by the image's
+  <a>associated Content-Type headers</a>.
 
-  User agents must not support non-image resources with the <{img}> element (e.g., XML
-  files whose root element is an HTML element). User agents must not run executable code (e.g.,
+  User agents must not support non-image resources with the <{img}> element (e.g., XML files whose
+  <a>document element</a> is an HTML element). User agents must not run executable code (e.g.,
   scripts) embedded in the image resource. User agents must only display the first page of a
   multipage resource (e.g., a PDF file). User agents must not allow the resource to act in an
   interactive fashion, but should honor any animation in the resource.
@@ -3491,11 +3492,11 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
     <li>Any number of <a>comments</a> and <a>space characters</a>.</li>
 
-    <li>Optionally, a <a>DOCTYPE</a>.
+    <li>Optionally, a <a>DOCTYPE</a>.</li>
 
-    </li><li>Any number of <a>comments</a> and <a>space characters</a>.</li>
+    <li>Any number of <a>comments</a> and <a>space characters</a>.</li>
 
-    <li>The root element, in the form of an <{html}> element.</li>
+    <li>The <a>document element</a>, in the form of an <{html}> element.</li>
 
     <li>Any number of <a>comments</a> and <a>space characters</a>.</li>
 
@@ -3622,71 +3623,50 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
     <a>Queue a task</a> to run the <a>iframe load event steps</a>.
 
-    The <a>task source</a> for this <a>task</a> is the
-    <a>DOM manipulation task source</a>.
+    The <a>task source</a> for this <a>task</a> is the <a>DOM manipulation task source</a>.
 
     </dd>
 
     <dt>Otherwise</dt>
 
-    <dd>
-
-    <ol>
-
-      <li>
-
-      If the element has no <code>src</code> attribute specified, or its value is the empty string,
-      let <var>url</var> be the string "<code>about:blank</code>".
-
-      Otherwise, <a>parse</a> the value of the <code>src</code> attribute, relative to the <{iframe}> element.
-
-      If that is not successful, then let <var>url</var> be the string
-      "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting URL string</a>.
-
-      </li>
-
-      <li>
-
-      If there exists an <a>ancestor browsing context</a> whose <a>active document</a>'s
-      <a>address</a>, ignoring <a for="url">fragment</a>, is equal to <var>url</var>, then abort these
-      steps.
-
-      </li>
-
-      <li>
-
-      <a>Navigate</a> the element's <a>child browsing context</a>
-      to <var>url</var>.
-
-      </li>
-
-    </ol>
-
-    </dd>
+    <dd>Run the <a>otherwise steps for iframe or frame elements</a>.</dd>
 
   </dl>
 
-  Furthermore, if the <a>active document</a> of the element's <a>child browsing
-  context</a> before such a <a>navigation</a> was not <a>completely
-  loaded</a> at the time of the new <a>navigation</a>, then the <a>navigation</a> must be completed with <a>replacement enabled</a>.
+  The <dfn>otherwise steps for iframe or frame elements</dfn> are as follows:
 
-  Similarly, if the <a>child browsing context</a>'s <a>session history</a> contained
-  only one {{Document}} when the <a>process the <code>iframe</code> attributes</a>
-  algorithm was invoked, and that was the <code>about:blank</code> {{Document}} created
-  when the <a>child browsing context</a> was created, then any <a>navigation</a> required of the user agent in that algorithm must be completed
-  with <a>replacement enabled</a>.
+  1: If the element has no <code data-x="attr-iframe-src">src</code> attribute specified, or its
+      value is the empty string, let <var>url</var> be the <a for="url">URL</a> "<code>about:blank</code>".
 
-  When a {{Document}} in an <code>iframe</code> is marked as <a>completely
-  loaded</a>, the user agent must run the <a>iframe load event steps</a> <a>in parallel</a>.
+      Otherwise, <a>parse</a> the value of the <code>src</code> attribute, relative to the element's
+      <a>node document</a>.
+
+      If that is not successful, then let <var>url</var> be the <a for="url">URL</a>
+      "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting URL record</a>.
+  2. If there exists an <a>ancestor browsing context</a> whose <a>active document</a>'s
+      <a>address</a>, ignoring <a>fragments</a>, is equal to <var>url</var>, then abort these steps.
+  3. <a>Navigate</a> the element's <a>child browsing context</a> to <var>url</var>.
+
+  Furthermore, if the <a>active document</a> of the element's <a>child browsing context</a> before
+  such a <a>navigation</a> was not <a>completely loaded</a> at the time of the new
+  <a>navigation</a>, then the <a>navigation</a> must be completed with <a>replacement enabled</a>.
+
+  Similarly, if the <a>child browsing context</a>'s <a>session history</a> contained only one
+  {{Document}} when the <a>process the <code>iframe</code> attributes</a> algorithm was invoked, and
+  that was the <code>about:blank</code> {{Document}} created when the <a>child browsing context</a>
+  was created, then any <a>navigation</a> required of the user agent in that algorithm must be
+  completed with <a>replacement enabled</a>.
+
+  When a {{Document}} in an <code>iframe</code> is marked as <a>completely loaded</a>, the user
+  agent must run the <a>iframe load event steps</a> <a>in parallel</a>.
 
   <p class="note">
-    A <code>load</code> event is also fired at the
-  <{iframe}> element when it is created if no other data is loaded in it.
+    A <code>load</code> event is also fired at the <{iframe}> element when it is created if no other
+    data is loaded in it.
   </p>
 
-  Each {{Document}} has an <dfn>iframe load in progress</dfn> flag and a <dfn>mute
-  iframe load</dfn> flag. When a {{Document}} is created, these flags must be unset for
-  that {{Document}}.
+  Each {{Document}} has an <dfn>iframe load in progress</dfn> flag and a <dfn>mute iframe load</dfn>
+  flag. When a {{Document}} is created, these flags must be unset for that {{Document}}.
 
   The <dfn>iframe load event steps</dfn> are as follows:
 
@@ -6326,8 +6306,7 @@ zero or more <{track}> elements, then
       <li>If a fetching process is in progress for the <a>media element</a>, the user agent should stop it.</li>
 
       <li>If the <a>media element</a>'s <a>assigned media provider object</a>
-        is a <code>MediaSource</code> object, then <a lt="detach from a media element">detach
-        it</a>.
+        is a <code>MediaSource</code> object, then <a lt="detach from a media element">detach it</a>.
 
       <li><a>Forget the media element's media-resource-specific tracks</a>.</li>
 
@@ -10784,19 +10763,18 @@ red:89
   manners more suitable to the user (e.g., fullscreen video or in an independent resizable window).
   Other controls may also be made available.
 
-  A user agent may provide controls to affect playback
+  Even when the attribute is absent, however, user agents may provide controls to affect playback
   of the media resource (e.g., play, pause, seeking, track selection, and volume controls), but
   such features should not interfere with the page's normal rendering. For example, such features
-  could be exposed in the <a>media element</a>'s context menu, platform
-  media keys, or a remote control. The user agent may implement this simply by <a>exposing a user
-  interface to the user</a> as described above (as if the <{mediaelements/controls}> attribute
-  was present).
+  could be exposed in the <a>media element</a>'s context menu, platform media keys, or a remote
+  control. The user agent may implement this simply by <a>exposing a user interface to the user</a>
+  as described above (as if the <{mediaelements/controls}> attribute was present).
 
   If the user agent <a>exposes a user interface to
   the user</a> by displaying controls over the <a>media element</a>, then the user agent
   should suppress any user interaction events while the user agent is interacting with this
-  interface. (For example, if the user clicks on a video's playback control, <code>mousedown</code> events and so forth would not simultaneously be fired at
-  elements on the page.)
+  interface. (For example, if the user clicks on a video's playback control, <code>mousedown</code>
+  events and so forth would not simultaneously be fired at elements on the page.)
 
   Where possible (specifically, for starting, stopping, pausing, and unpausing playback, for
   seeking, for changing the rate of playback, for fast-forwarding or rewinding, for listing,
@@ -10804,9 +10782,9 @@ red:89
   interface features exposed by the user agent must be implemented in terms of the DOM API described
   above, so that, e.g., all the same events fire.
 
-  For the purposes of listing chapters in the <a>media resource</a>, only <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a>
-  that are <a mode for="track">showing</a> and whose <a>text track kind</a> is
-  <code>chapters</code> should be used. Such tracks must be
+  For the purposes of listing chapters in the <a>media resource</a>, only <a>text tracks</a> in the
+  <a>media element</a>'s <a>list of text tracks</a> that are <a mode for="track">showing</a> and
+  whose <a>text track kind</a> is <code>chapters</code> should be used. Such tracks must be
   interpreted according to the <a>rules for constructing the chapter tree from a text
   track</a>. When seeking in response to a user manipulating a chapter selection interface, user
   agents should not use the <i>approximate-for-speed</i> flag.
@@ -11023,37 +11001,28 @@ red:89
     };
 
     dictionary TrackEventInit : EventInit {
-      (VideoTrack or AudioTrack or TextTrack)? track;
+      (VideoTrack or AudioTrack or TextTrack)? track = null;
     };
 </pre>
 
   <dl class="domintro">
-
     <dt><var>event</var> . <code>track</code></dt>
-
     <dd>
-
-    Returns the track object ({{TextTrack}}, <code>AudioTrack</code>, or
-    <code>VideoTrack</code>) to which the event relates.
-
+      Returns the track object ({{TextTrack}}, {{AudioTrack}}, or {{VideoTrack}}) to which the event
+      relates.
     </dd>
-
   </dl>
 
-  <div class="impl">
-
-  The <dfn attribute for="TrackEvent"><code>track</code></dfn> attribute must return the value
-  it was initialized to. When the object is created, this attribute must be initialized to null. It
+  The <dfn attribute for="TrackEvent"><code>track</code></dfn> attribute must return the value it
+  was initialized to. When the object is created, this attribute must be initialized to null. It
   represents the context information for the event.
-
-  </div>
 
 <h5 id="media-elements-event-summary">Event summary</h5>
 
   <em>This section is non-normative.</em>
 
-  The following events fire on <a>media elements</a> as part of the
-  processing model described above:
+  The following events fire on <a>media elements</a> as part of the processing model described
+  above:
 
   <table>
     <thead>
@@ -12167,44 +12136,29 @@ red:89
 
 <h4 id="mathml">MathML</h4>
 
-  The <{math}> element from the <a>MathML namespace</a>
-  falls into the <a>embedded content</a>, <a>phrasing content</a>, <a>flow
-  content</a>, and <a>palpable content</a> categories for the purposes of the content
-  models in this specification.
+  The <a>MathML <code>math</code></a> element falls into the <a>embedded content</a>,
+  <a>phrasing content</a>, <a>flow content</a>, and <a>palpable content</a> categories for the
+  purposes of the content models in this specification.
 
-  This specification refers to several specific MathML elements, in particular:
-    <{annotation-xml}>,
-    <{merror}>,
-    <{mi}>,
-    <{mn}>,
-    <{mo}>,
-    <{ms}>, and
-    <{mtext}>.
+  When the <a>MathML <code>annotation-xml</code></a> element contains elements from the
+  <a>HTML namespace</a>, such elements must all be <a>flow content</a>.
 
-  When the MathML <{annotation-xml}> element contains
-  elements from the <a>HTML namespace</a>, such elements must all be <a>flow
-  content</a>. [[!MATHML]]
-
-  When the MathML token elements (<{mi}>, <{mo}>, <{mn}>, <{ms}>,
-  and <{mtext}>) are descendants of HTML elements, they may contain
+  When the MathML token elements (<a>MathML <code>mi</code></a>, <a>MathML <code>mo</code></a>, <a>MathML <code>mn</code></a>, <a>MathML <code>ms</code></a>,
+  and <a>MathML <code>mtext</code></a>) are descendants of HTML elements, they may contain
   <a>phrasing content</a> elements from the <a>HTML namespace</a>. [[!MATHML]]
-
-  <div class="impl">
 
   User agents must handle text other than <a>inter-element whitespace</a> found in MathML
   elements whose content models do not allow straight text by pretending for the purposes of MathML
-  content models, layout, and rendering that the text is actually wrapped in an <{mtext}> element in the <a>MathML namespace</a>. (Such text is not,
-  however, conforming.)
+  content models, layout, and rendering that the text is actually wrapped in an <a>MathML <code>mtext</code></a> element in
+  the <a>MathML namespace</a>. (Such text is not, however, conforming.)
 
   User agents must act as if any MathML element whose contents does not match the element's
-  content model was replaced, for the purposes of MathML layout and rendering, by an <{merror}> element in the <a>MathML namespace</a> containing some
-  appropriate error message.
+  content model was replaced, for the purposes of MathML layout and rendering, by an <a>MathML <code>merror</code></a>
+  element containing some appropriate error message.
 
   To enable authors to use MathML tools that only accept MathML in its XML form, interactive HTML
   user agents are encouraged to provide a way to export any MathML fragment as an XML
   namespace-well-formed XML fragment.
-
-  </div>
 
   The semantics of MathML elements are defined by the MathML specification and
   <a lt="applicable specification">other applicable specifications</a>. [[!MATHML]]
@@ -12247,63 +12201,22 @@ red:89
 
 <h4 id="svg">SVG</h4>
 
-  The <dfn element><code>svg</code></dfn> element from the <a>SVG namespace</a> falls into the
-  <a>embedded content</a>, <a>phrasing content</a>, <a>flow content</a>,
-  and <a>palpable content</a> categories for the purposes of the content models in this
-  specification.
-
-  <div class="impl">
+  The <a>SVG <code>svg</code></a> element falls into the <a>embedded content</a>,
+  <a>phrasing content</a>, <a>flow content</a>, and <a>palpable content</a> categories for the
+  purposes of the content models in this specification.
 
   To enable authors to use SVG tools that only accept SVG in its XML form, interactive HTML user
   agents are encouraged to provide a way to export any SVG fragment as an XML namespace-well-formed
   XML fragment.
 
-  </div>
-
-  When the SVG <{foreignObject}> element contains elements from the <a>HTML namespace</a>, such
+  When the <a>SVG <code>foreignObject</code></a> element contains elements from the <a>HTML namespace</a>, such
   elements must all be <a>flow content</a>. [[!SVG]]
 
-  The content model for <a element for="svg">title</a> elements in the <a>SVG namespace</a>
-  inside <a>HTML documents</a> is <a>phrasing content</a>. (This further constrains the
-  requirements given in the SVG specification.)
+  The content model for <a>SVG <code>title</code></a> elements inside <a>HTML documents</a> is
+  <a>phrasing content</a>. (This further constrains the requirements given in the SVG specification.)
 
   The semantics of SVG elements are defined by the SVG specification and <a>other applicable
   specifications</a>. [[!SVG]]
-
-  <p><strong>User agent requirements</strong>: SVG as implemented today follows neither SVG 1.1 nor
-  SVG Tiny 1.2 precisely, instead implementing subsets of each. Although it is hoped that the
-  in-progress SVG 2 specification is a more realistic target for implementations, until that
-  specification is ready, user agents must implement the SVG 1.1 specification with the following
-  willful violations and additions. [[!SVG11]] [[!SVGTiny12]] [[!SVG2]]</p>
-
-  <p>The following features from SVG 1.1 must not be implemented:</p>
-
-  <ul>
-    <li>The <code>tref</code> element</li>
-    <li>The <code>cursor</code> element (use CSS's <code>cursor</code> property
-      instead)</li>
-    <li>The font-defining elements: <code>font</code>, <code>glyph</code>,
-      <code>missing-glyph</code>, <code>hkern</code>,
-      <code>vkern</code>, <code>font-face</code>,
-      <code>font-face-src</code>, <code>font-face-uri</code>,
-      <code>font-face-format</code>, and <code>font-face-name</code> (use
-      CSS's <code>@font-face</code> instead)</li>
-    <li>The <code>externalResourcesRequired</code> attribute</li>
-    <li>The <code>enable-background</code> property</li>
-    <li>The <code>contentScriptType</code> and <code>contentStyleType</code>
-      attributes (use the <code>type</code> attribute on the <code>script</code>
-      and <code>style</code> elements instead)</li>
-  </ul>
-
-  <p>The following features from SVG Tiny 1.2 must be implemented:</p>
-
-  <ul>
-    <li>The <code>non-scaling-stroke</code> value for the
-      <code>vector-effect</code> property</li>
-    <li>The <code>class</code> attribute is allowed on all SVG elements</li>
-    <li>The <code>tabindex</code> attribute is allowed on visible SVG elements</li>
-    <li>The ARIA accessibility attributes are allowed on all SVG elements</li>
-  </ul>
 
 <h4 id="sec-dimension-attributes"><dfn>Dimension attributes</dfn></h4>
 

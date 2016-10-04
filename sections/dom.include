@@ -75,6 +75,8 @@
   <pre class="idl" data-highlight="webidl" dfn-for="Document">
     enum DocumentReadyState { "loading", "interactive", "complete" };
 
+    typedef (HTMLScriptElement or SVGScriptElement) HTMLOrSVGScriptElement;
+
     [OverrideBuiltins]
     partial /*sealed*/ interface Document {
       // resource metadata management
@@ -98,7 +100,7 @@
       [SameObject] readonly attribute HTMLCollection forms;
       [SameObject] readonly attribute HTMLCollection scripts;
       NodeList getElementsByName(DOMString elementName);
-      readonly attribute HTMLScriptElement? currentScript;
+      readonly attribute HTMLOrSVGScriptElement? currentScript;
 
       // dynamic markup insertion
       Document open(optional DOMString type = "text/html", optional DOMString replace = "");
@@ -266,27 +268,23 @@
     </dd>
   </dl>
 
-  <div class="impl">
-    Each document has a <dfn>current document readiness</dfn>. When a {{Document}} object
-    is created, it must have its <a>current document readiness</a> set to the string
-    "<code>loading</code>" if the document is associated with an <a>HTML parser</a>, an
-    <a>XML parser</a>, or an XSLT processor, and to the string "<code>complete</code>"
-    otherwise. Various algorithms during page loading affect this value. When the value is set, the
-    user agent must <a>fire a simple event</a> named <code>readystatechange</code> at the
-    {{Document}} object.
+  Each document has a <dfn>current document readiness</dfn>. When a {{Document}} object  is created,
+  it must have its <a>current document readiness</a> set to the string "<code>loading</code>" if the
+  document is associated with an <a>HTML parser</a>, an <a>XML parser</a>, or an XSLT processor, and
+  to the string "<code>complete</code>" otherwise. Various algorithms during page loading affect
+  this value. When the value is set, the user agent must <a>fire a simple event</a> named
+  <code>readystatechange</code> at the {{Document}} object.
 
-    A {{Document}} is said to have an <dfn>active parser</dfn> if it is associated with an
-    <a>HTML parser</a> or an <a>XML parser</a> that has not yet been <a>stopped</a> or
-   <a>aborted</a>.
+  A {{Document}} is said to have an <dfn>active parser</dfn> if it is associated with an
+  <a>HTML parser</a> or an <a>XML parser</a> that has not yet been <a>stopped</a> or <a>aborted</a>.
 
-    The <dfn attribute for="Document"><code>readyState</code></dfn> IDL attribute must, on getting, return the <a>current
-    document readiness</a>.
-  </div>
+  The <dfn attribute for="Document"><code>readyState</code></dfn> IDL attribute must, on getting,
+  return the <a>current document readiness</a>.
 
 <h4 id="dom-tree-accessors">DOM tree accessors</h4>
 
-  The <{html}> element of a document is the document's root element, if there is
-  one and it's an <{html}> element, or null otherwise.
+  The <{html}> element of a document is it's <a>document element</a>, if it's an an
+  <{html}> element, and null otherwise.
 
   <hr />
 
@@ -298,10 +296,8 @@
   The <{head}> element of a document is the first <{head}> element that
   is a child of the <{html}> element, if there is one, or null otherwise.
 
-  <div class="impl">
-    The <dfn attribute for="Document"><code>head</code></dfn> attribute, on getting, must return
-    the <{head}> element of the document (a <{head}> element or null).
-  </div>
+  The <dfn attribute for="Document"><code>head</code></dfn> attribute, on getting, must return
+  the <{head}> element of the document (a <{head}> element or null).
 
   <hr />
 
@@ -309,63 +305,52 @@
     <dt><var>document</var> . <code>title</code> [ = <var>value</var> ]</dt>
     <dd>
       Returns the document's title, as given by the <a element for="html"><code>title</code></a> element for HTML and
-      as given by the SVG <a element for="svg"><code>title</code></a> element for SVG.
+      as given by the <a>SVG <code>title</code></a> element for SVG.
 
       Can be set, to update the document's title. If there is no appropriate element to update, the
       new value is ignored.
     </dd>
   </dl>
 
-  The <a element for="html"><code>title</code></a> element of a document is the first <a element for="html"><code>title</code></a> element
-  in the document (in <a>tree order</a>), if there is one, or null otherwise.
+  The <a element for="html"><code>title</code></a> element of a document is the first
+  <a element for="html"><code>title</code></a> element in the document (in <a>tree order</a>), if
+  there is one, or null otherwise.
 
-  <div class="impl">
-    The <dfn attribute for="Document"><code>title</code></dfn> attribute must, on getting, run the following algorithm:
+  The <dfn attribute for="Document"><code>title</code></dfn> attribute must, on getting, run the
+  following algorithm:
 
-    1. If the <a>root element</a> is an <{svg}> element in the <a>SVG namespace</a>, then let
-        <var>value</var> be the <a>child text content</a> of the first
-        <a element for="svg"><code>title</code></a> element in the <a>SVG namespace</a> that is a
-        child of the <a>root element</a>. [[!SVG]]
-    2. Otherwise, let <var>value</var> be the <a>child text content</a> of the
-        <a element for="html"><code>title</code></a> element, in <a>tree order</a>, or
-        the empty string if the <a element for="html"><code>title</code></a> element is null.
-    3. <a>Strip and collapse whitespace</a> in <var>value</var>.
-    4. Return <var>value</var>.
+  1. If the <a>document element</a> is an <a>SVG svg</a> element, then let
+      <var>value</var> be the <a>child text content</a> of the first
+      <a>SVG <code>title</code></a> element that is a child of the <a>document element</a>. [[!SVG]]
+  2. Otherwise, let <var>value</var> be the <a>child text content</a> of the
+      <a element for="html"><code>title</code></a> element, in <a>tree order</a>, or
+      the empty string if the <a element for="html"><code>title</code></a> element is null.
+  3. <a>Strip and collapse whitespace</a> in <var>value</var>.
+  4. Return <var>value</var>.
 
-    On setting, the steps corresponding to the first matching condition in the following list must
-    be run:
+  On setting, the steps corresponding to the first matching condition in the following list must
+  be run:
 
-    <dl class="switch">
-      <dt>
-        If the <a>root element</a> is an <{svg}> element in the <a>SVG namespace</a>
-        [[!SVG]]
-      </dt>
-      <dd>
-        1. Let <var>element</var> be the first <a element for="svg"><code>title</code></a> element in the
-            <a>SVG namespace</a> that is a child of the <a>root element</a>, if any. If there isn't
-            one, create a <a element for="svg"><code>title</code></a> element in the <a>SVG namespace</a>, insert it as the
-            first child of the <a>root element</a>, and let <var>element</var> be that element.
-            [[!SVG]]
-        2. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the
-            new value being assigned.
-      </dd>
+  : If the <a>document element</a> is an <a>SVG svg</a> element [[!SVG]]
+  :: 1. Let <var>element</var> be the first <a>SVG <code>title</code></a> element that is a child
+          of the <a>document element</a>, if any. If there isn't one, create a
+          <a>SVG <code>title</code></a> element, insert it as the first child of the
+          <a>document element</a>, and let <var>element</var> be that element. [[!SVG]]
+      2. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the new
+          value being assigned.
 
-      <dt>If the <a>root element</a> is in the <a>HTML namespace</a></dt>
-      <dd>
-        1. If the <a element for="html"><code>title</code></a> element is null and the <{head}> element
-            is null, then abort these steps.
-        2. If the <a element for="html"><code>title</code></a> element is null, then create a new <code>title</code>
-            element and <a>append</a> it to the <{head}> element, and let
-            <var>element</var> be the newly created element; otherwise, let <var>element</var> be
-            the <a element for="html"><code>title</code></a> element.
-        3. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the
-            new value being assigned.
-      </dd>
+  : If the <a>document element</a> is in the <a>HTML namespace</a>
+  :: 1. If the <a element for="html"><code>title</code></a> element is null and the <{head}> element
+          is null, then abort these steps.
+      2. If the <a element for="html"><code>title</code></a> element is null, then create a new
+          <a element for="html"><code>title</code></a> element and <a>append</a> it to the <{head}>
+          element, and let <var>element</var> be the newly created element; otherwise, let
+          <var>element</var> be the <a element for="html"><code>title</code></a> element.
+      3. Act as if the {{Node/textContent}} IDL attribute of <var>element</var> was set to the
+          new value being assigned.
 
-      <dt>Otherwise</dt>
-      <dd>Do nothing.</dd>
-    </dl>
-  </div>
+  : Otherwise
+  :: Do nothing.
 
   <hr />
 
@@ -381,28 +366,22 @@
     </dd>
   </dl>
 
-  The <{body}> element of a document is the first child of
-  the <{html}> element that is either a <{body}> element or a
-  <{frameset}> element. If there is no such element, it is null.
+  The <{body}> element of a document is the first child of the <{html}> element that is either a
+  <{body}> element or a <{frameset}> element. If there is no such element, it is null.
 
-  <div class="impl">
-    The <dfn attribute for="Document"><code>body</code></dfn> attribute, on getting, must return the <{body}> element of
-    the document (either a <{body}> element, a <{frameset}> element, or null). On
-    setting, the following algorithm must be run:
+  The <dfn attribute for="Document"><code>body</code></dfn> attribute, on getting, must return the
+  <{body}> element of the document (either a <{body}> element, a <{frameset}> element, or null). On
+  setting, the following algorithm must be run:
 
-    1. If the new value is not a <{body}> or <{frameset}> element, then throw a
-        <code>HierarchyRequestError</code> exception and abort these steps.
-    2. Otherwise, if the new value is the same as the <{body}> element, do nothing. Abort these
-        steps.
-    3. Otherwise, if the <{body}> element is not null, then replace that element with the new
-        value in the DOM, as if the root element's <code>replaceChild()</code> method had been
-        called with the new value and the incumbent <{body}> element as its two arguments
-        respectively, then abort these steps.
-    4. Otherwise, if there is no root element, throw a <code>HierarchyRequestError</code> exception
-        and abort these steps.
-    5. Otherwise, the <{body}> element is null, but there's a root element. Append the new value
-        to the root element.
-  </div>
+  1. If the new value is not a <{body}> or <{frameset}> element, then throw a
+      {{HierarchyRequestError}} exception and abort these steps.
+  2. Otherwise, if the new value is the same as the <{body}> element, do nothing. Abort these steps.
+  3. Otherwise, if the <{body}> element is not null, then <a>replace</a> the <{body}> element
+      with the new value within the <{body}> element's parent and abort these steps.
+  4. Otherwise, if there is no <a>document element</a>, throw a {{HierarchyRequestError}} exception
+      and abort these steps.
+  5. Otherwise, the <{body}> element is null, but there's a <a>document element</a>. <a>Append</a>
+      the new value to the <a>document element</a>.
 
   <hr />
 
@@ -440,28 +419,26 @@
 
   </dl>
 
-  <div class="impl">
-    The <dfn attribute for="Document"><code>images</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
-    at the {{Document}} node, whose filter matches only <{img}> elements.
+  The <dfn attribute for="Document"><code>images</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
+  at the {{Document}} node, whose filter matches only <{img}> elements.
 
-    The <dfn attribute for="Document"><code>embeds</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
-    at the {{Document}} node, whose filter matches only <{embed}> elements.
+  The <dfn attribute for="Document"><code>embeds</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
+  at the {{Document}} node, whose filter matches only <{embed}> elements.
 
-    The <dfn attribute for="Document"><code>plugins</code></dfn> attribute must return the same object as that returned by
-    the <code>embeds</code> attribute.
+  The <dfn attribute for="Document"><code>plugins</code></dfn> attribute must return the same object as that returned by
+  the <code>embeds</code> attribute.
 
-    The <dfn attribute for="Document"><code>links</code></dfn> attribute must return an <code>HTMLCollection</code> rooted at
-    the {{Document}} node, whose filter matches only <{a}> elements with
-    <{links/href}> attributes and <{area}> elements with <{links/href}> attributes.
+  The <dfn attribute for="Document"><code>links</code></dfn> attribute must return an <code>HTMLCollection</code> rooted at
+  the {{Document}} node, whose filter matches only <{a}> elements with
+  <{links/href}> attributes and <{area}> elements with <{links/href}> attributes.
 
-    The <dfn attribute for="Document"><code>forms</code></dfn> attribute must return an <code>HTMLCollection</code> rooted at
-    the {{Document}} node, whose filter matches only <{form}> elements.
+  The <dfn attribute for="Document"><code>forms</code></dfn> attribute must return an <code>HTMLCollection</code> rooted at
+  the {{Document}} node, whose filter matches only <{form}> elements.
 
-    The <dfn attribute for="Document"><code>scripts</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
-    at the {{Document}} node, whose filter matches only <{script}> elements.
+  The <dfn attribute for="Document"><code>scripts</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
+  at the {{Document}} node, whose filter matches only <{script}> elements.
 
-    <hr />
-  </div>
+  <hr />
 
   <dl class="domintro">
     <dt>
@@ -488,12 +465,13 @@
   <dl class="domintro">
     <dt><var>document</var> . <code>currentScript</code></dt>
     <dd>
-      Returns the <{script}> element that is currently executing. In the case of reentrant
-      <code>script</code> execution, returns the one that most recently started executing amongst
-      those that have not yet finished executing.
+      Returns the <{script}> element, or the <a>SVG <code>script</code></a> element, that is
+      currently executing. In the case of reentrant script execution, returns the one that most
+      recently started executing amongst those that have not yet finished executing.
 
       Returns null if the {{Document}} is not currently executing a <code>script</code>
-      element (e.g., because the running script is an event handler, or a timeout).
+      element or <a>SVG <code>script</code></a> element (e.g., because the running script is an
+      event handler, or a timeout).
     </dd>
   </dl>
 
@@ -1009,7 +987,7 @@
     <li><{main}></li>
     <li><{map}></li>
     <li><{mark}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{menu}></li>
     <li><{meter}></li>
     <li><{nav}></li>
@@ -1033,7 +1011,7 @@
     <li><{strong}></li>
     <li><{sub}></li>
     <li><{sup}></li>
-    <li><{svg}></li>
+    <li><a>SVG svg</a></li>
     <li><{table}></li>
     <li><{template}></li>
     <li><{textarea}></li>
@@ -1115,7 +1093,7 @@
     <li><{link}> (if it is <a>allowed in the body</a>)</li>
     <li><{map}></li>
     <li><{mark}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{meter}></li>
     <li><{noscript}></li>
     <li><{object}></li>
@@ -1133,7 +1111,7 @@
     <li><{strong}></li>
     <li><{sub}></li>
     <li><{sup}></li>
-    <li><{svg}></li>
+    <li><a>SVG svg</a></li>
     <li><{template}></li>
     <li><{textarea}></li>
     <li><{time}></li>
@@ -1179,10 +1157,10 @@
     <li><{embed}></li>
     <li><{iframe}></li>
     <li><{img}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{object}></li>
     <li><{picture}></li>
-    <li><{svg}></li>
+    <li><a>SVG <code>svg</code></a></li>
     <li><{video}></li>
   </ul>
 
@@ -1288,7 +1266,7 @@
     <li><{main}></li>
     <li><{map}></li>
     <li><{mark}></li>
-    <li><{math}></li>
+    <li><a>MathML <code>math</code></a></li>
     <li><{menu}> (if the <code>type</code> attribute is in the <a state for="menu">toolbar</a> state)</li>
     <li><{meter}></li>
     <li><{nav}></li>
@@ -1311,7 +1289,7 @@
     <li><{strong}></li>
     <li><{sub}></li>
     <li><{sup}></li>
-    <li><{svg}></li>
+    <li><a>SVG <code>svg</code></a></li>
     <li><{table}></li>
     <li><{textarea}></li>
     <li><{time}></li>
@@ -1445,7 +1423,7 @@
     Conformance checkers may warn authors of cases where they have paragraphs that overlap each
     other (this can happen with <{object}>, <{video}>, <{audio}>, and
     <{canvas}> elements, and indirectly through elements in other namespaces that allow
-    HTML to be further embedded therein, like <{svg}> or <{math}>).
+    HTML to be further embedded therein, like <a>SVG svg</a> or <a>MathML <code>math</code></a>).
   </div>
 
   A <a>paragraph</a> is also formed explicitly by <{p}> elements.
@@ -1712,8 +1690,8 @@
 
   The <code>id</code> attribute specifies its element's <a lt="id">unique identifier (ID)</a>. [[!DOM]]
 
-  The value must be unique amongst all the <a>IDs</a> in the element's <a>home subtree</a> and must
-  contain at least one character. The value must not contain any <a>space characters</a>.
+  The value must be unique amongst all the <a>IDs</a> in the element's <a>tree</a> and must contain
+  at least one character. The value must not contain any <a>space characters</a>.
 
   <p class="note">
     There are no other restrictions on what form an ID can take; in particular, IDs can consist of
@@ -1837,88 +1815,84 @@
   to indicate a change in language). It provides an explicit indication to user agents about the
   language of content, so an appropriate language dictionary can be used and, in the case of screen
   readers and similar assistive technologies with voice output, the content is pronounced using the
-  correct voice / language library (where available). The lang attribute is also used for font 
-  selection where different alphabets are mixed.</p> 
-  
-  <p>Incorrect or absent <{global/lang}> attributes can produce unexpected results in other circumstances, 
-  as they are also used to determine quotation marks for <{q}> elements, and for styling such 
+  correct voice / language library (where available). The lang attribute is also used for font
+  selection where different alphabets are mixed.</p>
+
+  <p>Incorrect or absent <{global/lang}> attributes can produce unexpected results in other circumstances,
+  as they are also used to determine quotation marks for <{q}> elements, and for styling such
   as hyphenation, case conversion, and line-breaking, as well as for spell-checking in some editors,
   etc.</p>
-  
-  <p><strong>Setting of a language using the <{global/lang}> attribute which does not match the 
-  language of the document or document parts will result in some users being unable to understand 
+
+  <p><strong>Setting of a language using the <{global/lang}> attribute which does not match the
+  language of the document or document parts will result in some users being unable to understand
   the content</strong>.</p>
   </div>
 
-  <div class="impl">
-    <hr />
+  <hr />
 
-    To determine the <dfn>language</dfn> of a node, user agents must look at the nearest ancestor
-    element (including the element itself if the node is an element) that has a
-    <{global/lang}> attribute in the <a>XML namespace</a> set or is an <a>HTML element</a>
-    and has a <{global/lang}> in no namespace attribute set. That attribute specifies the language
-    of the node (regardless of its value).
+  To determine the <dfn>language</dfn> of a node, user agents must look at the nearest ancestor
+  element (including the element itself if the node is an element) that has a <{global/lang}>
+  attribute in the <a>XML namespace</a> set or is an <a>HTML element</a> and has a <{global/lang}>
+  in no namespace attribute set. That attribute specifies the language of the node (regardless of
+  its value).
 
-    If both the <{global/lang}> attribute in no namespace and the
-    <{global/lang}> attribute in the <a>XML namespace</a> are set on an element, user
-    agents must use the <{global/lang}> attribute in the <a>XML namespace</a>, and the
-    <{global/lang}> attribute in no namespace must be <a>ignored</a> for the purposes of
-    determining the element's language.
+  If both the <{global/lang}> attribute in no namespace and the <{global/lang}> attribute in the
+  <a>XML namespace</a> are set on an element, user agents must use the <{global/lang}> attribute in
+  the <a>XML namespace</a>, and the <{global/lang}> attribute in no namespace must be <a>ignored</a>
+  for the purposes of determining the element's language.
 
-    If neither the node nor any of the node's ancestors, including the <a>root element</a>,
-    have either attribute set, but there is a <a>pragma-set default language</a> set, then that
-    is the language of the node. If there is no <a>pragma-set default language</a> set, then
-    language information from a higher-level protocol (such as HTTP), if any, must be used as the
-    final fallback language instead. In the absence of any such language information, and in cases
-    where the higher-level protocol reports multiple languages, the language of the node is unknown,
-    and the corresponding language tag is the empty string.
+  If node's <a>inclusive ancestors</a> do not have have either attribute set, but there is a
+  <a>pragma-set default language</a> set, then that is the language of the node. If there is no
+  <a>pragma-set default language</a> set, then language information from a higher-level protocol
+  (such as HTTP), if any, must be used as the final fallback language instead. In the absence of any
+  such language information, and in cases where the higher-level protocol reports multiple
+  languages, the language of the node is unknown, and the corresponding language tag is the empty
+  string.
 
-    <p class="example">
-      For example, if a document is delivered over HTTP and the <code>Content-Language</code> HTTP
-      header is specified with a value "<code>en</code>", then for any element in the document
-      that does not itself have a <{global/lang}> attribute nor any ancestor of that element, the
-      fallback language for the element will be English. If the value of the
-      <code>Content-Language</code> header was "<code>de, fr, it</code>" then the language of the
-      node is unknown. <a href="https://www.w3.org/International/questions/qa-http-and-lang">This
-      article</a> provides some additional guidance on the use of HTTP headers, and <{meta}>
-      elements for providing language information.
-    </p>
+  <p class="example">
+    For example, if a document is delivered over HTTP and the <code>Content-Language</code> HTTP
+    header is specified with a value "<code>en</code>", then for any element in the document that
+    does not itself have a <{global/lang}> attribute nor any ancestor of that element, the fallback
+    language for the element will be English. If the value of the <code>Content-Language</code>
+    header was "<code>de, fr, it</code>" then the language of the node is unknown.
+    <a href="https://www.w3.org/International/questions/qa-http-and-lang">This article</a> provides
+    some additional guidance on the use of HTTP headers, and <{meta}> elements for providing
+    language information.
+  </p>
 
-    If the resulting value is not a recognized language tag, then it must be treated as an unknown
-    language having the given language tag, distinct from all other languages. For the purposes of
-    round-tripping or communicating with other services that expect language tags, user agents
-    should pass unknown language tags through unmodified, and tagged as being BCP 47 language tags,
-    so that subsequent services do not interpret the data as another type of language description.
-    [[!BCP47]]
+  If the resulting value is not a recognized language tag, then it must be treated as an unknown
+  language having the given language tag, distinct from all other languages. For the purposes of
+  round-tripping or communicating with other services that expect language tags, user agents should
+  pass unknown language tags through unmodified, and tagged as being BCP 47 language tags, so that
+  subsequent services do not interpret the data as another type of language description. [[!BCP47]]
 
-    <p class="example">
-      Thus, for instance, an element with <code>lang="xyzzy"</code> would be matched by the selector
-      <code>:lang(xyzzy)</code> (e.g., in CSS), but it would not be matched by
-      <code>:lang(abcde)</code>, even though both are equally invalid. Similarly, if a Web browser
-      and screen reader working in unison communicated about the language of the element, the
-      browser would tell the screen reader that the language was "xyzzy", even if it knew it was
-      invalid, just in case the screen reader actually supported a language with that tag after all.
-      Even if the screen reader supported both BCP 47 and another syntax for encoding language
-      names, and in that other syntax the string "xyzzy" was a way to denote the Belarusian
-      language, it would be <em>incorrect</em> for the screen reader to then start treating text as
-      Belarusian, because "xyzzy" is not how Belarusian is described in BCP 47 codes (BCP 47 uses
-      the code "be" for Belarusian).
-    </p>
+  <p class="example">
+    Thus, for instance, an element with <code>lang="xyzzy"</code> would be matched by the selector
+    <code>:lang(xyzzy)</code> (e.g., in CSS), but it would not be matched by
+    <code>:lang(abcde)</code>, even though both are equally invalid. Similarly, if a Web browser and
+    screen reader working in unison communicated about the language of the element, the browser
+    would tell the screen reader that the language was "xyzzy", even if it knew it was invalid,
+    just in case the screen reader actually supported a language with that tag after all. Even if
+    the screen reader supported both BCP 47 and another syntax for encoding language names, and in
+    that other syntax the string "xyzzy" was a way to denote the Belarusian language, it would be
+    <em>incorrect</em> for the screen reader to then start treating text as Belarusian, because
+    "xyzzy" is not how Belarusian is described in BCP 47 codes (BCP 47 uses the code "be" for
+    Belarusian).
+  </p>
 
-    If the resulting value is the empty string, then it must be interpreted as meaning that the
-    language of the node is explicitly unknown.
+  If the resulting value is the empty string, then it must be interpreted as meaning that the
+  language of the node is explicitly unknown.
 
-    <hr />
+  <hr />
 
-    User agents may use the element's language to determine proper processing or rendering (e.g., in
-    the selection of appropriate fonts or pronunciations, for dictionary selection, or for the user
-    interfaces of form controls such as date pickers).
+  User agents may use the element's language to determine proper processing or rendering (e.g., in
+  the selection of appropriate fonts or pronunciations, for dictionary selection, or for the user
+  interfaces of form controls such as date pickers).
 
-    <hr />
+  <hr />
 
-    The <dfn attribute for="HTMLElement"><code>lang</code></dfn> IDL attribute must <a>reflect</a> the <{global/lang}> content
-    attribute in no namespace.
-  </div>
+  The <dfn attribute for="HTMLElement"><code>lang</code></dfn> IDL attribute must <a>reflect</a> the
+  <{global/lang}> content attribute in no namespace.
 
 <h5 id="the-translate-attribute">The <{global/translate}> attribute</h5>
 
@@ -1940,7 +1914,7 @@
   <code>translate</code> attribute is in the <i>inherit</i> state, or the element is not an
   <a>HTML element</a> and thus does not have a <code>translate</code> attribute; in either case, the
   element's <a>translation mode</a> is in the same state as its parent element's, if any, or in the
-  <a>translate-enabled</a> state, if the element is a <a>root element</a>.
+  <a>translate-enabled</a> state, if the element is a <a>document element</a>.
 
   When an element is in the <dfn>translate-enabled</dfn> state, the element's
   <a>translatable attributes</a> and the values of its <code>Text</code> node children are to be
@@ -1984,7 +1958,7 @@
 
     <pre highlight="html">
       &lt;!DOCTYPE HTML>
-      &lt;html> &lt;!-- default on the root element is translate=yes -->
+      &lt;html> &lt;!-- default on the document element is translate=yes -->
         &lt;head>
           &lt;title>The Bee Game&lt;/title> &lt;!-- implied translate=yes inherited from ancestors -->
         &lt;/head>
@@ -2046,7 +2020,7 @@
   <dl class="switch">
     <dt>If the element's <{global/dir}> attribute is in the <a state for="dir">ltr</a> state</dt>
     <dt>
-      If the element is a <a>root element</a> and the <{global/dir}> attribute is not in a defined
+      If the element is a <a>document element</a> and the <{global/dir}> attribute is not in a defined
       state (i.e., it is not present or has an invalid value)
     </dt>
     <dt>
@@ -2075,7 +2049,7 @@
       [[!BIDI]]
 
       Otherwise, if the element's <a lt="attribute value">value</a> is not the empty string, or if the element is a
-      <a>root element</a>, <a>the directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.
+      <a>document element</a>, <a>the directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.
 
       Otherwise, <a>the directionality</a> of the element is the same as the element's parent
       element's <a>directionality</a>.
@@ -2107,7 +2081,7 @@
       If such a character is found and it is of bidirectional character type L,
       <a>the directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.
 
-      Otherwise, if the element is a <a>root element</a>, <a>the directionality</a> of the element
+      Otherwise, if the element is a <a>document element</a>, <a>the directionality</a> of the element
       is &quot;<a state for="dir">ltr</a>&quot;.
 
       Otherwise, <a>the directionality</a> of the element the same as the element's parent element's
@@ -2393,7 +2367,7 @@
     <code>DOMStringMap</code> object, associated with the following algorithms, which expose these
     attributes on their element:
 
-    : The algorithm for getting the list of name-value pairs
+    : The algorithm for <a>getting the list of name-value pairs</a>
     :: 1. Let <var>list</var> be an empty list of name-value pairs.
         2. For each content attribute on the element whose first five characters are the string
             "<{global/data-}>" and whose remaining characters (if any) do not include any
@@ -2407,7 +2381,7 @@
             <a>converted to ASCII uppercase</a>.
         4. Return <var>list</var>.
 
-    : The algorithm for setting names to certain values
+    : The algorithm for <a>setting names to certain values</a>
     :: 1. Let <var>name</var> be the name passed to the algorithm.
         2. Let <var>value</var> be the value passed to the algorithm.
         3. If <var>name</var> contains a U+002D HYPHEN-MINUS character (-) followed by a
@@ -2422,7 +2396,7 @@
             <code>setAttribute()</code> would have thrown an exception when setting an attribute
             with the name <var>name</var>, then this must throw the same exception.
 
-    : The algorithm for deleting names
+    : The algorithm for <a>deleting names</a>
     :: 1. Let <var>name</var> be the name passed to the algorithm.
         2. For each <a>uppercase ASCII letter</a> in <var>name</var>, insert a U+002D HYPHEN-MINUS
             character (-) before the character and replace the character with the same character
@@ -2433,7 +2407,7 @@
 
         <p class="note">
           This algorithm will only get invoked by the Web IDL specification for names that are given
-          by the earlier algorithm for getting the list of name-value pairs. [[!WEBIDL]]
+          by the earlier algorithm for <a>getting the list of name-value pairs</a>. [[!WEBIDL]]
         </p>
   </div>
 
@@ -3091,7 +3065,7 @@
         </td>
       </tr>
       <tr>
-        <td><code>math</code></td>
+        <td>MathML <code>math</code></td>
         <td>Content that represents a mathematical expression. </td>
         <td>none</td>
         <td>

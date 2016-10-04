@@ -965,8 +965,8 @@
     };
   </pre>
 
-  The <dfn attribute for="ErrorEvent"><code>message</code></dfn> attribute must return the
-  value it was initialized to. It represents the error message.
+  The <dfn attribute for="ErrorEvent"><code>message</code></dfn> attribute must return the value it
+  was initialized to. It represents the error message.
 
   The <dfn attribute for="ErrorEvent"><code>filename</code></dfn> attribute must return the value it
   was initialized to. It represents the <a>absolute URL</a> of the script in which the error
@@ -2255,10 +2255,9 @@
 <h3 id="dynamic-markup-insertion"><dfn lt="it can also come from script|dynamic markup insertion">Dynamic markup insertion</dfn></h3>
 
   <p class="note">
-  APIs for dynamically inserting markup into the document interact with the parser,
-  and thus their behavior varies depending on whether they are used with <a>HTML documents</a>
-  (and the <a>HTML parser</a>) or XHTML in <a>XML documents</a> (and the <a>XML
-  parser</a>).
+    APIs for dynamically inserting markup into the document interact with the parser, and thus their
+    behavior varies depending on whether they are used with <a>HTML documents</a> (and the
+    <a>HTML parser</a>) or <a>XML documents</a> (and the <a>XML parser</a>).
   </p>
 
 <h4 id="opening-the-input-stream">Opening the input stream</h4>
@@ -2424,68 +2423,47 @@
 <h4 id="closing-the-input-stream">Closing the input stream</h4>
 
   <dl class="domintro">
-
     <dt><var>document</var> . {{Document/close()}}</dt>
-
     <dd>
+      Closes the input stream that was opened by the <code>document.open()</code> method.
 
-    Closes the input stream that was opened by the <code>document.open()</code> method.
-
-    Throws an <code>InvalidStateError</code> exception if the
-    <code>Document</code> is an <a>XML
-    document</a>.
-
+      Throws an {{InvalidStateError}} exception if the {{Document}} is an <a>XML document</a>.
     </dd>
-
   </dl>
 
-  The <dfn method for="Document"><code>close()</code></dfn> method must run the following
-  steps:
+  The <dfn method for="Document"><code>close()</code></dfn> method must run the following steps:
 
-  <ol>
-
-    <li>If the <code>Document</code> object is not flagged as an <a>HTML
-    document</a>, throw an <code>InvalidStateError</code> exception and abort these
-    steps.</li>
-
-    <li>If there is no <a>script-created parser</a> associated with the document, then abort
-    these steps.</li>
-
-    <li>Insert an <a>explicit "EOF" character</a> at the end of the parser's <a>input
-    stream</a>.</li>
-
-    <li>If there is a <a>pending parsing-blocking script</a>, then abort these
-    steps.</li>
-
-    <li>Run the tokenizer, processing resulting tokens as they are emitted, and stopping when the
-    tokenizer reaches the <a>explicit "EOF" character</a> or <a>spins the event loop</a>.</li>
-
-  </ol>
+  1. If the {{Document}} object is an <a>XML document</a>, then throw an {{InvalidStateError}}
+      exception and abort these steps.
+  2. If there is no <a>script-created parser</a> associated with the document, then abort these
+      steps.
+  3. Insert an <a>explicit "EOF" character</a> at the end of the parser's <a>input stream</a>.
+  4. If there is a <a>pending parsing-blocking script</a>, then abort these steps.
+  5. Run the tokenizer, processing resulting tokens as they are emitted, and stopping when the
+      tokenizer reaches the <a>explicit "EOF" character</a> or <a>spins the event loop</a>.
 
 <h4 id="documentwrite"><a method lt="write()"><code>document.write()</code></a></h4>
 
   <dl class="domintro">
-
     <dt><var>document</var> . {{Document/write()|write}}(<var>text</var>...)</dt>
-
     <dd>
+      In general, adds the given string(s) to the <code>Document</code>'s input stream.
 
-    In general, adds the given string(s) to the <code>Document</code>'s input stream.
+      <p class="warning">
+        This method has very idiosyncratic behavior. In some cases, this method can affect the state
+        of the <a>HTML parser</a> while the parser is running, resulting in a DOM that does not
+        correspond to the source of the document (e.g., if the string written is the string
+        "<code>&lt;plaintext&gt;</code>" or "<code>&lt;!--</code>"). In other cases, the call can
+        clear the current page first, as if <code>document.open()</code> had been called. In yet
+        more cases, the method is simply ignored, or throws an exception. To make matters worse, the
+        exact behavior of this method can in some cases be dependent on network latency, which can
+        lead to failures that are very hard to debug. <strong>For all these reasons, use of this
+        method is strongly discouraged.</strong>
+      </p>
 
-    <p class="warning">This method has very idiosyncratic behavior. In some cases, this method can
-    affect the state of the <a>HTML parser</a> while the parser is running, resulting in a DOM
-    that does not correspond to the source of the document (e.g., if the string written is the string
-    "<code>&lt;plaintext&gt;</code>" or "<code>&lt;!--</code>"). In other cases,
-    the call can clear the current page first, as if <code>document.open()</code> had been called. In yet more cases, the method
-    is simply ignored, or throws an exception. To make matters worse, the exact behavior of this
-    method can in some cases be dependent on network latency, which can lead to failures that are very hard to debug. <strong>For all these reasons, use
-    of this method is strongly discouraged.</strong></p>
-
-    This method throws an <code>InvalidStateError</code> exception when invoked on <a>XML
-    documents</a>.
-
+        This method throws an <code>InvalidStateError</code> exception when invoked on
+        <a>XML documents</a>.
     </dd>
-
   </dl>
 
   <code>Document</code> objects have an <dfn>ignore-destructive-writes counter</dfn>, which is

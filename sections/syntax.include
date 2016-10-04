@@ -18,13 +18,9 @@
 
 <h3 id="writing-html-documents">Writing HTML documents</h3>
 
-  <div class="impl">
-
   <i>This section only applies to documents, authoring tools, and markup generators. In
   particular, it does not apply to conformance checkers; conformance checkers must use the
   requirements given in the next section ("parsing HTML documents").</i>
-
-  </div>
 
   Documents must consist of the following parts, in the given
   order:
@@ -39,7 +35,7 @@
 
     <li>Any number of <a>comments</a> and <a>space characters</a>.</li>
 
-    <li>The root element, in the form of an <{html}> element.</li>
+    <li>The <a>document element</a>, in the form of an <{html}> element.</li>
 
     <li>Any number of <a>comments</a> and <a>space characters</a>.</li>
 
@@ -52,22 +48,21 @@
 
   <div class="note">
 
-    Space characters before the root <{html}> element, and space characters at the start
+    Space characters before the <{html}> element, and space characters at the start
     of the <{html}> element and before the <{head}> element, will be dropped when
-    the document is parsed; space characters <em>after</em> the root <{html}> element will
+    the document is parsed; space characters <em>after</em> the <{html}> element will
     be parsed as if they were at the end of the <{body}> element. Thus, space characters
-    around the root element do not round-trip.
+    around the <a>document element</a> do not round-trip.
 
     It is suggested that newlines be inserted after the DOCTYPE, after any comments that are
-    before the root element, after the <{html}> element's start tag (if it is not <a>omitted</a>), and after any comments that are inside the
+    before the <a>document element</a>, after the <{html}> element's start tag (if it is not <a>omitted</a>), and after any comments that are inside the
     <{html}> element but before the <{head}> element.
 
   </div>
 
   Many strings in the HTML syntax (e.g., the names of elements and their attributes) are
-  case-insensitive, but only for <a>uppercase ASCII letters</a> and <a>lowercase ASCII
-  letters</a>. For convenience, in this section this is just referred to as
-  "case-insensitive".
+  case-insensitive, but only for <a>uppercase ASCII letters</a> and <a>lowercase ASCII letters</a>.
+  For convenience, in this section this is just referred to as "case-insensitive".
 
 <h4 id="the-doctype">The DOCTYPE</h4>
 
@@ -242,21 +237,21 @@
     For instance, consider the following HTML fragment:
 
     <pre highlight="html">
-  &lt;p>
-  &lt;svg>
-  &lt;metadata>
-    &lt;!-- this is invalid -->
-    &lt;cdr:license xmlns:cdr="https://www.example.com/cdr/metadata" name="MIT"/>
-  &lt;/metadata>
-  &lt;/svg>
-  &lt;/p>
-  </pre>
+      &lt;p>
+      &lt;svg>
+      &lt;metadata>
+        &lt;!-- this is invalid -->
+        &lt;cdr:license xmlns:cdr="https://www.example.com/cdr/metadata" name="MIT"/>
+      &lt;/metadata>
+      &lt;/svg>
+      &lt;/p>
+    </pre>
 
-    The innermost element, <code>cdr:license</code>, is actually in the SVG namespace, as
+    The innermost element, <code>cdr:license</code>, is actually in the <a>SVG namespace</a>, as
     the "<code>xmlns:cdr</code>" attribute has no effect (unlike in XML). In fact, as the
     comment in the fragment above says, the fragment is actually non-conforming. This is because the
     SVG specification does not define any elements called "<code>cdr:license</code>" in the
-    SVG namespace.
+    <a>SVG namespace</a>.
 
   </div>
 
@@ -441,8 +436,8 @@
 
   </dl>
 
-  There must never be two or more attributes on the same start tag whose names are an <a>ASCII
-  case-insensitive</a> match for each other.
+  There must never be two or more attributes on the same start tag whose names are an
+  <a>ASCII case-insensitive</a> match for each other.
 
   <hr />
 
@@ -483,7 +478,7 @@
   <p class="note">
   Omitting an element's <a>start tag</a> in the
   situations described below does not mean the element is not present; it is implied, but it is
-  still there. For example, an HTML document always has a root <{html}> element, even if
+  still there. For example, an HTML document always has an <{html}> element, even if
   the string <code>&lt;html></code> doesn't appear anywhere in the markup.
   </p>
 
@@ -520,7 +515,7 @@
   &lt;/html>
   </pre>
 
-    This has the exact same DOM. In particular, note that white space around the root element is
+    This has the exact same DOM. In particular, note that white space around the <a>document element</a> is
     ignored by the parser. The following example would also have the exact same DOM:
 
     <pre highlight="html">
@@ -976,7 +971,7 @@
 
   <div class="example">
     CDATA sections can only be used in foreign content (MathML or SVG). In this example, a CDATA
-    section is used to escape the contents of an <{ms}> element:
+    section is used to escape the contents of an <a>MathML <code>ms</code></a> element:
 
     <pre highlight="html">
   &lt;p>You can add a string to a number, but this stringifies the number:&lt;/p>
@@ -1906,7 +1901,7 @@
 
   The <dfn>next input character</dfn> is the first character in the <a>input stream</a>
   that has not yet been <dfn>consumed</dfn> or explicitly ignored by the requirements in
-  this section. Initially, the <i>next input character</i> is the
+  this section. Initially, the <a>next input character</a> is the
   first character in the input. The <dfn>current input character</dfn> is the last character to have
   been <i>consumed</i>.
 
@@ -2097,8 +2092,8 @@
   tags</a>).
 
   <p class="note">
-  The "<a>before html</a>" <a>insertion
-  mode</a> creates the <code>html</code> root element node, which is then added to the stack.
+    The "<a>before html</a>" <a>insertion mode</a> creates the <{html}> <a>document element</a>
+    node, which is then added to the stack.
   </p>
 
   <p class="note">
@@ -2120,88 +2115,75 @@
 
   Elements in the <a>stack of open elements</a> fall into the following categories:
 
-  <dl>
+  : <dfn>Special</dfn>
+  :: The following elements have varying levels of special parsing rules: HTML's
+      <{address}>, <{applet}>, <{area}>, <{article}>, <{aside}>, <{base}>, <{basefont}>,
+      <{bgsound}>, <{blockquote}>, <{body}>, <{br}>, <{button}>, <{caption}>, <{center}>, <{col}>,
+      <{colgroup}>, <{dd}>, <{details}>, <{dir}>, <{div}>, <{dl}>, <{dt}>, <{embed}>, <{fieldset}>,
+      <{figcaption}>, <{figure}>, <{footer}>, <{form}>, <{frame}>, <{frameset}>, <{h1}>, <{h2}>,
+      <{h3}>, <{h4}>, <{h5}>, <{h6}>, <{head}>, <{header}>, <{hr}>, <{html}>, <{iframe}>, <{img}>,
+      <{input}>, <{}>, <{link}>, <{listing}>, <{main}>, <{marquee}>, <{menu}>, <{menuitem}>,
+      <{meta}>, <{nav}>, <{noembed}>, <{noframes}>, <{noscript}>, <{object}>, <{ol}>, <{p}>,
+      <{param}>, <{plaintext}>, <{pre}>, <{script}>, <{section}>, <{select}>, <{source}>, <{style}>,
+      <{summary}>, <{table}>, <{tbody}>, <{td}>, <{template}>, <{textarea}>, <{tfoot}>, <{th}>,
+      <{thead}>, <a element for="html"><code>title</code></a>, <{tr}>, <{track}>, <{ul}>, <{wbr}>,
+      and <{xmp}>; <a>MathML <code>mi</code></a>, <a>MathML <code>mo</code></a>,
+      <a>MathML <code>mn</code></a>, <a>MathML <code>ms</code></a>,
+      <a>MathML <code>mtext</code></a>, and <a>MathML <code>annotation-xml</code></a>; and
+      <a>SVG <code>foreignObject</code></a>, <a>SVG <code>desc</code></a>, and
+      <a>SVG <code>title</code></a>.
 
-    <dt><dfn>Special</dfn></dt>
+  : <dfn lt="formatting element tags|formatting">Formatting</dfn>
+  :: The following HTML elements are those that end up in the
+      <a>list of active formatting elements</a>: <{a}>, <{b}>, <{big}>, <{code}>, <{em}>, <{font}>,
+      <{i}>, <{nobr}>, <{s}>, <{small}>, <{strike}>, <{strong}>, <{tt}>, and <{u}>.
 
-    <dd>The following elements have varying levels of special parsing rules: HTML's
-    <{address}>, <{applet}>, <{area}>, <{article}>,
-    <{aside}>, <{base}>, <{basefont}>, <{bgsound}>,
-    <{blockquote}>, <{body}>, <{br}>, <{button}>,
-    <{caption}>, <{center}>, <{col}>, <{colgroup}>,
-    <{dd}>, <{details}>, <{dir}>, <{div}>, <{dl}>,
-    <{dt}>, <{embed}>, <{fieldset}>, <{figcaption}>,
-    <{figure}>, <{footer}>, <{form}>, <{frame}>,
-    <{frameset}>, <{h1}>, <{h2}>, <{h3}>, <{h4}>,
-    <{h5}>, <{h6}>, <{head}>, <{header}>,
-    <{hr}>, <{html}>, <{iframe}>,
-    <{img}>, <{input}>, <{li}>, <{link}>,
-    <{listing}>, <{main}>, <{marquee}>, <{menu}>,
-    <{menuitem}>, <{meta}>, <{nav}>, <{noembed}>,
-    <{noframes}>, <{noscript}>, <{object}>, <{ol}>,
-    <{p}>, <{param}>, <{plaintext}>, <{pre}>,
-    <{script}>, <{section}>, <{select}>, <{source}>,
-    <{style}>, <{summary}>, <{table}>, <{tbody}>,
-    <{td}>, <{template}>, <{textarea}>, <{tfoot}>,
-    <{th}>, <{thead}>, <a element for="html"><code>title</code></a>, <{tr}>, <{track}>,
-    <{ul}>, <{wbr}>, and <{xmp}>; MathML's <{mi}>, <{mo}>, <{mn}>,
-    <{ms}>, <{mtext}>, and <{annotation-xml}>; and SVG's <{foreignObject}>, <{desc}>, and <a element for="html"><code>title</code></a>.</dd>
+  : <dfn>Ordinary</dfn>
+  :: All other elements found while parsing an HTML document.
 
-    <dt><dfn lt="formatting element tags|formatting">Formatting</dfn></dt>
-    <dd>The following HTML elements are those that end up in the <a>list of active formatting
-    elements</a>: <{a}>, <{b}>, <{big}>, <{code}>,
-    <{em}>, <{font}>, <{i}>, <{nobr}>, <{s}>,
-    <{small}>, <{strike}>, <{strong}>, <{tt}>, and
-    <{u}>.</dd>
-
-    <dt><dfn>Ordinary</dfn></dt>
-    <dd>All other elements found while parsing an HTML document.</dd>
-
-  </dl>
+  <p class="note">
+    Typically, the <a>special</a> elements have the start and and end tag tokens handled
+    specifically, while <a>ordinary</a> elements' tokens fall into "any other start tag" and "any
+    other end tag" clauses, and some parts of the tree builder check if a particular element in the
+    <a>stack of open elements</a> is in the <a>special</a> category. However, some elements (e.g.,
+    the <{option}> element) have their start or end tag tokens handled specifically, but are still
+    not in the <a>special</a> category, so that they get the <a>ordinary</a> handling elsewhere.
+  </p>
 
   The <a>stack of open elements</a> is said to <dfn lt="as that element in the specific scope|have an element target node in a specific scope|has that element in the specific scope">have an element <var>target node</var> in a specific scope</dfn> consisting of a
-  list of element types <var>list</var> when the following algorithm terminates in a match
-  state:
+  list of element types <var>list</var> when the following algorithm terminates in a match state:
 
-  <ol>
-
-    <li>Initialize <var>node</var> to be the <a>current node</a> (the bottommost
-    node of the stack).</li>
-
-    <li>If <var>node</var> is the target node, terminate in a match state.</li>
-
-    <li>Otherwise, if <var>node</var> is one of the element types in <var>list</var>, terminate in a failure state.</li>
-
-    <li>Otherwise, set <var>node</var> to the previous entry in the <a>stack of open
-    elements</a> and return to step 2. (This will never fail, since the loop will always terminate
-    in the previous step if the top of the stack &mdash; an <{html}> element &mdash; is
-    reached.)</li>
-
-  </ol>
+  1. Initialize <var>node</var> to be the <a>current node</a> (the bottommost node of the stack).
+  2. If <var>node</var> is the target node, terminate in a match state.
+  3. Otherwise, if <var>node</var> is one of the element types in <var>list</var>, terminate in a
+      failure state.
+  4. Otherwise, set <var>node</var> to the previous entry in the <a>stack of open elements</a> and
+      return to step 2. (This will never fail, since the loop will always terminate in the previous
+      step if the top of the stack &mdash; an <{html}> element &mdash; is reached.)
 
   The <a>stack of open elements</a> is said to <dfn lt="in scope">have a
   particular element in scope</dfn> when it <a>has
   that element in the specific scope</a> consisting of the following element types:
 
   <ul class="brief">
-    <li><{applet}> in the <a>HTML namespace</a></li>
-    <li><{caption}> in the <a>HTML namespace</a></li>
-    <li><{html}> in the <a>HTML namespace</a></li>
-    <li><{table}> in the <a>HTML namespace</a></li>
-    <li><{td}> in the <a>HTML namespace</a></li>
-    <li><{th}> in the <a>HTML namespace</a></li>
-    <li><{marquee}> in the <a>HTML namespace</a></li>
-    <li><{object}> in the <a>HTML namespace</a></li>
-    <li><{template}> in the <a>HTML namespace</a></li>
-    <li><{mi}> in the <a>MathML namespace</a></li>
-    <li><{mo}> in the <a>MathML namespace</a></li>
-    <li><{mn}> in the <a>MathML namespace</a></li>
-    <li><{ms}> in the <a>MathML namespace</a></li>
-    <li><{mtext}> in the <a>MathML namespace</a></li>
-    <li><{annotation-xml}> in the <a>MathML namespace</a></li>
-    <li><{foreignObject}> in the <a>SVG namespace</a></li>
-    <li><{desc}> in the <a>SVG namespace</a></li>
-    <li><a element for="svg"><code>title</code></a> in the <a>SVG namespace</a></li>
+    <li><{applet}></li>
+    <li><{caption}></li>
+    <li><{html}></li>
+    <li><{table}></li>
+    <li><{td}></li>
+    <li><{th}></li>
+    <li><{marquee}></li>
+    <li><{object}></li>
+    <li><{template}></li>
+    <li><a>MathML <code>mi</code></a></li>
+    <li><a>MathML <code>mo</code></a></li>
+    <li><a>MathML <code>mn</code></a></li>
+    <li><a>MathML <code>ms</code></a></li>
+    <li><a>MathML <code>mtext</code></a></li>
+    <li><a>MathML <code>annotation-xml</code></a></li>
+    <li><a>SVG <code>foreignObject</code></a></li>
+    <li><a>SVG <code>desc</code></a></li>
+    <li><a>SVG <code>title</code></a></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn>have a particular element in list item scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following
@@ -2209,8 +2191,8 @@
 
   <ul class="brief">
     <li>All the element types listed above for the <a lt="in scope">has an element in scope</a> algorithm.</li>
-    <li><{ol}> in the <a>HTML namespace</a></li>
-    <li><{ul}> in the <a>HTML namespace</a></li>
+    <li><{ol}></li>
+    <li><{ul}></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have a p element in button scope|has a p element in button scope|have a particular element in button scope">have a particular element in button scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following element
@@ -2218,24 +2200,23 @@
 
   <ul class="brief">
     <li>All the element types listed above for the <a lt="in scope">has an element in scope</a> algorithm.</li>
-    <li><{button}> in the <a>HTML namespace</a></li>
+    <li><{button}></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have a particular element in table scope|have an element in table scope|in table scope">have a particular element in table scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following element
   types:
 
   <ul class="brief">
-    <li><{html}> in the <a>HTML namespace</a></li>
-    <li><{table}> in the <a>HTML namespace</a></li>
-    <li><{template}> in the <a>HTML namespace</a></li>
+    <li><{html}></li>
+    <li><{table}></li>
+    <li><{template}></li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have an li element in list item scope|have a particular element in select scope">have a particular element in select scope</dfn> when it <a>has that element in the specific scope</a> consisting of all element types
   <em>except</em> the following:
 
   <ul class="brief">
-
-    <li><{optgroup}> in the <a>HTML namespace</a></li>
+    <li><{optgroup}></li>
     <li><{option}> in the <a>HTML namespace</a></li>
   </ul>
 
@@ -2245,8 +2226,8 @@
   to be appended to nodes that are no longer in the DOM.
 
   <p class="note">
-  In some cases (namely, when <a>closing misnested formatting
-  elements</a>), the stack is manipulated in a random-access fashion.
+    In some cases (namely, when <a>closing misnested formatting elements</a>), the stack is
+    manipulated in a random-access fashion.
   </p>
 
 <h5 id="the-list-of-active-formatting-elements">The list of active formatting elements</h5>
@@ -2254,109 +2235,79 @@
   Initially, the <dfn>list of active formatting elements</dfn> is empty. It is used to handle
   mis-nested <a>formatting element tags</a>.
 
-  The list contains elements in the <a>formatting</a> category, and <a>markers</a>. The <dfn>markers</dfn> are inserted when entering <code>applet</code>
-  elements, buttons, <{object}> elements, marquees, table cells, and table captions, and
-  are used to prevent formatting from "leaking" <em>into</em> <{applet}> elements, buttons,
-  <{object}> elements, marquees, and tables.
+  The list contains elements in the <a>formatting</a> category, and <a>markers</a>. The
+  <dfn>markers</dfn> are inserted when entering <{applet}> elements, buttons, <{object}> elements,
+  marquees, table cells, and table captions, and are used to prevent formatting from "leaking"
+  <em>into</em> <{applet}> elements, buttons, <{object}> elements, marquees, and tables.
 
-  In addition, each element in the <a>list of active formatting elements</a> is associated
-  with the token for which it was created, so that further elements can be created for that token if
+  In addition, each element in the <a>list of active formatting elements</a> is associated with the
+  token for which it was created, so that further elements can be created for that token if
   necessary.
 
-  When the steps below require the user agent to <dfn>push onto the list of active formatting
-  elements</dfn> an element <var>element</var>, the user agent must perform the following
-  steps:
+  When the steps below require the user agent to <dfn>push onto the list of active formatting elements</dfn>
+  an element <var>element</var>,the user agent must perform the following steps:
 
-  <ol>
+  1. If there are already three elements in the <a>list of active formatting elements</a> after the
+      last <a>marker</a>, if any, or anywhere in the list if there are no <a>markers</a>, that have
+      the same tag name, namespace, and attributes as <var>element</var>, then remove the earliest
+      such element from the <a>list of active formatting elements</a>. For these purposes, the
+      attributes must be compared as they were when the elements were created by the parser; two
+      elements have the same attributes if all their parsed attributes can be paired such that the
+      two attributes in each pair have identical names, namespaces, and values (the order of the
+      attributes does not matter).
 
-    <li>If there are already three elements in the <a>list of active formatting elements</a>
-    after the last <a>marker</a>, if any, or anywhere in the
-    list if there are no <a>markers</a>, that have the same tag
-    name, namespace, and attributes as <var>element</var>, then remove the earliest such
-    element from the <a>list of active formatting elements</a>. For these purposes, the
-    attributes must be compared as they were when the elements were created by the parser; two
-    elements have the same attributes if all their parsed attributes can be paired such that the two
-    attributes in each pair have identical names, namespaces, and values (the order of the attributes
-    does not matter).
-
-    <p class="note">
-  This is the Noah's Ark clause. But with three per family instead of two.
-  </li>
-
-    <li>Add <var>element</var> to the <a>list of active formatting
-    elements</a>.</li>
-
-  </ol>
+      <p class="note">This is the Noah's Ark clause. But with three per family instead of two.</p>
+  2. Add <var>element</var> to the <a>list of active formatting elements</a>.
 
   When the steps below require the user agent to <dfn for="elements" lt="reconstruct the active formatting element|reconstruct the active formatting elements|reconstruction of the active formatting element|reconstruction of the active formatting elements">reconstruct the active formatting elements</dfn>,
   the user agent must perform the following steps:
 
-  <ol>
-
-    <li>If there are no entries in the <a>list of active formatting elements</a>, then there
-    is nothing to reconstruct; stop this algorithm.</li>
-
-    <li>If the last (most recently added) entry in the <a>list of active formatting
-    elements</a> is a <a>marker</a>, or if it is an element
-    that is in the <a>stack of open elements</a>, then there is nothing to reconstruct; stop
-    this algorithm.</li>
-
-    <li>Let <var>entry</var> be the last (most recently added) element in the <a>list
-    of active formatting elements</a>.</li>
-
-    <li><i>Rewind</i>: If there are no entries before <var>entry</var> in the <a>list
-    of active formatting elements</a>, then jump to the step labeled <i>create</i>.</li>
-
-    <li>Let <var>entry</var> be the entry one earlier than <var>entry</var> in
-    the <a>list of active formatting elements</a>.</li>
-
-    <li>If <var>entry</var> is neither a <a>marker</a> nor an element that is also in the <a>stack of
-    open elements</a>, go to the step labeled <i>rewind</i>.</li>
-
-    <li><i>Advance</i>: Let <var>entry</var> be the element one later than <var>entry</var> in the <a>list of active formatting elements</a>.</li>
-
-    <li><i>Create</i>: <a>Insert an HTML element</a> for the token for which the element
-    <var>entry</var> was created, to obtain <var>new element</var>.</li>
-
-    <li>Replace the entry for <var>entry</var> in the list with an entry for <var>new element</var>.</li>
-
-    <li>If the entry for <var>new element</var> in the <a>list of active formatting
-    elements</a> is not the last entry in the list, return to the step labeled
-    <i>advance</i>.</li>
-
-  </ol>
+  1. If there are no entries in the <a>list of active formatting elements</a>, then there is nothing
+      to reconstruct; stop this algorithm.
+  2. If the last (most recently added) entry in the <a>list of active formatting elements</a> is a
+      <a>marker</a>, or if it is an element that is in the <a>stack of open elements</a>, then there
+      is nothing to reconstruct; stop this algorithm.
+  3. Let <var>entry</var> be the last (most recently added) element in the
+      <a>list of active formatting elements</a>.
+  4. <i>Rewind</i>: If there are no entries before <var>entry</var> in the
+      <a>list of active formatting elements</a>, then jump to the step labeled <i>create</i>.
+  5. Let <var>entry</var> be the entry one earlier than <var>entry</var> in the
+      <a>list of active formatting elements</a>.
+  6. If <var>entry</var> is neither a <a>marker</a> nor an element that is also in the
+      <a>stack of open elements</a>, go to the step labeled <i>rewind</i>.
+  7. <i>Advance</i>: Let <var>entry</var> be the element one later than <var>entry</var> in the
+      <a>list of active formatting elements</a>.
+  8. <i>Create</i>: <a>Insert an HTML element</a> for the token for which the element
+      <var>entry</var> was created, to obtain <var>new element</var>.
+  9. Replace the entry for <var>entry</var> in the list with an entry for <var>new element</var>.
+  10. If the entry for <var>new element</var> in the <a>list of active formatting elements</a> is
+      not the last entry in the list, return to the step labeled <i>advance</i>.
 
   This has the effect of reopening all the formatting elements that were opened in the current
   body, cell, or caption (whichever is youngest) that haven't been explicitly closed.
 
   <p class="note">
-  The way this specification is written, the <a>list of active formatting
-  elements</a> always consists of elements in chronological order with the least recently added
-  element first and the most recently added element last (except for while steps 7 to 10 of the
-  above algorithm are being executed, of course).
+    The way this specification is written, the <a>list of active formatting elements</a> always
+    consists of elements in chronological order with the least recently added element first and the
+    most recently added element last (except for while steps 7 to 10 of the above algorithm are
+    being executed, of course).
   </p>
 
-  When the steps below require the user agent to <dfn>clear the list of active formatting elements up to
-  the last marker</dfn>, the user agent must perform the following steps:
+  When the steps below require the user agent to
+  <dfn>clear the list of active formatting elements up to the last marker</dfn>, the user agent must
+  perform the following steps:
 
-  <ol>
-
-    <li>Let <var>entry</var> be the last (most recently added) entry in the <a>list of
-    active formatting elements</a>.</li>
-
-    <li>Remove <var>entry</var> from the <a>list of active formatting
-    elements</a>.</li>
-
-    <li>If <var>entry</var> was a <a>marker</a>,
-    then stop the algorithm at this point. The list has been cleared up to the last <a>marker</a>.</li>
-
-    <li>Go to step 1.</li>
-
-  </ol>
+  1. Let <var>entry</var> be the last (most recently added) entry in the
+      <a>list of active formatting elements</a>.
+  2. Remove <var>entry</var> from the <a>list of active formatting elements</a>.
+  3. If <var>entry</var> was a <a>marker</a>, then stop the algorithm at this point. The list has
+      been cleared up to the last <a>marker</a>.
+  4. Go to step 1.
 
 <h5 id="the-element-pointers">The element pointers</h5>
 
-  Initially, the <dfn><code>head</code> element pointer</dfn> and the <dfn><code>form</code> element pointer</dfn> are both null.
+  Initially, the <dfn><code>head</code> element pointer</dfn> and the
+  <dfn><code>form</code> element pointer</dfn> are both null.
 
   Once a <{head}> element has been parsed (whether implicitly or explicitly) the
   <a><code>head</code> element pointer</a> gets set to point to this node.
@@ -3639,15 +3590,21 @@
 
 <h5 id="bogus-comment-state">Bogus comment state</h5>
 
-  Consume every character up to and including the first U+003E GREATER-THAN SIGN character (&gt;)
-  or the end of the file (EOF), whichever comes first.
-  If more than one character was consumed, then emit a comment token whose data is the
-  concatenation of all the characters starting from and including the character that caused the
-  state machine to switch into the bogus comment state, up to and including the character
-  immediately before the last consumed character (i.e., up to the character just before the U+003E or
-  EOF character), but with any U+0000 NULL characters replaced by U+FFFD REPLACEMENT CHARACTER
-  characters. (If the comment was started by the end of the file (EOF), the token is empty.
-  Similarly, the token is empty if it was generated by the string "<code>&lt;!></code>".)
+  Consume the <a>next input character</a>:
+
+  <dl class="switch">
+    <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
+    <dd>Switch to the <span>data state</span>. Emit the comment token.</dd>
+
+    <dt>EOF</dt>
+    <dd>Switch to the <span>data state</span>. Reconsume the EOF character. Emit the comment token.</dd>
+
+    <dt>U+0000 NULL</dt>
+    <dd>Append a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.</dd>
+
+    <dt>Anything else</dt>
+    <dd>Append the <span>current input character</span> to the comment token's data.</dd>
+  </dl>
 
   Switch to the [[#data-state]].
 
@@ -3666,9 +3623,9 @@
   for the string "[CDATA[" (the five uppercase letters "CDATA" with a U+005B LEFT SQUARE BRACKET
   character before and after), then consume those characters and switch to the [[#cdata-section-state]].
 
-  Otherwise, this is a <a for="parser">parse error</a>. Switch to the [[#bogus-comment-state]].
-  The next character that is consumed, if any, is the first character that will be in the
-  comment.
+  Otherwise, this is a <a for="parser">parse error</a>. Create a comment token whose data is the
+  empty string. Switch to the [[#bogus-comment-state]]. The next character that is consumed, if any,
+  is the first character that will be in the comment.
 
 <h5 id="comment-start-state">Comment start state</h5>
 
@@ -4387,8 +4344,8 @@
 
     </dl>
 
-    Consume as many characters as match the range of characters given above (<a>ASCII hex
-    digits</a> or <a>ASCII digits</a>).
+    Consume as many characters as match the range of characters given above (<a>ASCII hex digits</a>
+    or <a>ASCII digits</a>).
 
     If no characters match the range, then don't consume any characters (and unconsume the U+0023
     NUMBER SIGN character and, if appropriate, the X character). This is a <a for="parser">parse error</a>;
@@ -4526,7 +4483,7 @@
     <dt>If the <a>adjusted current node</a> is an element in the <a>HTML namespace</a></dt>
     <dt>If the <a>adjusted current node</a> is a <a>MathML text integration point</a> and the token is a start tag whose tag name is neither "mglyph" nor "malignmark"</dt>
     <dt>If the <a>adjusted current node</a> is a <a>MathML text integration point</a> and the token is a character token</dt>
-    <dt>If the <a>adjusted current node</a> is an <{annotation-xml}> element in the <a>MathML namespace</a> and the token is a start tag whose tag name is "svg"</dt>
+    <dt>If the <a>adjusted current node</a> is an <a>MathML <code>annotation-xml</code></a> element and the token is a start tag whose tag name is "svg"</dt>
     <dt>If the <a>adjusted current node</a> is an <a>HTML integration point</a> and the token is a start tag</dt>
     <dt>If the <a>adjusted current node</a> is an <a>HTML integration point</a> and the token is a character token</dt>
     <dt>If the token is an end-of-file token</dt>
@@ -4547,25 +4504,25 @@
   elements:
 
   <ul class="brief">
-    <li>An <{mi}> element in the <a>MathML namespace</a></li>
-    <li>An <{mo}> element in the <a>MathML namespace</a></li>
-    <li>An <{mn}> element in the <a>MathML namespace</a></li>
-    <li>An <{ms}> element in the <a>MathML namespace</a></li>
-    <li>An <{mtext}> element in the <a>MathML namespace</a></li>
+    <li>An <a>MathML <code>mi</code></a> element</li>
+    <li>An <a>MathML <code>mo</code></a> element</li>
+    <li>An <a>MathML <code>mn</code></a> element</li>
+    <li>An <a>MathML <code>ms</code></a> element</li>
+    <li>An <a>MathML <code>mtext</code></a> element</li>
   </ul>
 
   A node is an <dfn>HTML integration point</dfn> if it is one of the following elements:
 
   <ul class="brief">
-    <li>An <{annotation-xml}> element in the <a>MathML
-    namespace</a> whose start tag token had an attribute with the name "encoding" whose value was
+    <li>An <a>MathML <code>annotation-xml</code></a> element in the <a>MathML namespace</a> whose
+    start tag token had an attribute with the name "encoding" whose value was
     an <a>ASCII case-insensitive</a> match for the string "<a href="#text-html"><code>text/html</code></a>"</li>
-    <li>An <{annotation-xml}> element in the <a>MathML
-    namespace</a> whose start tag token had an attribute with the name "encoding" whose value was
+    <li>An <a>MathML <code>annotation-xml</code></a> element in the <a>MathML namespace</a> whose
+    start tag token had an attribute with the name "encoding" whose value was
     an <a>ASCII case-insensitive</a> match for the string "<code>application/xhtml+xml</code>"</li>
-    <li>A <{foreignObject}> element in the <a>SVG namespace</a></li>
-    <li>A <{desc}> element in the <a>SVG namespace</a></li>
-    <li>A <a element for="svg"><code>title</code></a> element in the <a>SVG namespace</a></li>
+    <li>A <a>SVG <code>foreignObject</code></a> element</li>
+    <li>A <a>SVG <code>desc</code></a> element</li>
+    <li>A <a>SVG <code>title</code></a> element</li>
   </ul>
 
   <p class="note">
@@ -4730,7 +4687,7 @@
     <li>If the element is a <a>form-associated element</a>, and the <a><code>form</code> element pointer</a> is not null, and there is no <code>template</code>
     element on the <a>stack of open elements</a>, and the newly created element is either not
     <a>reassociateable</a> or doesn't have a <code>form</code> attribute, and the <var>intended parent</var> is in
-    the same <a>home subtree</a> as the element pointed to by the <a><code>form</code> element pointer</a>, associate the newly created element with the
+    the same <a>tree</a> as the element pointed to by the <a><code>form</code> element pointer</a>, associate the newly created element with the
     <{form}> element pointed to by the <a><code>form</code> element
     pointer</a>, and suppress the running of the <a>reset the form owner</a> algorithm when
     the parser subsequently attempts to insert the element.</li>
@@ -5273,7 +5230,7 @@
 
   </dl>
 
-  The root element can end up being removed from the {{Document}} object, e.g., by
+  The <a>document element</a> can end up being removed from the {{Document}} object, e.g., by
   scripts; nothing in particular happens in such cases, content continues being appended to the
   nodes as described in the next section.
 
@@ -5846,7 +5803,7 @@
       node, if it has one.</li>
 
       <li>Pop all the nodes from the bottom of the <a>stack of open elements</a>, from the
-      <a>current node</a> up to, but not including, the root <{html}> element.
+      <a>current node</a> up to, but not including, the <{html}> element.
 
       <li><a>Insert an HTML element</a> for the token.</li>
 
@@ -6619,8 +6576,7 @@
     <a>Adjust foreign attributes</a> for the token. (This fixes the use of namespaced
     attributes, in particular XLink.)
 
-    <a>Insert a foreign element</a> for the token, in the <a>MathML
-    namespace</a>.
+    <a>Insert a foreign element</a> for the token, in the <a>MathML namespace</a>.
 
     If the token has its <i>self-closing flag</i> set, pop the <a>current node</a> off the
     <a>stack of open elements</a> and <a>acknowledge
@@ -8135,7 +8091,7 @@
     <dt>An end tag whose tag name is "frameset"</dt>
     <dd>
 
-    If the <a>current node</a> is the root <{html}> element, then this is a
+    If the <a>current node</a> is the <{html}> element, then this is a
     <a for="parser">parse error</a>; ignore the token. (<a>fragment case</a>)
 
     Otherwise, pop the <a>current node</a> from the <a>stack of open
@@ -8168,12 +8124,11 @@
     <dt>An end-of-file token</dt>
     <dd>
 
-    If the <a>current node</a> is not the root <{html}> element, then this is a
+    If the <a>current node</a> is not the <{html}> element, then this is a
     <a for="parser">parse error</a>.
 
     <p class="note">
-  The <a>current node</a> can only be the root
-    <{html}> element in the <a>fragment case</a>.
+  The <a>current node</a> can only be the <{html}> element in the <a>fragment case</a>.
   </p>
 
     <a lt="stops parsing">Stop parsing</a>.
@@ -8363,10 +8318,10 @@
     <a for="parser">parse error</a>. Ignore the token.
     </dd>
 
-    <dt>A start tag whose tag name is one of:  "b", "big", "blockquote", "body", "br", "center", "code", "dd", "div", "dl", "dt", "em", "embed", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "i", "img",
-    "li", "listing",
-    "menu", "meta", "nobr", "ol", "p", "pre", "ruby", "s",  "small", "span", "strong", "strike",  "sub",
-    "sup", "table", "tt", "u", "ul", "var"</dt>
+    <dt>A start tag whose tag name is one of:  "b", "big", "blockquote", "body", "br", "center",
+    "code", "dd", "div", "dl", "dt", "em", "embed", "h1", "h2", "h3", "h4", "h5", "h6", "head",
+    "hr", "i", "img", "li", "listing", "menu", "meta", "nobr", "ol", "p", "pre", "ruby", "s",
+    "small", "span", "strong", "strike", "sub", "sup", "table", "tt", "u", "ul", "var"</dt>
     <dt>A start tag whose tag name is "font", if the token has any attributes named "color", "face",
     or "size"</dt>
 
@@ -8481,7 +8436,7 @@
 
     </dd>
 
-    <dt>An end tag whose tag name is "script", if the <a>current node</a> is a <{script}> element in the <a>SVG namespace</a></dt>
+    <dt>An end tag whose tag name is "script", if the <a>current node</a> is a <a>SVG <code>script</code></a> element</dt>
     <dd>
 
     Pop the <a>current node</a> off the <a>stack of open elements</a>.

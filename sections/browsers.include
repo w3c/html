@@ -101,7 +101,7 @@
   {{Document}} <var>D</var> with an element <var>E</var> that nests
   another browsing context <var>C</var> inside it, then <var>C</var> is said to be
   <dfn lt="through which new document is nested|nested through">nested through</dfn> <var>D</var>, and <var>E</var> is said to be the <dfn>browsing context container</dfn> of <var>C</var>.
-  If the <a>browsing context container</a> element <var>E</var> is <a>in the <code>Document</code></a> <var>D</var>, then <var>P</var> is
+  If the <a>browsing context container</a> element <var>E</var> is in the <code>Document</code> <var>D</var>, then <var>P</var> is
   said to be the <dfn>parent browsing context</dfn> of <var>C</var> and <var>C</var> is said to be a <dfn lt="child browsing context|child browsing contexts">child browsing context</dfn> of <var>P</var>.
   Otherwise, the <a>nested browsing context</a> <var>C</var> has no <a>parent
   browsing context</a>.
@@ -126,8 +126,8 @@
 
     <li>
 
-    For each <a>child browsing context</a> of <var>d</var> that is <a>nested through</a> an element that is <a>in the <code>Document</code></a> <var>d</var>, in the <a>tree
-    order</a> of the elements nesting those <a>browsing
+    For each <a>child browsing context</a> of <var>d</var> that is <a>nested through</a> an element
+    that is in the <code>Document</code> <var>d</var>, in the <a>tree order</a> of the elements nesting those <a>browsing
     contexts</a>, run these substeps:
 
     <ol>
@@ -1459,8 +1459,7 @@
     <li>Let <var>specified browsing context</var> be the <a>browsing context</a>
     being closed.</li>
 
-    <li><a>Prompt to unload</a> the <a>active
-    document</a> of the <var>specified browsing context</var>. If the user <a>refused
+    <li><a>Prompt to unload</a> the <a>active document</a> of the <var>specified browsing context</var>. If the user <a>refused
     to allow the document to be unloaded</a>, then abort these steps.</li>
 
     <li><a>Unload</a> the <a>active document</a> of the <var>specified browsing context</var> with the <var>recycle</var> parameter set to
@@ -2696,8 +2695,7 @@
 
       <ol>
 
-        <li><a>Prompt to unload</a> the <a>active
-        document</a> of the <var>specified browsing context</var>. If the user
+        <li><a>Prompt to unload</a> the <a>active document</a> of the <var>specified browsing context</var>. If the user
         <a>refused to allow the document to be unloaded</a>, then abort these steps.</li>
 
         <li><a>Unload</a> the <a>active document</a> of the
@@ -3151,7 +3149,7 @@
       <a for="concept">origin</a>.
 
   <p class="note">It returns the Unicode rather than the ASCII serialization for compatibility with
-  <code>MessageEvent</code>.
+  <code>MessageEvent</code>.</p>
 
   The <dfn attribute for="Location"><code>protocol</code></dfn> attribute's getter must run these
   steps:
@@ -4596,7 +4594,7 @@
 
       <li>If <var>hash changed</var> is true, then <a>fire</a> a <a>trusted</a>
       event with the name <code>hashchange</code> at the <a>browsing
-      context</a>'s <code>Window</code> object, using the <code>HashChangeEvent</code> interface,
+      context</a>'s {{Window}} object, using the {{HashChangeEvent}} interface,
       with the <code>oldURL</code> attribute initialized to <var>old URL</var> and the <code>newURL</code> attribute
       initialized to <var>new URL</var>. This event must bubble but not be cancelable and
       has no default action.</li>
@@ -4651,28 +4649,23 @@
 
   <pre class="idl" data-highlight="webidl" dfn-for="PopStateEventInit">
     dictionary PopStateEventInit : EventInit {
-      any state;
+      any state = null;
     };
   </pre>
 
   <dl class="domintro">
-
     <dt><var>event</var> . <code>state</code></dt>
-
     <dd>
-
-    Returns a copy of the information that was provided to <code>pushState()</code> or <code>replaceState()</code>.
-
+      Returns a copy of the information that was provided to <code>pushState()</code> or
+      <code>replaceState()</code>.
     </dd>
-
   </dl>
 
   <div class="impl">
 
-  The <dfn attribute for="PopStateEvent"><code>state</code></dfn> attribute must return the
-  value it was initialized to. When the object is created, this attribute must be initialized to
-  null. It represents the context information for the event, or null, if the state represented is
-  the initial state of the {{Document}}.
+  The <dfn attribute for="PopStateEvent"><code>state</code></dfn> attribute must return the value it
+  was initialized to. It represents the context information for the event, or null, if the state
+  represented is the initial state of the {{Document}}.
 
   </div>
 
@@ -4681,53 +4674,37 @@
   <pre class="idl" data-highlight="webidl" dfn-for="HashChangeEvent">
     [Constructor(DOMString type, optional HashChangeEventInit eventInitDict), Exposed=(Window,Worker)]
     interface HashChangeEvent : Event {
-      readonly attribute DOMString oldURL;
-      readonly attribute DOMString newURL;
+      readonly attribute USVString oldURL;
+      readonly attribute USVString newURL;
     };
   </pre>
 
   <pre class="idl" data-highlight="webidl" dfn-for="HashChangeEventInit">
     dictionary HashChangeEventInit : EventInit {
-      DOMString oldURL;
-      DOMString newURL;
+      USVString oldURL = "";
+      USVString newURL = "";
     };
   </pre>
 
   <dl class="domintro">
-
     <dt><var>event</var> . <code>oldURL</code></dt>
-
     <dd>
-
-    Returns the <a for="url">URL</a> of the <a>session history entry</a> that was previously
-    current.
-
+      Returns the <a for="url">URL</a> of the <a>session history entry</a> that was previously
+      current.
     </dd>
-
     <dt><var>event</var> . <code>newURL</code></dt>
-
     <dd>
-
-    Returns the <a for="url">URL</a> of the <a>session history entry</a> that is now
-    current.
-
+      Returns the <a for="url">URL</a> of the <a>session history entry</a> that is now current.
     </dd>
-
   </dl>
 
-  <div class="impl">
-
   The <dfn attribute for="HashChangeEvent"><code>oldURL</code></dfn> attribute must return the
-  value it was initialized to. When the object is created, this attribute must be initialized to
-  null. It represents context information for the event, specifically the URL of the <a>session
-  history entry</a> that was traversed from.
+  value it was initialized to. It represents context information for the event, specifically the URL
+  of the <a>session history entry</a> that was traversed from.
 
   The <dfn attribute for="HashChangeEvent"><code>newURL</code></dfn> attribute must return the
-  value it was initialized to. When the object is created, this attribute must be initialized to
-  null. It represents context information for the event, specifically the URL of the <a>session
-  history entry</a> that was traversed to.
-
-  </div>
+  value it was initialized to. It represents context information for the event, specifically the URL
+  of the <a>session history entry</a> that was traversed to.
 
 <h5 id="the-pagetransitionevent-interface">The <code>PageTransitionEvent</code> interface</h5>
 
@@ -4740,51 +4717,37 @@
 
   <pre class="idl" data-highlight="webidl" dfn-for="PageTransitionEventInit">
     dictionary PageTransitionEventInit : EventInit {
-      boolean persisted;
+      boolean persisted = false;
     };
   </pre>
 
   <dl class="domintro">
-
     <dt><var>event</var> . <code>persisted</code></dt>
-
     <dd>
+      For the <code>pageshow</code> event, returns false if the page is newly being loaded (and the
+      <code>load</code> event will fire). Otherwise, returns true.
 
-    For the <code>pageshow</code> event, returns false if the page is
-    newly being loaded (and the <code>load</code> event will fire). Otherwise,
-    returns true.
+      For the <code>pagehide</code> event, returns false if the page is going away for the last
+      time. Otherwise, returns true, meaning that (if nothing conspires to make the page
+      unsalvageable) the page might be reused if the user navigates back to this page.
 
-    For the <code>pagehide</code> event, returns false if the page is
-    going away for the last time. Otherwise, returns true, meaning that (if nothing conspires to
-    make the page unsalvageable) the page might be reused if the user navigates back to this
-    page.
+      Things that can cause the page to be unsalvageable include:
 
-    Things that can cause the page to be unsalvageable include:
-
-    <ul class="brief">
-      <li><code>document.open()</code>
-      <li>Listening for <code>beforeunload</code> events
-      <li>Listening for <code>unload</code> events
-      <li>Having <code>iframe</code>s that are not salvageable
-      <li>Active <code>WebSocket</code> objects
-      <li><a>Aborting a <code>Document</code></a>
-    </ul>
-
+      <ul class="brief">
+        <li><code>document.open()</code>
+        <li>Listening for <code>beforeunload</code> events
+        <li>Listening for <code>unload</code> events
+        <li>Having <code>iframe</code>s that are not salvageable
+        <li>Active <code>WebSocket</code> objects
+        <li><a>Aborting a <code>Document</code></a>
+      </ul>
     </dd>
-
   </dl>
 
-  <div class="impl">
-
-  The <dfn attribute for="PageTransitionEvent"><code>persisted</code></dfn> attribute must
-  return the value it was initialized to. When the object is created, this attribute must be
-  initialized to false. It represents the context information for the event.
-
-  </div>
+  The <dfn attribute for="PageTransitionEvent"><code>persisted</code></dfn> attribute must return
+  the value it was initialized to. It represents the context information for the event.
 
 <h4 id="unloading-documents">Unloading documents</h4>
-
-  <div class="impl">
 
   A {{Document}} has a <dfn><i>salvageable</i></dfn> state, which must initially be
   true, a <dfn>fired unload</dfn> flag, which must initially be false, and a <dfn>page showing</dfn>
@@ -4793,11 +4756,12 @@
   receive two <code>pagehide</code> events in a row without an intervening
   <code>pageshow</code>, or vice versa).
 
-  <a>Event loops</a> have a <dfn>termination nesting level</dfn>
-  counter, which must initially be zero.
+  <a>Event loops</a> have a <dfn>termination nesting level</dfn> counter, which must initially be
+  zero.
 
-  When a user agent is to <dfn lt="prompt to unload|prompt to unload a document">prompt to unload a document</dfn>, it must run the following
-  steps.
+  When a user agent is to
+  <dfn lt="prompt to unload|prompt to unload a document">prompt to unload a document</dfn>, it must
+  run the following steps.
 
   <ol>
 
@@ -4845,14 +4809,12 @@
 
     <li>
 
-    If <var>descendants</var> is not an empty list, then for each <a>browsing
-    context</a> <var>b</var> in <var>descendants</var> run the following
-    substeps:
+    If <var>descendants</var> is not an empty list, then for each <a>browsing context</a>
+    <var>b</var> in <var>descendants</var> run the following substeps:
 
     <ol>
 
-      <li><a>Prompt to unload</a> the <a>active
-      document</a> of the <a>browsing context</a> <var>b</var>. If the user
+      <li><a>Prompt to unload</a> the <a>active document</a> of the <a>browsing context</a> <var>b</var>. If the user
       <a>refused to allow the document to be unloaded</a>, then the user implicitly also <a>refused to allow <em>this</em> document to be unloaded</a>; jump to the step labeled <i>end</i>.
 
       <li>If the <i>salvageable</i> state of the <a>active
@@ -4930,8 +4892,7 @@
 
     <li>
 
-    If <var>descendants</var> is not an empty list, then for each <a>browsing
-    context</a> <var>b</var> in <var>descendants</var> run the following
+    If <var>descendants</var> is not an empty list, then for each <a>browsing context</a> <var>b</var> in <var>descendants</var> run the following
     substeps:
 
     <ol>
@@ -4981,8 +4942,6 @@
     timers</a>.</li>
 
   </ol>
-
-  </div>
 
 <h5 id="the-beforeunloadevent-interface">The <code>BeforeUnloadEvent</code> interface</h5>
 

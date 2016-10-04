@@ -980,13 +980,14 @@
   <hr />
 
   The <dfn attribute for="HTMLFormElement"><code>elements</code></dfn> IDL attribute must return an
-  {{HTMLFormControlsCollection}} rooted at the <{form}> element's <a>home
-  subtree</a>'s <a>root element</a>, whose filter matches <a>listed elements</a> whose <a>form owner</a> is the
-  <{form}> element, with the exception of <{input}> elements whose <{input/type}> attribute is in the <a element-state for="input">image button</a> state, which must, for historical reasons, be
+  {{HTMLFormControlsCollection}} rooted at the <{form}> element, whose filter matches
+  <a>listed elements</a> whose <a>form owner</a> is the <{form}> element, with the exception of
+  <{input}> elements whose <{input/type}> attribute is in the
+  <a element-state for="input">image button</a> state, which must, for historical reasons, be
   excluded from this particular collection.
 
-  The <dfn attribute for="HTMLFormElement"><code>length</code></dfn> IDL attribute must return the number
-  of nodes <a>represented</a> by the <code>elements</code> collection.
+  The <dfn attribute for="HTMLFormElement"><code>length</code></dfn> IDL attribute must return the
+  number of nodes <a>represented</a> by the <code>elements</code> collection.
 
   The <a>supported property indices</a> at any instant are the indices supported by the
   object returned by the <code>elements</code> attribute at that
@@ -1462,9 +1463,9 @@ part of the form.</p>
           [SameObject] readonly attribute NodeList labels;
 
           void select();
-          attribute unsigned long selectionStart;
-          attribute unsigned long selectionEnd;
-          attribute DOMString selectionDirection;
+          attribute unsigned long? selectionStart;
+          attribute unsigned long? selectionEnd;
+          attribute DOMString? selectionDirection;
           void setRangeText(DOMString replacement);
           void setRangeText(DOMString replacement, unsigned long start, unsigned long end, optional SelectionMode selectionMode = "preserve");
           void setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
@@ -4954,15 +4955,17 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   <div class="impl">
 
-  <strong>The <a>value sanitization algorithm</a> is as follows</strong>: If the <a for="forms">value</a> of the element is a <a>valid simple color</a>, then
-  set it to the <a for="forms">value</a> of the element <a>converted to ASCII
-  lowercase</a>; otherwise, set it to the string "<code>#000000</code>".
+  <strong>The <a>value sanitization algorithm</a> is as follows</strong>: If the
+  <a for="forms">value</a> of the element is a <a>valid simple color</a>, then set it to the
+  <a for="forms">value</a> of the element <a>converted to ASCII lowercase</a>; otherwise, set it to
+  the string "<code>#000000</code>".
 
   </div>
 
   <div class="bookkeeping">
 
-    The following common <{input}> element content attributes and IDL attributes <a>apply</a> to the element:
+    The following common <{input}> element content attributes and IDL attributes <a>apply</a> to the
+    element:
     <{input/autocomplete}> and
     <{input/list}> content attributes;
     {{HTMLInputElement/list}} and
@@ -5173,8 +5176,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     <li>Either <var>a</var> and <var>b</var> have the same <a>form owner</a>,
     or they both have no <a>form owner</a>.</li>
 
-    <li>Both <var>a</var> and <var>b</var> are in the same <a>home
-    subtree</a>.</li>
+    <li>Both <var>a</var> and <var>b</var> are in the same <a>tree</a>.</li>
 
     <li>They both have a <{input/name}> attribute, their <{input/name}> attributes are not empty, and the value of <var>a</var>'s <{input/name}> attribute is a <a>compatibility
     caseless</a> match for the value of <var>b</var>'s <{input/name}> attribute.</li>
@@ -7476,14 +7478,14 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   If the element's <{input/type}> attribute is in the <a element-state for="button/type">Menu</a> state, the <dfn element-attr for="button"><code>menu</code></dfn> attribute must be specified to give the element's
   menu. The value must be the <a>ID</a> of a <{menu}> element in
-  the same <a>home subtree</a> whose <{input/type}> attribute is in
+  the same <a>tree</a> whose <{input/type}> attribute is in
   the <a state for="menu">popup menu</a> state. The attribute must not be specified if
   the element's <{input/type}> attribute is not in the <a element-state for="button/type">Menu</a> state.
 
   <div class="impl">
 
   A <{button}> element's <dfn>designated pop-up menu</dfn> is the first element in the
-  <{button}>'s <a>home subtree</a> whose ID is that given by the <{button}>
+  <{button}>'s <a>tree</a> whose ID is that given by the <{button}>
   element's <code>menu</code> attribute, if there is such an element and
   its <{input/type}> attribute is in the <a state for="menu">popup menu</a> state; otherwise, the element has no <a>designated pop-up
   menu</a>.
@@ -8505,9 +8507,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
           [SameObject] readonly attribute NodeList labels;
 
           void select();
-          attribute unsigned long selectionStart;
-          attribute unsigned long selectionEnd;
-          attribute DOMString selectionDirection;
+          attribute unsigned long? selectionStart;
+          attribute unsigned long? selectionEnd;
+          attribute DOMString? selectionDirection;
           void setRangeText(DOMString replacement);
           void setRangeText(DOMString replacement, unsigned long start, unsigned long end, optional SelectionMode selectionMode = "preserve");
           void setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
@@ -8520,16 +8522,12 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   control<span class="impl"> for the element's <dfn>raw
   value</dfn></span>. The contents of the control represent the control's default value.
 
-  <div class="impl">
-
   The <a>raw value</a> of a <{textarea}>
   control must be initially the empty string.
 
   <p class="note">
     This element <a href="#bidireq">has rendering requirements involving the bidirectional algorithm</a>.
   </p>
-
-  </div>
 
   The <dfn element-attr for="textarea"><code>readonly</code></dfn> attribute is a
   <a>boolean attribute</a> used to control whether the text can be edited by the user or
@@ -8539,22 +8537,20 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     In this example, a text field is marked read-only because it represents a read-only file:
 
     <pre highlight="html">
-Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
-&lt;textarea name="buffer" readonly&gt;
-# System-wide .bashrc file for interactive bash(1) shells.
+      Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
+      &lt;textarea name="buffer" readonly&gt;
+      # System-wide .bashrc file for interactive bash(1) shells.
 
-# To enable the settings / commands in this file for login shells as well,
-# this file has to be sourced in /etc/profile.
+      # To enable the settings / commands in this file for login shells as well,
+      # this file has to be sourced in /etc/profile.
 
-# If not running interactively, don't do anything
-[ -z "$PS1" ] &amp;amp;&amp;amp; return
+      # If not running interactively, don't do anything
+      [ -z "$PS1" ] &amp;amp;&amp;amp; return
 
-...&lt;/textarea&gt;
+      ...&lt;/textarea&gt;
     </pre>
 
   </div>
-
-  <div class="impl">
 
   <strong>Constraint validation</strong>: If the <{textarea/readonly}> attribute is specified on a <{textarea}>
   element, the element is <a>barred from constraint validation</a>.
@@ -8570,18 +8566,18 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
   wait for the user to have not hit a key for 100ms, so as to only fire the event when the user
   pauses, instead of continuously for each keystroke.
 
-  A <{textarea}> element has a <dfn for="textarea">dirty value flag</dfn>, which must be initially set to false, and must be set to true whenever the user
-  interacts with the control in a way that changes the <a>raw
-  value</a>.
+  A <{textarea}> element has a <dfn for="textarea">dirty value flag</dfn>, which must be initially
+  set to false, and must be set to true whenever the user interacts with the control in a way that
+  changes the <a>raw value</a>.
 
   When the <{textarea}> element's {{Node/textContent}} IDL attribute changes value,
   if the element's <a for="textarea">dirty value flag</a> is false, then the
   element's <a>raw value</a> must be set to the value of
   the element's {{Node/textContent}} IDL attribute.
 
-  The <a>reset algorithm</a> for <{textarea}>
-  elements is to set the element's <a>raw value</a> to the
-  value of the element's {{Node/textContent}} IDL attribute.
+  The <a>reset algorithm</a> for <{textarea}> elements is to set the
+  <a for="textarea">dirty value flag</a> back to false, and set the element's <a>raw value</a> to
+  the value of the element's {{Node/textContent}} IDL attribute.
 
   When a <{textarea}> element is popped off the <a>stack of open elements</a> of
   an <a>HTML parser</a> or <a>XML parser</a>, then the user agent must invoke the
@@ -8592,17 +8588,12 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
   writing direction or a right-to-left writing direction. If the user does so, the user agent must
   then run the following steps:
 
-  <ol>
-
-    <li>Set the element's <{global/dir}> attribute to "<a attr-value for="global/dir"><code>ltr</code></a>" if the user selected a left-to-right writing direction, and
-    "<a attr-value for="global/dir"><code>rtl</code></a>" if the user selected a right-to-left writing
-    direction.</li>
-
-    <li><a>Queue a task</a> to <a>fire a simple event</a> that bubbles named <code>input</code> at the <{textarea}> element.</li>
-
-  </ol>
-
-  </div>
+  1. Set the element's <{global/dir}> attribute to
+      "<a attr-value for="global/dir"><code>ltr</code></a>" if the user selected a left-to-right
+      writing direction, and "<a attr-value for="global/dir"><code>rtl</code></a>" if the user
+      selected a right-to-left writing direction.
+  2. <a>Queue a task</a> to <a>fire a simple event</a> that bubbles named <code>input</code> at the
+      <{textarea}> element.
 
   The <dfn element-attr for="textarea"><code>cols</code></dfn> attribute specifies the expected
   maximum number of characters per line. If the <code>cols</code>
@@ -8610,14 +8601,10 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
   zero. <span class="impl">If applying the <a>rules for parsing non-negative integers</a> to
   the attribute's value results in a number greater than zero, then the element's <dfn>character width</dfn> is that value; otherwise, it is 20.</span>
 
-  <div class="impl">
-
   The user agent may use the <{textarea}> element's <a>character width</a> as a hint to the user as to how many
   characters the server prefers per line (e.g., for visual user agents by making the width of the
   control be that many characters). In visual renderings, the user agent should wrap the user's
   input in the rendering so that each line is no wider than this number of characters.
-
-  </div>
 
   The <dfn element-attr for="textarea"><code>rows</code></dfn> attribute specifies the number of
   lines to show. If the <code>rows</code> attribute is specified, its
@@ -8626,11 +8613,7 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
   in a number greater than zero, then the element's <dfn>character
   height</dfn> is that value; otherwise, it is 2.</span>
 
-  <div class="impl">
-
   Visual user agents should set the height of the control to the number of lines given by <a>character height</a>.
-
-  </div>
 
   The <dfn element-attr for="textarea"><code>wrap</code></dfn> attribute is an <a>enumerated
   attribute</a> with two keywords and states: the <dfn attr-value for="textarea/wrap"><code>soft</code></dfn> keyword which maps to the <a state for="textarea">Soft</a> state, and the <dfn attr-value for="textarea/wrap"><code>hard</code></dfn> keyword which maps to the <a state for="textarea">Hard</a> state. The <i>missing value default</i> is the
@@ -8645,8 +8628,6 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
   it is submitted.
 
   If the element's <code>wrap</code> attribute is in the <a state for="textarea">Hard</a> state, the <code>cols</code> attribute must be specified.
-
-  <div class="impl">
 
   For historical reasons, the element's value is normalized in three different ways for three
   different purposes. The <a>raw value</a> is the value as
@@ -8692,8 +8673,6 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
 
   </ol>
 
-  </div>
-
   The <dfn element-attr for="textarea"><code>maxlength</code></dfn> attribute is a <a>form control <code>maxlength</code> attribute</a> controlled
   by the <{textarea}> element's <a for="textarea">dirty value flag</a>.
 
@@ -8710,12 +8689,8 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
   <a>boolean attribute</a>. When specified, the user will be required to enter a value before
   submitting the form.
 
-  <div class="impl">
-
   <strong>Constraint validation</strong>: If the element has its <code>required</code> attribute specified, and the element is <a>mutable</a>, and the element's <a for="forms">value</a> is the empty string, then the element is <a>suffering
   from being missing</a>.
-
-  </div>
 
   The <dfn element-attr for="textarea"><code>placeholder</code></dfn> attribute represents
   a <em>short</em> hint (a word or short phrase) intended to aid the user with data entry when the
@@ -8726,7 +8701,7 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
   should not be used as a replacement for a <{label}>. For a
   longer hint or other advisory text, place the text next to the control.
 
-    <p class="note">
+  <p class="note">
     Use of the <code>placeholder</code>
     attribute as a replacement for a <{label}> can reduce the
     accessibility and usability of the control for a range of users including older
@@ -8740,15 +8715,11 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
     reduces the size of the hit region available for setting focus on the control.
   </p>
 
-  <div class="impl">
-
   User agents should present this hint to the user when the element's <a for="forms">value</a> is the empty string and the control is not
   <a>focused</a> (e.g., by displaying it inside a blank unfocused control). All U+000D CARRIAGE
   RETURN U+000A LINE FEED character pairs (CRLF) in the hint, as well as all other U+000D CARRIAGE
   RETURN (CR) and U+000A LINE FEED (LF) characters in the hint, must be treated as line breaks when
   rendering the hint.
-
-  </div>
 
   The <{textarea/name}> attribute represents the element's name.
   The <{textarea/dirname}> attribute controls how the element's <a>directionality</a> is submitted.
@@ -8783,73 +8754,71 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
 
   </dl>
 
-  <div class="impl">
-    The <dfn attribute for="HTMLTextAreaElement"><code>cols</code></dfn>, <dfn attribute for="HTMLTextAreaElement"><code>placeholder</code></dfn>,
-    <dfn attribute for="HTMLTextAreaElement"><code>required</code></dfn>, <dfn attribute for="HTMLTextAreaElement"><code>rows</code></dfn>, and <dfn attribute for="HTMLTextAreaElement"><code>wrap</code></dfn>
-    attributes must <a>reflect</a> the respective content attributes of the same name. The
-    <code>cols</code> and <code>rows</code> attributes are <a>limited to only non-negative numbers
-    greater than zero</a>. The <code>cols</code> attribute's default value is 20. The
-    <{textarea/rows}> attribute's default value is 2. The <dfn attribute for="HTMLTextAreaElement"><code>dirName</code></dfn> IDL
-    attribute must <a>reflect</a> the <{textarea/dirname}> content attribute. The
-    <dfn attribute for="HTMLTextAreaElement"><code>inputMode</code></dfn> IDL attribute must <a>reflect</a> the <{textarea/inputmode}>
-    content attribute, <a>limited to only known values</a>. The <dfn attribute for="HTMLTextAreaElement"><code>maxLength</code></dfn>
-    IDL attribute must <a>reflect</a> the <{textarea/maxlength}> content attribute,
-    <a>limited to only non-negative numbers</a>. The <dfn attribute for="HTMLTextAreaElement"><code>minLength</code></dfn> IDL attribute
-    must <a>reflect</a> the <{textarea/minlength}> content attribute,
-    <a>limited to only non-negative numbers</a>. The <dfn attribute for="HTMLTextAreaElement"><code>readOnly</code></dfn> IDL attribute
-    must <a>reflect</a> the <{textarea/readonly}> content attribute.
+  The <dfn attribute for="HTMLTextAreaElement"><code>cols</code></dfn>, <dfn attribute for="HTMLTextAreaElement"><code>placeholder</code></dfn>,
+  <dfn attribute for="HTMLTextAreaElement"><code>required</code></dfn>, <dfn attribute for="HTMLTextAreaElement"><code>rows</code></dfn>, and <dfn attribute for="HTMLTextAreaElement"><code>wrap</code></dfn>
+  attributes must <a>reflect</a> the respective content attributes of the same name. The
+  <code>cols</code> and <code>rows</code> attributes are <a>limited to only non-negative numbers
+  greater than zero</a>. The <code>cols</code> attribute's default value is 20. The
+  <{textarea/rows}> attribute's default value is 2. The <dfn attribute for="HTMLTextAreaElement"><code>dirName</code></dfn> IDL
+  attribute must <a>reflect</a> the <{textarea/dirname}> content attribute. The
+  <dfn attribute for="HTMLTextAreaElement"><code>inputMode</code></dfn> IDL attribute must <a>reflect</a> the <{textarea/inputmode}>
+  content attribute, <a>limited to only known values</a>. The <dfn attribute for="HTMLTextAreaElement"><code>maxLength</code></dfn>
+  IDL attribute must <a>reflect</a> the <{textarea/maxlength}> content attribute,
+  <a>limited to only non-negative numbers</a>. The <dfn attribute for="HTMLTextAreaElement"><code>minLength</code></dfn> IDL attribute
+  must <a>reflect</a> the <{textarea/minlength}> content attribute,
+  <a>limited to only non-negative numbers</a>. The <dfn attribute for="HTMLTextAreaElement"><code>readOnly</code></dfn> IDL attribute
+  must <a>reflect</a> the <{textarea/readonly}> content attribute.
 
-    The <dfn attribute for="HTMLTextAreaElement"><code>type</code></dfn> IDL attribute must return the value "<code>textarea</code>".
+  The <dfn attribute for="HTMLTextAreaElement"><code>type</code></dfn> IDL attribute must return the value "<code>textarea</code>".
 
-    The <dfn attribute for="HTMLTextAreaElement"><code>defaultValue</code></dfn> IDL attribute must act like the element's
-    {{Node/textContent}} IDL attribute.
+  The <dfn attribute for="HTMLTextAreaElement"><code>defaultValue</code></dfn> IDL attribute must act like the element's
+  {{Node/textContent}} IDL attribute.
 
-    The <dfn attribute for="HTMLTextAreaElement"><code>value</code></dfn> attribute must, on getting, return the element's
-    <a>API value</a>; on setting, it must set the element's <a>raw value</a> to the new value, set
-    the element's <a for="textarea">dirty value flag</a> to true, and should then move the text entry cursor
-    position to the end of the text field, unselecting any selected text and resetting the selection
-    direction to <i>none</i>.
+  The <dfn attribute for="HTMLTextAreaElement"><code>value</code></dfn> attribute must, on getting, return the element's
+  <a>API value</a>; on setting, it must set the element's <a>raw value</a> to the new value, set
+  the element's <a for="textarea">dirty value flag</a> to true, and should then move the text entry cursor
+  position to the end of the text field, unselecting any selected text and resetting the selection
+  direction to <i>none</i>.
 
-    The <dfn attribute for="HTMLTextAreaElement"><code>textLength</code></dfn> IDL attribute must return the <a>code-unit length</a> of
-    the element's <a>API value</a>.
+  The <dfn attribute for="HTMLTextAreaElement"><code>textLength</code></dfn> IDL attribute must return the <a>code-unit length</a> of
+  the element's <a>API value</a>.
 
-    The {{HTMLTextAreaElement/willValidate}}, {{HTMLTextAreaElement/validity}}, and
-    {{HTMLTextAreaElement/validationMessage}} IDL attributes,
-    and the {{HTMLTextAreaElement/checkValidity()}}, {{HTMLTextAreaElement/reportValidity()}}, and
-    {{HTMLTextAreaElement/setCustomValidity()}} methods, are part of the
-    <a>constraint validation API</a>.
-    The {{HTMLTextAreaElement/labels}} IDL attribute provides a list of the element's <{label}>s.
-    The {{HTMLTextAreaElement/select()}},
-    {{HTMLTextAreaElement/selectionStart}},
-    {{HTMLTextAreaElement/selectionEnd}},
-    {{HTMLTextAreaElement/selectionDirection}},
-    {{HTMLTextAreaElement/setRangeText()}}, and
-    {{HTMLTextAreaElement/setSelectionRange()}} methods and IDL
-    attributes expose the element's text selection.
-    The {{HTMLTextAreaElement/autofocus}},
-    {{HTMLTextAreaElement/disabled}},
-    {{HTMLTextAreaElement/form}}, and
-    {{HTMLTextAreaElement/name}} IDL attributes are part of the element's forms API.
-  </div>
+  The {{HTMLTextAreaElement/willValidate}}, {{HTMLTextAreaElement/validity}}, and
+  {{HTMLTextAreaElement/validationMessage}} IDL attributes,
+  and the {{HTMLTextAreaElement/checkValidity()}}, {{HTMLTextAreaElement/reportValidity()}}, and
+  {{HTMLTextAreaElement/setCustomValidity()}} methods, are part of the
+  <a>constraint validation API</a>.
+  The {{HTMLTextAreaElement/labels}} IDL attribute provides a list of the element's <{label}>s.
+  The {{HTMLTextAreaElement/select()}},
+  {{HTMLTextAreaElement/selectionStart}},
+  {{HTMLTextAreaElement/selectionEnd}},
+  {{HTMLTextAreaElement/selectionDirection}},
+  {{HTMLTextAreaElement/setRangeText()}}, and
+  {{HTMLTextAreaElement/setSelectionRange()}} methods and IDL
+  attributes expose the element's text selection.
+  The {{HTMLTextAreaElement/autofocus}},
+  {{HTMLTextAreaElement/disabled}},
+  {{HTMLTextAreaElement/form}}, and
+  {{HTMLTextAreaElement/name}} IDL attributes are part of the element's forms API.
 
   <div class="example">
     Here is an example of a <{textarea}> being used for unrestricted free-form text input
     in a form:
 
     <pre highlight="html">
-&lt;p&gt;If you have any comments, please let us know: &lt;textarea cols=80 name=comments&gt;&lt;/textarea&gt;&lt;/p&gt;
+      &lt;p&gt;If you have any comments, please let us know: &lt;textarea cols=80 name=comments&gt;&lt;/textarea&gt;&lt;/p&gt;
     </pre>
 
     To specify a maximum length for the comments, one can use the <code>maxlength</code> attribute:
 
     <pre highlight="html">
-&lt;p&gt;If you have any short comments, please let us know: &lt;textarea cols=80 name=comments maxlength=200&gt;&lt;/textarea&gt;&lt;/p&gt;
+      &lt;p&gt;If you have any short comments, please let us know: &lt;textarea cols=80 name=comments maxlength=200&gt;&lt;/textarea&gt;&lt;/p&gt;
     </pre>
 
     To give a default value, text can be included inside the element:
 
     <pre highlight="html">
-&lt;p&gt;If you have any comments, please let us know: &lt;textarea cols=80 name=comments&gt;You rock!&lt;/textarea&gt;&lt;/p&gt;
+      &lt;p&gt;If you have any comments, please let us know: &lt;textarea cols=80 name=comments&gt;You rock!&lt;/textarea&gt;&lt;/p&gt;
     </pre>
 
     You can also give a minimum length. Here, a letter needs to be filled out by the user; a
@@ -8857,36 +8826,36 @@ Filename: &lt;code&gt;/etc/bash.bashrc&lt;/code&gt;
     the form:
 
     <pre highlight="html">
-&lt;textarea required minlength="500"&gt;Dear Madam Speaker,
+      &lt;textarea required minlength="500"&gt;Dear Madam Speaker,
 
-Regarding your letter dated ...
+      Regarding your letter dated ...
 
-...
+      ...
 
-Yours Sincerely,
+      Yours Sincerely,
 
-...&lt;/textarea&gt;
+      ...&lt;/textarea&gt;
     </pre>
 
     A placeholder can be given as well, to suggest the basic form to the user, without providing
     an explicit template:
 
     <pre highlight="html">
-&lt;textarea placeholder="Dear Francine,
+      &lt;textarea placeholder="Dear Francine,
 
-They closed the parks this week, so we won't be able to
-meet your there. Should we just have dinner?
+      They closed the parks this week, so we won't be able to
+      meet your there. Should we just have dinner?
 
-Love,
-Daddy"&gt;&lt;/textarea&gt;
+      Love,
+      Daddy"&gt;&lt;/textarea&gt;
     </pre>
 
     To have the browser submit <a>the directionality</a> of the element along with the
     value, the <code>dirname</code> attribute can be specified:
 
     <pre highlight="html">
-&lt;p&gt;If you have any comments, please let us know (you may use either English or Hebrew for your comments):
-&lt;textarea cols=80 name=comments dirname=comments.dir&gt;&lt;/textarea&gt;&lt;/p&gt;
+      &lt;p&gt;If you have any comments, please let us know (you may use either English or Hebrew for your comments):
+      &lt;textarea cols=80 name=comments dirname=comments.dir&gt;&lt;/textarea&gt;&lt;/p&gt;
     </pre>
 
   </div>
@@ -9962,7 +9931,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   controls.</span>
 
   When an element changes its parent node resulting in a <a>form-associated element</a> and
-  its <a>form owner</a> (if any) no longer being in the same <a>home subtree</a>, then
+  its <a>form owner</a> (if any) no longer being in the same <a>tree</a>, then
   the user agent must <a>reset the form owner</a> of that <a>form-associated
   element</a>.
 
@@ -9998,7 +9967,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
     <ol>
 
-      <li>If the first element <a>in the <code>Document</code></a> to
+      <li>If the first element in the <code>Document</code> to
       have an <a>ID</a> that is <a>case-sensitively</a> equal to the element's <{formelements/form}> content attribute's value is a <{form}> element,
       then associate the <a>form-associated
       element</a> with that <{form}> element.</li>
@@ -10027,13 +9996,12 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   &lt;/form&gt;
   &lt;script&gt;
   document.getElementById('b').innerHTML =
-      '&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;form id="c"&gt;&lt;input id="d"&gt;&lt;/table&gt;' +
+      '&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;/form&gt;&lt;form id="c"&gt;&lt;input id="d"&gt;&lt;/table&gt;' +
       '&lt;input id="e"&gt;';
   &lt;/script&gt;
 ...</pre>
 
-    The <a>form owner</a> of "d" would be the inner nested form "c", while the <a>form
-    owner</a> of "e" would be the outer form "a".
+    The <a>form owner</a> of "d" would be the inner nested form "c", while the <a>form owner</a> of "e" would be the outer form "a".
 
     This happens as follows: First, the "e" node gets associated with "c" in the <a>HTML
     parser</a>. Then, the <code>innerHTML</code> algorithm moves the nodes
@@ -10042,7 +10010,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     associations.
 
     This example is a non-conforming document, though, as it is a violation of the content models
-    to nest <{form}> elements.
+    to nest <{form}> elements, and there is a <a for="parser">parse error</a> for the <code>&lt;/form></code> tag.
 
   </div>
 
@@ -10457,15 +10425,13 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
   The <{formelements/autofocus}> attribute is a <a>boolean attribute</a>.
 
-  An element's <dfn>nearest ancestor autofocus scoping root element</dfn> is the element itself
+  An element's <dfn>nearest ancestor autofocus scoping <a>document element</a></dfn> is the element itself
   if the element is a <{dialog}> element, or else is the element's nearest ancestor
-  <{dialog}> element, if any, or else is the element's <a>root element</a>.
+  <{dialog}> element, if any, or else is the element's <a>document element</a>.
 
-  There must not be two elements with the same <a>nearest ancestor autofocus scoping root
-  element</a> that both have the <{formelements/autofocus}> attribute
-  specified.
-
-  <div class="impl">
+  There must not be two elements with the same
+  <a>nearest ancestor autofocus scoping document element</a> that both have the
+  <{formelements/autofocus}> attribute specified.
 
   When an element with the <{formelements/autofocus}> attribute specified
   is <a for="document">inserted into a document</a>, user agents
@@ -10522,8 +10488,6 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
   The <dfn attribute for="HTMLInputElement,HTMLButtonElement,HTMLSelectElement,HTMLTextAreaElement"><code>autofocus</code></dfn> IDL attribute must
   <a>reflect</a> the content attribute of the same name.
-
-  </div>
 
   <div class="example">
     In the following snippet, the text control would be focused when
@@ -10709,8 +10673,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
   When wearing the <a>autofill expectation mantle</a>, the <{autocompleteelements/autocomplete}> attribute, if specified, must have a value that
   is an ordered <a>set of space-separated tokens</a> consisting of either a single token that
-  is an <a>ASCII case-insensitive</a> match for the string "<code>off</code>", or a single token that is an <a>ASCII
-  case-insensitive</a> match for the string "<code>on</code>",
+  is an <a>ASCII case-insensitive</a> match for the string "<code>off</code>", or a single token
+  that is an <a>ASCII case-insensitive</a> match for the string "<code>on</code>",
   or <a>autofill detail tokens</a>.
 
   When wearing the <a>autofill anchor
@@ -11457,13 +11421,12 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
     <li>
 
-    If the <var>index</var>th token in <var>tokens</var> is not an <a>ASCII
-    case-insensitive</a> match for one of the tokens given in the first column of the following
-    table, or if the number of tokens in <var>tokens</var> is greater than the maximum
-    number given in the cell in the second column of that token's row, then jump to the step labeled
-    <i>default</i>. Otherwise, let <var>field</var> be the string given in the cell of the
-    first column of the matching row, and let <var>category</var> be the value of the cell
-    in the third column of that same row.
+    If the <var>index</var>th token in <var>tokens</var> is not an <a>ASCII case-insensitive</a>
+    match for one of the tokens given in the first column of the following table, or if the number
+    of tokens in <var>tokens</var> is greater than the maximum number given in the cell in the
+    second column of that token's row, then jump to the step labeled <i>default</i>. Otherwise, let
+    <var>field</var> be the string given in the cell of the first column of the matching row, and
+    let <var>category</var> be the value of the cell in the third column of that same row.
 
     <table>
       <thead>
@@ -11760,9 +11723,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
     <li>
 
-    If the <var>index</var>th token in <var>tokens</var> is an <a>ASCII
-    case-insensitive</a> match for one of the strings in the following list, then run the
-    substeps that follow:
+    If the <var>index</var>th token in <var>tokens</var> is an <a>ASCII case-insensitive</a> match
+    for one of the strings in the following list, then run the substeps that follow:
 
     <ul class="brief">
       <li>"<code>shipping</code>"
@@ -11797,8 +11759,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     the step labeled <i>default</i>.</li>
 
     <li>If the first eight characters of the <var>index</var>th token in <var>tokens</var> are not
-    an <a>ASCII case-insensitive</a> match for the string "<code>section-</code>", then jump to the step labeled
-    <i>default</i>.</li>
+    an <a>ASCII case-insensitive</a> match for the string "<code>section-</code>", then jump to the
+    step labeled <i>default</i>.</li>
 
     <li>Let <var>section</var> be the <var>index</var>th token in <var>tokens</var>,
     <a>converted to ASCII lowercase</a>.</li>
