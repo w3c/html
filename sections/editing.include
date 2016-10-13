@@ -159,8 +159,7 @@
   {{Document}}, must be marked as <a>inert</a>.
 
   An entire <code>Document</code> can be marked as <dfn lt="blocked by the modal dialog|blocked by a modal dialog">blocked by a modal dialog</dfn>
-  <var>subject</var>. While a <code>Document</code> is so marked, every node that is <a>in the
-  <code>Document</code></a>, with the exception of the <var>subject</var> element and its
+  <var>subject</var>. While a <code>Document</code> is so marked, every node that is in the <code>Document</code>, with the exception of the <var>subject</var> element and its
   descendants, must be marked <a>inert</a>. (The elements excepted by this paragraph can
   additionally be marked <a>inert</a> through other means; being part of a modal dialog does not
   "protect" a node from being marked <a>inert</a>.)
@@ -834,7 +833,7 @@
 
       </dd>
 
-      <dt>If <var>new focus target</var> is the <a>root element</a> of its
+      <dt>If <var>new focus target</var> is the <a>document element</a> of its
       <code>Document</code></dt>
 
       <dd>
@@ -1197,11 +1196,10 @@
 
     <li>
 
-    If <var>target node</var> is a <code>Document</code> that has a <{body}> element, then let <var>target node</var> be <a href="#the-body-element">the <code>body</code> element</a> of that {{Document}}.
+    If <var>target node</var> is a <code>Document</code> that has a <{body}> element, then let <var>target node</var> be the <{body}> element of that {{Document}}.
 
-    Otherwise, if <var>target node</var> is a <code>Document</code> that has a
-    <a>root element</a>, then let <var>target node</var> be the <a>root
-    element</a> of that {{Document}}.
+    Otherwise, if <var>target node</var> is a {{Document}} object that has a non-null
+    <a>document element</a>, then let <var>target node</var> be that <a>document element</a>.
 
     </li>
 
@@ -1219,8 +1217,7 @@
     </li>
 
     <li>If the event was not canceled, then let <var>target area</var> handle the key
-    event. This might include <a>running synthetic
-    click activation steps</a> for <var>target node</var>.</li>
+    event. This might include <a>running synthetic click activation steps</a> for <var>target node</var>.</li>
 
   </ol>
 
@@ -1509,7 +1506,7 @@
     <dd>
 
     Moves the focus to the <a>viewport</a>. Use of this method is discouraged; if you want to focus the
-    <a>viewport</a>, call the <code>focus()</code> method on the <code>Document</code>'s root element.
+    <a>viewport</a>, call the <code>focus()</code> method on the <code>Document</code>'s <a>document element</a>.
 
     Do not use this method to hide the focus ring if you find the focus ring unsightly. Instead,
     use a CSS rule to override the 'outline' property, and provide a different way to show what
@@ -1556,11 +1553,12 @@
 
     <li>
 
-    If <var>candidate</var> is a <code>Document</code> that has a <{body}> element, then let <var>candidate</var> be <a href="#the-body-element">the <code>body</code> element</a> of that {{Document}}.
-
-    Otherwise, if <var>candidate</var> is a <code>Document</code> that has a <a>root
-    element</a>, then let <var>candidate</var> be the <a>root element</a> of that
+    If <var>candidate</var> is a <code>Document</code> that has a <{body}> element, then let
+    <var>candidate</var> be the <{body}> element of that
     {{Document}}.
+
+    Otherwise, if <var>candidate</var> is a {{Document}} with a non-null <a>document element</a>, then
+    let <var>candidate</var> be that <a>document element</a>.
 
     Otherwise, if <var>candidate</var> is a {{Document}}, then let <var>candidate</var> be null.
 
@@ -1784,11 +1782,11 @@
 
   </dl>
 
-  The <dfn attribute for="ElementContentEditable"><code>contentEditable</code></dfn> IDL attribute, on
-  getting, must return the string "<code>true</code>" if the content attribute is set to
+  The <dfn attribute for="ElementContentEditable"><code>contentEditable</code></dfn> IDL attribute,
+  on getting, must return the string "<code>true</code>" if the content attribute is set to
   the true state, "<code>false</code>" if the content attribute is set to the false state,
-  and "<code>inherit</code>" otherwise. On setting, if the new value is an <a>ASCII
-  case-insensitive</a> match for the string "<code>inherit</code>" then the content
+  and "<code>inherit</code>" otherwise. On setting, if the new value is an
+  <a>ASCII case-insensitive</a> match for the string "<code>inherit</code>" then the content
   attribute must be removed, if the new value is an <a>ASCII case-insensitive</a> match for
   the string "<code>true</code>" then the content attribute must be set to the string
   "<code>true</code>", if the new value is an <a>ASCII case-insensitive</a> match for
@@ -1821,11 +1819,11 @@
   </dl>
 
   The <code>designMode</code> IDL attribute on the
-  <code>Document</code> object takes two values, "<code>on</code>" and "<code>off</code>". On setting, the new value must be compared in an <a>ASCII
-  case-insensitive</a> manner to these two values; if it matches the "<code>on</code>"
-  value, then <code>designMode</code> must be enabled, and if it
-  matches the "<code>off</code>" value, then <code>designMode</code> must be disabled. Other values must be
-  ignored.
+  <code>Document</code> object takes two values, "<code>on</code>" and "<code>off</code>". On
+  setting, the new value must be compared in an <a>ASCII case-insensitive</a> manner to these two
+  values; if it matches the "<code>on</code>" value, then <code>designMode</code> must be enabled,
+  and if it matches the "<code>off</code>" value, then <code>designMode</code> must be disabled.
+  Other values must be ignored.
 
   On getting, if <code>designMode</code> is enabled, the IDL
   attribute must return the value "<code>on</code>"; otherwise it is disabled, and the
@@ -1838,7 +1836,7 @@
   When the <code>designMode</code> changes from being disabled to
   being enabled, the user agent must <a>immediately</a> reset the document's <a>active range</a>'s
   start and end boundary points to be at the start of the <code>Document</code> and then run the
-  <a>focusing steps</a> for the root element of the {{Document}}, if any.
+  <a>focusing steps</a> for the <a>document element</a> of the {{Document}}, if non-null.
 
 <h4 id="best-practices-for-in-page-editors">Best practices for in-page editors</h4>
 
@@ -2517,8 +2515,7 @@
     the <a>protected mode</a>, return the empty string and abort these
     steps.</li>
 
-    <li>Let <var>format</var> be the first argument, <a>converted to ASCII
-    lowercase</a>.</li>
+    <li>Let <var>format</var> be the first argument, <a>converted to ASCII lowercase</a>.</li>
 
     <li>Let <var>convert-to-URL</var> be false.</li>
 
@@ -2553,8 +2550,7 @@
     not the <a>read/write mode</a>, abort these steps. Nothing
     happens.</li>
 
-    <li>Let <var>format</var> be the first argument, <a>converted to ASCII
-    lowercase</a>.</li>
+    <li>Let <var>format</var> be the first argument, <a>converted to ASCII lowercase</a>.</li>
 
     <li>
 
@@ -2588,8 +2584,7 @@
     item list</a> whose {{DataTransferItem/kind}} is <i>Plain Unicode
     string</i>, and abort these steps.</li>
 
-    <li>Let <var>format</var> be the first argument, <a>converted to ASCII
-    lowercase</a>.</li>
+    <li>Let <var>format</var> be the first argument, <a>converted to ASCII lowercase</a>.</li>
 
     <li>
 
@@ -3196,8 +3191,7 @@
     If the drag initiated outside of the application, the user agent must add items to the
     <a>drag data store item list</a> as appropriate for the data being dragged, honoring
     platform conventions where appropriate; however, if the platform conventions do not use <a>MIME types</a> to label dragged data, the user agent must make a
-    best-effort attempt to map the types to MIME types, and, in any case, all the <a>drag data item type strings</a> must be <a>converted to ASCII
-    lowercase</a>.
+    best-effort attempt to map the types to MIME types, and, in any case, all the <a>drag data item type strings</a> must be <a>converted to ASCII lowercase</a>.
 
     User agents may also add one or more items representing the selection or dragged element(s)
     in other forms, e.g., as HTML.

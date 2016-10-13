@@ -229,7 +229,7 @@
   It is compatible with most legacy Web browsers. If a document is transmitted with the
   <a href="#text-html"><code>text/html</code></a> <a>MIME type</a>, then it will be processed as an
   HTML document by Web browsers. This specification defines the latest version of the HTML syntax,
-  known as "HTML [LEVEL]".
+  known simply as "HTML".
 
   The second concrete syntax is the XHTML syntax, which is an application of XML. When a document
   is transmitted with an <a>XML MIME type</a>, such as
@@ -237,8 +237,8 @@
   XML document by Web browsers, to be parsed by an XML processor. Authors are reminded that the
   processing for XML and HTML differs; in particular, even minor syntax errors will prevent a
   document labeled as XML from being rendered fully, whereas they would be ignored in the HTML
-  syntax. This specification defines the latest version of the XHTML syntax, known as "XHTML
-  [LEVEL]".
+  syntax. This specification defines the latest version of the XHTML syntax, known simply as
+  "XHTML".
 
   The DOM, the HTML syntax, and the XHTML syntax cannot all represent the same content. For
   example, namespaces cannot be represented using the HTML syntax, but they are supported in the
@@ -559,8 +559,8 @@
     </li>
   </ul>
 
-  The <a>root element</a> of this tree is the <{html}> element, which is the element always found at
-  the root of HTML documents. It contains two elements, <{head}> and <{body}>, as well as a
+  The {{document}} element of this tree is the <{html}> element, which is the element always found
+  in that position in HTML documents. It contains two elements, <{head}> and <{body}>, as well as a
   {{Text!!interface}} node between them.
 
   There are many more {{Text!!interface}} nodes in the DOM tree than one would initially expect,
@@ -598,7 +598,7 @@
     var a = document.links[0]; // obtain the first link in the document
     a.href = 'sample.html'; // change the destination URL of the link
     a.protocol = 'https'; // change just the scheme part of the URL
-    a.setAttribute('href', 'https://example.com/'); // change the content attribute directly
+    a.setAttribute('href', 'http://example.com/'); // change the content attribute directly
   </pre>
 
   Since DOM trees are used as the way to represent HTML documents when they are processed and
@@ -682,7 +682,7 @@
         If the message was just displayed to the user without escaping, a hostile attacker could
         then craft a URL that contained a script element:
 
-        <pre>https://example.com/message.cgi?say=%3Cscript%3Ealert%28%27Oh%20no%21%27%29%3C/script%3E</pre>
+        <pre>http://example.com/message.cgi?say=%3Cscript%3Ealert%28%27Oh%20no%21%27%29%3C/script%3E</pre>
 
         If the attacker then convinced a victim user to visit this page, a script of the
         attacker's choosing would run on the page. Such a script could do any number of hostile
@@ -696,11 +696,10 @@
       There are many constructs that can be used to try to trick a site into executing code. Here
       are some that authors are encouraged to consider when writing safelist filters:
 
-      * When allowing harmless-seeming elements like <{img}>, exercise the principle of
-        least-privilege and limit the element's attributes to only those that are needed (e.g., via
-        a safelist). If one allowed all attributes then an attacker could, for instance, use the
-        <a attribute for="GlobalEventHandlers"><code>onload</code></a> attribute to run arbitrary
-        script.
+      * When allowing harmless-seeming elements like <{img}>, it is important to safelist any
+        provided attributes as well. If one allowed all attributes then an attacker could, for
+        instance, use the <a attribute for="GlobalEventHandlers"><code>onload</code></a> attribute
+        to run arbitrary script.
       * When allowing URLs to be provided (e.g., for links), the scheme of each URL also needs to be
         explicitly safelisted, as there are many schemes that can be abused. The most prominent
         example is "<code>javascript:</code>", but user agents can implement (and indeed, have
@@ -732,7 +731,7 @@
 
       To avoid this, sites that do not expect to be used in frames are encouraged to only enable
       their interface if they detect that they are not in a frame (e.g., by comparing the
-      {{Window}} object to the value of the {{Window/top}} attribute).
+      {{window}} object to the value of the {{Window/top}} attribute).
 
 <h4 id="common-pitfalls-to-avoid-when-using-the-scripting-apis">
   Common pitfalls to avoid when using the scripting APIs
@@ -744,10 +743,9 @@
   the script uninterrupted before doing anything else, such as firing further events or continuing
   to parse the document.
 
-  On the other hand, parsing of HTML files happens <a>in parallel</a> and incrementally, meaning
-  that the parser can pause at any point to let scripts run. This is generally a good thing, but it
-  does mean that authors need to be careful to avoid hooking event handlers after the events could
-  have possibly fired.
+  On the other hand, parsing of HTML files happens incrementally, meaning that the parser can pause
+  at any point to let scripts run. This is generally a good thing, but it does mean that authors
+  need to be careful to avoid hooking event handlers after the events could have possibly fired.
 
   There are two techniques for doing this reliably: use <a>event handler content attributes</a>, or
   create the element and add the event handlers in the same script. The latter is safe because, as
@@ -827,8 +825,8 @@
   :: While it is possible to use presentational markup in a way that provides users of assistive
       technologies (ATs) with an acceptable experience (e.g., using ARIA), doing so is significantly
       more difficult than doing so when using semantically-appropriate markup. Furthermore,
-      presentational markup does not guarantee accessibility for users of non-AT, non-graphical user
-      agents (such as text-mode browsers).
+      even using such techniques doesn't help make pages accessible for non-AT, non-graphical users,
+      such as users of text-mode browsers.
 
       Using media-independent markup, on the other hand, provides an easy way for documents to be
       authored in such a way that they are "accessible" for more users (e.g., users of text
@@ -852,7 +850,7 @@
   production environments, but it can be useful for rapid prototyping (where its rules can be
   directly moved into a separate style sheet later) and for providing specific styles in unusual
   cases where a separate style sheet would be inconvenient. Similarly, the <{style}> element can
-  be useful for grouping or for page-specific styles, but in general an external style sheet
+  be useful in syndication or for page-specific styles, but in general an external style sheet
   is likely to be more convenient when the styles apply to multiple pages.
 
   It is also worth noting that some elements that were previously presentational have been
@@ -886,10 +884,11 @@
       user agents, any syntax resulting in such behavior is considered invalid.
   : Errors that can result in infoset coercion
   :: When a user agent based on XML is connected to an HTML parser, it is possible that certain
-      invariants that XML enforces, such as comments never containing two consecutive hyphens, will
-      be violated by an HTML file. Handling this can require that the parser coerce the HTML DOM
-      into an XML-compatible infoset. Most syntax constructs that require such handling are
-      considered invalid.
+      invariants that XML enforces, such as element or attribute names never contain multiple
+      colons, will be violated by an HTML file. Handling this can require that the parser coerce the
+      HTML DOM into an XML-compatible infoset. Most syntax constructs that require such handling are
+      considered invalid. (Comments containing two consecutive hyphens, or ending with a hyphen, are
+      exceptions that are allowed in the HTML syntax.)
   : Errors that result in disproportionately poor performance
   :: Certain syntax constructs can result in disproportionately poor performance. To discourage the
       use of such constructs, they are typically made non-conforming.
@@ -1065,8 +1064,8 @@
       harmless features are disallowed.
 
       <p class="example">
-        For example, attributes in end tags are currently invalid and ignored. A future change to
-        the language may make use of this syntax feature and can do so without conflicting with
+        For example, attributes in end tags are ignored currently, but they are invalid, in case a
+        future change to the language makes use of that syntax feature without conflicting with
         already-deployed (and valid!) content.
       </p>
 
@@ -1120,11 +1119,11 @@
       confusing combinations are disallowed.
 
       <p class="example">
-        For example, <{div}> elements are rendered as <a>block boxes</a>, and <{span}> elements as 
-        <a>inline boxes</a>. Putting a <a>block box</a> in an inline box is unnecessarily confusing; 
-        since either nesting just <{div}> elements, or nesting just <{span}> elements, or nesting 
-        <{span}> elements inside <{div}> elements all serve the same purpose as nesting a <{div}> 
-        element in a <{span}> element, but only the latter involves a <a>block box</a> in an 
+        For example, <{div}> elements are rendered as <a>block boxes</a>, and <{span}> elements as
+        <a>inline boxes</a>. Putting a <a>block box</a> in an inline box is unnecessarily confusing;
+        since either nesting just <{div}> elements, or nesting just <{span}> elements, or nesting
+        <{span}> elements inside <{div}> elements all serve the same purpose as nesting a <{div}>
+        element in a <{span}> element, but only the latter involves a <a>block box</a> in an
         <a>inline box</a>, the latter combination is disallowed.
       </p>
 

@@ -55,8 +55,6 @@
   attribute</a>. If present, it indicates that both the summary and the additional information is
   to be shown to the user. If the attribute is absent, only the summary is to be shown.
 
-  <div class="impl">
-
   When the element is created, if the attribute is absent, the additional information should be
   hidden; if the attribute is present, that information should be shown. Subsequently, if the
   attribute is removed, then the information should be hidden; if the attribute is added, the
@@ -91,13 +89,10 @@
 
   </ol>
 
-  The <a>task source</a> for this task must be the <a>DOM manipulation task
-  source</a>.
+  The <a>task source</a> for this task must be the <a>DOM manipulation task source</a>.
 
   The <dfn attribute for="HTMLDetailsElement"><code>open</code></dfn> IDL attribute must
   <a>reflect</a> the <code>open</code> content attribute.
-
-  </div>
 
   <div class="example">
     The following example shows the <{details}> element being used to hide technical
@@ -123,8 +118,7 @@
   </div>
 
   <div class="example">
-    The following shows how a <{details}> element can be used to hide some controls by
-    default:
+    The following shows how a <{details}> element can be used to hide some controls by default:
 
     <pre highlight="html">
       &lt;details&gt;
@@ -134,7 +128,7 @@
       &lt;/details&gt;
     </pre>
 
-    One could use this in conjunction with other <code>details</code> in a list to allow the user
+    One could use this in conjunction with other <{details}> in a list to allow the user
     to collapse a set of fields down to a small set of headings, with the ability to open each
     one.
 
@@ -142,11 +136,10 @@
 
     In these examples, the summary really just summarizes what the controls can change, and not
     the actual values, which is less than ideal.
-
   </div>
 
   <div class="example">
-    Because the <code>open</code> attribute is added and removed
+    Because the <{details/open}> attribute is added and removed
     automatically as the user interacts with the control, it can be used in CSS to style the element
     differently based on its state. Here, a stylesheet is used to animate the color of the summary
     when the element is opened or closed:
@@ -632,7 +625,7 @@
 
   The <dfn element-attr for="global"><code>contextmenu</code></dfn> attribute gives the element's
   context menu. The value must be the <a>ID</a> of a <{menu}>
-  element in the same <a>home subtree</a> whose <code>type</code>
+  element in the same <a>tree</a> whose <code>type</code>
   attribute is in the <a state for="menu">popup menu</a> state.
 
   <p class="note">
@@ -665,7 +658,7 @@
 
   Each element has an <dfn>assigned context menu</dfn>, which can be null. If an element <var>A</var> has a <{global/contextmenu}> attribute, and there is
   an element with the ID given by <var>A</var>'s <{global/contextmenu}> attribute's value in <var>A</var>'s
-  <a>home subtree</a>, and the first such element in <a>tree order</a> is a
+  <a>tree</a>, and the first such element in <a>tree order</a> is a
   <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">popup menu</a> state, then <var>A</var>'s <a>assigned
   context menu</a> is that element. Otherwise, if <var>A</var> has a parent element,
   then <var>A</var>'s <a>assigned context menu</a> is the <a>assigned context
@@ -774,66 +767,45 @@
     };
 
     dictionary RelatedEventInit : EventInit {
-      EventTarget? relatedTarget;
+      EventTarget? relatedTarget = null;
     };
   </pre>
 
   <dl class="domintro">
-
     <dt><var>event</var> . <code>relatedTarget</code></dt>
-
     <dd>
-
-    Returns the other event target involved in this event. For example, when a <code>show</code> event fires on a <{menu}> element, the other event
-    target involved in the event would be the element for which the menu is being shown.
-
+      Returns the other event target involved in this event. For example, when a <code>show</code>
+      event fires on a <{menu}> element, the other event target involved in the event would be the
+      element for which the menu is being shown.
     </dd>
-
   </dl>
 
-  <div class="impl">
-
-  The <dfn attribute for="RelatedEvent"><code>relatedTarget</code></dfn> attribute must
-  return the value it was initialized to. When the object is created, this attribute must be
-  initialized to null. It represents the other event target that is related to the event.
-
-  </div>
+  The <dfn attribute for="RelatedEvent"><code>relatedTarget</code></dfn> attribute must return the
+  value it was initialized to. It represents the other event target that is related to the event.
 
 <h4 id="commands">Commands</h4>
 
 <h5 id="facets">Facets</h5>
 
-  A <dfn for="menuitem" lt="defines a command|command">command</dfn> is the abstraction behind menu items, buttons, and
-  links. Once a command is defined, other parts of the interface can refer to the same command,
-  allowing many access points to a single feature to share facets such as the <a facet for="menuitem">Disabled State</a>.
+  A <dfn for="menuitem" lt="defines a command|command">command</dfn> is the abstraction behind menu
+  items, buttons, and links. Once a command is defined, other parts of the interface can refer to
+  the same command, allowing many access points to a single feature to share facets such as the
+  <a facet for="menuitem">Disabled State</a>.
 
   Commands are defined to have the following <dfn for="menuitem">facets</dfn>:
 
-  <dl>
-
-    <dt><dfn facet for="menuitem">Label</dfn></dt>
-
-    <dd>The name of the command as seen by the user.</dd>
-
-    <dt><dfn facet for="menuitem">Access Key</dfn></dt>
-
-    <dd>A key combination selected by the user agent that triggers the command. A command might not
-    have an Access Key.</dd>
-
-    <dt><dfn facet for="menuitem">Hidden State</dfn></dt>
-
-    <dd>Whether the command is hidden or not (basically, whether it should be shown in menus).</dd>
-
-    <dt><dfn facet for="menuitem">Disabled State</dfn></dt>
-
-    <dd>Whether the command is relevant and can be triggered or not.</dd>
-
-    <dt><dfn facet for="menuitem">Action</dfn></dt>
-
-    <dd>The actual effect that triggering the command will have. This could be a scripted event
-    handler, a <a for="url">URL</a> to which to <a>navigate</a>, or a form submission.</dd>
-
-  </dl>
+  : <dfn facet for="menuitem">Label</dfn>
+  :: The name of the command as seen by the user.
+  : <dfn facet for="menuitem">Access Key</dfn>
+  :: A key combination selected by the user agent that triggers the command. A command might not
+      have an Access Key.
+  : <dfn facet for="menuitem">Hidden State</dfn>
+  :: Whether the command is hidden or not (basically, whether it should be shown in menus).
+  : <dfn facet for="menuitem">Disabled State</dfn>
+  :: Whether the command is relevant and can be triggered or not.
+  : <dfn facet for="menuitem">Action</dfn>
+  :: The actual effect that triggering the command will have. This could be a scripted event
+      handler, a <a for="url">URL</a> to which to <a>navigate</a>, or a form submission.
 
   User agents may expose the <a>commands</a> that match the following criteria:
 
@@ -1356,7 +1328,7 @@
 
   When an element <var>subject</var> is placed in <a>centered alignment</a> mode,
   and when it is in that mode and has new rendering boxes created, the user agent must set up the
-  element such that its top static position, for the purposes of calculating the used value of the
+  element such that its top static position, for the purposes of calculating the <a>used value</a> of the
   'top' property, is the value that would place the element's top <a>margin edge</a> as far from the top of
   the <a>viewport</a> as the element's bottom <a>margin edge</a> from the bottom of the viewport, if the element's
   height is less than the height of the viewport, and otherwise is the value that would place the
@@ -1369,7 +1341,7 @@
 
   This top static position of a <{dialog}> element with <a>centered alignment</a>
   must remain the element's top static position until its boxes are recreated. (The element's static
-  position is only used in calculating the used value of the 'top' property in certain situations;
+  position is only used in calculating the <a>used value</a> of the 'top' property in certain situations;
   it's not used, for instance, to position the element if its 'position' property is set to
   ''static''.)
 

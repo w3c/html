@@ -965,8 +965,8 @@
     };
   </pre>
 
-  The <dfn attribute for="ErrorEvent"><code>message</code></dfn> attribute must return the
-  value it was initialized to. It represents the error message.
+  The <dfn attribute for="ErrorEvent"><code>message</code></dfn> attribute must return the value it
+  was initialized to. It represents the error message.
 
   The <dfn attribute for="ErrorEvent"><code>filename</code></dfn> attribute must return the value it
   was initialized to. It represents the <a>absolute URL</a> of the script in which the error
@@ -1208,22 +1208,26 @@
           <var>docs</var> all {{Document}} objects whose <a>browsing context</a>'s <a>top-level
           browsing context</a> is <var>B</var>.
 
-          <p class="note">Whether a <a>top-level browsing context</a> would benefit from having
-          its rendering updated depends on various factors, such as the update frequency. For
-          example, if the browser is attempting to achieve a 60 Hz refresh rate, then these steps
-          are only necessary every 60th of a second (about 16.7ms). If the browser finds that a
-          <a>top-level browsing context</a> is not able to sustain this rate, it might drop to a
-          more sustainable 30Hz for that set of {{Document}}s, rather than occasionally dropping
-          frames. (This specification does not mandate any particular model for when to update the
-          rendering.) Similarly, if a <a>top-level browsing context</a> is in the background, the
-          user agent might decide to drop that page to a much slower 4Hz, or even less.</p>
+          <p class="note">
+            Whether a <a>top-level browsing context</a> would benefit from having its rendering
+            updated depends on various factors, such as the update frequency. For example, if the
+            browser is attempting to achieve a 60 Hz refresh rate, then these steps are only
+            necessary every 60th of a second (about 16.7ms). If the browser finds that a
+            <a>top-level browsing context</a> is not able to sustain this rate, it might drop to a
+            more sustainable 30Hz for that set of {{Document}}s, rather than occasionally dropping
+            frames. (This specification does not mandate any particular model for when to update the
+            rendering.) Similarly, if a <a>top-level browsing context</a> is in the background, the
+            user agent might decide to drop that page to a much slower 4Hz, or even less.
+          </p>
 
-          <p class="note">Another example of why a browser might skip updating the rendering is to
-          ensure certain <a>tasks</a> are executed immediately after each other, with only
-          <a>microtask checkpoints</a> interleaved (and without, e.g.,
-          <a lt='run the animation frame callbacks'>animation frame callbacks</a> interleaved).
-          For example, a user agent might wish to coalesce timer callbacks together, with no
-          intermediate rendering updates.</p>
+          <p class="note">
+            Another example of why a browser might skip updating the rendering is to ensure certain
+            <a>tasks</a> are executed immediately after each other, with only
+            <a>microtask checkpoints</a> interleaved (and without, e.g.,
+            <a lt='run the animation frame callbacks'>animation frame callbacks</a> interleaved).
+            For example, a user agent might wish to coalesce timer callbacks together, with no
+            intermediate rendering updates.
+          </p>
       4. If there are a <a>nested browsing contexts</a> <var>B</var> that the user agent believes
           would not benefit from having their rendering updated at this time, then remove from
           <var>docs</var> all {{Document}} objects whose <a>browsing context</a> is in <var>B</var>.
@@ -1975,20 +1979,77 @@
   must act as if, for the purposes of <a>event dispatching</a>,
   the <code>Window</code> object is the parent of the <code>Document</code> object. [[!DOM]]
 
+<h3 id="windoworworkerglobalscope-mixin">The WindowOrWorkerGlobalScope mixin</h3>
+
+  The {{WindowOrWorkerGlobalScope}} mixin is for use of APIs that are to be exposed
+  on {{Window}} and {{WorkerGlobalScope}} objects.
+
+  <p class="note">
+    Other standards are encouraged to further extend it using <code>partial interface
+    {{WindowOrWorkerGlobalScope}} { … };</code> along with an appropriate reference.
+  </p>
+
+  <pre class="idl" data-highlight="webidl" dfn-for="WindowOrWorkerGlobalScope">
+    typedef (DOMString or Function) TimerHandler;
+
+    [NoInterfaceObject, Exposed=(Window, Worker)]
+    interface WindowOrWorkerGlobalScope {
+      [Replaceable] readonly attribute USVString origin;
+
+      // Base64 utility methods (WindowBase64)
+      DOMString btoa(DOMString btoa);
+      DOMString atob(DOMString atob);
+
+      // Timers (WindowTimers)
+      long setTimeout((Function or DOMString) handler, optional long timeout = 0, any... arguments);
+      void clearTimeout(optional long handle = 0);
+      long setInterval((Function or DOMString) handler, optional long timeout = 0, any... arguments);
+      void clearInterval(optional long handle = 0);
+
+      // ImageBitmap, Images (ImageBitmapFactories)
+      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image);
+      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image, long sx, long sy, long sw, long sh);
+    };
+    Window implements WindowOrWorkerGlobalScope;
+    WorkerGlobalScope implements WindowOrWorkerGlobalScope;
+  </pre>
+
+  <dl class="domintro">
+    <dt><var>origin</var> = <var>self</var> . <var>origin</var></dt>
+    <dd>
+      Returns the global object's origin, serialized as string.
+    </dd>
+  </dl>
+
+  <div class="example">
+    Developers are strongly encouraged to use <code>self.origin</code> over
+    <code>location.origin</code>. <code>self.origin</code> returns the origin of the
+    environment, while <code>location.origin</code> returns URL of the environment.
+
+    Imagine the following script executing in a document on https://example.com:
+
+    <pre>
+      var frame = document.createElement("iframe")
+      frame.onload = function() {
+        var frameWin = frame.contentWindow
+        console.log(frameWin.location.origin) // "null"
+        console.log(frameWin.origin) // "https://example.com"
+      }
+      document.body.appendChild(frame)
+    </pre>
+
+    <code>self.origin</code> is a more reliable security indicator.
+  </div>
+
+  The <code>origin</code> attribute's getter must return this object's relevant
+  setting object's origin, serialized.
+
+  <!-- TODO: origin and serialized references are missing. -->
+
 <h3 id="base64-utility-methods">Base64 utility methods</h3>
 
   The <code>atob()</code> and <code>btoa()</code> methods allow authors to transform content to and from
   the base64 encoding.
-
-  <pre class="idl" data-highlight="webidl" dfn-for="WindowBase64">
-    [NoInterfaceObject, Exposed=(Window, Worker)]
-    interface WindowBase64 {
-      DOMString btoa(DOMString btoa);
-      DOMString atob(DOMString atob);
-    };
-    Window implements WindowBase64;
-    WorkerGlobalScope implements WindowBase64;
-  </pre>
 
   <p class="note">
   In these APIs, for mnemonic purposes, the "b" can be considered to stand for
@@ -2194,10 +2255,9 @@
 <h3 id="dynamic-markup-insertion"><dfn lt="it can also come from script|dynamic markup insertion">Dynamic markup insertion</dfn></h3>
 
   <p class="note">
-  APIs for dynamically inserting markup into the document interact with the parser,
-  and thus their behavior varies depending on whether they are used with <a>HTML documents</a>
-  (and the <a>HTML parser</a>) or XHTML in <a>XML documents</a> (and the <a>XML
-  parser</a>).
+    APIs for dynamically inserting markup into the document interact with the parser, and thus their
+    behavior varies depending on whether they are used with <a>HTML documents</a> (and the
+    <a>HTML parser</a>) or <a>XML documents</a> (and the <a>XML parser</a>).
   </p>
 
 <h4 id="opening-the-input-stream">Opening the input stream</h4>
@@ -2363,68 +2423,47 @@
 <h4 id="closing-the-input-stream">Closing the input stream</h4>
 
   <dl class="domintro">
-
     <dt><var>document</var> . {{Document/close()}}</dt>
-
     <dd>
+      Closes the input stream that was opened by the <code>document.open()</code> method.
 
-    Closes the input stream that was opened by the <code>document.open()</code> method.
-
-    Throws an <code>InvalidStateError</code> exception if the
-    <code>Document</code> is an <a>XML
-    document</a>.
-
+      Throws an {{InvalidStateError}} exception if the {{Document}} is an <a>XML document</a>.
     </dd>
-
   </dl>
 
-  The <dfn method for="Document"><code>close()</code></dfn> method must run the following
-  steps:
+  The <dfn method for="Document"><code>close()</code></dfn> method must run the following steps:
 
-  <ol>
-
-    <li>If the <code>Document</code> object is not flagged as an <a>HTML
-    document</a>, throw an <code>InvalidStateError</code> exception and abort these
-    steps.</li>
-
-    <li>If there is no <a>script-created parser</a> associated with the document, then abort
-    these steps.</li>
-
-    <li>Insert an <a>explicit "EOF" character</a> at the end of the parser's <a>input
-    stream</a>.</li>
-
-    <li>If there is a <a>pending parsing-blocking script</a>, then abort these
-    steps.</li>
-
-    <li>Run the tokenizer, processing resulting tokens as they are emitted, and stopping when the
-    tokenizer reaches the <a>explicit "EOF" character</a> or <a>spins the event loop</a>.</li>
-
-  </ol>
+  1. If the {{Document}} object is an <a>XML document</a>, then throw an {{InvalidStateError}}
+      exception and abort these steps.
+  2. If there is no <a>script-created parser</a> associated with the document, then abort these
+      steps.
+  3. Insert an <a>explicit "EOF" character</a> at the end of the parser's <a>input stream</a>.
+  4. If there is a <a>pending parsing-blocking script</a>, then abort these steps.
+  5. Run the tokenizer, processing resulting tokens as they are emitted, and stopping when the
+      tokenizer reaches the <a>explicit "EOF" character</a> or <a>spins the event loop</a>.
 
 <h4 id="documentwrite"><a method lt="write()"><code>document.write()</code></a></h4>
 
   <dl class="domintro">
-
     <dt><var>document</var> . {{Document/write()|write}}(<var>text</var>...)</dt>
-
     <dd>
+      In general, adds the given string(s) to the <code>Document</code>'s input stream.
 
-    In general, adds the given string(s) to the <code>Document</code>'s input stream.
+      <p class="warning">
+        This method has very idiosyncratic behavior. In some cases, this method can affect the state
+        of the <a>HTML parser</a> while the parser is running, resulting in a DOM that does not
+        correspond to the source of the document (e.g., if the string written is the string
+        "<code>&lt;plaintext&gt;</code>" or "<code>&lt;!--</code>"). In other cases, the call can
+        clear the current page first, as if <code>document.open()</code> had been called. In yet
+        more cases, the method is simply ignored, or throws an exception. To make matters worse, the
+        exact behavior of this method can in some cases be dependent on network latency, which can
+        lead to failures that are very hard to debug. <strong>For all these reasons, use of this
+        method is strongly discouraged.</strong>
+      </p>
 
-    <p class="warning">This method has very idiosyncratic behavior. In some cases, this method can
-    affect the state of the <a>HTML parser</a> while the parser is running, resulting in a DOM
-    that does not correspond to the source of the document (e.g., if the string written is the string
-    "<code>&lt;plaintext&gt;</code>" or "<code>&lt;!--</code>"). In other cases,
-    the call can clear the current page first, as if <code>document.open()</code> had been called. In yet more cases, the method
-    is simply ignored, or throws an exception. To make matters worse, the exact behavior of this
-    method can in some cases be dependent on network latency, which can lead to failures that are very hard to debug. <strong>For all these reasons, use
-    of this method is strongly discouraged.</strong></p>
-
-    This method throws an <code>InvalidStateError</code> exception when invoked on <a>XML
-    documents</a>.
-
+        This method throws an <code>InvalidStateError</code> exception when invoked on
+        <a>XML documents</a>.
     </dd>
-
   </dl>
 
   <code>Document</code> objects have an <dfn>ignore-destructive-writes counter</dfn>, which is
@@ -2533,18 +2572,6 @@
   The <code>setTimeout()</code>
   and <code>setInterval()</code>
   methods allow authors to schedule timer-based callbacks.
-
-  <pre class="idl" data-highlight="webidl" dfn-for="WindowTimers">
-    [NoInterfaceObject, Exposed=(Window,Worker)]
-    interface WindowTimers {
-      long setTimeout((Function or DOMString) handler, optional long timeout = 0, any... arguments);
-      void clearTimeout(optional long handle = 0);
-      long setInterval((Function or DOMString) handler, optional long timeout = 0, any... arguments);
-      void clearInterval(optional long handle = 0);
-    };
-    Window implements WindowTimers;
-    WorkerGlobalScope implements WindowTimers;
-  </pre>
 
   <dl class="domintro">
 
@@ -4516,16 +4543,6 @@
             ImageData or
             CanvasRenderingContext2D or
             ImageBitmap) ImageBitmapSource;
-  </pre>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="ImageBitmapFactories">
-    [NoInterfaceObject, Exposed=(Window, Worker)]
-    interface ImageBitmapFactories {
-      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image);
-      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image, long sx, long sy, long sw, long sh);
-    };
-    Window implements ImageBitmapFactories;
-    WorkerGlobalScope implements ImageBitmapFactories;
   </pre>
 
   An <code>ImageBitmap</code> object represents a bitmap image that can be painted to a canvas
