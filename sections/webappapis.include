@@ -1979,20 +1979,77 @@
   must act as if, for the purposes of <a>event dispatching</a>,
   the <code>Window</code> object is the parent of the <code>Document</code> object. [[!DOM]]
 
+<h3 id="windoworworkerglobalscope-mixin">The WindowOrWorkerGlobalScope mixin</h3>
+
+  The {{WindowOrWorkerGlobalScope}} mixin is for use of APIs that are to be exposed
+  on {{Window}} and {{WorkerGlobalScope}} objects.
+
+  <p class="note">
+    Other standards are encouraged to further extend it using <code>partial interface
+    {{WindowOrWorkerGlobalScope}} { … };</code> along with an appropriate reference.
+  </p>
+
+  <pre class="idl" data-highlight="webidl" dfn-for="WindowOrWorkerGlobalScope">
+    typedef (DOMString or Function) TimerHandler;
+
+    [NoInterfaceObject, Exposed=(Window, Worker)]
+    interface WindowOrWorkerGlobalScope {
+      [Replaceable] readonly attribute USVString origin;
+
+      // Base64 utility methods (WindowBase64)
+      DOMString btoa(DOMString btoa);
+      DOMString atob(DOMString atob);
+
+      // Timers (WindowTimers)
+      long setTimeout((Function or DOMString) handler, optional long timeout = 0, any... arguments);
+      void clearTimeout(optional long handle = 0);
+      long setInterval((Function or DOMString) handler, optional long timeout = 0, any... arguments);
+      void clearInterval(optional long handle = 0);
+
+      // ImageBitmap, Images (ImageBitmapFactories)
+      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image);
+      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image, long sx, long sy, long sw, long sh);
+    };
+    Window implements WindowOrWorkerGlobalScope;
+    WorkerGlobalScope implements WindowOrWorkerGlobalScope;
+  </pre>
+
+  <dl class="domintro">
+    <dt><var>origin</var> = <var>self</var> . <var>origin</var></dt>
+    <dd>
+      Returns the global object's origin, serialized as string.
+    </dd>
+  </dl>
+
+  <div class="example">
+    Developers are strongly encouraged to use <code>self.origin</code> over
+    <code>location.origin</code>. <code>self.origin</code> returns the origin of the
+    environment, while <code>location.origin</code> returns URL of the environment.
+
+    Imagine the following script executing in a document on https://example.com:
+
+    <pre>
+      var frame = document.createElement("iframe")
+      frame.onload = function() {
+        var frameWin = frame.contentWindow
+        console.log(frameWin.location.origin) // "null"
+        console.log(frameWin.origin) // "https://example.com"
+      }
+      document.body.appendChild(frame)
+    </pre>
+
+    <code>self.origin</code> is a more reliable security indicator.
+  </div>
+
+  The <code>origin</code> attribute's getter must return this object's relevant
+  setting object's origin, serialized.
+
+  <!-- TODO: origin and serialized references are missing. -->
+
 <h3 id="base64-utility-methods">Base64 utility methods</h3>
 
   The <code>atob()</code> and <code>btoa()</code> methods allow authors to transform content to and from
   the base64 encoding.
-
-  <pre class="idl" data-highlight="webidl" dfn-for="WindowBase64">
-    [NoInterfaceObject, Exposed=(Window, Worker)]
-    interface WindowBase64 {
-      DOMString btoa(DOMString btoa);
-      DOMString atob(DOMString atob);
-    };
-    Window implements WindowBase64;
-    WorkerGlobalScope implements WindowBase64;
-  </pre>
 
   <p class="note">
   In these APIs, for mnemonic purposes, the "b" can be considered to stand for
@@ -2515,18 +2572,6 @@
   The <code>setTimeout()</code>
   and <code>setInterval()</code>
   methods allow authors to schedule timer-based callbacks.
-
-  <pre class="idl" data-highlight="webidl" dfn-for="WindowTimers">
-    [NoInterfaceObject, Exposed=(Window,Worker)]
-    interface WindowTimers {
-      long setTimeout((Function or DOMString) handler, optional long timeout = 0, any... arguments);
-      void clearTimeout(optional long handle = 0);
-      long setInterval((Function or DOMString) handler, optional long timeout = 0, any... arguments);
-      void clearInterval(optional long handle = 0);
-    };
-    Window implements WindowTimers;
-    WorkerGlobalScope implements WindowTimers;
-  </pre>
 
   <dl class="domintro">
 
@@ -4498,16 +4543,6 @@
             ImageData or
             CanvasRenderingContext2D or
             ImageBitmap) ImageBitmapSource;
-  </pre>
-
-  <pre class="idl" data-highlight="webidl" dfn-for="ImageBitmapFactories">
-    [NoInterfaceObject, Exposed=(Window, Worker)]
-    interface ImageBitmapFactories {
-      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image);
-      Promise&lt;ImageBitmap&gt; createImageBitmap(ImageBitmapSource image, long sx, long sy, long sw, long sh);
-    };
-    Window implements ImageBitmapFactories;
-    WorkerGlobalScope implements ImageBitmapFactories;
   </pre>
 
   An <code>ImageBitmap</code> object represents a bitmap image that can be painted to a canvas
