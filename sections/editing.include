@@ -629,12 +629,26 @@
   whether it is supposed to be reachable using <a>sequential focus navigation</a> and, optionally,
   to suggest where in the sequential focus navigation order the element appears.
 
-  <p class="warning">
-    Using a positive value for <{global/tabindex}> to specify the element's position in the
-    <a>sequential focus navigation</a> order interacts with the order of all focusable elements.
-    It is error-prone, and therefore not recommended. Authors should generally
-    leave elements to appear in their default order, specifying <code>tabindex="0"</code> to make an element <a>focusable</a>.
-  </p>
+  <div class="warning">
+    <p>
+      Using a positive value for <{global/tabindex}> to specify the element's position in the
+      <a>sequential focus navigation</a> order interacts with the order of all focusable elements.
+      It is error-prone, and therefore not recommended. Authors should generally
+      leave elements to appear in their default order.
+    </p>
+    <p>
+      Elements that do not receive focus by default can be made <a>focusable</a> using
+      <code>tabindex="0"</code>. This value does not specify a particular position in the
+      <a>sequential focus navigation</a> order. Instead, the element's position in the navigation
+      order will be determined by the order in which the element appears in the document.
+      However, authors should only make elements focusable if they act as interactive controls or widgets.
+      In addition, authors should ensure that these focusable elements have an appropriate ARIA <code>role</code>
+      attribute.
+    </p>
+    <p>
+      For non-interactive elements that need to receive focus but that are not meant to be part of the <a>sequential focus navigation</a> order (for instance, the target of a skip link, or a container element that needs to be programmatically focused via JavaScript), authors should use a negative value of <code>tabindex="-1"</code>.
+    </p>
+  </div>
 
   The name "tab index" comes from the common use of the "tab" key to navigate through the focusable
   elements. The term "tabbing" refers to moving between focusable elements using sequential focus navigation.
@@ -698,13 +712,6 @@
       <li><a>Browsing context containers</a></li>
 
     </ul>
-
-    <p class="note">
-  One valid reason to ignore the platform conventions and always allow an element
-    to be focused (by setting its <a>tabindex focus flag</a>) would be if the user's only
-    mechanism for activating an element is through a keyboard action that triggers the focused
-    element.
-  </p>
 
     </dd>
 
@@ -775,13 +782,10 @@
 
   </dl>
 
-  An element that has its <a>tabindex focus flag</a> set but does not otherwise have an
-  <a>activation behavior</a> defined has an <a>activation behavior</a> that does
-  nothing.
-
   <p class="note">
-  This means that an element that is only focusable because of its <code>tabindex</code> attribute will fire a <code>click</code> event in response to a non-mouse activation (e.g., hitting the
-  "enter" key while the element is <a>focused</a>).
+  In current user agent implementations, an element that is only focusable because of its <code>tabindex</code>
+  attribute will generally <em>not</em> fire a <code>click</code> event in response to a non-mouse activation
+  (e.g., hitting the "enter" key while the element is <a>focused</a>).
   </p>
 
   An element with the <code>tabindex</code> attribute specified is
@@ -789,8 +793,8 @@
 
   The <dfn attribute for="HTMLElement"><code>tabIndex</code></dfn> IDL attribute must
   <a>reflect</a> the value of the <code>tabindex</code> content
-  attribute. Its default value is 0 for elements that are focusable and -1 for elements that
-  are not focusable.
+  attribute. Its default value is 0 for elements that are focusable and are included in the
+  <a>sequential focus navigation order</a>, and -1 for all other elements.
 
   <p class="warning">
   Most current browsers instead give the {{HTMLElement/tabIndex}} IDL attribute a value of 0 for some list of elements that are by default a <a>focusable area</a>, and -1 for other elements, if there is no <{global/tabindex}> content attribute set. This behaviour is not well-defined and will hopefully be improved in the future.</p>
