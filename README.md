@@ -11,7 +11,7 @@ repository.
 
 1. Install [bikeshed](https://github.com/tabatkins/bikeshed)
 
-   **Important this spec was built using a snapshot of the bikeshed tool)**
+   **Important:** this spec was built using a snapshot of the bikeshed tool
 
 2. From the bikeshed folder open a command prompt
 3. Checkout the commit used to build this branch:
