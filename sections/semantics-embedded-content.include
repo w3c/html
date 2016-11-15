@@ -431,7 +431,7 @@
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLPictureElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLPictureElement : HTMLElement {};
       </pre>
     </dd>
@@ -458,28 +458,32 @@
 
   <dl class="element">
     <dt><a>Categories</a>:</dt>
-    <dd>Same as for the <{source}> element.</dd>
+    <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>As a child of a <{picture}> element, before the <{img}> element.</dd>
+    <dd>As a child of a <a>media element</a>, before any <a>flow content</a> or <{track}> elements.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd>Same as for the <{source}> element.</dd>
+    <dd><a>Nothing</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>No <a>end tag</a></dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>srcset</code> - Images to use in different situations
-    (e.g., high-resolution displays, small monitors, etc)</dd>
-    <dd><code>sizes</code> - Image sizes between breakpoints</dd>
-    <dd><code>media</code> - Applicable media</dd>
+    <dd><code>src</code> - Address of the resource</dd>
     <dd><code>type</code> - Type of embedded resource</dd>
+    <dd><code>srcset</code> - Images to use in different situations (e.g., high-resolution displays,
+    small monitors, etc)</dd>
+    <dd><code>sizes</code> - Image sizes between breakpoints</dd>
+    <dd><code>media</code> - Applicable media</dd>   
     <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
     <dd>None</dd>
     <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLSourceElement" id='Picture-HTMLSourceElement'>
-        partial interface HTMLSourceElement {
+      <pre class="idl" data-highlight="webidl">
+        interface HTMLSourceElement : HTMLElement {
+          attribute DOMString src;
+          attribute DOMString type;
           attribute DOMString srcset;
           attribute DOMString sizes;
           attribute DOMString media;
@@ -488,59 +492,60 @@
     </dd>
   </dl>
 
-  The authoring requirements in this section only apply if the <a element lt="picture source"><code>source</code></a> element has
-  a parent that is a <{picture}> element.
+<!--  The authoring requirements in this section only apply if the <a element lt="picture source"><code>source</code></a> element has
+  a parent that is a <{picture}> element. -->
 
-  The <a element lt="picture source"><code>source</code></a> element allows authors to specify multiple alternative
-  <a>source sets</a> for <{img}> elements.
-  It does not <a>represent</a> anything on its own.
+  The <{source}> element allows authors to specify multiple alternative <a>source sets</a> for 
+  <{img}> elements or multiple alternative <a>media resources</a> for <a>media elements</a>. It does 
+  not <a>represent</a> anything on its own.
+  
+  The <dfn element-attr for="source"><code>type</code></dfn> attribute may be present. If present,
+  the value must be a <a>valid MIME type</a>.
+  
+  The remainder of the requirements depend on whether the parent is a <{picture}> element or a 
+  <a>media element</a>:
+  
+  <dl class="switch">
+    <dt><{source}> element's parent is a <{picture}> element</dt>
+    <dd>The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be 
+    present, and must consist of one or more <a>image candidate strings</a>, each separated from the 
+    next by a U+002C COMMA character (,). If an <a>image candidate string</a> contains no 
+    descriptors and no <a>space characters</a> after the URL, the following 
+    <a>image candidate string</a>, if there is one, must begin with one or more 
+    <a>space characters</a>.
 
-  The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be present,
-  and must consist of one or more <a>image candidate strings</a>,
-  each separated from the next by a U+002C COMMA character (,).
-  If an <a>image candidate string</a> contains no descriptors
-  and no <a>space characters</a> after the URL,
-  the following <a>image candidate string</a>, if there is one,
-  must begin with one or more <a>space characters</a>.
+    If the <{source/srcset}> attribute has any <a>image candidate strings</a> using a 
+    <a>width descriptor</a>, the 
+    <dfn element-attr for="source"><code>sizes</code></dfn> content attribute must also be present,
+    and the value must be a <a>valid source size list</a>.
 
-  If the <{source/srcset}> attribute has any
-  <a>image candidate strings</a> using a <a>width descriptor</a>,
-  the <dfn element-attr for="source"><code>sizes</code></dfn> content attribute must also be present,
-  and the value must be a <a>valid source size list</a>.
+    The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be present.
+    If present, the value must contain a <a>valid media query list</a>.
 
-  The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be present.
-  If present, the value must contain a <a>valid media query list</a>.
+    The <{source/type}> gives the type of the images in the <a>source set</a>, to allow the user 
+    agent to skip to the next <{source}> element if it does not support the given type.
 
-  The <dfn element-attr for="source" lt='picture source type'><code>type</code></dfn> content attribute may also be present.
-  If present, the value must be a <a>valid mime type</a>.
-  It gives the type of the images in the <a>source set</a>,
-  to allow the user agent to skip to the next <{source}> element
-  if it does not support the given type.
+    <p class="note">
+      If the <{source/type}> attribute is <em>not</em> specified, the user agent will not select a 
+      different <{source}> element if it finds that it does not support the image format after 
+      fetching it.
+    </p>
 
-  <p class="note">
-    If the <code>type</code> attribute
-  is <em>not</em> specified, the user agent will not select a different
-  <{source}> element if it finds that it does not support
-  the image format after fetching it.
-  </p>
+    When a <{source}> element has a following sibling <{source}> element or <{img}> element with a
+    <code>srcset</code> attribute specified, it must have at least one of the following:
 
-  When a <a element lt="picture source"><code>source</code></a> element has a following sibling
-  <a element lt="picture source"><code>source</code></a> element or <{img}> element with a
-  <code>srcset</code> attribute specified, it must have
-  at least one of the following:
+    * A <{source/media}> attribute specified with a value that, after 
+        <a>stripping leading and trailing whitespace</a>, is not the empty string and is not an 
+        <a>ASCII case-insensitive</a> match for the string "<code>all</code>".
+    * A <{source/type}> attribute specified.
 
-  <ul>
-
-    <li>A <code>media</code> attribute specified with a value that,
-    after <a>stripping leading and trailing whitespace</a>,
-    is not the empty string and is not an <a>ASCII case-insensitive</a> match for the string "<code>all</code>".</li>
-
-    <li>A <code>type</code> attribute specified.</li>
-
-  </ul>
-
-  The <code>src</code> attribute must not be present.
-
+    The <code>src</code> attribute must not be present.
+    </dd>
+    <dt></dt>
+    <dd>
+    </dd>
+  </dl>
+    
   <div class="impl">
 
   The IDL attributes <dfn attribute for="HTMLSourceElement"><code>srcset</code></dfn>,
@@ -589,7 +594,7 @@
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLImageElement">
+      <pre class="idl" data-highlight="webidl">
         [NamedConstructor=Image(optional unsigned long width, optional unsigned long height)]
         interface HTMLImageElement : HTMLElement {
           attribute DOMString alt;
@@ -3470,7 +3475,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLIFrameElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLIFrameElement : HTMLElement {
           attribute DOMString src;
           attribute DOMString srcdoc;
@@ -3997,7 +4002,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLEmbedElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLEmbedElement : HTMLElement {
           attribute DOMString src;
           attribute DOMString type;
@@ -4346,7 +4351,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLObjectElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLObjectElement : HTMLElement {
           attribute DOMString data;
           attribute DOMString type;
@@ -4968,7 +4973,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLParamElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLParamElement : HTMLElement {
           attribute DOMString name;
           attribute DOMString value;
@@ -5080,7 +5085,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLVideoElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLVideoElement : HTMLMediaElement {
           attribute unsigned long width;
           attribute unsigned long height;
@@ -5412,7 +5417,7 @@ zero or more <{track}> elements, then
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-    <pre class="idl" data-highlight="webidl" dfn-for="HTMLAudioElement">
+    <pre class="idl" data-highlight="webidl">
       [NamedConstructor=Audio(optional DOMString src)]
       interface HTMLAudioElement : HTMLMediaElement {};
     </pre>
@@ -5485,36 +5490,6 @@ zero or more <{track}> elements, then
 
 <h4 id="the-source-element">The <dfn element for="media"><code>source</code></dfn> element</h4>
 
-  <dl class="element">
-    <dt><a>Categories</a>:</dt>
-    <dd>None.</dd>
-    <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <a>media element</a>, before any <a>flow content</a>
-  or <{track}> elements.</dd>
-    <dt><a>Content model</a>:</dt>
-    <dd><a>Nothing</a>.</dd>
-    <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>No <a>end tag</a></dd>
-    <dt><a>Content attributes</a>:</dt>
-    <dd><a>Global attributes</a></dd>
-    <dd><code>src</code> - Address of the resource</dd>
-    <dd><code>type</code> - Type of embedded resource</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dt><a>DOM interface</a>:</dt>
-    <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLSourceElement">
-        interface HTMLSourceElement : HTMLElement {
-          attribute DOMString src;
-          attribute DOMString type;
-        };
-      </pre>
-    </dd>
-  </dl>
-
-  The <{source}> element allows authors to specify multiple alternative <a>media resources</a> for <a>media elements</a>. It does not <a>represent</a> anything on its own.
 
   The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
   <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
@@ -5670,7 +5645,7 @@ zero or more <{track}> elements, then
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTrackElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLTrackElement : HTMLElement {
           attribute DOMString kind;
           attribute DOMString src;
@@ -5891,15 +5866,15 @@ zero or more <{track}> elements, then
   {{HTMLMediaElement}} objects (<{audio}> and <{video}>, in this specification) are simply known as
   <dfn lt="media element|media elements">media elements</dfn>.
 
-  <pre class="idl" data-highlight="webidl" dfn-for="CanPlayTypeResult">
+  <pre class="idl" data-highlight="webidl">
     enum CanPlayTypeResult { "" /* empty string */, "maybe", "probably" };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="MediaProvider">
+  <pre class="idl" data-highlight="webidl">
     typedef (MediaStream or MediaSource or Blob) MediaProvider;
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="HTMLMediaElement">
+  <pre class="idl" data-highlight="webidl">
     interface HTMLMediaElement : HTMLElement {
 
       // error state
@@ -6020,7 +5995,7 @@ zero or more <{track}> elements, then
 
   </div>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="MediaError">
+  <pre class="idl" data-highlight="webidl">
     interface MediaError {
       const unsigned short MEDIA_ERR_ABORTED = 1;
       const unsigned short MEDIA_ERR_NETWORK = 2;
@@ -8671,7 +8646,7 @@ zero or more <{track}> elements, then
   The <code>AudioTrackList</code> and <code>VideoTrackList</code> interfaces are used by
   attributes defined in the previous section.
 
-  <pre class="idl" data-highlight="webidl" dfn-for="AudioTrackList">
+  <pre class="idl" data-highlight="webidl">
     interface AudioTrackList : EventTarget {
       readonly attribute unsigned long length;
       getter AudioTrack (unsigned long index);
@@ -8683,7 +8658,7 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="AudioTrack">
+  <pre class="idl" data-highlight="webidl">
     interface AudioTrack {
       readonly attribute DOMString id;
       readonly attribute DOMString kind;
@@ -8693,7 +8668,7 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="VideoTrackList">
+  <pre class="idl" data-highlight="webidl">
     interface VideoTrackList : EventTarget {
       readonly attribute unsigned long length;
       getter VideoTrack (unsigned long index);
@@ -8706,7 +8681,7 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="VideoTrack">
+  <pre class="idl" data-highlight="webidl">
     interface VideoTrack {
       readonly attribute DOMString id;
       readonly attribute DOMString kind;
@@ -9905,7 +9880,7 @@ zero or more <{track}> elements, then
 
 <h6 id="text-track-api">Text track API</h6>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrackList">
+  <pre class="idl" data-highlight="webidl">
     interface TextTrackList : EventTarget {
       readonly attribute unsigned long length;
       getter TextTrack (unsigned long index);
@@ -9970,7 +9945,7 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrack">
+  <pre class="idl" data-highlight="webidl">
     enum TextTrackMode { "disabled",  "hidden",  "showing" };
 
     enum TextTrackKind { "subtitles",  "captions",  "descriptions",  "chapters",  "metadata" };
@@ -10180,11 +10155,11 @@ zero or more <{track}> elements, then
   the {{TextTrack}} object represents, as defined by the following list:
 
   <dl>
-    <dt>"<dfn enum for="TextTrackMode"><code>disabled</code></dfn>"</dt>
+    <dt>"<dfn enum-value for="TextTrackMode"><code>disabled</code></dfn>"</dt>
     <dd>The <a mode for="track" lt="disabled">text track disabled</a> mode.</dd>
-    <dt>"<dfn enum for="TextTrackMode"><code>hidden</code></dfn>"</dt>
+    <dt>"<dfn enum-value for="TextTrackMode"><code>hidden</code></dfn>"</dt>
     <dd>The <a mode for="track" lt="hidden">text track hidden</a> mode.</dd>
-    <dt>"<dfn enum for="TextTrackMode"><code>showing</code></dfn>"</dt>
+    <dt>"<dfn enum-value for="TextTrackMode"><code>showing</code></dfn>"</dt>
     <dd>The <a mode for="track" lt="showing">text track showing</a> mode.</dd>
   </dl>
 
@@ -10329,7 +10304,7 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrackCueList">
+  <pre class="idl" data-highlight="webidl">
     interface TextTrackCueList {
       readonly attribute unsigned long length;
       getter TextTrackCue (unsigned long index);
@@ -10383,7 +10358,7 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrackCue">
+  <pre class="idl" data-highlight="webidl">
     interface TextTrackCue : EventTarget {
       readonly attribute TextTrack? track;
 
@@ -10478,7 +10453,7 @@ zero or more <{track}> elements, then
   appropriate to expose the data in the cues of a <a>media-resource-specific text track</a>,
   the {{DataCue}} object is used. [[INBANDTRACKS]]
 
-  <pre class="idl" data-highlight="webidl" dfn-for="DataCue">
+  <pre class="idl" data-highlight="webidl">
     [Constructor(double startTime, double endTime, ArrayBuffer data)]
     interface DataCue : TextTrackCue {
       attribute ArrayBuffer data;
@@ -10921,7 +10896,7 @@ red:89
   Objects implementing the <code>TimeRanges</code> interface
   represent a list of ranges (periods) of time.
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TimeRanges">
+  <pre class="idl" data-highlight="webidl">
     interface TimeRanges {
       readonly attribute unsigned long length;
       double start(unsigned long index);
@@ -11007,7 +10982,7 @@ red:89
 
 <h5 id="the-trackevent-interface">The <code>TrackEvent</code> interface</h5>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TrackEvent">
+  <pre class="idl" data-highlight="webidl">
     [Constructor(DOMString type, optional TrackEventInit eventInitDict)]
     interface TrackEvent : Event {
       readonly attribute (VideoTrack or AudioTrack or TextTrack)? track;
@@ -11589,7 +11564,7 @@ red:89
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLMapElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLMapElement : HTMLElement {
           attribute DOMString name;
           [SameObject] readonly attribute HTMLCollection areas;
@@ -11710,7 +11685,7 @@ red:89
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLAreaElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLAreaElement : HTMLElement {
           attribute DOMString alt;
           attribute DOMString coords;
