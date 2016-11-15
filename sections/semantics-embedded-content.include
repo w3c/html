@@ -420,7 +420,7 @@
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>Where <a>embedded content</a> is expected.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd>Zero or more <a element lt="picture source"><code>source</code></a> elements, followed by one <{img}> element, optionally intermixed with <a>script-supporting elements</a>.</dd>
+    <dd>Zero or more <{source}> elements, followed by one <{img}> element, optionally intermixed with <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
@@ -445,8 +445,8 @@
   <p class="note">
     The <{picture}> element is somewhat different
     from the similar-looking <code>video</code> and <{audio}> elements.
-    While all of them contain <a element lt="picture source"><code>source</code></a> elements,
-    the <a element lt="picture source"><code>source</code></a> element's <code>src</code> attribute has no meaning
+    While all of them contain <{source}> elements,
+    the <{source}> element's <{source/src}> attribute has no meaning
     when the element is nested within a <{picture}> element,
     and the resource selection algorithm is different.
     As well, the <{picture}> element itself does not display anything;
@@ -454,7 +454,7 @@
     that enables it to choose from multiple <a for="url">URLs</a>.
   </p>
 
-<h4 id="the-source-element-when-used-with-the-picture-element">The <dfn element for="picture" lt="picture source"><code>source</code></dfn> element when used with the <{picture}> element</h4>
+<h4 id="the-source-element">The <dfn element "picture source"><code>source</code></dfn> element</h4>
 
   <dl class="element">
     <dt><a>Categories</a>:</dt>
@@ -491,9 +491,6 @@
       </pre>
     </dd>
   </dl>
-
-<!--  The authoring requirements in this section only apply if the <a element lt="picture source"><code>source</code></a> element has
-  a parent that is a <{picture}> element. -->
 
   The <{source}> element allows authors to specify multiple alternative <a>source sets</a> for 
   <{img}> elements or multiple alternative <a>media resources</a> for <a>media elements</a>. It does 
@@ -541,20 +538,142 @@
 
     The <code>src</code> attribute must not be present.
     </dd>
-    <dt></dt>
-    <dd>
+    <dt><{source}> element's parent is a <a>media element</a></dt>
+    <dd>The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
+    <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
+    by spaces</a>. This attribute must be present.
+
+    <p class="note">
+      Dynamically modifying a <{source}> element and its attribute when the
+    element is already inserted in a <code>video</code> or <{audio}> element will have no
+    effect. To change what is playing, just use the <code>src</code> attribute
+    on the <a>media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
+    resources. Generally, manipulating <{source}> elements manually after the document has
+    been parsed is an unnecessarily complicated approach.
+    </p>
+
+    The <{source/type}> content attribute gives the type of the
+    <a>media resource</a>, to help the user agent determine if it can play this <a>media
+    resource</a> before fetching it. If specified, its value must be a <a>valid MIME
+    type</a>. The <code>codecs</code> parameter, which certain MIME types define, might be
+    necessary to specify exactly how the resource is encoded. [[!RFC6381]]
+
+    <div class="example">
+      The following list shows some examples of how to use the <code>codecs=</code> MIME
+      parameter in the <{source/type}> attribute.
+
+      : H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
+      </pre>
+
+      : H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'&gt;
+      </pre>
+
+      : H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'&gt;
+      </pre>
+
+      : H.264 &quot;High&quot; profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'&gt;
+      </pre>
+
+      : MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'&gt;
+      </pre>
+
+      : MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'&gt;
+      </pre>
+
+      : MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container
+      :: <pre highlight="html">
+  &lt;source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'&gt;
+      </pre>
+
+      : Theora video and Vorbis audio in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'&gt;
+      </pre>
+
+      : Theora video and Speex audio in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='video.ogv' type='video/ogg; codecs="theora, speex"'&gt;
+      </pre>
+
+      : Vorbis audio alone in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='audio.ogg' type='audio/ogg; codecs=vorbis'&gt;
+      </pre>
+
+      : Speex audio alone in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='audio.spx' type='audio/ogg; codecs=speex'&gt;
+      </pre>
+
+      : FLAC audio alone in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='audio.oga' type='audio/ogg; codecs=flac'&gt;
+      </pre>
+
+      : Dirac video and Vorbis audio in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'&gt;
+      </pre>
+
+    </div>
+    
+    The <{source/srcset}>, <{source/sizes}>, and <{source/media}> attributes must not be present.
     </dd>
   </dl>
-    
-  <div class="impl">
-
-  The IDL attributes <dfn attribute for="HTMLSourceElement"><code>srcset</code></dfn>,
+  
+  If a <{source}> element is inserted as a child of a <a>media element</a> that has no 
+  <{source/src}> attribute and whose <code>networkState</code> has the value 
+  <code>NETWORK_EMPTY</code>, the user agent must invoke the <a>media element</a>'s 
+  <a>resource selection algorithm</a>.
+  
+  The IDL attributes 
+  <dfn attribute for="HTMLSourceElement"><code>src</code></dfn>,
+  <dfn attribute for="HTMLSourceElement"><code>type</code></dfn>,
+  <dfn attribute for="HTMLSourceElement"><code>srcset</code></dfn>,
   <dfn attribute for="HTMLSourceElement"><code>sizes</code></dfn> and
   <dfn attribute for="HTMLSourceElement"><code>media</code></dfn> must <a>reflect</a> the
   respective content attributes of the same name.
 
-  </div>
+  <div class="example">
+    If the author isn't sure if user agents will all be able to render the media resources
+    provided, the author can listen to the <code>error</code> event on the last
+    <{source}> element and trigger fallback behavior:
 
+    <pre highlight="html">
+&lt;script&gt;
+  function fallback(video) {
+    // replace &lt;video&gt; with its contents
+    while (video.hasChildNodes()) {
+      if (video.firstChild instanceof HTMLSourceElement)
+        video.removeChild(video.firstChild);
+      else
+        video.parentNode.insertBefore(video.firstChild, video);
+    }
+    video.parentNode.removeChild(video);
+  }
+&lt;/script&gt;
+&lt;video controls autoplay&gt;
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
+  &lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'
+          onerror="fallback(parentNode)"&gt;
+  ...
+&lt;/video&gt;
+    </pre>
+
+  </div>
+  
 <h4 id="the-img-element">The <dfn element><code>img</code></dfn> element</h4>
 
   <dl class="element">
@@ -5491,136 +5610,9 @@ zero or more <{track}> elements, then
 <h4 id="the-source-element">The <dfn element for="media"><code>source</code></dfn> element</h4>
 
 
-  The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
-  <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
-  by spaces</a>. This attribute must be present.
-
-  <p class="note">
-    Dynamically modifying a <{source}> element and its attribute when the
-  element is already inserted in a <code>video</code> or <{audio}> element will have no
-  effect. To change what is playing, just use the <code>src</code> attribute
-  on the <a>media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
-  resources. Generally, manipulating <{source}> elements manually after the document has
-  been parsed is an unnecessarily complicated approach.
-  </p>
-
-  The <dfn element-attr for="source"><code>type</code></dfn> content attribute gives the type of the
-  <a>media resource</a>, to help the user agent determine if it can play this <a>media
-  resource</a> before fetching it. If specified, its value must be a <a>valid MIME
-  type</a>. The <code>codecs</code> parameter, which certain MIME types define, might be
-  necessary to specify exactly how the resource is encoded. [[!RFC6381]]
-
-  <div class="example">
-    The following list shows some examples of how to use the <code>codecs=</code> MIME
-    parameter in the <code>type</code> attribute.
-
-    <dl>
-
-    <dt>H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>H.264 &quot;High&quot; profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'&gt;
-    </pre></dd>
-
-    <dt>Theora video and Vorbis audio in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'&gt;
-    </pre></dd>
-
-    <dt>Theora video and Speex audio in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.ogv' type='video/ogg; codecs="theora, speex"'&gt;
-    </pre></dd>
-
-    <dt>Vorbis audio alone in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='audio.ogg' type='audio/ogg; codecs=vorbis'&gt;
-    </pre></dd>
-
-    <dt>Speex audio alone in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='audio.spx' type='audio/ogg; codecs=speex'&gt;
-    </pre></dd>
-
-    <dt>FLAC audio alone in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='audio.oga' type='audio/ogg; codecs=flac'&gt;
-    </pre></dd>
-
-    <dt>Dirac video and Vorbis audio in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'&gt;
-    </pre></dd>
-
-    </dl>
-
-  </div>
-
-  If a <code>source</code> element is inserted as a child of a <a>media element</a> that
-  has no <code>src</code> attribute and whose <code>networkState</code> has the value <code>NETWORK_EMPTY</code>, the user agent must invoke the <a>media element</a>'s <a>resource selection
-  algorithm</a>.
-
-  The IDL attributes <dfn attribute for="HTMLSourceElement"><code>src</code></dfn> and
-  <dfn attribute for="HTMLSourceElement"><code>type</code></dfn> must <a>reflect</a> the respective
-  content attributes of the same name.
-
-  <div class="example">
-    If the author isn't sure if user agents will all be able to render the media resources
-    provided, the author can listen to the <code>error</code> event on the last
-    <{source}> element and trigger fallback behavior:
-
-    <pre highlight="html">
-&lt;script&gt;
-  function fallback(video) {
-    // replace &lt;video&gt; with its contents
-    while (video.hasChildNodes()) {
-      if (video.firstChild instanceof HTMLSourceElement)
-        video.removeChild(video.firstChild);
-      else
-        video.parentNode.insertBefore(video.firstChild, video);
-    }
-    video.parentNode.removeChild(video);
-  }
-&lt;/script&gt;
-&lt;video controls autoplay&gt;
-  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
-  &lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'
-          onerror="fallback(parentNode)"&gt;
-  ...
-&lt;/video&gt;
-    </pre>
-
-  </div>
-
+  
+  
+  
 <h4 id="the-track-element">The <dfn element><code>track</code></dfn> element</h4>
 
   <dl class="element">
