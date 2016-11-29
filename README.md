@@ -25,9 +25,10 @@ There are some conventions for linking to things. For example,
 * For WebIDL terms use `{{HTMLImageElement/alt}}`
 * For Normative references use `[[!shortname]]` where `shortname` is the W3C "shortname" of the spec
 * For informative references use `[[shortname]]`
-* For spec text that differs from WHATWG and must not be overwritten is indicated by wrapping in a comment: `<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`
+
 
 And we try to follow these best-practices:
+* For spec text that differs from WHATWG and must not be overwritten is indicated by wrapping in a comment: `<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`
 * Line wrap at column `100` to keep lines easily readable
 * Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
 * Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
