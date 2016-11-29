@@ -13,29 +13,27 @@
 
 <h3 id="documents">Documents</h3>
 
-  Every XML and HTML document in an HTML user agent is represented by a {{Document}} object.
+  Every XML and HTML document in an HTML UA is represented by a {{Document}} object.
   [[!DOM]]
 
-  <dfn lt="the document address|address|the document's address|the address">The document's address</dfn>
-  is the <i>URL associated with a {{Document}}</i> (as defined in the DOM standard). It is initially
-  set when the {{Document}} is created, but that can change during the lifetime of the {{Document}};
-  for example, it changes when the user <a>navigates</a> to a <a for="url">fragment</a> on the page and when
-  the <code>pushState()</code> method is called with a new <a for="url">URL</a>. [[!DOM]]
+  The {{Document}} object's 
+  <dfn lt="the document address|address|the document's address|the address|concept-document-url">URL</dfn>
+  is defined in the DOM standard. It is initially set when the {{Document}} object is created, but 
+  that can change during the lifetime of the {{Document}} object; for example, it changes when the 
+  user <a>navigates</a> to a <a for="url">fragment</a> on the page and when the 
+  <code>pushState()</code> method is called with a new <a for="url">URL</a>. [[!DOM]]
 
-  <p class="warning">
-    Interactive user agents typically expose <a>the document's address</a> in their user interface.
-    This is the primary mechanism by which a user can tell if a site is attempting to impersonate
-    another.
-  </p>
+  <p class="warning">Interactive user agents typically expose the {{Document}} object's 
+  <a lt="concept-document-url">URL</a> in their user interface. This is the primary mechanism by 
+  which a user can tell if a site is attempting to impersonate another.</p>
 
   When a {{Document}} is created by a <a for="concept">script</a> using the <code>createDocument()</code>
-  or <code>createHTMLDocument()</code> APIs, <a>the document's address</a> is the same as
-  <a>the document's address</a> of the <a>responsible document</a> specified by the script's
-  <a>settings object</a>, and the {{Document}} is both <a>ready for post-load tasks</a> and
+  or <code>createHTMLDocument()</code> APIs, the {{Document}} is both <a>ready for post-load tasks</a> and
   <a>completely loaded</a> immediately.
 
-  <dfn>The document's referrer</dfn> is an <a>absolute URL</a> that can be set when the
-  {{Document}} is created. If it is not explicitly set, then its value is the empty string.
+  <dfn>The document's referrer</dfn> is a string (representing a <a for="url">URL</a>) that can be 
+  set when the {{Document}} is created. If it is not explicitly set, then its value is the empty 
+  string.
 
   Each {{Document}} object has a <dfn>reload override flag</dfn> that is originally unset.
   The flag is set by the <code>document.open()</code> and <a method lt="write()"><code>document.write()</code></a> methods in
@@ -53,12 +51,15 @@
       <a lt="document url">URL</a>.
   3. Let <var>HTTPS state</var> be the <a for="document">HTTPS state</a> of the
       <a>browsing context</a>'s <a>active document</a>.
+  4. Let |referrer policy| be the <a for="document">referrer policy</a> of the 
+      <a>browsing context</a>'s <a>active document</a>.
   4. Let <var>CSP list</var> be the <a for="document">CSP list</a> of the <a>browsing context</a>'s
       <a>active document</a>.
   5. <a>Navigate</a> the <a>browsing context</a> to a new <a>response</a> whose
-      <a for="response">body</a> is <var>source</var>, <a for="response">CSP list</a> is
+      <a for="response">body</a> is <var>source</var>, <a for="response">header list</a> is 
+      <code>`Referrer-Policy`/</code>|referrer policy|, <a for="response">CSP list</a> is
       <var>CSP list</var> and <a for="response">HTTPS state</a> is <var>HTTPS state</var>, with the
-      <a>exceptions enabled flag</a> and <a>replacement enabled</a>. The
+      <a>exceptions enabled flag</a> set and <a>replacement enabled</a>. The
       <a>source browsing context</a> is that given to the <a>overridden reload</a> algorithm. When
       the <a>navigate</a> algorithm creates a {{Document}} object for this purpose, set that
       {{Document}}'s <a>reload override flag</a> and set its <a>reload override buffer</a> to
@@ -132,6 +133,10 @@
   initially "<code>none</code>", which represents the security properties of the network channel
   used to deliver the {{Document}}'s data.
 
+  The {{Document}} has a <dfn for="document">referrer policy</dfn> (a <a>referrer policy</a>), 
+  initially the empty string, which represents the default <a>referrer policy</a> used by 
+  <a>fetches</a> initiated by the {{Document}}.
+  
   The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of
   <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise
   specified.
