@@ -18,8 +18,8 @@
 
   The {{Document}} object's <a for="Document">URL</a>
 <!--  <dfn lt="the document address|address|the document's address|the address|concept-document-url">URL</dfn> -->
-  is defined in the DOM specification. It is initially set when the {{Document}} object is created, 
-  but that can change during the lifetime of the {{Document}} object; for example, it changes when 
+  is defined in the DOM specification. It is initially set when the {{Document}} object is created,
+  but that can change during the lifetime of the {{Document}} object; for example, it changes when
   the user <a>navigates</a> to a <a for="url">fragment</a> on the page and when the
   {{History/pushState()}} method is called with a new <a for="url">URL</a>. [[!DOM]]
 
@@ -27,8 +27,8 @@
   <a for="Document">URL</a> in their user interface. This is the primary mechanism by
   which a user can tell if a site is attempting to impersonate another.</p>
 
-  When a {{Document}} is created by a <a for="concept">script</a> using the 
-  {{DOMImplementation/createDocument()}} or {{DOMImplementation/createHTMLDocument()}} APIs, the 
+  When a {{Document}} is created by a <a for="concept">script</a> using the
+  {{DOMImplementation/createDocument()}} or {{DOMImplementation/createHTMLDocument()}} APIs, the
   {{Document}} is both <a>ready for post-load tasks</a> and <a>completely loaded</a> immediately.
 
   <dfn>The document's referrer</dfn> is a string (representing a <a for="url">URL</a>) that can be
@@ -36,12 +36,12 @@
   string.
 
   Each {{Document}} object has a <dfn>reload override flag</dfn> that is originally unset.
-  The flag is set by the {{Document/open()|document.open()}} and 
-  {{Document/write()|document.write()}} methods in certain situations. When the flag is set, the 
-  {{Document}} also has a <dfn>reload override buffer</dfn> which is a Unicode string that is used 
+  The flag is set by the {{Document/open()|document.open()}} and
+  {{Document/write()|document.write()}} methods in certain situations. When the flag is set, the
+  {{Document}} also has a <dfn>reload override buffer</dfn> which is a Unicode string that is used
   as the source of the document when it is reloaded.
 
-  When the user agent is to perform 
+  When the user agent is to perform
   <dfn lt="overridden reload|an overridden reload">an overridden reload</dfn>, given a
   <a>source browsing context</a>, it must act as follows:
 
@@ -49,9 +49,9 @@
       <a>reload override buffer</a>.
   2. Let |address| be the <a>browsing context</a>'s <a>active document</a>'s
       <a lt="document url">URL</a>.
-  3. Let |HTTPS state| be the <a for="document">HTTPS state</a> of the <a>browsing context</a>'s 
+  3. Let |HTTPS state| be the <a for="document">HTTPS state</a> of the <a>browsing context</a>'s
       <a>active document</a>.
-  4. Let |referrer policy| be the <a for="document">referrer policy</a> of the
+  4. Let |referrer policy| be the <a lt="document referrer policy">referrer policy</a> of the
       <a>browsing context</a>'s <a>active document</a>.
   4. Let |CSP list| be the <a for="document">CSP list</a> of the <a>browsing context</a>'s
       <a>active document</a>.
@@ -133,9 +133,10 @@
   initially "<code>none</code>", which represents the security properties of the network channel
   used to deliver the {{Document}}'s data.
 
-  The {{Document}} has a <dfn for="document">referrer policy</dfn> (a <a>referrer policy</a>),
-  initially the empty string, which represents the default <a>referrer policy</a> used by
-  <a>fetches</a> initiated by the {{Document}}.
+  The {{Document}} has a 
+  <dfn export id="concept-document-referrer-policy" local-lt="document referrer policy">referrer policy</dfn>
+  (a <a>referrer policy</a>), initially the empty string, which represents the default 
+  <a>referrer policy</a> used by <a>fetches</a> initiated by the {{Document}}.
 
   The {{Document}} has a <dfn for="document">CSP list</dfn>, which is a list of
   <a>Content Security Policy</a> objects active in this context. The list is empty unless otherwise
@@ -152,10 +153,12 @@
         navigated to this one, unless it was blocked or there was no such document, in which case it
         returns the empty string.
 
-        The <a attr-value for="link/type"><code>noreferrer</code></a> link type can be used to block the referrer.
+        The <a attr-value for="link/type"><code>noreferrer</code></a> link type can be used to block
+        the referrer.
   </dl>
-        
-  The <dfn attribute for="Document"><code>referrer</code></dfn> attribute must return <a>the document's referrer</a>.
+
+  The <dfn attribute for="Document"><code>referrer</code></dfn> attribute must return
+  <a>the document's referrer</a>.
 
   <hr />
 
@@ -175,27 +178,27 @@
   the resource identified by the document's <a for="Document">URL</a>.
 
   A {{Document}} object that falls into one of the following conditions is a
-  <dfn lt="cookie-averse|sandbox cookies">cookie-averse {{Document}} object</dfn>:
+  <dfn lt="cookie-averse|sandbox cookies">cookie-averse</dfn> {{Document}} object:
 
   * A {{Document}} that has no <a>browsing context</a>.
   * A {{Document}} whose <a for="Document">URL</a>'s <a for="url">scheme</a> is not a
       <a>network scheme</a>.
 
-  On getting, if the document is a 
-  <a lt="cookie-averse">cookie-averse <code>Document</code> object</a>, then the user agent must 
-  return the empty string. Otherwise, if the {{Document}}'s <a for="concept">origin</a> is an 
-  <a>opaque origin</a>, the user agent must throw a "{{SecurityError}}" {{DOMException}}. Otherwise, 
-  the user agent must return the <a>cookie-string</a> for the document's 
+  On getting, if the document is a <a>cookie-averse</a> {{Document}} object, then the user agent
+  must return the empty string. Otherwise, if the {{Document}}'s <a for="concept">origin</a> is an
+  <a>opaque origin</a>, the user agent must throw a "{{SecurityError}}" {{DOMException}}. Otherwise,
+  the user agent must return the <a>cookie-string</a> for the document's
   <a for="Document">URL</a> for a "non-HTTP" API, decoded
   using <a>UTF-8 decode without BOM</a>.
   [[!COOKIES]]
   <a class="fingerprint" href="#fingerprinting-vector"><img height="21" src="images/fingerprint.png" width="15" alt="(This is a fingerprinting vector.)" /></a>
 
-  On setting, if the document is a <a lt="cookie-averse">cookie-averse <code>Document</code> object</a>, then
+  On setting, if the document is a <a>cookie-averse</a> {{Document}} object, then
   the user agent must do nothing. Otherwise, if the {{Document}}'s <a for="concept">origin</a> is
   an <a>opaque origin</a>, the user agent must throw a "{{SecurityError}}" {{DOMException}}.
-  Otherwise, the user agent must act as it would when <a>receiving a set-cookie-string</a> for the document's <a for="Document">URL</a>
-  via a "non-HTTP" API, consisting of the new value <a>encoded as UTF-8</a>. [[!COOKIES]] [[!ENCODING]]
+  Otherwise, the user agent must act as it would when <a>receiving a set-cookie-string</a> for the
+  document's <a for="Document">URL</a> via a "non-HTTP" API, consisting of the new value
+  <a>encoded as UTF-8</a>. [[!COOKIES]] [[!ENCODING]]
 
   <p class="note">Since the <code>cookie</code> attribute is accessible across frames, the path
   restrictions on cookies are only a tool to help manage which cookies are sent to which parts of
@@ -212,13 +215,11 @@
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . <code>lastModified</code></dt>
-    <dd>
-      Returns the date of the last modification to the document, as reported by the server, in the
-      form "<code>MM/DD/YYYY&nbsp;hh:mm:ss</code>", in the user's local time zone.
+    : |document| . {{Document/lastModified}}
+    :: Returns the date of the last modification to the document, as reported by the server, in the
+        form "<code>MM/DD/YYYY&nbsp;hh:mm:ss</code>", in the user's local time zone.
 
-      If the last modification date is not known, the current time is returned instead.
-    </dd>
+        If the last modification date is not known, the current time is returned instead.
   </dl>
 
   The <dfn attribute for="Document"><code>lastModified</code></dfn> attribute, on getting, must
@@ -251,15 +252,13 @@
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . {{Document/readyState}}</dt>
-    <dd>
-      Returns "<code>loading</code>" while the {{Document}} is loading, "<code>interactive</code>"
-      once it is finished parsing but still loading sub-resources, and "<code>complete</code>" once
-      it has loaded.
+    : |document| . {{Document/readyState}}
+    :: Returns "<code>loading</code>" while the {{Document}} is loading, "<code>interactive</code>"
+        once it is finished parsing but still loading sub-resources, and "<code>complete</code>"
+        once it has loaded.
 
-      The <code>readystatechange</code> event fires on the {{Document}} object when this value
-      changes.
-    </dd>
+        The <code>readystatechange</code> event fires on the {{Document}} object when this value
+        changes.
   </dl>
 
   Each document has a <dfn>current document readiness</dfn>. When a {{Document}} object  is created,
@@ -283,8 +282,8 @@
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . <code>head</code></dt>
-    <dd>Returns the <{head}> element.</dd>
+    : |document| . {{Document/head}}
+    :: Returns the <{head}> element.
   </dl>
 
   The <{head}> element of a document is the first <{head}> element that
@@ -296,19 +295,16 @@
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . <code>title</code> [ = |value| ]</dt>
-    <dd>
-      Returns the document's title, as given by the <{title}> element for HTML and
-      as given by the <a>SVG <code>title</code></a> element for SVG.
+    : |document| . {{Document/title}} [ = |value| ]
+    :: Returns the document's title, as given by the <{title}> element for HTML and as given by the
+        <a>SVG <code>title</code></a> element for SVG.
 
-      Can be set, to update the document's title. If there is no appropriate element to update, the
-      new value is ignored.
-    </dd>
+        Can be set, to update the document's title. If there is no appropriate element to update,
+        the new value is ignored.
   </dl>
 
-  The <{title}> element of a document is the first
-  <{title}> element in the document (in <a>tree order</a>), if
-  there is one, or null otherwise.
+  The <{title}> element of a document is the first <{title}> element in the document (in
+  <a>tree order</a>), if there is one, or null otherwise.
 
   The <dfn attribute for="Document"><code>title</code></dfn> attribute must, on getting, run the
   following algorithm:
@@ -326,42 +322,43 @@
   be run:
 
   <dl class="switch">
-  : If the <a>document element</a> is an <a>SVG svg</a> element [[!SVG]]
-  :: 1. If there is an <a>SVG <code>title</code></a> element that is a child of the
-          <a>document element</a>, let |element| be the first such element.
-      2. Otherwise:
-          1. Let |element| be the result of <a>creating an element</a> given the
-              <a>document element</a>'s <a>node document</a>,
-              <a lt="SVG title"><code>title</code></a>, and the <a>SVG namespace</a>.
-          2. Insert |element| as the first child of the <a>document element</a>.
-      3. Act as if the {{Node/textContent}} IDL attribute of |element| was set to the new
-          value being assigned.
+    : If the <a>document element</a> is an <a>SVG svg</a> element
+    :: 1. If there is an <a>SVG <code>title</code></a> element that is a child of the
+            <a>document element</a>, let |element| be the first such element.
+        2. Otherwise:
+            1. Let |element| be the result of <a>creating an element</a> given the
+                <a>document element</a>'s <a>node document</a>,
+                <a lt="SVG title"><code>title</code></a>, and the <a>SVG namespace</a>.
+            2. Insert |element| as the first child of the <a>document element</a>.
+        3. Act as if the {{Node/textContent}} IDL attribute of |element| was set to the new
+            value being assigned.
 
-  : If the <a>document element</a> is in the <a>HTML namespace</a>
-  :: 1. If the <{title}> element is null and the <{head}> element
-          is null, then abort these steps.
-      2. If the <{title}> element is null, then create a new
-          <{title}> element and <a>append</a> it to the <{head}>
-          element, and let |element| be the newly created element; otherwise, let
-          |element| be the <{title}> element.
-      3. Act as if the {{Node/textContent}} IDL attribute of |element| was set to the
-          new value being assigned.
+    : If the <a>document element</a> is in the <a>HTML namespace</a>
+    :: 1. If the <{title}> element is null and the <{head}> element
+            is null, then abort these steps.
+        2. If the <{title}> element is non-null, let |element| be the <{title}> element.
+        3. Otherwise:
+            1. Let |element| be the result of <a>creating an element</a> given the
+                <a>document element</a>'s <a>node document</a>, <{title}>, and the
+                <a>HTML namespace</a>.
+            2. <a>Append</a> |element| to the <{head}> element.
+        4. Act as if the {{Node/textContent}} IDL attribute of |element| was set to the new value
+            being assigned.
 
-  : Otherwise
-  :: Do nothing.
+    : Otherwise
+    :: Do nothing.
+  </dl>
 
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . <code>body</code> [ = |value| ]</dt>
-    <dd>
-      Returns the <{body}> element.
+    : |document| . {{Document/body}} [ = |value| ]
+    :: Returns the <{body}> element.
 
-      Can be set, to replace the <{body}> element.
+        Can be set, to replace the <{body}> element.
 
-      If the new value is not a <code>body</code> or <{frameset}> element, this will throw
-      a <code>HierarchyRequestError</code> exception.
-    </dd>
+        If the new value is not a <{body}> or <{frameset}> element, this will throw
+        a "{{HierarchyRequestError}}" {{DOMException}}.
   </dl>
 
   The <{body}> element of a document is the first child of the <{html}> element that is either a
@@ -372,170 +369,150 @@
   setting, the following algorithm must be run:
 
   1. If the new value is not a <{body}> or <{frameset}> element, then throw a
-      {{HierarchyRequestError}} exception and abort these steps.
+      "{{HierarchyRequestError}}" {{DOMException}} and abort these steps.
   2. Otherwise, if the new value is the same as the <{body}> element, do nothing. Abort these steps.
   3. Otherwise, if the <{body}> element is not null, then <a>replace</a> the <{body}> element
       with the new value within the <{body}> element's parent and abort these steps.
-  4. Otherwise, if there is no <a>document element</a>, throw a {{HierarchyRequestError}} exception
-      and abort these steps.
+  4. Otherwise, if there is no <a>document element</a>, throw a "{{HierarchyRequestError}}"
+      {{DOMException}} and abort these steps.
   5. Otherwise, the <{body}> element is null, but there's a <a>document element</a>. <a>Append</a>
       the new value to the <a>document element</a>.
 
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . <code>images</code></dt>
-    <dd>
-      Returns an <code>HTMLCollection</code> of the <{img}> elements in the
-      {{Document}}.
-    </dd>
+    : |document| . {{Document/images}}
+    :: Returns an {{HTMLCollection}} of the <{img}> elements in the {{Document}}.
 
-    <dt>|document| . <code>embeds</code></dt>
-    <dt>|document| . <code>plugins</code></dt>
-    <dd>
-      Return an <code>HTMLCollection</code> of the <{embed}> elements in the
-      {{Document}}.
-    </dd>
+    : |document| . {{Document/embeds}}
+    : |document| . {{Document/plugins}}
+    :: Return an {{HTMLCollection}} of the <{embed}> elements in the {{Document}}.
 
-    <dt>|document| . <code>links</code></dt>
-    <dd>
-      Returns an <code>HTMLCollection</code> of the <{a}> and <{area}> elements in
-      the {{Document}} that have <{links/href}> attributes.
-    </dd>
+    : |document| . {{Document/links}}
+    :: Returns an {{HTMLCollection}} of the <{a}> and <{area}> elements in the {{Document}}
+        that have <{links/href}> attributes.
 
-    <dt>|document| . <code>forms</code></dt>
-    <dd>
-      Return an <code>HTMLCollection</code> of the <{form}> elements in the
-      {{Document}}.
-    </dd>
+    : |document| . {{Document/forms}}
+    :: Return an {{HTMLCollection}} of the <{form}> elements in the {{Document}}.
 
-    <dt>|document| . <code>scripts</code></dt>
-    <dd>
-      Return an <code>HTMLCollection</code> of the <{script}> elements in the
-      {{Document}}.
-    </dd>
-
+    : |document| . {{Document/scripts}}
+    :: Return an {{HTMLCollection}} of the <{script}> elements in the {{Document}}.
   </dl>
 
-  The <dfn attribute for="Document"><code>images</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
-  at the {{Document}} node, whose filter matches only <{img}> elements.
+  The <dfn attribute for="Document"><code>images</code></dfn> attribute must return an 
+  {{HTMLCollection}} rooted at the {{Document}} node, whose filter matches only <{img}> elements.
 
-  The <dfn attribute for="Document"><code>embeds</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
-  at the {{Document}} node, whose filter matches only <{embed}> elements.
+  The <dfn attribute for="Document"><code>embeds</code></dfn> attribute must return an 
+  {{HTMLCollection}} rooted at the {{Document}} node, whose filter matches only <{embed}> elements.
 
-  The <dfn attribute for="Document"><code>plugins</code></dfn> attribute must return the same object as that returned by
-  the <code>embeds</code> attribute.
+  The <dfn attribute for="Document"><code>plugins</code></dfn> attribute must return the same object 
+  as that returned by the {{Document/embeds}} attribute.
 
-  The <dfn attribute for="Document"><code>links</code></dfn> attribute must return an <code>HTMLCollection</code> rooted at
-  the {{Document}} node, whose filter matches only <{a}> elements with
+  The <dfn attribute for="Document"><code>links</code></dfn> attribute must return an 
+  {{HTMLCollection}} rooted at the {{Document}} node, whose filter matches only <{a}> elements with
   <{links/href}> attributes and <{area}> elements with <{links/href}> attributes.
 
-  The <dfn attribute for="Document"><code>forms</code></dfn> attribute must return an <code>HTMLCollection</code> rooted at
-  the {{Document}} node, whose filter matches only <{form}> elements.
+  The <dfn attribute for="Document"><code>forms</code></dfn> attribute must return an 
+  {{HTMLCollection}} rooted at the {{Document}} node, whose filter matches only <{form}> elements.
 
-  The <dfn attribute for="Document"><code>scripts</code></dfn> attribute must return an <code>HTMLCollection</code> rooted
-  at the {{Document}} node, whose filter matches only <{script}> elements.
-
-  <hr />
-
-  <dl class="domintro">
-    <dt>
-      |collection| = |document| . <code>getElementsByName</code>(|name|)
-    </dt>
-    <dd>
-      Returns a <code>NodeList</code> of elements in the {{Document}} that have a
-      <code>name</code> attribute with the value |name|.
-    </dd>
-  </dl>
-
-  <div class="impl">
-    The <dfn method for="Document" lt="getElementsByName()|getElementsByName(elementName)"><code>getElementsByName(|name|)</code></dfn> method takes a string
-    |name|, and must return a <a>live</a> <code>NodeList</code> containing all the
-    <a>html elements</a> in that document that have a <code>name</code> attribute whose value is
-    equal to the |name| argument (in a <a>case-sensitive</a> manner), in <a>tree order</a>.
-    When the method is invoked on a {{Document}} object again with the same argument, the
-    user agent may return the same as the object returned by the earlier call. In other cases, a new
-    <code>NodeList</code> object must be returned.
-  </div>
+  The <dfn attribute for="Document"><code>scripts</code></dfn> attribute must return an 
+  {{HTMLCollection}} rooted at the {{Document}} node, whose filter matches only <{script}> elements.
 
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . <code>currentScript</code></dt>
-    <dd>
-      Returns the <{script}> element, or the <a>SVG <code>script</code></a> element, that is
-      currently executing. In the case of reentrant script execution, returns the one that most
-      recently started executing amongst those that have not yet finished executing.
-
-      Returns null if the {{Document}} is not currently executing a <code>script</code>
-      element or <a>SVG <code>script</code></a> element (e.g., because the running script is an
-      event handler, or a timeout).
-    </dd>
+    : |collection| = |document| . {{Document/getElementsByName()|getElementsByName}}(|name|)
+    :: Returns a {{NodeList}} of elements in the {{Document}} that have a <code>name</code>
+        attribute with the value |name|.
   </dl>
-
-  <div class="impl">
-    The <dfn attribute for="Document"><code>currentScript</code></dfn> attribute, on getting, must return the value to which
-    it was most recently initialized. When the {{Document}} is created, the
-    <code>currentScript</code> must be initialized to null.
-  </div>
-
-  <div class="impl">
-    <hr />
-
-    The {{Document}} interface <a spec="webidl" lt="support named properties">supports named properties</a>. The
-    <a spec="webidl">supported property names</a> at any moment consist of the values of the <code>name</code>
-    content attributes of all the <{applet}>, <a>exposed</a> <{embed}>,
-    <{form}>, <{iframe}>, <{img}>, and <a>exposed</a> <code>object</code>
-    elements in the {{Document}} that have non-empty <code>name</code> content attributes,
-    and the values of the <code>id</code> content attributes of all the <code>applet</code> and
-    <a>exposed</a> <{object}> elements in the {{Document}} that have non-empty
-    <code>id</code> content attributes, and the values of the <code>id</code> content attributes of
-    all the <{img}> elements in the {{Document}} that have both non-empty
-    <code>name</code> content attributes and non-empty <code>id</code> content attributes. The
-    <a spec="webidl">supported property names</a> must be in <a>tree order</a>, ignoring later duplicates, with
-    values from <code>id</code> attributes coming before values from <code>name</code> attributes
-    when the same element contributes both.
-
-    To <a spec="webidl">determine the value of a named property</a> |name| when
-    <dfn>the {{Document}} object is indexed for property retrieval</dfn>, the user agent
-    must return the value obtained using the following steps:
-
-    1. Let |elements| be the list of <a>named elements</a> with the name |name| in
-        the {{Document}}.
-
-        <p class="note">There will be at least one such element, by definition.</p>
-    2. If |elements| has only one element, and that element is an <code>iframe</code>
-        element, then return the <code>WindowProxy</code> object of the
-        <a>nested browsing context</a> represented by that <{iframe}> element, and abort
-        these steps.
-    3. Otherwise, if |elements| has only one element, return that element and abort these
-        steps.
-    4. Otherwise return an <code>HTMLCollection</code> rooted at the {{Document}} node,
-        whose filter matches only <a>named elements</a> with the name |name|.
-
-    <dfn>Named elements</dfn> with the name |name|, for the purposes of the above
-    algorithm, are those that are either:
-
-    * <{applet}>, <a>exposed</a> <{embed}>, <{form}>,
-        <{iframe}>, <{img}>, or <a>exposed</a> <{object}> elements that
-        have a <code>name</code> content attribute whose value is |name|, or
-    * <code>applet</code> or <a>exposed</a> <{object}> elements that have an
-        <code>id</code> content attribute whose value is |name|, or
-    * <{img}> elements that have an <code>id</code> content attribute whose value is
-        |name|, and that have a non-empty <code>name</code> content attribute present also.
-
-    An <code>embed</code> or <{object}> element is said to be <dfn>exposed</dfn> if it has
-    no <a>exposed</a> <code>object</code> ancestor, and, for <{object}> elements, is
-    additionally either not showing its <a>fallback content</a> or has no <code>object</code> or
-    <code>embed</code> descendants.
-  </div>
+  
+  The 
+  <dfn method for="Document" lt="getElementsByName()|getElementsByName(elementName)"><code>getElementsByName(|name|)</code></dfn> 
+  method takes a string |name|, and must return a <a>live</a> {{NodeList}} containing all the 
+  <a>html elements</a> in that document that have a <code>name</code> attribute whose value is
+  equal to the |name| argument (in a <a>case-sensitive</a> manner), in <a>tree order</a>. When the 
+  method is invoked on a {{Document}} object again with the same argument, the user agent may return 
+  the same as the object returned by the earlier call. In other cases, a new {{NodeList}} object 
+  must be returned.
 
   <hr />
 
-  <p class="note">
-    The <code>dir</code> attribute on the {{Document}} interface is defined along with the
-    <code>dir</code> content attribute.
-  </p>
+  <dl class="domintro">
+    : |document| . {{Document/currentScript}}
+    :: Returns the <{script}> element, or the <a>SVG <code>script</code></a> element, that is
+        currently executing, as long as the element represents a <a>classic script</a>. In the case 
+        of reentrant script execution, returns the one that most recently started executing amongst 
+        those that have not yet finished executing.
+
+        Returns null if the {{Document}} is not currently executing a <{script}>
+        element or <a>SVG <code>script</code></a> element (e.g., because the running script is an
+        event handler, or a timeout), or if the currently executing <{script}> or 
+        <a>SVG <code>script</code></a> element represents a <a>module script</a>.
+  </dl>
+
+  The <dfn attribute for="Document"><code>currentScript</code></dfn> attribute, on getting, must return the value to which
+  it was most recently initialized. When the {{Document}} is created, the
+  <code>currentScript</code> must be initialized to null.
+
+  <p class="note">This API has fallen out of favor in the implementor and standards community, as it 
+  globally exposes <{script}> or <a>SVG <code>script</code></a> elements. As such, it is not 
+  available in newer contexts, such as when running <a>module scripts</a> or when running scripts in 
+  a shadow tree.</p>
+  
+  <hr />
+
+  The {{Document}} interface 
+  <a spec="webidl" lt="support named properties">supports named properties</a>. The
+  <a spec="webidl">supported property names</a> of a {{Document}} object |document| at any moment 
+  consist of the following, in <a>tree order</a> according to the element that contributed them,
+  ignoring later duplicates, and with values from <{global/id}> attributes coming before values from 
+  <code>name</code> attributes when the same element contributes both:
+  
+  * the value of the <code>name</code> content attribute for all <{applet}>, <a>exposed</a> 
+      <{embed}>, <{form}>, <{iframe}>, <{img}>, and <a>exposed</a> <{object}> elements that have a
+      non-empty <code>name</code> content attribute and are <a>in a document tree</a> with 
+      |document| as their <a>root</a>;
+  * the value of the <{global/id}> content attribute for all <{applet}> and <a>exposed</a> 
+      <{object}> elements that have a non-empty <{global/id}> content attribute and are 
+      <a>in a document tree</a> with |document| as their <a>root</a>;
+  * the value of the <{global/id}> content attribute for all <{img}> elements that have both a 
+      non-empty <{global/id}> content attribute and a non-empty <code>name</code> content attribute,
+      and are <a>in a document tree</a> with |document| as their <a>root</a>. 
+
+  To <a spec="webidl">determine the value of a named property</a> |name| for a {{Document}}, the 
+  user agent must return the value obtained using the following steps:
+
+  1. Let |elements| be the list of <a>named elements</a> with the name |name| that are 
+      <a>in a document tree</a> with the {{Document}} as their <a>root</a>.
+
+      <p class="note">There will be at least one such element, by definition.</p>
+  2. If |elements| has only one element, and that element is an <{iframe}> element, and that 
+      <{iframe}> element's <a>nested browsing context</a> is not null, then return the 
+      {{WindowProxy}} object of the element's <a>nested browsing context</a>.
+  3. Otherwise, if |elements| has only one element, return that element.
+  4. Otherwise return an {{HTMLCollection}} rooted at the {{Document}} node,
+      whose filter matches only <a>named elements</a> with the name |name|.
+
+  <dfn>Named elements</dfn> with the name |name|, for the purposes of the above
+  algorithm, are those that are either:
+
+  * <{applet}>, <a>exposed</a> <{embed}>, <{form}>,
+      <{iframe}>, <{img}>, or <a>exposed</a> <{object}> elements that
+      have a <code>name</code> content attribute whose value is |name|, or
+  * <code>applet</code> or <a>exposed</a> <{object}> elements that have an
+      <code>id</code> content attribute whose value is |name|, or
+  * <{img}> elements that have an <code>id</code> content attribute whose value is
+      |name|, and that have a non-empty <code>name</code> content attribute present also.
+
+  An <code>embed</code> or <{object}> element is said to be <dfn>exposed</dfn> if it has
+  no <a>exposed</a> <code>object</code> ancestor, and, for <{object}> elements, is
+  additionally either not showing its <a>fallback content</a> or has no <code>object</code> or
+  <code>embed</code> descendants.
+
+  <hr />
+
+  <p class="note">The {{Document/dir}} attribute on the {{Document}} interface is defined along with 
+  the <{global/dir}> content attribute.</p>
 
   <div class="impl">
     <h4 id="loading-xml-documents">Loading XML documents</h4>
@@ -2024,84 +2001,71 @@
   steps from the following list:
 
   <dl class="switch">
-    <dt>If the element's <{global/dir}> attribute is in the <a state for="dir">ltr</a> state</dt>
-    <dt>
-      If the element is a <a>document element</a> and the <{global/dir}> attribute is not in a defined
-      state (i.e., it is not present or has an invalid value)
-    </dt>
-    <dt>
-      If the element is an <{input}> element whose <code>type</code> attribute is in the
-      <a element-state for="input">Telephone</a> state, and the <{global/dir}> attribute is not in a defined state (i.e., it
-      is not present or has an invalid value)
-    </dt>
-    <dd><a>The directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.</dd>
+    : If the element's <{global/dir}> attribute is in the <a state for="dir">ltr</a> state
+    : If the element is a <a>document element</a> and the <{global/dir}> attribute is not in a
+        defined state (i.e., it is not present or has an invalid value)
+    : If the element is an <{input}> element whose <code>type</code> attribute is in the
+        <a element-state for="input">Telephone</a> state, and the <{global/dir}> attribute is not in
+        a defined state (i.e., it is not present or has an invalid value)
+    :: <a>The directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.
 
-    <dt>If the element's <{global/dir}> attribute is in the <a attr-value for="global/dir"><code>rtl</code></a> state</dt>
-    <dd><a>The directionality</a> of the element is &quot;<a state for="dir">rtl</a>&quot;.</dd>
+    : If the element's <{global/dir}> attribute is in the
+        <a attr-value for="global/dir"><code>rtl</code></a> state
+    :: <a>The directionality</a> of the element is &quot;<a state for="dir">rtl</a>&quot;.
 
-    <dt>
-      If the element is an <{input}> element whose <code>type</code> attribute is in the
-      <a element-state for="input">Text</a>, <a element-state for="input">Search</a>, <a element-state for="input">Telephone</a>, <a element-state for="input">URL</a>, or <a element-state for="input">E-mail</a> state, and the
-      <{global/dir}> attribute is in the <a state for="dir">auto</a> state
-    </dt>
-    <dt>
-      If the element is a <{textarea}> element and the <{global/dir}> attribute is in the
-      <a state for="dir">auto</a> state
-    </dt>
-    <dd>
-      If the element's <a lt="attribute value">value</a> contains a character of bidirectional character type AL or R,
-      and there is no character of bidirectional character type L anywhere before it in the
-      element's <a lt="attribute value">value</a>, then <a>the directionality</a> of the element is &quot;<a state for="dir">rtl</a>&quot;.
-      [[!BIDI]]
+    : If the element is an <{input}> element whose <code>type</code> attribute is in the
+        <a element-state for="input">Text</a>, <a element-state for="input">Search</a>,
+        <a element-state for="input">Telephone</a>, <a element-state for="input">URL</a>, or
+        <a element-state for="input">E-mail</a> state, and the <{global/dir}> attribute is in the
+        <a state for="dir">auto</a> state
+    : If the element is a <{textarea}> element and the <{global/dir}> attribute is in the
+        <a state for="dir">auto</a> state
+    :: If the element's <a lt="attribute value">value</a> contains a character of bidirectional
+        character type AL or R, and there is no character of bidirectional character type L anywhere
+        before it in the element's <a lt="attribute value">value</a>, then <a>the directionality</a>
+        of the element is &quot;<a state for="dir">rtl</a>&quot;. [[!BIDI]]
 
-      Otherwise, if the element's <a lt="attribute value">value</a> is not the empty string, or if the element is a
-      <a>document element</a>, <a>the directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.
+        Otherwise, if the element's <a lt="attribute value">value</a> is not the empty string, or if
+        the element is a <a>document element</a>, <a>the directionality</a> of the element is
+        &quot;<a state for="dir">ltr</a>&quot;.
 
-      Otherwise, <a>the directionality</a> of the element is the same as the element's parent
-      element's <a>directionality</a>.
-    </dd>
+        Otherwise, <a>the directionality</a> of the element is the same as the element's parent
+        element's <a>directionality</a>.
 
-    <dt>If the element's <{global/dir}> attribute is in the <a state for="dir">auto</a> state</dt>
-    <dt>
-      If the element is a <{bdi}> element and the <{global/dir}> attribute is not in a
-      defined state (i.e., it is not present or has an invalid value)
-    </dt>
-    <dd>
-      Find the first character in <a>tree order</a> that matches the following criteria:
+    : If the element's <{global/dir}> attribute is in the <a state for="dir">auto</a> state
+    : If the element is a <{bdi}> element and the <{global/dir}> attribute is not in a defined state
+        (i.e., it is not present or has an invalid value)
+    :: Find the first character in <a>tree order</a> that matches the following criteria:
 
-      * The character is from a <code>Text</code> node that is a descendant of the element whose
-        <a>directionality</a> is being determined.
-      * The character is of bidirectional character type L, AL, or R. [[!BIDI]]
-      * The character is not in a <code>Text</code> node that has an ancestor element that is a
-        descendant of the element whose <a>directionality</a> is being determined and that is
-        either:
-        * A <{bdi}> element.
-        * A <{script}> element.
-        * A <{style}> element.
-        * A <{textarea}> element.
-        * An element with a <{global/dir}> attribute in a defined state.
+        * The character is from a <code>Text</code> node that is a descendant of the element whose
+            <a>directionality</a> is being determined.
+        * The character is of bidirectional character type L, AL, or R. [[!BIDI]]
+        * The character is not in a <code>Text</code> node that has an ancestor element that is a
+            descendant of the element whose <a>directionality</a> is being determined and that is
+            either:
 
-      If such a character is found and it is of bidirectional character type AL or R,
-      <a>the directionality</a> of the element is &quot;<a state for="dir">rtl</a>&quot;.
+            * A <{bdi}> element.
+            * A <{script}> element.
+            * A <{style}> element.
+            * A <{textarea}> element.
+            * An element with a <{global/dir}> attribute in a defined state.
 
-      If such a character is found and it is of bidirectional character type L,
-      <a>the directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.
+        If such a character is found and it is of bidirectional character type AL or R,
+        <a>the directionality</a> of the element is &quot;<a state for="dir">rtl</a>&quot;.
 
-      Otherwise, if the element is a <a>document element</a>, <a>the directionality</a> of the element
-      is &quot;<a state for="dir">ltr</a>&quot;.
+        If such a character is found and it is of bidirectional character type L,
+        <a>the directionality</a> of the element is &quot;<a state for="dir">ltr</a>&quot;.
 
-      Otherwise, <a>the directionality</a> of the element the same as the element's parent element's
-      <a>directionality</a>.
-    </dd>
+        Otherwise, if the element is a <a>document element</a>, <a>the directionality</a> of the
+        element is &quot;<a state for="dir">ltr</a>&quot;.
 
-    <dt>
-      If the element has a parent element and the <{global/dir}> attribute is not in a defined
-      state (i.e., it is not present or has an invalid value)
-    </dt>
-    <dd>
-      <a>The directionality</a> of the element is the same as the element's parent element's
-      <a>directionality</a>.
-    </dd>
+        Otherwise, <a>the directionality</a> of the element the same as the element's parent
+        element's <a>directionality</a>.
+
+    : If the element has a parent element and the <{global/dir}> attribute is not in a defined
+        state (i.e., it is not present or has an invalid value)
+    :: <a>The directionality</a> of the element is the same as the element's parent element's
+        <a>directionality</a>.
   </dl>
 
   <p class="note">
@@ -2124,24 +2088,20 @@
   first appropriate set of steps from the following list:
 
   <dl class="switch">
-    <dt>
-      If the attribute is a <a>directionality-capable attribute</a> and the element's
-      <{global/dir}> attribute is in the <a state for="dir">auto</a> state
-    </dt>
-    <dd>
-      Find the first character (in logical order) of the attribute's value that is of bidirectional
-      character type L, AL, or R. [[!BIDI]]</a>
+    : If the attribute is a <a>directionality-capable attribute</a> and the element's <{global/dir}>
+        attribute is in the <a state for="dir">auto</a> state
+    :: Find the first character (in logical order) of the attribute's value that is of bidirectional
+        character type L, AL, or R. [[!BIDI]]</a>
 
-      If such a character is found and it is of bidirectional character type AL or R, the
-      <a>directionality of the attribute</a> is &quot;<a attr-value for="global/dir"><code>rtl</code></a>&quot;.
+        If such a character is found and it is of bidirectional character type AL or R, the
+        <a>directionality of the attribute</a> is
+        &quot;<a attr-value for="global/dir"><code>rtl</code></a>&quot;.
 
-      Otherwise, the <a>directionality of the attribute</a> is &quot;<a attr-value for="global/dir"><code>ltr</code></a>&quot;.
-    </dd>
+        Otherwise, the <a>directionality of the attribute</a> is
+        &quot;<a attr-value for="global/dir"><code>ltr</code></a>&quot;.
 
-    <dt>Otherwise</dt>
-    <dd>
-      The <a>directionality of the attribute</a> is the same as <a>the element's directionality</a>.
-    </dd>
+    : Otherwise
+    :: The <a>directionality of the attribute</a> is the same as <a>the element's directionality</a>.
   </dl>
 
   The following attributes are <dfn>directionality-capable attributes</dfn>:
@@ -2159,16 +2119,15 @@
   <hr />
 
   <dl class="domintro">
-    <dt>|document| . {{Document/dir}} [ = |value| ]</dt>
-    <dd>
-      Returns the <{html}> element's <{global/dir}> attribute's value, if any.
+    : |document| . {{Document/dir}} [ = |value| ]
+    :: Returns the <{html}> element's <{global/dir}> attribute's value, if any.
 
-      Can be set, to either "<a attr-value for="global/dir"><code>ltr</code></a>", "<a attr-value for="global/dir"><code>rtl</code></a>", or "<a attr-value for="global/dir"><code>auto</code></a>" to
-      replace the <{html}> element's <{global/dir}> attribute's value.
+        Can be set, to either "<a attr-value for="global/dir"><code>ltr</code></a>",
+        "<a attr-value for="global/dir"><code>rtl</code></a>", or
+        "<a attr-value for="global/dir"><code>auto</code></a>" to replace the <{html}> element's
+        <{global/dir}> attribute's value.
 
-      If there is no <{html}> element, returns the empty string and ignores new
-      values.
-    </dd>
+        If there is no <{html}> element, returns the empty string and ignores new values.
   </dl>
 
   <div class="impl">
@@ -2270,11 +2229,9 @@
   <hr />
 
   <dl class="domintro">
-    <dt>|element| . <code>style</code></dt>
-    <dd>
-      Returns a <code>CSSStyleDeclaration</code> object for the element's <{global/style}>
-      attribute.
-    </dd>
+    : |element| . <code>style</code>
+    :: Returns a <code>CSSStyleDeclaration</code> object for the element's <{global/style}>
+        attribute.
   </dl>
 
   <div class="impl">
@@ -2355,15 +2312,12 @@
   <hr />
 
   <dl class="domintro">
-    <dt>|element| . {{HTMLElement/dataset}}</dt>
-    <dd>
-      Returns a <code>DOMStringMap</code> object for the element's <code>data-*</code> attributes.
+    : |element| . {{HTMLElement/dataset}}
+    :: Returns a <code>DOMStringMap</code> object for the element's <code>data-*</code> attributes.
 
-      Hyphenated names are converted to dromedaryCase (which is the same as CamelCase except
-      the initial letter is not uppercased). For example, <code>data-foo-bar=""</code> becomes
-      <code>element.dataset.fooBar</code>.
-    </dd>
-
+        Hyphenated names are converted to dromedaryCase (which is the same as CamelCase except
+        the initial letter is not uppercased). For example, <code>data-foo-bar=""</code> becomes
+        <code>element.dataset.fooBar</code>.
   </dl>
 
   <div class="impl">
@@ -2488,21 +2442,17 @@
   5. Process |node| according to the first matching step from the following list:
 
       <dl class="switch">
-        <dt>If |node| is a <code>Text</code> node</dt>
-        <dd>Append the text data of |node| to |string|.</dd>
+        : If |node| is a <code>Text</code> node
+        :: Append the text data of |node| to |string|.
 
-        <dt>If |node| is a <{br}> element</dt>
-        <dt>
-          If |node| is an <a>HTML element</a> that is <a>flow content</a> but that is not
-          also <a>phrasing content</a>
-        </dt>
-        <dd>
-          If |string| is not the empty string, push |string| onto
-          |output|, and let |string| be empty string.
-        </dd>
+        : If |node| is a <{br}> element
+        : If |node| is an <a>HTML element</a> that is <a>flow content</a> but that is not also
+            <a>phrasing content</a>
+        :: If |string| is not the empty string, push |string| onto |output|, and let |string| be 
+            empty string.
 
-        <dt>Otherwise</dt>
-        <dd>Do nothing.</dd>
+        : Otherwise
+        :: Do nothing.
       </dl>
   6. Let |node| be |node|'s next sibling, if any, or null otherwise.
   7. Jump to the step labeled <i>loop</i>.
