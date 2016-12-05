@@ -26,7 +26,9 @@ There are some conventions for linking to things. For example,
 * For Normative references use `[[!shortname]]` where `shortname` is the W3C "shortname" of the spec
 * For informative references use `[[shortname]]`
 
+
 And we try to follow these best-practices:
+* For spec text that differs from WHATWG and must not be overwritten is indicated by wrapping in a comment: `<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`
 * Line wrap at column `100` to keep lines easily readable
 * Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
 * Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
@@ -113,7 +115,7 @@ To make changes to the specification:
 The following considerations should be kept in mind when making a pull request:
 
 * Editorial changes that improve the readability of the spec or correct spelling or grammatical mistakes are welcome.
-* Ideally new features should be proposed in a new specification and not as additions to the HTML spec. The [Web Platform WG charter](https://www.w3.org/2015/10/webplatform-charter.html#deliverables) requires that the WG only adopt new proposals after they have been through an incubation phase. Please consider the WICG's [Intent to Migrate](https://wicg.github.io/admin/intent-to-migrate.html) template when proposing new features.
+* Ideally new features should be proposed in a new specification and not as additions to the HTML spec. The [Web Platform WG charter](https://www.w3.org/2016/11/webplatform-charter.html#deliverables) requires that the WG only adopt new proposals after they have been through an incubation phase. Please consider the WICG's [Intent to Migrate](https://wicg.github.io/admin/intent-to-migrate.html) template when proposing new features.
 * Normative changes to the spec should aim to improve interoperability amongst browsers. Such changes should be accompanied by a test case to show that the change does this. It may also include links to bug trackers for browsers showing that there is an intent to adopt the new behaviour.
 * Normative changes to the spec should be associated with a bug or issue that describes the reason for the change.
 

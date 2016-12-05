@@ -420,7 +420,7 @@
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>Where <a>embedded content</a> is expected.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd>Zero or more <a element lt="picture source"><code>source</code></a> elements, followed by one <{img}> element, optionally intermixed with <a>script-supporting elements</a>.</dd>
+    <dd>Zero or more <{source}> elements, followed by one <{img}> element, optionally intermixed with <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
@@ -431,7 +431,7 @@
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLPictureElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLPictureElement : HTMLElement {};
       </pre>
     </dd>
@@ -445,8 +445,8 @@
   <p class="note">
     The <{picture}> element is somewhat different
     from the similar-looking <code>video</code> and <{audio}> elements.
-    While all of them contain <a element lt="picture source"><code>source</code></a> elements,
-    the <a element lt="picture source"><code>source</code></a> element's <code>src</code> attribute has no meaning
+    While all of them contain <{source}> elements,
+    the <{source}> element's <{source/src}> attribute has no meaning
     when the element is nested within a <{picture}> element,
     and the resource selection algorithm is different.
     As well, the <{picture}> element itself does not display anything;
@@ -454,32 +454,36 @@
     that enables it to choose from multiple <a for="url">URLs</a>.
   </p>
 
-<h4 id="the-source-element-when-used-with-the-picture-element">The <dfn element for="picture" lt="picture source"><code>source</code></dfn> element when used with the <{picture}> element</h4>
+<h4 id="the-source-element">The <dfn element><code>source</code></dfn> element</h4>
 
   <dl class="element">
     <dt><a>Categories</a>:</dt>
-    <dd>Same as for the <{source}> element.</dd>
+    <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>As a child of a <{picture}> element, before the <{img}> element.</dd>
+    <dd>As a child of a <a>media element</a>, before any <a>flow content</a> or <{track}> elements.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd>Same as for the <{source}> element.</dd>
+    <dd><a>Nothing</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>No <a>end tag</a></dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>srcset</code> - Images to use in different situations
-    (e.g., high-resolution displays, small monitors, etc)</dd>
-    <dd><code>sizes</code> - Image sizes between breakpoints</dd>
-    <dd><code>media</code> - Applicable media</dd>
+    <dd><code>src</code> - Address of the resource</dd>
     <dd><code>type</code> - Type of embedded resource</dd>
+    <dd><code>srcset</code> - Images to use in different situations (e.g., high-resolution displays,
+    small monitors, etc)</dd>
+    <dd><code>sizes</code> - Image sizes between breakpoints</dd>
+    <dd><code>media</code> - Applicable media</dd>   
     <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
     <dd>None</dd>
     <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLSourceElement" id='Picture-HTMLSourceElement'>
-        partial interface HTMLSourceElement {
+      <pre class="idl" data-highlight="webidl">
+        interface HTMLSourceElement : HTMLElement {
+          attribute DOMString src;
+          attribute DOMString type;
           attribute DOMString srcset;
           attribute DOMString sizes;
           attribute DOMString media;
@@ -488,68 +492,188 @@
     </dd>
   </dl>
 
-  The authoring requirements in this section only apply if the <a element lt="picture source"><code>source</code></a> element has
-  a parent that is a <{picture}> element.
+  The <{source}> element allows authors to specify multiple alternative <a>source sets</a> for 
+  <{img}> elements or multiple alternative <a>media resources</a> for <a>media elements</a>. It does 
+  not <a>represent</a> anything on its own.
+  
+  The <dfn element-attr for="source"><code>type</code></dfn> attribute may be present. If present,
+  the value must be a <a>valid MIME type</a>.
+  
+  The remainder of the requirements depend on whether the parent is a <{picture}> element or a 
+  <a>media element</a>:
+  
+  <dl class="switch">
+    <dt><{source}> element's parent is a <{picture}> element</dt>
+    <dd>The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be 
+    present, and must consist of one or more <a>image candidate strings</a>, each separated from the 
+    next by a U+002C COMMA character (,). If an <a>image candidate string</a> contains no 
+    descriptors and no <a>space characters</a> after the URL, the following 
+    <a>image candidate string</a>, if there is one, must begin with one or more 
+    <a>space characters</a>.
 
-  The <a element lt="picture source"><code>source</code></a> element allows authors to specify multiple alternative
-  <a>source sets</a> for <{img}> elements.
-  It does not <a>represent</a> anything on its own.
+    If the <{source/srcset}> attribute has any <a>image candidate strings</a> using a 
+    <a>width descriptor</a>, the 
+    <dfn element-attr for="source"><code>sizes</code></dfn> content attribute must also be present,
+    and the value must be a <a>valid source size list</a>.
 
-  The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be present,
-  and must consist of one or more <a>image candidate strings</a>,
-  each separated from the next by a U+002C COMMA character (,).
-  If an <a>image candidate string</a> contains no descriptors
-  and no <a>space characters</a> after the URL,
-  the following <a>image candidate string</a>, if there is one,
-  must begin with one or more <a>space characters</a>.
+    The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be present.
+    If present, the value must contain a <a>valid media query list</a>.
 
-  If the <{source/srcset}> attribute has any
-  <a>image candidate strings</a> using a <a>width descriptor</a>,
-  the <dfn element-attr for="source"><code>sizes</code></dfn> content attribute must also be present,
-  and the value must be a <a>valid source size list</a>.
+    The <{source/type}> gives the type of the images in the <a>source set</a>, to allow the user 
+    agent to skip to the next <{source}> element if it does not support the given type.
 
-  The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be present.
-  If present, the value must contain a <a>valid media query list</a>.
+    <p class="note">
+      If the <{source/type}> attribute is <em>not</em> specified, the user agent will not select a 
+      different <{source}> element if it finds that it does not support the image format after 
+      fetching it.
+    </p>
 
-  The <dfn element-attr for="source" lt='picture source type'><code>type</code></dfn> content attribute may also be present.
-  If present, the value must be a <a>valid mime type</a>.
-  It gives the type of the images in the <a>source set</a>,
-  to allow the user agent to skip to the next <{source}> element
-  if it does not support the given type.
+    When a <{source}> element has a following sibling <{source}> element or <{img}> element with a
+    <code>srcset</code> attribute specified, it must have at least one of the following:
 
-  <p class="note">
-    If the <code>type</code> attribute
-  is <em>not</em> specified, the user agent will not select a different
-  <{source}> element if it finds that it does not support
-  the image format after fetching it.
-  </p>
+    * A <{source/media}> attribute specified with a value that, after 
+        <a>stripping leading and trailing whitespace</a>, is not the empty string and is not an 
+        <a>ASCII case-insensitive</a> match for the string "<code>all</code>".
+    * A <{source/type}> attribute specified.
 
-  When a <a element lt="picture source"><code>source</code></a> element has a following sibling
-  <a element lt="picture source"><code>source</code></a> element or <{img}> element with a
-  <code>srcset</code> attribute specified, it must have
-  at least one of the following:
+    The <code>src</code> attribute must not be present.
+    </dd>
+    <dt><{source}> element's parent is a <a>media element</a></dt>
+    <dd>The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
+    <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
+    by spaces</a>. This attribute must be present.
 
-  <ul>
+    <p class="note">
+      Dynamically modifying a <{source}> element and its attribute when the
+    element is already inserted in a <code>video</code> or <{audio}> element will have no
+    effect. To change what is playing, just use the <code>src</code> attribute
+    on the <a>media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
+    resources. Generally, manipulating <{source}> elements manually after the document has
+    been parsed is an unnecessarily complicated approach.
+    </p>
 
-    <li>A <code>media</code> attribute specified with a value that,
-    after <a>stripping leading and trailing whitespace</a>,
-    is not the empty string and is not an <a>ASCII case-insensitive</a> match for the string "<code>all</code>".</li>
+    The <{source/type}> content attribute gives the type of the
+    <a>media resource</a>, to help the user agent determine if it can play this <a>media
+    resource</a> before fetching it. If specified, its value must be a <a>valid MIME
+    type</a>. The <code>codecs</code> parameter, which certain MIME types define, might be
+    necessary to specify exactly how the resource is encoded. [[!RFC6381]]
 
-    <li>A <code>type</code> attribute specified.</li>
+    <div class="example">
+      The following list shows some examples of how to use the <code>codecs=</code> MIME
+      parameter in the <{source/type}> attribute.
 
-  </ul>
+      : H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
+      </pre>
 
-  The <code>src</code> attribute must not be present.
+      : H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'&gt;
+      </pre>
 
-  <div class="impl">
+      : H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'&gt;
+      </pre>
 
-  The IDL attributes <dfn attribute for="HTMLSourceElement"><code>srcset</code></dfn>,
+      : H.264 &quot;High&quot; profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'&gt;
+      </pre>
+
+      : MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'&gt;
+      </pre>
+
+      : MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+      :: <pre highlight="html">
+  &lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'&gt;
+      </pre>
+
+      : MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container
+      :: <pre highlight="html">
+  &lt;source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'&gt;
+      </pre>
+
+      : Theora video and Vorbis audio in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'&gt;
+      </pre>
+
+      : Theora video and Speex audio in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='video.ogv' type='video/ogg; codecs="theora, speex"'&gt;
+      </pre>
+
+      : Vorbis audio alone in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='audio.ogg' type='audio/ogg; codecs=vorbis'&gt;
+      </pre>
+
+      : Speex audio alone in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='audio.spx' type='audio/ogg; codecs=speex'&gt;
+      </pre>
+
+      : FLAC audio alone in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='audio.oga' type='audio/ogg; codecs=flac'&gt;
+      </pre>
+
+      : Dirac video and Vorbis audio in Ogg container
+      :: <pre highlight="html">
+  &lt;source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'&gt;
+      </pre>
+
+    </div>
+    
+    The <{source/srcset}>, <{source/sizes}>, and <{source/media}> attributes must not be present.
+    </dd>
+  </dl>
+  
+  If a <{source}> element is inserted as a child of a <a>media element</a> that has no 
+  <{source/src}> attribute and whose <code>networkState</code> has the value 
+  <code>NETWORK_EMPTY</code>, the user agent must invoke the <a>media element</a>'s 
+  <a>resource selection algorithm</a>.
+  
+  The IDL attributes 
+  <dfn attribute for="HTMLSourceElement"><code>src</code></dfn>,
+  <dfn attribute for="HTMLSourceElement"><code>type</code></dfn>,
+  <dfn attribute for="HTMLSourceElement"><code>srcset</code></dfn>,
   <dfn attribute for="HTMLSourceElement"><code>sizes</code></dfn> and
   <dfn attribute for="HTMLSourceElement"><code>media</code></dfn> must <a>reflect</a> the
   respective content attributes of the same name.
 
-  </div>
+  <div class="example">
+    If the author isn't sure if user agents will all be able to render the media resources
+    provided, the author can listen to the <code>error</code> event on the last
+    <{source}> element and trigger fallback behavior:
 
+    <pre highlight="html">
+&lt;script&gt;
+  function fallback(video) {
+    // replace &lt;video&gt; with its contents
+    while (video.hasChildNodes()) {
+      if (video.firstChild instanceof HTMLSourceElement)
+        video.removeChild(video.firstChild);
+      else
+        video.parentNode.insertBefore(video.firstChild, video);
+    }
+    video.parentNode.removeChild(video);
+  }
+&lt;/script&gt;
+&lt;video controls autoplay&gt;
+  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
+  &lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'
+          onerror="fallback(parentNode)"&gt;
+  ...
+&lt;/video&gt;
+    </pre>
+
+  </div>
+  
 <h4 id="the-img-element">The <dfn element><code>img</code></dfn> element</h4>
 
   <dl class="element">
@@ -589,7 +713,7 @@
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLImageElement">
+      <pre class="idl" data-highlight="webidl">
         [NamedConstructor=Image(optional unsigned long width, optional unsigned long height)]
         interface HTMLImageElement : HTMLElement {
           attribute DOMString alt;
@@ -693,7 +817,7 @@
   all <a>image candidate strings</a> for that
   element must have the <a>width descriptor</a> specified.
 
-  If an <a>image candidate string</a> for a <code>source</code> or
+  If an <a>image candidate string</a> for a <{source}> or
   <{img}> element has the <a>width descriptor</a> specified, all other
   <a>image candidate strings</a> for that element must also
   have the <a>width descriptor</a> specified.
@@ -824,8 +948,8 @@
 
     <li>The element is <a for="document">inserted into</a> or <a for="document">removed from</a> a <code>picture</code> parent element.</li>
 
-    <li>The element's parent is a <{picture}> element and a
-    <code>source</code> element is inserted as a previous sibling.</li>
+    <li>The element's parent is a <{picture}> element and a <{source}> element is inserted as a 
+    previous sibling.</li>
 
     <li>The element's parent is a <{picture}> element and a
     <{source}> element that was a previous sibling is <a>removed</a>.</li>
@@ -3470,7 +3594,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLIFrameElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLIFrameElement : HTMLElement {
           attribute DOMString src;
           attribute DOMString srcdoc;
@@ -3997,7 +4121,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLEmbedElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLEmbedElement : HTMLElement {
           attribute DOMString src;
           attribute DOMString type;
@@ -4346,7 +4470,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLObjectElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLObjectElement : HTMLElement {
           attribute DOMString data;
           attribute DOMString type;
@@ -4463,8 +4587,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     if the element is not <a>in a <code>Document</code></a> with a
     <a>browsing context</a>, or if the element's <a>node document</a> is not <a>fully
     active</a>, or if the element is still in the <a>stack of open elements</a> of an
-    <a>HTML parser</a> or <a>XML parser</a>, or if the element is not <a>being
-    rendered</a>, then jump to the step below labeled <i>fallback</i>.
+    <a>HTML parser</a> or <a>XML parser</a>, or if the element is not <a>being rendered</a>, or if the 
+    <a for="/">Should plugin element be blocked <i lang="li">a priori</i> by Content Security Policy?</a> algorithm 
+     returns "Blocked" when executed on the element, then jump to the step below labeled fallback. [[!CSP3]].
 
     </li>
 
@@ -4968,7 +5093,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLParamElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLParamElement : HTMLElement {
           attribute DOMString name;
           attribute DOMString value;
@@ -5080,7 +5205,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLVideoElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLVideoElement : HTMLMediaElement {
           attribute unsigned long width;
           attribute unsigned long height;
@@ -5324,11 +5449,14 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   features should, again, not interfere with the page's normal rendering.
 
   User agents may allow users to view the video content in manners more suitable to the user
-  (e.g., fullscreen or in an independent resizable window). As for the other user interface
-  features, controls to enable this should not interfere with the page's normal rendering unless the
-  user agent is <a>exposing a user interface</a>.
-  In such an independent context, however, user agents may make full user interfaces visible even
-  if the <{mediaelements/controls}> attribute is absent.
+  (e.g., fullscreen or in an independent resizable window). Captions, subtitles or other additional 
+  visual tracks should remain available and visible when enabled. As for the other user interface 
+  features, controls to enable this should not interfere with the page's normal rendering unless 
+  the user agent is exposing a user interfaceAs for the other user interface features, controls to 
+  enable this should not interfere with the page's normal rendering unless the user agent is 
+  <a>exposing a user interface</a>. In such an independent context, however, user agents may make 
+  full user interfaces visible e.g., play, pause, seeking, and volume controls even if the 
+  <{mediaelements/controls}> attribute is absent.
 
   User agents may allow video playback to affect system features that could interfere with the
   user's experience; for example, user agents could disable screensavers while video playback is in
@@ -5412,7 +5540,7 @@ zero or more <{track}> elements, then
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-    <pre class="idl" data-highlight="webidl" dfn-for="HTMLAudioElement">
+    <pre class="idl" data-highlight="webidl">
       [NamedConstructor=Audio(optional DOMString src)]
       interface HTMLAudioElement : HTMLMediaElement {};
     </pre>
@@ -5482,170 +5610,7 @@ zero or more <{track}> elements, then
   constructor is found.
 
   </div>
-
-<h4 id="the-source-element">The <dfn element for="media"><code>source</code></dfn> element</h4>
-
-  <dl class="element">
-    <dt><a>Categories</a>:</dt>
-    <dd>None.</dd>
-    <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <a>media element</a>, before any <a>flow content</a>
-  or <{track}> elements.</dd>
-    <dt><a>Content model</a>:</dt>
-    <dd><a>Nothing</a>.</dd>
-    <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>No <a>end tag</a></dd>
-    <dt><a>Content attributes</a>:</dt>
-    <dd><a>Global attributes</a></dd>
-    <dd><code>src</code> - Address of the resource</dd>
-    <dd><code>type</code> - Type of embedded resource</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dt><a>DOM interface</a>:</dt>
-    <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLSourceElement">
-        interface HTMLSourceElement : HTMLElement {
-          attribute DOMString src;
-          attribute DOMString type;
-        };
-      </pre>
-    </dd>
-  </dl>
-
-  The <{source}> element allows authors to specify multiple alternative <a>media resources</a> for <a>media elements</a>. It does not <a>represent</a> anything on its own.
-
-  The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
-  <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
-  by spaces</a>. This attribute must be present.
-
-  <p class="note">
-    Dynamically modifying a <{source}> element and its attribute when the
-  element is already inserted in a <code>video</code> or <{audio}> element will have no
-  effect. To change what is playing, just use the <code>src</code> attribute
-  on the <a>media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
-  resources. Generally, manipulating <{source}> elements manually after the document has
-  been parsed is an unnecessarily complicated approach.
-  </p>
-
-  The <dfn element-attr for="source"><code>type</code></dfn> content attribute gives the type of the
-  <a>media resource</a>, to help the user agent determine if it can play this <a>media
-  resource</a> before fetching it. If specified, its value must be a <a>valid MIME
-  type</a>. The <code>codecs</code> parameter, which certain MIME types define, might be
-  necessary to specify exactly how the resource is encoded. [[!RFC6381]]
-
-  <div class="example">
-    The following list shows some examples of how to use the <code>codecs=</code> MIME
-    parameter in the <code>type</code> attribute.
-
-    <dl>
-
-    <dt>H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>H.264 &quot;High&quot; profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'&gt;
-    </pre></dd>
-
-    <dt>MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'&gt;
-    </pre></dd>
-
-    <dt>Theora video and Vorbis audio in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'&gt;
-    </pre></dd>
-
-    <dt>Theora video and Speex audio in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.ogv' type='video/ogg; codecs="theora, speex"'&gt;
-    </pre></dd>
-
-    <dt>Vorbis audio alone in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='audio.ogg' type='audio/ogg; codecs=vorbis'&gt;
-    </pre></dd>
-
-    <dt>Speex audio alone in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='audio.spx' type='audio/ogg; codecs=speex'&gt;
-    </pre></dd>
-
-    <dt>FLAC audio alone in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='audio.oga' type='audio/ogg; codecs=flac'&gt;
-    </pre></dd>
-
-    <dt>Dirac video and Vorbis audio in Ogg container</dt>
-    <dd><pre highlight="html">
-&lt;source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'&gt;
-    </pre></dd>
-
-    </dl>
-
-  </div>
-
-  If a <code>source</code> element is inserted as a child of a <a>media element</a> that
-  has no <code>src</code> attribute and whose <code>networkState</code> has the value <code>NETWORK_EMPTY</code>, the user agent must invoke the <a>media element</a>'s <a>resource selection
-  algorithm</a>.
-
-  The IDL attributes <dfn attribute for="HTMLSourceElement"><code>src</code></dfn> and
-  <dfn attribute for="HTMLSourceElement"><code>type</code></dfn> must <a>reflect</a> the respective
-  content attributes of the same name.
-
-  <div class="example">
-    If the author isn't sure if user agents will all be able to render the media resources
-    provided, the author can listen to the <code>error</code> event on the last
-    <{source}> element and trigger fallback behavior:
-
-    <pre highlight="html">
-&lt;script&gt;
-  function fallback(video) {
-    // replace &lt;video&gt; with its contents
-    while (video.hasChildNodes()) {
-      if (video.firstChild instanceof HTMLSourceElement)
-        video.removeChild(video.firstChild);
-      else
-        video.parentNode.insertBefore(video.firstChild, video);
-    }
-    video.parentNode.removeChild(video);
-  }
-&lt;/script&gt;
-&lt;video controls autoplay&gt;
-  &lt;source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'&gt;
-  &lt;source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'
-          onerror="fallback(parentNode)"&gt;
-  ...
-&lt;/video&gt;
-    </pre>
-
-  </div>
-
+  
 <h4 id="the-track-element">The <dfn element><code>track</code></dfn> element</h4>
 
   <dl class="element">
@@ -5670,7 +5635,7 @@ zero or more <{track}> elements, then
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLTrackElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLTrackElement : HTMLElement {
           attribute DOMString kind;
           attribute DOMString src;
@@ -5891,15 +5856,15 @@ zero or more <{track}> elements, then
   {{HTMLMediaElement}} objects (<{audio}> and <{video}>, in this specification) are simply known as
   <dfn lt="media element|media elements">media elements</dfn>.
 
-  <pre class="idl" data-highlight="webidl" dfn-for="CanPlayTypeResult">
+  <pre class="idl" data-highlight="webidl">
     enum CanPlayTypeResult { "" /* empty string */, "maybe", "probably" };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="MediaProvider">
+  <pre class="idl" data-highlight="webidl">
     typedef (MediaStream or MediaSource or Blob) MediaProvider;
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="HTMLMediaElement">
+  <pre class="idl" data-highlight="webidl">
     interface HTMLMediaElement : HTMLElement {
 
       // error state
@@ -6020,7 +5985,7 @@ zero or more <{track}> elements, then
 
   </div>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="MediaError">
+  <pre class="idl" data-highlight="webidl">
     interface MediaError {
       const unsigned short MEDIA_ERR_ABORTED = 1;
       const unsigned short MEDIA_ERR_NETWORK = 2;
@@ -8671,7 +8636,7 @@ zero or more <{track}> elements, then
   The <code>AudioTrackList</code> and <code>VideoTrackList</code> interfaces are used by
   attributes defined in the previous section.
 
-  <pre class="idl" data-highlight="webidl" dfn-for="AudioTrackList">
+  <pre class="idl" data-highlight="webidl">
     interface AudioTrackList : EventTarget {
       readonly attribute unsigned long length;
       getter AudioTrack (unsigned long index);
@@ -8683,7 +8648,7 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="AudioTrack">
+  <pre class="idl" data-highlight="webidl">
     interface AudioTrack {
       readonly attribute DOMString id;
       readonly attribute DOMString kind;
@@ -8693,7 +8658,7 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="VideoTrackList">
+  <pre class="idl" data-highlight="webidl">
     interface VideoTrackList : EventTarget {
       readonly attribute unsigned long length;
       getter VideoTrack (unsigned long index);
@@ -8706,7 +8671,7 @@ zero or more <{track}> elements, then
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="VideoTrack">
+  <pre class="idl" data-highlight="webidl">
     interface VideoTrack {
       readonly attribute DOMString id;
       readonly attribute DOMString kind;
@@ -9905,7 +9870,7 @@ zero or more <{track}> elements, then
 
 <h6 id="text-track-api">Text track API</h6>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrackList">
+  <pre class="idl" data-highlight="webidl">
     interface TextTrackList : EventTarget {
       readonly attribute unsigned long length;
       getter TextTrack (unsigned long index);
@@ -9970,7 +9935,7 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrack">
+  <pre class="idl" data-highlight="webidl">
     enum TextTrackMode { "disabled",  "hidden",  "showing" };
 
     enum TextTrackKind { "subtitles",  "captions",  "descriptions",  "chapters",  "metadata" };
@@ -10180,11 +10145,11 @@ zero or more <{track}> elements, then
   the {{TextTrack}} object represents, as defined by the following list:
 
   <dl>
-    <dt>"<dfn enum for="TextTrackMode"><code>disabled</code></dfn>"</dt>
+    <dt>"<dfn enum-value for="TextTrackMode"><code>disabled</code></dfn>"</dt>
     <dd>The <a mode for="track" lt="disabled">text track disabled</a> mode.</dd>
-    <dt>"<dfn enum for="TextTrackMode"><code>hidden</code></dfn>"</dt>
+    <dt>"<dfn enum-value for="TextTrackMode"><code>hidden</code></dfn>"</dt>
     <dd>The <a mode for="track" lt="hidden">text track hidden</a> mode.</dd>
-    <dt>"<dfn enum for="TextTrackMode"><code>showing</code></dfn>"</dt>
+    <dt>"<dfn enum-value for="TextTrackMode"><code>showing</code></dfn>"</dt>
     <dd>The <a mode for="track" lt="showing">text track showing</a> mode.</dd>
   </dl>
 
@@ -10329,7 +10294,7 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrackCueList">
+  <pre class="idl" data-highlight="webidl">
     interface TextTrackCueList {
       readonly attribute unsigned long length;
       getter TextTrackCue (unsigned long index);
@@ -10383,7 +10348,7 @@ zero or more <{track}> elements, then
 
   <hr />
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TextTrackCue">
+  <pre class="idl" data-highlight="webidl">
     interface TextTrackCue : EventTarget {
       readonly attribute TextTrack? track;
 
@@ -10478,7 +10443,7 @@ zero or more <{track}> elements, then
   appropriate to expose the data in the cues of a <a>media-resource-specific text track</a>,
   the {{DataCue}} object is used. [[INBANDTRACKS]]
 
-  <pre class="idl" data-highlight="webidl" dfn-for="DataCue">
+  <pre class="idl" data-highlight="webidl">
     [Constructor(double startTime, double endTime, ArrayBuffer data)]
     interface DataCue : TextTrackCue {
       attribute ArrayBuffer data;
@@ -10921,7 +10886,7 @@ red:89
   Objects implementing the <code>TimeRanges</code> interface
   represent a list of ranges (periods) of time.
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TimeRanges">
+  <pre class="idl" data-highlight="webidl">
     interface TimeRanges {
       readonly attribute unsigned long length;
       double start(unsigned long index);
@@ -11007,7 +10972,7 @@ red:89
 
 <h5 id="the-trackevent-interface">The <code>TrackEvent</code> interface</h5>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="TrackEvent">
+  <pre class="idl" data-highlight="webidl">
     [Constructor(DOMString type, optional TrackEventInit eventInitDict)]
     interface TrackEvent : Event {
       readonly attribute (VideoTrack or AudioTrack or TextTrack)? track;
@@ -11589,7 +11554,7 @@ red:89
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLMapElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLMapElement : HTMLElement {
           attribute DOMString name;
           [SameObject] readonly attribute HTMLCollection areas;
@@ -11710,7 +11675,7 @@ red:89
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLAreaElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLAreaElement : HTMLElement {
           attribute DOMString alt;
           attribute DOMString coords;
