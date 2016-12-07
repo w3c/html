@@ -13,12 +13,12 @@
     <dd>
       If the document is <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a> or if title
       information is available from a higher-level protocol: Zero or more elements of
-      <a>metadata content</a>, of which no more than one is a <a element for="html"><code>title</code></a> element and no more
+      <a>metadata content</a>, of which no more than one is a <{title}> element and no more
       than one is a <{base}> element.
     </dd>
     <dd>
       Otherwise: One or more elements of <a>metadata content</a>, of which exactly one is a
-      <a element for="html"><code>title</code></a> element and no more than one is a <{base}> element.
+      <{title}> element and no more than one is a <{base}> element.
     </dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>
@@ -37,7 +37,7 @@
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLHeadElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLHeadElement : HTMLElement {};
       </pre>
     </dd>
@@ -51,7 +51,7 @@
 
     <pre highlight="html">
       &lt;!doctype html>
-      &lt;html>
+      &lt;html lang="en">
         &lt;head>
           &lt;title>A document with a short head&lt;/title>
         &lt;/head>
@@ -63,7 +63,7 @@
 
     <pre highlight="html">
       &lt;!DOCTYPE HTML>
-        &lt;HTML>
+        &lt;HTML lang="en">
         &lt;HEAD>
           &lt;META CHARSET="UTF-8">
           &lt;BASE HREF="https://www.example.com/">
@@ -79,16 +79,18 @@
   </div>
 
   <p class="note">
-    The <a element for="html"><code>title</code></a> element is a required child in most situations, but when a higher-level
+    The <{title}> element is a required child in most situations, but when a higher-level
     protocol provides title information, e.g., in the Subject line of an e-mail when HTML is used as
-    an e-mail authoring format, the <a element for="html"><code>title</code></a> element can be omitted.
+    an e-mail authoring format, the <{title}> element can be omitted.
   </p>
 
+  <!-- W3C START - DO NOT OVERWRITE-->
   <p class="note">
     It is recommended to keep the usage of attributes and their values defined on the <{head}>
     element to a minimum to allow for proper detection of the <a>character encoding declaration</a>
     within the first 1024 bytes.
   </p>
+  <!-- W3C END -->
 
 <h4 id="the-title-element">The <dfn element><code>title</code></dfn> element</h4>
 
@@ -96,7 +98,7 @@
     <dt><a>Categories</a>:</dt>
     <dd><a>Metadata content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>In a <{head}> element containing no other <a element for="html"><code>title</code></a> elements.</dd>
+    <dd>In a <{head}> element containing no other <{title}> elements.</dd>
     <dt><a>Content model</a>:</dt>
     <dd><a>Text</a> that is not <a>inter-element whitespace</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
@@ -109,7 +111,7 @@
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-hightlight="webidl" dfn-for="HTMLTitleElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLTitleElement : HTMLElement {
           attribute DOMString text;
         };
@@ -117,12 +119,12 @@
     </dd>
   </dl>
 
-  The <a element for="html"><code>title</code></a> element <a>represents</a> the document's title or name. Authors should use
+  The <{title}> element <a>represents</a> the document's title or name. Authors should use
   titles that identify their documents even when they are used out of context, for example in a
   user's history or bookmarks, or in search results. The document's title is often different from
   its first heading, since the first heading does not have to stand alone when taken out of context.
 
-  There must be no more than one <a element for="html"><code>title</code></a> element per document.
+  There must be no more than one <{title}> element per document.
 
   <p class="note">
     If it's reasonable for the {{Document}} to have no title, then the <code>title</code>
@@ -141,7 +143,7 @@
 
   <div class="impl">
     The IDL attribute <dfn attribute for="HTMLTitleElement"><code>text</code></dfn> must return the
-    <a>child text content</a> of the <a element for="html"><code>title</code></a> element. On
+    <a>child text content</a> of the <{title}> element. On
     setting, it must act the same way as the {{Node/textContent}} IDL attribute.
   </div>
 
@@ -173,8 +175,8 @@
 
   <div class="impl">
     User agents should use the document's title when referring to the document in their user
-    interface. When the contents of a <a element for="html"><code>title</code></a> element are used in this way,
-    <a>the directionality</a> of that <a element for="html"><code>title</code></a> element should be used to set the
+    interface. When the contents of a <{title}> element are used in this way,
+    <a>the directionality</a> of that <{title}> element should be used to set the
     directionality of the document's title in the user interface.
   </div>
 
@@ -202,7 +204,7 @@
     <dd><a>Global aria-* attributes</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLBaseElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLBaseElement : HTMLElement {
           attribute DOMString href;
           attribute DOMString target;
@@ -212,7 +214,7 @@
   </dl>
 
   The <{base}> element allows authors to specify the <a>document base URL</a> for the
-  purposes of <a>parsing relative URLs</a>, and the name of the default <a>browsing context</a>
+  purposes of [[#parsing-urls]], and the name of the default <a>browsing context</a>
   for the purposes of <a>following hyperlinks</a>. The element does not <a>represent</a> any content
   beyond this information.
 
@@ -249,7 +251,7 @@
     </p>
 
     A <{base}> element that is the first <{base}> element with an
-    <{base/href}> content attribute in a particular {{Document}} has a
+    <{base/href}> content attribute <a>in a document tree</a> has a
     <dfn>frozen base URL</dfn>. The <a>frozen base URL</a> must be <a>immediately</a>
     <a lt="set the frozen base URL">set</a> for an element whenever any of the following situations
     occur:
@@ -283,7 +285,7 @@
         <a>character encoding</a>. (Thus, the <{base}> element isn't affected by other <{base}>
         elements or itself).
     4. If <var>urlRecord</var> is failure, return <var>url</var>.
-    5. Return the <a for="url">serialization</a> of <var>urlRecord</var>.
+    5. Return the <a>serialization</a> of <var>urlRecord</var>.
 
     The {{HTMLBaseElement/href}} IDL attribute, on setting, must set the <{base/href}> content
     attribute to the given new value.
@@ -297,7 +299,7 @@
 
     <pre highlight="html">
       &lt;!DOCTYPE html>
-      &lt;html>
+      &lt;html lang="en">
         &lt;head>
           &lt;title>This is an example for the &amp;lt;base&amp;gt; element&lt;/title>
           &lt;base href="https://www.example.com/news/index.html">
@@ -334,7 +336,7 @@
     <dd><{link/rel}> — Relationship of this document (or subsection/topic) to the destination resource</dd>
     <dd><{link/rev}> — <a>Reverse link</a> relationship of the destination resource to this document (or subsection/topic)</dd>
     <dd><code>media</code> — Applicable media</dd>
-    <dd><code>nonce</code> — Cryptographic nonce used in Content Security Policy checks [[CSP3]]</dd>
+	<dd><code>nonce</code> — Cryptographic nonce used in Content Security Policy checks [[CSP3]]</dd>
     <dd><code>hreflang</code> — Language of the linked resource</dd>
     <dd><code>type</code> — Hint for the type of the referenced resource</dd>
     <dd><code>sizes</code> — Sizes of the icons (for <{link/rel}>="<code>icon</code>")</dd>
@@ -350,7 +352,7 @@
     <dd>For <code>role</code> value </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLLinkElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLLinkElement : HTMLElement {
           attribute DOMString href;
           attribute DOMString? crossOrigin;
@@ -467,7 +469,7 @@
   which indicates that the current document is the table of contents document for every chapter.
 
   </div>
-
+  
   <p>The <dfn element-attr for="link"><code>nonce</code></dfn> attribute represents a
   cryptographic nonce ("number used once") which can be used by <cite>Content Security Policy</cite>
   to determine whether or not an external resource specified by the link will be loaded and applied
@@ -778,7 +780,7 @@
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLMetaElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLMetaElement : HTMLElement {
           attribute DOMString name;
           attribute DOMString httpEquiv;
@@ -789,7 +791,7 @@
   </dl>
 
   The <{meta}> element <a>represents</a> various kinds of metadata that cannot be
-  expressed using the <a element for="html"><code>title</code></a>, <{base}>, <{link}>, <{style}>,
+  expressed using the <{title}>, <{base}>, <{link}>, <{style}>,
   and <{script}> elements.
 
   The <{meta}> element can represent document-level metadata with the <code>name</code>
@@ -820,27 +822,28 @@
   The <dfn element-attr for="meta"><code>content</code></dfn> attribute gives the value of the
   document metadata or pragma directive when the element is used for those purposes. The allowed
   values depend on the exact context, as described in subsequent sections of this specification.
-
+  
   <div class="warning">
-
+  
   <p><a href="https://www.w3.org/TR/css-device-adapt-1/#viewport-meta"><code>&lt;meta name="viewport" content="..."></code></a>
   allows authors to define specific viewport characteristics (such as the layout viewport's width and zoom factor)
   for their documents. Among these is the ability to prevent or restrict users from being able to zoom, using
   <code>content</code> values such as <code>user-scalable=no</code> or <code>maximum-scale=1.0</code>. Authors should not suppress
   or limit the ability of users to resize a document, as this causes accessibility and usability issues.</p>
-
+  
   <div class="example">
   The following examples illustrate code that should be avoided:
   <pre highlight="html">
+  
    &lt;!-- DO NOT DO THIS -->
+  
+   &lt;meta name="viewport" content="<mark>user-scalable=no</mark>">
 
-   &lt;meta name="viewport" content="user-scalable=no">
-
-   &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+   &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, <mark>maximum-scale=1.0</mark>">
   </pre>
   </div>
-
-  <p>There may be specific use cases where preventing users from zooming may be appropriate, such as map applications –
+  
+  <p>There may be specific use cases where preventing users from zooming may be appropriate, such as map applications – 
   where custom zoom functionality is handled via scripting.
   However, in general this practice should be avoided, and HTML conformance checking tools should display a warning if
   they encounter these values.</p>
@@ -883,7 +886,7 @@
 
       <div class="impl">
         User agents may use the application name in UI in preference to the page's
-        <a element for="html"><code>title</code></a>, since the title might include status messages and the like relevant to
+        <{title}>, since the title might include status messages and the like relevant to
         the status of the page at a particular moment in time instead of just being the name of the
         application.
 
@@ -1311,7 +1314,7 @@
 
         1. If the <{meta}> element has no <code>content</code> attribute, or if that
             attribute's value is the empty string, then abort these steps.
-        2. Act as if <a>receiving a set-cookie-string</a> for <a>the document's address</a> via a
+        2. Act as if <a>receiving a set-cookie-string</a> for the document's <a for="Document">URL</a> via a
             "non-HTTP" API, consisting of the value of the element's <code>content</code> attribute
             <a>encoded as UTF-8</a>. [[!COOKIES]] [[!ENCODING]]
 
@@ -1495,7 +1498,7 @@
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-      <pre class="idl" data-highlight="webidl" dfn-for="HTMLStyleElement">
+      <pre class="idl" data-highlight="webidl">
         interface HTMLStyleElement : HTMLElement {
           attribute DOMString media;
           attribute DOMString nonce;

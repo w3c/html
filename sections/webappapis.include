@@ -118,8 +118,8 @@
   :: A {{Document}} that is assigned responsibility for actions taken by the scripts that use this
       <a>environment settings object</a>.
 
-      <p class="example">For example, the <a>address</a> of the <a>responsible document</a> is used
-      to set the <a>address</a> of the {{Document}} after it has been reset using
+      <p class="example">For example, the <a for="Document">URL</a> of the <a>responsible document</a> is used
+      to set the <a for="Document">URL</a> of the {{Document}} after it has been reset using
       {{Document/open()}}.</p>
 
       If the <a>responsible event loop</a> is not a <a>browsing context</a> <a>event loop</a>, then
@@ -139,7 +139,7 @@
   : A <dfn>creation URL</dfn>
   :: An <a>absolute URL</a> representing the location of the resource with which the <a>environment
       settings object</a> is associated. Note that this URL might be distinct from the
-      <a>responsible document</a>'s <a>address</a>, due to mechanisms such as
+      <a>responsible document</a>'s <a for="Document">URL</a>, due to mechanisms such as
       <code>history.pushState()</code>.
 
   : An <dfn for="settings">HTTPS state</a>
@@ -944,7 +944,7 @@
 
 <h6 id="the-errorevent-interface">The <code>ErrorEvent</code> interface</h6>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="ErrorEvent">
+  <pre class="idl" data-highlight="webidl">
     [Constructor(DOMString type, optional ErrorEventInit eventInitDict), Exposed=(Window, Worker)]
     interface ErrorEvent : Event {
       readonly attribute DOMString message;
@@ -955,7 +955,7 @@
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="ErrorEventInit">
+  <pre class="idl" data-highlight="webidl">
     dictionary ErrorEventInit : EventInit {
       DOMString message = "";
       DOMString filename = "";
@@ -1575,7 +1575,7 @@
   The {{EventHandler}} callback function type represents a callback used for event handlers. It is
   represented in Web IDL as follows:
 
-  <pre class="idl" data-highlight="webidl" dfn-for="EventHandlerNonNull">
+  <pre class="idl" data-highlight="webidl">
     [TreatNonObjectAsNull]
     callback EventHandlerNonNull = any (Event event);
     typedef EventHandlerNonNull? EventHandler;
@@ -1601,7 +1601,7 @@
 
   For historical reasons, the {{GlobalEventHandlers/onerror}} handler has different arguments:
 
-  <pre class="idl" data-highlight="webidl" dfn-for="OnErrorEventHandlerNonNull">
+  <pre class="idl" data-highlight="webidl">
     [TreatNonObjectAsNull]
     callback OnErrorEventHandlerNonNull = any ((Event or DOMString) event, optional DOMString source, optional unsigned long lineno, optional unsigned long column, optional any error);
     typedef OnErrorEventHandlerNonNull? OnErrorEventHandler;
@@ -1609,7 +1609,7 @@
 
   Similarly, the {{OnBeforeUnloadEventHandler/onbeforeunload}} handler has a different return value:
 
-  <pre class="idl" data-highlight="webidl" dfn-for="OnBeforeUnloadEventHandlerNonNull">
+  <pre class="idl" data-highlight="webidl">
     [TreatNonObjectAsNull]
     callback OnBeforeUnloadEventHandlerNonNull = DOMString? (Event event);
     typedef OnBeforeUnloadEventHandlerNonNull? OnBeforeUnloadEventHandler;
@@ -1845,7 +1845,7 @@
 
 <h6 id="idl-definitions">IDL definitions</h6>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="GlobalEventHandlers">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
     interface GlobalEventHandlers {
       attribute EventHandler onabort;
@@ -1911,7 +1911,7 @@
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="WindowEventHandlers">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
     interface WindowEventHandlers {
       attribute EventHandler onafterprint;
@@ -1932,7 +1932,7 @@
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="DocumentAndElementEventHandlers">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
     interface DocumentAndElementEventHandlers {
       attribute EventHandler oncopy;
@@ -1989,7 +1989,7 @@
     {{WindowOrWorkerGlobalScope}} { … };</code> along with an appropriate reference.
   </p>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="WindowOrWorkerGlobalScope">
+  <pre class="idl" data-highlight="webidl">
     typedef (DOMString or Function) TimerHandler;
 
     [NoInterfaceObject, Exposed=(Window, Worker)]
@@ -2442,7 +2442,7 @@
   5. Run the tokenizer, processing resulting tokens as they are emitted, and stopping when the
       tokenizer reaches the <a>explicit "EOF" character</a> or <a>spins the event loop</a>.
 
-<h4 id="documentwrite"><a method lt="write()"><code>document.write()</code></a></h4>
+<h4 id="documentwrite">{{Document/write()|document.write()}}</h4>
 
   <dl class="domintro">
     <dt><var>document</var> . {{Document/write()|write}}(<var>text</var>...)</dt>
@@ -2468,7 +2468,7 @@
 
   <code>Document</code> objects have an <dfn>ignore-destructive-writes counter</dfn>, which is
   used in conjunction with the processing of <{script}> elements to prevent external
-  scripts from being able to use <a method lt="write()"><code>document.write()</code></a> to blow
+  scripts from being able to use {{Document/write()|document.write()}} to blow
   away the document by implicitly calling <code>document.open()</code>.
   Initially, the counter must be set to zero.
 
@@ -2528,7 +2528,7 @@
     <code>script</code> end tag token is emitted by the tokenizer).
 
     <p class="note">
-  If the <a method lt="write()"><code>document.write()</code></a> method was
+  If the {{Document/write()|document.write()}} method was
     called from script executing inline (i.e., executing because the parser parsed a set of
     <code>script</code> tags), then this is a <a lt="reentrant">reentrant invocation of the
     parser</a>.
@@ -2563,7 +2563,7 @@
   </dl>
 
   The <dfn method for="Document" lt="writeln()"><code>document.writeln(...)</code></dfn> method, when
-  invoked, must act as if the <a method lt="write()"><code>document.write()</code></a> method had
+  invoked, must act as if the {{Document/write()|document.write()}} method had
   been invoked with the same argument(s), plus an extra argument consisting of a string containing a
   single line feed character (U+000A).
 
@@ -3286,7 +3286,7 @@
   method).
   </p>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="WindowModal">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
     interface WindowModal {
       readonly attribute any dialogArguments;
@@ -3352,7 +3352,7 @@
   which represents the identity and state of the user agent (the client), and allows Web pages to
   register themselves as potential protocol and content handlers:
 
-  <pre class="idl" data-highlight="webidl" dfn-for="Navigator">
+  <pre class="idl" data-highlight="webidl">
     interface Navigator {
       // objects implementing this interface also implement the interfaces given below
     };
@@ -3369,7 +3369,7 @@
 
 <h5 id="client-identification">Client identification</h5>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="NavigatorID">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject, Exposed=(Window, Worker)]
     interface NavigatorID {
       [Exposed=Window] readonly attribute DOMString appCodeName; // constant "Mozilla"
@@ -3467,7 +3467,7 @@
 
 <h5 id="language-preferences">Language preferences</h5>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="NavigatorLanguage">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject, Exposed=(Window, Worker)]
     interface NavigatorLanguage {
       readonly attribute DOMString? language;
@@ -3549,7 +3549,7 @@
 
 <h5 id="custom-scheme-and-content-handlers-the-registerprotocolhandler-and-registercontenthandler-methods">Custom scheme and content handlers: the <code>registerProtocolHandler()</code> and <code>registerContentHandler()</code> methods</h5>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="NavigatorContentUtils">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
     interface NavigatorContentUtils {
       // content handler registration
@@ -4104,7 +4104,7 @@
 
 <h5 id="cookies">Cookies</h5>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="NavigatorCookies">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
     interface NavigatorCookies {
       readonly attribute boolean cookieEnabled;
@@ -4120,9 +4120,9 @@
     return true if the user agent attempts to handle cookies according to the cookie specification,
     and false if it ignores cookie change requests. [[!COOKIES]]
 
-<h5 id="plugins">Plugins</h5>
+<h5 id="plugins-api">Plugins</h5>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="NavigatorPlugins">
+  <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
       interface NavigatorPlugins {
       [SameObject] readonly attribute PluginArray plugins;
@@ -4131,7 +4131,7 @@
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="PluginArray">
+  <pre class="idl" data-highlight="webidl">
     interface PluginArray {
       void refresh(optional boolean reload = false);
       readonly attribute unsigned long length;
@@ -4140,7 +4140,7 @@
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="MimeTypeArray">
+  <pre class="idl" data-highlight="webidl">
     interface MimeTypeArray {
       readonly attribute unsigned long length;
       getter MimeType? item(unsigned long index);
@@ -4148,7 +4148,7 @@
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="Plugin">
+  <pre class="idl" data-highlight="webidl">
     interface Plugin {
       readonly attribute DOMString name;
       readonly attribute DOMString description;
@@ -4159,7 +4159,7 @@
     };
   </pre>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="MimeType">
+  <pre class="idl" data-highlight="webidl">
     interface MimeType {
       readonly attribute DOMString type;
       readonly attribute DOMString description;
@@ -4529,7 +4529,7 @@
 
 <h3 id="webappapis-images">Images</h3>
 
-  <pre class="idl" data-highlight="webidl" dfn-for="ImageBitmap">
+  <pre class="idl" data-highlight="webidl">
     [Exposed=(Window, Worker)]
     interface ImageBitmap {
       readonly attribute unsigned long width;

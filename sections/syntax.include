@@ -182,7 +182,7 @@
 
     <dt><dfn lt="escapable raw text|escapable raw text elements">escapable raw text elements</dfn></dt>
 
-    <dd><{textarea}>, <a element for="html"><code>title</code></a></dd>
+    <dd><{textarea}>, <{title}></dd>
 
     <dt><dfn>Foreign elements</dfn></dt>
 
@@ -456,7 +456,7 @@
     <tr> <td> <code>show</code> <td> <a>XLink namespace</a> <td> <code>xlink:show</code>
     <tr> <td> <code>title</code> <td> <a>XLink namespace</a> <td> <code>xlink:title</code>
     <tr> <td> <code>type</code> <td> <a>XLink namespace</a> <td> <code>xlink:type</code>
-    <tr> <td> <code>base</code> <td> <a>XML namespace</a>  <td> <code>xml:base</code>
+    <tr> <td> <code>base</code> <td> <a>XML namespace</a>  <td> <{global/xml:base}>
     <tr> <td> <{global/lang}> <td> <a>XML namespace</a> <td> <{xml/lang|xml:lang}>
     <tr> <td> <code>space</code> <td> <a>XML namespace</a> <td> <code>xml:space</code>
     <tr> <td> <code>xmlns</code> <td> <a>XMLNS namespace</a> <td> <code>xmlns</code>
@@ -1080,7 +1080,7 @@
 
   In the common case, the data handled by the tokenization stage comes from the network, but
   <a>it can also come from script</a> running in the user
-  agent, e.g., using the <a method lt="write()"><code>document.write()</code></a> API.
+  agent, e.g., using the {{Document/write()|document.write()}} API.
 
   There is only one set of states for the tokenizer stage and the tree
   construction stage, but the tree construction stage is <dfn>reentrant</dfn>, meaning that while the tree
@@ -1891,7 +1891,7 @@
 
   Any <a>character</a> that is a not a <a>Unicode character</a>, i.e., any isolated
   surrogate, is a <a for="parser">parse error</a>. (These can only find their way into the input stream via
-  script APIs such as <a method lt="write()"><code>document.write()</code></a>.)
+  script APIs such as {{Document/write()|document.write()}}.)
 
   U+000D CARRIAGE RETURN (CR) characters and U+000A LINE FEED (LF) characters are treated
   specially. Any LF character that immediately follows a CR character must be ignored, and all CR
@@ -1906,7 +1906,7 @@
   been <i>consumed</i>.
 
   The <dfn>insertion point</dfn> is the position (just before a character or just before the end
-  of the input stream) where content inserted using <a method lt="write()"><code>document.write()</code></a> is actually inserted. The insertion point is
+  of the input stream) where content inserted using {{Document/write()|document.write()}} is actually inserted. The insertion point is
   relative to the position of the character immediately after it, it is not an absolute offset into
   the input stream. Initially, the insertion point is undefined.
 
@@ -2126,7 +2126,7 @@
       <{meta}>, <{nav}>, <{noembed}>, <{noframes}>, <{noscript}>, <{object}>, <{ol}>, <{p}>,
       <{param}>, <{plaintext}>, <{pre}>, <{script}>, <{section}>, <{select}>, <{source}>, <{style}>,
       <{summary}>, <{table}>, <{tbody}>, <{td}>, <{template}>, <{textarea}>, <{tfoot}>, <{th}>,
-      <{thead}>, <a element for="html"><code>title</code></a>, <{tr}>, <{track}>, <{ul}>, <{wbr}>,
+      <{thead}>, <{title}>, <{tr}>, <{track}>, <{ul}>, <{wbr}>,
       and <{xmp}>; <a>MathML <code>mi</code></a>, <a>MathML <code>mo</code></a>,
       <a>MathML <code>mn</code></a>, <a>MathML <code>ms</code></a>,
       <a>MathML <code>mtext</code></a>, and <a>MathML <code>annotation-xml</code></a>; and
@@ -4954,7 +4954,7 @@
   <hr />
 
   DOM mutation events must not fire for changes caused by the user agent
-  parsing the document. This includes the parsing of any content inserted using <a method lt="write()"><code>document.write()</code></a> and <code>document.writeln()</code> calls. [[!UIEVENTS]]
+  parsing the document. This includes the parsing of any content inserted using {{Document/write()|document.write()}} and <code>document.writeln()</code> calls. [[!UIEVENTS]]
 
   However, <a>mutation observers</a> <em>do</em> fire, as required by the DOM specification.
 
@@ -5411,7 +5411,7 @@
       Mark the element as being <a>"parser-inserted"</a> and unset the element's
       <a>"non-blocking"</a> flag.
 
-      <p class="note">This ensures that, if the script is external, any <a method lt="write()"><code>document.write()</code></a> calls in the script will execute in-line,
+      <p class="note">This ensures that, if the script is external, any {{Document/write()|document.write()}} calls in the script will execute in-line,
       instead of blowing the document away, as would happen in most other cases. It also prevents
       the script from executing until the end tag is seen.
   </p>
@@ -6876,7 +6876,7 @@
     Increment the parser's <a>script nesting level</a> by one.
 
     Prepare the <var>script</var>. This might
-    cause some script to execute, which might cause <a method lt="write()">new characters
+    cause some script to execute, which might cause <a method for="Document" lt="write()">new characters
     to be inserted into the tokenizer</a>, and might cause the tokenizer to output more tokens,
     resulting in a <a lt="reentrant">reentrant invocation of the parser</a>.
 
@@ -6901,7 +6901,7 @@
       when the caller returns to the "outer" tree construction stage.)
 
       <p class="note">
-  The tree construction stage of this particular parser is <a lt="reentrant">being called reentrantly</a>, say from a call to <a method lt="write()"><code>document.write()</code></a>.
+  The tree construction stage of this particular parser is <a lt="reentrant">being called reentrantly</a>, say from a call to {{Document/write()|document.write()}}.
   </p>
 
       </dd>
@@ -8452,7 +8452,7 @@
     SVG. [[!SVG]]
 
     <p class="note">
-  Even if this causes <a method lt="write()">new characters to be
+  Even if this causes <a method for="Document" lt="write()">new characters to be
     inserted into the tokenizer</a>, the parser will not be executed reentrantly, since the
     <a>parser pause flag</a> is true.
   </p>
@@ -8477,13 +8477,13 @@
       <li>Initialize <var>node</var> to be the <a>current node</a> (the bottommost
       node of the stack).</li>
 
-      <li>If <var>node</var>'s tag name, <a>converted to ASCII lowercase</a>, is
+      <li>If <var>node</var>'s tag name, in <a>ASCII lowercase</a>, is
       not the same as the tag name of the token, then this is a <a for="parser">parse error</a>.</li>
 
       <li><i>Loop</i>: If <var>node</var> is the topmost element in the <a>stack of
       open elements</a>, abort these steps. (<a>fragment case</a>)</li>
 
-      <li>If <var>node</var>'s tag name, <a>converted to ASCII lowercase</a>, is
+      <li>If <var>node</var>'s tag name, in <a>ASCII lowercase</a>, is
       the same as the tag name of the token, pop elements from the <a>stack of open
       elements</a> until <var>node</var> has been popped from the stack, and then abort
       these steps.</li>
