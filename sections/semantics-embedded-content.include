@@ -4004,7 +4004,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   The <dfn element-attr for="iframe"><code>allowfullscreen</code></dfn> attribute is a
   <a>boolean attribute</a>. When specified, it indicates that {{Document}} objects in
-  the <{iframe}> element's <a>browsing context</a> are to be allowed to use <code>requestFullscreen()</code> (if it's not blocked for other
+  the <{iframe}> element's <a>browsing context</a> are to be <a>allowed to use</a> <code>requestFullscreen()</code> (if it's not blocked for other
   reasons, e.g., there is another ancestor <code>iframe</code> without this attribute set).
 
   <div class="example">
@@ -4031,8 +4031,21 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
   The <dfn element-attr for="iframe"><code>allowpaymentrequest</code></dfn>
   attribute is a <a>boolean attribute</a>. When specified, it indicates that
   {{Document}} objects in the <{iframe}> element's <a>browsing context</a>
-  are to be allowed to use the <a><code>PaymentRequest</code></a> interface
+  are to be <a>allowed to use</a> the <a><code>PaymentRequest</code></a> interface
   to make payment requests.
+
+  To determine whether a {{Document}} object <var>document</var> is
+  <dfn id="allowed-to-use">allowed to use</dfn> the feature indicated by attribute name
+  <var>allowattribute</var>, run these steps:
+
+  <ol>
+    <li><p>If <var>document</var> has no <a>browsing context</a>, then return false.</p></li>
+    <li><p>If <var>document</var>'s <a>browsing context</a> is a <a>top-level browsing context</a>, then return true.</p></li>
+    <li><p>If <var>document</var>'s <a>browsing context</a> has a <a>browsing context container</a> that is an <{iframe}> element with an
+    <var>allowattribute</var> attribute specified, and whose <a>node document</a> is
+    <a>allowed to use</a> the feature indicated by <var>allowattribute</var>, then return true.</p></li>
+    <li><p>Return false.</p></li>
+  </ol>
 
   <hr />
 
