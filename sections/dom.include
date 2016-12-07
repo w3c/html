@@ -17,7 +17,6 @@
   [[!DOM]]
 
   The {{Document}} object's <a for="Document">URL</a>
-<!--  <dfn lt="the document address|address|the document's address|the address|concept-document-url">URL</dfn> -->
   is defined in the DOM specification. It is initially set when the {{Document}} object is created,
   but that can change during the lifetime of the {{Document}} object; for example, it changes when
   the user <a>navigates</a> to a <a for="url">fragment</a> on the page and when the
@@ -513,52 +512,6 @@
 
   <p class="note">The {{Document/dir}} attribute on the {{Document}} interface is defined along with 
   the <{global/dir}> content attribute.</p>
-
-  <div class="impl">
-    <h4 id="loading-xml-documents">Loading XML documents</h4>
-
-    <pre class="idl" data-highlight="webidl">
-      partial interface XMLDocument {
-        boolean load(DOMString url);
-      };
-    </pre>
-
-    The <dfn method for="XMLDocument" lt="load()|load(url)"><code>load(|url|)</code></dfn> method must run the following steps:
-
-    1. Let |document| be the {{XMLDocument}} object on which the method was
-        invoked.
-    2. <a>Parse</a> |url|, relative to the <a>entry settings object</a>. If this is not
-        successful, throw a "{{SyntaxError}}" {{DOMException}} and abort these steps.
-        Otherwise, let |urlRecord| be the <a>resulting URL record</a>.
-    3. If |urlRecord|'s <a for="url">origin</a> is not the same as the
-        <a for="concept">origin</a> of |document|, throw a "{{SecurityError}}"
-        {{DOMException}} and abort these steps.
-    4. Remove all child nodes of |document|, without firing any mutation events.
-    5. Set the <a>current document readiness</a> of |document| to "<code>loading</code>".
-    6. Run the remainder of these steps <a>in parallel</a>, and return true from the method.
-    7. Let |result| be a {{Document}} object.
-    8. Let |success| be false.
-    9. Let |request| be a new <a>request</a> whose <a for="url">URL</a> is
-        |urlRecord|,
-        <a>client</a> is <a>entry settings object</a>, <a>destination</a> is
-        "<code>subresource</code>", <a>synchronous flag</a> is set, <a for="request">mode</a> is
-        "<code>same-origin</code>", <a>credentials mode</a> is "<code>same-origin</code>", and whose
-        <a>use-URL-credentials flag</a> is set.
-    10. Let |response| be the result of <a>fetching</a> |request|.
-    11. If |response|'s <a>Content-Type metadata</a> is an <a>XML MIME type</a>, then run
-        these substeps:
-        1. Create a new <a>XML parser</a> associated with the |result| document.
-        2. Pass this parser |response|'s <a for="response">body</a>.
-        3. If there is an XML well-formedness or XML namespace well-formedness error, then remove
-            all child nodes from |result|. Otherwise let |success| be true.
-    12. Queue a task</a> to run the following steps.
-        1. Set the <a>current document readiness</a> of |document| to
-            "<code>complete</code>".
-        2. Replace all the children of |document| by the children of |result|
-            (even if it has no children), firing mutation events as if a
-            <code>DocumentFragment</code> containing the new children had been inserted.
-        3. <a>Fire a simple event</a> named <code>load</code> at |document|.
-  </div>
 
 <h3 id="elements">Elements</h3>
 
