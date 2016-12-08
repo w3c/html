@@ -428,7 +428,7 @@
   The 
   <dfn method for="Document" lt="getElementsByName()|getElementsByName(elementName)"><code>getElementsByName(|name|)</code></dfn> 
   method takes a string |name|, and must return a <a>live</a> {{NodeList}} containing all the 
-  <a>html elements</a> in that document that have a <code>name</code> attribute whose value is
+  <a>HTML elements</a> in that document that have a <code>name</code> attribute whose value is
   equal to the |name| argument (in a <a>case-sensitive</a> manner), in <a>tree order</a>. When the 
   method is invoked on a {{Document}} object again with the same argument, the user agent may return 
   the same as the object returned by the earlier call. In other cases, a new {{NodeList}} object 
@@ -449,8 +449,8 @@
         <a>SVG <code>script</code></a> element represents a <a>module script</a>.
   </dl>
 
-  The <dfn attribute for="Document"><code>currentScript</code></dfn> attribute, on getting, must return the value to which
-  it was most recently initialized. When the {{Document}} is created, the
+  The <dfn attribute for="Document"><code>currentScript</code></dfn> attribute, on getting, must 
+  return the value to which it was most recently initialized. When the {{Document}} is created, the
   <code>currentScript</code> must be initialized to null.
 
   <p class="note">This API has fallen out of favor in the implementor and standards community, as it 
@@ -610,9 +610,9 @@
 
 <h4 id="elements-in-the-dom">Elements in the DOM</h4>
 
-  The nodes representing <a>html elements</a> in the DOM <span class="impl">must</span> implement,
+  The nodes representing <a>HTML elements</a> in the DOM must implement,
   and expose to scripts, the interfaces listed for them in the relevant sections of this
-  specification. This includes <a>html elements</a> in <a>XML documents</a>, even when those
+  specification. This includes <a>HTML elements</a> in <a>XML documents</a>, even when those
   documents are in another context (e.g., inside an XSLT transform).
 
   Elements in the DOM <dfn>represent</dfn> things; that is, they have intrinsic <em>meaning</em>,
@@ -620,38 +620,39 @@
 
   <p class="example">For example, an <{ol}> element represents an ordered list.</p>
 
-  The basic interface, from which all the <a>html elements</a>' interfaces inherit,
-  <span class="impl">and which must be used by elements that have no additional requirements,</span>
+  The basic interface, from which all the <a>HTML elements</a>' interfaces inherit,
+  and which must be used by elements that have no additional requirements,
   is the {{HTMLElement}} interface.
 
   <pre class="idl" data-highlight="webidl">
+    [HTMLConstructor]
     interface HTMLElement : Element {
       // metadata attributes
-      attribute DOMString title;
-      attribute DOMString lang;
-      attribute boolean translate;
-      attribute DOMString dir;
+      [CEReactions] attribute DOMString title;
+      [CEReactions] attribute DOMString lang;
+      [CEReactions] attribute boolean translate;
+      [CEReactions] attribute DOMString dir;
       [SameObject] readonly attribute DOMStringMap dataset;
 
       // user interaction
-      attribute boolean hidden;
+      [CEReactions] attribute boolean hidden;
       void click();
-      attribute long tabIndex;
+      [CEReactions] attribute long tabIndex;
       void focus();
       void blur();
-      attribute DOMString accessKey;
-      attribute boolean draggable;
-      [SameObject, PutForwards=value] readonly attribute DOMTokenList dropzone;
-      attribute HTMLMenuElement? contextMenu;
-      attribute boolean spellcheck;
+      [CEReactions] attribute DOMString accessKey;
+      [CEReactions] attribute boolean draggable;
+      [CEReactions, SameObject, PutForwards=value] readonly attribute DOMTokenList dropzone;
+      [CEReactions] attribute HTMLMenuElement? contextMenu;
+      [CEReactions] attribute boolean spellcheck;
       void forceSpellCheck();
+      [CEReactions, TreatNullAs=EmptyString] attribute DOMString innerText; 
     };
     HTMLElement implements GlobalEventHandlers;
     HTMLElement implements DocumentAndElementEventHandlers;
     HTMLElement implements ElementContentEditable;
-  </pre>
-
-  <pre class="idl" data-highlight="webidl">
+    
+    // Note: intentionally not [HTMLConstructor]
     interface HTMLUnknownElement : HTMLElement { };
   </pre>
 
@@ -659,11 +660,30 @@
   disparate features, and the members of this interface are therefore described in various different
   sections of this specification.
 
-  <div class="impl">
-    The {{HTMLUnknownElement}} interface must be used for <a>html elements</a> that are not
-    defined by this specification (or <a lt="applicable specification">other applicable specifications</a>).
-  </div>
+  The {{HTMLUnknownElement}} interface must be used for <a>HTML elements</a> that are not
+  defined by this specification (or <a lt="applicable specification">other applicable specifications</a>).
+  
+  The <a>element interface</a> for an element with name |name| in the <a>HTML namespace</a> is 
+  determined as follows:
 
+  1. If |name| is <{bgsound}>, <{blink}>, <{isindex}>, <{multicol}>, <{nextid}>, or <{spacer}>, then 
+      return {{HTMLUnknownElement}}.
+  2. If |name| is <{acronym}>, <{basefont}>, <{big}>, <{center}>, <{nobr}>, <{noembed}>, 
+      <{noframes}>, <{plaintext}>, <{rb}>, <{rtc}>, <{strike}>, or <{tt}>, then return 
+      {{HTMLElement}}.
+  3. If |name| is <{listing}> or <{xmp}>, then return {{HTMLPreElement}}.
+  4. Otherwise, if this specification defines an interface appropriate for the <a>element type</a>
+      corresponding to the local name |name|, then return that interface.
+  5. If <a>other applicable specifications</a> define an appropriate interface for |name|, then 
+      return the interface they define.
+  6. If |name| is a <a>valid custom element name</a>, then return {{HTMLElement}}.
+  7. Return {{HTMLUnknownElement}}.
+
+  <p class="note">The use of {{HTMLElement}} instead of {{HTMLUnknownElement}} in the case of 
+  <a>valid custom element names</a> is done to ensure that any potential future <a>upgrades</a> only 
+  cause a linear transition of the element's prototype chain, from {{HTMLElement}} to a subclass, 
+  instead of a lateral one, from {{HTMLUnknownElement}} to an unrelated subclass.</p>
+  
 <h4 id="element-definitions">Element definitions</h4>
 
   Each element in this specification has a definition that includes the following information:
@@ -706,11 +726,11 @@
 
   This is then followed by a description of what the element <a>represents</a>, along with any
   additional normative conformance criteria that may apply to authors
-  <span class="impl"> and implementations</span>. Examples are sometimes also included.
+  and implementations. Examples are sometimes also included.
 
 <h5 id="element-definitions-attributes">Attributes</h5>
 
-  Except where otherwise specified, attributes on <a>html elements</a> may have any string value,
+  Except where otherwise specified, attributes on <a>HTML elements</a> may have any string value,
   including the empty string. Except where explicitly stated, there is no restriction on what text
   can be specified in such attributes.
 
@@ -741,7 +761,7 @@
     nodes.
   </p>
 
-  Authors must not use <a>html elements</a> anywhere except where they are explicitly allowed, as
+  Authors must not use <a>HTML elements</a> anywhere except where they are explicitly allowed, as
   defined for each element, or as explicitly required by other specifications. For XML compound
   documents, these contexts could be inside elements from other namespaces, if those elements are
   defined as providing the relevant contexts.
@@ -754,7 +774,7 @@
     specification. [[RFC4287]]
   </div>
 
-  In addition, <a>html elements</a> may be orphan nodes (i.e., without a parent node).
+  In addition, <a>HTML elements</a> may be orphan nodes (i.e., without a parent node).
 
   <div class="example">
     For example, creating a <{td}> element and storing it in a global variable in a
@@ -1336,23 +1356,21 @@
     </pre>
   </div>
 
-  <div class="impl">
-    Let |view| be a view of the DOM that replaces all <{a}>, <{ins}>,
-    <{del}>, and <{map}> elements in the document with their
-    <a lt='html-contents'>contents</a>. Then, in |view|, for each run of sibling <a>phrasing content</a>
-    nodes uninterrupted by other types of content, in an element that accepts content other than
-    <a>phrasing content</a> as well as <a>phrasing content</a>, let |first| be the first
-    node of the run, and let |last| be the last node of the run. For each such run that
-    consists of at least one node that is neither <a>embedded content</a> nor
-    <a>inter-element whitespace</a>, a paragraph exists in the original DOM from immediately before
-    |first| to immediately after |last|. (Paragraphs can thus span across
-    <{a}>, <{ins}>, <{del}>, and <{map}> elements.)
+  Let |view| be a view of the DOM that replaces all <{a}>, <{ins}>,
+  <{del}>, and <{map}> elements in the document with their
+  <a lt='html-contents'>contents</a>. Then, in |view|, for each run of sibling <a>phrasing content</a>
+  nodes uninterrupted by other types of content, in an element that accepts content other than
+  <a>phrasing content</a> as well as <a>phrasing content</a>, let |first| be the first
+  node of the run, and let |last| be the last node of the run. For each such run that
+  consists of at least one node that is neither <a>embedded content</a> nor
+  <a>inter-element whitespace</a>, a paragraph exists in the original DOM from immediately before
+  |first| to immediately after |last|. (Paragraphs can thus span across
+  <{a}>, <{ins}>, <{del}>, and <{map}> elements.)
 
-    Conformance checkers may warn authors of cases where they have paragraphs that overlap each
-    other (this can happen with <{object}>, <{video}>, <{audio}>, and
-    <{canvas}> elements, and indirectly through elements in other namespaces that allow
-    HTML to be further embedded therein, like <a>SVG svg</a> or <a>MathML <code>math</code></a>).
-  </div>
+  Conformance checkers may warn authors of cases where they have paragraphs that overlap each
+  other (this can happen with <{object}>, <{video}>, <{audio}>, and
+  <{canvas}> elements, and indirectly through elements in other namespaces that allow
+  HTML to be further embedded therein, like <a>SVG svg</a> or <a>MathML <code>math</code></a>).
 
   A <a>paragraph</a> is also formed explicitly by <{p}> elements.
 
@@ -1449,8 +1467,8 @@
 
 <h4 id="sec-global-attributes"><dfn>Global attributes</dfn></h4>
 
-  The following attributes are common to and may be specified on all <a>html elements</a>
-  <span class="impl"> (even those not defined in this specification)</span>:
+  The following attributes are common to and may be specified on all <a>HTML elements</a>
+  (even those not defined in this specification):
 
   * <{global/accesskey}>
   * <code>class</code>
@@ -1468,7 +1486,6 @@
   * <{global/title}>
   * <code>translate</code>
 
-  <div class="impl">
   These attributes are only defined by this specification as attributes for <a>HTML elements</a>. When this specification refers to elements having these attributes, elements from
   namespaces that are not defined as having these attributes must not be considered as being
   elements with these attributes.
@@ -1488,8 +1505,6 @@
         &lt;/bogus>
       &lt;/div>
     </pre>
-  </div>
-
   </div>
 
   <hr />
@@ -1607,10 +1622,10 @@
 
   The XML specification also allows the use of the <code>xml:space</code> attribute in the
   <a>XML namespace</a> on any element in an <a>XML document</a>. This attribute has no effect on
-  <a>html elements</a>, as the default behavior in HTML is to preserve whitespace. [[!XML]]
+  <a>HTML elements</a>, as the default behavior in HTML is to preserve whitespace. [[!XML]]
 
   <p class="note">
-    There is no way to serialize the <code>xml:space</code> attribute on <a>html elements</a> in the
+    There is no way to serialize the <code>xml:space</code> attribute on <a>HTML elements</a> in the
     <a href="#text-html"><code>text/html</code></a> syntax.
   </p>
 
@@ -1632,10 +1647,8 @@
     target an element when scripting, and as a way to style a specific element from CSS.
   </p>
 
-  <div class="impl">
-    Identifiers are opaque strings. Particular meanings should not be derived from the value of the
-    <code>id</code> attribute.
-  </div>
+  Identifiers are opaque strings. Particular meanings should not be derived from the value of the
+  <code>id</code> attribute.
 
 <h5 id="the-title-attribute">The <code>title</code> attribute</h5>
 
@@ -1682,28 +1695,26 @@
   Some elements, such as <{link}>, <{abbr}>, and <{input}>, define
   additional semantics for the <code>title</code> attribute beyond the semantics described above.
 
-  <div class="impl">
-    The <dfn>advisory information</dfn> of an element is the value that the following algorithm
-    returns, with the algorithm being aborted once a value is returned. When the algorithm returns
-    the empty string, then there is no advisory information.
+  The <dfn>advisory information</dfn> of an element is the value that the following algorithm
+  returns, with the algorithm being aborted once a value is returned. When the algorithm returns
+  the empty string, then there is no advisory information.
 
-    1. If the element is a <{link}>, <{style}>, <{dfn}>,
-        <{abbr}>, or <{menuitem}> element, then: if the element has a
-        <code>title</code> attribute, return the value of that attribute, otherwise, return the
-        empty string.
-    2. Otherwise, if the element has a <code>title</code> attribute, then return its value.
-    3. Otherwise, if the element has a parent element, then return the parent element's
-        <a>advisory information</a>.
-    4. Otherwise, return the empty string.
+  1. If the element is a <{link}>, <{style}>, <{dfn}>,
+      <{abbr}>, or <{menuitem}> element, then: if the element has a
+      <code>title</code> attribute, return the value of that attribute, otherwise, return the
+      empty string.
+  2. Otherwise, if the element has a <code>title</code> attribute, then return its value.
+  3. Otherwise, if the element has a parent element, then return the parent element's
+      <a>advisory information</a>.
+  4. Otherwise, return the empty string.
 
-    User agents should inform the user when elements have <a>advisory information</a>, otherwise the
-    information would not be discoverable.
+  User agents should inform the user when elements have <a>advisory information</a>, otherwise the
+  information would not be discoverable.
 
-    <hr />
+  <hr />
 
-    The <dfn attribute for="HTMLElement"><code>title</code></dfn> IDL attribute must <a>reflect</a> the <code>title</code>
-    content attribute.
-  </div>
+  The <dfn attribute for="HTMLElement"><code>title</code></dfn> IDL attribute must <a>reflect</a> the <code>title</code>
+  content attribute.
 
 <h5 id="the-lang-and-xmllang-attributes">
   The <{global/lang}> and <{xml/lang|xml:lang}> attributes
@@ -1722,7 +1733,7 @@
   The <{global/lang}> attribute in no namespace may be used on any <a>HTML element</a>.
 
   The <{global/lang}> attribute in the <a>XML namespace</a> may be used on
-  <a>html elements</a> in <a>XML documents</a>, as well as elements in other namespaces if the
+  <a>HTML elements</a> in <a>XML documents</a>, as well as elements in other namespaces if the
   relevant specifications allow it (in particular, MathML and SVG allow <{global/lang}>
   attributes in the <a>XML namespace</a> to be specified on their elements). If both the
   <{global/lang}> attribute in no namespace and the <{global/lang}> attribute in the
@@ -1730,9 +1741,9 @@
   when compared in an <a>ASCII case-insensitive</a> manner.
 
   Authors must not use the <{global/lang}> attribute in the <a>XML namespace</a> on
-  <a>html elements</a> in <a>HTML documents</a>. To ease migration to and from XHTML, authors may
+  <a>HTML elements</a> in <a>HTML documents</a>. To ease migration to and from XHTML, authors may
   specify an attribute in no namespace with no prefix and with the literal localname
-  "<{xml/lang|xml:lang}>" on <a>html elements</a> in <a>HTML documents</a>, but such attributes must
+  "<{xml/lang|xml:lang}>" on <a>HTML elements</a> in <a>HTML documents</a>, but such attributes must
   only be specified if a <{global/lang}> attribute in no namespace is also specified, and both
   attributes must have the same value when compared in an <a>ASCII case-insensitive</a> manner.
 
@@ -1869,24 +1880,22 @@
   * <code>download</code> on <{a}> and <{area}> elements
   * <code>label</code> on <{menuitem}>, <{menu}>, <{optgroup}>,
     <{option}>, and <{track}> elements
-  * <{global/lang}> on <a>html elements</a>; must be "translated" to match the language used in
+  * <{global/lang}> on <a>HTML elements</a>; must be "translated" to match the language used in
     the translation
   * <code>placeholder</code> on <code>input</code> and <{textarea}> elements
   * <code>srcdoc</code> on <{iframe}> elements; must be parsed and recursively processed
-  * <code>style</code> on <a>html elements</a>; must be parsed and recursively processed (e.g., for
+  * <code>style</code> on <a>HTML elements</a>; must be parsed and recursively processed (e.g., for
     the values of &quot;content&quot; properties)
-  * <code>title</code> on all <a>html elements</a>
+  * <code>title</code> on all <a>HTML elements</a>
   * <code>value</code> on <{input}> elements with a <{input/type}> attribute in the
     <a element-state for="input">Button</a>, <a element-state for="input">submit button</a>, or <a element-state for="input">reset button</a> state
 
-  <div class="impl">
-    <hr />
+  <hr />
 
-    The <dfn attribute for="HTMLElement"><code>translate</code></dfn> IDL attribute must, on getting, return true if the
-    element's <a>translation mode</a> is <a>translate-enabled</a>, and false otherwise. On setting,
-    it must set the content attribute's value to "<code>yes</code>" if the new value is true, and
-    set the content attribute's value to "<code>no</code>" otherwise.
-  </div>
+  The <dfn attribute for="HTMLElement"><code>translate</code></dfn> IDL attribute must, on getting, return true if the
+  element's <a>translation mode</a> is <a>translate-enabled</a>, and false otherwise. On setting,
+  it must set the content attribute's value to "<code>yes</code>" if the new value is true, and
+  set the content attribute's value to "<code>no</code>" otherwise.
 
   <div class="example">
     In this example, everything in the document is to be translated when the page is localized,
@@ -1912,8 +1921,8 @@
 
   The <dfn element-attr for="global"><code>xml:base</code></dfn> attribute is defined in XML Base. [[!XMLBASE]]
 
-  The <{global/xml:base}> attribute may be used on <a>html elements</a> of <a>XML documents</a>.
-  Authors must not use the <{global/xml:base}> attribute on <a>html elements</a> in
+  The <{global/xml:base}> attribute may be used on <a>HTML elements</a> of <a>XML documents</a>.
+  Authors must not use the <{global/xml:base}> attribute on <a>HTML elements</a> in
   <a>HTML documents</a>.
 
 <h5 id="the-dir-attribute">The <code>dir</code> attribute</h5>
@@ -2022,17 +2031,15 @@
   </dl>
 
   <p class="note">
-    Since the <{global/dir}> attribute is only defined for <a>html elements</a>, it cannot be
+    Since the <{global/dir}> attribute is only defined for <a>HTML elements</a>, it cannot be
     present on elements from other namespaces. Thus, elements from other namespaces always just
     inherit their <a>directionality</a> from their parent element, or, if they don't have one,
     default to &quot;<a attr-value for="global/dir"><code>ltr</code></a>&quot;.
   </p>
 
-  <div class="impl">
-    <p class="note">
-      This attribute <a href="#bidireq">has rendering requirements involving the bidirectional algorithm</a>.
-    </p>
-  </div>
+  <p class="note">
+    This attribute <a href="#bidireq">has rendering requirements involving the bidirectional algorithm</a>.
+  </p>
 
   <hr />
 
@@ -2067,7 +2074,7 @@
   * <code>label</code> on <{menuitem}>, <{menu}>, <{optgroup}>,
     <{option}>, and <{track}> elements
   * <code>placeholder</code> on <{input}> and <{textarea}> elements
-  * <code>title</code> on all <a>html elements</a>
+  * <code>title</code> on all <a>HTML elements</a>
 
   <hr />
 
@@ -2083,15 +2090,13 @@
         If there is no <{html}> element, returns the empty string and ignores new values.
   </dl>
 
-  <div class="impl">
-    The <dfn attribute for="HTMLElement"><code>dir</code></dfn> IDL attribute on an element must <a>reflect</a> the
-    <{global/dir}> content attribute of that element, <a>limited to only known values</a>.
+  The <dfn attribute for="HTMLElement"><code>dir</code></dfn> IDL attribute on an element must <a>reflect</a> the
+  <{global/dir}> content attribute of that element, <a>limited to only known values</a>.
 
-    The <dfn attribute for="Document"><code>dir</code></dfn> IDL attribute on {{Document}} objects must
-    <a>reflect</a> the <{global/dir}> content attribute of the <{html}> element,
-    if any, <a>limited to only known values</a>. If there is no such element, then the attribute
-    must return the empty string and do nothing on setting.
-  </div>
+  The <dfn attribute for="Document"><code>dir</code></dfn> IDL attribute on {{Document}} objects must
+  <a>reflect</a> the <{global/dir}> content attribute of the <{html}> element,
+  if any, <a>limited to only known values</a>. If there is no such element, then the attribute
+  must return the empty string and do nothing on setting.
 
   <p class="note">
     Authors are strongly encouraged to use the <{global/dir}> attribute to indicate text direction
@@ -2129,11 +2134,9 @@
   The attribute, if specified, must have a value that is a <a>set of space-separated tokens</a>
   representing the various classes that the element belongs to.
 
-  <div class="impl">
-    The classes that an <a>HTML element</a> has assigned to it consists of all the classes returned
-    when the value of the <{global/class}> attribute is <a lt="split a string on spaces">split on spaces</a>. (Duplicates are
-    ignored.)
-  </div>
+  The classes that an <a>HTML element</a> has assigned to it consists of all the classes returned
+  when the value of the <{global/class}> attribute is <a lt="split a string on spaces">split on spaces</a>. (Duplicates are
+  ignored.)
 
   <p class="note">
     Assigning classes to an element affects class matching in selectors in CSS, the
@@ -2144,19 +2147,17 @@
   attribute, but authors are encouraged to use values that describe the nature of the content,
   rather than values that describe the desired presentation of the content.
 
-  <div class="impl">
-    <hr />
+  <hr />
 
-    <p class="note">
-      The {{className}} and {{classList}} IDL attributes,
-      defined in the DOM specification, <a>reflect</a> the <code>class</code> content attribute.
-      [[!DOM]]
-    </p>
-  </div>
+  <p class="note">
+    The {{className}} and {{classList}} IDL attributes,
+    defined in the DOM specification, <a>reflect</a> the <code>class</code> content attribute.
+    [[!DOM]]
+  </p>
 
   <h5 id="the-style-attribute">The <dfn element-attr for="global"><code>style</code></dfn> attribute</h5>
 
-  All <a>html elements</a> may have the <{global/style}> content attribute set. This is a
+  All <a>HTML elements</a> may have the <{global/style}> content attribute set. This is a
   <a>style attribute</a> as defined by the <cite>CSS Style Attributes</cite> specification.
   [[!CSS-STYLE-ATTR]]
 
@@ -2187,10 +2188,8 @@
         attribute.
   </dl>
 
-  <div class="impl">
-    The <code>style</code> IDL attribute is defined in the CSS Object Model (CSSOM)
-    specification. [[!CSSOM]]
-  </div>
+  The <code>style</code> IDL attribute is defined in the CSS Object Model (CSSOM)
+  specification. [[!CSSOM]]
 
   <div class="example">
     In the following example, the words that refer to colors are marked up using the
@@ -2211,7 +2210,7 @@
   <a>XML-compatible</a>, and contains no <a>uppercase ASCII letters</a>.
 
   <p class="note">
-    All attribute names on <a>html elements</a> in <a>HTML documents</a> get ASCII-lowercased
+    All attribute names on <a>HTML elements</a> in <a>HTML documents</a> get ASCII-lowercased
     automatically, so the restriction on ASCII uppercase letters doesn't affect such documents.
   </p>
 
@@ -2273,56 +2272,54 @@
         <code>element.dataset.fooBar</code>.
   </dl>
 
-  <div class="impl">
-    The <dfn attribute for="HTMLElement"><code>dataset</code></dfn> IDL attribute provides convenient
-    accessors for all the <{global/data-*}> attributes on an element. On
-    getting, the {{HTMLElement/dataset}} IDL attribute must return a
-    <code>DOMStringMap</code> object, associated with the following algorithms, which expose these
-    attributes on their element:
+  The <dfn attribute for="HTMLElement"><code>dataset</code></dfn> IDL attribute provides convenient
+  accessors for all the <{global/data-*}> attributes on an element. On
+  getting, the {{HTMLElement/dataset}} IDL attribute must return a
+  <code>DOMStringMap</code> object, associated with the following algorithms, which expose these
+  attributes on their element:
 
-    : The algorithm for <a>getting the list of name-value pairs</a>
-    :: 1. Let |list| be an empty list of name-value pairs.
-        2. For each content attribute on the element whose first five characters are the string
-            "<{global/data-}>" and whose remaining characters (if any) do not include any
-            <a>uppercase ASCII letters</a>, in the order that those attributes are listed in the
-            element's <a lt="element attribute">attribute list</a>, add a name-value pair to |list| whose name is
-            the attribute's name with the first five characters removed and whose value is the
-            attribute's value.
-        3. For each name in |list|, for each U+002D HYPHEN-MINUS character (-) in the name
-            that is followed by a <a>lowercase ASCII letter</a>, remove the U+002D HYPHEN-MINUS
-            character (-) and replace the character that followed it by the same character in
-            <a>ASCII uppercase</a>.
-        4. Return |list|.
+  : The algorithm for <a>getting the list of name-value pairs</a>
+  :: 1. Let |list| be an empty list of name-value pairs.
+      2. For each content attribute on the element whose first five characters are the string
+          "<{global/data-}>" and whose remaining characters (if any) do not include any
+          <a>uppercase ASCII letters</a>, in the order that those attributes are listed in the
+          element's <a lt="element attribute">attribute list</a>, add a name-value pair to |list| whose name is
+          the attribute's name with the first five characters removed and whose value is the
+          attribute's value.
+      3. For each name in |list|, for each U+002D HYPHEN-MINUS character (-) in the name
+          that is followed by a <a>lowercase ASCII letter</a>, remove the U+002D HYPHEN-MINUS
+          character (-) and replace the character that followed it by the same character in
+          <a>ASCII uppercase</a>.
+      4. Return |list|.
 
-    : The algorithm for <a>setting names to certain values</a>
-    :: 1. Let |name| be the name passed to the algorithm.
-        2. Let |value| be the value passed to the algorithm.
-        3. If |name| contains a U+002D HYPHEN-MINUS character (-) followed by a
-            <a>lowercase ASCII letter</a>, throw a "{{SyntaxError}}" {{DOMException}} and abort
-            these steps.
-        4. For each <a>uppercase ASCII letter</a> in |name|, insert a U+002D HYPHEN-MINUS
-            character (-) before the character and replace the character with the same character
-            in <a>ASCII lowercase</a>.
-        5. Insert the string <{global/data-}> at the front of |name|.
-        6. Set the value of the attribute with the name |name|, to the value
-            |value|, replacing any previous value if the attribute already existed. If
-            <code>setAttribute()</code> would have thrown an exception when setting an attribute
-            with the name |name|, then this must throw the same exception.
+  : The algorithm for <a>setting names to certain values</a>
+  :: 1. Let |name| be the name passed to the algorithm.
+      2. Let |value| be the value passed to the algorithm.
+      3. If |name| contains a U+002D HYPHEN-MINUS character (-) followed by a
+          <a>lowercase ASCII letter</a>, throw a "{{SyntaxError}}" {{DOMException}} and abort
+          these steps.
+      4. For each <a>uppercase ASCII letter</a> in |name|, insert a U+002D HYPHEN-MINUS
+          character (-) before the character and replace the character with the same character
+          in <a>ASCII lowercase</a>.
+      5. Insert the string <{global/data-}> at the front of |name|.
+      6. Set the value of the attribute with the name |name|, to the value
+          |value|, replacing any previous value if the attribute already existed. If
+          <code>setAttribute()</code> would have thrown an exception when setting an attribute
+          with the name |name|, then this must throw the same exception.
 
-    : The algorithm for <a>deleting names</a>
-    :: 1. Let |name| be the name passed to the algorithm.
-        2. For each <a>uppercase ASCII letter</a> in |name|, insert a U+002D HYPHEN-MINUS
-            character (-) before the character and replace the character with the same character
-            in <a>ASCII lowercase</a>.
-        3. Insert the string <{global/data-}> at the front of |name|.
-        4. Remove the attribute with the name |name|, if such an attribute exists. Do
-            nothing otherwise.
+  : The algorithm for <a>deleting names</a>
+  :: 1. Let |name| be the name passed to the algorithm.
+      2. For each <a>uppercase ASCII letter</a> in |name|, insert a U+002D HYPHEN-MINUS
+          character (-) before the character and replace the character with the same character
+          in <a>ASCII lowercase</a>.
+      3. Insert the string <{global/data-}> at the front of |name|.
+      4. Remove the attribute with the name |name|, if such an attribute exists. Do
+          nothing otherwise.
 
-        <p class="note">
-          This algorithm will only get invoked by the Web IDL specification for names that are given
-          by the earlier algorithm for <a>getting the list of name-value pairs</a>. [[!WEBIDL]]
-        </p>
-  </div>
+      <p class="note">
+        This algorithm will only get invoked by the Web IDL specification for names that are given
+        by the earlier algorithm for <a>getting the list of name-value pairs</a>. [[!WEBIDL]]
+      </p>
 
   <div class="example">
     If a Web page wanted an element to represent a space ship, e.g., as part of a game, it would have
@@ -2342,11 +2339,9 @@
   Authors should carefully design such extensions so that when the attributes are ignored and any
   associated CSS dropped, the page is still usable.
 
-  <div class="impl">
-    User agents must not derive any implementation behavior from these attributes or values.
-    Specifications intended for user agents must not define these attributes to have any meaningful
-    values.
-  </div>
+  User agents must not derive any implementation behavior from these attributes or values.
+  Specifications intended for user agents must not define these attributes to have any meaningful
+  values.
 
   JavaScript libraries may use the <a>custom data attributes</a>, as they are considered to be part
   of the page on which they are used. Authors of libraries that are reused by many authors are
@@ -2372,8 +2367,8 @@
   Authoring conformance criteria for bidirectional-algorithm formatting characters
 </h5>
 
-  <a>Text content</a> in <a>html elements</a> with <code>Text</code> nodes in their <a lt='html-contents'>contents</a>,
-  and text in attributes of <a>html elements</a> that allow free-form text, may contain characters
+  <a>Text content</a> in <a>HTML elements</a> with <code>Text</code> nodes in their <a lt='html-contents'>contents</a>,
+  and text in attributes of <a>HTML elements</a> that allow free-form text, may contain characters
   in the ranges U+202A to U+202E and U+2066 to U+2069 (the bidirectional-algorithm formatting
   characters). However, the use of these characters is restricted so that any embedding or overrides
   generated by these characters do not start and end with different parent elements, and so that all
@@ -2451,36 +2446,34 @@
     characters manually. The bidirectional-algorithm formatting characters interact poorly with CSS.
 </p>
 
-  <div class="impl">
-    <h5 id="user-agent-conformance-criteria">User agent conformance criteria</h5>
+  <h5 id="user-agent-conformance-criteria">User agent conformance criteria</h5>
 
-    User agents must implement the Unicode bidirectional algorithm to determine the proper ordering
-    of characters when rendering documents and parts of documents. [[!BIDI]]
+  User agents must implement the Unicode bidirectional algorithm to determine the proper ordering
+  of characters when rendering documents and parts of documents. [[!BIDI]]
 
-    The mapping of HTML to the Unicode bidirectional algorithm must be done in one of three ways.
-    Either the user agent must implement CSS, including in particular the CSS 'unicode-bidi',
-    'direction', and 'content' properties, and must have, in its user agent style sheet, the rules
-    using those properties given in this specification's [[#rendering]] section, or,
-    alternatively, the user agent must act as if it implemented just the aforementioned properties
-    and had a user agent style sheet that included all the aforementioned rules, but without letting
-    style sheets specified in documents override them, or, alternatively, the user agent must
-    implement another styling language with equivalent semantics. [[CSS-WRITING-MODES-3]]
-    [[CSS3-CONTENT]]
+  The mapping of HTML to the Unicode bidirectional algorithm must be done in one of three ways.
+  Either the user agent must implement CSS, including in particular the CSS 'unicode-bidi',
+  'direction', and 'content' properties, and must have, in its user agent style sheet, the rules
+  using those properties given in this specification's [[#rendering]] section, or,
+  alternatively, the user agent must act as if it implemented just the aforementioned properties
+  and had a user agent style sheet that included all the aforementioned rules, but without letting
+  style sheets specified in documents override them, or, alternatively, the user agent must
+  implement another styling language with equivalent semantics. [[CSS-WRITING-MODES-3]]
+  [[CSS3-CONTENT]]
 
-    <p id="bidireq">
-      The following elements and attributes have requirements defined by the [[#rendering]]
-      section that, due to the requirements in this section, are requirements on all user agents
-      (not just those that <a>support the suggested default rendering</a>):
-    </p>
+  <p id="bidireq">
+    The following elements and attributes have requirements defined by the [[#rendering]]
+    section that, due to the requirements in this section, are requirements on all user agents
+    (not just those that <a>support the suggested default rendering</a>):
+  </p>
 
-    * <{global/dir}> attribute
-    * <{bdi}> element
-    * <{bdo}> element
-    * <{br}> element
-    * <{pre}> element
-    * <{textarea}> element
-    * <{wbr}> element
-  </div>
+  * <{global/dir}> attribute
+  * <{bdi}> element
+  * <{bdo}> element
+  * <{br}> element
+  * <{pre}> element
+  * <{textarea}> element
+  * <{wbr}> element
 
   <section>
   <h4 id="wai-aria">WAI-ARIA and HTML Accessibility API Mappings</h4>
@@ -2510,13 +2503,13 @@
     </ul>
   </div>
   </section>
-  <section class="impl">
+  <section>
    <h5 id='aria-conformance-requirements'>Conformance Checker Implementation Requirements</h5>
   <p>Conformance checkers are required to implement document conformance requirements for use of the
   ARIA <code>role</code> and <code>aria-*</code> attributes on <a>HTML elements</a>
   , as defined in ARIA in HTML. [[!html-aria]] </p>
   </section>
-  <section class="impl">
+  <section>
   <h5 id='user-agent-requirements'>User Agent Implementation Requirements</h5>
   <div>
     <p>User agents are required to implement ARIA semantics on all <a>HTML elements</a>
@@ -2537,10 +2530,9 @@
   The attribute, if specified, must have a value that is a set of space-separated tokens;
   each token must be a non-abstract role defined in the WAI-ARIA specification [[!wai-aria-1.1]].
 
-  <div class="impl">
-    The WAI-ARIA role that an HTML element has assigned to it is the first non-abstract role found
-    in the list of values generated when the <code>role</code> attribute is split on spaces.
-  </div>
+  The WAI-ARIA role that an HTML element has assigned to it is the first non-abstract role found
+  in the list of values generated when the <code>role</code> attribute is split on spaces.
+  
   </section>
   <section>
   <h6 id="state-and-property-attributes">State and Property Attributes</h6>
