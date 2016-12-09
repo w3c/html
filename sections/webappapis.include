@@ -1707,6 +1707,7 @@
     <tr><th><a>Event handler</a> <th><a>Event handler event type</a>
     <tbody>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onabort</code></dfn> <td> <code>abort</code>
+    <tr><td><dfn attribute for="GlobalEventHandlers"><code>onauxclick</code></dfn> <td> <code>auxclick</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>oncancel</code></dfn> <td> <code>cancel</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>oncanplay</code></dfn> <td> <code>canplay</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>oncanplaythrough</code></dfn> <td> <code>canplaythrough</code>
@@ -1734,6 +1735,7 @@
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onkeyup</code></dfn> <td> <code>keyup</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onloadeddata</code></dfn> <td> <code>loadeddata</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onloadedmetadata</code></dfn> <td> <code>loadedmetadata</code>
+    <tr><td><dfn attribute for="GlobalEventHandlers"><code>onloadend</code></dfn> <td> <code>loadend</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onloadstart</code></dfn> <td> <code>loadstart</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onmousedown</code></dfn> <td> <code>mousedown</code>
     <tr><td><dfn attribute for="GlobalEventHandlers"><code>onmouseenter</code></dfn> <td> <code>mouseenter</code>
@@ -2272,7 +2274,7 @@
     reusing the previous object, which is then returned.
 
     If the <var>type</var> argument is omitted or has the value
-    "<a href="#text-html"><code>text/html</code></a>", then the resulting {{Document}} has an HTML
+    "<code>[[#text-html|text/html]]</code>", then the resulting {{Document}} has an HTML
     parser associated with it, which can be given data to parse using
     {{Document/write()|document.write()}}. Otherwise, all content passed to
     {{Document/write()|document.write()}} will be parsed as plain text.
@@ -2376,7 +2378,7 @@
   25. Set the <a>current document readiness</a> of the document to "<code>loading</code>".
   26. If <var>type</var> is an <a>ASCII case-insensitive</a> match for the string
        "<code>replace</code>", then, for historical reasons, set it to the string
-       "<a href="#text-html"><code>text/html</code></a>".
+       "<code>[[#text-html|text/html]]</code>".
 
        Otherwise:
 
@@ -2385,7 +2387,7 @@
 
        <a>Strip leading and trailing whitespace</a> from <var>type</var>.
   27. If <var>type</var> is <em>not</em> now an <a>ASCII case-insensitive</a> match for the string
-       "<a href="#text-html"><code>text/html</code></a>", then act as if the tokenizer had emitted a
+       "<code>[[#text-html|text/html]]</code>", then act as if the tokenizer had emitted a
        start tag token with the tag name "pre" followed by a single U+000A LINE FEED (LF) character,
        then switch the <a>HTML parser</a>'s tokenizer to the [[#plaintext-state]].
   28. Remove all the entries in the <a>browsing context</a>'s <a>session history</a> after the
@@ -3708,7 +3710,7 @@
       <li><code>image/svg+xml</code></li>
       <li><code>multipart/x-mixed-replace</code></li>
       <li><code>text/css</code></li>
-      <li><a href="#text-html"><code>text/html</code></a></li>
+      <li><code>[[#text-html|text/html]]</code></li>
       <li><code>text/ping</code></li>
       <li><code>text/plain</code></li>
       <li><code>text/vtt</code></li>
@@ -4120,7 +4122,7 @@
     return true if the user agent attempts to handle cookies according to the cookie specification,
     and false if it ignores cookie change requests. [[!COOKIES]]
 
-<h5 id="plugins-api">Plugins</h5>
+<h5 id="plugins-2">Plugins</h5>
 
   <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
@@ -4283,7 +4285,7 @@
 
   <p class="note">
   The fewer <a>plugins</a> are represented by the
-  <code>PluginArray</code> object, and of those, the more that are <a>hidden</a>, the more the user's privacy will be protected. Each exposed plugin
+  <code>PluginArray</code> object, and of those, the more that are <a lt="hidden plugins">hidden</a>, the more the user's privacy will be protected. Each exposed plugin
   increases the number of bits that can be derived for fingerprinting. Hiding a plugin helps, but
   unless it is an extremely rare plugin, it is likely that a site attempting to derive the list of
   plugins can still determine whether the plugin is supported or not by probing for it by name (the
@@ -4310,10 +4312,10 @@
   </p>
 
   The <a>supported property indices</a> of a <code>PluginArray</code> object are the
-  numbers from zero to the number of non-<a>hidden</a> <a>plugins</a> represented by the object, if any.
+  numbers from zero to the number of non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the object, if any.
 
   The <dfn attribute for="PluginArray"><code>length</code></dfn> attribute must return the
-  number of non-<a>hidden</a> <a>plugins</a>
+  number of non-<a lt="hidden plugins">hidden</a> <a>plugins</a>
   represented by the object.
 
   The <dfn method for="PluginArray"><code>item()</code></dfn> method of a
@@ -4324,7 +4326,7 @@
   <ol>
 
     <li>Let <var>list</var> be the <code>Plugin</code> objects
-    representing the non-<a>hidden</a> <a>plugins</a> represented by the <code>PluginArray</code> object.</li>
+    representing the non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the <code>PluginArray</code> object.</li>
 
     <li>Sort <var>list</var> alphabetically by the <code>name</code> of each <code>Plugin</code>.</li>
 
@@ -4375,11 +4377,11 @@
 
   The <a>supported property indices</a> of a <code>MimeTypeArray</code> object are the
   numbers from zero to the number of <a>MIME types</a> <a>explicitly
-  supported</a> by non-<a>hidden</a> <a>plugins</a> represented by the corresponding <code>PluginArray</code> object, if
+  supported</a> by non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the corresponding <code>PluginArray</code> object, if
   any.
 
   The <dfn attribute for="MimeTypeArray"><code>length</code></dfn> attribute must return the
-  number of <a>MIME types</a> <a>explicitly supported</a> by non-<a>hidden</a> <a>plugins</a> represented by the
+  number of <a>MIME types</a> <a>explicitly supported</a> by non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the
   corresponding <code>PluginArray</code> object, if any.
 
   The <dfn method for="MimeTypeArray"><code>item()</code></dfn> method of a
@@ -4389,7 +4391,7 @@
 
   <ol>
 
-    <li>Let <var>list</var> be the <code>MimeType</code> objects representing the <a>MIME types</a> <a>explicitly supported</a> by non-<a>hidden</a> <a>plugins</a> represented by the corresponding
+    <li>Let <var>list</var> be the <code>MimeType</code> objects representing the <a>MIME types</a> <a>explicitly supported</a> by non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the corresponding
     <code>PluginArray</code> object, if any.</li>
 
     <li>Sort <var>list</var> alphabetically by the <code>type</code> of each <code>MimeType</code>.</li>

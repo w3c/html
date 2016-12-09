@@ -499,8 +499,8 @@
       <{iframe}>, <{img}>, or <a>exposed</a> <{object}> elements that
       have a <code>name</code> content attribute whose value is |name|, or
   * <code>applet</code> or <a>exposed</a> <{object}> elements that have an
-      <code>id</code> content attribute whose value is |name|, or
-  * <{img}> elements that have an <code>id</code> content attribute whose value is
+      <{global/id}> content attribute whose value is |name|, or
+  * <{img}> elements that have an <{global/id}> content attribute whose value is
       |name|, and that have a non-empty <code>name</code> content attribute present also.
 
   An <code>embed</code> or <{object}> element is said to be <dfn>exposed</dfn> if it has
@@ -695,23 +695,22 @@
   :: A <em>non-normative</em> description of where the element can be used. This information is
       redundant with the content models of elements that allow this one as a child, and is provided
       only as a convenience.
-      <p class="note">
-        For simplicity, only the most specific expectations are listed. For example, an element that
-        is both <a>flow content</a> and <a>phrasing content</a> can be used anywhere that either
-        <a>flow content</a> or <a>phrasing content</a> is expected, but since anywhere that
-        <a>flow content</a> is expected, <a>phrasing content</a> is also expected (since all
-        <a>phrasing content</a> is <a>flow content</a>), only "where <a>phrasing content</a> is
-        expected" will be listed.
-      </p>
+      
+      <p class="note">For simplicity, only the most specific expectations are listed. For example, 
+      an element that is both <a>flow content</a> and <a>phrasing content</a> can be used anywhere 
+      that either <a>flow content</a> or <a>phrasing content</a> is expected, but since anywhere 
+      that <a>flow content</a> is expected, <a>phrasing content</a> is also expected (since all
+      <a>phrasing content</a> is <a>flow content</a>), only "where <a>phrasing content</a> is
+      expected" will be listed.</p>
   : <dfn>Content model</dfn>
   :: A normative description of what content must be included as children and descendants of the
       element.
   : <dfn>Tag omission in text/html</dfn>
-  :: A <em>non-normative</em> description of whether, in the <a href="#text-html"><code>text/html</code></a> syntax, the
+  :: A <em>non-normative</em> description of whether, in the <code>[[#text-html|text/html]]</code> syntax, the
       <a lt="start tag">start</a> and <a lt="end tag">end</a> tags can be omitted. This information is redundant with the
       normative requirements given in the <a lt="omitted">optional tags</a> section, and is provided in the
       element definitions only as a convenience.
-  : <dfn lt="content attribute|content attributes">Content attributes</dfn>
+  : <dfn>Content attributes</dfn>
   :: A normative list of attributes that may be specified on the element (except where otherwise
       disallowed), along with non-normative descriptions of those attributes. (The content to the
       left of the dash is normative, the content to the right of the dash is not.)
@@ -730,18 +729,20 @@
 
 <h5 id="element-definitions-attributes">Attributes</h5>
 
-  Except where otherwise specified, attributes on <a>HTML elements</a> may have any string value,
-  including the empty string. Except where explicitly stated, there is no restriction on what text
-  can be specified in such attributes.
+  An attribute value is a string. Except where otherwise specified, attribute values on 
+  <a>HTML elements</a> may be any string value, including the empty string, and there is no 
+  restriction on what text can be specified in such attribute values.
 
 <h4 id="content-models">Content models</h4>
 
   Each element defined in this specification has a content model: a description of the element's
-  expected <a lt='html-contents'>contents</a>. An <a>HTML element</a> must have contents that match the requirements
-  described in the element's content model. The <dfn lt='html-contents'>contents</dfn> of an element are its children
-  in the DOM, except for <{template}> elements, where the children are those in the
-  <a>template contents</a> (a separate <code>DocumentFragment</code> assigned to the element when
-  the element is created).
+  expected <a>contents</a>. An <a>HTML element</a> must have contents that match 
+  the requirements described in the element's content model. The 
+  <dfn>contents</dfn> of an element are its children in the DOM.
+  
+  <p class="note">When a <{template}> element is being parsed, its children are assigned to the
+  <a>template contents</a> (a separate {{DocumentFragment}} assigned to the element when
+  the element is created), rather than its children.</p>
 
   The <a>space characters</a> are always allowed between elements. User agents represent these
   characters between elements in the source markup as <code>Text</code> nodes in the DOM. Empty
@@ -752,14 +753,11 @@
   when establishing whether an element's contents match the element's content model or not, and must
   be ignored when following algorithms that define document and element semantics.
 
-  <p class="note">
-    Thus, an element |A| is said to be <i>preceded or followed</i> by a second element
-    |B| if |A| and |B| have the same parent node and there are no other
-    element nodes or <code>Text</code> nodes (other than <a>inter-element whitespace</a>) between
-    them. Similarly, a node is the <i>only child</i> of an element if that element contains no other
-    nodes other than <a>inter-element whitespace</a>, comment nodes, and processing instruction
-    nodes.
-  </p>
+  <p class="note">Thus, an element |A| is said to be <i>preceded or followed</i> by a second element
+  |B| if |A| and |B| have the same parent node and there are no other element nodes or {{Text}} 
+  nodes (other than <a>inter-element whitespace</a>) between them. Similarly, a node is the 
+  <i>only child</i> of an element if that element contains no other nodes other than 
+  <a>inter-element whitespace</a>, comment nodes, and processing instruction nodes.</p>
 
   Authors must not use <a>HTML elements</a> anywhere except where they are explicitly allowed, as
   defined for each element, or as explicitly required by other specifications. For XML compound
@@ -791,38 +789,35 @@
 
 <h5 id="the-nothing-content-model">The "nothing" content model</h5>
 
-  When an element's content model is <dfn>nothing</dfn>, the element must contain no
-  <code>Text</code> nodes (other than <a>inter-element whitespace</a>) and no element nodes.
+  When an element's content model is <dfn>nothing</dfn>, the element must contain no {{Text}} nodes 
+  (other than <a>inter-element whitespace</a>) and no element nodes.
 
-  <p class="note">
-    Most HTML elements whose content model is "nothing" are also, for convenience,
-    <a>void elements</a> (elements that have no <a>end tag</a> in the <a href="#syntax">HTML syntax</a>). However,
-    these are entirely separate concepts.
-  </p>
+  <p class="note">Most HTML elements whose content model is "nothing" are also, for convenience,
+  <a>void elements</a> (elements that have no <a>end tag</a> in the [[#syntax|HTML syntax]]). 
+  However, these are entirely separate concepts.</p>
 
 <h5 id="kinds-of-content">Kinds of content</h5>
 
-  Each element in HTML falls into zero or more <dfn lt="content categories|conent category">categories</dfn> that group elements with
-  similar characteristics together. The following broad categories are used in this specification:
+  Each element in HTML falls into zero or more 
+  <dfn lt="content categories|conent category">categories</dfn> that group elements with similar 
+  characteristics together. The following broad categories are used in this specification:
 
-  <ul class="brief category-list">
-    <li>[[#kinds-of-content-metadata-content]]</li>
-    <li>[[#kinds-of-content-flow-content]]</li>
-    <li>[[#kinds-of-content-sectioning-content]]</li>
-    <li>[[#kinds-of-content-heading-content]]</li>
-    <li>[[#kinds-of-content-phrasing-content]]</li>
-    <li>[[#kinds-of-content-embedded-content]]</li>
-    <li>[[#kinds-of-content-interactive-content]]</li>
+  <ul class="brief">
+    * [[#metadata-content|Metadata content]]
+    * [[#flow-content|Flow content]]
+    * [[#sectioning-content|Sectioning content]]
+    * [[#heading-content|Heading content]]
+    * [[#phrasing-content|Phrasing content]]
+    * [[#embedded-content|Embedded content]]
+    * [[#interactive-content|Interactive content]]
   </ul>
 
-  <p class="note">
-    Some elements also fall into other categories, which are defined in other parts of this
-    specification.
-  </p>
+  <p class="note">Some elements also fall into other categories, which are defined in other parts of 
+  this specification.</p>
 
   These categories are related as follows:
 
-  <object width="1000" height="288" data="images/content-venn.svg"><img src="images/content-venn.png" alt="" width="512" height="288" /></object>
+  <p><object width="1000" height="288" data="images/content-venn.svg"><img src="images/content-venn.png" alt="" width="512" height="288" /></object></p>
 
   Sectioning content, heading content, phrasing content, embedded content, and interactive content
   are all types of flow content. Metadata is sometimes flow content. Metadata and interactive
@@ -833,21 +828,21 @@
   number of categories to define common requirements. Some elements have unique requirements and do
   not fit into any particular category.
 
-<h6 id="kinds-of-content-metadata-content">Metadata content</h6>
+<h6 id="metadata-content">Metadata content</h6>
 
-  <dfn lt="metadata content">Metadata content</dfn> is content that sets up the presentation or behavior of the rest of
+  <dfn id="metadata-content-2">Metadata content</dfn> is content that sets up the presentation or behavior of the rest of
   the content, or that sets up the relationship of the document with other documents, or that
   conveys other "out of band" information.
 
   <ul class="brief category-list">
-    <li><{base}></li>
-    <li><{link}></li>
-    <li><{meta}></li>
-    <li><{noscript}></li>
-    <li><{script}></li>
-    <li><{style}></li>
-    <li><{template}></li>
-    <li><{title}></li>
+    <li><{base}>
+    <li><{link}>
+    <li><{meta}>
+    <li><{noscript}>
+    <li><{script}>
+    <li><{style}>
+    <li><{template}>
+    <li><{title}>
   </ul>
 
   Elements from other namespaces whose semantics are primarily metadata-related (e.g., RDF) are also
@@ -857,11 +852,11 @@
     Thus, in the XML serialization, one can use RDF, like this:
 
     <pre highlight="html">
-      &lt;html xmlns="https://www.w3.org/1999/xhtml" xmlns:r="https://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      &lt;html xmlns="http://www.w3.org/1999/xhtml" xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         &lt;head>
           &lt;title>Hedral's Home Page&lt;/title>
           &lt;r:RDF>
-            &lt;Person xmlns="https://www.w3.org/2000/10/swap/pim/contact#"
+            &lt;Person xmlns="http://www.w3.org/2000/10/swap/pim/contact#"
                        r:about="https://hedral.example.com/#">
               &lt;fullName>Cat Hedral&lt;/fullName>
               &lt;mailbox r:resource="mailto:hedral@damowmow.com"/>
@@ -880,236 +875,230 @@
     This isn't possible in the HTML serialization, however.
   </div>
 
-<h6 id="kinds-of-content-flow-content">Flow content</h6>
+<h6 id="flow-content">Flow content</h6>
 
   Most elements that are used in the body of documents and applications are categorized as
-  <dfn lt="flow content">flow content</dfn>.
+  <dfn id="flow-content-2" lt="flow content|flow">flow content</dfn>.
 
   <ul class="brief category-list">
-    <li><{a}></li>
-    <li><{abbr}></li>
-    <li><{address}></li>
-    <li><{area}> (if it is a descendant of a <{map}> element)</li>
-    <li><{article}></li>
-    <li><{aside}></li>
-    <li><{audio}></li>
-    <li><{b}></li>
-    <li><{bdi}></li>
-    <li><{bdo}></li>
-    <li><{blockquote}></li>
-    <li><{br}></li>
-    <li><{button}></li>
-    <li><{canvas}></li>
-    <li><{cite}></li>
-    <li><{code}></li>
-    <li><{data}></li>
-    <li><{datalist}></li>
-    <li><{del}></li>
-    <li><{details}></li>
-    <li><{dfn}></li>
-    <li><{dialog}></li>
-    <li><{div}></li>
-    <li><{dl}></li>
-    <li><{em}></li>
-    <li><{embed}></li>
-    <li><{fieldset}></li>
-    <li><{figure}></li>
-    <li><{footer}></li>
-    <li><{form}></li>
-    <li><{h1}></li>
-    <li><{h2}></li>
-    <li><{h3}></li>
-    <li><{h4}></li>
-    <li><{h5}></li>
-    <li><{h6}></li>
-    <li><{header}></li>
-    <li><{hr}></li>
-    <li><{i}></li>
-    <li><{iframe}></li>
-    <li><{img}></li>
-    <li><{input}></li>
-    <li><{ins}></li>
-    <li><{kbd}></li>
-    <li><{label}></li>
-    <li><{link}> (if it is <a>allowed in the body</a>)</li>
-    <li><{main}></li>
-    <li><{map}></li>
-    <li><{mark}></li>
-    <li><a>MathML <code>math</code></a></li>
-    <li><{menu}></li>
-    <li><{meter}></li>
-    <li><{nav}></li>
-    <li><{noscript}></li>
-    <li><{object}></li>
-    <li><{ol}></li>
-    <li><{output}></li>
-    <li><{p}></li>
-    <li><{picture}></li>
-    <li><{pre}></li>
-    <li><{progress}></li>
-    <li><{q}></li>
-    <li><{ruby}></li>
-    <li><{s}></li>
-    <li><{samp}></li>
-    <li><{script}></li>
-    <li><{section}></li>
-    <li><{select}></li>
-    <li><{small}></li>
-    <li><{span}></li>
-    <li><{strong}></li>
-    <li><{sub}></li>
-    <li><{sup}></li>
-    <li><a>SVG svg</a></li>
-    <li><{table}></li>
-    <li><{template}></li>
-    <li><{textarea}></li>
-    <li><{time}></li>
-    <li><{u}></li>
-    <li><{ul}></li>
-    <li><{var}></li>
-    <li><{video}></li>
-    <li><{wbr}></li>
-    <li><a>Text</a></li>
+    <li><{a}>
+    <li><{abbr}>
+    <li><{address}>
+    <li><{area}> (if it is a descendant of a <{map}> element)
+    <li><{article}>
+    <li><{aside}>
+    <li><{audio}>
+    <li><{b}>
+    <li><{bdi}>
+    <li><{bdo}>
+    <li><{blockquote}>
+    <li><{br}>
+    <li><{button}>
+    <li><{canvas}>
+    <li><{cite}>
+    <li><{code}>
+    <li><{data}>
+    <li><{datalist}>
+    <li><{del}>
+    <li><{details}>
+    <li><{dfn}>
+    <li><{dialog}>
+    <li><{div}>
+    <li><{dl}>
+    <li><{em}>
+    <li><{embed}>
+    <li><{fieldset}>
+    <li><{figure}>
+    <li><{footer}>
+    <li><{form}>
+    <li><{h1}>
+    <li><{h2}>
+    <li><{h3}>
+    <li><{h4}>
+    <li><{h5}>
+    <li><{h6}>
+    <li><{header}>
+    <li><{hr}>
+    <li><{i}>
+    <li><{iframe}>
+    <li><{img}>
+    <li><{input}>
+    <li><{ins}>
+    <li><{kbd}>
+    <li><{label}>
+    <li><{link}> (if it is <a>allowed in the body</a>)
+    <li><{main}>
+    <li><{map}>
+    <li><{mark}>
+    <li><a>MathML <code>math</code></a>
+    <li><{menu}>
+    <li><{meter}>
+    <li><{nav}>
+    <li><{noscript}>
+    <li><{object}>
+    <li><{ol}>
+    <li><{output}>
+    <li><{p}>
+    <li><{picture}>
+    <li><{pre}>
+    <li><{progress}>
+    <li><{q}>
+    <li><{ruby}>
+    <li><{s}>
+    <li><{samp}>
+    <li><{script}>
+    <li><{section}>
+    <li><{select}>
+    <li><{small}>
+    <li><{span}>
+    <li><{strong}>
+    <li><{sub}>
+    <li><{sup}>
+    <li><a>SVG svg</a>
+    <li><{table}>
+    <li><{template}>
+    <li><{textarea}>
+    <li><{time}>
+    <li><{u}>
+    <li><{ul}>
+    <li><{var}>
+    <li><{video}>
+    <li><{wbr}>
+    <li><a>text</a>
   </ul>
 
+<h6 id="sectioning-content">Sectioning content</h6>
 
-<h6 id="kinds-of-content-sectioning-content">Sectioning content</h6>
-
-  <dfn lt="sectioning content">Sectioning content</dfn> is content that defines the scope of <a>headings</a>,
-  <a element lt="footer">footer</a> and <a element lt="header">header</a> elements.
+  <dfn id="sectioning-content-2" lt="sectioning content|sectioning">Sectioning content</dfn> is content that defines the scope of 
+  <a>headings</a> and [[#the-footer-element|footers]].
 
   <ul class="brief category-list">
-    <li><{article}></li>
-    <li><{aside}></li>
-    <li><{nav}></li>
-    <li><{section}></li>
+    <li><{article}>
+    <li><{aside}>
+    <li><{nav}>
+    <li><{section}>
   </ul>
 
   Each <a>sectioning content</a> element potentially has a heading and an <a>outline</a>. See the
-  section on [[#headings-and-sections]] for further details.
+  section on [[#headings-and-sections|headings and sections]] for further details.
 
-  <p class="note">
-    There are also certain elements that are <a>sectioning roots</a>. These are distinct from
-    <a>sectioning content</a>, but they can also have an <a>outline</a>.
-  </p>
+  <p class="note">There are also certain elements that are <a>sectioning roots</a>. These are 
+  distinct from <a>sectioning content</a>, but they can also have an <a>outline</a>.</p>
 
-<h6 id="kinds-of-content-heading-content">Heading content</h6>
+<h6 id="heading-content">Heading content</h6>
 
-  <dfn lt="heading content|headings">Heading content</dfn> defines the header of a section (whether explicitly marked up using
-  <a>sectioning content</a> elements, or implied by the heading content itself).
+  <dfn id="heading-content-2" lt="heading content|headings">Heading content</dfn> defines the header 
+  of a section (whether explicitly marked up using <a>sectioning content</a> elements, or implied by 
+  the heading content itself).
 
   <ul class="brief category-list">
-    <li><{h1}></li>
-    <li><{h2}></li>
-    <li><{h3}></li>
-    <li><{h4}></li>
-    <li><{h5}></li>
-    <li><{h6}></li>
+    <li><{h1}>
+    <li><{h2}>
+    <li><{h3}>
+    <li><{h4}>
+    <li><{h5}>
+    <li><{h6}>
   </ul>
 
-<h6 id="kinds-of-content-phrasing-content">Phrasing content</h6>
+<h6 id="phrasing-content">Phrasing content</h6>
 
-  <dfn lt="phrasing content">Phrasing content</dfn> is the text of the document, as well as elements that mark up that
+  <dfn id="phrasing-content-2" lt="phrasing content|phrasing">Phrasing content</dfn> is the text of the document, as well as elements that mark up that
   text at the intra-paragraph level. Runs of <a>phrasing content</a> form <a>paragraphs</a>.
 
   <ul class="brief category-list">
-    <li><{a}></li>
-    <li><{abbr}></li>
-    <li><{area}> (if it is a descendant of a <{map}> element)</li>
-    <li><{audio}></li>
-    <li><{b}></li>
-    <li><{bdi}></li>
-    <li><{bdo}></li>
-    <li><{br}></li>
-    <li><{button}></li>
-    <li><{canvas}></li>
-    <li><{cite}></li>
-    <li><{code}></li>
-    <li><{data}></li>
-    <li><{datalist}></li>
-    <li><{del}></li>
-    <li><{dfn}></li>
-    <li><{em}></li>
-    <li><{embed}></li>
-    <li><{i}></li>
-    <li><{iframe}></li>
-    <li><{img}></li>
-    <li><{input}></li>
-    <li><{ins}></li>
-    <li><{kbd}></li>
-    <li><{label}></li>
-    <li><{link}> (if it is <a>allowed in the body</a>)</li>
-    <li><{map}></li>
-    <li><{mark}></li>
-    <li><a>MathML <code>math</code></a></li>
-    <li><{meter}></li>
-    <li><{noscript}></li>
-    <li><{object}></li>
-    <li><{output}></li>
-    <li><{picture}></li>
-    <li><{progress}></li>
-    <li><{q}></li>
-    <li><{ruby}></li>
-    <li><{s}></li>
-    <li><{samp}></li>
-    <li><{script}></li>
-    <li><{select}></li>
-    <li><{small}></li>
-    <li><{span}></li>
-    <li><{strong}></li>
-    <li><{sub}></li>
-    <li><{sup}></li>
-    <li><a>SVG svg</a></li>
-    <li><{template}></li>
-    <li><{textarea}></li>
-    <li><{time}></li>
-    <li><{u}></li>
-    <li><{var}></li>
-    <li><{video}></li>
-    <li><{wbr}></li>
-    <li><a>Text</a></li>
+    <li><{a}>
+    <li><{abbr}>
+    <li><{area}> (if it is a descendant of a <{map}> element)
+    <li><{audio}>
+    <li><{b}>
+    <li><{bdi}>
+    <li><{bdo}>
+    <li><{br}>
+    <li><{button}>
+    <li><{canvas}>
+    <li><{cite}>
+    <li><{code}>
+    <li><{data}>
+    <li><{datalist}>
+    <li><{del}>
+    <li><{dfn}>
+    <li><{em}>
+    <li><{embed}>
+    <li><{i}>
+    <li><{iframe}>
+    <li><{img}>
+    <li><{input}>
+    <li><{ins}>
+    <li><{kbd}>
+    <li><{label}>
+    <li><{link}> (if it is <a>allowed in the body</a>)
+    <li><{map}>
+    <li><{mark}>
+    <li><a>MathML <code>math</code></a>
+    <li><{meter}>
+    <li><{noscript}>
+    <li><{object}>
+    <li><{output}>
+    <li><{picture}>
+    <li><{progress}>
+    <li><{q}>
+    <li><{ruby}>
+    <li><{s}>
+    <li><{samp}>
+    <li><{script}>
+    <li><{select}>
+    <li><{small}>
+    <li><{span}>
+    <li><{strong}>
+    <li><{sub}>
+    <li><{sup}>
+    <li><a>SVG svg</a>
+    <li><{template}>
+    <li><{textarea}>
+    <li><{time}>
+    <li><{u}>
+    <li><{var}>
+    <li><{video}>
+    <li><{wbr}>
+    <li><a>text</a>
   </ul>
 
-  <p class="note">
-    Most elements that are categorized as phrasing content can only contain elements that are
-    themselves categorized as phrasing content, not any flow content.
-  </p>
+  <p class="note">Most elements that are categorized as phrasing content can only contain elements 
+  that are themselves categorized as phrasing content, not any flow content.</p>
 
-  <dfn lt="Text|Text content">Text</dfn>, in the context of content models, means either nothing, or
-  <code>Text</code> nodes. <a>Text</a> is sometimes used as a content model on its own, but is also
-  <a>phrasing content</a>, and can be <a>inter-element whitespace</a> (if the <code>Text</code>
+  <dfn id="text-content" lt="text|text content">Text</dfn>, in the context of content models, means 
+  either nothing, or {{Text}} nodes. <a>Text</a> is sometimes used as a content model on its own, 
+  but is also <a>phrasing content</a>, and can be <a>inter-element whitespace</a> (if the {{Text}}
   nodes are empty or contain just <a>space characters</a>).
 
-  <code>Text</code> nodes and attribute values must consist of <a>Unicode characters</a>, must not
-  contain U+0000 characters, must not contain permanently undefined Unicode characters
-  (noncharacters), and must not contain <a>control characters</a> other than
-  <a>space characters</a>.
-
-  This specification includes extra constraints on the exact value of <code>Text</code> nodes and
-  attribute values depending on their precise context.
+  {{Text}} nodes and attribute values must consist of <a>Unicode characters</a>, must not contain 
+  U+0000 characters, must not contain permanently undefined Unicode characters (noncharacters), and 
+  must not contain <a>control characters</a> other than <a>space characters</a>. This specification 
+  includes extra constraints on the exact value of {{Text}} nodes and attribute values depending on 
+  their precise context.
 
   For elements in HTML, the constraints of the <a>Text</a> <a>content model</a> also depends on the
   <a>kind of element</a>. For instance, an "<code>&lt;</code>" inside a <{textarea}> element does
   not need to be escaped in HTML because <{textarea}> is an <a>escapable raw text</a> element.
   (This does not apply to XHTML. In XHTML, the <a>kind of element</a> doesn't affect the constraints
-  of <a>content model</a>: <a>Text</a>.)
+  of the <a>Text</a> <a>content model</a>.)
 
-<h6 id="kinds-of-content-embedded-content">Embedded content</h6>
+<h6 id="embedded-content">Embedded content</h6>
 
-  <dfn lt="embedded content">Embedded content</dfn> is content that imports another
+  <dfn id="embedded-content-2" lt="embedded content|embedded">Embedded content</dfn> is content that imports another
   resource into the document, or content from another vocabulary that is <a for="document">inserted into the document</a>.
 
   <ul class="brief category-list">
-    <li><{audio}></li>
-    <li><{canvas}></li>
-    <li><{embed}></li>
-    <li><{iframe}></li>
-    <li><{img}></li>
-    <li><a>MathML <code>math</code></a></li>
-    <li><{object}></li>
-    <li><{picture}></li>
-    <li><a>SVG <code>svg</code></a></li>
-    <li><{video}></li>
+    <li><{audio}>
+    <li><{canvas}>
+    <li><{embed}>
+    <li><{iframe}>
+    <li><{img}>
+    <li><a>MathML <code>math</code></a>
+    <li><{object}>
+    <li><{picture}>
+    <li><a>SVG <code>svg</code></a>
+    <li><{video}>
   </ul>
 
   Elements that are from namespaces other than the <a>HTML namespace</a> and that convey content but
@@ -1120,43 +1109,40 @@
   when the external resource cannot be used (e.g., because it is of an unsupported format). The
   element definitions state what the fallback is, if any.
 
-<h6 id="kinds-of-content-interactive-content">Interactive content</h6>
+<h6 id="interactive-content">Interactive content</h6>
 
-  <dfn lt="interactive content">Interactive content</dfn> is content that is specifically intended
+  <dfn id="interactive-content-2" lt="interactive content|interactive">Interactive content</dfn> is content that is specifically intended
   for user interaction.
 
   <ul class="brief category-list">
-    <li><{a}> (if the <{a/href}> attribute is present)</li>
-    <li><{audio}> (if the <{audio/controls}> attribute is present)</li>
-    <li><{button}></li>
-    <li><{details}></li>
-    <li><{embed}></li>
-    <li><{iframe}></li>
-    <li><{img}> (if the <{img/usemap}> attribute is present)</li>
-    <li>
-      <{input}> (if the <{input/type}> attribute is <em>not</em> in the <a>Hidden</a>
-      state)
-    </li>
-    <li><{label}></li>
-    <li><{select}></li>
-    <li><{textarea}></li>
-    <li><{video}> (if the <{video/controls}> attribute is present)</li>
+    <li><{a}> (if the <{a/href}> attribute is present)
+    <li><{audio}> (if the <{audio/controls}> attribute is present)
+    <li><{button}>
+    <li><{details}>
+    <li><{embed}>
+    <li><{iframe}>
+    <li><{img}> (if the <{img/usemap}> attribute is present)
+    <li><{input}> (if the <{input/type}> attribute is <em>not</em> in the 
+      <a element-state for="input">Hidden</a> state)
+    <li><{label}>
+    <li><{select}>
+    <li><{textarea}>
+    <li><{video}> (if the <{video/controls}> attribute is present)
   </ul>
 
-  The <code>tabindex</code> attribute can also make any element into <a>interactive content</a>.
+  The <{global/tabindex}> attribute can also make any element into <a>interactive content</a>.
 
-<h6 id="sec-palpable-content">Palpable content</h6>
+<h6 id="palpable-content">Palpable content</h6>
 
   As a general rule, elements whose content model allows any <a>flow content</a> or
-  <a>phrasing content</a> should have at least one node in its <a lt='html-contents'>contents</a> that is
-  <a>palpable content</a> and that does not have the <code>hidden</code> attribute specified.
+  <a>phrasing content</a> should have at least one node in its <a>contents</a> 
+  that is <dfn id="palpable-content-2">palpable content</dfn> and that does not have the 
+  <{global/hidden}> attribute specified.
 
-  <p class="note">
-    <dfn lt="palpable content">Palpable content</dfn> makes an element non-empty by providing either some descendant non-empty
-    <a>text</a>, or else something users can hear (<{audio}> elements) or view
-    (<{video}> or <{img}> or <{canvas}> elements) or otherwise interact
-    with (for example, interactive form controls).
-  </p>
+  <p class="note"><a>Palpable content</a> makes an element non-empty by providing either some 
+  descendant non-empty <a>text</a>, or else something users can hear (<{audio}> elements) or view
+  (<{video}> or <{img}> or <{canvas}> elements) or otherwise interact with (for example, interactive 
+  form controls).</p>
 
   This requirement is not a hard requirement, however, as there are many cases where an element can
   be empty legitimately, for example when it is used as a placeholder which will later be filled in
@@ -1169,98 +1155,92 @@
   The following elements are palpable content:
 
   <ul class="brief category-list">
-    <li><{a}></li>
-    <li><{abbr}></li>
-    <li><{address}></li>
-    <li><{article}></li>
-    <li><{aside}></li>
-    <li><{audio}> (if the <code>controls</code> attribute is present)</li>
-    <li><{b}></li>
-    <li><{bdi}></li>
-    <li><{bdo}></li>
-    <li><{blockquote}></li>
-    <li><{button}></li>
-    <li><{canvas}></li>
-    <li><{cite}></li>
-    <li><{code}></li>
-    <li><{data}></li>
-    <li><{details}></li>
-    <li><{dfn}></li>
-    <li><{div}></li>
-    <li><{dl}> (if the element's children include at least one name-value group)</li>
-    <li><{em}></li>
-    <li><{embed}></li>
-    <li><{fieldset}></li>
-    <li><{figure}></li>
-    <li><{footer}></li>
-    <li><{form}></li>
-    <li><{h1}></li>
-    <li><{h2}></li>
-    <li><{h3}></li>
-    <li><{h4}></li>
-    <li><{h5}></li>
-    <li><{h6}></li>
-    <li><{header}></li>
-    <li><{i}></li>
-    <li><{iframe}></li>
-    <li><{img}></li>
-    <li>
-      <{input}> (if the <code>type</code> attribute is <em>not</em> in the <a element-state for="input">Hidden</a>
-      state)
-    </li>
-    <li><{ins}></li>
-    <li><{kbd}></li>
-    <li><{label}></li>
-    <li><{main}></li>
-    <li><{map}></li>
-    <li><{mark}></li>
-    <li><a>MathML <code>math</code></a></li>
-    <li><{menu}> (if the <code>type</code> attribute is in the <a state for="menu">toolbar</a> state)</li>
-    <li><{meter}></li>
-    <li><{nav}></li>
-    <li><{object}></li>
-    <li>
-      <{ol}> (if the element's children include at least one <{li}> element)
-    </li>
-    <li><{output}></li>
-    <li><{p}></li>
-    <li><{pre}></li>
-    <li><{progress}></li>
-    <li><{q}></li>
-    <li><{ruby}></li>
-    <li><{s}></li>
-    <li><{samp}></li>
-    <li><{section}></li>
-    <li><{select}></li>
-    <li><{small}></li>
-    <li><{span}></li>
-    <li><{strong}></li>
-    <li><{sub}></li>
-    <li><{sup}></li>
-    <li><a>SVG <code>svg</code></a></li>
-    <li><{table}></li>
-    <li><{textarea}></li>
-    <li><{time}></li>
-    <li><{u}></li>
-    <li>
-      <{ul}> (if the element's children include at least one <{li}> element)
-    </li>
-    <li><{var}></li>
-    <li><{video}></li>
-    <li><a>Text</a> that is not <a>inter-element whitespace</a></li>
+    <li><{a}>
+    <li><{abbr}>
+    <li><{address}>
+    <li><{article}>
+    <li><{aside}>
+    <li><{audio}> (if the <code>controls</code> attribute is present)
+    <li><{b}>
+    <li><{bdi}>
+    <li><{bdo}>
+    <li><{blockquote}>
+    <li><{button}>
+    <li><{canvas}>
+    <li><{cite}>
+    <li><{code}>
+    <li><{data}>
+    <li><{details}>
+    <li><{dfn}>
+    <li><{div}>
+    <li><{dl}> (if the element's children include at least one name-value group)
+    <li><{em}>
+    <li><{embed}>
+    <li><{fieldset}>
+    <li><{figure}>
+    <li><{footer}>
+    <li><{form}>
+    <li><{h1}>
+    <li><{h2}>
+    <li><{h3}>
+    <li><{h4}>
+    <li><{h5}>
+    <li><{h6}>
+    <li><{header}>
+    <li><{i}>
+    <li><{iframe}>
+    <li><{img}>
+    <li><{input}> (if the <code>type</code> attribute is <em>not</em> in the 
+      <a element-state for="input">Hidden</a> state)
+    <li><{ins}>
+    <li><{kbd}>
+    <li><{label}>
+    <li><{main}>
+    <li><{map}>
+    <li><{mark}>
+    <li><a>MathML <code>math</code></a>
+    <li><{menu}> (if the <code>type</code> attribute is in the <a state for="menu">toolbar</a> state)
+    <li><{meter}>
+    <li><{nav}>
+    <li><{object}>
+    <li><{ol}> (if the element's children include at least one <{li}> element)
+    <li><{output}>
+    <li><{p}>
+    <li><{pre}>
+    <li><{progress}>
+    <li><{q}>
+    <li><{ruby}>
+    <li><{s}>
+    <li><{samp}>
+    <li><{section}>
+    <li><{select}>
+    <li><{small}>
+    <li><{span}>
+    <li><{strong}>
+    <li><{sub}>
+    <li><{sup}>
+    <li><a>SVG <code>svg</code></a>
+    <li><{table}>
+    <li><{textarea}>
+    <li><{time}>
+    <li><{u}>
+    <li><{ul}> (if the element's children include at least one <{li}> element)
+    <li><{var}>
+    <li><{video}>
+    <li><a>text</a> that is not <a>inter-element whitespace</a>
   </ul>
 
-<h6 id="sec-script-supporting-elements">Script-supporting elements</h6>
+<h6 id="script-supporting-elements">Script-supporting elements</h6>
 
-  <dfn lt="Script-supporting element|Script-supporting elements">Script-supporting elements</dfn> are those that do not <a>represent</a> anything themselves
-  (i.e., they are not rendered), but are used to support scripts, e.g., to provide functionality for
-  the user.
+  <dfn id="script-supporting-elements-2">Script-supporting elements</dfn> are those that do not 
+  <a>represent</a> anything themselves (i.e., they are not rendered), but are used to support 
+  scripts, e.g., to provide functionality for the user.
 
   The following elements are script-supporting elements:
 
   <ul class="brief category-list">
-    <li><{script}></li>
-    <li><{template}></li>
+    <li><{script}>
+    <li><{template}>
   </ul>
 
 <h5 id="transparent-content-models">Transparent content models</h5>
@@ -1278,10 +1258,8 @@
     <{rt}> element is not <a>phrasing content</a>.
   </div>
 
-  <p class="note">
-    In some cases, where transparent elements are nested in each other, the process has to be
-    applied iteratively.
-  </p>
+  <p class="note">In some cases, where transparent elements are nested in each other, the process 
+  has to be applied iteratively.</p>
 
   <div class="example">
     Consider the following markup fragment:
@@ -1301,17 +1279,16 @@
 
 <h5 id="paragraphs">Paragraphs</h5>
 
-  <p class="note">
-    The term <a>paragraph</a> as defined in this section is used for more than just the definition
-    of the <{p}> element. The <a>paragraph</a> concept defined here is used to describe how
-    to interpret documents. The <{p}> element is merely one of several ways of marking up a
-    <a>paragraph</a>.
-  </p>
+  <p class="note">The term <a>paragraph</a> as defined in this section is used for more than just 
+  the definition of the <{p}> element. The <a>paragraph</a> concept defined here is used to describe 
+  how to interpret documents. The <{p}> element is merely one of several ways of marking up a
+  <a>paragraph</a>.</p>
 
-  A <dfn lt="paragraph|paragraphs|implied paragraph|paragraphing|implied|implied paragraphs">paragraph</dfn> is typically a run of <a>phrasing content</a> that forms a block of text
-  with one or more sentences that discuss a particular topic, as in typography, but can also be used
-  for more general thematic grouping. For instance, an address is also a paragraph, as is a part of
-  a form, a byline, or a stanza in a poem.
+  A <dfn lt="paragraph|paragraphs|implied paragraph|paragraphing|implied|implied paragraphs">paragraph</dfn> 
+  is typically a run of <a>phrasing content</a> that forms a block of text with one or more 
+  sentences that discuss a particular topic, as in typography, but can also be used for more general 
+  thematic grouping. For instance, an address is also a paragraph, as is a part of a form, a byline, 
+  or a stanza in a poem.
 
   <div class="example">
     In the following example, there are two paragraphs in a section. There is also a heading,
@@ -1333,10 +1310,8 @@
   matters, since those elements, with their hybrid content models, can straddle paragraph
   boundaries, as shown in the first two examples below.
 
-  <p class="note">
-    Generally, having elements straddle paragraph boundaries is best avoided. Maintaining such
-    markup can be difficult.
-  </p>
+  <p class="note">Generally, having elements straddle paragraph boundaries is best avoided. 
+  Maintaining such markup can be difficult.</p>
 
   <div class="example">
     The following example takes the markup from the earlier example and puts <{ins}> and
@@ -1356,28 +1331,25 @@
     </pre>
   </div>
 
-  Let |view| be a view of the DOM that replaces all <{a}>, <{ins}>,
-  <{del}>, and <{map}> elements in the document with their
-  <a lt='html-contents'>contents</a>. Then, in |view|, for each run of sibling <a>phrasing content</a>
-  nodes uninterrupted by other types of content, in an element that accepts content other than
-  <a>phrasing content</a> as well as <a>phrasing content</a>, let |first| be the first
-  node of the run, and let |last| be the last node of the run. For each such run that
-  consists of at least one node that is neither <a>embedded content</a> nor
-  <a>inter-element whitespace</a>, a paragraph exists in the original DOM from immediately before
-  |first| to immediately after |last|. (Paragraphs can thus span across
-  <{a}>, <{ins}>, <{del}>, and <{map}> elements.)
+  Let |view| be a view of the DOM that replaces all <{a}>, <{ins}>, <{del}>, and <{map}> elements in
+  the document with their <a>contents</a>. Then, in |view|, for each run of sibling 
+  <a>phrasing content</a> nodes uninterrupted by other types of content, in an element that accepts 
+  content other than <a>phrasing content</a> as well as <a>phrasing content</a>, let |first| be the 
+  first node of the run, and let |last| be the last node of the run. For each such run that consists 
+  of at least one node that is neither <a>embedded content</a> nor <a>inter-element whitespace</a>, 
+  a paragraph exists in the original DOM from immediately before |first| to immediately after 
+  |last|. (Paragraphs can thus span across <{a}>, <{ins}>, <{del}>, and <{map}> elements.)
 
-  Conformance checkers may warn authors of cases where they have paragraphs that overlap each
-  other (this can happen with <{object}>, <{video}>, <{audio}>, and
-  <{canvas}> elements, and indirectly through elements in other namespaces that allow
-  HTML to be further embedded therein, like <a>SVG svg</a> or <a>MathML <code>math</code></a>).
+  Conformance checkers may warn authors of cases where they have paragraphs that overlap each other 
+  (this can happen with <{object}>, <{video}>, <{audio}>, and <{canvas}> elements, and indirectly 
+  through elements in other namespaces that allow HTML to be further embedded therein, like 
+  <a>SVG svg</a> or <a>MathML <code>math</code></a>).
 
   A <a>paragraph</a> is also formed explicitly by <{p}> elements.
 
-  <p class="note">
-    The <{p}> element can be used to wrap individual paragraphs when there would otherwise
-    not be any content other than phrasing content to separate the paragraphs from each other.
-  </p>
+  <p class="note">The <{p}> element can be used to wrap individual paragraphs when there would 
+  otherwise not be any content other than phrasing content to separate the paragraphs from each 
+  other.</p>
 
   <div class="example">
     In the following example, the link spans half of the first paragraph, all of the heading
@@ -1432,13 +1404,15 @@
 
     There are five paragraphs:
 
-    1. The paragraph that says "You can play with my cat simulator. <i>object</i> I'm quite proud of
-        it.", where <i>object</i> is the <{object}> element.
-    2. The paragraph that says "To see the cat simulator, use one of the following links:".
-    3. The paragraph that says "Download simulator file".
-    4. The paragraph that says "Use online simulator".
-    5. The paragraph that says "Alternatively, upgrade to the Mellblom Browser.".
-
+    <ol class="brief">
+        1. The paragraph that says "You can play with my cat simulator. <i>object</i> I'm quite proud 
+             of it.", where <i>object</i> is the <{object}> element.
+        2. The paragraph that says "To see the cat simulator, use one of the following links:".
+        3. The paragraph that says "Download simulator file".
+        4. The paragraph that says "Use online simulator".
+        5. The paragraph that says "Alternatively, upgrade to the Mellblom Browser.".
+    </ol>
+    
     The first paragraph is overlapped by the other four. A user agent that supports the "cats.sim"
     resource will only show the first one, but a user agent that shows the fallback will confusingly
     show the first sentence of the first paragraph as if it was in the same paragraph as the second
@@ -1464,38 +1438,38 @@
     </pre>
   </div>
 
-
-<h4 id="sec-global-attributes"><dfn>Global attributes</dfn></h4>
+<h4 id="global-attributes"><dfn id="global-attributes-2" lt="global attributes|globals">Global attributes</dfn></h4>
 
   The following attributes are common to and may be specified on all <a>HTML elements</a>
   (even those not defined in this specification):
 
-  * <{global/accesskey}>
-  * <code>class</code>
-  * <{global/contenteditable}>
-  * <{global/contextmenu}>
-  * <{global/dir}>
-  * <{global/draggable}>
-  * <{global/dropzone}>
-  * <code>hidden</code>
-  * <{global/id}>
-  * <{global/lang}>
-  * <code>spellcheck</code>
-  * <code>style</code>
-  * <code>tabindex</code>
-  * <{global/title}>
-  * <code>translate</code>
-
-  These attributes are only defined by this specification as attributes for <a>HTML elements</a>. When this specification refers to elements having these attributes, elements from
-  namespaces that are not defined as having these attributes must not be considered as being
-  elements with these attributes.
+  <ul class="brief">
+    * <{global/accesskey}>
+    * <{global/contenteditable}>
+    * <{global/contextmenu}>
+    * <{global/dir}>
+    * <{global/draggable}>
+    * <{global/dropzone}>
+    * <{global/hidden}>
+    * <{global/lang}>
+    * <{global/spellcheck}>
+    * <{global/style}>
+    * <{global/tabindex}>
+    * <{global/title}>
+    * <{global/translate}>
+  </ul>
+  
+  These attributes are only defined by this specification as attributes for <a>HTML elements</a>. 
+  When this specification refers to elements having these attributes, elements from namespaces that 
+  are not defined as having these attributes must not be considered as being elements with these 
+  attributes.
 
   <div class="example">
     For example, in the following XML fragment, the "<code>bogus</code>" element does not have a
     <{global/dir}> attribute as defined in this specification, despite having an attribute with
     the literal name "<{global/dir}>". Thus, <a>the directionality</a> of the inner-most
-    <{span}> element is &quot;<a attr-value for="global/dir"><code>rtl</code></a>&quot;, inherited from the <{div}> element
-    indirectly through the "<code>bogus</code>" element.
+    <{span}> element is &quot;<a attr-value for="global/dir"><code>rtl</code></a>&quot;, inherited 
+    from the <{div}> element indirectly through the "<code>bogus</code>" element.
 
     <pre class="bad">
       &lt;div xmlns="http://www.w3.org/1999/xhtml" dir="rtl">
@@ -1509,90 +1483,132 @@
 
   <hr />
 
+  The DOM specification defines the user agent requirements for the 
+  <dfn element-attr for="global"><code>class</code></dfn>, 
+  <dfn element-attr for="global"><code>id</code></dfn>, and 
+  <dfn element-attr for="global"><code>slot</code></dfn> attributes for any element in any 
+  namespace. [[DOM]]
+  
+  The <{global/class}>, <{global/id}>, and <{global/slot}> attributes may be specified on all 
+  <a>HTML elements</a>.
+
+  When specified on <a>HTML elements</a>, the <{global/class}> attribute must have a value that is a 
+  <a>set of space-separated tokens</a> representing the various classes that the element belongs to.
+
+  <div class="note">
+    Assigning classes to an element affects class matching in selectors in CSS, the
+    {{Document/getElementsByClassName()}} method in the DOM, and other such features.
+    
+    There are no additional restrictions on the tokens authors can use in the <{global/class}>
+    attribute, but authors are encouraged to use values that describe the nature of the content,
+    rather than values that describe the desired presentation of the content.
+  </div>
+
+  When specified on <a>HTML elements</a>, the <{global/id}> attribute value must be unique amongst 
+  all the <a>IDs</a> in the element's <a>tree</a> and must contain at least one character. The value 
+  must not contain any <a>space characters</a>.
+
+  <div class="note">
+    The <{global/id}> attribute specifies its element's 
+    <a lt="id">unique identifier (ID)</a>.
+    
+    There are no other restrictions on what form an ID can take; in particular, IDs can consist of
+    just digits, start with a digit, start with an underscore, consist of just punctuation, etc.
+  
+    An element's <a>unique identifier</a> can be used for a variety of purposes, most notably as a 
+    way to link to specific parts of a document using <a for="url">fragment</a>, as a way to target 
+    an element when scripting, and as a way to style a specific element from CSS.
+  </div>
+
+  Identifiers are opaque strings. Particular meanings should not be derived from the value of the
+  <{global/id}> attribute.
+  
+  There are no conformance requirements for the <{global/slot}> attribute specific to 
+  <a>HTML elements</a>.
+  
+  <hr />
+  
   To enable assistive technology products to expose a more fine-grained interface than is otherwise
-  possible with HTML elements and attributes, a set of
-  annotations for assistive technology products can be specified (the ARIA <code>role</code>
-  and <code>aria-*</code> attributes). [[!wai-aria-1.1]]
+  possible with HTML elements and attributes, a set of annotations for assistive technology products 
+  can be specified (the ARIA <{aria/role}> and <a lt="global aria-* attributes">aria-*</a> 
+  attributes). [[!wai-aria-1.1]]
 
   <hr />
 
   The following <a>event handler content attributes</a> may be specified on any <a>HTML element</a>:
 
-  * <code>onabort</code>
-  * <code>onblur</code>*
-  * <code>oncancel</code>
-  * <code>oncanplay</code>
-  * <code>oncanplaythrough</code>
-  * <code>onchange</code>
-  * <code>onclick</code>
-  * <code>onclose</code>
-  * <code>oncontextmenu</code>
-  * <code>oncopy</code>
-  * <code>oncuechange</code>
-  * <code>oncut</code>
-  * <code>ondblclick</code>
-  * <code>ondrag</code>
-  * <code>ondragend</code>
-  * <code>ondragenter</code>
-  * <code>ondragexit</code>
-  * <code>ondragleave</code>
-  * <code>ondragover</code>
-  * <code>ondragstart</code>
-  * <code>ondrop</code>
-  * <code>ondurationchange</code>
-  * <code>onemptied</code>
-  * <code>onended</code>
-  * <code>onerror</code>*
-  * <code>onfocus</code>*
-  * <code>oninput</code>
-  * <code>oninvalid</code>
-  * <code>onkeydown</code>
-  * <code>onkeypress</code>
-  * <code>onkeyup</code>
-  * <code>onload</code>*
-  * <code>onloadeddata</code>
-  * <code>onloadedmetadata</code>
-  * <code>onloadstart</code>
-  * <code>onmousedown</code>
-  * <code>onmouseenter</code>
-  * <code>onmouseleave</code>
-  * <code>onmousemove</code>
-  * <code>onmouseout</code>
-  * <code>onmouseover</code>
-  * <code>onmouseup</code>
-  * <code>onwheel</code>
-  * <code>onpaste</code>
-  * <code>onpause</code>
-  * <code>onplay</code>
-  * <code>onplaying</code>
-  * <code>onprogress</code>
-  * <code>onratechange</code>
-  * <code>onreset</code>
-  * <code>onresize</code>*
-  * <code>onscroll</code>*
-  * <code>onseeked</code>
-  * <code>onseeking</code>
-  * <code>onselect</code>
-  * <code>onshow</code>
-  * <code>onstalled</code>
-  * <code>onsubmit</code>
-  * <code>onsuspend</code>
-  * <code>ontimeupdate</code>
-  * <code>ontoggle</code>
-  * <code>onvolumechange</code>
-  * <code>onwaiting</code>
+  <ul class="brief">
+    * {{GlobalEventHandlers/onabort}}
+    * {{GlobalEventHandlers/onauxclick}}
+    * {{GlobalEventHandlers/onblur}}*
+    * {{GlobalEventHandlers/oncancel}}
+    * {{GlobalEventHandlers/oncanplay}}
+    * {{GlobalEventHandlers/oncanplaythrough}}
+    * {{GlobalEventHandlers/onchange}}
+    * {{GlobalEventHandlers/onclick}}
+    * {{GlobalEventHandlers/onclose}}
+    * {{GlobalEventHandlers/oncontextmenu}}
+    * {{GlobalEventHandlers/oncuechange}}
+    * {{GlobalEventHandlers/ondblclick}}
+    * {{GlobalEventHandlers/ondrag}}
+    * {{GlobalEventHandlers/ondragend}}
+    * {{GlobalEventHandlers/ondragenter}}
+    * {{GlobalEventHandlers/ondragexit}}
+    * {{GlobalEventHandlers/ondragleave}}
+    * {{GlobalEventHandlers/ondragover}}
+    * {{GlobalEventHandlers/ondragstart}}
+    * {{GlobalEventHandlers/ondrop}}
+    * {{GlobalEventHandlers/ondurationchange}}
+    * {{GlobalEventHandlers/onemptied}}
+    * {{GlobalEventHandlers/onended}}
+    * {{GlobalEventHandlers/onerror}}*
+    * {{GlobalEventHandlers/onfocus}}*
+    * {{GlobalEventHandlers/oninput}}
+    * {{GlobalEventHandlers/oninvalid}}
+    * {{GlobalEventHandlers/onkeydown}}
+    * {{GlobalEventHandlers/onkeypress}}
+    * {{GlobalEventHandlers/onkeyup}}
+    * {{GlobalEventHandlers/onload}}*
+    * {{GlobalEventHandlers/onloadeddata}}
+    * {{GlobalEventHandlers/onloadedmetadata}}
+    * {{GlobalEventHandlers/onloadend}}
+    * {{GlobalEventHandlers/onloadstart}}
+    * {{GlobalEventHandlers/onmousedown}}
+    * {{GlobalEventHandlers/onmouseenter}}
+    * {{GlobalEventHandlers/onmouseleave}}
+    * {{GlobalEventHandlers/onmousemove}}
+    * {{GlobalEventHandlers/onmouseout}}
+    * {{GlobalEventHandlers/onmouseover}}
+    * {{GlobalEventHandlers/onmouseup}}
+    * {{GlobalEventHandlers/onwheel}}
+    * {{GlobalEventHandlers/onpause}}
+    * {{GlobalEventHandlers/onplay}}
+    * {{GlobalEventHandlers/onplaying}}
+    * {{GlobalEventHandlers/onprogress}}
+    * {{GlobalEventHandlers/onratechange}}
+    * {{GlobalEventHandlers/onreset}}
+    * {{GlobalEventHandlers/onresize}}*
+    * {{GlobalEventHandlers/onscroll}}*
+    * {{GlobalEventHandlers/onseeked}}
+    * {{GlobalEventHandlers/onseeking}}
+    * {{GlobalEventHandlers/onselect}}
+    * {{GlobalEventHandlers/onshow}}
+    * {{GlobalEventHandlers/onstalled}}
+    * {{GlobalEventHandlers/onsubmit}}
+    * {{GlobalEventHandlers/onsuspend}}
+    * {{GlobalEventHandlers/ontimeupdate}}
+    * {{GlobalEventHandlers/ontoggle}}
+    * {{GlobalEventHandlers/onvolumechange}}
+    * {{GlobalEventHandlers/onwaiting}}
+  </ul>
+  
+  <p class="note">The attributes marked with an asterisk have a different meaning when specified on
+  <{body}> elements as those elements expose <a>event handlers</a> of the {{Window}} object with the 
+  same names.</p>
 
-  <p class="note">
-    The attributes marked with an asterisk have a different meaning when specified on
-    <{body}> elements as those elements expose <a>event handlers</a> of the
-    <code>Window</code> object with the same names.
-  </p>
-
-  <p class="note">
-    While these attributes apply to all elements, they are not useful on all elements. For example,
-    only <a>media elements</a> will ever receive a
-    <a event for="media"><code>volumechange</code></a> event fired by the user agent.
-  </p>
+  <p class="note">While these attributes apply to all elements, they are not useful on all elements. 
+  For example, only <a>media elements</a> will ever receive a 
+  <a event for="media"><code>volumechange</code></a> event fired by the user agent.</p>
 
   <hr />
 
@@ -1605,50 +1621,24 @@
   attribute specified, if, and only if, it has the exact value
   "<code>http://www.w3.org/1999/xhtml</code>". This does not apply to <a>XML documents</a>.
 
-  <p class="note">
-    In HTML, the <code>xmlns</code> attribute has absolutely no effect. It is basically a talisman.
-    It is allowed merely to make migration to and from XHTML mildly easier. When parsed by an
-    <a>HTML parser</a>, the attribute ends up in no namespace, not the
-    "<code>http://www.w3.org/2000/xmlns/</code>" namespace like namespace declaration attributes in
-    XML do.
-  </p>
+  <p class="note">In HTML, the <code>xmlns</code> attribute has absolutely no effect. It is 
+  basically a talisman. It is allowed merely to make migration to and from XML mildly easier. When 
+  parsed by an <a>HTML parser</a>, the attribute ends up in no namespace, not the
+  "<code>http://www.w3.org/2000/xmlns/</code>" namespace like namespace declaration attributes in
+  XML do.</p>
 
-  <p class="note">
-    In XML, an <code>xmlns</code> attribute is part of the namespace declaration mechanism, and an
-    element cannot actually have an <code>xmlns</code> attribute in no namespace specified.
-  </p>
+  <p class="note">In XML, an <code>xmlns</code> attribute is part of the namespace declaration 
+  mechanism, and an element cannot actually have an <code>xmlns</code> attribute in no namespace 
+  specified.</p>
 
   <hr />
 
-  The XML specification also allows the use of the <code>xml:space</code> attribute in the
+  The XML specification also allows the use of the <{xml/space|xml:space}> attribute in the
   <a>XML namespace</a> on any element in an <a>XML document</a>. This attribute has no effect on
   <a>HTML elements</a>, as the default behavior in HTML is to preserve whitespace. [[!XML]]
 
-  <p class="note">
-    There is no way to serialize the <code>xml:space</code> attribute on <a>HTML elements</a> in the
-    <a href="#text-html"><code>text/html</code></a> syntax.
-  </p>
-
-<h5 id="the-id-attribute">The <dfn element-attr for="global"><code>id</code></dfn> attribute</h5>
-
-  The <code>id</code> attribute specifies its element's <a lt="id">unique identifier (ID)</a>. [[!DOM]]
-
-  The value must be unique amongst all the <a>IDs</a> in the element's <a>tree</a> and must contain
-  at least one character. The value must not contain any <a>space characters</a>.
-
-  <p class="note">
-    There are no other restrictions on what form an ID can take; in particular, IDs can consist of
-    just digits, start with a digit, start with an underscore, consist of just punctuation, etc.
-  </p>
-
-  <p class="note">
-    An element's <a lt="id">unique identifier</a> can be used for a variety of purposes, most
-    notably as a way to link to specific parts of a document using <a for="url">fragment</a>, as a way to
-    target an element when scripting, and as a way to style a specific element from CSS.
-  </p>
-
-  Identifiers are opaque strings. Particular meanings should not be derived from the value of the
-  <code>id</code> attribute.
+  <p class="note">There is no way to serialize the <{xml/space|xml:space}> attribute on 
+  <a>HTML elements</a> in the <code>[[#text-html|text/html]]</code> syntax.</p>
 
 <h5 id="the-title-attribute">The <code>title</code> attribute</h5>
 
@@ -1663,25 +1653,25 @@
   <!-- W3C START - DO NOT OVERWRITE-->
 
   <p class="warning">
-    Relying on the <code>title</code> attribute is currently discouraged as many user agents do not
+    Relying on the <{global/title}> attribute is currently discouraged as many user agents do not
     expose the attribute in an accessible manner as required by this specification (e.g., requiring a
     pointing device such as a mouse to cause a tooltip to appear, which excludes keyboard-only users
     and touch-only users, such as anyone with a modern phone or tablet).
   </p>
 
-   <!-- W3C END -->
+  <!-- W3C END -->
 
-  If this attribute is omitted from an element, then it implies that the <code>title</code>
-  attribute of the nearest ancestor <a>HTML element</a> with a <code>title</code> attribute set is
+  If this attribute is omitted from an element, then it implies that the <{global/title}>
+  attribute of the nearest ancestor <a>HTML element</a> with a <{global/title}> attribute set is
   also relevant to this element. Setting the attribute overrides this, explicitly stating that the
   advisory information of any ancestors is not relevant to this element. Setting the attribute to
   the empty string indicates that the element has no advisory information.
 
-  If the <code>title</code> attribute's value contains U+000A LINE FEED (LF) characters, the content
+  If the <{global/title}> attribute's value contains U+000A LINE FEED (LF) characters, the content
   is split into multiple lines. Each U+000A LINE FEED (LF) character represents a line break.
 
   <div class="example">
-    Caution is advised with respect to the use of newlines in <code>title</code> attributes.
+    Caution is advised with respect to the use of newlines in <{global/title}> attributes.
 
     For instance, the following snippet actually defines an abbreviation's expansion
     <em>with a line break in it</em>:
@@ -1692,8 +1682,8 @@
     </pre>
   </div>
 
-  Some elements, such as <{link}>, <{abbr}>, and <{input}>, define
-  additional semantics for the <code>title</code> attribute beyond the semantics described above.
+  Some elements, such as <{link}>, <{abbr}>, and <{input}>, define additional semantics for the 
+  <{global/title}> attribute beyond the semantics described above.
 
   The <dfn>advisory information</dfn> of an element is the value that the following algorithm
   returns, with the algorithm being aborted once a value is returned. When the algorithm returns
@@ -1701,9 +1691,9 @@
 
   1. If the element is a <{link}>, <{style}>, <{dfn}>,
       <{abbr}>, or <{menuitem}> element, then: if the element has a
-      <code>title</code> attribute, return the value of that attribute, otherwise, return the
+      <{global/title}> attribute, return the value of that attribute, otherwise, return the
       empty string.
-  2. Otherwise, if the element has a <code>title</code> attribute, then return its value.
+  2. Otherwise, if the element has a <{global/title}> attribute, then return its value.
   3. Otherwise, if the element has a parent element, then return the parent element's
       <a>advisory information</a>.
   4. Otherwise, return the empty string.
@@ -1713,12 +1703,10 @@
 
   <hr />
 
-  The <dfn attribute for="HTMLElement"><code>title</code></dfn> IDL attribute must <a>reflect</a> the <code>title</code>
+  The <dfn attribute for="HTMLElement"><code>title</code></dfn> IDL attribute must <a>reflect</a> the <{global/title}>
   content attribute.
 
-<h5 id="the-lang-and-xmllang-attributes">
-  The <{global/lang}> and <{xml/lang|xml:lang}> attributes
-</h5>
+<h5 id="the-lang-and-xmllang-attributes">The <{global/lang}> and <{xml/lang|xml:lang}> attributes</h5>
 
   The <dfn element-attr for="global"><code>lang</code></dfn> attribute (in no namespace) specifies the primary language for
   the element's contents and for any of the element's attributes that contain text. Its value must
@@ -1854,12 +1842,12 @@
 
   Each element (even non-HTML elements) has a <dfn>translation mode</dfn>, which is in either the
   <a>translate-enabled</a> state or the <a>no-translate</a> state. If an <a>HTML element</a>'s
-  <code>translate</code> attribute is in the <i>yes</i> state, then the element's
+  <{global/translate}> attribute is in the <i>yes</i> state, then the element's
   <a>translation mode</a> is in the <a>translate-enabled</a> state; otherwise, if the element's
-  <code>translate</code> attribute is in the <i>no</i> state, then the element's
+  <{global/translate}> attribute is in the <i>no</i> state, then the element's
   <a>translation mode</a> is in the <a>no-translate</a> state. Otherwise, either the element's
-  <code>translate</code> attribute is in the <i>inherit</i> state, or the element is not an
-  <a>HTML element</a> and thus does not have a <code>translate</code> attribute; in either case, the
+  <{global/translate}> attribute is in the <i>inherit</i> state, or the element is not an
+  <a>HTML element</a> and thus does not have a <{global/translate}> attribute; in either case, the
   element's <a>translation mode</a> is in the same state as its parent element's, if any, or in the
   <a>translate-enabled</a> state, if the element is a <a>document element</a>.
 
@@ -1884,9 +1872,9 @@
     the translation
   * <code>placeholder</code> on <code>input</code> and <{textarea}> elements
   * <code>srcdoc</code> on <{iframe}> elements; must be parsed and recursively processed
-  * <code>style</code> on <a>HTML elements</a>; must be parsed and recursively processed (e.g., for
+  * <{global/style}> on <a>HTML elements</a>; must be parsed and recursively processed (e.g., for
     the values of &quot;content&quot; properties)
-  * <code>title</code> on all <a>HTML elements</a>
+  * <{global/title}> on all <a>HTML elements</a>
   * <code>value</code> on <{input}> elements with a <{input/type}> attribute in the
     <a element-state for="input">Button</a>, <a element-state for="input">submit button</a>, or <a element-state for="input">reset button</a> state
 
@@ -2074,7 +2062,7 @@
   * <code>label</code> on <{menuitem}>, <{menu}>, <{optgroup}>,
     <{option}>, and <{track}> elements
   * <code>placeholder</code> on <{input}> and <{textarea}> elements
-  * <code>title</code> on all <a>HTML elements</a>
+  * <{global/title}> on all <a>HTML elements</a>
 
   <hr />
 
@@ -2127,35 +2115,7 @@
     which causes the "right?" to be to the left of the Arabic text.
   </div>
 
-<h5 id="classes">The <dfn element-attr for="global"><code>class</code></dfn> attribute</h5>
-
-  Every <a>HTML element</a> may have a <code>class</code> attribute specified.
-
-  The attribute, if specified, must have a value that is a <a>set of space-separated tokens</a>
-  representing the various classes that the element belongs to.
-
-  The classes that an <a>HTML element</a> has assigned to it consists of all the classes returned
-  when the value of the <{global/class}> attribute is <a lt="split a string on spaces">split on spaces</a>. (Duplicates are
-  ignored.)
-
-  <p class="note">
-    Assigning classes to an element affects class matching in selectors in CSS, the
-    <code>getElementsByClassName()</code> method in the DOM, and other such features.
-  </p>
-
-  There are no additional restrictions on the tokens authors can use in the <code>class</code>
-  attribute, but authors are encouraged to use values that describe the nature of the content,
-  rather than values that describe the desired presentation of the content.
-
-  <hr />
-
-  <p class="note">
-    The {{className}} and {{classList}} IDL attributes,
-    defined in the DOM specification, <a>reflect</a> the <code>class</code> content attribute.
-    [[!DOM]]
-  </p>
-
-  <h5 id="the-style-attribute">The <dfn element-attr for="global"><code>style</code></dfn> attribute</h5>
+<h5 id="the-style-attribute">The <dfn element-attr for="global"><code>style</code></dfn> attribute</h5>
 
   All <a>HTML elements</a> may have the <{global/style}> content attribute set. This is a
   <a>style attribute</a> as defined by the <cite>CSS Style Attributes</cite> specification.
@@ -2177,23 +2137,23 @@
   <p class="note">
     In particular, using the <{global/style}> attribute to hide and show content, or to convey
     meaning that is otherwise not included in the document, is non-conforming. (To hide and show
-    content, use the <code>hidden</code> attribute.)
+    content, use the <{global/hidden}> attribute.)
   </p>
 
   <hr />
 
   <dl class="domintro">
-    : |element| . <code>style</code>
-    :: Returns a <code>CSSStyleDeclaration</code> object for the element's <{global/style}>
+    : |element| . {{ElementCSSInlineStyle/style}}
+    :: Returns a {{CSSStyleDeclaration}} object for the element's <{global/style}>
         attribute.
   </dl>
 
-  The <code>style</code> IDL attribute is defined in the CSS Object Model (CSSOM)
+  The {{ElementCSSInlineStyle/style}} IDL attribute is defined in the CSS Object Model (CSSOM)
   specification. [[!CSSOM]]
 
   <div class="example">
     In the following example, the words that refer to colors are marked up using the
-    <{span}> element and the <code>style</code> attribute to make those words show up in
+    <{span}> element and the <{global/style}> attribute to make those words show up in
     the relevant colors in visual media.
 
     <pre highlight="html">
@@ -2253,7 +2213,7 @@
 
     In this example, the "<code>data-mytrans-de</code>" attribute gives specific text for the
     MyTrans product to use when translating the phrase "claim" to German. However, the standard
-    <code>translate</code> attribute is used to tell it that in all languages, "HTML" is to remain
+    <{global/translate}> attribute is used to tell it that in all languages, "HTML" is to remain
     unchanged. When a standard attribute is available, there is no need for a
     <a>custom data attribute</a> to be used.
   </div>
@@ -2323,7 +2283,7 @@
 
   <div class="example">
     If a Web page wanted an element to represent a space ship, e.g., as part of a game, it would have
-    to use the <code>class</code> attribute along with <code>data-*</code> attributes:
+    to use the <{global/class}> attribute along with <code>data-*</code> attributes:
 
     <pre highlight="html">
       &lt;div class="spaceship" data-ship-id="30">
@@ -2367,7 +2327,7 @@
   Authoring conformance criteria for bidirectional-algorithm formatting characters
 </h5>
 
-  <a>Text content</a> in <a>HTML elements</a> with <code>Text</code> nodes in their <a lt='html-contents'>contents</a>,
+  <a>Text content</a> in <a>HTML elements</a> with <code>Text</code> nodes in their <a>contents</a>,
   and text in attributes of <a>HTML elements</a> that allow free-form text, may contain characters
   in the ranges U+202A to U+202E and U+2066 to U+2069 (the bidirectional-algorithm formatting
   characters). However, the use of these characters is restricted so that any embedding or overrides
@@ -2524,7 +2484,7 @@
   </div>
   <section>
   <h6 id="aria-role-attribute">ARIA Role Attribute</h6>
-  Every HTML element may have an ARIA <code>role</code> attribute specified. This is an ARIA Role
+  Every <a>HTML element</a> may have an ARIA <{aria/role}> attribute specified. This is an ARIA Role
   attribute as defined by [[!wai-aria-1.1]].
 
   The attribute, if specified, must have a value that is a set of space-separated tokens;
