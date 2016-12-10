@@ -234,28 +234,28 @@
 
   The {{Document}}'s source file's last modification date and time must be derived from relevant
   features of the networking protocols used, e.g., from the value of the HTTP
-  <a><code>Last-Modified</code></a> header of the document, or from metadata in the file system for
-  local files. If the last modification date and time are not known, the attribute must return the
-  current date and time in the above format.
+  `<a http-header><code>Last-Modified</code></a>` header of the document, or from metadata in the 
+  file system for local files. If the last modification date and time are not known, the attribute 
+  must return the current date and time in the above format.
 
   <hr />
 
   <dl class="domintro">
     : |document| . {{Document/readyState}}
-    :: Returns "<code>loading</code>" while the {{Document}} is loading, "<code>interactive</code>"
-        once it is finished parsing but still loading sub-resources, and "<code>complete</code>"
-        once it has loaded.
+    :: Returns "{{DocumentReadyState/loading}}" while the {{Document}} is loading, 
+        "{{DocumentReadyState/interactive}}" once it is finished parsing but still loading 
+        sub-resources, and "{{DocumentReadyState/complete}}" once it has loaded.
 
-        The <code>readystatechange</code> event fires on the {{Document}} object when this value
+        The {{global/readystatechange}} event fires on the {{Document}} object when this value
         changes.
   </dl>
 
   Each document has a <dfn>current document readiness</dfn>. When a {{Document}} object  is created,
-  it must have its [=current document readiness=] set to the string "<code>loading</code>" if the
-  document is associated with an [=HTML parser=], an [=XML parser=], or an XSLT processor, and
-  to the string "<code>complete</code>" otherwise. Various algorithms during page loading affect
-  this value. When the value is set, the user agent must [=fire an event=] named
-  <code>readystatechange</code> at the {{Document}} object.
+  it must have its [=current document readiness=] set to the string "{{DocumentReadyState/loading}}"
+  if the document is associated with an [=HTML parser=], an [=XML parser=], or an XSLT processor, 
+  and to the string "{{DocumentReadyState/complete}}" otherwise. Various algorithms during page 
+  loading affect this value. When the value is set, the user agent must [=fire an event=] named
+  {{global/readystatechange}} at the {{Document}} object.
 
   A {{Document}} is said to have an <dfn>active parser</dfn> if it is associated with an
   [=HTML parser=] or an [=XML parser=] that has not yet been [=stopped=] or [=aborted=].
@@ -275,11 +275,11 @@
     :: Returns the <{head}> element.
   </dl>
 
-  The <{head}> element of a document is the first <{head}> element that
-  is a child of the <{html}> element, if there is one, or null otherwise.
+  The <{head}> element of a document is the first <{head}> element that is a child of the <{html}> 
+  element, if there is one, or null otherwise.
 
-  The <dfn attribute for="Document"><code>head</code></dfn> attribute, on getting, must return
-  the <{head}> element of the document (a <{head}> element or null).
+  The <dfn attribute for="Document"><code>head</code></dfn> attribute, on getting, must return the 
+  <{head}> element of the document (a <{head}> element or null).
 
   <hr />
 
@@ -306,8 +306,8 @@
   3. [=Strip and collapse whitespace=] in |value|.
   4. Return |value|.
 
-  On setting, the steps corresponding to the first matching condition in the following list must
-  be run:
+  On setting, the steps corresponding to the first matching condition in the following list must be 
+  run:
 
   <dl class="switch">
     : If the [=document element=] is an [=SVG svg=] element
@@ -447,11 +447,10 @@
 
   <hr />
 
-  The {{Document}} interface
-  <a lt="support named properties">supports named properties</a>. The
-  <a>supported property names</a> of a {{Document}} object |document| at any moment
-  consist of the following, in [=tree order=] according to the element that contributed them,
-  ignoring later duplicates, and with values from <{global/id}> attributes coming before values from
+  The {{Document}} interface [=support named properties|supports named properties=]. The
+  [=supported property names=] of a {{Document}} object |document| at any moment consist of the 
+  following, in [=tree order=] according to the element that contributed them, ignoring later 
+  duplicates, and with values from <{global/id}> attributes coming before values from 
   <code>name</code> attributes when the same element contributes both:
 
   * the value of the <code>name</code> content attribute for all <{applet}>, [=exposed=] <{embed}>,
@@ -583,10 +582,10 @@
   document to reflect these changes.
 
   <div class="example">
-    In this example the <{audio}> element is used to play a music track. The
-    <dfn attribute for="Document"><code>controls</code></dfn> attribute is used to show the user
-    agent player, and as the music plays the controls are updated to indicate progress. The
-    available semantic information is updated in response to these changes.
+    In this example the <{audio}> element is used to play a music track. The <{audio/controls}> 
+    attribute is used to show the user agent player, and as the music plays the controls are updated 
+    to indicate progress. The available semantic information is updated in response to these 
+    changes.
 
     <pre highlight="html">
       &lt;audio src="comfortablynumb.mp3" controls&gt;
@@ -728,21 +727,21 @@
 <h4 id="content-models">Content models</h4>
 
   Each element defined in this specification has a content model: a description of the element's
-  expected [=contents=]. An [=HTML element=] must have contents that match
-  the requirements described in the element's content model. The
-  <dfn>contents</dfn> of an element are its children in the DOM.
+  expected [=contents=]. An [=HTML element=] must have contents that match the requirements 
+  described in the element's content model. The <dfn>contents</dfn> of an element are its children 
+  in the DOM.
 
   <p class="note">When a <{template}> element is being parsed, its children are assigned to the
-  [=template contents=] (a separate {{DocumentFragment}} assigned to the element when
-  the element is created), rather than its children.</p>
+  [=template contents=] (a separate {{DocumentFragment}} assigned to the element when the element is 
+  created), rather than its children.</p>
 
   The [=space characters=] are always allowed between elements. User agents represent these
-  characters between elements in the source markup as {{Text}} nodes in the DOM. Empty
-  {{Text}} nodes and {{Text}} nodes consisting of just sequences of those
-  characters are considered <dfn>inter-element whitespace</dfn>.
+  characters between elements in the source markup as {{Text}} nodes in the DOM. Empty {{Text}} 
+  nodes and {{Text}} nodes consisting of just sequences of those characters are considered 
+  <dfn>inter-element whitespace</dfn>.
 
-  [=Inter-element whitespace=], comment nodes, and processing instruction nodes must be ignored
-  when establishing whether an element's contents match the element's content model or not, and must
+  [=Inter-element whitespace=], comment nodes, and processing instruction nodes must be ignored when 
+  establishing whether an element's contents match the element's content model or not, and must
   be ignored when following algorithms that define document and element semantics.
 
   <p class="note">Thus, an element |A| is said to be <i>preceded or followed</i> by a second element
@@ -759,17 +758,17 @@
   <div class="example">
     For example, the Atom specification defines a <code>content</code> element. When its
     <code>type</code> attribute has the value <code>xhtml</code>, the Atom specification requires
-    that it contain a single HTML <{div}> element. Thus, a <{div}> element is
-    allowed in that context, even though this is not explicitly normatively stated by this
-    specification. [[RFC4287]]
+    that it contain a single HTML <{div}> element. Thus, a <{div}> element is allowed in that 
+    context, even though this is not explicitly normatively stated by this specification. 
+    [[RFC4287]]
   </div>
 
   In addition, [=HTML elements=] may be orphan nodes (i.e., without a parent node).
 
   <div class="example">
-    For example, creating a <{td}> element and storing it in a global variable in a
-    script is conforming, even though <{td}> elements are otherwise only supposed to be
-    used inside <{tr}> elements.
+    For example, creating a <{td}> element and storing it in a global variable in a script is 
+    conforming, even though <{td}> elements are otherwise only supposed to be used inside <{tr}> 
+    elements.
 
     <pre highlight="javascript">
       var data = {
@@ -785,8 +784,8 @@
   (other than [=inter-element whitespace=]) and no element nodes.
 
   <p class="note">Most HTML elements whose content model is "nothing" are also, for convenience,
-  [=void elements=] (elements that have no [=end tag=] in the [[#syntax|HTML syntax]]).
-  However, these are entirely separate concepts.</p>
+  [=void elements=] (elements that have no [=end tag=] in the [[#syntax|HTML syntax]]). However, 
+  these are entirely separate concepts.</p>
 
 <h5 id="kinds-of-content">Kinds of content</h5>
 
@@ -822,9 +821,9 @@
 
 <h6 id="metadata-content">Metadata content</h6>
 
-  <dfn id="metadata-content-2">Metadata content</dfn> is content that sets up the presentation or behavior of the rest of
-  the content, or that sets up the relationship of the document with other documents, or that
-  conveys other "out of band" information.
+  <dfn id="metadata-content-2">Metadata content</dfn> is content that sets up the presentation or 
+  behavior of the rest of the content, or that sets up the relationship of the document with other 
+  documents, or that conveys other "out of band" information.
 
   <ul class="brief category-list">
     <li><{base}>
@@ -971,11 +970,11 @@
     <li><{section}>
   </ul>
 
-  Each [=sectioning content=] element potentially has a heading and an [=outline=]. See the
-  section on [[#headings-and-sections|headings and sections]] for further details.
+  Each [=sectioning content=] element potentially has a heading and an [=outline=]. See the section 
+  on [[#headings-and-sections|headings and sections]] for further details.
 
-  <p class="note">There are also certain elements that are [=sectioning roots=]. These are
-  distinct from [=sectioning content=], but they can also have an [=outline=].</p>
+  <p class="note">There are also certain elements that are [=sectioning roots=]. These are distinct 
+  from [=sectioning content=], but they can also have an [=outline=].</p>
 
 <h6 id="heading-content">Heading content</h6>
 
@@ -1060,9 +1059,9 @@
   that are themselves categorized as phrasing content, not any flow content.</p>
 
   <dfn id="text-content" lt="text|text content">Text</dfn>, in the context of content models, means
-  either nothing, or {{Text}} nodes. [=Text=] is sometimes used as a content model on its own,
-  but is also [=phrasing content=], and can be [=inter-element whitespace=] (if the {{Text}}
-  nodes are empty or contain just [=space characters=]).
+  either nothing, or {{Text}} nodes. [=Text=] is sometimes used as a content model on its own, but 
+  is also [=phrasing content=], and can be [=inter-element whitespace=] (if the {{Text}} nodes are 
+  empty or contain just [=space characters=]).
 
   {{Text}} nodes and attribute values must consist of [=Unicode characters=], must not contain
   U+0000 characters, must not contain permanently undefined Unicode characters (noncharacters), and
@@ -1071,10 +1070,10 @@
   their precise context.
 
   For elements in HTML, the constraints of the [=Text=] [=content model=] also depends on the
-  [=kind of element=]. For instance, an "<code>&lt;</code>" inside a <{textarea}> element does
-  not need to be escaped in HTML because <{textarea}> is an [=escapable raw text=] element.
-  (This does not apply to XHTML. In XHTML, the [=kind of element=] doesn't affect the constraints
-  of the [=Text=] [=content model=].)
+  [=kind of element=]. For instance, an "<code>&lt;</code>" inside a <{textarea}> element does not 
+  need to be escaped in HTML because <{textarea}> is an [=escapable raw text=] element. (This does 
+  not apply to XHTML. In XHTML, the [=kind of element=] doesn't affect the constraints of the 
+  [=Text=] [=content model=].)
 
 <h6 id="embedded-content">Embedded content</h6>
 
@@ -1269,16 +1268,16 @@
 
 <h5 id="paragraphs">Paragraphs</h5>
 
-  <p class="note">The term [=paragraph=] as defined in this section is used for more than just
-  the definition of the <{p}> element. The [=paragraph=] concept defined here is used to describe
-  how to interpret documents. The <{p}> element is merely one of several ways of marking up a
+  <p class="note">The term [=paragraph=] as defined in this section is used for more than just the 
+  definition of the <{p}> element. The [=paragraph=] concept defined here is used to describe how to 
+  interpret documents. The <{p}> element is merely one of several ways of marking up a 
   [=paragraph=].</p>
 
   A <dfn lt="paragraph|paragraphs|implied paragraph|paragraphing|implied|implied paragraphs">paragraph</dfn>
-  is typically a run of [=phrasing content=] that forms a block of text with one or more
-  sentences that discuss a particular topic, as in typography, but can also be used for more general
-  thematic grouping. For instance, an address is also a paragraph, as is a part of a form, a byline,
-  or a stanza in a poem.
+  is typically a run of [=phrasing content=] that forms a block of text with one or more sentences 
+  that discuss a particular topic, as in typography, but can also be used for more general thematic 
+  grouping. For instance, an address is also a paragraph, as is a part of a form, a byline, or a 
+  stanza in a poem.
 
   <div class="example">
     In the following example, there are two paragraphs in a section. There is also a heading, which 
@@ -1395,8 +1394,8 @@
     There are five paragraphs:
 
     <ol class="brief">
-        1. The paragraph that says "You can play with my cat simulator. <i>object</i> I'm quite proud
-             of it.", where <i>object</i> is the <{object}> element.
+        1. The paragraph that says "You can play with my cat simulator. <i>object</i> I'm quite 
+             proud of it.", where <i>object</i> is the <{object}> element.
         2. The paragraph that says "To see the cat simulator, use one of the following links:".
         3. The paragraph that says "Download simulator file".
         4. The paragraph that says "Use online simulator".
@@ -1449,9 +1448,9 @@
     * <{global/translate}>
   </ul>
 
-  These attributes are only defined by this specification as attributes for [=HTML elements=].
-  When this specification refers to elements having these attributes, elements from namespaces that
-  are not defined as having these attributes must not be considered as being elements with these
+  These attributes are only defined by this specification as attributes for [=HTML elements=]. When 
+  this specification refers to elements having these attributes, elements from namespaces that are 
+  not defined as having these attributes must not be considered as being elements with these
   attributes.
 
   <div class="example">
@@ -1504,9 +1503,9 @@
     There are no other restrictions on what form an ID can take; in particular, IDs can consist of
     just digits, start with a digit, start with an underscore, consist of just punctuation, etc.
 
-    An element's [=unique identifier=] can be used for a variety of purposes, most notably as a
-    way to link to specific parts of a document using <a for="url">fragment</a>, as a way to target
-    an element when scripting, and as a way to style a specific element from CSS.
+    An element's [=unique identifier=] can be used for a variety of purposes, most notably as a way 
+    to link to specific parts of a document using <a for="url">fragment</a>, as a way to target an 
+    element when scripting, and as a way to style a specific element from CSS.
   </div>
 
   Identifiers are opaque strings. Particular meanings should not be derived from the value of the
@@ -1596,19 +1595,19 @@
   same names.</p>
 
   <p class="note">While these attributes apply to all elements, they are not useful on all elements.
-  For example, only [=media elements=] will ever receive a
-  {{media/volumechange}} event fired by the user agent.</p>
+  For example, only [=media elements=] will ever receive a {{media/volumechange}} event fired by the 
+  user agent.</p>
 
   <hr />
 
-  [=Custom data attributes=] (e.g., <code>data-foldername</code> or <code>data-msgid</code>) can
-  be specified on any [=HTML element=], to store custom data specific to the page.
+  [=Custom data attributes=] (e.g., <code>data-foldername</code> or <code>data-msgid</code>) can be 
+  specified on any [=HTML element=], to store custom data specific to the page.
 
   <hr />
 
-  In [=HTML documents=], elements in the [=HTML namespace=] may have an <code>xmlns</code>
-  attribute specified, if, and only if, it has the exact value
-  "<code>http://www.w3.org/1999/xhtml</code>". This does not apply to [=XML documents=].
+  In [=HTML documents=], elements in the [=HTML namespace=] may have an <code>xmlns</code> attribute 
+  specified, if, and only if, it has the exact value "<code>http://www.w3.org/1999/xhtml</code>". 
+  This does not apply to [=XML documents=].
 
   <p class="note">In HTML, the <code>xmlns</code> attribute has absolutely no effect. It is
   basically a talisman. It is allowed merely to make migration to and from XML mildly easier. When
@@ -1632,29 +1631,27 @@
 <h5 id="the-title-attribute">The <code>title</code> attribute</h5>
 
   The <dfn element-attr for="global,figure,div,img,textarea,meter"><code>title</code></dfn>
-  attribute [=represents=] advisory information for the
-  element, such as would be appropriate for a tooltip. On a link, this could be the title or a
-  description of the target resource; on an image, it could be the image credit or a description of
-  the image; on a paragraph, it could be a footnote or commentary on the text; on a citation, it
-  could be further information about the source; on [=interactive content=], it could be a label
-  for, or instructions for, use of the element; and so forth. The value is text.
+  attribute [=represents=] advisory information for the element, such as would be appropriate for a 
+  tooltip. On a link, this could be the title or a description of the target resource; on an image, 
+  it could be the image credit or a description of the image; on a paragraph, it could be a footnote 
+  or commentary on the text; on a citation, it could be further information about the source; on 
+  [=interactive content=], it could be a label for, or instructions for, use of the element; and so 
+  forth. The value is text.
 
   <!-- W3C START - DO NOT OVERWRITE-->
 
-  <p class="warning">
-    Relying on the <{global/title}> attribute is currently discouraged as many user agents do not
-    expose the attribute in an accessible manner as required by this specification (e.g., requiring a
-    pointing device such as a mouse to cause a tooltip to appear, which excludes keyboard-only users
-    and touch-only users, such as anyone with a modern phone or tablet).
-  </p>
+  <p class="warning">Relying on the <{global/title}> attribute is currently discouraged as many user 
+  agents do not expose the attribute in an accessible manner as required by this specification 
+  (e.g., requiring a pointing device such as a mouse to cause a tooltip to appear, which excludes 
+  keyboard-only users and touch-only users, such as anyone with a modern phone or tablet).</p>
 
   <!-- W3C END -->
 
-  If this attribute is omitted from an element, then it implies that the <{global/title}>
-  attribute of the nearest ancestor [=HTML element=] with a <{global/title}> attribute set is
-  also relevant to this element. Setting the attribute overrides this, explicitly stating that the
-  advisory information of any ancestors is not relevant to this element. Setting the attribute to
-  the empty string indicates that the element has no advisory information.
+  If this attribute is omitted from an element, then it implies that the <{global/title}> attribute 
+  of the nearest ancestor [=HTML element=] with a <{global/title}> attribute set is also relevant to 
+  this element. Setting the attribute overrides this, explicitly stating that the advisory 
+  information of any ancestors is not relevant to this element. Setting the attribute to the empty 
+  string indicates that the element has no advisory information.
 
   If the <{global/title}> attribute's value contains U+000A LINE FEED (LF) characters, the content
   is split into multiple lines. Each U+000A LINE FEED (LF) character represents a line break.
@@ -1678,10 +1675,9 @@
   returns, with the algorithm being aborted once a value is returned. When the algorithm returns
   the empty string, then there is no advisory information.
 
-  1. If the element is a <{link}>, <{style}>, <{dfn}>,
-      <{abbr}>, or <{menuitem}> element, then: if the element has a
-      <{global/title}> attribute, return the value of that attribute, otherwise, return the
-      empty string.
+  1. If the element is a <{link}>, <{style}>, <{dfn}>, <{abbr}>, or <{menuitem}> element, then: if 
+      the element has a <{global/title}> attribute, return the value of that attribute, otherwise, 
+      return the empty string.
   2. Otherwise, if the element has a <{global/title}> attribute, then return its value.
   3. Otherwise, if the element has a parent element, then return the parent element's
       [=advisory information=].
@@ -1692,42 +1688,43 @@
 
   <hr />
 
-  The <dfn attribute for="HTMLElement"><code>title</code></dfn> IDL attribute must [=reflect=] the <{global/title}>
-  content attribute.
+  The <dfn attribute for="HTMLElement"><code>title</code></dfn> IDL attribute must [=reflect=] the 
+  <{global/title}> content attribute.
 
 <h5 id="the-lang-and-xmllang-attributes">The <{global/lang}> and <{xml/lang|xml:lang}> attributes</h5>
 
-  The <dfn element-attr for="global"><code>lang</code></dfn> attribute (in no namespace) specifies the primary language for
-  the element's contents and for any of the element's attributes that contain text. Its value must
-  be a valid BCP 47 language tag, or the empty string. Setting the attribute to the empty string
-  indicates that the primary language is unknown. [[!BCP47]]
+  The <dfn element-attr for="global"><code>lang</code></dfn> attribute (in no namespace) specifies 
+  the primary language for the element's contents and for any of the element's attributes that 
+  contain text. Its value must be a valid BCP 47 language tag, or the empty string. Setting the 
+  attribute to the empty string indicates that the primary language is unknown. [[!BCP47]]
 
-  The <dfn element-attr for="xml"><code>lang</code></dfn> attribute in the [=XML namespace=] is defined in XML. [[!XML]]
+  The <dfn element-attr for="xml"><code>lang</code></dfn> attribute in the [=XML namespace=] is 
+  defined in XML. [[!XML]]
 
   If these attributes are omitted from an element, then the language of this element is the same as
   the language of its parent element, if any.
 
   The <{global/lang}> attribute in no namespace may be used on any [=HTML element=].
 
-  The <{global/lang}> attribute in the [=XML namespace=] may be used on
-  [=HTML elements=] in [=XML documents=], as well as elements in other namespaces if the
-  relevant specifications allow it (in particular, MathML and SVG allow <{global/lang}>
-  attributes in the [=XML namespace=] to be specified on their elements). If both the
-  <{global/lang}> attribute in no namespace and the <{global/lang}> attribute in the
-  [=XML namespace=] are specified on the same element, they must have exactly the same value
-  when compared in an [=ASCII case-insensitive=] manner.
+  The <{global/lang}> attribute in the [=XML namespace=] may be used on [=HTML elements=] in 
+  [=XML documents=], as well as elements in other namespaces if the relevant specifications allow it 
+  (in particular, MathML and SVG allow <{global/lang}> attributes in the [=XML namespace=] to be 
+  specified on their elements). If both the <{global/lang}> attribute in no namespace and the 
+  <{global/lang}> attribute in the [=XML namespace=] are specified on the same element, they must 
+  have exactly the same value when compared in an [=ASCII case-insensitive=] manner.
 
-  Authors must not use the <{global/lang}> attribute in the [=XML namespace=] on
-  [=HTML elements=] in [=HTML documents=]. To ease migration to and from XHTML, authors may
-  specify an attribute in no namespace with no prefix and with the literal localname
-  "<{xml/lang|xml:lang}>" on [=HTML elements=] in [=HTML documents=], but such attributes must
-  only be specified if a <{global/lang}> attribute in no namespace is also specified, and both
-  attributes must have the same value when compared in an [=ASCII case-insensitive=] manner.
+  Authors must not use the <{global/lang}> attribute in the [=XML namespace=] on [=HTML elements=] 
+  in [=HTML documents=]. To ease migration to and from XHTML, authors may specify an attribute in no 
+  namespace with no prefix and with the literal localname "<{xml/lang|xml:lang}>" on 
+  [=HTML elements=] in [=HTML documents=], but such attributes must only be specified if a 
+  <{global/lang}> attribute in no namespace is also specified, and both attributes must have the 
+  same value when compared in an [=ASCII case-insensitive=] manner.
 
   <p class="note">The attribute in no namespace with no prefix and with the literal localname
   "<{xml/lang|xml:lang}>" has no effect on language processing.</p>
 
   <!-- W3C START - DO NOT OVERWRITE-->
+  
   <div class="warning" id="lang-warning">
     The language of [=HTML documents=] is indicated using a <{global/lang}> attribute (on the
     <{html}> element itself, to indicate the primary language of the document, and on individual
@@ -1745,35 +1742,35 @@
     the document or document parts will result in some users being unable to understand the
     content.</strong>
   </div>
+  
   <!-- W3C END -->
 
   <hr />
 
   To determine the <dfn>language</dfn> of a node, user agents must look at the nearest ancestor
   element (including the element itself if the node is an element) that has a <{global/lang}>
-  attribute in the [=XML namespace=] set or is an [=HTML element=] and has a <{global/lang}>
-  in no namespace attribute set. That attribute specifies the language of the node (regardless of
-  its value).
+  attribute in the [=XML namespace=] set or is an [=HTML element=] and has a <{global/lang}> in no 
+  namespace attribute set. That attribute specifies the language of the node (regardless of its 
+  value).
 
   If both the <{global/lang}> attribute in no namespace and the <{global/lang}> attribute in the
-  [=XML namespace=] are set on an element, user agents must use the <{global/lang}> attribute in
-  the [=XML namespace=], and the <{global/lang}> attribute in no namespace must be [=ignored=]
-  for the purposes of determining the element's language.
+  [=XML namespace=] are set on an element, user agents must use the <{global/lang}> attribute in the 
+  [=XML namespace=], and the <{global/lang}> attribute in no namespace must be [=ignored=] for the 
+  purposes of determining the element's language.
 
   If node's [=inclusive ancestors=] do not have either attribute set, but there is a
   [=pragma-set default language=] set, then that is the language of the node. If there is no
-  [=pragma-set default language=] set, then language information from a higher-level protocol
-  (such as HTTP), if any, must be used as the final fallback language instead. In the absence of any
-  such language information, and in cases where the higher-level protocol reports multiple
-  languages, the language of the node is unknown, and the corresponding language tag is the empty
-  string.
+  [=pragma-set default language=] set, then language information from a higher-level protocol (such 
+  as HTTP), if any, must be used as the final fallback language instead. In the absence of any such 
+  language information, and in cases where the higher-level protocol reports multiple languages, the 
+  language of the node is unknown, and the corresponding language tag is the empty string.
 
   <p class="example">For example, if a document is delivered over HTTP and the
-  <a><code>Content-Language</code></a> HTTP header is specified with a value "<code>en</code>", then
-  for any element in the document that does not itself have a <{global/lang}> attribute nor any
-  ancestor of that element, the fallback language for the element will be English. If the value of
-  the <a><code>Content-Language</code></a> header was "<code>de, fr, it</code>" then the language of
-  the node is unknown.
+  `<a http-header><code>Content-Language</code></a>` HTTP header is specified with a value 
+  "<code>en</code>", then for any element in the document that does not itself have a 
+  <{global/lang}> attribute nor any ancestor of that element, the fallback language for the element 
+  will be English. If the value of the `<a http-header><code>Content-Language</code></a>` header was 
+  "<code>de, fr, it</code>" then the language of the node is unknown.
   <a href="https://www.w3.org/International/questions/qa-http-and-lang">This article</a> provides
   some additional guidance on the use of HTTP headers, and <{meta}> elements for providing language
   information.</p>
@@ -1829,7 +1826,8 @@
   state. Otherwise, either the element's <{global/translate}> attribute is in the <i>inherit</i>
   state, or the element is not an [=HTML element=] and thus does not have a <{global/translate}>
   attribute; in either case, the element's [=translation mode=] is in the same state as its parent
-  element's, if any, or in the [=translate-enabled=] state, if the element is a [=document element=].
+  element's, if any, or in the [=translate-enabled=] state, if the element is a 
+  [=document element=].
 
   When an element is in the <dfn>translate-enabled</dfn> state, the element's
   [=translatable attributes=] and the values of its {{Text}} node children are to be translated when
@@ -1909,10 +1907,12 @@
       <dfn state for="dir">ltr</dfn> state
   :: Indicates that the contents of the element are explicitly directionally isolated left-to-right
       text.
+      
   : The <dfn attr-value for="global/dir"><code>rtl</code></dfn> keyword, which maps to the
       <dfn state for="dir">rtl</dfn> state
   :: Indicates that the contents of the element are explicitly directionally isolated right-to-left
       text.
+      
   : The <dfn attr-value for="global/dir"><code>auto</code></dfn> keyword, which maps to the
       <dfn state for="dir">auto</dfn> state
   :: Indicates that the contents of the element are explicitly directionally isolated text, but that
@@ -1978,12 +1978,14 @@
         * The character is of bidirectional character type L, AL, or R. [[!BIDI]]
         * The character is not in a {{Text}} node that has an ancestor element that is a descendant
             of the element whose [=directionality=] is being determined and that is either:
-
-            * A <{bdi}> element.
-            * A <{script}> element.
-            * A <{style}> element.
-            * A <{textarea}> element.
-            * An element with a <{global/dir}> attribute in a defined state.
+            
+            <ul class="brief">
+                * A <{bdi}> element.
+                * A <{script}> element.
+                * A <{style}> element.
+                * A <{textarea}> element.
+                * An element with a <{global/dir}> attribute in a defined state.
+            </ul>
 
         If such a character is found and it is of bidirectional character type AL or R,
         [=the directionality=] of the element is '<a state for="dir">rtl</a>'.
@@ -2013,7 +2015,8 @@
 
   <hr />
 
-  The <dfn lt="directionality of the attribute|directionality of an attribute">directionality of an attribute</dfn>
+  The 
+  <dfn lt="directionality of the attribute|directionality of an attribute">directionality of an attribute</dfn>
   of an [=HTML element=], which is used when the text of that attribute is to be included in the
   rendering in some manner, is determined as per the first appropriate set of steps from the
   following list:
@@ -2036,16 +2039,18 @@
 
   The following attributes are <dfn>directionality-capable attributes</dfn>:
 
-  * <{th/abbr}> on <{th}> elements
-  * <code>alt</code> on <{area/alt|area}>, <{img/alt|img}>, and <{input/alt|input}> elements
-  * <{meta/content}> on <{meta}> elements, if the <{meta/name}> attribute specifies a metadata
-    name whose value is primarily intended to be human-readable rather than machine-readable
-  * <code>label</code> on <{menuitem/label|menuitem}>, <{menu/label|menu}>,
-      <{optgroup/label|optgroup}>, <{option/label|option}>, and <{track/label|track}> elements
-  * <code>placeholder</code> on <{input/placeholder|input}> and <{textarea/placeholder|textarea}>
-      elements
-  * <{global/title}> on all [=HTML elements=]
-
+  <ul class="brief">
+    * <{th/abbr}> on <{th}> elements
+    * <code>alt</code> on <{area/alt|area}>, <{img/alt|img}>, and <{input/alt|input}> elements
+    * <{meta/content}> on <{meta}> elements, if the <{meta/name}> attribute specifies a metadata
+        name whose value is primarily intended to be human-readable rather than machine-readable
+    * <code>label</code> on <{menuitem/label|menuitem}>, <{menu/label|menu}>,
+        <{optgroup/label|optgroup}>, <{option/label|option}>, and <{track/label|track}> elements
+    * <code>placeholder</code> on <{input/placeholder|input}> and <{textarea/placeholder|textarea}>
+        elements
+    * <{global/title}> on all [=HTML elements=]
+  </ul>
+  
   <hr />
 
   <dl class="domintro">
@@ -2102,40 +2107,36 @@
   [=style attribute=] as defined by the <cite>CSS Style Attributes</cite> specification.
   [[!CSS-STYLE-ATTR]]
 
-    In user agents that support CSS, the attribute's value must be parsed when the attribute is
-    added or has its value changed, according to the rules given for [=style attributes=].
-    [[!CSS-STYLE-ATTR]]
+  In user agents that support CSS, the attribute's value must be parsed when the attribute is added 
+  or has its value changed, according to the rules given for [=style attributes=].
+  [[!CSS-STYLE-ATTR]]
 
-    However, if the
-    <a>Should element's inline behavior be blocked by Content Security Policy?</a> algorithm returns
-    "<code>Blocked</code>" when executed upon the
-    attribute's element and "[=style attribute=]", then the style
-    rules defined in the attribute's value must not be applied to the element. [[!CSP3]]
+  However, if the [=Should element's inline behavior be blocked by Content Security Policy?=] 
+  algorithm returns "<code>Blocked</code>" when executed upon the attribute's {{Element|element}} 
+  and "<code>style attribute</code>", and the attribute's value, then the style rules defined in the 
+  attribute's value must not be applied to the {{Element|element}}. [[!CSP3]]
 
   Documents that use <{global/style}> attributes on any of their elements must still be
   comprehensible and usable if those attributes were removed.
 
-  <p class="note">
-    In particular, using the <{global/style}> attribute to hide and show content, or to convey
-    meaning that is otherwise not included in the document, is non-conforming. (To hide and show
-    content, use the <{global/hidden}> attribute.)
-  </p>
+  <p class="note">In particular, using the <{global/style}> attribute to hide and show content, or 
+  to convey meaning that is otherwise not included in the document, is non-conforming. (To hide and 
+  show content, use the <{global/hidden}> attribute.)</p>
 
   <hr />
 
   <dl class="domintro">
     : |element| . {{ElementCSSInlineStyle/style}}
-    :: Returns a {{CSSStyleDeclaration}} object for the element's <{global/style}>
-        attribute.
+    :: Returns a {{CSSStyleDeclaration}} object for the element's <{global/style}> attribute.
   </dl>
 
   The {{ElementCSSInlineStyle/style}} IDL attribute is defined in the CSS Object Model (CSSOM)
   specification. [[!CSSOM]]
 
   <div class="example">
-    In the following example, the words that refer to colors are marked up using the
-    <{span}> element and the <{global/style}> attribute to make those words show up in
-    the relevant colors in visual media.
+    In the following example, the words that refer to colors are marked up using the <{span}> 
+    element and the <{global/style}> attribute to make those words show up in the relevant colors in 
+    visual media.
 
     <pre highlight="html">
       &lt;p>My sweat suit is &lt;span style="color: green; background:
@@ -2147,16 +2148,16 @@
 <h5 id="embedding-custom-non-visible-data-with-the-data-attributes"><dfn>Embedding custom non-visible data</dfn> with the <code>data-*</code> attributes</h5>
 
   A <dfn>custom data attribute</dfn> is an attribute in no namespace whose name starts with the
-  string "<dfn element-attr for="global" lt="data-|data-*"><code>data-</code></dfn>", has at least one character after the hyphen, is
-  [=XML-compatible=], and contains no [=uppercase ASCII letters=].
+  string "<dfn element-attr for="global" lt="data-|data-*"><code>data-</code></dfn>", has at least 
+  one character after the hyphen, is [=XML-compatible=], and contains no 
+  [=uppercase ASCII letters=].
 
-  <p class="note">
-    All attribute names on [=HTML elements=] in [=HTML documents=] get ASCII-lowercased
-    automatically, so the restriction on ASCII uppercase letters doesn't affect such documents.
-  </p>
+  <p class="note">All attribute names on [=HTML elements=] in [=HTML documents=] get 
+  ASCII-lowercased automatically, so the restriction on ASCII uppercase letters doesn't affect such 
+  documents.</p>
 
-  [=Custom data attributes=] are intended to store custom data private to the page or
-  application, for which there are no more appropriate attributes or elements.
+  [=Custom data attributes=] are intended to store custom data private to the page or application, 
+  for which there are no more appropriate attributes or elements.
 
   These attributes are not intended for use by software that is not known to the administrators of
   the site that uses the attributes. For generic extensions that are to be used by multiple
@@ -2202,107 +2203,161 @@
   Every [=HTML element=] may have any number of [=custom data attributes=] specified, with any
   value.
 
+  Authors should carefully design such extensions so that when the attributes are ignored and any 
+  associated CSS dropped, the page is still usable.
+
+  User agents must not derive any implementation behavior from these attributes or values. 
+  Specifications intended for user agents must not define these attributes to have any meaningful 
+  values.
+
+  JavaScript libraries may use the [=custom data attributes=], as they are considered to be part of 
+  the page on which they are used. Authors of libraries that are reused by many authors are 
+  encouraged to include their name in the attribute names, to reduce the risk of clashes. Where it 
+  makes sense, library authors are also encouraged to make the exact name used in the attribute 
+  names customizable, so that libraries whose authors unknowingly picked the same name can be used 
+  on the same page, and so that multiple versions of a particular library can be used on the same 
+  page even when those versions are not mutually compatible.
+
+  <div class="example">
+    For example, a library called "DoQuery" could use attribute names like 
+    <code>data-doquery-range</code>, and a library called "jJo" could use attributes names like 
+    <code>data-jjo-range</code>. The jJo library could also provide an API to set which prefix to 
+    use (e.g. <code>J.setDataPrefix("j2")</code>, making the attributes have names like 
+    <code>data-j2-range</code>).
+  </div>
+
   <hr />
 
   <dl class="domintro">
     : |element| . {{HTMLElement/dataset}}
-    :: Returns a <code>DOMStringMap</code> object for the element's <code>data-*</code> attributes.
+    :: Returns a {{DOMStringMap}} object for the element's <{global/data-*}> attributes.
 
-        Hyphenated names are converted to dromedaryCase (which is the same as CamelCase except
+        Hyphenated names are converted to dromedary-case (which is the same as camel-case except
         the initial letter is not uppercased). For example, <code>data-foo-bar=""</code> becomes
         <code>element.dataset.fooBar</code>.
   </dl>
 
   The <dfn attribute for="HTMLElement"><code>dataset</code></dfn> IDL attribute provides convenient
-  accessors for all the <{global/data-*}> attributes on an element. On
-  getting, the {{HTMLElement/dataset}} IDL attribute must return a
-  <code>DOMStringMap</code> object, associated with the following algorithms, which expose these
-  attributes on their element:
+  accessors for all the <{global/data-*}> attributes on an element. On getting, the 
+  {{HTMLElement/dataset}} IDL attribute must return a {{DOMStringMap}} whose associated element is 
+  this element.
 
-  : The algorithm for [=getting the list of name-value pairs=]
-  :: 1. Let |list| be an empty list of name-value pairs.
-      2. For each content attribute on the element whose first five characters are the string
-          "<{global/data-}>" and whose remaining characters (if any) do not include any
-          [=uppercase ASCII letters=], in the order that those attributes are listed in the
-          element's <a lt="element attribute">attribute list</a>, add a name-value pair to |list| whose name is
-          the attribute's name with the first five characters removed and whose value is the
-          attribute's value.
-      3. For each name in |list|, for each U+002D HYPHEN-MINUS character (-) in the name
-          that is followed by a [=lowercase ASCII letter=], remove the U+002D HYPHEN-MINUS
-          character (-) and replace the character that followed it by the same character in
-          [=ASCII uppercase=].
-      4. Return |list|.
+  The {{DOMStringMap}} interface is used for the {{HTMLElement/dataset}} attribute. Each 
+  {{DOMStringMap}} has an <dfn>associated element</dfn>.
 
-  : The algorithm for [=setting names to certain values=]
-  :: 1. Let |name| be the name passed to the algorithm.
-      2. Let |value| be the value passed to the algorithm.
-      3. If |name| contains a U+002D HYPHEN-MINUS character (-) followed by a
-          [=lowercase ASCII letter=], throw a "{{SyntaxError}}" {{DOMException}} and abort
-          these steps.
-      4. For each [=uppercase ASCII letter=] in |name|, insert a U+002D HYPHEN-MINUS
-          character (-) before the character and replace the character with the same character
-          in [=ASCII lowercase=].
-      5. Insert the string <{global/data-}> at the front of |name|.
-      6. Set the value of the attribute with the name |name|, to the value
-          |value|, replacing any previous value if the attribute already existed. If
-          <code>setAttribute()</code> would have thrown an exception when setting an attribute
-          with the name |name|, then this must throw the same exception.
+  <pre class="idl" data-highlight="webidl">
+    [OverrideBuiltins]
+    interface DOMStringMap {
+      getter DOMString (DOMString name);
+      [CEReactions] setter void (DOMString name, DOMString value);
+      [CEReactions] deleter void (DOMString name);
+    };
+  </pre>
 
-  : The algorithm for [=deleting names=]
-  :: 1. Let |name| be the name passed to the algorithm.
-      2. For each [=uppercase ASCII letter=] in |name|, insert a U+002D HYPHEN-MINUS
-          character (-) before the character and replace the character with the same character
-          in [=ASCII lowercase=].
-      3. Insert the string <{global/data-}> at the front of |name|.
-      4. Remove the attribute with the name |name|, if such an attribute exists. Do
-          nothing otherwise.
+  To 
+  <dfn for="DOMStringMap" lt="__getter__()|__getter__(name)">get a {{DOMStringMap}}'s name-value pairs</dfn>,
+  run the following algorithm:
+  
+  1. Let |list| be an empty list of name-value pairs.
+  2. For each content attribute on the {{DOMStringMap}}'s [=associated element=] whose first five 
+      characters are the string "<code>data-</code>" and whose remaining characters (if any) do not 
+      include any [=uppercase ASCII letters=], in the order that those attributes are listed in the
+      element's [=element attribute|attribute list=], add a name-value pair to |list| whose name is
+      the attribute's name with the first five characters removed and whose value is the attribute's 
+      value.
+  3. For each name in |list|, for each U+002D HYPHEN-MINUS character (-) in the name that is 
+      followed by a [=lowercase ASCII letter=], remove the U+002D HYPHEN-MINUS character (-) and 
+      replace the character that followed it by the same character in [=ASCII uppercase=].
+  4. Return |list|.
 
-      <p class="note">
-        This algorithm will only get invoked by the Web IDL specification for names that are given
-        by the earlier algorithm for [=getting the list of name-value pairs=]. [[!WEBIDL]]
-      </p>
+  The [=supported property names=] on a {{DOMStringMap}} object at any instant are the names of each 
+  pair returned from [=DOMStringMap/__getter__()|getting the DOMStringMap's name-value pairs=] at 
+  that instant, in the order returned.
+
+  To [=determine the value of a named property=] |name| for a {{DOMStringMap}}, return the value 
+  component of the name-value pair whose name component is |name| in the list returned from 
+  [=DOMStringMap/__getter__()|getting the DOMStringMap's name-value pairs=].
+
+  To 
+  <dfn for="DOMStringMap" lt="__setter__()|__setter__(name, value)">[=set the value of a new named property=] or [=set the value of an existing named property=] for a {{DOMStringMap}}</dfn>,
+  given a property name |name| and a new value |value|, run the following steps:
+  
+  1. If |name| contains a U+002D HYPHEN-MINUS character (-) followed by a
+      [=lowercase ASCII letter=], then throw a "{{SyntaxError}}" {{DOMException}} and abort these 
+      steps.
+  2. For each [=uppercase ASCII letter=] in |name|, insert a U+002D HYPHEN-MINUS character (-) 
+      before the character and replace the character with the same character in [=ASCII lowercase=].
+  3. Insert the string <code>data-</code> at the front of |name|.
+  4. If |name| does not match the XML <code>[=xml/Name=]</code> production, throw an 
+      "{{InvalidCharacterError}}" {{DOMException}} and abort these steps.
+  5. [=Set an attribute value=] for the {{DOMStringMap}}'s [=associated element=] using |name| and 
+      |value|.
+
+  To 
+  <dfn for="DOMStringMap" lt="__deleter__()|__deleter__(name)">[=delete an existing named property=] |name| for a {{DOMStringMap}}</dfn>,
+  run the following steps:
+
+  1. For each [=uppercase ASCII letter=] in |name|, insert a U+002D HYPHEN-MINUS character (-) 
+      before the character and replace the character with the same character in [=ASCII lowercase=].
+  2. Insert the string <code>data-</code> at the front of |name|.
+  3. [=Remove an attribute by name=] given |name|, and the {{DOMStringMap}}'s 
+      [=associated element=].
+
+  <p class="note">This algorithm will only get invoked by the Web IDL specification for names that 
+  are given by the earlier algorithm for 
+  [=DOMStringMap/__getter__()|getting the DOMStringMap's name-value pairs=]. [[!WEBIDL]]</p>
 
   <div class="example">
-    If a Web page wanted an element to represent a space ship, e.g., as part of a game, it would have
-    to use the <{global/class}> attribute along with <code>data-*</code> attributes:
+    If a Web page wanted an element to represent a space ship, e.g., as part of a game, it would 
+    have to use the <{global/class}> attribute along with <{global/data-*}> attributes:
 
     <pre highlight="html">
-      &lt;div class="spaceship" data-ship-id="30">
-        &lt;button class="fire" onclick="spaceships[this.parentNode.dataset.shipId].fire()">
+      &lt;div class="spaceship" data-ship-id="92432"
+           data-weapons="laser 2" data-shields="50%"
+           data-x="30" data-y="10" data-z="90">
+        &lt;button class="fire" 
+                onclick="spaceships[this.parentNode.dataset.shipId].fire()">
           Fire
         &lt;/button>
       &lt;/div>
     </pre>
 
-    Notice how the hyphenated attribute name becomes camel-cased in the API.
+    Notice how the hyphenated attribute name becomes dromedary-cased in the API.
   </div>
-
-  Authors should carefully design such extensions so that when the attributes are ignored and any
-  associated CSS dropped, the page is still usable.
-
-  User agents must not derive any implementation behavior from these attributes or values.
-  Specifications intended for user agents must not define these attributes to have any meaningful
-  values.
-
-  JavaScript libraries may use the [=custom data attributes=], as they are considered to be part
-  of the page on which they are used. Authors of libraries that are reused by many authors are
-  encouraged to include their name in the attribute names, to reduce the risk of clashes. Where it
-  makes sense, library authors are also encouraged to make the exact name used in the attribute
-  names customizable, so that libraries whose authors unknowingly picked the same name can be used
-  on the same page, and so that multiple versions of a particular library can be used on the same
-  page even when those versions are not mutually compatible.
-
+  
   <div class="example">
-    For example, a library called "DoQuery" could use attribute names like
-    <code>data-doquery-range</code>, and a library called "jJo" could use attributes names like
-    <code>data-jjo-range</code>. The jJo library could also provide an API to set which prefix to
-    use (e.g., <code>J.setDataPrefix("j2")</code>, making the attributes have names like
-    <code>data-j2-range</code>).
+    Given the following fragment and elements with similar constructions:
+
+    <pre highlight="html">
+      &lt;img class="tower" id="tower5" data-x="12" data-y="5" 
+           data-ai="robotarget" data-hp="46" data-ability="flames" 
+           src="towers/rocket.png" alt="Rocket Tower">
+    </pre>
+
+    ...one could imagine a function <code>splashDamage()</code> that takes some arguments, the first
+    of which is the element to process:
+
+    <pre highlight="javascript">
+      function splashDamage(node, x, y, damage) {
+        if (node.classList.contains('tower') && // checking the 'class' attribute
+            node.dataset.x == x && // reading the 'data-x' attribute
+            node.dataset.y == y) { // reading the 'data-y' attribute
+          var hp = parseInt(node.dataset.hp); // reading the 'data-hp' attribute
+          hp = hp - damage;
+          if (hp &lt; 0) {
+            hp = 0;
+            node.dataset.ai = 'dead'; // setting the 'data-ai' attribute
+            delete node.dataset.ability; // removing the 'data-ability' attribute
+          }
+          node.dataset.hp = hp; // setting the 'data-hp' attribute
+        }
+      }
+    </pre>
   </div>
 
-<h4 id="requirements-relating-to-the-bidirectional-algorithm">
-  Requirements relating to the bidirectional algorithm
-</h4>
+  <!-- innerText goes here -->
+  
+<h4 id="requirements-relating-to-the-bidirectional-algorithm">Requirements relating to the bidirectional algorithm</h4>
 
 <h5 id="authoring-conformance-criteria-for-bidirectional-algorithm-formatting-characters">
   Authoring conformance criteria for bidirectional-algorithm formatting characters
