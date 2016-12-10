@@ -456,7 +456,7 @@
     <tr> <td> <code>show</code>    <td> <a>XLink namespace</a> <td> <code>xlink:show</code>
     <tr> <td> <code>title</code>   <td> <a>XLink namespace</a> <td> <code>xlink:title</code>
     <tr> <td> <code>type</code>    <td> <a>XLink namespace</a> <td> <code>xlink:type</code>
-    <tr> <td> <code>base</code>    <td> <a>XML namespace</a>   <td> <{global/xml:base}>
+    <tr> <td> <code>base</code>    <td> <a>XML namespace</a>   <td> <{xml/base|xml:base}>
     <tr> <td> <code>lang</code>    <td> <a>XML namespace</a>   <td> <{xml/lang|xml:lang}>
     <tr> <td> <code>space</code>   <td> <a>XML namespace</a>   <td> <{xml/space|xml:space}>
     <tr> <td> <code>xmlns</code>   <td> <a>XMLNS namespace</a> <td> <code>xmlns</code>
@@ -1242,8 +1242,8 @@
       nested</a> (the <a>active document</a> of the <a>parent browsing context</a> of
       <var>new document</var>).</li>
 
-      <li>If <var>parent document</var>'s <a for="concept">origin</a> is not the <a>same
-      origin</a> as <var>new document</var>'s <a for="concept">origin</a>, then abort these
+      <li>If <var>parent document</var>'s [=concept/origin=] is not the <a>same
+      origin</a> as <var>new document</var>'s [=concept/origin=], then abort these
       substeps.</li>
 
       <li>If <var>parent document</var>'s <a>character encoding</a> is not an <a>ASCII-compatible encoding</a>, then
@@ -2122,7 +2122,7 @@
       <{colgroup}>, <{dd}>, <{details}>, <{dir}>, <{div}>, <{dl}>, <{dt}>, <{embed}>, <{fieldset}>,
       <{figcaption}>, <{figure}>, <{footer}>, <{form}>, <{frame}>, <{frameset}>, <{h1}>, <{h2}>,
       <{h3}>, <{h4}>, <{h5}>, <{h6}>, <{head}>, <{header}>, <{hr}>, <{html}>, <{iframe}>, <{img}>,
-      <{input}>, <{}>, <{link}>, <{listing}>, <{main}>, <{marquee}>, <{menu}>, <{menuitem}>,
+      <{input}>, <{li}>, <{link}>, <{listing}>, <{main}>, <{marquee}>, <{menu}>, <{menuitem}>,
       <{meta}>, <{nav}>, <{noembed}>, <{noframes}>, <{noscript}>, <{object}>, <{ol}>, <{p}>,
       <{param}>, <{plaintext}>, <{pre}>, <{script}>, <{section}>, <{select}>, <{source}>, <{style}>,
       <{summary}>, <{table}>, <{tbody}>, <{td}>, <{template}>, <{textarea}>, <{tfoot}>, <{th}>,
@@ -4541,7 +4541,7 @@
 
   <p class="note">
   The algorithm described below places no limit on the depth of the DOM tree
-  generated, or on the length of tag names, attribute names, attribute values, <code>Text</code>
+  generated, or on the length of tag names, attribute names, attribute values, {{Text}}
   nodes, etc. While implementors are encouraged to avoid arbitrary limits, it is recognized that <a>practical concerns</a> will likely force user agents to impose nesting
   depth constraints.
   </p>
@@ -4666,7 +4666,7 @@
     namespace, and with the attributes on the node being those given in the given token.
 
     The interface appropriate for an element in the <a>HTML namespace</a> that is not
-    defined in this specification (or <a lt="applicable specification">other applicable specifications</a>) is
+    defined in this specification (or [=other applicable specifications=]) is
     {{HTMLUnknownElement}}. Elements in other namespaces whose interface is not defined by
     that namespace's specification must use the interface {{Element}}.
 
@@ -4855,17 +4855,17 @@
     then abort these steps.
 
     <p class="note">
-  The DOM will not let <code>Document</code> nodes have <code>Text</code> node
+  The DOM will not let <code>Document</code> nodes have {{Text}} node
     children, so they are dropped on the floor.
 
     </li>
 
     <li>
 
-    If there is a <code>Text</code> node immediately before the <var>adjusted insertion
-    location</var>, then append <var>data</var> to that <code>Text</code> node's data.
+    If there is a {{Text}} node immediately before the <var>adjusted insertion
+    location</var>, then append <var>data</var> to that {{Text}} node's data.
 
-    Otherwise, create a new <code>Text</code> node whose data is <var>data</var> and
+    Otherwise, create a new {{Text}} node whose data is <var>data</var> and
     whose <a>node document</a> is the same as that of the
     element in which the <var>adjusted insertion location</var> finds itself, and insert
     the newly created node at the <var>adjusted insertion location</var>.
@@ -4875,13 +4875,13 @@
   </ol>
 
   <div class="example">
-    Here are some sample inputs to the parser and the corresponding number of <code>Text</code>
+    Here are some sample inputs to the parser and the corresponding number of {{Text}}
     nodes that they result in, assuming a user agent that executes scripts.
 
     <table>
     <thead>
       <tr>
-      <th>Input <th>Number of <code>Text</code> nodes
+      <th>Input <th>Number of {{Text}} nodes
     <tbody>
       <tr>
       <td><pre highlight="html">
@@ -4890,7 +4890,7 @@
   document.body.removeChild(script);
   &lt;/script>B
   </pre>
-      <td>One <code>Text</code> node in the document, containing "AB".
+      <td>One {{Text}} node in the document, containing "AB".
       <tr>
       <td><pre highlight="html">
   A&lt;script>
@@ -4898,7 +4898,7 @@
   document.body.appendChild(text);
   &lt;/script>C
   </pre>
-      <td>Three <code>Text</code> nodes; "A" before the script, the script's contents, and "BC" after the script (the parser appends to the <code>Text</code> node created by the script).
+      <td>Three {{Text}} nodes; "A" before the script, the script's contents, and "BC" after the script (the parser appends to the {{Text}} node created by the script).
       <tr>
       <td><pre highlight="html">
   A&lt;script>
@@ -4907,22 +4907,22 @@
   document.body.appendChild(text);
   &lt;/script>C
   </pre>
-      <td>Two adjacent <code>Text</code> nodes in the document, containing "A" and "BC".
+      <td>Two adjacent {{Text}} nodes in the document, containing "A" and "BC".
       <tr>
       <td><pre highlight="html">
   A&lt;table>B&lt;tr>C&lt;/tr>D&lt;/table>
   </pre>
-      <td>One <code>Text</code> node before the table, containing "ABCD". (This is caused by <a>foster parenting</a>.)
+      <td>One {{Text}} node before the table, containing "ABCD". (This is caused by <a>foster parenting</a>.)
       <tr>
       <td><pre highlight="html">
   A&lt;table>&lt;tr>&nbsp;B&lt;/tr>&nbsp;C&lt;/table>
   </pre>
-      <td>One <code>Text</code> node before the table, containing "A&nbsp;B&nbsp;C" (A-space-B-space-C). (This is caused by <a>foster parenting</a>.)
+      <td>One {{Text}} node before the table, containing "A&nbsp;B&nbsp;C" (A-space-B-space-C). (This is caused by <a>foster parenting</a>.)
       <tr>
       <td><pre highlight="html">
   A&lt;table>&lt;tr>&nbsp;B&lt;/tr>&nbsp;&lt;/em>C&lt;/table>
   </pre>
-      <td>One <code>Text</code> node before the table, containing "A&nbsp;BC" (A-space-B-C), and one <code>Text</code> node inside the table (as a child of a <code>tbody</code>) with a single space character. (Space characters separated from non-space characters by non-character tokens are not affected by <a>foster parenting</a>, even if those other tokens then get ignored.)
+      <td>One {{Text}} node before the table, containing "A&nbsp;BC" (A-space-B-C), and one {{Text}} node inside the table (as a child of a <code>tbody</code>) with a single space character. (Space characters separated from non-space characters by non-character tokens are not affected by <a>foster parenting</a>, even if those other tokens then get ignored.)
     </table>
   </div>
 
@@ -8742,8 +8742,8 @@
 
   The next token is a character ("4"), triggers the <a>reconstruction of the active formatting elements</a>, in this case just
   the <{i}> element. A new <{i}> element is thus created for the "4"
-  <code>Text</code> node. After the end tag token for the "i" is also received, and the "5"
-  <code>Text</code> node is inserted, the DOM looks as follows:
+  {{Text}} node. After the end tag token for the "i" is also received, and the "5"
+  {{Text}} node is inserted, the DOM looks as follows:
 
   <ul class="domTree"><li class="t1"><{html}><ul><li class="t1"><{head}></li><li class="t1"><{body}><ul><li class="t1"><{p}><ul><li class="t3"><code>#text</code>: <span>1</span></li><li class="t1"><{b}><ul><li class="t3"><code>#text</code>: <a>2</a></li><li class="t1"><{i}><ul><li class="t3"><code>#text</code>: <span>3</span></li></ul></li></ul></li><li class="t1"><{i}><ul><li class="t3"><code>#text</code>: <span>4</span></li></ul></li><li class="t3"><code>#text</code>: <span>5</span></li></ul></li></ul></li></ul></li></ul>
 
@@ -8850,7 +8850,7 @@
   <ul class="domTree"><li class="t1"><{html}><ul><li class="t1"><{head}></li><li class="t1"><{body}><ul><li class="t1"><{b}></li><li class="t1"><{table}><ul><li class="t1"><{tbody}><ul><li class="t1"><{tr}><ul><li class="t1"><{td}></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>
 
   The <a>marker</a> means that when the "aaa" character
-  tokens are seen, no <{b}> element is created to hold the resulting <code>Text</code>
+  tokens are seen, no <{b}> element is created to hold the resulting {{Text}}
   node:
 
   <ul class="domTree"><li class="t1"><{html}><ul><li class="t1"><{head}></li><li class="t1"><{body}><ul><li class="t1"><{b}></li><li class="t1"><{table}><ul><li class="t1"><{tbody}><ul><li class="t1"><{tr}><ul><li class="t1"><{td}><ul><li class="t3"><code>#text</code>: <span>aaa</span></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>
@@ -8870,7 +8870,7 @@
   insertion mode but with <a>foster parenting</a>.
 
   When <a lt="reconstruct the active formatting elements">the active formatting elements
-  are reconstructed</a>, a <{b}> element is created and <a>foster parented</a>, and then the "bbb" <code>Text</code> node is appended to it:
+  are reconstructed</a>, a <{b}> element is created and <a>foster parented</a>, and then the "bbb" {{Text}} node is appended to it:
 
   <ul class="domTree"><li class="t1"><{html}><ul><li class="t1"><{head}></li><li class="t1"><{body}><ul><li class="t1"><{b}></li><li class="t1"><{b}><ul><li class="t3"><code>#text</code>: <span>bbb</span></li></ul></li><li class="t1"><{table}><ul><li class="t1"><{tbody}><ul><li class="t1"><{tr}><ul><li class="t1"><{td}><ul><li class="t3"><code>#text</code>: <span>aaa</span></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>
 
@@ -8896,8 +8896,8 @@
   <em>This section is non-normative.</em>
 
   Consider the following markup, which for this example we will assume is the document with
-  <a for="url">URL</a> <code>https://example.com/inner</code>, being rendered as the content of
-  an <code>iframe</code> in another document with the <a for="url">URL</a> <code>https://example.com/outer</code>:
+  [=url/URL=] <code>https://example.com/inner</code>, being rendered as the content of
+  an <code>iframe</code> in another document with the [=url/URL=] <code>https://example.com/outer</code>:
 
   <pre highlight="html">
   &lt;div id=a>
@@ -9104,7 +9104,7 @@
 
         If <var>current node</var> is a <{pre}>, <{textarea}>, or
         <{listing}> element, and the first child node of the element, if any, is a
-        <code>Text</code> node whose character data has as its first character a U+000A LINE FEED
+        {{Text}} node whose character data has as its first character a U+000A LINE FEED
         (LF) character, then append a U+000A LINE FEED (LF) character.
 
         Append the value of running the <a>HTML fragment serialization algorithm</a> on the
@@ -9115,7 +9115,7 @@
 
         </dd>
 
-        <dt>If <var>current node</var> is a <code>Text</code> node</dt>
+        <dt>If <var>current node</var> is a {{Text}} node</dt>
 
         <dd>
 
@@ -9186,7 +9186,7 @@
     a comment that contains the literal string "<code>--&gt;</code>", then when the result
     of serializing the element is parsed, the comment will be truncated at that point and the rest of
     the comment will be interpreted as markup. More examples would be making a <code>script</code>
-    element contain a <code>Text</code> node with the text string "<code>&lt;/script></code>", or
+    element contain a {{Text}} node with the text string "<code>&lt;/script></code>", or
     having a <{p}> element that contains a <{ul}> element (as the <code>ul</code>
     element's <a>start tag</a> would imply the end tag for the
     <code>p</code>).
