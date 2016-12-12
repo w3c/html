@@ -2355,7 +2355,104 @@
     </pre>
   </div>
 
-  <!-- innerText goes here -->
+<h4 id="the-innertext-idl-attribute">The {{HTMLElement/innerText}} IDL attribute</h4>
+
+  <dl class="domintro">
+    : |element| . {{HTMLElement/innerText}} [ = value ]
+    :: Returns the element's text content "as rendered".
+        
+        Can be set, to replace the element's children with the given value, but with line breaks 
+        converted to <{br}> elements.
+  </dl>
+
+  On getting, the <dfn attribute for="HTMLElement"><code>innerText</code></dfn> attribute must 
+  follow these steps:
+  
+  1. If this element is not [=being rendered=], or if the user agent is a non-CSS user agent, then 
+      return the same value as the {{Node/textContent}} IDL attribute on this element.
+  2. Compute a list of items each of which is a string or a positive integer (a 
+      |required line break count|), by applying the following recursive procedure to each child node 
+      |node| of this element in [=tree order=], and then concatenating the results to a single list 
+      of items.
+
+      <p class="note">Intuitively, a |required line break count| item means that a certain number of 
+      line breaks appear at that point, but they can be collapsed with the line breaks induced by 
+      adjacent |required line break count| items, reminiscent to CSS margin-collapsing.</p>
+
+      1. Let |items| be the result of recursively applying this procedure to each child of |node| in
+          [=tree order=], and then concatenating the results to a single list of items.
+      2. If |node|'s [=computed value=] of 'visibility' is not "visible", then let the result of 
+          these substeps be |items| and abort these substeps.
+      3. If |node| has no associated CSS box, then let the result of these substeps be |items| and 
+          abort these substeps. For the purpose of this step, the following elements must act as 
+          described if the [=computed value=] of the 'display' property is not "none":
+      
+          <ul class="brief">
+            * <{select}> elements have an associated non-replaced inline CSS box whose child boxes 
+                include only those of <{optgroup}> and <{option}> element child nodes;
+            * <{optgroup}> elements have an associated non-replaced block-level CSS box whose child 
+                boxes include only those of <{option}> element child nodes; and
+            * <{option}> element have an associated non-replaced block-level CSS box whose child 
+                boxes are as normal for non-replaced block-level CSS boxes.
+          </ul>
+
+          <p class="note">items can be non-empty due to "display:contents".</p>
+      4. If |node| is a {{Text}} node, then for each CSS text box produced by |node|, in content 
+          order, compute the text of the box after application of the CSS 'white-space' processing 
+          rules and 'text-transform' rules, let the result of these substeps be a list of the 
+          resulting strings, and abort these substeps. The CSS 'white-space' processing rules are 
+          slightly modified: collapsible spaces at the end of lines are always collapsed, but they 
+          are only removed if the line is the last line of the block, or it ends with a <{br}> 
+          element. Soft hyphens should be preserved. [[CSS-TEXT-3]]
+      5. If |node| is a <{br}> element, then append a string containing a single U+000A LINE FEED 
+          (LF) character to |items|.
+      6. If |node|'s [=computed value=] of 'display' is ''display/table-cell'', and |node|'s CSS box 
+          is not the last ''table-cell'' box of its enclosing ''table-row'' box, then append a 
+          string containing a single U+0009 CHARACTER TABULATION (tab) character to |items|.
+      7. If |node|'s [=computed value=] of 'display' is ''display/table-cell'', and |node|'s CSS box 
+          is not the last ''table-cell'' box of the nearest ancestor ''display/table'' box, then 
+          append a string containing a single U+000A LINE FEED (LF) character to |items|.
+      8. If |node| is a <{p}> element, then add 2 (a |required line break count|) at the beginning 
+          and end of |items|.
+      9. If |node|'s [=used value=] of 'display' is block-level or ''display/table-caption'', then 
+          add 1 (a |required line break count|) at the beginning and end of |items|. 
+          [[CSS-DISPLAY-3]]
+
+          <p class="note">Floats and absolutely-positioned elements fall into this category.</p>
+      10. Let the result of these substeps be |items|.</p>
+  3. Delete any string items whose strings are empty.</p>
+  4. Delete any runs of consecutive |required line break count| items at the start or end of the 
+      list.
+  5. Replace each remaining run of consecutive |required line break count| items with a string 
+      consisting of as many U+000A LINE FEED (LF) characters as the maximum of the values in the 
+      |required line break count| items.</p>
+  6. Return the concatenation of the string |items|.</p>
+
+  <p class="note">Note that descendant nodes of most replaced elements (e.g., <{textarea}>, 
+  <{input}>, and <{video}> — but not <{button}>) are not rendered by CSS, strictly speaking, and 
+  therefore have no CSS boxes for the purposes of this algorithm.</p>
+
+  On setting, the {{HTMLElement/innerText}} attribute must follow these steps:
+
+  1. Let |document| be this element's [=node document=].
+  2. Let |fragment| be a new {{DocumentFragment}} object whose [=node document=] is |document|.
+  3. Let |input| be the given value.
+  4. Let |pointer| be a pointer into |input|, initially pointing at the start of the string.
+  5. Let |text| be the empty string.
+  6. While |pointer| is not past the end of |input|:
+      1. [=Collect a sequence of characters=] that are not U+000A LINE FEED (LF) or U+000D CARRIAGE 
+          RETURN (CR) characters. Set |text| to the collected characters.
+      2. If |text| is not the empty string, then [=append=] a new {{Text}} node whose 
+          {{CharacterData/data}} is |text| and [=node document=] is |document| to |fragment|.
+      3. While |pointer| is not past the end of |input|, and the character at |position| is either a 
+          U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) character:
+          1. If the character at |position| is a U+000D CARRIAGE RETURN (CR) character and the next 
+              character is a U+000A LINE FEED (LF) character, then advance |position| to the next 
+              character in |input|.
+          2. Advance |position| to the next character in |input|.
+          3. [=Append=] the result of [=creating an element=] given |document|, <{br}>, and the 
+              [=HTML namespace=] to |fragment|.
+  7. [=Replace all=] with |fragment| within this element.
   
 <h4 id="requirements-relating-to-the-bidirectional-algorithm">Requirements relating to the bidirectional algorithm</h4>
 
