@@ -189,11 +189,11 @@
   would when [=receiving a set-cookie-string=] for the document's [=Document/URL=] via a "non-HTTP"
   API, consisting of the new value [=encoded as UTF-8=]. [[!COOKIES]] [[!ENCODING]]
 
-  <p class="note">Since the <code>cookie</code> attribute is accessible across frames, the path
+  <p class="note">Since the {{Document/cookie}} attribute is accessible across frames, the path
   restrictions on cookies are only a tool to help manage which cookies are sent to which parts of
   the site, and are not in any way a security feature.</p>
 
-  <p class="warning">The <code>cookie</code> attribute's getter and setter synchronously access
+  <p class="warning">The {{Document/cookie}} attribute's getter and setter synchronously access
   shared state. Since there is no locking mechanism, other browsing contexts in a multiprocess user
   agent can modify cookies while scripts are running. A site could, for instance, try to read a
   cookie, increment its value, then write it back out, using the new value of the cookie as a unique
@@ -286,7 +286,7 @@
   <dl class="domintro">
     : |document| . {{Document/title}} [ = |value| ]
     :: Returns the document's title, as given by the <{title}> element for HTML and as given by the
-        <a>SVG <code>title</code></a> element for SVG.
+        SVG <a element for="svg"><code>title</code></a> element for SVG.
 
         Can be set, to update the document's title. If there is no appropriate element to update,
         the new value is ignored.
@@ -298,9 +298,9 @@
   The <dfn attribute for="Document"><code>title</code></dfn> attribute must, on getting, run the
   following algorithm:
 
-  1. If the [=document element=] is an [=SVG svg=] element, then let |value| be the
-      [=child text content=] of the first <a>SVG <code>title</code></a> element that is a child of
-      the [=document element=]. [[!SVG]]
+  1. If the [=document element=] is an SVG <{svg}> element, then let |value| be the
+      [=child text content=] of the first SVG <a element for="svg"><code>title</code></a> element 
+      that is a child of the [=document element=]. [[!SVG]]
   2. Otherwise, let |value| be the [=child text content=] of the <{title}> element, or the empty
       string if the <{title}> element is null.
   3. [=Strip and collapse whitespace=] in |value|.
@@ -310,13 +310,13 @@
   run:
 
   <dl class="switch">
-    : If the [=document element=] is an [=SVG svg=] element
-    :: 1. If there is an <a>SVG <code>title</code></a> element that is a child of the
-            [=document element=], let |element| be the first such element.
+    : If the [=document element=] is an SVG <{svg}> element
+    :: 1. If there is an SVG <a element for="svg"><code>title</code></a> element that is a child of 
+            the [=document element=], let |element| be the first such element.
         2. Otherwise:
             1. Let |element| be the result of [=creating an element=] given the
-                [=document element=]'s [=node document=],
-                <a lt="SVG title"><code>title</code></a>, and the [=SVG namespace=].
+                [=document element=]'s [=node document=], SVG
+                <a element for="svg"><code>title</code></a>, and the [=SVG namespace=].
             2. Insert |element| as the first child of the [=document element=].
         3. Act as if the {{Node/textContent}} IDL attribute of |element| was set to the new value
             being assigned.
@@ -425,25 +425,25 @@
 
   <dl class="domintro">
     : |document| . {{Document/currentScript}}
-    :: Returns the <{script}> element, or the <a>SVG <code>script</code></a> element, that is
-        currently executing, as long as the element represents a [=classic script=]. In the case
-        of reentrant script execution, returns the one that most recently started executing amongst
-        those that have not yet finished executing.
+    :: Returns the <{script}> element, or the SVG <a element for="svg"><code>script</code></a> 
+        element, that is currently executing, as long as the element represents a 
+        [=classic script=]. In the case of reentrant script execution, returns the one that most 
+        recently started executing amongst those that have not yet finished executing.
 
         Returns null if the {{Document}} is not currently executing a <{script}> element or
-        <a>SVG <code>script</code></a> element (e.g., because the running script is an event
-        handler, or a timeout), or if the currently executing <{script}> or
-        <a>SVG <code>script</code></a> element represents a [=module script=].
+        SVG <a element for="svg"><code>script</code></a> element (e.g., because the running script 
+        is an event handler, or a timeout), or if the currently executing <{script}> or SVG 
+        <a element for="svg"><code>script</code></a> element represents a [=module script=].
   </dl>
 
   The <dfn attribute for="Document"><code>currentScript</code></dfn> attribute, on getting, must
   return the value to which it was most recently initialized. When the {{Document}} is created, the
-  <code>currentScript</code> must be initialized to null.
+  {{Document/currentScript}} must be initialized to null.
 
   <p class="note">This API has fallen out of favor in the implementor and standards community, as it
-  globally exposes <{script}> or <a>SVG <code>script</code></a> elements. As such, it is not
-  available in newer contexts, such as when running [=module scripts=] or when running scripts in
-  a shadow tree.</p>
+  globally exposes <{script}> or SVG <a element for="svg"><code>script</code></a> elements. As such, 
+  it is not available in newer contexts, such as when running [=module scripts=] or when running 
+  scripts in a shadow tree.</p>
 
   <hr />
 
@@ -483,7 +483,7 @@
 
   * <{applet}>, [=exposed=] <{embed}>, <{form}>, <{iframe}>, <{img}>, or [=exposed=] <{object}>
       elements that have a <code>name</code> content attribute whose value is |name|, or
-  * <code>applet</code> or [=exposed=] <{object}> elements that have an <{global/id}> content
+  * <{applet}> or [=exposed=] <{object}> elements that have an <{global/id}> content
       attribute whose value is |name|, or
   * <{img}> elements that have an <{global/id}> content attribute whose value is |name|, and that
       have a non-empty <code>name</code> content attribute present also.
@@ -757,11 +757,11 @@
   defined as providing the relevant contexts.
 
   <div class="example">
-    For example, the Atom specification defines a <code>content</code> element. When its
-    <code>type</code> attribute has the value <code>xhtml</code>, the Atom specification requires
-    that it contain a single HTML <{div}> element. Thus, a <{div}> element is allowed in that 
-    context, even though this is not explicitly normatively stated by this specification. 
-    [[RFC4287]]
+    For example, the Atom specification defines a <a element for="atom"><code>content</code></a> 
+    element. When its <{atom/type}> attribute has the value <code>xhtml</code>, the Atom 
+    specification requires that it contain a single HTML <{div}> element. Thus, a <{div}> element is 
+    allowed in that context, even though this is not explicitly normatively stated by this 
+    specification. [[RFC4287]]
   </div>
 
   In addition, [=HTML elements=] may be orphan nodes (i.e., without a parent node).
@@ -922,7 +922,7 @@
     <li><{main}>
     <li><{map}>
     <li><{mark}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{menu}>
     <li><{meter}>
     <li><{nav}>
@@ -946,7 +946,7 @@
     <li><{strong}>
     <li><{sub}>
     <li><{sup}>
-    <li>[=SVG svg=]
+    <li>SVG <{svg}>
     <li><{table}>
     <li><{template}>
     <li><{textarea}>
@@ -1027,7 +1027,7 @@
     <li><{link}> (if it is [=allowed in the body=])
     <li><{map}>
     <li><{mark}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{meter}>
     <li><{noscript}>
     <li><{object}>
@@ -1045,7 +1045,7 @@
     <li><{strong}>
     <li><{sub}>
     <li><{sup}>
-    <li>[=SVG svg=]
+    <li>SVG <{svg}>
     <li><{template}>
     <li><{textarea}>
     <li><{time}>
@@ -1088,10 +1088,10 @@
     <li><{embed}>
     <li><{iframe}>
     <li><{img}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{object}>
     <li><{picture}>
-    <li><a>SVG <code>svg</code></a>
+    <li>SVG <{svg}>
     <li><{video}>
   </ul>
 
@@ -1190,7 +1190,7 @@
     <li><{main}>
     <li><{map}>
     <li><{mark}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{menu}> (if the <{menu/type}> attribute is in the <a state for="menu">toolbar</a> state)
     <li><{meter}>
     <li><{nav}>
@@ -1211,7 +1211,7 @@
     <li><{strong}>
     <li><{sub}>
     <li><{sup}>
-    <li><a>SVG <code>svg</code></a>
+    <li>SVG <{svg}>
     <li><{table}>
     <li><{textarea}>
     <li><{time}>
@@ -1332,8 +1332,8 @@
 
   Conformance checkers may warn authors of cases where they have paragraphs that overlap each other
   (this can happen with <{object}>, <{video}>, <{audio}>, and <{canvas}> elements, and indirectly
-  through elements in other namespaces that allow HTML to be further embedded therein, like
-  [=SVG svg=] or <a>MathML <code>math</code></a>).
+  through elements in other namespaces that allow HTML to be further embedded therein, like SVG
+  <{svg}> or MathML <{math}>).
 
   A [=paragraph=] is also formed explicitly by <{p}> elements.
 
@@ -1606,18 +1606,18 @@
 
   <hr />
 
-  In [=HTML documents=], elements in the [=HTML namespace=] may have an <code>xmlns</code> attribute 
+  In [=HTML documents=], elements in the [=HTML namespace=] may have an <{xmlns/xmlns}> attribute 
   specified, if, and only if, it has the exact value "<code>http://www.w3.org/1999/xhtml</code>". 
   This does not apply to [=XML documents=].
 
-  <p class="note">In HTML, the <code>xmlns</code> attribute has absolutely no effect. It is
+  <p class="note">In HTML, the <{xmlns/xmlns}> attribute has absolutely no effect. It is
   basically a talisman. It is allowed merely to make migration to and from XML mildly easier. When
   parsed by an [=HTML parser=], the attribute ends up in no namespace, not the
   "<code>http://www.w3.org/2000/xmlns/</code>" namespace like namespace declaration attributes in
   XML do.</p>
 
-  <p class="note">In XML, an <code>xmlns</code> attribute is part of the namespace declaration
-  mechanism, and an element cannot actually have an <code>xmlns</code> attribute in no namespace
+  <p class="note">In XML, an <{xmlns/xmlns}> attribute is part of the namespace declaration
+  mechanism, and an element cannot actually have an <{xmlns/xmlns}> attribute in no namespace
   specified.</p>
 
   <hr />
@@ -1629,7 +1629,7 @@
   <p class="note">There is no way to serialize the <{xml/space|xml:space}> attribute on
   [=HTML elements=] in the <code>[[#text-html|text/html]]</code> syntax.</p>
 
-<h5 id="the-title-attribute">The <code>title</code> attribute</h5>
+<h5 id="the-title-attribute">The <{global/title}> attribute</h5>
 
   The <dfn element-attr for="global,figure,div,img,textarea,meter"><code>title</code></dfn>
   attribute [=represents=] advisory information for the element, such as would be appropriate for a 
@@ -2146,7 +2146,7 @@
     </pre>
   </div>
 
-<h5 id="embedding-custom-non-visible-data-with-the-data-attributes"><dfn>Embedding custom non-visible data</dfn> with the <code>data-*</code> attributes</h5>
+<h5 id="embedding-custom-non-visible-data-with-the-data-attributes"><dfn>Embedding custom non-visible data</dfn> with the <{global/data-*}> attributes</h5>
 
   A <dfn>custom data attribute</dfn> is an attribute in no namespace whose name starts with the
   string "<dfn element-attr for="global" lt="data-|data-*"><code>data-</code></dfn>", has at least 
