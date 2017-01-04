@@ -189,11 +189,11 @@
   would when [=receiving a set-cookie-string=] for the document's [=Document/URL=] via a "non-HTTP"
   API, consisting of the new value [=encoded as UTF-8=]. [[!COOKIES]] [[!ENCODING]]
 
-  <p class="note">Since the <code>cookie</code> attribute is accessible across frames, the path
+  <p class="note">Since the {{Document/cookie}} attribute is accessible across frames, the path
   restrictions on cookies are only a tool to help manage which cookies are sent to which parts of
   the site, and are not in any way a security feature.</p>
 
-  <p class="warning">The <code>cookie</code> attribute's getter and setter synchronously access
+  <p class="warning">The {{Document/cookie}} attribute's getter and setter synchronously access
   shared state. Since there is no locking mechanism, other browsing contexts in a multiprocess user
   agent can modify cookies while scripts are running. A site could, for instance, try to read a
   cookie, increment its value, then write it back out, using the new value of the cookie as a unique
@@ -286,7 +286,7 @@
   <dl class="domintro">
     : |document| . {{Document/title}} [ = |value| ]
     :: Returns the document's title, as given by the <{title}> element for HTML and as given by the
-        <a>SVG <code>title</code></a> element for SVG.
+        SVG <a element for="svg"><code>title</code></a> element for SVG.
 
         Can be set, to update the document's title. If there is no appropriate element to update,
         the new value is ignored.
@@ -298,9 +298,9 @@
   The <dfn attribute for="Document"><code>title</code></dfn> attribute must, on getting, run the
   following algorithm:
 
-  1. If the [=document element=] is an [=SVG svg=] element, then let |value| be the
-      [=child text content=] of the first <a>SVG <code>title</code></a> element that is a child of
-      the [=document element=]. [[!SVG]]
+  1. If the [=document element=] is an SVG <{svg}> element, then let |value| be the
+      [=child text content=] of the first SVG <a element for="svg"><code>title</code></a> element 
+      that is a child of the [=document element=]. [[!SVG]]
   2. Otherwise, let |value| be the [=child text content=] of the <{title}> element, or the empty
       string if the <{title}> element is null.
   3. [=Strip and collapse whitespace=] in |value|.
@@ -310,13 +310,13 @@
   run:
 
   <dl class="switch">
-    : If the [=document element=] is an [=SVG svg=] element
-    :: 1. If there is an <a>SVG <code>title</code></a> element that is a child of the
-            [=document element=], let |element| be the first such element.
+    : If the [=document element=] is an SVG <{svg}> element
+    :: 1. If there is an SVG <a element for="svg"><code>title</code></a> element that is a child of 
+            the [=document element=], let |element| be the first such element.
         2. Otherwise:
             1. Let |element| be the result of [=creating an element=] given the
-                [=document element=]'s [=node document=],
-                <a lt="SVG title"><code>title</code></a>, and the [=SVG namespace=].
+                [=document element=]'s [=node document=], SVG
+                <a element for="svg"><code>title</code></a>, and the [=SVG namespace=].
             2. Insert |element| as the first child of the [=document element=].
         3. Act as if the {{Node/textContent}} IDL attribute of |element| was set to the new value
             being assigned.
@@ -425,25 +425,25 @@
 
   <dl class="domintro">
     : |document| . {{Document/currentScript}}
-    :: Returns the <{script}> element, or the <a>SVG <code>script</code></a> element, that is
-        currently executing, as long as the element represents a [=classic script=]. In the case
-        of reentrant script execution, returns the one that most recently started executing amongst
-        those that have not yet finished executing.
+    :: Returns the <{script}> element, or the SVG <a element for="svg"><code>script</code></a> 
+        element, that is currently executing, as long as the element represents a 
+        [=classic script=]. In the case of reentrant script execution, returns the one that most 
+        recently started executing amongst those that have not yet finished executing.
 
         Returns null if the {{Document}} is not currently executing a <{script}> element or
-        <a>SVG <code>script</code></a> element (e.g., because the running script is an event
-        handler, or a timeout), or if the currently executing <{script}> or
-        <a>SVG <code>script</code></a> element represents a [=module script=].
+        SVG <a element for="svg"><code>script</code></a> element (e.g., because the running script 
+        is an event handler, or a timeout), or if the currently executing <{script}> or SVG 
+        <a element for="svg"><code>script</code></a> element represents a [=module script=].
   </dl>
 
   The <dfn attribute for="Document"><code>currentScript</code></dfn> attribute, on getting, must
   return the value to which it was most recently initialized. When the {{Document}} is created, the
-  <code>currentScript</code> must be initialized to null.
+  {{Document/currentScript}} must be initialized to null.
 
   <p class="note">This API has fallen out of favor in the implementor and standards community, as it
-  globally exposes <{script}> or <a>SVG <code>script</code></a> elements. As such, it is not
-  available in newer contexts, such as when running [=module scripts=] or when running scripts in
-  a shadow tree.</p>
+  globally exposes <{script}> or SVG <a element for="svg"><code>script</code></a> elements. As such, 
+  it is not available in newer contexts, such as when running [=module scripts=] or when running 
+  scripts in a shadow tree.</p>
 
   <hr />
 
@@ -483,7 +483,7 @@
 
   * <{applet}>, [=exposed=] <{embed}>, <{form}>, <{iframe}>, <{img}>, or [=exposed=] <{object}>
       elements that have a <code>name</code> content attribute whose value is |name|, or
-  * <code>applet</code> or [=exposed=] <{object}> elements that have an <{global/id}> content
+  * <{applet}> or [=exposed=] <{object}> elements that have an <{global/id}> content
       attribute whose value is |name|, or
   * <{img}> elements that have an <{global/id}> content attribute whose value is |name|, and that
       have a non-empty <code>name</code> content attribute present also.
@@ -702,14 +702,15 @@
       disallowed), along with non-normative descriptions of those attributes. (The content to the
       left of the dash is normative, the content to the right of the dash is not.)
 
-  : Allowed [[#aria-role-attribute|ARIA role attribute]] values
+  : <dfn>Allowed ARIA role attribute values</dfn>
   :: A non normative list of [[#aria-role-attribute|ARIA role attribute]] values that may be 
       specified on the element (except where otherwise disallowed). Each value is linked to a non 
       normative description.
 
-  : Allowed [[#state-and-property-attributes|ARIA state and property attributes]]
+  : <dfn>Allowed ARIA state and property attributes</dfn>
   :: Links to the [=Global aria-* attributes=] list and the
-      [[#allowed-aria-roles-states-and-properties|allowed roles, states and properties]] table.
+      [[#allowed-aria-roles-states-and-properties|allowed roles, states and properties]] table as
+      described in the [[#state-and-property-attributes|state and property attributes]] section.
       
   : <dfn>DOM interface</dfn>
   :: A normative definition of a DOM interface that such elements must implement.
@@ -756,11 +757,11 @@
   defined as providing the relevant contexts.
 
   <div class="example">
-    For example, the Atom specification defines a <code>content</code> element. When its
-    <code>type</code> attribute has the value <code>xhtml</code>, the Atom specification requires
-    that it contain a single HTML <{div}> element. Thus, a <{div}> element is allowed in that 
-    context, even though this is not explicitly normatively stated by this specification. 
-    [[RFC4287]]
+    For example, the Atom specification defines a <a element for="atom"><code>content</code></a> 
+    element. When its <{atom/type}> attribute has the value <code>xhtml</code>, the Atom 
+    specification requires that it contain a single HTML <{div}> element. Thus, a <{div}> element is 
+    allowed in that context, even though this is not explicitly normatively stated by this 
+    specification. [[RFC4287]]
   </div>
 
   In addition, [=HTML elements=] may be orphan nodes (i.e., without a parent node).
@@ -921,7 +922,7 @@
     <li><{main}>
     <li><{map}>
     <li><{mark}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{menu}>
     <li><{meter}>
     <li><{nav}>
@@ -945,7 +946,7 @@
     <li><{strong}>
     <li><{sub}>
     <li><{sup}>
-    <li>[=SVG svg=]
+    <li>SVG <{svg}>
     <li><{table}>
     <li><{template}>
     <li><{textarea}>
@@ -1026,7 +1027,7 @@
     <li><{link}> (if it is [=allowed in the body=])
     <li><{map}>
     <li><{mark}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{meter}>
     <li><{noscript}>
     <li><{object}>
@@ -1044,7 +1045,7 @@
     <li><{strong}>
     <li><{sub}>
     <li><{sup}>
-    <li>[=SVG svg=]
+    <li>SVG <{svg}>
     <li><{template}>
     <li><{textarea}>
     <li><{time}>
@@ -1087,10 +1088,10 @@
     <li><{embed}>
     <li><{iframe}>
     <li><{img}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{object}>
     <li><{picture}>
-    <li><a>SVG <code>svg</code></a>
+    <li>SVG <{svg}>
     <li><{video}>
   </ul>
 
@@ -1189,7 +1190,7 @@
     <li><{main}>
     <li><{map}>
     <li><{mark}>
-    <li><a>MathML <code>math</code></a>
+    <li>MathML <{math}>
     <li><{menu}> (if the <{menu/type}> attribute is in the <a state for="menu">toolbar</a> state)
     <li><{meter}>
     <li><{nav}>
@@ -1210,7 +1211,7 @@
     <li><{strong}>
     <li><{sub}>
     <li><{sup}>
-    <li><a>SVG <code>svg</code></a>
+    <li>SVG <{svg}>
     <li><{table}>
     <li><{textarea}>
     <li><{time}>
@@ -1331,8 +1332,8 @@
 
   Conformance checkers may warn authors of cases where they have paragraphs that overlap each other
   (this can happen with <{object}>, <{video}>, <{audio}>, and <{canvas}> elements, and indirectly
-  through elements in other namespaces that allow HTML to be further embedded therein, like
-  [=SVG svg=] or <a>MathML <code>math</code></a>).
+  through elements in other namespaces that allow HTML to be further embedded therein, like SVG
+  <{svg}> or MathML <{math}>).
 
   A [=paragraph=] is also formed explicitly by <{p}> elements.
 
@@ -1460,7 +1461,7 @@
     is '<a attr-value for="global/dir"><code>rtl</code></a>', inherited from the <{div}> element 
     indirectly through the "<code>bogus</code>" element.
 
-    <pre class="bad">
+    <pre highlight="html" class="bad">
       &lt;div xmlns="http://www.w3.org/1999/xhtml" dir="rtl">
         &lt;bogus xmlns="https://example.net/ns" dir="ltr">
           &lt;span xmlns="http://www.w3.org/1999/xhtml">
@@ -1605,18 +1606,18 @@
 
   <hr />
 
-  In [=HTML documents=], elements in the [=HTML namespace=] may have an <code>xmlns</code> attribute 
+  In [=HTML documents=], elements in the [=HTML namespace=] may have an <{xmlns/xmlns}> attribute 
   specified, if, and only if, it has the exact value "<code>http://www.w3.org/1999/xhtml</code>". 
   This does not apply to [=XML documents=].
 
-  <p class="note">In HTML, the <code>xmlns</code> attribute has absolutely no effect. It is
+  <p class="note">In HTML, the <{xmlns/xmlns}> attribute has absolutely no effect. It is
   basically a talisman. It is allowed merely to make migration to and from XML mildly easier. When
   parsed by an [=HTML parser=], the attribute ends up in no namespace, not the
   "<code>http://www.w3.org/2000/xmlns/</code>" namespace like namespace declaration attributes in
   XML do.</p>
 
-  <p class="note">In XML, an <code>xmlns</code> attribute is part of the namespace declaration
-  mechanism, and an element cannot actually have an <code>xmlns</code> attribute in no namespace
+  <p class="note">In XML, an <{xmlns/xmlns}> attribute is part of the namespace declaration
+  mechanism, and an element cannot actually have an <{xmlns/xmlns}> attribute in no namespace
   specified.</p>
 
   <hr />
@@ -1628,7 +1629,7 @@
   <p class="note">There is no way to serialize the <{xml/space|xml:space}> attribute on
   [=HTML elements=] in the <code>[[#text-html|text/html]]</code> syntax.</p>
 
-<h5 id="the-title-attribute">The <code>title</code> attribute</h5>
+<h5 id="the-title-attribute">The <{global/title}> attribute</h5>
 
   The <dfn element-attr for="global,figure,div,img,textarea,meter"><code>title</code></dfn>
   attribute [=represents=] advisory information for the element, such as would be appropriate for a 
@@ -1860,7 +1861,7 @@
   </ul>
 
   Other specifications may define other attributes that are also [=translatable attributes=]. For
-  example, ARIA would define the <{global/aria-label}> attribute as translatable.
+  example, ARIA would define the <{aria/aria-label}> attribute as translatable.
 
   <hr />
 
@@ -2145,7 +2146,7 @@
     </pre>
   </div>
 
-<h5 id="embedding-custom-non-visible-data-with-the-data-attributes"><dfn>Embedding custom non-visible data</dfn> with the <code>data-*</code> attributes</h5>
+<h5 id="embedding-custom-non-visible-data-with-the-data-attributes"><dfn>Embedding custom non-visible data</dfn> with the <{global/data-*}> attributes</h5>
 
   A <dfn>custom data attribute</dfn> is an attribute in no namespace whose name starts with the
   string "<dfn element-attr for="global" lt="data-|data-*"><code>data-</code></dfn>", has at least 
@@ -2355,94 +2356,119 @@
     </pre>
   </div>
 
-  <!-- innerText goes here -->
+<h4 id="the-innertext-idl-attribute">The {{HTMLElement/innerText}} IDL attribute</h4>
+
+  <dl class="domintro">
+    : |element| . {{HTMLElement/innerText}} [ = value ]
+    :: Returns the element's text content "as rendered".
+        
+        Can be set, to replace the element's children with the given value, but with line breaks 
+        converted to <{br}> elements.
+  </dl>
+
+  On getting, the <dfn attribute for="HTMLElement"><code>innerText</code></dfn> attribute must 
+  follow these steps:
+  
+  1. If this element is not [=being rendered=], or if the user agent is a non-CSS user agent, then 
+      return the same value as the {{Node/textContent}} IDL attribute on this element.
+  2. Compute a list of items each of which is a string or a positive integer (a 
+      |required line break count|), by applying the following recursive procedure to each child node 
+      |node| of this element in [=tree order=], and then concatenating the results to a single list 
+      of items.
+
+      <p class="note">Intuitively, a |required line break count| item means that a certain number of 
+      line breaks appear at that point, but they can be collapsed with the line breaks induced by 
+      adjacent |required line break count| items, reminiscent to CSS margin-collapsing.</p>
+
+      1. Let |items| be the result of recursively applying this procedure to each child of |node| in
+          [=tree order=], and then concatenating the results to a single list of items.
+      2. If |node|'s [=computed value=] of 'visibility' is not "visible", then let the result of 
+          these substeps be |items| and abort these substeps.
+      3. If |node| has no associated CSS box, then let the result of these substeps be |items| and 
+          abort these substeps. For the purpose of this step, the following elements must act as 
+          described if the [=computed value=] of the 'display' property is not "none":
+      
+          <ul class="brief">
+            * <{select}> elements have an associated non-replaced inline CSS box whose child boxes 
+                include only those of <{optgroup}> and <{option}> element child nodes;
+            * <{optgroup}> elements have an associated non-replaced block-level CSS box whose child 
+                boxes include only those of <{option}> element child nodes; and
+            * <{option}> element have an associated non-replaced block-level CSS box whose child 
+                boxes are as normal for non-replaced block-level CSS boxes.
+          </ul>
+
+          <p class="note">items can be non-empty due to "display:contents".</p>
+      4. If |node| is a {{Text}} node, then for each CSS text box produced by |node|, in content 
+          order, compute the text of the box after application of the CSS 'white-space' processing 
+          rules and 'text-transform' rules, let the result of these substeps be a list of the 
+          resulting strings, and abort these substeps. The CSS 'white-space' processing rules are 
+          slightly modified: collapsible spaces at the end of lines are always collapsed, but they 
+          are only removed if the line is the last line of the block, or it ends with a <{br}> 
+          element. Soft hyphens should be preserved. [[CSS-TEXT-3]]
+      5. If |node| is a <{br}> element, then append a string containing a single U+000A LINE FEED 
+          (LF) character to |items|.
+      6. If |node|'s [=computed value=] of 'display' is ''display/table-cell'', and |node|'s CSS box 
+          is not the last ''table-cell'' box of its enclosing ''table-row'' box, then append a 
+          string containing a single U+0009 CHARACTER TABULATION (tab) character to |items|.
+      7. If |node|'s [=computed value=] of 'display' is ''display/table-cell'', and |node|'s CSS box 
+          is not the last ''table-cell'' box of the nearest ancestor ''display/table'' box, then 
+          append a string containing a single U+000A LINE FEED (LF) character to |items|.
+      8. If |node| is a <{p}> element, then add 2 (a |required line break count|) at the beginning 
+          and end of |items|.
+      9. If |node|'s [=used value=] of 'display' is block-level or ''display/table-caption'', then 
+          add 1 (a |required line break count|) at the beginning and end of |items|. 
+          [[CSS-DISPLAY-3]]
+
+          <p class="note">Floats and absolutely-positioned elements fall into this category.</p>
+      10. Let the result of these substeps be |items|.</p>
+  3. Delete any string items whose strings are empty.</p>
+  4. Delete any runs of consecutive |required line break count| items at the start or end of the 
+      list.
+  5. Replace each remaining run of consecutive |required line break count| items with a string 
+      consisting of as many U+000A LINE FEED (LF) characters as the maximum of the values in the 
+      |required line break count| items.</p>
+  6. Return the concatenation of the string |items|.</p>
+
+  <p class="note">Note that descendant nodes of most replaced elements (e.g., <{textarea}>, 
+  <{input}>, and <{video}> — but not <{button}>) are not rendered by CSS, strictly speaking, and 
+  therefore have no CSS boxes for the purposes of this algorithm.</p>
+
+  On setting, the {{HTMLElement/innerText}} attribute must follow these steps:
+
+  1. Let |document| be this element's [=node document=].
+  2. Let |fragment| be a new {{DocumentFragment}} object whose [=node document=] is |document|.
+  3. Let |input| be the given value.
+  4. Let |pointer| be a pointer into |input|, initially pointing at the start of the string.
+  5. Let |text| be the empty string.
+  6. While |pointer| is not past the end of |input|:
+      1. [=Collect a sequence of characters=] that are not U+000A LINE FEED (LF) or U+000D CARRIAGE 
+          RETURN (CR) characters. Set |text| to the collected characters.
+      2. If |text| is not the empty string, then [=append=] a new {{Text}} node whose 
+          {{CharacterData/data}} is |text| and [=node document=] is |document| to |fragment|.
+      3. While |pointer| is not past the end of |input|, and the character at |position| is either a 
+          U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) character:
+          1. If the character at |position| is a U+000D CARRIAGE RETURN (CR) character and the next 
+              character is a U+000A LINE FEED (LF) character, then advance |position| to the next 
+              character in |input|.
+          2. Advance |position| to the next character in |input|.
+          3. [=Append=] the result of [=creating an element=] given |document|, <{br}>, and the 
+              [=HTML namespace=] to |fragment|.
+  7. [=Replace all=] with |fragment| within this element.
   
 <h4 id="requirements-relating-to-the-bidirectional-algorithm">Requirements relating to the bidirectional algorithm</h4>
 
-<h5 id="authoring-conformance-criteria-for-bidirectional-algorithm-formatting-characters">
-  Authoring conformance criteria for bidirectional-algorithm formatting characters
-</h5>
+<h5 id="authoring-conformance-criteria-for-bidirectional-algorithm-formatting-characters">Authoring conformance criteria for bidirectional-algorithm formatting characters</h5>
 
   [=Text content=] in [=HTML elements=] with {{Text}} nodes in their [=contents=],
   and text in attributes of [=HTML elements=] that allow free-form text, may contain characters
   in the ranges U+202A to U+202E and U+2066 to U+2069 (the bidirectional-algorithm formatting
-  characters). However, the use of these characters is restricted so that any embedding or overrides
-  generated by these characters do not start and end with different parent elements, and so that all
-  such embeddings and overrides are explicitly terminated by a U+202C POP DIRECTIONAL FORMATTING
-  character. This helps reduce incidences of text being reused in a manner that has unforeseen
-  effects on the bidirectional algorithm. [[!BIDI]]
+  characters). [[!BIDI]] 
 
-  The aforementioned restrictions are defined by specifying that certain parts of documents form
-  [=bidirectional-algorithm formatting character ranges=], and then imposing a requirement on
-  such ranges.
+  <p class="note">Authors are encouraged to use the <{global/dir}> attribute, the <{bdo}> element, 
+  and the <{bdi}> element, rather than maintaining the bidirectional-algorithm formatting characters 
+  manually. The bidirectional-algorithm formatting characters interact poorly with CSS.</p>
 
-  The strings resulting from applying the following algorithm to an [=HTML element=]
-  |element| are [=bidirectional-algorithm formatting character ranges=]:
-
-  1. Let |output| be an empty list of strings.
-  2. Let |string| be an empty string.
-  3. Let |node| be the first child node of |element|, if any, or null otherwise.
-  4. <i>Loop</i>: If |node| is null, jump to the step labeled <i>end</i>.
-  5. Process |node| according to the first matching step from the following list:
-
-      <dl class="switch">
-        : If |node| is a {{Text}} node
-        :: Append the text data of |node| to |string|.
-
-        : If |node| is a <{br}> element
-        : If |node| is an [=HTML element=] that is [=flow content=] but that is not also
-            [=phrasing content=]
-        :: If |string| is not the empty string, push |string| onto |output|, and let |string| be
-            empty string.
-
-        : Otherwise
-        :: Do nothing.
-      </dl>
-  6. Let |node| be |node|'s next sibling, if any, or null otherwise.
-  7. Jump to the step labeled <i>loop</i>.
-  8. <i>End</i>: If |string| is not the empty string, push |string| onto
-      |output|.
-  9. Return |output| as the [=bidirectional-algorithm formatting character ranges=].
-
-  The value of a namespace-less attribute of an [=HTML element=] is a <a>bidirectional-algorithm
-  formatting character range</a>.
-
-  Any strings that, as described above, are
-  <dfn>bidirectional-algorithm formatting character ranges</dfn> must match the <code>string</code>
-  production in the following ABNF, the character set for which is Unicode. [[!ABNF]]
-
-  <pre data-highlight="abnf">
-    string        = *( plaintext ( embedding / override / isolation ) ) plaintext
-    embedding     = ( lre / rle ) string pdf
-    override      = ( lro / rlo ) string pdf
-    isolation     = ( lri / rli / fsi ) string pdi
-    lre           = %x202A ; U+202A LEFT-TO-RIGHT EMBEDDING
-    rle           = %x202B ; U+202B RIGHT-TO-LEFT EMBEDDING
-    lro           = %x202D ; U+202D LEFT-TO-RIGHT OVERRIDE
-    rlo           = %x202E ; U+202E RIGHT-TO-LEFT OVERRIDE
-    pdf           = %x202C ; U+202C POP DIRECTIONAL FORMATTING
-    lri           = %x2066 ; U+2066 LEFT-TO-RIGHT ISOLATE
-    rli           = %x2067 ; U+2067 RIGHT-TO-LEFT ISOLATE
-    fsi           = %x2068 ; U+2068 FIRST STRONG ISOLATE
-    pdi           = %x2069 ; U+2069 POP DIRECTIONAL ISOLATE
-    plaintext     = *( %x0000-2029 / %x202F-2065 / %x206A-10FFFF )
-                    ; any string with no bidirectional-algorithm formatting characters
-  </pre>
-
-  <p class="note">
-    While the U+2069 POP DIRECTIONAL ISOLATE character implicitly also ends open embeddings and
-    overrides, text that relies on this implicit scope closure is not conforming to this
-    specification. All strings of embeddings, overrides, and isolations need to be explicitly
-    terminated to conform to this section's requirements.
-  </p>
-
-  <p class="note">
-    Authors are encouraged to use the <code>dir</code> attribute, the <{bdo}> element, and
-    the <{bdi}> element, rather than maintaining the bidirectional-algorithm formatting
-    characters manually. The bidirectional-algorithm formatting characters interact poorly with CSS.
-</p>
-
-  <h5 id="user-agent-conformance-criteria">User agent conformance criteria</h5>
+<h5 id="user-agent-conformance-criteria">User agent conformance criteria</h5>
 
   User agents must implement the Unicode bidirectional algorithm to determine the proper ordering
   of characters when rendering documents and parts of documents. [[!BIDI]]
@@ -2450,125 +2476,112 @@
   The mapping of HTML to the Unicode bidirectional algorithm must be done in one of three ways.
   Either the user agent must implement CSS, including in particular the CSS 'unicode-bidi',
   'direction', and 'content' properties, and must have, in its user agent style sheet, the rules
-  using those properties given in this specification's [[#rendering]] section, or,
+  using those properties given in this specification's [[#rendering|rendering]] section, or,
   alternatively, the user agent must act as if it implemented just the aforementioned properties
   and had a user agent style sheet that included all the aforementioned rules, but without letting
   style sheets specified in documents override them, or, alternatively, the user agent must
   implement another styling language with equivalent semantics. [[CSS-WRITING-MODES-3]]
   [[CSS3-CONTENT]]
 
-  <p id="bidireq">
-    The following elements and attributes have requirements defined by the [[#rendering]]
-    section that, due to the requirements in this section, are requirements on all user agents
-    (not just those that [=support the suggested default rendering=]):
-  </p>
+  <p id="bidireq">The following elements and attributes have requirements defined by the 
+  [[#rendering|rendering]] section that, due to the requirements in this section, are requirements 
+  on all user agents (not just those that [=support the suggested default rendering=]):</p>
 
-  * <{global/dir}> attribute
-  * <{bdi}> element
-  * <{bdo}> element
-  * <{br}> element
-  * <{pre}> element
-  * <{textarea}> element
-  * <{wbr}> element
+  <ul class="brief">
+    * <{global/dir}> attribute
+    * <{bdi}> element
+    * <{bdo}> element
+    * <{br}> element
+    * <{pre}> element
+    * <{textarea}> element
+    * <{wbr}> element
+  </ul>
+  
+<h4 id="wai-aria">WAI-ARIA and HTML Accessibility API Mappings</h4>
+  
+<h5 id="aria-authoring-requirements">ARIA Authoring Requirements</h5>
 
-  <section>
-  <h4 id="wai-aria">WAI-ARIA and HTML Accessibility API Mappings</h4>
-  <section>
-  <h5 id='aria-authoring-requirements'>ARIA Authoring Requirements</h5>
-  Authors may use the ARIA <code>role</code> and <code>aria-*</code> attributes on
-  [=HTML elements=], in accordance with the requirements described in the
-  ARIA specifications, except where these conflict with the requirements specified in
-  ARIA in HTML [[!html-aria]]. These exceptions are intended to prevent authors from making assistive technology
-  products report nonsensical states that do not represent the actual state of the document. [[!wai-aria-1.1]]
+  Authors may use the ARIA <{aria/role}> and <{aria/aria-*}> attributes on [=HTML elements=], in 
+  accordance with the requirements described in the ARIA specifications, except where these conflict 
+  with the requirements specified in ARIA in HTML [[!html-aria]]. These exceptions are intended to 
+  prevent authors from making assistive technology products report nonsensical states that do not 
+  represent the actual state of the document. [[!wai-aria-1.1]]
 
- <p class="note" id="aria-usage-note">
-   <dfn lt="do not set"></dfn>In the majority of cases setting an ARIA <code>role</code> and/or
-   <code>aria-*</code> attribute that matches the default implicit ARIA semantics is unnecessary and
-   not recommended as these properties are already set by the browser.
- </p>
+  <p class="note" id="aria-usage-note">In the majority of cases setting an ARIA <{aria/role}> and/or 
+  <{aria/aria-*}> attribute that matches the default implicit ARIA semantics 
+  <dfn lt="do not set">is unnecessary and not recommended</dfn> as these properties are already set 
+  by the browser.</p>
 
   <div class="note">
-    <p>Authors are encouraged to make use of the following documents for guidance on using ARIA in
-  HTML beyond that which is provided in this section:</p>
-    <ul>
-      <li><a href="https://w3c.github.io/aria-in-html/">Notes on Using ARIA in HTML</a> - A practical
-    guide for developers on how to to add accessibility information to HTML elements using the
-    Accessible Rich Internet Applications specification [[!wai-aria-1.1]].</li>
-      <li><a href="https://w3c.github.io/aria/practices/aria-practices.html">WAI-ARIA 1.1 Authoring Practices</a> -
-    An author's guide to understanding and implementing Accessible Rich Internet Applications.</li>
-    </ul>
+    Authors are encouraged to make use of the following documents for guidance on using ARIA in HTML 
+    beyond that which is provided in this section:
+    
+    * [=Notes on Using ARIA in HTML=] - A practical guide for developers on how to to add 
+        accessibility information to HTML elements using the Accessible Rich Internet Applications 
+        specification [[!wai-aria-1.1]].
+    * [=WAI-ARIA 1.1 Authoring Practices=] - An author's guide to understanding and implementing 
+        Accessible Rich Internet Applications.
   </div>
-  </section>
-  <section>
-   <h5 id='aria-conformance-requirements'>Conformance Checker Implementation Requirements</h5>
-  <p>Conformance checkers are required to implement document conformance requirements for use of the
-  ARIA <code>role</code> and <code>aria-*</code> attributes on [=HTML elements=]
-  , as defined in ARIA in HTML. [[!html-aria]] </p>
-  </section>
-  <section>
-  <h5 id='user-agent-requirements'>User Agent Implementation Requirements</h5>
-  <div>
-    <p>User agents are required to implement ARIA semantics on all [=HTML elements=]
-  , as defined in the ARIA  specifications [[!wai-aria-1.1]] and
-  <a href="https://w3c.github.io/aria/core-aam/core-aam.html">[core-aam-1.1]</a>. </p>
-    <p>User agents are required to implement Accessibility API semantics on all
-  [=HTML elements=], as defined in the
-  HTML Accessibility API Mappings specification <a href="https://w3c.github.io/aria/html-aam/html-aam.html">[html-aam-1.0]</a>.</p>
-    <p>The ARIA attributes defined in the ARIA specifications do not have any effect on CSS
-  <a>pseudo-class</a> matching, user interface modalities that don't use assistive technologies, or the
-  default actions of user interaction events as described in this specification.</p>
-  </div>
-  <section>
-  <h6 id="aria-role-attribute">ARIA Role Attribute</h6>
+
+<h5 id='aria-conformance-requirements'>Conformance Checker Implementation Requirements</h5>
+
+  Conformance checkers are required to implement document conformance requirements for use of the
+  ARIA <{aria/role}> and <{aria/aria-*}> attributes on [=HTML elements=], as defined in ARIA in 
+  HTML. [[!html-aria]]
+
+<h5 id='user-agent-requirements'>User Agent Implementation Requirements</h5>
+
+  User agents must implement ARIA semantics on all [=HTML elements=], as defined in the ARIA 
+  specifications [[!wai-aria-1.1]] and [[!core-aam-1.1]].
+  
+  User agents must implement Accessibility API semantics on all [=HTML elements=], as defined in the
+  HTML Accessibility API Mappings specification [[!html-aam-1.0]].
+  
+  The ARIA attributes defined in the ARIA specifications do not have any effect on CSS 
+  [=pseudo-class=] matching, user interface modalities that don't use assistive technologies, or the
+  default actions of user interaction events as described in this specification.
+  
+<h6 id="aria-role-attribute">ARIA Role Attribute</h6>
+
   Every [=HTML element=] may have an ARIA <{aria/role}> attribute specified. This is an ARIA Role
   attribute as defined by [[!wai-aria-1.1]].
 
-  The attribute, if specified, must have a value that is a set of space-separated tokens;
-  each token must be a non-abstract role defined in the WAI-ARIA specification [[!wai-aria-1.1]].
+  The attribute, if specified, must have a value that is a [=set of space-separated tokens=]; each 
+  token must be a non-abstract role defined in the WAI-ARIA specification [[!wai-aria-1.1]].
 
-  The WAI-ARIA role that an HTML element has assigned to it is the first non-abstract role found
-  in the list of values generated when the <code>role</code> attribute is split on spaces.
+  The WAI-ARIA role that an [=HTML element=] has assigned to it is the first non-abstract role found
+  in the list of values generated when the <{aria/role}> attribute is split on spaces.
 
-  </section>
-  <section>
-  <h6 id="state-and-property-attributes">State and Property Attributes</h6>
-  Every HTML element may have ARIA state and property attributes specified. These attributes are
+<h6 id="state-and-property-attributes">State and Property Attributes</h6>
+  
+  Every [=HTML element=] may have ARIA state and property attributes specified. These attributes are
   defined by [[!wai-aria-1.1]].
 
   A subset of the ARIA State and Property attributes are defined as
-  "<dfn lt="global aria-* attributes|global States and properties">Global States and Properties</dfn>"
-  in the [[!wai-aria-1.1]] Specification.
+  "<dfn lt="global aria-* attributes">Global States and Properties</dfn>" in the [[!wai-aria-1.1]] 
+  specification.
 
   These attributes, if specified, must have a value that is the ARIA value type in the "Value" field
   of the definition for the state or property, mapped to the appropriate HTML value type according
   to [[!wai-aria-1.1]].
 
-  ARIA State and Property attributes can be used on any element. They   are not always meaningful,
-  however, and in such cases user agents   might not perform any processing aside from including them
-  in the DOM.   State and property attributes are processed according to the requirements of the
-  HTML Accessibility API Mappings specification <a href="https://w3c.github.io/aria/html-aam/html-aam.html">[html-aam-1.0]</a>,
-  as well as [[!wai-aria-1.1]] and , as   defined in the ARIA  specifications [[!WAI-ARIA]] and
-  <a href="https://w3c.github.io/aria/core-aam/core-aam.html">[core-aam-1.1]</a>.
-
-  </section>
-  </section>
-</section>
+  ARIA State and Property attributes can be used on any element. They are not always meaningful,
+  however, and in such cases user agents might not perform any processing aside from including them
+  in the DOM. State and property attributes are processed according to the requirements of the
+  HTML Accessibility API Mappings specification [[!html-aam-1.0]], as well as [[!wai-aria-1.1]] and,
+  as defined in the ARIA specifications [[!WAI-ARIA]] and [[!core-aam-1.1]].
 
 <!-- W3C START - DO NOT OVERWRITE-->
 
-<section>
- <h5 id="allowed-aria-roles-states-and-properties">Allowed ARIA roles, states and properties</h5>
+<h5 id="allowed-aria-roles-states-and-properties">Allowed ARIA roles, states and properties</h5>
 
   <em>This section is non-normative.</em>
 
-  <p class="note">
-    The following table provides an informative reference to the ARIA roles, states and properties
-    permitted for use in HTML. All ARIA roles, states and properties are normatively defined in the
-    [[!wai-aria-1.1]] specification. Links to ARIA roles, states and properties in the table reference
-    the normative [[!wai-aria-1.1]] definitions.
-  </p>
+  <p class="note">The following table provides an informative reference to the ARIA roles, states 
+  and properties permitted for use in HTML. Links to ARIA roles, states and properties in the table 
+  reference the normative definitions in the [[!wai-aria-1.1]] specification.</p>
 
- <table>
+  <table>
     <caption>
       <abbr title="Accessible Rich Internet Applications">ARIA</abbr> Roles, States and Properties
     </caption>
@@ -2583,176 +2596,179 @@
     <tbody>
       <tr>
         <td>any</td>
-        <td>ARIA [=global states and properties=] can be used on any HTML element.</td>
+        <td>[=global aria-* attributes=] can be used on any HTML element.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-atomic</code>
-          * <code>aria-busy (state)</code>
-          * <code>aria-controls</code>
-          * <code>aria-current (state)</code>
-          * <code>aria-describedby</code>
-          * <code>aria-details</code>
-          * <code>aria-disabled (state)</code>
-          * <code>aria-dropeffect</code>
-          * <code>aria-errormessage</code>
-          * <code>aria-flowto</code>
-          * <code>aria-grabbed (state)</code>
-          * <code>aria-haspopup</code>
-          * <code>aria-hidden (state)</code>
-          * <code>aria-invalid (state)</code>
-          * <code>aria-keyshortcuts</code>
-          * <{global/aria-label}>
-          * <code>aria-labelledby</code>
-          * <code>aria-live</code>
-          * <code>aria-owns</code>
-          * <code>aria-relevant</code>
-          * <code>aria-roledescription</code>
-
+          <ul class="brief">
+            * <{aria/aria-atomic}>
+            * <{aria/aria-busy}> (state)
+            * <{aria/aria-controls}>
+            * <{aria/aria-current}> (state)
+            * <{aria/aria-describedby}>
+            * <{aria/aria-details}>
+            * <{aria/aria-disabled}> (state)
+            * <{aria/aria-dropeffect}>
+            * <{aria/aria-errormessage}>
+            * <{aria/aria-flowto}>
+            * <{aria/aria-grabbed}> (state)
+            * <{aria/aria-haspopup}>
+            * <{aria/aria-hidden}> (state)
+            * <{aria/aria-invalid}> (state)
+            * <{aria/aria-keyshortcuts}>
+            * <{aria/aria-label}>
+            * <{aria/aria-labelledby}>
+            * <{aria/aria-live}>
+            * <{aria/aria-owns}>
+            * <{aria/aria-relevant}>
+            * <{aria/aria-roledescription}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>alert</code></td>
+        <td><a attr-value for="aria/role"><code>alert</code></a></td>
         <td>
           A message with important, and usually time-sensitive, information. See related
-          <code>alertdialog</code> and <code>status</code>.
+          <a attr-value for="aria/role"><code>alertdialog</code></a> and 
+          <a attr-value for="aria/role"><code>status</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>alertdialog</code></td>
+        <td><a attr-value for="aria/role"><code>alertdialog</code></a></td>
         <td>
           A type of dialog that contains an alert message, where initial focus goes to an element
-          within the dialog. See related <code>alert</code> and <code>dialog</code>.
+          within the dialog. See related <a attr-value for="aria/role"><code>alert</code></a> and  
+          <a attr-value for="aria/role"><code>dialog</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-          * <code>aria-modal</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-dialog}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>application</code></td>
+        <td><a attr-value for="aria/role"><code>application</code></a></td>
         <td>A structure containing one or more focusable elements requiring user input, such as
-        keyboard or gesture events, that do not follow a standard interaction pattern supported by
-        a widget role.</td>
+          keyboard or gesture events, that do not follow a standard interaction pattern supported by
+          a widget role.
+        </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>article</code></td>
+        <td><a attr-value for="aria/role"><code>article</code></a></td>
         <td>
           A section of a page that consists of a composition that forms an independent part of a
           document, page, or site.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>banner</code></td>
+        <td><a attr-value for="aria/role"><code>banner</code></a></td>
         <td>
           A region that contains mostly site-oriented content, rather than page-specific content.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>button</code></td>
+        <td><a attr-value for="aria/role"><code>button</code></a></td>
         <td>
           An input that allows for user-triggered actions when clicked or pressed. See related
-          <code>link</code>.
+          <a attr-value for="aria/role"><code>link</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-          * <code>aria-pressed (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-pressed}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>checkbox</code></td>
+        <td><a attr-value for="aria/role"><code>checkbox</code></a></td>
         <td>A checkable input that has three possible values: true, false, or mixed.</td>
         <td>
-
-          * <code>aria-checked (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-checked}> (state)
+          </ul>
         </td>
-        <td></td>
+        <td>none</td>
       </tr>
       <tr>
-        <td><code>cell</code></td>
+        <td><a attr-value for="aria/role"><code>cell</code></a></td>
         <td>A cell in a tabular container.</td>
-        <td></td>
+        <td>none</td>
         <td>
-
-          * <code>aria-colspan</code>
-          * <code>aria-rowindex</code>
-          * <code>aria-rowspan</code>
-
+          <ul class="brief">
+            * <{aria/aria-colspan}>
+            * <{aria/aria-rowindex}>
+            * <{aria/aria-rowspan}>
+          </ul>
         </td>
       </tr>
 
       <tr>
-        <td><code>columnheader</code></td>
+        <td><a attr-value for="aria/role"><code>columnheader</code></a></td>
         <td>A cell containing header information for a column.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-sort</code>
-          * <code>aria-readonly</code>
-          * <code>aria-required</code>
-          * <code>aria-selected (state)</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-colspan</code>
-          * <code>aria-rowindex</code>
-          * <code>aria-rowspan</code>
-
+          <ul class="brief">
+            * <{aria/aria-sort}>
+            * <{aria/aria-readonly}>
+            * <{aria/aria-required}>
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-colspan}>
+            * <{aria/aria-rowindex}>
+            * <{aria/aria-rowspan}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>combobox</code></td>
+        <td><a attr-value for="aria/role"><code>combobox</code></a></td>
         <td>
           A presentation of a select; usually similar to a textbox where users can type ahead to
           select an option, or type to enter arbitrary text as a new item in the list. See related
-          <code>listbox</code>.
+          <a attr-value for="aria/role"><code>listbox</code></a>.
         </td>
         <td>
-
-          * <code>aria-controls</code>
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-controls}>
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
         <td>
-
-          * <code>aria-autocomplete</code>
-          * <code>aria-required</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-autocomplete}>
+            * <{aria/aria-required}>
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>complementary</code></td>
+        <td><a attr-value for="aria/role"><code>complementary</code></a></td>
         <td>
           A supporting section of the document, designed to be complementary to the main content at
           a similar level in the DOM hierarchy, but remains meaningful when separated from the main
@@ -2760,446 +2776,455 @@
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>contentinfo</code></td>
+        <td><a attr-value for="aria/role"><code>contentinfo</code></a></td>
         <td>A large perceivable region that contains information about the parent document.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>definition</code></td>
+        <td><a attr-value for="aria/role"><code>definition</code></a></td>
         <td>A definition of a term or concept.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>dialog</code></td>
+        <td><a attr-value for="aria/role"><code>dialog</code></a></td>
         <td>
           A dialog is an application window that is designed to interrupt the current processing of
           an application in order to prompt the user to enter information or require a response. See
-          related <code>alertdialog</code>.
+          related <a attr-value for="aria/role"><code>alertdialog</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-          * <code>aria-modal</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-dialog}>
+          </ul>
          </td>
       </tr>
       <tr>
-        <td><code>directory</code></td>
+        <td><a attr-value for="aria/role"><code>directory</code></a></td>
         <td>A list of references to members of a group, such as a static table of contents.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>document</code></td>
+        <td><a attr-value for="aria/role"><code>document</code></a></td>
         <td>
           A region containing related information that is declared as document content, as opposed
           to a web application.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>feed</code></td>
+        <td><a attr-value for="aria/role"><code>feed</code></a></td>
         <td>
-          A scrollable list of articles where scrolling may cause articles to be added to or
-          removed from either end of the list.
+          A scrollable list of articles where scrolling may cause articles to be added to or removed 
+          from either end of the list.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>figure</code></td>
+        <td><a attr-value for="aria/role"><code>figure</code></a></td>
         <td>
           A perceivable section of content that typically contains a graphical document, images,
           code snippets, or example text.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>form</code></td>
+        <td><a attr-value for="aria/role"><code>form</code></a></td>
         <td>
           A landmark region that contains a collection of items and objects that, as a whole,
-          combine to create a form. See related <code>search</code>.
+          combine to create a form. See related 
+          <a attr-value for="aria/role"><code>search</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>grid</code></td>
+        <td><a attr-value for="aria/role"><code>grid</code></a></td>
         <td>
           A grid is an interactive control which contains cells of tabular data arranged in rows and
           columns, like a table.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-level</code>
-          * <code>aria-multiselectable</code>
-          * <code>aria-readonly</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-colcount</code>
-          * <code>aria-rowcount</code>
-
+          <ul class="brief">
+            * <{aria/aria-level}>
+            * <{aria/aria-multiselectable}>
+            * <{aria/aria-readonly}>
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-colcount}>
+            * <{aria/aria-rowcount}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>gridcell</code></td>
+        <td><a attr-value for="aria/role"><code>gridcell</code></a></td>
         <td>A cell in a grid or treegrid.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-readonly</code>
-          * <code>aria-required</code>
-          * <code>aria-selected (state)</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-colspan</code>
-          * <code>aria-rowindex</code>
-          * <code>aria-rowspan</code>
-
+          <ul class="brief">
+            * <{aria/aria-readonly}>
+            * <{aria/aria-required}>
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-colspan}>
+            * <{aria/aria-rowindex}>
+            * <{aria/aria-rowspan}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>group</code></td>
+        <td><a attr-value for="aria/role"><code>group</code></a></td>
         <td>
           A set of user interface objects which are not intended to be included in a page summary or
           table of contents by assistive technologies.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>heading</code></td>
+        <td><a attr-value for="aria/role"><code>heading</code></a></td>
         <td>A heading for a section of the page.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-level</code>
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-level}>
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>img</code></td>
+        <td><a attr-value for="aria/role"><code>img</code></a></td>
         <td>A container for a collection of elements that form an image.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>link</code></td>
+        <td><a attr-value for="aria/role"><code>link</code></a></td>
         <td>
           An interactive reference to an internal or external resource that, when activated, causes
-          the user agent to navigate to that resource. See related <code>button</code>.
+          the user agent to navigate to that resource. See related 
+          <a attr-value for="aria/role"><code>button</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>list</code></td>
+        <td><a attr-value for="aria/role"><code>list</code></a></td>
         <td>
-          A group of non-interactive list items. See related <code>listbox</code>.</td>
+          A group of non-interactive list items. See related 
+          <a attr-value for="aria/role"><code>listbox</code></a>.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
           </td>
       </tr>
       <tr>
-        <td><code>listbox</code></td>
+        <td><a attr-value for="aria/role"><code>listbox</code></a></td>
         <td>
           A widget that allows the user to select one or more items from a list of choices. See
-          related <code>combobox</code> and <code>list</code>.
+          related <a attr-value for="aria/role"><code>combobox</code></a> and 
+          <a attr-value for="aria/role"><code>list</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-multiselectable</code>
-          * <code>aria-required</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-multiselectable}>
+            * <{aria/aria-required}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>listitem</code></td>
-        <td>A single item in a <code>list</code> or <code>directory</code>.</td>
+        <td><a attr-value for="aria/role"><code>listitem</code></a></td>
+        <td>A single item in a <a attr-value for="aria/role"><code>list</code></a> or 
+        <a attr-value for="aria/role"><code>directory</code></a>.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-level</code>
-          * <code>aria-posinset</code>
-          * <code>aria-setsize</code>
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-level}>
+            * <{aria/aria-posinset}>
+            * <{aria/aria-setsize}>
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>log</code></td>
+        <td><a attr-value for="aria/role"><code>log</code></a></td>
         <td>
           A type of live region where new information is added in meaningful order and old
-          information may disappear. See related <{marquee}>.
+          information may disappear. See related 
+          <a attr-value for="aria/role"><code>marquee</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>main</code></td>
+        <td><a attr-value for="aria/role"><code>main</code></a></td>
         <td>The main content of a document.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>marquee</code></td>
+        <td><a attr-value for="aria/role"><code>marquee</code></a></td>
         <td>
           A type of live region where non-essential information changes frequently. See related
-          <code>log</code>.
+          <a attr-value for="aria/role"><code>log</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td>MathML <code>math</code></td>
+        <td>MathML <a attr-value for="aria/role"><code>math</code></a></td>
         <td>Content that represents a mathematical expression. </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>menu</code></td>
+        <td><a attr-value for="aria/role"><code>menu</code></a></td>
         <td>A type of widget that offers a list of choices to the user.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>menubar</code></td>
+        <td><a attr-value for="aria/role"><code>menubar</code></a></td>
         <td>
           A presentation of menu that usually remains visible and is usually presented horizontally.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>menuitem</code></td>
+        <td><a attr-value for="aria/role"><code>menuitem</code></a></td>
         <td>
-          An option in a group of choices contained by a <code>menu</code> or <code>menubar</code>.
+          An option in a group of choices contained by a 
+          <a attr-value for="aria/role"><code>menu</code></a> or 
+          <a attr-value for="aria/role"><code>menubar</code></a>.
         </td>
         <td>none</td>
-        <td></td>
+        <td>none</td>
       </tr>
       <tr>
-        <td><code>menuitemcheckbox</code></td>
+        <td><a attr-value for="aria/role"><code>menuitemcheckbox</code></a></td>
         <td>A checkable menuitem that has three possible values: true, false, or mixed.</td>
         <td>
-
-          * <code>aria-checked (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-checked}> (state)
+          </ul>
         </td>
-        <td></td>
+        <td>none</td>
       </tr>
       <tr>
-        <td><code>menuitemradio</code></td>
+        <td><a attr-value for="aria/role"><code>menuitemradio</code></a></td>
         <td>
-          A checkable menuitem in a group of <code>menuitemradio</code> roles, only one of which can
+          A checkable menuitem in a group of 
+          <a attr-value for="aria/role"><code>menuitemradio</code></a> roles, only one of which can
           be checked at a time.
         </td>
         <td>
-
-          * <code>aria-checked (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-checked}> (state)
+          </ul>
         </td>
         <td>
-
-          * <code>aria-posinset</code>
-          * <code>aria-selected (state)</code>
-          * <code>aria-setsize</code>
-
+          <ul class="brief">
+            * <{aria/aria-posinset}>
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-setsize}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>navigation</code></td>
+        <td><a attr-value for="aria/role"><code>navigation</code></a></td>
         <td>
           A collection of navigational elements (usually links) for navigating the document or
           related documents.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
           </td>
       </tr>
       <tr>
-        <td><code>none</code></td>
+        <td><a attr-value for="aria/role"><code>none</code></a></td>
         <td>
           An element whose implicit native role semantics will not be mapped to the accessibility
-          API. See synonym <code>presentation</code>
+          API. See synonym <a attr-value for="aria/role"><code>presentation</code></a>.
         </td>
         <td>none</td>
-        <td></td>
+        <td>none</td>
       </tr>
       <tr>
-        <td><code>note</code></td>
+        <td><a attr-value for="aria/role"><code>note</code></a></td>
         <td>
           A section whose content is parenthetic or ancillary to the main content of the resource.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>option</code></td>
+        <td><a attr-value for="aria/role"><code>option</code></a></td>
         <td>A selectable item in a select list.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-checked (state)</code>
-          * <code>aria-posinset</code>
-          * <code>aria-selected (state)</code>
-          * <code>aria-setsize</code>
-
+          <ul class="brief">
+            * <{aria/aria-checked}> (state)
+            * <{aria/aria-posinset}>
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-setsize}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>presentation</code></td>
+        <td><a attr-value for="aria/role"><code>presentation</code></a></td>
         <td>
           An element whose implicit native role semantics will not be mapped to the accessibility
           API.
         </td>
         <td>none</td>
-        <td></td>
+        <td>none</td>
       </tr>
       <tr>
-        <td><code>progressbar</code></td>
+        <td><a attr-value for="aria/role"><code>progressbar</code></a></td>
         <td>An element that displays the progress status for tasks that take a long time.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-valuemax</code>
-          * <code>aria-valuemin</code>
-          * <code>aria-valuenow</code>
-          * <code>aria-valuetext</code>
-
+          <ul class="brief">
+            * <{aria/aria-valuemax}>
+            * <{aria/aria-valuemin}>
+            * <{aria/aria-valuenow}>
+            * <{aria/aria-valuetext}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>radio</code></td>
+        <td><a attr-value for="aria/role"><code>radio</code></a></td>
         <td>
           A checkable input in a group of radio roles, only one of which can be checked at a time.
         </td>
         <td>
-
-          * <code>aria-checked (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-checked}> (state)
+          </ul>
         </td>
         <td>
-
-          * <code>aria-posinset</code>
-          * <code>aria-selected (state)</code>
-          * <code>aria-setsize</code>
-
+          <ul class="brief">
+            * <{aria/aria-posinset}>
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-setsize}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>radiogroup</code></td>
+        <td><a attr-value for="aria/role"><code>radiogroup</code></a></td>
         <td>A group of radio buttons.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-required</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-required}>
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>region</code></td>
+        <td><a attr-value for="aria/role"><code>region</code></a></td>
         <td>
           A large perceivable section of a web page or document, that the author feels is important
           enough to be included in a page summary or table of contents, for example, an area of the
@@ -3207,350 +3232,352 @@
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>row</code></td>
+        <td><a attr-value for="aria/role"><code>row</code></a></td>
         <td>A row of cells in a grid.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-level</code>
-          * <code>aria-selected (state)</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-colindex</code>
-          * <code>aria-rowindex</code>
-
+          <ul class="brief">
+            * <{aria/aria-level}>
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-colindex}>
+            * <{aria/aria-rowindex}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>rowgroup</code></td>
+        <td><a attr-value for="aria/role"><code>rowgroup</code></a></td>
         <td>A group containing one or more row elements in a grid.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>rowheader</code></td>
+        <td><a attr-value for="aria/role"><code>rowheader</code></a></td>
         <td>A cell containing header information for a row in a grid.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-sort</code>
-          * <code>aria-readonly</code>
-          * <code>aria-required</code>
-          * <code>aria-selected (state)</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-colspan</code>
-          * <code>aria-rowspan</code>
-          * <code>aria-rowindex</code>
-
+          <ul class="brief">
+            * <{aria/aria-sort}>
+            * <{aria/aria-readonly}>
+            * <{aria/aria-required}>
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-colspan}>
+            * <{aria/aria-rowspan}>
+            * <{aria/aria-rowindex}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>scrollbar</code></td>
+        <td><a attr-value for="aria/role"><code>scrollbar</code></a></td>
         <td>
           A graphical object that controls the scrolling of content within a viewing area,
           regardless of whether the content is fully displayed within the viewing area.
         </td>
         <td>
-
-          * <code>aria-controls</code>
-          * <code>aria-orientation</code>
-          * <code>aria-valuemax</code>
-          * <code>aria-valuemin</code>
-          * <code>aria-valuenow</code>
-
+          <ul class="brief">
+            * <{aria/aria-controls}>
+            * <{aria/aria-orientation}>
+            * <{aria/aria-valuemax}>
+            * <{aria/aria-valuemin}>
+            * <{aria/aria-valuenow}>
+          </ul>
         </td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>search</code></td>
+        <td><a attr-value for="aria/role"><code>search</code></a></td>
         <td>
           A landmark region that contains a collection of items and objects that, as a whole,
-          combine to create a search facility. See related <code>form</code>.
+          combine to create a search facility. See related 
+          <a attr-value for="aria/role"><code>form</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>searchbox</code></td>
+        <td><a attr-value for="aria/role"><code>searchbox</code></a></td>
         <td>
           A type of textbox intended for specifying search criteria..
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-activedescend</code>
-          * <code>aria-autocomplete</code>
-          * <code>aria-multiline</code>
-          * <code>aria-placeholder</code>
-          * <code>aria-readonly</code>
-          * <code>aria-required</code>
-
+          <ul class="brief">
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-autocomplete}>
+            * <{aria/aria-multiline}>
+            * <{aria/aria-placeholder}>
+            * <{aria/aria-readonly}>
+            * <{aria/aria-required}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>separator</code></td>
+        <td><a attr-value for="aria/role"><code>separator</code></a></td>
         <td>
           A divider that separates and distinguishes sections of content or groups of menuitems.
         </td>
         <td>
-
-         * <code>aria-valuemax</code> (if focusable)
-         * <code>aria-valuemin</code> (if focusable)
-         * <code>aria-valuenow</code> (if focusable)
-
+          <ul class="brief">
+            * <{aria/aria-valuemax}> (if focusable)
+            * <{aria/aria-valuemin}> (if focusable)
+            * <{aria/aria-valuenow}> (if focusable)
+          </ul>
          </td>
         <td>
-
-          * <code>aria-valuetext</code> (if focusable)
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-valuetext}> (if focusable)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>slider</code></td>
+        <td><a attr-value for="aria/role"><code>slider</code></a></td>
         <td>A user input where the user selects a value from within a given range.</td>
         <td>
-
-          * <code>aria-valuemax</code>
-          * <code>aria-valuemin</code>
-          * <code>aria-valuenow</code>
-
+          <ul class="brief">
+            * <{aria/aria-valuemax}>
+            * <{aria/aria-valuemin}>
+            * <{aria/aria-valuenow}>
+          </ul>
         </td>
         <td>
-
-          * <code>aria-orientation</code>
-          * <code>aria-valuetext</code>
-
+          <ul class="brief">
+            * <{aria/aria-orientation}>
+            * <{aria/aria-valuetext}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>spinbutton</code></td>
+        <td><a attr-value for="aria/role"><code>spinbutton</code></a></td>
         <td>A form of range that expects the user to select from among discrete choices.</td>
         <td>
-
-          * <code>aria-valuemax</code>
-          * <code>aria-valuemin</code>
-          * <code>aria-valuenow</code>
-
+          <ul class="brief">
+            * <{aria/aria-valuemax}>
+            * <{aria/aria-valuemin}>
+            * <{aria/aria-valuenow}>
+          </ul>
         </td>
         <td>
-
-          * <code>aria-required</code>
-          * <code>aria-valuetext</code>
-
+          <ul class="brief">
+            * <{aria/aria-required}>
+            * <{aria/aria-valuetext}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>status</code></td>
+        <td><a attr-value for="aria/role"><code>status</code></a></td>
         <td>
           A container whose content is advisory information for the user but is not important enough
           to justify an alert, often but not necessarily presented as a status bar. See related
-          <code>alert</code>.
+          <a attr-value for="aria/role"><code>alert</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>switch</code></td>
+        <td><a attr-value for="aria/role"><code>switch</code></a></td>
         <td>
          A type of checkbox that represents on/off values, as opposed to checked/unchecked values.
         </td>
         <td>
-
-          * <code>aria-checked (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-checked}> (state)
+          </ul>
         </td>
-        <td>
-        </td>
+        <td>none</td>
       </tr>
       <tr>
-        <td><code>tab</code></td>
+        <td><a attr-value for="aria/role"><code>tab</code></a></td>
         <td>
           A grouping label providing a mechanism for selecting the tab content that is to be
           rendered to the user.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-selected (state)</code>
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-selected}> (state)
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>table</code></td>
+        <td><a attr-value for="aria/role"><code>table</code></a></td>
         <td>
         A section containing data arranged in rows and columns. The table role is intended for
         tabular containers which are not interactive.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-colcount</code>
-          * <code>aria-rowcount</code>
-
+          <ul class="brief">
+            * <{aria/aria-colcount}>
+            * <{aria/aria-rowcount}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>tablist</code></td>
+        <td><a attr-value for="aria/role"><code>tablist</code></a></td>
         <td>A list of tab elements, which are references to tabpanel elements.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-level</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-level}>
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>tabpanel</code></td>
+        <td><a attr-value for="aria/role"><code>tabpanel</code></a></td>
         <td>
-          A container for the resources associated with a <code>tab</code>, where each
-          <code>tab</code> is contained in a <code>tablist</code>.
+          A container for the resources associated with a 
+          <a attr-value for="aria/role"><code>tab</code></a>, where each
+          <a attr-value for="aria/role"><code>tab</code></a> is contained in a 
+          <a attr-value for="aria/role"><code>tablist</code></a>.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>term</code></td>
+        <td><a attr-value for="aria/role"><code>term</code></a></td>
         <td>
-          A word or phrase with a corresponding definition. See related <code>definition</code>.
+          A word or phrase with a corresponding definition. See related 
+          <a attr-value for="aria/role"><code>definition</code></a>.
         </td>
         <td>none</td>
-        <td>
-        </td>
+        <td>none</td>
       </tr>
       <tr>
-        <td><code>textbox</code></td>
+        <td><a attr-value for="aria/role"><code>textbox</code></a></td>
         <td>Input that allows free-form text as its value.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-activedescendant</code>
-          * <code>aria-autocomplete</code>
-          * <code>aria-multiline</code>
-          * <code>aria-placeholder</code>
-          * <code>aria-readonly</code>
-          * <code>aria-required</code>
-
+          <ul class="brief">
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-autocomplete}>
+            * <{aria/aria-multiline}>
+            * <{aria/aria-placeholder}>
+            * <{aria/aria-readonly}>
+            * <{aria/aria-required}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>timer</code></td>
+        <td><a attr-value for="aria/role"><code>timer</code></a></td>
         <td>
           A type of live region containing a numerical counter which indicates an amount of elapsed
           time from a start point, or the time remaining until an end point.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>toolbar</code></td>
+        <td><a attr-value for="aria/role"><code>toolbar</code></a></td>
         <td>A collection of commonly used function buttons represented in compact visual form.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>tooltip</code></td>
+        <td><a attr-value for="aria/role"><code>tooltip</code></a></td>
         <td>A contextual popup that displays a description for an element.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-expanded (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-expanded}> (state)
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>tree</code></td>
+        <td><a attr-value for="aria/role"><code>tree</code></a></td>
         <td>
           A type of list that may contain sub-level nested groups that can be collapsed and
           expanded.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-multiselectable</code>
-          * <code>aria-required</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-orientation</code>
-
+          <ul class="brief">
+            * <{aria/aria-multiselectable}>
+            * <{aria/aria-required}>
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-orientation}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>treegrid</code></td>
+        <td><a attr-value for="aria/role"><code>treegrid</code></a></td>
         <td>A grid whose rows can be expanded and collapsed in the same manner as for a tree.</td>
         <td>none</td>
         <td>
-
-          * <code>aria-level</code>
-          * <code>aria-multiselectable</code>
-          * <code>aria-readonly</code>
-          * <code>aria-activedescendant</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-required</code>
-          * <code>aria-orientation</code>
-          * <code>aria-colcount</code>
-          * <code>aria-rowcount</code>
-
+          <ul class="brief">
+            * <{aria/aria-level}>
+            * <{aria/aria-multiselectable}>
+            * <{aria/aria-readonly}>
+            * <{aria/aria-activedescendant}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-required}>
+            * <{aria/aria-orientation}>
+            * <{aria/aria-colcount}>
+            * <{aria/aria-rowcount}>
+          </ul>
         </td>
       </tr>
       <tr>
-        <td><code>treeitem</code></td>
+        <td><a attr-value for="aria/role"><code>treeitem</code></a></td>
         <td>
           An option item of a tree. This is an element within a tree that may be expanded or
           collapsed if it contains a sub-level group of treeitems.
         </td>
         <td>none</td>
         <td>
-
-          * <code>aria-level</code>
-          * <code>aria-posinset</code>
-          * <code>aria-setsize</code>
-          * <code>aria-expanded (state)</code>
-          * <code>aria-checked (state)</code>
-          * <code>aria-selected (state)</code>
-
+          <ul class="brief">
+            * <{aria/aria-level}>
+            * <{aria/aria-posinset}>
+            * <{aria/aria-setsize}>
+            * <{aria/aria-expanded}> (state)
+            * <{aria/aria-checked}> (state)
+            * <{aria/aria-selected}> (state)
+          </ul>
         </td>
       </tr>
     </tbody>
