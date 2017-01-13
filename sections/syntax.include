@@ -1972,8 +1972,8 @@
 
   <hr />
 
-  When the steps below require the user agent to <dfn>reset the insertion mode appropriately</dfn>, it
-  means the user agent must follow these steps:
+  When the steps below require the UA to <dfn>reset the insertion mode appropriately</dfn>, it
+  means the UA must follow these steps:
 
   <ol>
 
@@ -2094,8 +2094,7 @@
   tags</a>).
 
   <p class="note">
-    The "<a>before html</a>" <a>insertion mode</a> creates the <{html}> <a>document element</a>
-    node, which is then added to the stack.
+    The "<a>before html</a>" <a>insertion mode</a> creates the <{html}> <a>document element</a>, which is then added to the stack.
   </p>
 
   <p class="note">
@@ -2124,16 +2123,18 @@
       <{colgroup}>, <{dd}>, <{details}>, <{dir}>, <{div}>, <{dl}>, <{dt}>, <{embed}>, <{fieldset}>,
       <{figcaption}>, <{figure}>, <{footer}>, <{form}>, <{frame}>, <{frameset}>, <{h1}>, <{h2}>,
       <{h3}>, <{h4}>, <{h5}>, <{h6}>, <{head}>, <{header}>, <{hr}>, <{html}>, <{iframe}>, <{img}>,
-      <{input}>, <{li}>, <{link}>, <{listing}>, <{main}>, <{marquee}>, <{menu}>, <{menuitem}>,
+      <{input}>, <{li}>, <{link}>, <{listing}>, <{main}>, <{marquee}>, <{menu}>,
       <{meta}>, <{nav}>, <{noembed}>, <{noframes}>, <{noscript}>, <{object}>, <{ol}>, <{p}>,
       <{param}>, <{plaintext}>, <{pre}>, <{script}>, <{section}>, <{select}>, <{source}>, <{style}>,
       <{summary}>, <{table}>, <{tbody}>, <{td}>, <{template}>, <{textarea}>, <{tfoot}>, <{th}>,
       <{thead}>, <{title}>, <{tr}>, <{track}>, <{ul}>, <{wbr}>,
-      and <{xmp}>; <a>MathML <code>mi</code></a>, <a>MathML <code>mo</code></a>,
+      <{xmp}>; <a>MathML <code>mi</code></a>, <a>MathML <code>mo</code></a>,
       <a>MathML <code>mn</code></a>, <a>MathML <code>ms</code></a>,
       <a>MathML <code>mtext</code></a>, and <a>MathML <code>annotation-xml</code></a>; and
       SVG <{foreignObject}>, SVG <{desc}>, and
       SVG <a element for="svg"><code>title</code></a>.
+
+      <p class="note">An <code>image</code> start tag token is handled by the tree builder, but it is not in this list because it is not an element; it gets turned into an <{img}> element.</p>
 
   : <dfn lt="formatting element tags|formatting">Formatting</dfn>
   :: The following HTML elements are those that end up in the
@@ -2144,7 +2145,7 @@
   :: All other elements found while parsing an HTML document.
 
   <p class="note">
-    Typically, the <a>special</a> elements have the start and and end tag tokens handled
+    Typically, the <a>special</a> elements have the start and end tag tokens handled
     specifically, while <a>ordinary</a> elements' tokens fall into "any other start tag" and "any
     other end tag" clauses, and some parts of the tree builder check if a particular element in the
     <a>stack of open elements</a> is in the <a>special</a> category. However, some elements (e.g.,
@@ -2193,8 +2194,8 @@
 
   <ul class="brief">
     <li>All the element types listed above for the <a lt="in scope">has an element in scope</a> algorithm.</li>
-    <li><{ol}></li>
-    <li><{ul}></li>
+    <li><{ol}> in the [=HTML namespace=]</li>
+    <li><{ul}> in the [=HTML namespace=]</li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have a p element in button scope|has a p element in button scope|have a particular element in button scope">have a particular element in button scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following element
@@ -2202,24 +2203,24 @@
 
   <ul class="brief">
     <li>All the element types listed above for the <a lt="in scope">has an element in scope</a> algorithm.</li>
-    <li><{button}></li>
+    <li><{button}> in the [=HTML namespace=]</li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have a particular element in table scope|have an element in table scope|in table scope">have a particular element in table scope</dfn> when it <a>has that element in the specific scope</a> consisting of the following element
   types:
 
   <ul class="brief">
-    <li><{html}></li>
-    <li><{table}></li>
-    <li><{template}></li>
+    <li><{html}> in the [=HTML namespace=]</li>
+    <li><{table}> in the [=HTML namespace=]</li>
+    <li><{template}> in the [=HTML namespace=]</li>
   </ul>
 
   The <a>stack of open elements</a> is said to <dfn lt="have an li element in list item scope|have a particular element in select scope">have a particular element in select scope</dfn> when it <a>has that element in the specific scope</a> consisting of all element types
   <em>except</em> the following:
 
   <ul class="brief">
-    <li><{optgroup}></li>
-    <li><{option}> in the <a>HTML namespace</a></li>
+    <li><{optgroup}> in the [=HTML namespace=]</li>
+    <li><{option}> in the [=HTML namespace=]</li>
   </ul>
 
   Nothing happens if at any time any of the elements in the <a>stack of open elements</a>
@@ -2238,16 +2239,16 @@
   mis-nested <a>formatting element tags</a>.
 
   The list contains elements in the <a>formatting</a> category, and <a>markers</a>. The
-  <dfn>markers</dfn> are inserted when entering <{applet}> elements, buttons, <{object}> elements,
-  marquees, table cells, and table captions, and are used to prevent formatting from "leaking"
-  <em>into</em> <{applet}> elements, buttons, <{object}> elements, marquees, and tables.
+  <dfn>markers</dfn> are inserted when entering <{applet}>, <{object}>, <{marquee}>, <{template}>,
+  <{td}>, <{th}>, and <{caption}> elements, and are used to prevent formatting from "leaking"
+  into <{applet}>, <{object}>, <{marquee}>, <{template}>, <{td}>, <{th}>, and <{caption}> elements.
 
   In addition, each element in the <a>list of active formatting elements</a> is associated with the
   token for which it was created, so that further elements can be created for that token if
   necessary.
 
-  When the steps below require the user agent to <dfn>push onto the list of active formatting elements</dfn>
-  an element <var>element</var>,the user agent must perform the following steps:
+  When the steps below require the UA to <dfn>push onto the list of active formatting elements</dfn>
+  an element <var>element</var>, the UA must perform the following steps:
 
   1. If there are already three elements in the <a>list of active formatting elements</a> after the
       last <a>marker</a>, if any, or anywhere in the list if there are no <a>markers</a>, that have
@@ -2261,8 +2262,8 @@
       <p class="note">This is the Noah's Ark clause. But with three per family instead of two.</p>
   2. Add <var>element</var> to the <a>list of active formatting elements</a>.
 
-  When the steps below require the user agent to <dfn for="elements" lt="reconstruct the active formatting element|reconstruct the active formatting elements|reconstruction of the active formatting element|reconstruction of the active formatting elements">reconstruct the active formatting elements</dfn>,
-  the user agent must perform the following steps:
+  When the steps below require the UA to <dfn for="elements" lt="reconstruct the active formatting element|reconstruct the active formatting elements|reconstruction of the active formatting element|reconstruction of the active formatting elements">reconstruct the active formatting elements</dfn>,
+  the UA must perform the following steps:
 
   1. If there are no entries in the <a>list of active formatting elements</a>, then there is nothing
       to reconstruct; stop this algorithm.
@@ -2295,8 +2296,8 @@
     being executed, of course).
   </p>
 
-  When the steps below require the user agent to
-  <dfn>clear the list of active formatting elements up to the last marker</dfn>, the user agent must
+  When the steps below require the UA to
+  <dfn>clear the list of active formatting elements up to the last marker</dfn>, the UA must
   perform the following steps:
 
   1. Let <var>entry</var> be the last (most recently added) entry in the
@@ -2343,13 +2344,19 @@
   Implementations must act as if they used the following state machine to tokenize HTML. The
   state machine must start in the [[#data-state]]. Most states consume a single character,
   which may have various side-effects, and either switches the state machine to a new state to
-  <i>reconsume</i> the same character, or switches it to a new state to consume the next character,
+  [=reconsume=] the [=current input character=], or switches it to a new state to consume the next character,
   or stays in the same state to consume the next character. Some states have more complicated
   behavior and can consume several characters before switching to another state. In some cases, the
   tokenizer state is also changed by the tree construction stage.
 
+  When a state says to <dfn>reconsume</dfn> a matched character in a specified state, that means to
+  switch to that state, but when it attempts to consume the [=next input character=], provide it
+  with the [=current input character=] instead.
+
   The exact behavior of certain states depends on the <a>insertion mode</a> and the
-  <a>stack of open elements</a>. Certain states also use a <dfn><var>temporary buffer</var></dfn> to track progress.
+  <a>stack of open elements</a>. Certain states also use a <dfn>|temporary buffer|</dfn> to track
+  progress, and the [=character reference state=] uses a <dfn>|return state|</dfn> to return to the
+  state it was invoked from.
 
   The output of the tokenization step is a series of zero or more of the following tokens:
   DOCTYPE, start tag, end tag, comment, character, end-of-file. DOCTYPE tokens have a name, a public
@@ -2397,13 +2404,13 @@
   <dl class="switch">
 
     <dt>U+0026 AMPERSAND (&amp;)</dt>
-    <dd>Switch to the [[#character-reference-in-data-state]].</dd>
+    <dd>Set the [=return state=] to the [=data state=]. Switch to the [=character reference state=].</dd>
 
     <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
     <dd>Switch to the [[#tag-open-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Emit the <a>current input character</a> as a character
+    <dd><a for="parser">Parse error</a>. Emit the <a>current input character</a> as a character
     token.</dd>
 
     <dt>EOF</dt>
@@ -2414,17 +2421,6 @@
 
   </dl>
 
-<h5 id="character-reference-in-data-state">Character reference in data state</h5>
-
-  Switch to the [[#data-state]].
-
-  Attempt to <a>consume a character reference</a>, with no <a>additional allowed
-  character</a>.
-
-  If nothing is returned, emit a U+0026 AMPERSAND character (&amp;) token.
-
-  Otherwise, emit the character tokens that were returned.
-
 <h5 id="rcdata-state">RCDATA state</h5>
 
   Consume the <a>next input character</a>:
@@ -2432,13 +2428,13 @@
   <dl class="switch">
 
     <dt>U+0026 AMPERSAND (&amp;)</dt>
-    <dd>Switch to the [[#character-reference-in-rcdata-state]].</dd>
+    <dd>Set the [=return state=] to the [=RCDATA state=]. Switch to the [[#character-reference-state]].</dd>
 
     <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
     <dd>Switch to the [[#rcdata-less-than-sign-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
     <dd>Emit an end-of-file token.</dd>
@@ -2447,17 +2443,6 @@
     <dd>Emit the <a>current input character</a> as a character token.</dd>
 
   </dl>
-
-<h5 id="character-reference-in-rcdata-state">Character reference in RCDATA state</h5>
-
-  Switch to the [[#rcdata-state]].
-
-  Attempt to <a>consume a character reference</a>, with no <a>additional allowed
-  character</a>.
-
-  If nothing is returned, emit a U+0026 AMPERSAND character (&amp;) token.
-
-  Otherwise, emit the character tokens that were returned.
 
 <h5 id="rawtext-state">RAWTEXT state</h5>
 
@@ -2469,7 +2454,7 @@
     <dd>Switch to the [[#rawtext-less-than-sign-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
     <dd>Emit an end-of-file token.</dd>
@@ -2489,7 +2474,7 @@
     <dd>Switch to the [[#script-data-less-than-sign-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
     <dd>Emit an end-of-file token.</dd>
@@ -2506,7 +2491,7 @@
   <dl class="switch">
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
     <dd>Emit an end-of-file token.</dd>
@@ -2528,23 +2513,16 @@
     <dt>U+002F SOLIDUS (/)</dt>
     <dd>Switch to the [[#end-tag-open-state]].</dd>
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Create a new start tag token, set its tag name to the lowercase version of the <a>current
-    input character</a> (add 0x0020 to the character's code point), then switch to the [[#tag-name-state]].
-    (Don't emit the token yet; further details will be filled in before it is
-    emitted.)</dd>
-
-    <dt><a>Lowercase ASCII letter</a></dt>
-    <dd>Create a new start tag token, set its tag name to the <a>current input character</a>,
-    then switch to the [[#tag-name-state]]. (Don't emit the token yet; further details will
-    be filled in before it is emitted.)</dd>
+    <dt><a>ASCII letter</a></dt>
+    <dd>Create a new start tag token, set its tag name to the empty string. [=Reconsume=] in the
+    [[#tag-name-state]].</dd>
 
     <dt>U+003F QUESTION MARK (?)</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#bogus-comment-state]].</dd>
+    <dd><a for="parser">Parse error</a>. Create a comment token whose data is the empty string. [=Reconsume=] in the [[#bogus-comment-state]].</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit a U+003C LESS-THAN SIGN
-    character token. Reconsume the <a>current input character</a>.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+003C LESS-THAN SIGN
+    character token. [=Reconsume=] in the [[#data-state]].</dd>
 
   </dl>
 
@@ -2554,26 +2532,19 @@
 
   <dl class="switch">
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, set its tag name to the lowercase version of the <a>current
-    input character</a> (add 0x0020 to the character's code point), then switch to the [[#tag-name-state]].
-    (Don't emit the token yet; further details will be filled in before it is
-    emitted.)</dd>
-
-    <dt><a>Lowercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, set its tag name to the <a>current input character</a>,
-    then switch to the [[#tag-name-state]]. (Don't emit the token yet; further details will
-    be filled in before it is emitted.)</dd>
+    <dt><a>ASCII letter</a></dt>
+    <dd>Create a new end tag token, set its tag name to the empty string. [=Reconsume=] in the [[#tag-name-state]].
+    </dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]].</dd>
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]].</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit a U+003C LESS-THAN SIGN
-    character token and a U+002F SOLIDUS character token. Reconsume the EOF character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+003C LESS-THAN SIGN
+    character token, a U+002F SOLIDUS character token and an end-of-file token.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#bogus-comment-state]].</dd>
+    <dd><a for="parser">Parse error</a>. Create a comment token whose data is the empty string. [=Reconsume=] in the [[#bogus-comment-state]].</dd>
 
   </dl>
 
@@ -2601,12 +2572,11 @@
     character's code point) to the current tag token's tag name.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current tag
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current tag
     token's tag name.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Append the <a>current input character</a> to the current tag token's tag name.</dd>
@@ -2624,8 +2594,8 @@
     the [[#rcdata-end-tag-open-state]].</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#rcdata-state]]. Emit a U+003C LESS-THAN SIGN character token.
-    Reconsume the <a>current input character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character token.
+    [=Reconsume=] in the [[#RCDATA-state]].</dd>
 
   </dl>
 
@@ -2635,22 +2605,12 @@
 
   <dl class="switch">
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the lowercase version of the
-    <a>current input character</a> (add 0x0020 to the character's code point). Append the
-    <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#rcdata-end-tag-name-state]]. (Don't emit the
-    token yet; further details will be filled in before it is emitted.)</dd>
-
-    <dt><a>Lowercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the <a>current input character</a>.
-    Append the <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#rcdata-end-tag-name-state]]. (Don't emit the
-    token yet; further details will be filled in before it is emitted.)</dd>
+    <dt><a>ASCII letter</a></dt>
+    <dd>Create a new end tag token, set its tag name to the empty string. [=Reconsume=] in [[#rcdata-end-tag-name-state]].</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#rcdata-state]]. Emit a U+003C LESS-THAN SIGN character token and a
-    U+002F SOLIDUS character token. Reconsume the <a>current input character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character token and a
+    U+002F SOLIDUS character token. [=Reconsume=] in the [[#rcdata-state]].</dd>
 
   </dl>
 
@@ -2690,9 +2650,9 @@
     buffer</var>.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#rcdata-state]]. Emit a U+003C LESS-THAN SIGN character token, a
+    <dd>Emit a U+003C LESS-THAN SIGN character token, a
     U+002F SOLIDUS character token, and a character token for each of the characters in the <var>temporary buffer</var> (in the order they were added to the buffer).
-    Reconsume the <a>current input character</a>.</dd>
+    [=Reconsume=] in the [[#rcdata-state]].</dd>
 
   </dl>
 
@@ -2707,8 +2667,8 @@
     the [[#rawtext-end-tag-open-state]].</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#rawtext-state]]. Emit a U+003C LESS-THAN SIGN character token.
-    Reconsume the <a>current input character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character token.
+    [=Reconsume=] in the [[#rawtext-state]].</dd>
 
   </dl>
 
@@ -2718,22 +2678,12 @@
 
   <dl class="switch">
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the lowercase version of the
-    <a>current input character</a> (add 0x0020 to the character's code point). Append the
-    <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#rawtext-end-tag-name-state]]. (Don't emit the
-    token yet; further details will be filled in before it is emitted.)</dd>
-
-    <dt><a>Lowercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the <a>current input character</a>.
-    Append the <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#rawtext-end-tag-name-state]]. (Don't emit the
-    token yet; further details will be filled in before it is emitted.)</dd>
+    <dt><a>ASCII letter</a></dt>
+    <dd>Create a new end tag token, set its tag name to the empty string. [=Reconsume=] in the [[#rawtext-end-tag-name-state]].</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#rawtext-state]]. Emit a U+003C LESS-THAN SIGN character token and a
-    U+002F SOLIDUS character token. Reconsume the <a>current input character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character token and a
+    U+002F SOLIDUS character token. [=Reconsume=] in the [[#rawtext-state]].</dd>
 
   </dl>
 
@@ -2773,9 +2723,9 @@
     buffer</var>.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#rawtext-state]]. Emit a U+003C LESS-THAN SIGN character token, a
+    <dd>Emit a U+003C LESS-THAN SIGN character token, a
     U+002F SOLIDUS character token, and a character token for each of the characters in the <var>temporary buffer</var> (in the order they were added to the buffer).
-    Reconsume the <a>current input character</a>.</dd>
+    [=Reconsume=] in the [[#rawtext-state]].</dd>
 
   </dl>
 
@@ -2794,8 +2744,8 @@
     character token and a U+0021 EXCLAMATION MARK character token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-state]]. Emit a U+003C LESS-THAN SIGN character token.
-    Reconsume the <a>current input character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character token.
+    [=Reconsume=] in the [[#script-data-state]].</dd>
 
   </dl>
 
@@ -2805,22 +2755,12 @@
 
   <dl class="switch">
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the lowercase version of the
-    <a>current input character</a> (add 0x0020 to the character's code point). Append the
-    <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#script-data-end-tag-name-state]]. (Don't emit the
-    token yet; further details will be filled in before it is emitted.)</dd>
-
-    <dt><a>Lowercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the <a>current input character</a>.
-    Append the <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#script-data-end-tag-name-state]]. (Don't emit the
-    token yet; further details will be filled in before it is emitted.)</dd>
+    <dt><a>ASCII letter</a></dt>
+    <dd>Create a new end tag token, set its tag name to the empty string. [=Reconsume=] in the [[#script-data-end-tag-name-state]].</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-state]]. Emit a U+003C LESS-THAN SIGN character token
-    and a U+002F SOLIDUS character token. Reconsume the <a>current input character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character token
+    and a U+002F SOLIDUS character token. [=Reconsume=] in the [[#script-data-state]].</dd>
 
   </dl>
 
@@ -2860,9 +2800,9 @@
     buffer</var>.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-state]]. Emit a U+003C LESS-THAN SIGN character token, a
+    <dd>Emit a U+003C LESS-THAN SIGN character token, a
     U+002F SOLIDUS character token, and a character token for each of the characters in the <var>temporary buffer</var> (in the order they were added to the buffer).
-    Reconsume the <a>current input character</a>.</dd>
+    [=Reconsume=] in the [[#script-data-state]].</dd>
 
   </dl>
 
@@ -2877,8 +2817,7 @@
     character token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-state]]. Reconsume the <a>current input
-    character</a>.</dd>
+    <dd>[=Reconsume=] in the [[#script-data-state]].</dd>
 
   </dl>
 
@@ -2893,8 +2832,7 @@
     character token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-state]]. Reconsume the <a>current input
-    character</a>.</dd>
+    <dd>[=Reconsume=] in the [[#script-data-state]].</dd>
 
   </dl>
 
@@ -2912,11 +2850,10 @@
     <dd>Switch to the [[#script-data-escaped-less-than-sign-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
-    <dd>Switch to the [[#data-state]]. <a for="parser">parse error</a>. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Emit the <a>current input character</a> as a character token.</dd>
@@ -2937,12 +2874,11 @@
     <dd>Switch to the [[#script-data-escaped-less-than-sign-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#script-data-escaped-state]]. Emit a U+FFFD
+    <dd><a for="parser">Parse error</a>. Switch to the [[#script-data-escaped-state]]. Emit a U+FFFD
     REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Switch to the [[#script-data-escaped-state]]. Emit the <a>current input
@@ -2967,12 +2903,11 @@
     token.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#script-data-escaped-state]]. Emit a U+FFFD
+    <dd><a for="parser">Parse error</a>. Switch to the [[#script-data-escaped-state]]. Emit a U+FFFD
     REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Switch to the [[#script-data-escaped-state]]. Emit the <a>current input
@@ -2990,22 +2925,12 @@
     <dd>Set the <var>temporary buffer</var> to the empty string. Switch to
     the [[#script-data-escaped-end-tag-open-state]].</dd>
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Set the <var>temporary buffer</var> to the empty string. Append the
-    lowercase version of the <a>current input character</a> (add 0x0020 to the character's code
-    point) to the <var>temporary buffer</var>. Switch to the [[#script-data-double-escape-start-state]]. Emit a U+003C LESS-THAN SIGN character token and the
-    <a>current input character</a> as a character token.</dd>
-
-    <dt><a>Lowercase ASCII letter</a></dt>
-    <dd>Set the <var>temporary buffer</var> to the empty string. Append the
-    <a>current input character</a> to the <var>temporary
-    buffer</var>. Switch to the [[#script-data-double-escape-start-state]]. Emit a U+003C
-    LESS-THAN SIGN character token and the <a>current input character</a> as a character
-    token.</dd>
+    <dt><a>ASCII letter</a></dt>
+    <dd>Set the <var>temporary buffer</var> to the empty string. Emit a U+003C LESS-THAN SIGN character token. [=Reconsume=] in the [[#script-data-double-escape-start-state]].</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-escaped-state]]. Emit a U+003C LESS-THAN SIGN character
-    token. Reconsume the <a>current input character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character
+    token. [=Reconsume=] in the [[#script-data-escaped-state]].</dd>
 
   </dl>
 
@@ -3015,23 +2940,13 @@
 
   <dl class="switch">
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the lowercase version of the
-    <a>current input character</a> (add 0x0020 to the character's code point). Append the
-    <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#script-data-escaped-end-tag-name-state]]. (Don't
-    emit the token yet; further details will be filled in before it is emitted.)</dd>
-
-    <dt><a>Lowercase ASCII letter</a></dt>
-    <dd>Create a new end tag token, and set its tag name to the <a>current input character</a>.
-    Append the <a>current input character</a> to the <var>temporary
-    buffer</var>. Finally, switch to the [[#script-data-escaped-end-tag-name-state]]. (Don't
+    <dt><a>ASCII letter</a></dt>
+    <dd>Create a new end tag token. [=Reconsume=] in the [[#script-data-escaped-end-tag-name-state]]. (Don't
     emit the token yet; further details will be filled in before it is emitted.)</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-escaped-state]]. Emit a U+003C LESS-THAN SIGN character
-    token and a U+002F SOLIDUS character token. Reconsume the <a>current input
-    character</a>.</dd>
+    <dd>Emit a U+003C LESS-THAN SIGN character
+    token and a U+002F SOLIDUS character token. [=Reconsume=] in the [[#script-data-escaped-state]].</dd>
 
   </dl>
 
@@ -3071,10 +2986,10 @@
     buffer</var>.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-escaped-state]]. Emit a U+003C LESS-THAN SIGN character
+    <dd>Emit a U+003C LESS-THAN SIGN character
     token, a U+002F SOLIDUS character token, and a character token for each of the characters in the
     <var>temporary buffer</var> (in the order they were added to the
-    buffer). Reconsume the <a>current input character</a>.</dd>
+    buffer). [=Reconsume=] in the [[#script-data-escaped-state]].</dd>
 
   </dl>
 
@@ -3105,8 +3020,7 @@
     token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-escaped-state]]. Reconsume the <a>current input
-    character</a>.</dd>
+    <dd>[=Reconsume=] in the [[#script-data-escaped-state]].</dd>
 
   </dl>
 
@@ -3125,11 +3039,10 @@
     LESS-THAN SIGN character token.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
+    <dd><a for="parser">Parse error</a>. Emit a U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Emit the <a>current input character</a> as a character token.</dd>
@@ -3151,12 +3064,11 @@
     LESS-THAN SIGN character token.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#script-data-double-escaped-state]]. Emit a
+    <dd><a for="parser">Parse error</a>. Switch to the [[#script-data-double-escaped-state]]. Emit a
     U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Switch to the [[#script-data-double-escaped-state]]. Emit the <a>current input
@@ -3182,12 +3094,11 @@
     token.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#script-data-double-escaped-state]]. Emit a
+    <dd><a for="parser">Parse error</a>. Switch to the [[#script-data-double-escaped-state]]. Emit a
     U+FFFD REPLACEMENT CHARACTER character token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Switch to the [[#script-data-double-escaped-state]]. Emit the <a>current input
@@ -3206,8 +3117,7 @@
     the [[#script-data-double-escape-end-state]]. Emit a U+002F SOLIDUS character token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-double-escaped-state]]. Reconsume the <a>current
-    input character</a>.</dd>
+    <dd>[=Reconsume=] in the [[#script-data-double-escaped-state]].</dd>
 
   </dl>
 
@@ -3238,8 +3148,7 @@
     token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Switch to the [[#script-data-double-escaped-state]]. Reconsume the <a>current
-    input character</a>.</dd>
+    <dd>[=Reconsume=] in the [[#script-data-double-escaped-state]].</dd>
 
   </dl>
 
@@ -3252,39 +3161,24 @@
     <dt>U+0009 CHARACTER TABULATION (tab)</dt>
     <dt>U+000A LINE FEED (LF)</dt>
     <dt>U+000C FORM FEED (FF)</dt>
-
     <dt>U+0020 SPACE</dt>
     <dd>Ignore the character.</dd>
 
     <dt>U+002F SOLIDUS (/)</dt>
-    <dd>Switch to the [[#self-closing-start-tag-state]].</dd>
-
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd>Switch to the [[#data-state]]. Emit the current tag token.</dd>
-
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Start a new attribute in the current tag token. Set that attribute's name to the lowercase
-    version of the <a>current input character</a> (add 0x0020 to the character's code point),
-    and its value to the empty string. Switch to the [[#attribute-name-state]].</dd>
-
-    <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Start a new attribute in the current tag token. Set that
-    attribute's name to a U+FFFD REPLACEMENT CHARACTER character, and its value to the empty string.
-    Switch to the [[#attribute-name-state]].</dd>
-
-    <dt>U+0022 QUOTATION MARK (&quot;)</dt>
-    <dt>U+0027 APOSTROPHE (')</dt>
-    <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
-    <dt>U+003D EQUALS SIGN (=)</dt>
-    <dd><a for="parser">parse error</a>. Treat it as per the "anything else" entry below.</dd>
-
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
+    <dd>[=Reconsume=] in the [[#after-attribute-name-state]].</dd>
+
+    <dt>U+003D EQUALS SIGN (=)</dt>
+    <dd><a for="parser">Parse error</a>. Start a new attribute in the current tag token. Set that
+    attribute's name to the [=current input character=], and its value to the empty string. Switch
+    to the [[#attribute-name-state]].</dd>
+
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
     character.</dd>
 
     <dt>Anything else</dt>
-    <dd>Start a new attribute in the current tag token. Set that attribute's name to the
-    <a>current input character</a>, and its value to the empty string. Switch to the
+    <dd>Start a new attribute in the current tag token. Set that attribute's name and value to the empty string. [=Reconsume=] in the
     [[#attribute-name-state]].</dd>
 
   </dl>
@@ -3298,35 +3192,27 @@
     <dt>U+0009 CHARACTER TABULATION (tab)</dt>
     <dt>U+000A LINE FEED (LF)</dt>
     <dt>U+000C FORM FEED (FF)</dt>
-
     <dt>U+0020 SPACE</dt>
-    <dd>Switch to the [[#after-attribute-name-state]].</dd>
-
     <dt>U+002F SOLIDUS (/)</dt>
-    <dd>Switch to the [[#self-closing-start-tag-state]].</dd>
+    <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
+    <dt>EOF</dt>
+    <dd>[=Reconsume=] in the [[#after-attribute-name-state]].</dd>
 
     <dt>U+003D EQUALS SIGN (=)</dt>
     <dd>Switch to the [[#before-attribute-value-state]].</dd>
-
-    <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd>Switch to the [[#data-state]]. Emit the current tag token.</dd>
 
     <dt><a>Uppercase ASCII letter</a></dt>
     <dd>Append the lowercase version of the <a>current input character</a> (add 0x0020 to the
     character's code point) to the current attribute's name.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     attribute's name.</dd>
 
     <dt>U+0022 QUOTATION MARK (&quot;)</dt>
     <dt>U+0027 APOSTROPHE (')</dt>
     <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
-    <dd><a for="parser">parse error</a>. Treat it as per the "anything else" entry below.</dd>
-
-    <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Treat it as per the "anything else" entry below.</dd>
 
     <dt>Anything else</dt>
     <dd>Append the <a>current input character</a> to the current attribute's name.</dd>
@@ -3354,7 +3240,6 @@
     <dt>U+0009 CHARACTER TABULATION (tab)</dt>
     <dt>U+000A LINE FEED (LF)</dt>
     <dt>U+000C FORM FEED (FF)</dt>
-
     <dt>U+0020 SPACE</dt>
     <dd>Ignore the character.</dd>
 
@@ -3367,28 +3252,11 @@
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
     <dd>Switch to the [[#data-state]]. Emit the current tag token.</dd>
 
-    <dt><a>Uppercase ASCII letter</a></dt>
-    <dd>Start a new attribute in the current tag token. Set that attribute's name to the lowercase
-    version of the <a>current input character</a> (add 0x0020 to the character's code point),
-    and its value to the empty string. Switch to the [[#attribute-name-state]].</dd>
-
-    <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Start a new attribute in the current tag token. Set that
-    attribute's name to a U+FFFD REPLACEMENT CHARACTER character, and its value to the empty string.
-    Switch to the [[#attribute-name-state]].</dd>
-
-    <dt>U+0022 QUOTATION MARK (&quot;)</dt>
-    <dt>U+0027 APOSTROPHE (')</dt>
-    <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
-    <dd><a for="parser">parse error</a>. Treat it as per the "anything else" entry below.</dd>
-
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Start a new attribute in the current tag token. Set that attribute's name to the
-    <a>current input character</a>, and its value to the empty string. Switch to the
+    <dd>Start a new attribute in the current tag token. Set that attribute's name and value to the empty string. [=Reconsume=] in the
     [[#attribute-name-state]].</dd>
 
   </dl>
@@ -3409,33 +3277,14 @@
     <dt>U+0022 QUOTATION MARK (&quot;)</dt>
     <dd>Switch to the [[#attribute-value-double-quoted-state]].</dd>
 
-    <dt>U+0026 AMPERSAND (&amp;)</dt>
-    <dd>Switch to the [[#attribute-value-unquoted-state]]. Reconsume the <a>current
-    input character</a>.</dd>
-
     <dt>U+0027 APOSTROPHE (')</dt>
     <dd>Switch to the [[#attribute-value-single-quoted-state]].</dd>
 
-    <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
-    attribute's value. Switch to the [[#attribute-value-unquoted-state]].</dd>
-
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the current tag
-    token.</dd>
-
-    <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
-    <dt>U+003D EQUALS SIGN (=)</dt>
-    <dt>U+0060 GRAVE ACCENT (`)</dt>
-    <dd><a for="parser">parse error</a>. Treat it as per the "anything else" entry below.</dd>
-
-    <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Treat it as per the "anything else" entry below.</dd>
 
     <dt>Anything else</dt>
-    <dd>Append the <a>current input character</a> to the current attribute's value. Switch to
-    the [[#attribute-value-unquoted-state]].</dd>
+    <dd>[=Reconsume=] in the [[#attribute-value-unquoted-state]].</dd>
 
   </dl>
 
@@ -3449,16 +3298,14 @@
     <dd>Switch to the [[#after-attribute-value-quoted-state]].</dd>
 
     <dt>U+0026 AMPERSAND (&amp;)</dt>
-    <dd>Switch to the [[#character-reference-in-attribute-value-state]], with the
-    <a>additional allowed character</a> being U+0022 QUOTATION MARK (&quot;).</dd>
+    <dd>Set the [=return state=] to the [[#attribute-value-double-quoted-state]]. Switch to the [[#character-reference-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     attribute's value.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Append the <a>current input character</a> to the current attribute's value.</dd>
@@ -3475,16 +3322,14 @@
     <dd>Switch to the [[#after-attribute-value-quoted-state]].</dd>
 
     <dt>U+0026 AMPERSAND (&amp;)</dt>
-    <dd>Switch to the [[#character-reference-in-attribute-value-state]], with the
-    <a>additional allowed character</a> being U+0027 APOSTROPHE (').</dd>
+    <dd>Set the [=return state=] to the [[#attribute-value-single-quoted-state]]. Switch to the [[#character-reference-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     attribute's value.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Append the <a>current input character</a> to the current attribute's value.</dd>
@@ -3505,14 +3350,13 @@
     <dd>Switch to the [[#before-attribute-name-state]].</dd>
 
     <dt>U+0026 AMPERSAND (&amp;)</dt>
-    <dd>Switch to the [[#character-reference-in-attribute-value-state]], with the
-    <a>additional allowed character</a> being U+003E GREATER-THAN SIGN (&gt;).</dd>
+    <dd>Set the [=return state=] to the [[#attribute-value-unquoted-state]]. Switch to the [[#character-reference-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
     <dd>Switch to the [[#data-state]]. Emit the current tag token.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     attribute's value.</dd>
 
     <dt>U+0022 QUOTATION MARK (&quot;)</dt>
@@ -3520,27 +3364,15 @@
     <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
     <dt>U+003D EQUALS SIGN (=)</dt>
     <dt>U+0060 GRAVE ACCENT (`)</dt>
-    <dd><a for="parser">parse error</a>. Treat it as per the "anything else" entry below.</dd>
+    <dd><a for="parser">Parse error</a>. Treat it as per the "anything else" entry below.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Append the <a>current input character</a> to the current attribute's value.</dd>
 
   </dl>
-
-<h5 id="character-reference-in-attribute-value-state"><dfn lt="as part of an attribute">Character reference in attribute value state</dfn></h5>
-
-  Attempt to <a>consume a character reference</a>.
-
-  If nothing is returned, append a U+0026 AMPERSAND character (&amp;) to the current attribute's
-  value.
-
-  Otherwise, append the returned character tokens to the current attribute's value.
-
-  Finally, switch back to the attribute value state that switched into this state.
 
 <h5 id="after-attribute-value-quoted-state">After attribute value (quoted) state</h5>
 
@@ -3562,12 +3394,10 @@
     <dd>Switch to the [[#data-state]]. Emit the current tag token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#before-attribute-name-state]]. Reconsume
-    the character.</dd>
+    <dd><a for="parser">Parse error</a>. [=Reconsume=] in the [[#before-attribute-name-state]].</dd>
 
   </dl>
 
@@ -3581,11 +3411,11 @@
     <dd>Set the <i>self-closing flag</i> of the current tag token. Switch to the [[#data-state]]. Emit the current tag token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
     character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#before-attribute-name-state]]. Reconsume
+    <dd><a for="parser">Parse error</a>. Switch to the [[#before-attribute-name-state]]. Reconsume
     the character.</dd>
 
   </dl>
@@ -3639,14 +3469,14 @@
     <dd>Switch to the [[#comment-start-dash-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the comment
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the comment
     token's data. Switch to the [[#comment-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.</dd>
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
     Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3665,14 +3495,14 @@
     <dd>Switch to the [[#comment-end-state]]</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+002D HYPHEN-MINUS character (-) and a U+FFFD REPLACEMENT
+    <dd><a for="parser">Parse error</a>. Append a U+002D HYPHEN-MINUS character (-) and a U+FFFD REPLACEMENT
     CHARACTER character to the comment token's data. Switch to the [[#comment-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.</dd>
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
     Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3691,11 +3521,11 @@
     <dd>Switch to the [[#comment-end-dash-state]]</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the comment
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the comment
     token's data.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
     Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3713,11 +3543,11 @@
     <dd>Switch to the [[#comment-end-state]]</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+002D HYPHEN-MINUS character (-) and a U+FFFD REPLACEMENT
+    <dd><a for="parser">Parse error</a>. Append a U+002D HYPHEN-MINUS character (-) and a U+FFFD REPLACEMENT
     CHARACTER character to the comment token's data. Switch to the [[#comment-state]].</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
     Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3736,22 +3566,22 @@
     <dd>Switch to the [[#data-state]]. Emit the comment token.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append two U+002D HYPHEN-MINUS characters (-) and a U+FFFD
+    <dd><a for="parser">Parse error</a>. Append two U+002D HYPHEN-MINUS characters (-) and a U+FFFD
     REPLACEMENT CHARACTER character to the comment token's data. Switch to the [[#comment-state]].</dd>
 
     <dt>U+0021 EXCLAMATION MARK (!)</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#comment-end-bang-state]].</dd>
+    <dd><a for="parser">Parse error</a>. Switch to the [[#comment-end-bang-state]].</dd>
 
     <dt>U+002D HYPHEN-MINUS (-)</dt>
-    <dd><a for="parser">parse error</a>. Append a U+002D HYPHEN-MINUS character (-) to the comment token's
+    <dd><a for="parser">Parse error</a>. Append a U+002D HYPHEN-MINUS character (-) to the comment token's
     data.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
     Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Append two U+002D HYPHEN-MINUS characters (-) and the <a>current
+    <dd><a for="parser">Parse error</a>. Append two U+002D HYPHEN-MINUS characters (-) and the <a>current
     input character</a> to the comment token's data. Switch to the [[#comment-state]].</dd>
 
   </dl>
@@ -3770,12 +3600,12 @@
     <dd>Switch to the [[#data-state]]. Emit the comment token.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append two U+002D HYPHEN-MINUS characters (-), a U+0021 EXCLAMATION
+    <dd><a for="parser">Parse error</a>. Append two U+002D HYPHEN-MINUS characters (-), a U+0021 EXCLAMATION
     MARK character (!), and a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.
     Switch to the [[#comment-state]].</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
     Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3798,11 +3628,11 @@
     <dd>Switch to the [[#before-doctype-name-state]].</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Create a new DOCTYPE token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Create a new DOCTYPE token.
     Set its <i>force-quirks flag</i> to <i>on</i>. Emit the token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#before-doctype-name-state]]. Reconsume the
+    <dd><a for="parser">Parse error</a>. Switch to the [[#before-doctype-name-state]]. Reconsume the
     character.</dd>
 
   </dl>
@@ -3826,15 +3656,15 @@
     [[#doctype-name-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Create a new DOCTYPE token. Set the token's name to a U+FFFD
+    <dd><a for="parser">Parse error</a>. Create a new DOCTYPE token. Set the token's name to a U+FFFD
     REPLACEMENT CHARACTER character. Switch to the [[#doctype-name-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Create a new DOCTYPE token. Set its <i>force-quirks flag</i> to
+    <dd><a for="parser">Parse error</a>. Create a new DOCTYPE token. Set its <i>force-quirks flag</i> to
     <i>on</i>. Switch to the [[#data-state]]. Emit the token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Create a new DOCTYPE token.
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Create a new DOCTYPE token.
     Set its <i>force-quirks flag</i> to <i>on</i>. Emit the token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3864,11 +3694,11 @@
     character's code point) to the current DOCTYPE token's name.</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     DOCTYPE token's name.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3893,7 +3723,7 @@
     <dd>Switch to the [[#data-state]]. Emit the current DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -3927,23 +3757,23 @@
     <dd>Switch to the [[#before-doctype-public-identifier-state]].</dd>
 
     <dt>U+0022 QUOTATION MARK (&quot;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's public identifier to the empty string (not
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's public identifier to the empty string (not
     missing), then switch to the [[#doctype-public-identifier-double-quoted-state]].</dd>
 
     <dt>U+0027 APOSTROPHE (')</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's public identifier to the empty string (not
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's public identifier to the empty string (not
     missing), then switch to the [[#doctype-public-identifier-single-quoted-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#bogus-doctype-state]].</dd>
 
   </dl>
@@ -3970,15 +3800,15 @@
     the [[#doctype-public-identifier-single-quoted-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#bogus-doctype-state]].</dd>
 
   </dl>
@@ -3993,15 +3823,15 @@
     <dd>Switch to the [[#after-doctype-public-identifier-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     DOCTYPE token's public identifier.</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -4020,15 +3850,15 @@
     <dd>Switch to the [[#after-doctype-public-identifier-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     DOCTYPE token's public identifier.</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -4054,19 +3884,19 @@
     <dd>Switch to the [[#data-state]]. Emit the current DOCTYPE token.</dd>
 
     <dt>U+0022 QUOTATION MARK (&quot;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
     missing), then switch to the [[#doctype-system-identifier-double-quoted-state]].</dd>
 
     <dt>U+0027 APOSTROPHE (')</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
     missing), then switch to the [[#doctype-system-identifier-single-quoted-state]].</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#bogus-doctype-state]].</dd>
 
   </dl>
@@ -4096,11 +3926,11 @@
     the [[#doctype-system-identifier-single-quoted-state]].</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#bogus-doctype-state]].</dd>
 
   </dl>
@@ -4119,23 +3949,23 @@
     <dd>Switch to the [[#before-doctype-system-identifier-state]].</dd>
 
     <dt>U+0022 QUOTATION MARK (&quot;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
     missing), then switch to the [[#doctype-system-identifier-double-quoted-state]].</dd>
 
     <dt>U+0027 APOSTROPHE (')</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's system identifier to the empty string (not
     missing), then switch to the [[#doctype-system-identifier-single-quoted-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#bogus-doctype-state]].</dd>
 
   </dl>
@@ -4162,15 +3992,15 @@
     the [[#doctype-system-identifier-single-quoted-state]].</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#bogus-doctype-state]].</dd>
 
   </dl>
@@ -4185,15 +4015,15 @@
     <dd>Switch to the [[#after-doctype-system-identifier-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     DOCTYPE token's system identifier.</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -4212,15 +4042,15 @@
     <dd>Switch to the [[#after-doctype-system-identifier-state]].</dd>
 
     <dt>U+0000 NULL</dt>
-    <dd><a for="parser">parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the current
     DOCTYPE token's system identifier.</dd>
 
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd><a for="parser">parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
+    <dd><a for="parser">Parse error</a>. Set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.
     Switch to the [[#data-state]]. Emit that DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
@@ -4246,11 +4076,11 @@
     <dd>Switch to the [[#data-state]]. Emit the current DOCTYPE token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
+    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Set the DOCTYPE token's
     <i>force-quirks flag</i> to <i>on</i>. Emit that DOCTYPE token. Reconsume the EOF character.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">parse error</a>. Switch to the [[#bogus-doctype-state]]. (This does
+    <dd><a for="parser">Parse error</a>. Switch to the [[#bogus-doctype-state]]. (This does
     <em>not</em> set the DOCTYPE token's <i>force-quirks flag</i> to <i>on</i>.)</dd>
 
   </dl>
@@ -5183,7 +5013,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A comment token</dt>
@@ -5216,7 +5046,7 @@
 
     <dt>Any other end tag</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Anything else</dt>
@@ -5257,7 +5087,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -5288,7 +5118,7 @@
     <dt>Any other end tag</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
 
     </dd>
 
@@ -5330,7 +5160,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -5508,7 +5338,7 @@
     <dt>A start tag whose tag name is "head"</dt>
     <dt>Any other end tag</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Anything else</dt>
@@ -5535,7 +5365,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -5576,13 +5406,13 @@
     <dt>A start tag whose tag name is one of: "head", "noscript"</dt>
     <dt>Any other end tag</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Anything else</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     Pop the <a>current node</a> (which will be a <{noscript}> element) from the
     <a>stack of open elements</a>; the new <a>current node</a> will be a
@@ -5618,7 +5448,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -5654,7 +5484,7 @@
     "noframes", "script", "style", "template", "title"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     Push the node pointed to by the <a><code>head</code> element pointer</a> onto
     the <a>stack of open elements</a>.
@@ -5685,7 +5515,7 @@
     <dt>A start tag whose tag name is "head"</dt>
     <dt>Any other end tag</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Anything else</dt>
@@ -5712,7 +5542,7 @@
     <dt>A character token that is U+0000 NULL</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
 
     </dd>
 
@@ -5745,13 +5575,13 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If there is a <{template}> element on the <a>stack of open elements</a>, then
     ignore the token.
@@ -5772,7 +5602,7 @@
     <dt>A start tag whose tag name is "body"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the second element on the <a>stack of open elements</a> is not a <code>body</code>
     element, if the <a>stack of open elements</a> has only one node on it, or if there is a
@@ -5789,7 +5619,7 @@
     <dt>A start tag whose tag name is "frameset"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the <a>stack of open elements</a> has only one node on it, or if the second element
     on the <a>stack of open elements</a> is not a <{body}> element, then ignore the
@@ -6096,7 +5926,7 @@
 
       <ol>
 
-        <li><a for="parser">parse error</a>.</li>
+        <li><a for="parser">Parse error</a>.</li>
 
         <li><a>Generate implied end tags</a>.</li>
 
@@ -6386,7 +6216,7 @@
     <dt>An end tag whose tag name is "br"</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Drop the attributes from the token, and act as described in the
+    <a for="parser">Parse error</a>. Drop the attributes from the token, and act as described in the
     next entry; i.e., act as if this was a "br" start tag token with no attributes, rather than the
     end tag token that it actually is.
 
@@ -6455,7 +6285,7 @@
     <dt>A start tag whose tag name is "image"</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Change the token's tag name to "img" and reprocess it. (Don't
+    <a for="parser">Parse error</a>. Change the token's tag name to "img" and reprocess it. (Don't
     ask.)
     </dd>
 
@@ -6610,7 +6440,7 @@
 
     <dd>
 
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
 
     </dd>
 
@@ -6847,7 +6677,7 @@
     <dt>An end-of-file token</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the <a>current node</a> is a <{script}> element, mark the
     <{script}> element as <a>"already started"</a>.
@@ -7009,7 +6839,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "caption"</dt>
@@ -7074,7 +6904,7 @@
     <dt>A start tag whose tag name is "table"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the <a>stack of open elements</a> does not <a lt="in table scope">have a <code>table</code> element in table scope</a>, ignore the token.
 
@@ -7106,7 +6936,7 @@
     <dt>An end tag whose tag name is one of: "body", "caption", "col", "colgroup", "html", "tbody",
     "td", "tfoot", "th", "thead", "tr"</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is one of: "style", "script", "template"</dt>
@@ -7126,7 +6956,7 @@
 
     Otherwise:
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     <a>Insert an HTML element</a> for the token.
 
@@ -7140,7 +6970,7 @@
     <dt>A start tag whose tag name is "form"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If there is a <{template}> element on the <a>stack of open elements</a>, or if
     the <a><code>form</code> element pointer</a> is not null, ignore the
@@ -7164,7 +6994,7 @@
     <dt>Anything else</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Enable <a>foster parenting</a>, process
+    <a for="parser">Parse error</a>. Enable <a>foster parenting</a>, process
     the token <a>using the rules for</a> the "<a>in
     body</a>" <a>insertion mode</a>, and then disable <a>foster
     parenting</a>.
@@ -7197,7 +7027,7 @@
     <dt>A character token that is U+0000 NULL</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
 
     </dd>
 
@@ -7283,7 +7113,7 @@
     <dt>An end tag whose tag name is one of: "body", "col", "colgroup", "html", "tbody", "td",
     "tfoot", "th", "thead", "tr"</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Anything else</dt>
@@ -7315,7 +7145,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -7349,7 +7179,7 @@
 
     <dt>An end tag whose tag name is "col"</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "template"</dt>
@@ -7405,7 +7235,7 @@
     <dt>A start tag whose tag name is one of: "th", "td"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     <a>Clear the stack back to a table body context</a>. (See below.)
 
@@ -7455,7 +7285,7 @@
     <dt>An end tag whose tag name is one of: "body", "caption", "col", "colgroup", "html", "td",
     "th", "tr"</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Anything else</dt>
@@ -7551,7 +7381,7 @@
     <dt>An end tag whose tag name is one of: "body", "caption", "col", "colgroup", "html", "td",
     "th"</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Anything else</dt>
@@ -7614,7 +7444,7 @@
     <dt>An end tag whose tag name is one of: "body", "caption",
     "col", "colgroup", "html"</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>An end tag whose tag name is one of: "table", "tbody",
@@ -7671,7 +7501,7 @@
 
     <dt>A character token that is U+0000 NULL</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>Any other character token</dt>
@@ -7688,7 +7518,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -7761,7 +7591,7 @@
     <dt>A start tag whose tag name is "select"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the <a>stack of open elements</a> does not <span>have a <{select}> element in select scope</span>, ignore the token.
     (<a>fragment case</a>)
@@ -7782,7 +7612,7 @@
     <dt>A start tag whose tag name is one of: "input", "textarea"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the <a>stack of open elements</a> does not <span>have a <{select}> element in select scope</span>, ignore the token.
     (<a>fragment case</a>)
@@ -7815,7 +7645,7 @@
 
     <dt>Anything else</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
   </dl>
@@ -7831,7 +7661,7 @@
     "td", "th"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     Pop elements from the <a>stack of open elements</a> until a <{select}> element
     has been popped from the stack.
@@ -7846,7 +7676,7 @@
     "td", "th"</dt>
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the <a>stack of open elements</a> does not <a lt="in table scope">have an element in table scope</a> that is an <a>HTML element</a> with the same tag name as that of the token, then ignore the token.
 
@@ -7969,7 +7799,7 @@
 
     <dt>Any other end tag</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>An end-of-file token</dt>
@@ -8020,7 +7850,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -8049,7 +7879,7 @@
     <dt>Anything else</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Switch the <a>insertion mode</a> to "<a>in body</a>" and reprocess the token.
+    <a for="parser">Parse error</a>. Switch the <a>insertion mode</a> to "<a>in body</a>" and reprocess the token.
 
     </dd>
 
@@ -8075,7 +7905,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -8139,7 +7969,7 @@
 
     <dt>Anything else</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
   </dl>
@@ -8164,7 +7994,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is "html"</dt>
@@ -8195,7 +8025,7 @@
 
     <dt>Anything else</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
   </dl>
@@ -8230,7 +8060,7 @@
     <dt>Anything else</dt>
     <dd>
 
-    <a for="parser">parse error</a>. Switch the <a>insertion mode</a> to "<a>in body</a>" and reprocess the token.
+    <a for="parser">Parse error</a>. Switch the <a>insertion mode</a> to "<a>in body</a>" and reprocess the token.
 
     </dd>
 
@@ -8272,7 +8102,7 @@
 
     <dt>Anything else</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
   </dl>
@@ -8287,7 +8117,7 @@
     <dt>A character token that is U+0000 NULL</dt>
     <dd>
 
-    <a for="parser">parse error</a>. <a lt="insert a character">Insert a U+FFFD REPLACEMENT CHARACTER character</a>.
+    <a for="parser">Parse error</a>. <a lt="insert a character">Insert a U+FFFD REPLACEMENT CHARACTER character</a>.
 
     </dd>
 
@@ -8317,7 +8147,7 @@
 
     <dt>A DOCTYPE token</dt>
     <dd>
-    <a for="parser">parse error</a>. Ignore the token.
+    <a for="parser"><a for="parser">Parse error</a>.
     </dd>
 
     <dt>A start tag whose tag name is one of:  "b", "big", "blockquote", "body", "br", "center",
@@ -8329,7 +8159,7 @@
 
     <dd>
 
-    <a for="parser">parse error</a>.
+    <a for="parser">Parse error</a>.
 
     If the parser was originally created for the <a>HTML fragment parsing algorithm</a>,
     then act as described in the "any other start tag" entry below. (<a>fragment case</a>)
