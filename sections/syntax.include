@@ -3411,12 +3411,11 @@
     <dd>Set the <i>self-closing flag</i> of the current tag token. Switch to the [[#data-state]]. Emit the current tag token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Reconsume the EOF
-    character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
-    <dd><a for="parser">Parse error</a>. Switch to the [[#before-attribute-name-state]]. Reconsume
-    the character.</dd>
+    <dd><a for="parser">Parse error</a>. [=Reconsume=] in
+    the [[#before-attribute-name-state]].</dd>
 
   </dl>
 
@@ -3426,21 +3425,17 @@
 
   <dl class="switch">
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
-    <dd>Switch to the <span>data state</span>. Emit the comment token.</dd>
+    <dd>Switch to the [[#data-state]]. Emit the comment token.</dd>
 
     <dt>EOF</dt>
-    <dd>Switch to the <span>data state</span>. Reconsume the EOF character. Emit the comment token.</dd>
+    <dd>Emit the comment. Emit an end-of-file token.</dd>
 
     <dt>U+0000 NULL</dt>
     <dd>Append a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.</dd>
 
     <dt>Anything else</dt>
-    <dd>Append the <span>current input character</span> to the comment token's data.</dd>
+    <dd>Append the [=current input character=] to the comment token's data.</dd>
   </dl>
-
-  Switch to the [[#data-state]].
-
-  If the end of the file was reached, reconsume the EOF character.
 
 <h5 id="markup-declaration-open-state">Markup declaration open state</h5>
 
@@ -3456,8 +3451,7 @@
   character before and after), then consume those characters and switch to the [[#cdata-section-state]].
 
   Otherwise, this is a <a for="parser">parse error</a>. Create a comment token whose data is the
-  empty string. Switch to the [[#bogus-comment-state]]. The next character that is consumed, if any,
-  is the first character that will be in the comment.
+  empty string. Switch to the [[#bogus-comment-state]] (don't consume anything in the current state).
 
 <h5 id="comment-start-state">Comment start state</h5>
 
@@ -3468,20 +3462,11 @@
     <dt>U+002D HYPHEN-MINUS (-)</dt>
     <dd>Switch to the [[#comment-start-dash-state]].</dd>
 
-    <dt>U+0000 NULL</dt>
-    <dd><a for="parser">Parse error</a>. Append a U+FFFD REPLACEMENT CHARACTER character to the comment
-    token's data. Switch to the [[#comment-state]].</dd>
-
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
     <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.</dd>
 
-    <dt>EOF</dt>
-    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
-    Reconsume the EOF character.</dd>
-
     <dt>Anything else</dt>
-    <dd>Append the <a>current input character</a> to the comment token's data. Switch to the
-    [[#comment-state]].</dd>
+    <dd>[=Reconsume=] in the [[#comment-state]].</dd>
 
   </dl>
 
@@ -3494,20 +3479,15 @@
     <dt>U+002D HYPHEN-MINUS (-)</dt>
     <dd>Switch to the [[#comment-end-state]]</dd>
 
-    <dt>U+0000 NULL</dt>
-    <dd><a for="parser">Parse error</a>. Append a U+002D HYPHEN-MINUS character (-) and a U+FFFD REPLACEMENT
-    CHARACTER character to the comment token's data. Switch to the [[#comment-state]].</dd>
-
     <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
     <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
-    Reconsume the EOF character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit the comment token. Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Append a U+002D HYPHEN-MINUS character (-) and the <a>current input character</a> to
-    the comment token's data. Switch to the [[#comment-state]].</dd>
+    <dd>Append a U+002D HYPHEN-MINUS character (-) to
+    the comment token's data. [=Reconsume=] in the [[#comment-state]].</dd>
 
   </dl>
 
@@ -3517,6 +3497,9 @@
 
   <dl class="switch">
 
+    <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
+    <dd>Append the [=current input character=] to the comment token's data. Switch to the [[#comment-less-than-sign-state]].</dd>
+    
     <dt>U+002D HYPHEN-MINUS (-)</dt>
     <dd>Switch to the [[#comment-end-dash-state]]</dd>
 
@@ -3525,14 +3508,74 @@
     token's data.</dd>
 
     <dt>EOF</dt>
-    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
-    Reconsume the EOF character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit the comment token.
+    Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
     <dd>Append the <a>current input character</a> to the comment token's data.</dd>
 
   </dl>
 
+<h5 id="comment-less-than-sign-state">Comment less-than sign state</h5>
+
+  Consume the <a>next input character</a>:
+
+  <dl class="switch">
+
+    <dt>U+0021 EXCLAMATION MARK (!)</dt>
+    <dd>Append the [=current input character=] to the comment token's data. Switch to the [[#comment-less-than-sign-bang-state]].</dd>
+    
+    <dt>U+003C LESS-THAN SIGN (&lt;)</dt>
+    <dd>Append the [=current input character=] to the comment token's data.</dd>
+    
+    <dt>Anything else</dt>
+    <dd>[=Reconsume=] in the [[#comment-state]].</dd>
+
+  </dl>
+
+<h5 id="comment-less-than-sign-bang-state">Comment less-than sign bang state</h5>
+  
+  Consume the next input character:
+
+  <dl class="switch">
+  
+    <dt>U+002D HYPHEN-MINUS (-)</dt>
+    <dd>Switch to the [[#comment-less-than-sign-bang-dash-state]].</dd>
+
+    <dt>Anything else</dt>
+    <dd>[=Reconsume=] in the [[#comment-state]].
+    
+  </dl>
+  
+<h5 id="comment-less-than-sign-bang-dash-state">Comment less-than sign bang dash state</h5>
+  
+  Consume the next input character:
+
+  <dl class="switch">
+  
+    <dt>U+002D HYPHEN-MINUS (-)</dt>
+    <dd>Switch to the [[#comment-less-than-sign-bang-dash-dash-state]].</dd>
+
+    <dt>Anything else</dt>
+    <dd>[=Reconsume=] in the [[#comment-end-dash-state]].
+    
+  </dl>
+  
+<h5 id="comment-less-than-sign-bang-dash-dash-state">Comment less-than sign bang dash dash state</h5>
+  
+  Consume the next input character:
+
+  <dl class="switch">
+  
+    <dt>U+003E GREATER-THAN SIGN (&gt;)</dt>
+    <dt>EOF</dt>
+    <dd>[=Reconsume=] in the [[#comment-end-state]].
+
+    <dt>Anything else</dt>
+    <dd><a for="parser">Parse error</a>. [=Reconsume=] in the [[#comment-end-state]].
+    
+  </dl>
+  
 <h5 id="comment-end-dash-state">Comment end dash state</h5>
 
   Consume the <a>next input character</a>:
@@ -3542,17 +3585,13 @@
     <dt>U+002D HYPHEN-MINUS (-)</dt>
     <dd>Switch to the [[#comment-end-state]]</dd>
 
-    <dt>U+0000 NULL</dt>
-    <dd><a for="parser">Parse error</a>. Append a U+002D HYPHEN-MINUS character (-) and a U+FFFD REPLACEMENT
-    CHARACTER character to the comment token's data. Switch to the [[#comment-state]].</dd>
-
     <dt>EOF</dt>
-    <dd><a for="parser">Parse error</a>. Switch to the [[#data-state]]. Emit the comment token.
-    Reconsume the EOF character.</dd>
+    <dd><a for="parser">Parse error</a>. Emit the comment token.
+    Emit an end-of-file token.</dd>
 
     <dt>Anything else</dt>
-    <dd>Append a U+002D HYPHEN-MINUS character (-) and the <a>current input character</a> to
-    the comment token's data. Switch to the [[#comment-state]].</dd>
+    <dd>Append a U+002D HYPHEN-MINUS character (-) to
+    the comment token's data. [=Reconsume=] in the [[#comment-state]].</dd>
 
   </dl>
 
