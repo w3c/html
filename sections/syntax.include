@@ -4389,7 +4389,7 @@
     <dt>If the <a>adjusted current node</a> is an element in the <a>HTML namespace</a></dt>
     <dt>If the <a>adjusted current node</a> is a <a>MathML text integration point</a> and the token is a start tag whose tag name is neither "mglyph" nor "malignmark"</dt>
     <dt>If the <a>adjusted current node</a> is a <a>MathML text integration point</a> and the token is a character token</dt>
-    <dt>If the <a>adjusted current node</a> is an <a>MathML <code>annotation-xml</code></a> element and the token is a start tag whose tag name is "svg"</dt>
+    <dt>If the <a>adjusted current node</a> is a <a>MathML <code>annotation-xml</code></a> element and the token is a start tag whose tag name is "svg"</dt>
     <dt>If the <a>adjusted current node</a> is an <a>HTML integration point</a> and the token is a start tag</dt>
     <dt>If the <a>adjusted current node</a> is an <a>HTML integration point</a> and the token is a character token</dt>
     <dt>If the token is an end-of-file token</dt>
@@ -4410,25 +4410,25 @@
   elements:
 
   <ul class="brief">
-    <li>An <a>MathML <code>mi</code></a> element</li>
-    <li>An <a>MathML <code>mo</code></a> element</li>
-    <li>An <a>MathML <code>mn</code></a> element</li>
-    <li>An <a>MathML <code>ms</code></a> element</li>
-    <li>An <a>MathML <code>mtext</code></a> element</li>
+    <li>A <a>MathML <code>mi</code></a> element</li>
+    <li>A <a>MathML <code>mo</code></a> element</li>
+    <li>A <a>MathML <code>mn</code></a> element</li>
+    <li>A <a>MathML <code>ms</code></a> element</li>
+    <li>A <a>MathML <code>mtext</code></a> element</li>
   </ul>
 
   A node is an <dfn>HTML integration point</dfn> if it is one of the following elements:
 
   <ul class="brief">
-    <li>An <a>MathML <code>annotation-xml</code></a> element in the <a>MathML namespace</a> whose
+    <li>A <a>MathML <code>annotation-xml</code></a> element whose
     start tag token had an attribute with the name "encoding" whose value was
     an <a>ASCII case-insensitive</a> match for the string "<code>[[#text-html|text/html]]</code>"</li>
-    <li>An <a>MathML <code>annotation-xml</code></a> element in the <a>MathML namespace</a> whose
+    <li>A <a>MathML <code>annotation-xml</code></a> element whose
     start tag token had an attribute with the name "encoding" whose value was
     an <a>ASCII case-insensitive</a> match for the string "<code>application/xhtml+xml</code>"</li>
-    <li>A SVG <{foreignObject}> element</li>
-    <li>A SVG <{desc}> element</li>
-    <li>A SVG <a element for="svg"><code>title</code></a> element</li>
+    <li>An SVG <{foreignObject}> element</li>
+    <li>An SVG <{desc}> element</li>
+    <li>An SVG <a element for="svg"><code>title</code></a> element</li>
   </ul>
 
   <p class="note">
@@ -4557,50 +4557,42 @@
 
   <hr />
 
-  When the steps below require the user agent to <dfn lt="create an element for the token|create an element for a token">create an element for a token</dfn> in a particular <var>given namespace</var> and with a
-  particular <var>intended parent</var>, the user agent must run the following steps:
+  When the steps below require the UA to <dfn lt="create an element for the token|create an element for a token">create an element for a token</dfn> in a particular <var>given namespace</var> and with a
+  particular <var>intended parent</var>, the UA must run the following steps:
 
-  <ol>
-
-    <li>
-
-    Create a node implementing the interface appropriate for the element type corresponding to
-    the tag name of the token in <var>given namespace</var> (as given in the specification
-    that defines that element, e.g., for an <{a}> element in the <a>HTML
-    namespace</a>, this specification defines it to be the <code>HTMLAnchorElement</code>
-    interface), with the tag name being the name of that element, with the node being in the given
-    namespace, and with the attributes on the node being those given in the given token.
-
-    The interface appropriate for an element in the <a>HTML namespace</a> that is not
-    defined in this specification (or [=other applicable specifications=]) is
-    {{HTMLUnknownElement}}. Elements in other namespaces whose interface is not defined by
-    that namespace's specification must use the interface {{Element}}.
-
-    The <a>node document</a> of the newly created element
-    must be the <a>node document</a> of the <var>intended parent</var>.
-
-    </li>
-
-    <li>If the newly created element has an <{xmlns/xmlns}> attribute <em>in the
+  1. Let |document| be |intended parent|'s [=node document=].
+  2. Let |local name| be the tag name of the token.
+  3. Let |is| be the value of the "<code>is</code>" attribute in the given token, if such an attribute exists, or null otherwise.
+  4. Let definition be the result of looking up a custom element definition given document, given namespace, local name, and is.
+  5. If definition is non-null and the parser was not originally created for the HTML fragment parsing algorithm, then let will execute script be true. Otherwise, let it be false.
+  6. If will execute script is true, then:
+    1. Increment document's throw-on-dynamic-markup-insertion counter.
+    2. If the JavaScript execution context stack is empty, then perform a microtask checkpoint.
+    3. Push a new element queue onto the custom element reactions stack.
+  7. Let element be the result of creating an element given document, localName, given namespace, null, and is. If will execute script is true, set the synchronous custom elements flag; otherwise, leave it unset.
+    <p class="note">This will cause custom element constructors to run, if will execute script is true. However, since we incremented the throw-on-dynamic-markup-insertion counter, this cannot cause new characters to be inserted into the tokenizer, or the document to be blown away.</p>
+  8. Append each attribute in the given token to element.
+    <p class="note">This can enqueue a custom element callback reaction for the attributeChangedCallback, which might run immediately (in the next step).</p>
+    <p class="note">Even though the is attribute governs the creation of a customized built-in element, it is not present during the execution of the relevant custom element constructor; it is appended in this step, along with all other attributes.</p>
+  9. If will execute script is true, then:
+    1. Let queue be the result of popping the current element queue from the custom element reactions stack. (This will be the same element queue as was pushed above.)
+    2. Invoke custom element reactions in queue.
+    3. Decrement document's throw-on-dynamic-markup-insertion counter.
+  10. If the newly created element has an <{xmlns/xmlns}> attribute <em>in the
     <a>XMLNS namespace</a></em> whose value is not exactly the same as the element's namespace,
     that is a <a for="parser">parse error</a>. Similarly, if the newly created element has an <code>xmlns:xlink</code> attribute in the <a>XMLNS namespace</a> whose value is not the
-    <a>XLink namespace</a>, that is a <a for="parser">parse error</a>.</li>
-
-    <li>If the newly created element is a <a>resettable element</a>,
+    <a>XLink namespace</a>, that is a <a for="parser">parse error</a>.
+  11. If the newly created element is a <a>resettable element</a>,
     invoke its <a>reset algorithm</a>. (This initializes the
-    element's <a for="forms">value</a> and <a for="forms">checkedness</a> based on the element's attributes.)</li>
-
-    <li>If the element is a <a>form-associated element</a>, and the <a><code>form</code> element pointer</a> is not null, and there is no <code>template</code>
+    element's <a for="forms">value</a> and <a for="forms">checkedness</a> based on the element's attributes.)
+  12. If the element is a <a>form-associated element</a>, and the <a><code>form</code> element pointer</a> is not null, and there is no <code>template</code>
     element on the <a>stack of open elements</a>, and the newly created element is either not
     <a>reassociateable</a> or doesn't have a <code>form</code> attribute, and the <var>intended parent</var> is in
     the same <a>tree</a> as the element pointed to by the <a><code>form</code> element pointer</a>, associate the newly created element with the
     <{form}> element pointed to by the <a><code>form</code> element
     pointer</a>, and suppress the running of the <a>reset the form owner</a> algorithm when
-    the parser subsequently attempts to insert the element.</li>
-
-    <li>Return the newly created element.</li>
-
-  </ol>
+    the parser subsequently attempts to insert the element.
+  13. Return element.
 
   <hr />
 
