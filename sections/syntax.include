@@ -1063,9 +1063,6 @@
   Where possible, references to such elements are hyperlinked to their definition.
   </p>
 
-  </div>
-
-  <div class="impl">
 
 <h4 id="overview-of-the-parsing-model">Overview of the parsing model</h4>
 
@@ -1106,9 +1103,7 @@
   To handle these cases, parsers have a <dfn>script nesting level</dfn>, which must be initially
   set to zero, and a <dfn>parser pause flag</dfn>, which must be initially set to false.
 
-  </div>
 
-  <div class="impl">
 
 <h4 id="the-input-byte-stream">The <dfn>input byte stream</dfn></h4>
 
@@ -1926,9 +1921,6 @@
   construction stage.
   </p>
 
-  </div>
-
-  <div class="impl">
 
 <h4 id="parse-state">Parse state</h4>
 
@@ -2335,9 +2327,6 @@
   The <dfn>frameset-ok flag</dfn> is set to "ok" when the parser is created. It is set to "not
   ok" after certain tokens are seen.
 
-  </div>
-
-  <div class="impl">
 
 <h4 id="sec-tokenization"><dfn lt="tokenizer|tokenization">Tokenization</dfn></h4>
 
@@ -8485,9 +8474,8 @@
 
   </dl>
 
-  </div>
 
-  <div class="impl">
+
 
 <h4 id="the-end">The end</h4>
 
@@ -8527,7 +8515,10 @@
 
     </li>
 
-    <li><a>Queue a task</a> to <a>fire a simple event</a> that bubbles named <code>DOMContentLoaded</code> at the {{Document}}.</li>
+    <li><a>Queue a task</a> to run the following substeps:
+
+        1. <a>fire an event</a> named <code>DOMContentLoaded</code> at the {{Document}} object, with its {{Event/bubbles}} attribute initialized to true.
+        2. Enable the [=client message queue=] of the {{ServiceWorkerContainer}} object whose associated [=service worker client=] is the {{Document}} object's [=relevant settings object=].
 
     <li><a>Spin the event loop</a> until the <a>set of scripts that will execute as soon
     as possible</a> and the <a>list of scripts that will execute in order as soon as
@@ -8543,10 +8534,9 @@
 
       <li>Set the <a>current document readiness</a> to "<code>complete</code>".</li>
 
-      <li><i>Load event</i>: If the <code>Document</code> is in a <a>browsing context</a>,
-      <a>fire a simple event</a> named <code>load</code> at the
-      <code>Document</code>'s <code>Window</code> object, with <i>target override</i> set to the <code>Document</code>
-      object.</li>
+      <li><i>Load event</i>: If the {{Document}} has a <a>browsing context</a>, then
+      <a>fire an event</a> named <code>load</code> at the
+      {{Document}} object's {{Window}} object, with <i>legacy target override flag</i> set.</li>
 
     </ol>
 
@@ -8554,7 +8544,7 @@
 
     <li>
 
-    If the <code>Document</code> is in a <a>browsing context</a>, then <a>queue a
+    If the <code>Document</code> has a <a>browsing context</a>, then <a>queue a
     task</a> to run the following substeps:
 
     <ol>
@@ -8564,16 +8554,20 @@
 
       <li>Set the <code>Document</code>'s <a>page showing</a> flag to true.</li>
 
-      <li><a>Fire</a> a <a>trusted</a> event with the name <code>pageshow</code> at the <code>Window</code> object of the
-      {{Document}}, with <i>target override</i> set to the <code>Document</code>
-      object,
-      using the <code>PageTransitionEvent</code> interface, with the <code>persisted</code> attribute initialized to false. This
-      event must not bubble, must not be cancelable, and has no default action.</li>
+      <li><a>Fire an event</a> named <code>pageshow</code> at the {{Document}} object's {{Window}} object using
+      {{PageTransitionEvent}}, with the <code>persisted</code> attribute initialized to false, and
+      <i>legacy target override flag</i> set.</li>.
 
     </ol>
 
     </li>
-
+    <!-- App cache -->
+    <!--
+    <li>If the {{Document}} has any [=pending application cache download process tasks=], then
+    [=queue=] each such [=task=] in the order they were added to the list of
+    [=pending application cache download process tasks=], and then empty the list of
+    [=pending application cache download process tasks=]. The [=task source=] for these [=tasks=] is the [=networking task source=].</li>
+    -->
     <li>If the <code>Document</code>'s <a>print when loaded</a> flag is set, then run the
     <a>printing steps</a>.</li>
 
@@ -8602,7 +8596,7 @@
   Except where otherwise specified, the <a>task source</a> for the <a>tasks</a> mentioned in this section is the <a>DOM manipulation task
   source</a>.
 
-  </div>
+
 
   <div class="impl">
 
@@ -8684,9 +8678,6 @@
   that start tag.
   </p>
 
-  </div>
-
-  <div class="impl">
 
 <h4 id="an-introduction-to-error-handling-and-strange-cases-in-the-parser">An introduction to error handling and strange cases in the parser</h4>
 
@@ -8975,7 +8966,7 @@
 
   The following steps form the <dfn>HTML fragment serialization algorithm</dfn>. The algorithm
   takes as input a DOM {{Element}}, {{Document}}, or {{DocumentFragment}}
-  referred to as <var>the node</var>, and either returns a string.
+  referred to as <var>the node</var>, and returns a string.
 
   <p class="note">
   This algorithm serializes the <em>children</em> of the node being serialized, not
@@ -9015,7 +9006,7 @@
 
         <p class="note">
   For <a>HTML elements</a> created by the <a>HTML parser</a> or
-        <code>Document.createElement()</code>, <var>tagname</var> will be
+        {{Document/createElement()}}, <var>tagname</var> will be
         lowercase.
   </p>
 
@@ -9070,7 +9061,7 @@
 
         </dl>
 
-        While the exact order of attributes is user agent-defined, and may depend on factors such as the
+        While the exact order of attributes is UA-defined, and may depend on factors such as the
         order that the attributes were given in the original markup, the sort order must be stable,
         such that consecutive invocations of this algorithm serialize an element's attributes in the
         same order.
@@ -9080,14 +9071,8 @@
         If <var>current node</var> is an <{area}>, <{base}>,
         <{basefont}>, <{bgsound}>, <{br}>, <{col}>,
         <{embed}>, <{frame}>, <{hr}>, <{img}>,
-        <{input}>, <{link}>, <{menuitem}>,
-        <{meta}>, <{param}>, <{source}>, <{track}> or
+        <{input}>, <{link}>, <{meta}>, <{param}>, <{source}>, <{track}> or
         <{wbr}> element, then continue on to the next child node at this point.
-
-        If <var>current node</var> is a <{pre}>, <{textarea}>, or
-        <{listing}> element, and the first child node of the element, if any, is a
-        {{Text}} node whose character data has as its first character a U+000A LINE FEED
-        (LF) character, then append a U+000A LINE FEED (LF) character.
 
         Append the value of running the <a>HTML fragment serialization algorithm</a> on the
         <var>current node</var> element (thus recursing into this algorithm for that
@@ -9158,8 +9143,9 @@
 
   </ol>
 
-  <p class="warning">It is possible that the output of this algorithm, if parsed with an <a>HTML
-  parser</a>, will not return the original tree structure.</p>
+  <p class="warning">It is possible that the output of this algorithm, if parsed with an <a>HTML parser</a>,
+  will not return the original tree structure. Tree structures that do not roundtrip
+  a serialize and reparse step can also be produced by the <a>HTML parser</a> itself, although such cases are typically non-conforming.</p>
 
   <div class="example">
     For instance, if a <{textarea}> element to which a <code>Comment</code> node
@@ -9181,6 +9167,251 @@
     would contain a <code>script</code> node, even though no <code>script</code> node existed in the
     original DOM.
   </div>
+
+
+  <div class="example">
+
+    <p>For example, consider the following markup:</p>
+
+    <pre highlight="html">&lt;form id="outer"&gt;&lt;div&gt;&lt;/form&gt;&lt;form id="inner"&gt;&lt;input&gt;</pre>
+
+    <p>This will be parsed into:</p>
+
+    <ul class="domTree"><li class="t1">html<ul><li class="t1">head</li><li class="t1">body<ul><li class="t1">form <span class="t2">id="outer"</span>
+
+       <ul>
+
+        <li class="t1">
+
+        div
+
+         <ul>
+
+          <li class="t1">
+
+          form <span class="t2">id="inner"</span>
+
+           <ul>
+
+            <li class="t1">
+
+            input
+
+            </li>
+
+           </ul>
+
+          </li>
+
+         </ul>
+
+        </li>
+
+       </ul>
+
+      </li>
+
+     </ul>
+
+    </li>
+
+   </ul>
+
+  </li>
+
+ </ul>
+
+ <p>The input element will be associated with the inner form element. Now, if this tree structure is serialized and reparsed, the &lt;form id="inner"&gt; start tag will be ignored, and so the input element will be associated with the outer form element instead.</p>
+
+ <pre highlight="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;form id="outer"&gt;&lt;div&gt;<mark>&lt;form id="inner"&gt;</mark>&lt;input&gt;&lt;/form&gt;&lt;/div&gt;&lt;/form&gt;&lt;/body&gt;&lt;/html&gt;</pre>
+
+ <ul class="domTree">
+
+  <li class="t1">
+
+  html
+
+   <ul>
+
+    <li class="t1">
+
+    head
+
+    </li>
+
+    <li class="t1">
+
+    body
+
+     <ul>
+
+      <li class="t1">
+
+      form <span class="t2">id="outer"</span>
+
+       <ul>
+
+        <li class="t1">
+
+        div
+
+         <ul>
+
+          <li class="t1">
+
+          input
+
+          </li>
+
+         </ul>
+
+        </li>
+
+       </ul>
+
+      </li>
+
+     </ul>
+
+    </li>
+
+   </ul>
+
+  </li>
+
+ </ul>
+
+</div>
+
+<div class="example">
+
+ <p>As another example, consider the following markup:</p>
+
+ <pre highlight="html">&lt;a&gt;&lt;table&gt;&lt;a&gt;</pre>
+
+ <p>This will be parsed into:</p>
+
+ <ul class="domTree">
+
+  <li class="t1">
+
+  html
+
+   <ul>
+
+    <li class="t1">
+
+    head
+
+    </li>
+
+    <li class="t1">
+
+    body
+
+     <ul>
+
+      <li class="t1">
+
+      a
+
+       <ul>
+
+        <li class="t1">
+
+        a
+
+        </li>
+
+        <li class="t1">
+
+        table
+
+        </li>
+
+       </ul>
+
+      </li>
+
+     </ul>
+
+    </li>
+
+   </ul>
+
+  </li>
+
+ </ul>
+
+ <p>That is, the a elements are nested, because the second a element is foster parented. After a serialize-reparse roundtrip, the a elements and the table element would all be siblings, because the second &lt;a&gt; start tag implicitly closes the first a element.</p>
+
+ <pre highlight="html">&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;a&gt;<mark>&lt;a&gt;</mark>&lt;/a&gt;&lt;table&gt;&lt;/table&gt;&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;</pre>
+
+ <ul class="domTree">
+
+  <li class="t1">
+
+  html
+
+   <ul>
+
+    <li class="t1">
+
+    head
+
+    </li>
+
+    <li class="t1">
+
+    body
+
+     <ul>
+
+      <li class="t1">
+
+      a
+
+      </li>
+
+      <li class="t1">
+
+      a
+
+      </li>
+
+      <li class="t1">
+
+      table
+
+      </li>
+
+     </ul>
+
+    </li>
+
+   </ul>
+
+  </li>
+
+ </ul>
+
+</div>
+
+<p>For historical reasons, this algorithm does not round-trip an initial U+000A LINE FEED (LF) character in pre, textarea, or listing elements, even though (in the first two cases) the markup being round-tripped can be conforming. The HTML parser will drop such a character during parsing, but this algorithm does not serialize an extra U+000A LINE FEED (LF) character.</p>
+
+<div class="example">
+
+ <p>For example, consider the following markup:</p>
+
+ <pre highlight="html">&lt;pre&gt;
+
+
+
+Hello.&lt;/pre&gt;</pre>
+
+ <p>When this document is first parsed, the pre element's child text content starts with a single newline character. After a serialize-reparse roundtrip, the pre element's child text content is simply "Hello.".</p>
+
+</div>
 
   <dfn>Escaping a string</dfn> (for the purposes of the algorithm above)
   consists of running the following steps:
@@ -9247,32 +9478,36 @@
     <li>
 
     Set the state of the <a>HTML parser</a>'s <a>tokenization</a> stage as
-    follows:
+    follows, switching on the [=context=] element:
 
     <dl class="switch">
 
-      <dt>If it is a <{title}> or <{textarea}> element</dt>
+      <dt><{title}></dt>
+      <dt><{textarea}></dt>
 
       <dd>Switch the tokenizer to the [[#RCDATA-state]].</dd>
 
-      <dt>If it is a <{style}>, <{xmp}>, <{iframe}>,
-      <{noembed}>, or <{noframes}> element</dt>
+      <dt><{style}></dt>
+      <dt><{xmp}></dt>
+      <dt><{iframe}></dt>
+      <dt><{noembed}></dt>
+      <dt><{noframes}></dt>
 
       <dd>Switch the tokenizer to the [[#rawtext-state]].</dd>
 
-      <dt>If it is a <{script}> element</dt>
+      <dt><{script}></dt>
 
       <dd>Switch the tokenizer to the [[#script-data-state]].</dd>
 
-      <dt>If it is a <{noscript}> element</dt>
+      <dt><{noscript}></dt>
 
       <dd>If the <a>scripting flag</a> is enabled, switch the tokenizer to the [[#rawtext-state]]. Otherwise, leave the tokenizer in the [[#data-state]].</dd>
 
-      <dt>If it is a <{plaintext}> element</dt>
+      <dt><{plaintext}></dt>
 
       <dd>Switch the tokenizer to the [[#plaintext-state]].</dd>
 
-      <dt>Otherwise</dt>
+      <dt>Any other element</dt>
 
       <dd>Leave the tokenizer in the [[#data-state]].</dd>
 
@@ -9371,7 +9606,6 @@
 
   </ol>
 
-  </div>
 
 <h3 id="named-character-references">Named character references</h3>
 
@@ -9379,9 +9613,7 @@
   to which they refer. It is referenced by the previous sections.
 
   <div id="named-character-references-table">
-<pre class="include">
-path: includes/entities.include
-</pre>
+<pre class="include">path: includes/entities.include</pre>
   </div>
 
   This data is also available <a href='entities.json'>as a JSON file</a>.
