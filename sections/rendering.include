@@ -8,112 +8,99 @@
 ██    ██  ██       ██   ███ ██     ██ ██       ██    ██   ██  ██   ███ ██    ██
 ██     ██ ████████ ██    ██ ████████  ████████ ██     ██ ████ ██    ██  ██████
 -->
+<!-- This section ostensibly kept up to date by arronei@microsoft.com -->
 
-<h2 id="rendering">Rendering</h2>
+Rendering {#rendering}
+=========
 
-  <i>User agents are not required to present HTML documents in any particular way. However, this
+  *User agents are not required to present HTML documents in any particular way. However, this
   section provides a set of suggestions for rendering HTML documents that, if followed, are likely
   to lead to a user experience that closely resembles the experience intended by the documents'
-  authors. So as to avoid confusion regarding the normativity of this section, RFC2119 terms have
-  not been used. Instead, the term "expected" is used to indicate behavior that will lead to this
-  experience. For the purposes of conformance for user agents designated as <a>supporting the suggested default rendering</a>, the term "expected" in this
-  section has the same conformance implications as the RFC2119-defined term "must".</i>
+  authors. So as to avoid confusion regarding the normativity of this section, "must" has not been
+  used. Instead, the term "expected" is used to indicate behavior that will lead to this experience.
+  For the purposes of conformance for user agents designated as
+  [=supporting the suggested default rendering=], the term "expected" in this section has the same
+  conformance implications as "must".*
 
-<h3 id="rendering-introduction">Introduction</h3>
+## Introduction ## {#rendering-introduction}
 
-  In general, user agents are expected to support CSS, and many of the suggestions in this
-  section are expressed in CSS terms. User agents that use other presentation mechanisms can derive
-  their expected behavior by translating from the CSS rules given in this section.
+  In general, user agents are expected to support CSS, and many of the suggestions in this section
+  are expressed in CSS terms. User agents that use other presentation mechanisms can derive their
+  expected behavior by translating from the CSS rules given in this section.
 
   In the absence of style-layer rules to the contrary (e.g., author style sheets), user agents are
   expected to render an element so that it conveys to the user the meaning that the element
-  <a>represents</a>, as described by this specification.
+  [=represents=], as described by this specification.
 
   The suggestions in this section generally assume a visual output medium with a resolution of
   96dpi or greater, but HTML is intended to apply to multiple media (it is a
-  <i>media-independent</i> language). User agent implementors are encouraged to adapt the
+  *media-independent* language). User agent implementors are encouraged to adapt the
   suggestions in this section to their target media.
 
-  <hr />
+  ---
 
   An element is <dfn>being rendered</dfn> if it has any associated CSS layout boxes, SVG layout
   boxes, or some equivalent in other styling languages.
 
-  <p class="note">
-  Just being off-screen does not mean the element is not <a>being
-  rendered</a>. The presence of the <{global/hidden}> attribute normally
-  means the element is not <a>being rendered</a>, though this might be overridden by the style
-  sheets.
-  </p>
+  NOTE: Just being off-screen does not mean the element is not [=being rendered=]. The presence of
+  the <{global/hidden}> attribute normally means the element is not [=being rendered=], though this
+  might be overridden by the style sheets.
 
-  <hr />
+  ---
 
   User agents that do not honor author-level CSS style sheets are nonetheless expected to act as
   if they applied the CSS rules given in these sections in a manner consistent with this
   specification and the relevant CSS and Unicode specifications. [[!CSS-2015]] [[!UNICODE]] [[!BIDI]]
 
-  <p class="note">
-  This is especially important for issues relating to the 'display', 'unicode-bidi',
-  and 'direction' properties.
-  </p>
+  NOTE: This is especially important for issues relating to the 'display', 'unicode-bidi', and
+  'direction' properties.
 
-<h3 id="the-css-user-agent-style-sheet-and-presentational-hints">The CSS user agent style sheet and presentational hints</h3>
+ ## The CSS user agent style sheet and presentational hints ## {#the-css-user-agent-style-sheet-and-presentational-hints}
 
   The CSS rules given in these subsections are, except where otherwise specified, expected to be
   used as part of the user-agent level style sheet defaults for all documents that contain
-  <a>html elements</a>.
+  [=HTML elements=].
 
-  Some rules are intended for the author-level zero-specificity presentational hints part of the
-  CSS cascade; these are explicitly called out as <dfn>presentational hints</dfn>.
+  Some rules are intended for the author-level zero-specificity presentational hints part of the CSS
+  cascade; these are explicitly called out as <dfn>presentational hints</dfn>.
 
-  Some of the rules regarding left and right margins are given here as appropriate for elements
-  whose 'direction' property is ''ltr'', and are expected to be flipped around on elements whose
-  'direction' property is ''rtl''. These are marked "<dfn>LTR-specific</dfn>".
+  ---
 
-  <p class="note">
-  These markings only affect the handling of attribute <em>values</em>, not
-  attribute names or element names.
-  </p>
+  When the text below says that an attribute |attribute| on an element |element|
+  <dfn>maps to the pixel length property</dfn> (or properties) |properties|, it means that if
+  |element| has an attribute |attribute| set, and parsing that attribute's value using the
+  [=rules for parsing non-negative integers=] doesn't generate an error, then the user agent is
+  expected to use the parsed value as a pixel length for a [=presentational hint=] for |properties|.
 
-  <hr />
+  When the text below says that an attribute |attribute| on an element |element|
+  <dfn lt="as hints for the rendering|maps to the dimension properties|maps to the dimension property">maps to the dimension property</dfn>
+  (or properties) |properties|, it means that if |element| has an attribute |attribute| set, and
+  parsing that attribute's value using the [=rules for parsing dimension values=] doesn't generate
+  an error, then the user agent is expected to use the parsed dimension as the value for a
+  [=presentational hint=] for |properties|, with the value given as a pixel length if the dimension
+  was a length, and with the value given as a percentage if the dimension was a percentage.
 
-  When the text below says that an attribute <var>attribute</var> on an element
-  <var>element</var> <dfn>maps to the pixel length property</dfn> (or properties)
-  <var>properties</var>, it means that if <var>element</var> has an attribute <var>attribute</var>
-  set, and parsing that attribute's value using the <a>rules for parsing non-negative
-  integers</a> doesn't generate an error, then the user agent is expected to use the parsed value
-  as a pixel length for a <a>presentational hint</a> for
-  <var>properties</var>.
-
-  When the text below says that an attribute <var>attribute</var> on an element
-  <var>element</var> <dfn lt="as hints for the rendering|maps to the dimension properties|maps to the dimension property">maps to the dimension property</dfn> (or properties)
-  <var>properties</var>, it means that if <var>element</var> has an attribute <var>attribute</var>
-  set, and parsing that attribute's value using the <a>rules for parsing dimension values</a>
-  doesn't generate an error, then the user agent is expected to use the parsed dimension as the
-  value for a <a>presentational hint</a> for
-  <var>properties</var>, with the value given as a pixel length if the dimension was a length, and
-  with the value given as a percentage if the dimension was a percentage.
-
-  When the text below says that an attribute <var>attribute</var> on an element
-  <var>element</var> <dfn lt="map to the dimension property (ignoring zero)|maps to the dimension property (ignoring zero)">maps to the dimension property (ignoring zero)</dfn> (or properties)
-  <var>properties</var>, it means that if <var>element</var> has an attribute <var>attribute</var>
-  set, and parsing that attribute's value using the <a>rules for parsing non-zero dimension
-  values</a> doesn't generate an error, then the user agent is expected to use the parsed
-  dimension as the value for a <a>presentational hint</a> for
-  <var>properties</var>, with the value given as a pixel length if the dimension was a length, and
-  with the value given as a percentage if the dimension was a percentage.
+  When the text below says that an attribute |attribute| on an element |element|
+  <dfn lt="map to the dimension property (ignoring zero)|maps to the dimension property (ignoring zero)">maps to the dimension property (ignoring zero)</dfn>
+  (or properties) |properties|, it means that if |element| has an attribute |attribute| set, and
+  parsing that attribute's value using the [=rules for parsing non-zero dimension values=] doesn't
+  generate an error, then the user agent is expected to use the parsed dimension as the value for a
+  [=presentational hint=] for |properties|, with the value given as a pixel length if the dimension
+  was a length, and with the value given as a percentage if the dimension was a percentage.
 
   When a user agent is to <dfn>align descendants</dfn> of a node, the user agent is expected to
-  align only those descendants that have both their 'margin-left' and 'margin-right' properties
-  computing to a value other than <a value for="margin-left"><code>auto</code></a>, that are over-constrained and that have one of those two
-  margins with a <a>used value</a> forced to a greater value, and that do not themselves have an applicable
-  <code>align</code> attribute. When multiple elements are to <a lt="align descendants">align</a> a particular descendant, the most deeply nested such
-  element is expected to override the others. Aligned elements are expected to be aligned by having
-  the <a>used values</a> of their left and right margins be set accordingly.
+  align only those descendants that have both their 'margin-inline-start' and 'margin-inline-end'
+  properties computing to a value other than ''margin-left/auto'', that are over-constrained and
+  that have one of those two margins with a [=used value=] forced to a greater value, and that do
+  not themselves have an applicable `align` attribute. When multiple elements are to
+  [=align descendants|align=] a particular descendant, the most deeply nested such element is
+  expected to override the others. Aligned elements are expected to be aligned by having the
+  [=used values=] of their margins on the line-left and line-right sides be set accordingly.
+  [[CSS-LOGICAL-PROPS]] [[CSS-WRITING-MODES-3]]
 
-<h3 id="non-replaced-elements">Non-replaced elements</h3>
+## Non-replaced elements ## {#non-replaced-elements}
 
-<h4 id="hidden-elements">Hidden elements</h4>
+### Hidden elements ### {#hidden-elements}
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -125,14 +112,14 @@
 
     embed[hidden] { display: inline; height: 0; width: 0; }
 
-    input[type=hidden i] { display none ! important; }
+    input[type=hidden i] { display: none !important; }
 
     @media (scripting) {
       noscript { display: none !important; }
     }
   </pre>
 
-<h4 id="the-page">The page</h4>
+### The page ### {#the-page}
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -140,114 +127,130 @@
     html, body { display: block; }
   </pre>
 
-  For each property in the table below, given a <{body}> element, the first attribute
-  that exists <a>maps to the pixel length property</a> on the <{body}> element. If
-  none of the attributes for a property are found, or if the value of the attribute that was found
-  cannot be parsed successfully, then, then a default value of 8px is expected to be used for that
-  property instead.
+  For each property in the table below, given a <{body}> element, the first attribute that exists
+  [=maps to the pixel length property=] on the <{body}> element. If none of the attributes for a
+  property are found, or if the value of the attribute that was found cannot be parsed successfully,
+  then a default value of 8px is expected to be used for that property instead.
 
   <table>
     <thead>
-    <tr>
-      <th>Property
-      <th>Source
+      <tr>
+        <th>Property</th>
+        <th>Source</th>
+      </tr>
+    </thead>
     <tbody>
-    <tr>
-      <td rowspan="3">'margin-top'
-      <td><{body}> element's <code>marginheight</code> attribute
-    <tr>
-      <td>The <{body}> element's <a>container frame element</a>'s <code>marginheight</code> attribute
-    <tr>
-      <td><{body}> element's <code>topmargin</code> attribute
+      <tr>
+        <td rowspan="3">'margin-top'</td>
+        <td><{body}> element's <{body/marginheight}> attribute</td>
+      </tr>
+      <tr>
+        <td>The <{body}> element's [=container frame element=]'s <{body/marginheight}> attribute</td>
+      </tr>
+      <tr>
+        <td><{body}> element's <{body/topmargin}> attribute</td>
+      </tr>
+    </tbody>
     <tbody>
-    <tr>
-      <td rowspan="3">'margin-right'
-      <td><{body}> element's <code>marginwidth</code> attribute
-    <tr>
-      <td>The <{body}> element's <a>container frame element</a>'s <code>marginwidth</code> attribute
-    <tr>
-      <td><{body}> element's <code>rightmargin</code> attribute
+      <tr>
+        <td rowspan="3">'margin-right'</td>
+        <td><{body}> element's <{body/marginwidth}> attribute</td>
+      </tr>
+      <tr>
+        <td>The <{body}> element's [=container frame element=]'s <{body/marginwidth}> attribute</td>
+      </tr>
+      <tr>
+        <td><{body}> element's <{body/rightmargin}> attribute</td>
+      </tr>
+    </tbody>
     <tbody>
-    <tr>
-      <td rowspan="3">'margin-bottom'
-      <td><{body}> element's <code>marginheight</code> attribute
-    <tr>
-      <td>The <{body}> element's <a>container frame element</a>'s <code>marginheight</code> attribute
-    <tr>
-      <td><{body}> element's <code>bottommargin</code> attribute
+      <tr>
+        <td rowspan="3">'margin-bottom'</td>
+        <td><{body}> element's <{body/marginheight}> attribute</td>
+      </tr>
+      <tr>
+        <td>The <{body}> element's [=container frame element=]'s <{body/marginheight}> attribute</td>
+      </tr>
+      <tr>
+        <td><{body}> element's <{body/bottommargin}> attribute</td>
+      </tr>
+    </tbody>
     <tbody>
-    <tr>
-      <td rowspan="3">'margin-left'
-      <td><{body}> element's <code>marginwidth</code> attribute
-    <tr>
-      <td>The <{body}> element's <a>container frame element</a>'s <code>marginwidth</code> attribute
-    <tr>
-      <td><{body}> element's <code>leftmargin</code> attribute
+      <tr>
+        <td rowspan="3">'margin-left'</td>
+        <td><{body}> element's <{body/marginwidth}> attribute</td>
+      </tr>
+      <tr>
+        <td>The <{body}> element's [=container frame element=]'s <{body/marginwidth}> attribute</td>
+      </tr>
+      <tr>
+        <td><{body}> element's <{body/leftmargin}> attribute</td>
+      </tr>
+    </tbody>
   </table>
 
-  If the <{body}> element's <a>node document</a>'s <a>browsing context</a> is a
-  <a>nested browsing context</a>, and the <a>browsing context container</a> of that
-  <a>nested browsing context</a> is a <code>frame</code> or <{iframe}> element, then
-  the <dfn>container frame element</dfn> of the <{body}> element is that <code>frame</code>
-  or <{iframe}> element. Otherwise, there is no <a>container frame element</a>.
+  If the <{body}> element's [=node document=]'s [=browsing context=] is a
+  [=nested browsing context=], and the [=browsing context container=] of that
+  [=nested browsing context=] is a <{frame}> or <{iframe}> element, then the
+  <dfn>container frame element</dfn> of the <{body}> element is that <{frame}> or <{iframe}>
+  element. Otherwise, there is no [=container frame element=].
 
   <p class="warning">The above requirements imply that a page can change the margins of another page
-  (including one from another [=concept/origin=]) using, for example, an <{iframe}>. This
-  is potentially a security risk, as it might in some cases allow an attack to contrive a situation
+  (including one from another [=concept/origin=]) using, for example, an <{iframe}>. This is
+  potentially a security risk, as it might in some cases allow an attack to contrive a situation
   in which a page is rendered not as the author intended, possibly for the purposes of phishing or
   otherwise misleading the user.</p>
 
-  <hr />
+  ---
 
-  If a {{Document}} is in a <a>nested browsing context</a>, it is expected to be
-  positioned and sized to fit inside the <a>content box</a> of its <a>browsing context container</a>.
-  If a <a>browsing context</a> is not <a>being rendered</a>, it is expected to have a
-  <a>viewport</a> with zero width and zero height.
+  If a {{Document}} is in a [=nested browsing context=], it is expected to be positioned and sized
+  to fit inside the [=content box=] of its [=browsing context container=]. If a
+  [=browsing context=]'s [=browsing context container=] is not [=being rendered=], the
+  [=browsing context=] is expected to have a [=viewport=] with zero width and zero height.
 
-  If the {{Document}} is in a <a>nested browsing context</a>, and the
-  <a>browsing context container</a> of that <a>nested browsing context</a> is a
-  <{frame}> or <{iframe}> element, and that element has a <code>scrolling</code> attribute, and that attribute's value is an <a>ASCII
-  case-insensitive</a> match for the string "<code>off</code>", "<code>noscroll</code>", or "<code>no</code>", then the user agent is expected to
-  prevent any scroll bars from being shown for the <a>viewport</a> of the <a>nested browsing context</a>, regardless of the 'overflow' property that applies to that <a>viewport</a>.
+  If the {{Document}} is in a [=nested browsing context=], and the [=browsing context container=] of
+  that [=nested browsing context=] is a <{frame}> or <{iframe}> element, and that element has a
+  <{iframe/scrolling}> attribute, and that attribute's value is an [=ASCII case-insensitive=]
+  match for the string "`off`", "`noscroll`", or "`no`", then the user agent is expected to prevent
+  any scroll bars from being shown for the [=viewport=] of the [=nested browsing context=],
+  regardless of the 'overflow' property that applies to that [=viewport=].
 
-  <hr />
+  ---
 
-  When a <{body}> element has a <{common/background}>
-  attribute set to a non-empty value, the new value is expected to be <a>parsed</a> relative to the
-  element's <a>node document</a>, and if this is successful, the user agent is
-  expected to treat the attribute as a <a>presentational hint</a>
-  setting the element's 'background-image' property to the <a>resulting URL string</a>.
+  When a <{body}> element has a <{common/background}> attribute set to a non-empty value, the new
+  value is expected to be [=parsed=] relative to the element's [=node document=], and if this is
+  successful, the user agent is expected to treat the attribute as a [=presentational hint=]
+  setting the element's 'background-image' property to the [=resulting URL string=].
 
-  When a <{body}> element has a <{body/bgcolor}> attribute
-  set, the new value is expected to be parsed using the <a>rules for parsing a legacy color
-  value</a>, and if that does not return an error, the user agent is expected to treat the
-  attribute as a <a>presentational hint</a> setting the element's
-  'background-color' property to the resulting color.
+  When a <{body}> element has a <{body/bgcolor}> attribute set, the new value is expected to be
+  parsed using the [=rules for parsing a legacy color value=], and if that does not return an error,
+  the user agent is expected to treat the attribute as a [=presentational hint=] setting the
+  element's 'background-color' property to the resulting color.
 
   When a <{body}> element has a <{body/text}> attribute, its
-  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and if
+  value is expected to be parsed using the [=rules for parsing a legacy color value=], and if
   that does not return an error, the user agent is expected to treat the attribute as a
-  <a>presentational hint</a> setting the element's 'color' property to the resulting color.
+  [=presentational hint=] setting the element's 'color' property to the resulting color.
 
   When a <{body}> element has a <{body/link}> attribute, its
-  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and if
+  value is expected to be parsed using the [=rules for parsing a legacy color value=], and if
   that does not return an error, the user agent is expected to treat the attribute as a
-  <a>presentational hint</a> setting the 'color' property of any element in the {{Document}}
-  matching the '':link'' <a>pseudo-class</a> to the resulting color.
+  [=presentational hint=] setting the 'color' property of any element in the {{Document}}
+  matching the '':link'' [=pseudo-class=] to the resulting color.
 
   When a <{body}> element has a <{body/vlink}> attribute, its value is expected to be parsed using
-  the <a>rules for parsing a legacy color value</a>, and if that does not return an error, the user
-  agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color'
-  property of any element in the {{Document}} matching the '':visited'' <a>pseudo-class</a> to the
+  the [=rules for parsing a legacy color value=], and if that does not return an error, the user
+  agent is expected to treat the attribute as a [=presentational hint=] setting the 'color'
+  property of any element in the {{Document}} matching the '':visited'' [=pseudo-class=] to the
   resulting color.
 
   When a <{body}> element has an <{body/alink}> attribute, its value is expected to be parsed using
-  the <a>rules for parsing a legacy color value</a>, and if that does not return an error, the user
-  agent is expected to treat the attribute as a <a>presentational hint</a> setting the 'color'
-  property of any element in the {{Document}} matching the '':active'' <a>pseudo-class</a> and either
-  the '':link'' <a>pseudo-class</a> or the '':visited'' <a>pseudo-class</a> to the resulting color.
+  the [=rules for parsing a legacy color value=], and if that does not return an error, the user
+  agent is expected to treat the attribute as a [=presentational hint=] setting the 'color'
+  property of any element in the {{Document}} matching the '':active'' [=pseudo-class=] and either
+  the :link [=pseudo-class=] or the '':visited'' [=pseudo-class=] to the resulting color.
 
-<h4 id="non-replaced-elements-flow-content">Flow content</h4>
+### Flow content ### {#non-replaced-elements-flow-content}
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -258,10 +261,10 @@
     }
 
     blockquote, figure, listing, p, plaintext, pre, xmp {
-      margin-top: 1em; margin-bottom: 1em;
+      margin-block-start: 1em; margin-block-end: 1em;
     }
 
-    blockquote, figure { margin-left: 40px; margin-right: 40px; }
+    blockquote, figure { margin-inline-start: 40px; margin-inline-end: 40px; }
 
     address { font-style: italic; }
     listing, plaintext, pre, xmp {
@@ -284,7 +287,7 @@
       background: rgba(0,0,0,0.1);
     }
 
-    /* for small devices, modal dialogs go fullscreen */
+    /* for small devices, modal dialogs go full-screen */
     @media screen and (max-width: 540px) {
       dialog:modal {
         top: 0;
@@ -292,9 +295,13 @@
         margin: 1em;
       }
     }
+
+    slot {
+      display: contents;
+    }
   </pre>
 
-  The following rules are also expected to apply, as <a>presentational hints</a>:
+  The following rules are also expected to apply, as [=presentational hints=]:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -302,221 +309,192 @@
     pre[wrap] { white-space: pre-wrap; }
   </pre>
 
-  In <a>quirks mode</a>, the following rules are also expected to apply:
+  In [=quirks mode=], the following rules are also expected to apply:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
 
-    form { margin-bottom: 1em; }
+    form { margin-block-end: 1em; }
   </pre>
 
-  <hr />
+  ---
 
-  The <{center}> element, and the <{div}> element when it has an <{div/align}> attribute whose value is an <a>ASCII
-  case-insensitive</a> match for either the string "<code>center</code>" or the string
-  "<code>middle</code>", are expected to center text within themselves, as if they had
-  their 'text-align' property set to ''center'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the center.
+  The <{center}> element, and the <{div}> element when it has an <{div/align}> attribute whose value
+  is an [=ASCII case-insensitive=] match for either the string "`center`" or the string "`middle`",
+  are expected to center text within themselves, as if they had their 'text-align' property set to
+  ''text-align/center'' in a [=presentational hint=], and to [=align descendants=] to the center.
 
-  The <{div}> element, when it has an <{div/align}>
-  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>left</code>", is expected to left-align text within itself, as if it had its
-  'text-align' property set to ''text-align/left'' in a <a>presentational
-  hint</a>, and to <a>align descendants</a> to the left.
+  The <{div}> element, when it has an <{div/align}> attribute whose value is an
+  [=ASCII case-insensitive=] match for the string "`left`", is expected to left-align text within
+  itself, as if it had its 'text-align' property set to ''text-align/left'' in a
+  [=presentational hint=], and to [=align descendants=] to the left.
 
-  The <{div}> element, when it has an <{div/align}>
-  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>right</code>", is expected to right-align text within itself, as if it had its
-  'text-align' property set to ''text-align/right'' in a <a>presentational
-  hint</a>, and to <a>align descendants</a> to the right.
+  The <{div}> element, when it has an <{div/align}> attribute whose value is an
+  [=ASCII case-insensitive=] match for the string "`right`", is expected to right-align text within
+  itself, as if it had its 'text-align' property set to ''text-align/right'' in a
+  [=presentational hint=], and to [=align descendants=] to the right.
 
-  The <{div}> element, when it has an <{div/align}>
-  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>justify</code>", is expected to full-justify text within itself, as if it had its
-  'text-align' property set to ''text-align/justify'' in a <a>presentational
-  hint</a>, and to <a>align descendants</a> to the left.
+  The <{div}> element, when it has an <{div/align}> attribute whose value is an
+  [=ASCII case-insensitive=] match for the string "`justify`", is expected to full-justify text
+  within itself, as if it had its 'text-align' property set to ''text-align/justify'' in a
+  [=presentational hint=], and to [=align descendants=] to the left.
 
-<h4 id="non-replaced-elements-phrasing-content">Phrasing content</h4>
+### Phrasing content ### {#non-replaced-elements-phrasing-content}
 
   <pre highlight="css">
-@namespace url(http://www.w3.org/1999/xhtml);
+    @namespace url(http://www.w3.org/1999/xhtml);
 
-  cite, dfn, em, i, var { font-style: italic; }
-  b, strong { font-weight: bolder; }
-  code, kbd, samp, tt { font-family: monospace; }
-  big { font-size: larger; }
-  small { font-size: smaller; }
+    cite, dfn, em, i, var { font-style: italic; }
+    b, strong { font-weight: bolder; }
+    code, kbd, samp, tt { font-family: monospace; }
+    big { font-size: larger; }
+    small { font-size: smaller; }
 
-  sub { vertical-align: sub; }
-  sup { vertical-align: super; }
-  sub, sup { line-height: normal; font-size: smaller; }
+    sub { vertical-align: sub; }
+    sup { vertical-align: super; }
+    sub, sup { line-height: normal; font-size: smaller; }
 
-  ruby { display: ruby; }
-  rb   { display: ruby-base; white-space: nowrap; }
-  rt   {
-    display: ruby-text;
-    white-space: nowrap;
-    font-size: 50%;
-    font-variant-east-asian: ruby;
-    text-emphasis: none;
-  }
-  rbc  { display: ruby-base-container; }
-  rtc  { display: ruby-text-container; }
-  ruby, rb, rt, rbc, rtc { unicode-bidi: isolate; }
+    ruby { display: ruby; }
+    rt   { display: ruby-text; }
 
-  :link { color: #0000EE; }
-  :visited { color: #551A8B; }
-  :link:active, :visited:active { color: #FF0000; }
-  :link, :visited { text-decoration: underline; cursor: pointer; }
-  a:link[rel~=help], a:visited[rel~=help],
-  area:link[rel~=help], area:visited[rel~=help] { cursor: help; }
+    :link { color: #0000EE; }
+    :visited { color: #551A8B; }
+    :link:active, :visited:active { color: #FF0000; }
+    :link, :visited { text-decoration: underline; cursor: pointer; }
+    a:link[rel~=help], a:visited[rel~=help],
+    area:link[rel~=help], area:visited[rel~=help] { cursor: help; }
 
-  :focus { outline: auto; }
+    :focus { outline: auto; }
 
-  mark { background: yellow; color: black; } /* this color is just a suggestion and can be changed based on implementation feedback */
+    mark { background: yellow; color: black; } /* this color is just a suggestion and can be changed based on implementation feedback */
 
-  abbr[title], acronym[title] { text-decoration: dotted underline; }
-  ins, u { text-decoration: underline; }
-  del, s, strike { text-decoration: line-through; }
-  blink { text-decoration: blink; }
+    abbr[title], acronym[title] { text-decoration: dotted underline; }
+    ins, u { text-decoration: underline; }
+    del, s, strike { text-decoration: line-through; }
+    blink { text-decoration: blink; }
 
-  q::before { content: open-quote; }
-  q::after { content: close-quote; }
+    q::before { content: open-quote; }
+    q::after { content: close-quote; }
 
-  br { display-outside: newline; } /* this also has bidi implications */
-  nobr { white-space: nowrap; }
-  wbr { display-outside: break-opportunity; } /* this also has bidi implications */
-  nobr wbr { white-space: normal; }
+    br { display-outside: newline; } /* this also has bidi implications */
+    nobr { white-space: nowrap; }
+    wbr { display-outside: break-opportunity; } /* this also has bidi implications */
+    nobr wbr { white-space: normal; }
   </pre>
 
-  The following rules are also expected to apply, as
-  <a>presentational hints</a>:
+  The following rules are also expected to apply, as [=presentational hints=]:
 
   <pre highlight="css">
-@namespace url(http://www.w3.org/1999/xhtml);
+    @namespace url(http://www.w3.org/1999/xhtml);
 
-  br[clear=left i] { clear: left; }
-  br[clear=right i] { clear: right; }
-  br[clear=all i], br[clear=both i] { clear: both; }
+    br[clear=left i] { clear: left; }
+    br[clear=right i] { clear: right; }
+    br[clear=all i], br[clear=both i] { clear: both; }
   </pre>
 
   User agents that do not support correct ruby rendering are expected to render parentheses
-  around the text of <{rt}> elements in the absence of <{rp}> elements.
-  [[CSS3-RUBY]]
+  around the text of <{rt}> elements in the absence of <{rp}> elements. [[CSS3-RUBY]]
 
-  <hr />
+  ---
 
   User agents are expected to support the 'clear' property on inline elements (in order to render
-  <{br}> elements with <code>clear</code> attributes) in the manner
-  described in the non-normative note to this effect in CSS2.1.
+  <{br}> elements with <{br/clear}> attributes) in the manner described in the non-normative
+  note to this effect in the CSS specification.
 
   The initial value for the 'color' property is expected to be black. The initial value for the
-  'background-color' property is expected to be ''transparent''. The canvas' background is expected to
-  be white.
+  'background-color' property is expected to be ''transparent''. The canvas' background is expected
+  to be ''white''.
 
-  <hr />
+  ---
 
-  When a <{font}> element has a <code>color</code>
-  attribute, its value is expected to be parsed using the <a>rules for parsing a legacy color
-  value</a>, and if that does not return an error, the user agent is expected to treat the
-  attribute as a <a>presentational hint</a> setting the
+  When a <{font}> element has a {{HTMLFontElement/color}} attribute, its value is expected to be
+  parsed using the [=rules for parsing a legacy color value=], and if that does not return an error,
+  the user agent is expected to treat the attribute as a [=presentational hint=] setting the
   element's 'color' property to the resulting color.
 
-  The <{font}> element is expected to
-  override the color of any text decoration that spans the text of the element to the <a>used value</a> of
-  the element's 'color' property.
+  The <{font}> element is expected to override the color of any text decoration that spans the text
+  of the element to the [=used value=] of the element's 'color' property.
 
-  When a <{font}> element has a <code>face</code>
-  attribute, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'font-family' property to the attribute's
-  value.
+  When a <{font}> element has a {{HTMLFontElement/face}} attribute, the user agent is expected to
+  treat the attribute as a [=presentational hint=] setting the element's 'font-family' property to
+  the attribute's value.
 
-  When a <{font}> element has a <code>size</code>
-  attribute, the user agent is expected to use the following steps, known as the <dfn>rules for
-  parsing a legacy font size</dfn>, to treat the attribute as a <a>presentational hint</a> setting the element's 'font-size' property:
+  When a <{font}> element has a {{HTMLFontElement/size}} attribute, the user agent is expected to
+  use the following steps, known as the <dfn>rules for parsing a legacy font size</dfn>, to treat
+  the attribute as a [=presentational hint=] setting the element's 'font-size' property:
 
-  <ol>
+  1. Let |input| be the attribute's value.
+  2. Let |position| be a pointer into |input|, initially pointing at the start of the string.
+  3. [=Skip whitespace=].
+  4. If |position| is past the end of |input|, there is no [=presentational hint=]. Abort these
+      steps.
+  5. If the character at |position| is a U+002B PLUS SIGN character (+), then let |mode| be
+      <i>relative-plus</i>, and advance |position| to the next character. Otherwise, if the
+      character at |position| is a U+002D HYPHEN-MINUS character (-), then let |mode| be
+      <i>relative-minus</i>, and advance |position| to the next character. Otherwise, let |mode| be
+      <i>absolute</i>.
+  6. [=Collect a sequence of characters=] that are [=ASCII digits=], and let the resulting sequence
+      be |digits|.
+  7. If |digits| is the empty string, there is no [=presentational hint=]. Abort these steps.
+  8. Interpret |digits| as a base-ten integer. Let |value| be the resulting number.
+  9. If |mode| is <i>relative-plus</i>, then increment |value| by 3. If |mode| is
+      <i>relative-minus</i>, then let |value| be the result of subtracting |value| from 3.
+  10. If |value| is greater than 7, let it be 7.
+  11. If |value| is less than 1, let it be 1.
+  12. Set 'font-size' to the keyword corresponding to the value of |value| according to the
+      following table:
 
-    <li>Let <var>input</var> be the attribute's value.</li>
+      <table>
+        <thead>
+          <tr>
+            <th>|value|</th>
+            <th>'font-size' keyword</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>''x-small''</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>''small''</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>''medium''</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>''large''</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>''x-large''</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>''xx-large''</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>''xxx-large''</td>
+            <td><i>see below</i></td>
+          </tr>
+        </tbody>
+      </table>
 
-    <li>Let <var>position</var> be a pointer into <var>input</var>, initially pointing at the
-    start of the string.</li>
+      <small>The ''xxx-large'' value is a non-CSS value used here to indicate a font size
+      50% larger than ''xx-large''.</small>
 
-    <li><a>Skip whitespace</a>.</li>
-
-    <li>If <var>position</var> is past the end of <var>input</var>, there is no <a>presentational hint</a>. Abort these steps.</li>
-
-    <li>If the character at <var>position</var> is a U+002B PLUS SIGN character (+), then let
-    <var>mode</var> be <i>relative-plus</i>, and advance <var>position</var> to the next character.
-    Otherwise, if the character at <var>position</var> is a U+002D HYPHEN-MINUS character (-), then
-    let <var>mode</var> be <i>relative-minus</i>, and advance <var>position</var> to the next
-    character. Otherwise, let <var>mode</var> be <i>absolute</i>.</li>
-
-    <li><a>Collect a sequence of characters</a> that are <a>ASCII digits</a>, and let
-    the resulting sequence be <var>digits</var>.</li>
-
-    <li>If <var>digits</var> is the empty string, there is no <a>presentational hint</a>. Abort these steps.</li>
-
-    <li>Interpret <var>digits</var> as a base-ten integer. Let <var>value</var> be the resulting
-    number.</li>
-
-    <li>
-
-    If <var>mode</var> is <i>relative-plus</i>, then increment <var>value</var> by 3. If
-    <var>mode</var> is <i>relative-minus</i>, then let <var>value</var> be the result of subtracting
-    <var>value</var> from 3.
-
-    </li>
-
-    <li>If <var>value</var> is greater than 7, let it be 7.</li>
-
-    <li>If <var>value</var> is less than 1, let it be 1.</li>
-
-    <li>
-
-    Set 'font-size' to the keyword corresponding to the value of <var>value</var> according to
-    the following table:
-
-    <table>
-      <thead>
-      <tr>
-        <th><var>value</var>
-        <th>'font-size' keyword
-        <th>Notes
-      <tbody>
-      <tr>
-        <td>1
-        <td>''x-small''
-        <td>
-      <tr>
-        <td>2
-        <td>''small''
-        <td>
-      <tr>
-        <td>3
-        <td>''medium''
-        <td>
-      <tr>
-        <td>4
-        <td>''large''
-        <td>
-      <tr>
-        <td>5
-        <td>''x-large''
-        <td>
-      <tr>
-        <td>6
-        <td>''xx-large''
-        <td>
-      <tr>
-        <td>7
-        <td>''xxx-large''
-        <td><i>see below</i>
-    </table>
-
-    <small>The &quot;xxx-large&quot; value is a non-CSS value used here to
-    indicate a font size 50% larger than &quot;xx-large&quot;.</small>
-
-    </li>
-
-  </ol>
-
-<h4 id="bidirectional-text">Bidirectional text</h4>
+### Bidirectional text ### {#bidirectional-text}
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -526,7 +504,7 @@
 
     address, blockquote, center, div, figure, figcaption, footer, form, header, hr,
     legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2,
-    h3, h4, h5, h6, nav, section, table, caption, colgroup, col, thead,
+    h3, h4, h5, h6, hgroup, nav, section, table, caption, colgroup, col, thead,
     tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output,
     [dir=ltr i], [dir=rtl i], [dir=auto i] {
       unicode-bidi: isolate;
@@ -540,22 +518,19 @@
     }
     /* see prose for input elements whose type attribute is in the Text state */
 
-    /* the rules setting the 'content' property on br and wbr elements also has bidi implications */
+    /* the rules setting the 'content' property on &lt;br> and &lt;wbr> elements also has bidi implications */
   </pre>
 
-  When an <{input}> element's <code>dir</code> attribute is in the
-  <a state for="dir">auto</a> state and its <code>type</code>
-  attribute is in the <a>Text</a> state, then the user agent is
-  expected to act as if it had a user-agent-level style sheet rule setting the 'unicode-bidi'
-  property to ''plaintext''.
+  When an <{input}> element's <{global/dir}> attribute is in the <{dir/auto!!state}> state and its
+  <{input/type}> attribute is in the [=Text=] state, then the user agent is expected to act as if it
+  had a user-agent-level style sheet rule setting the 'unicode-bidi' property to ''plaintext''.
 
-  Input fields (i.e., <{textarea}> elements, and <{input}> elements when their
-  <code>type</code> attribute is in the <{input/Text}>, <{input/Search}>,
-  <{input/Telephone}>, <{input/URL}>,
-  or <{input/E-mail}> state) are expected to present an editing
-  user interface with a directionality that matches the element's 'direction' property.
+  Input fields (i.e., <{textarea}> elements, and <{input}> elements when their <{input/type}>
+  attribute is in the <{input/Text}>, <{input/Search}>, <{input/Telephone}>, <{input/URL}>, or
+  <{input/E-mail}> state) are expected to present an editing user interface with a directionality
+  that matches the element's 'direction' property.
 
-  When the document's character encoding is <a>ISO-8859-8</a>, the following rules are additionally
+  When the document's character encoding is [=ISO-8859-8=], the following rules are additionally
   expected to apply, following those above: [[!ENCODING]]
 
   <pre highlight="css">
@@ -563,7 +538,7 @@
 
     address, blockquote, center, div, figure, figcaption, footer, form, header, hr,
     legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2,
-    h3, h4, h5, h6, nav, section, table, caption, colgroup, col, thead,
+    h3, h4, h5, h6, hgroup, nav, section, table, caption, colgroup, col, thead,
     tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, [dir=ltr i],
     [dir=rtl i], [dir=auto i], *|* {
       unicode-bidi: bidi-override;
@@ -574,54 +549,65 @@
     }
   </pre>
 
-<h4 id="quotes">Quotes</h4>
+### Quotes ### {#quotes}
 
   This block is automatically generated from the Unicode Common Locale Data Repository. [[!CLDR]]
 
   User agents are expected to use either the block below (which will be regularly updated) or to
   automatically generate their own copy directly from the source material. The language codes are
-  derived from the CLDR file names. The quotes are derived from the <code>delimiter</code>
+  derived from the CLDR file names. The quotes are derived from the `delimiter`
   blocks, with fallback handled as specified in the CLDR documentation.
-
 <pre class="include">
 path: includes/cldr.include
 </pre>
 
-<h4 id="sections-and-headings">Sections and headings</h4>
+### Sections and headings ### {#sections-and-headings}
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
 
-    article, aside, h1, h2, h3, h4, h5, h6, nav, section {
+    article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section {
       display: block;
     }
 
-    h1 { margin-top: 0.67em; margin-bottom: 0.67em; font-size: 2.00em; font-weight: bold; }
-    h2 { margin-top: 0.83em; margin-bottom: 0.83em; font-size: 1.50em; font-weight: bold; }
-    h3 { margin-top: 1.00em; margin-bottom: 1.00em; font-size: 1.17em; font-weight: bold; }
-    h4 { margin-top: 1.33em; margin-bottom: 1.33em; font-size: 1.00em; font-weight: bold; }
-    h5 { margin-top: 1.67em; margin-bottom: 1.67em; font-size: 0.83em; font-weight: bold; }
-    h6 { margin-top: 2.33em; margin-bottom: 2.33em; font-size: 0.67em; font-weight: bold; }
+    h1 { margin-block-start: 0.67em; margin-block-end: 0.67em; font-size: 2.00em; font-weight: bold; }
+    h2 { margin-block-start: 0.83em; margin-block-end: 0.83em; font-size: 1.50em; font-weight: bold; }
+    h3 { margin-block-start: 1.00em; margin-block-end: 1.00em; font-size: 1.17em; font-weight: bold; }
+    h4 { margin-block-start: 1.33em; margin-block-end: 1.33em; font-size: 1.00em; font-weight: bold; }
+    h5 { margin-block-start: 1.67em; margin-block-end: 1.67em; font-size: 0.83em; font-weight: bold; }
+    h6 { margin-block-start: 2.33em; margin-block-end: 2.33em; font-size: 0.67em; font-weight: bold; }
   </pre>
 
-  In the following CSS block, <var>x</var> is shorthand for the following selector:
-  <code>:matches(article, aside, nav, section)</code>
+  In the following CSS block, |x| is shorthand for the following selector:
+  `:matches(article, aside, nav, section)`
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
 
-    x h1 { margin-top: 0.83em; margin-bottom: 0.83em; font-size: 1.50em; }
-    x x h1 { margin-top: 1.00em; margin-bottom: 1.00em; font-size: 1.17em; }
-    x x x h1 { margin-top: 1.33em; margin-bottom: 1.33em; font-size: 1.00em; }
-    x x x x h1 { margin-top: 1.67em; margin-bottom: 1.67em; font-size: 0.83em; }
-    x x x x x h1 { margin-top: 2.33em; margin-bottom: 2.33em; font-size: 0.67em; }
+    x h1 { margin-block-start: 0.83em; margin-block-end: 0.83em; font-size: 1.50em; }
+    x x h1 { margin-block-start: 1.00em; margin-block-end: 1.00em; font-size: 1.17em; }
+    x x x h1 { margin-block-start: 1.33em; margin-block-end: 1.33em; font-size: 1.00em; }
+    x x x x h1 { margin-block-start: 1.67em; margin-block-end: 1.67em; font-size: 0.83em; }
+    x x x x x h1 { margin-block-start: 2.33em; margin-block-end: 2.33em; font-size: 0.67em; }
+
+    x hgroup > h1 ~ h2 { margin-block-start: 1.00em; margin-block-end: 1.00em; font-size: 1.17em; }
+    x x hgroup > h1 ~ h2 { margin-block-start: 1.33em; margin-block-end: 1.33em; font-size: 1.00em; }
+    x x x hgroup > h1 ~ h2 { margin-block-start: 1.67em; margin-block-end: 1.67em; font-size: 0.83em; }
+    x x x x hgroup > h1 ~ h2 { margin-block-start: 2.33em; margin-block-end: 2.33em; font-size: 0.67em; }
+
+    x hgroup > h1 ~ h3 { margin-block-start: 1.33em; margin-block-end: 1.33em; font-size: 1.00em; }
+    x x hgroup > h1 ~ h3 { margin-block-start: 1.67em; margin-block-end: 1.67em; font-size: 0.83em; }
+    x x x hgroup > h1 ~ h3 { margin-block-start: 2.33em; margin-block-end: 2.33em; font-size: 0.67em; }
+
+    x hgroup > h1 ~ h4 { margin-block-start: 1.67em; margin-block-end: 1.67em; font-size: 0.83em; }
+    x x hgroup > h1 ~ h4 { margin-block-start: 2.33em; margin-block-end: 2.33em; font-size: 0.67em; }
+
+    x hgroup > h1 ~ h5 { margin-block-start: 2.33em; margin-block-end: 2.33em; font-size: 0.67em; }
   </pre>
 
-  <p class="note">
-  The shorthand is used to keep this block at least mildly readable.
-  </p>
+  NOTE: The shorthand is used to keep this block at least mildly readable.
 
-<h4 id="section-lists">Lists</h4>
+### Lists ### {#section-lists}
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -629,10 +615,10 @@ path: includes/cldr.include
     dir, dd, dl, dt, menu, ol, ul { display: block; }
     li { display: list-item; }
 
-    dir, dl, menu, ol, ul { margin-top: 1em; margin-bottom: 1em; }
+    dir, dl, menu, ol, ul { margin-block-start: 1em; margin-block-end: 1em; }
 
     :matches(dir, dl, menu, ol, ul) :matches(dir, dl, menu, ol, ul) {
-      margin-top: 0; margin-bottom: 0;
+      margin-block-start: 0; margin-block-end: 0;
     }
 
     dd { margin-left: 40px; } /* LTR-specific: use 'margin-right' for rtl elements */
@@ -651,8 +637,7 @@ path: includes/cldr.include
     }
   </pre>
 
-  The following rules are also expected to apply, as <a>presentational
-  hints</a>:
+  The following rules are also expected to apply, as [=presentational hints=]:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -668,19 +653,16 @@ path: includes/cldr.include
     ul[type=square i], li[type=square i] { list-style-type: square; }
   </pre>
 
-  In the above stylesheet, the <a>attribute selectors</a> for the
-  <code>ol</code> and <{li}> elements are expected to be treated as
-  <a>case-sensitive</a>.
+  In the above stylesheet, the [=attribute selectors=] for the <{ol}> and <{li}> elements are
+  expected to be treated as [=case-sensitive=].
 
-  When rendering <{li}> elements, non-CSS user agents are expected to use the
-  <a>ordinal value</a> of the <{li}> element to render the counter in the list item
-  marker.
+  When rendering <{li}> elements, non-CSS user agents are expected to use the [=ordinal value=] of
+  the <{li}> element to render the counter in the list item marker.
 
-  <p class="critical">This specification does not yet define the
-  CSS-specific rules for rendering <{li}> elements, because CSS doesn't yet provide
-  sufficient hooks for this purpose.
+  <p class="critical">This specification does not yet define the CSS-specific rules for rendering
+  <{li}> elements, because CSS doesn't yet provide sufficient hooks for this purpose.
 
-<h4 id="tables">Tables</h4>
+### Tables ### {#tables}
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -743,7 +725,7 @@ path: includes/cldr.include
     }
   </pre>
 
-  The following rules are also expected to apply, as <a>presentational hints</a>:
+  The following rules are also expected to apply, as [=presentational hints=]:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -869,7 +851,7 @@ path: includes/cldr.include
     }
   </pre>
 
-  In <a>quirks mode</a>, the following rules are also expected to apply:
+  In [=quirks mode=], the following rules are also expected to apply:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -888,18 +870,18 @@ path: includes/cldr.include
   <hr />
 
   For the purposes of the CSS table model, the <{col}> element is expected to be treated
-  as if it was present as many times as its <code>span</code> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
+  as if it was present as many times as its <{col/span}> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
 
   For the purposes of the CSS table model, the <{colgroup}> element, if it contains no
   <{col}> element, is expected to be treated as if it had as many such children as its
-  <code>span</code> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
+  <{col/span}> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
 
   For the purposes of the CSS table model, the <code>colspan</code> and
   <code>rowspan</code> attributes on <{td}> and <{th}>
   elements are expected to <a lt="rules for parsing non-negative integers">provide</a> the
   <i>special knowledge</i> regarding cells spanning rows and columns.
 
-  In <a>HTML documents</a>, the following rules are also expected to apply:
+  In [=HTML documents=], the following rules are also expected to apply:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -910,68 +892,62 @@ path: includes/cldr.include
   <hr />
 
   The <{table}> element's <code>cellspacing</code>
-  attribute <a>maps to the pixel length property</a> 'border-spacing' on the element.
+  attribute [=maps to the pixel length property=] 'border-spacing' on the element.
 
   The <{table}> element's <code>cellpadding</code>
-  attribute <a>maps to the pixel length
-  properties</a> 'padding-top', 'padding-right', 'padding-bottom', and 'padding-left' of any
-  <code>td</code> and <{th}> elements that have corresponding <a>cells</a> in the <a>table</a> corresponding to
+  attribute [=maps to the pixel length properties=] 'padding-top', 'padding-right', 'padding-bottom', and 'padding-left' of any
+  <code>td</code> and <{th}> elements that have corresponding [=cells=] in the [=table=] corresponding to
   the <{table}> element.
 
-  The <{table}> element's <code>hspace</code> attribute <a>maps to the dimension properties</a> 'margin-left' and
+  The <{table}> element's <code>hspace</code> attribute [=maps to the dimension properties=] 'margin-left' and
   'margin-right' on the <{table}> element.
 
-  The <{table}> element's <code>vspace</code> attribute <a>maps to the dimension properties</a> 'margin-top' and
+  The <{table}> element's <code>vspace</code> attribute [=maps to the dimension properties=] 'margin-top' and
   'margin-bottom' on the <{table}> element.
 
   The <{table}> element's <code>height</code> attribute
-  <a>maps to the dimension property (ignoring zero)</a> 'height' on the <code>table</code>
+  [=maps to the dimension property (ignoring zero)=] 'height' on the <code>table</code>
   element.
 
   The <{table}> element's <code>width</code> attribute
-  <a>maps to the dimension property (ignoring zero)</a> 'width' on the <code>table</code>
+  [=maps to the dimension property (ignoring zero)=] 'width' on the <code>table</code>
   element.
 
-  The <{col}> element's <code>width</code> attribute <a>maps
-  to the dimension property (ignoring zero)</a> 'width' on the <{col}> element.
+  The <{col}> element's <code>width</code> attribute [=maps to the dimension property (ignoring zero)=] 'width' on the <{col}> element.
 
-  The <{tr}> element's <code>height</code> attribute <a>maps
-  to the dimension property (ignoring zero)</a> 'height' on the <{tr}> element.
+  The <{tr}> element's <code>height</code> attribute [=maps to the dimension property (ignoring zero)=] 'height' on the <{tr}> element.
 
   The <code>td</code> and <{th}> elements' <code>height</code>
-  attributes <a>map to the dimension
-  property (ignoring zero)</a> 'height' on the element.
+  attributes [=map to the dimension property (ignoring zero)=] 'height' on the element.
 
   The <code>td</code> and <{th}> elements' <code>width</code>
-  attributes <a>map to the dimension
-  property (ignoring zero)</a> 'width' on the element.
+  attributes [=map to the dimension property (ignoring zero)=] 'width' on the element.
 
   <hr />
 
   The <{caption}> element unless specified otherwise below, and the <{thead}>,
   <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, and <code>th</code>
-  elements when they have an <code>align</code> attribute whose value is an <a>ASCII
-  case-insensitive</a> match for either the string "<code>center</code>" or the string
+  elements when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for either the string "<code>center</code>" or the string
   "<code>middle</code>", are expected to center text within themselves, as if they had
-  their 'text-align' property set to ''center'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the center.
+  their 'text-align' property set to ''center'' in a [=presentational hint=], and to [=align descendants=] to the center.
 
   The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an <a>ASCII case-insensitive</a> match for
+  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for
   the string "<code>left</code>", are expected to left-align text within themselves, as if
-  they had their 'text-align' property set to ''text-align/left'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the left.
+  they had their 'text-align' property set to ''text-align/left'' in a [=presentational hint=], and to [=align descendants=] to the left.
 
   The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an <a>ASCII case-insensitive</a> match for
+  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for
   the string "<code>right</code>", are expected to right-align text within themselves, as
-  if they had their 'text-align' property set to ''text-align/right'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the right.
+  if they had their 'text-align' property set to ''text-align/right'' in a [=presentational hint=], and to [=align descendants=] to the right.
 
   The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an <a>ASCII case-insensitive</a> match for
+  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for
   the string "<code>justify</code>", are expected to full-justify text within themselves,
-  as if they had their 'text-align' property set to ''text-align/justify'' in a <a>presentational hint</a>, and to <a>align descendants</a> to the left.
+  as if they had their 'text-align' property set to ''text-align/justify'' in a [=presentational hint=], and to [=align descendants=] to the left.
 
   User agents are expected to have a rule in their user agent stylesheet that matches
-  <{th}> elements that have a parent node whose <a>computed value</a> for the 'text-align'
+  <{th}> elements that have a parent node whose [=computed value=] for the 'text-align'
   property is its initial value, whose declaration block consists of just a single declaration that
   sets the 'text-align' property to the value ''center''.
 
@@ -979,53 +955,49 @@ path: includes/cldr.include
 
   When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>,
   <{tr}>, <{td}>, or <{th}> element has a <{common/background}> attribute set to a non-empty value, the new value is
-  expected to be <a>parsed</a> relative to the element's <a>node document</a>, and if this is
-  successful, the user agent is expected to treat the attribute as a <a>presentational hint</a>
+  expected to be [=parsed=] relative to the element's [=node document=], and if this is
+  successful, the user agent is expected to treat the attribute as a [=presentational hint=]
   setting the element's 'background-image' property to the
-  <a>resulting URL string</a>.
+  [=resulting URL string=].
 
   When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>,
   <{tr}>, <{td}>, or <{th}> element has a <code>bgcolor</code>
-  attribute set, the new value is expected to be parsed using the <a>rules for parsing a legacy
-  color value</a>, and if that does not return an error, the user agent is expected to treat the
-  attribute as a <a>presentational hint</a> setting the element's
+  attribute set, the new value is expected to be parsed using the [=rules for parsing a legacy color value=], and if that does not return an error, the user agent is expected to treat the
+  attribute as a [=presentational hint=] setting the element's
   'background-color' property to the resulting color.
 
   When a <{table}> element has a <code>bordercolor</code>
-  attribute, its value is expected to be parsed using the <a>rules for parsing a legacy color
-  value</a>, and if that does not return an error, the user agent is expected to treat the
-  attribute as a <a>presentational hint</a> setting the element's
+  attribute, its value is expected to be parsed using the [=rules for parsing a legacy color value=], and if that does not return an error, the user agent is expected to treat the
+  attribute as a [=presentational hint=] setting the element's
   'border-top-color', 'border-right-color', 'border-bottom-color', and 'border-left-color'
   properties to the resulting color.
 
   <hr />
 
-  The <{table}> element's <code>border</code> attribute <a>maps to the pixel length properties</a>
+  The <{table}> element's <code>border</code> attribute [=maps to the pixel length properties=]
   'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width' on the
-  element. If the attribute is present but parsing the attribute's value using the <a>rules for
-  parsing non-negative integers</a> generates an error, a default value of 1px is expected to be
+  element. If the attribute is present but parsing the attribute's value using the [=rules for parsing non-negative integers=] generates an error, a default value of 1px is expected to be
   used for that property instead.
 
   Rules marked "<dfn>only if border is not equivalent to zero</dfn>"
   in the CSS block above is expected to only be applied if the <code>border</code> attribute mentioned in the selectors for the rule is not
-  only present but, when parsed using the <a>rules for parsing non-negative integers</a>, is
+  only present but, when parsed using the [=rules for parsing non-negative integers=], is
   also found to have a value other than zero or to generate an error.
 
   <hr />
 
-  In <a>quirks mode</a>, a <{td}> element or a <{th}> element that has a
-  <code>nowrap</code> attribute but also has a <code>width</code> attribute whose value, when parsed using the <a>rules for
-  parsing non-zero dimension values</a>, is found to be a length (not an error or a number
-  classified as a percentage), is expected to have a <a>presentational hint</a> setting the element's 'white-space' property to ''white-space/normal'',
+  In [=quirks mode=], a <{td}> element or a <{th}> element that has a
+  <code>nowrap</code> attribute but also has a <code>width</code> attribute whose value, when parsed using the [=rules for parsing non-zero dimension values=], is found to be a length (not an error or a number
+  classified as a percentage), is expected to have a [=presentational hint=] setting the element's 'white-space' property to ''white-space/normal'',
   overriding the rule in the CSS block above that sets it to ''white-space/nowrap''.
 
 <h4 id="margin-collapsing-quirks">Margin collapsing quirks</h4>
 
   A node is <dfn>substantial</dfn> if it is a text node
-  that is not <a>inter-element whitespace</a>, or if it is an element node.
+  that is not [=inter-element whitespace=], or if it is an element node.
 
   A node is <dfn>blank</dfn> if it is an element that contains no
-  <a>substantial</a> nodes.
+  [=substantial=] nodes.
 
   The <dfn lt="elements with default margins|element with default margins">elements with default margins</dfn>
   are the following elements: <{blockquote}>, <{dir}>, <{dl}>,
@@ -1033,24 +1005,22 @@ path: includes/cldr.include
   <{h6}>, <{listing}>, <{menu}>, <{ol}>,
   <{p}>, <{plaintext}>, <{pre}>, <{ul}>, <code>xmp</code>
 
-  In <a>quirks mode</a>, any <a>element with default margins</a> that is the child of a <{body}>, <{td}>, or
-  <{th}> element and has no <a>substantial</a>
+  In [=quirks mode=], any [=element with default margins=] that is the child of a <{body}>, <{td}>, or
+  <{th}> element and has no [=substantial=]
   previous siblings is expected to have a user-agent level style sheet rule that sets its
   'margin-top' property to zero.
 
-  In <a>quirks mode</a>, any <a>element
-  with default margins</a> that is the child of a <{body}>, <{td}>, or
-  <{th}> element, has no <a>substantial</a>
-  previous siblings, and is <a>blank</a>, is expected to have
+  In [=quirks mode=], any [=element with default margins=] that is the child of a <{body}>, <{td}>, or
+  <{th}> element, has no [=substantial=]
+  previous siblings, and is [=blank=], is expected to have
   a user-agent level style sheet rule that sets its 'margin-bottom' property to zero also.
 
-  In <a>quirks mode</a>, any <a>element
-  with default margins</a> that is the child of a <{td}> or <{th}> element, has
-  no <a>substantial</a> following siblings, and is <a>blank</a>, is expected to have a user-agent level style sheet
+  In [=quirks mode=], any [=element with default margins=] that is the child of a <{td}> or <{th}> element, has
+  no [=substantial=] following siblings, and is [=blank=], is expected to have a user-agent level style sheet
   rule that sets its 'margin-top' property to zero.
 
-  In <a>quirks mode</a>, any <{p}> element that is the child of a <{td}>
-  or <{th}> element and has no <a>substantial</a> following siblings, is expected to have a
+  In [=quirks mode=], any <{p}> element that is the child of a <{td}>
+  or <{th}> element and has no [=substantial=] following siblings, is expected to have a
   user-agent level style sheet rule that sets its 'margin-bottom' property to zero.
 
 <h4 id="form-controls">Form controls</h4>
@@ -1068,7 +1038,7 @@ path: includes/cldr.include
   }
   </pre>
 
-  In <a>quirks mode</a>, the following rules are also expected to apply:
+  In [=quirks mode=], the following rules are also expected to apply:
 
   <pre highlight="css">
 @namespace url(http://www.w3.org/1999/xhtml);
@@ -1087,7 +1057,7 @@ path: includes/cldr.include
   hr { color: gray; border-style: inset; border-width: 1px; margin: 0.5em auto; }
   </pre>
 
-  The following rules are also expected to apply, as <a>presentational hints</a>:
+  The following rules are also expected to apply, as [=presentational hints=]:
 
   <pre highlight="css">
 @namespace url(http://www.w3.org/1999/xhtml);
@@ -1100,25 +1070,23 @@ path: includes/cldr.include
 
   If an <{hr}> element has either a <code>color</code> attribute
   or a <code>noshade</code> attribute, and furthermore also has a <code>size</code> attribute, and parsing that attribute's value using the
-  <a>rules for parsing non-negative integers</a> doesn't generate an error, then the user
+  [=rules for parsing non-negative integers=] doesn't generate an error, then the user
   agent is expected to use the parsed value divided by two as a pixel length for
-  <a>presentational hints</a> for the properties 'border-top-width', 'border-right-width',
+  [=presentational hints=] for the properties 'border-top-width', 'border-right-width',
   'border-bottom-width', and 'border-left-width' on the element.
 
   Otherwise, if an <{hr}> element has neither a <code>color</code>
   attribute nor a <code>noshade</code> attribute, but does have a <code>size</code> attribute, and parsing that attribute's value using the
-  <a>rules for parsing non-negative integers</a> doesn't generate an error, then: if the
-  parsed value is one, then the user agent is expected to use the attribute as a <a>presentational hint</a> setting the element's
+  [=rules for parsing non-negative integers=] doesn't generate an error, then: if the
+  parsed value is one, then the user agent is expected to use the attribute as a [=presentational hint=] setting the element's
   'border-bottom-width' to 0; otherwise, if the parsed value is greater than one, then the user
-  agent is expected to use the parsed value minus two as a pixel length for <a>presentational
-  hints</a> for the 'height' property on the element.
+  agent is expected to use the parsed value minus two as a pixel length for [=presentational hints=] for the 'height' property on the element.
 
-  The <code>width</code> attribute on an <{hr}> element <a>maps
-  to the dimension property</a> 'width' on the element.
+  The <code>width</code> attribute on an <{hr}> element [=maps to the dimension property=] 'width' on the element.
 
   When an <{hr}> element has a <code>color</code> attribute, its
-  value is expected to be parsed using the <a>rules for parsing a legacy color value</a>, and
-  if that does not return an error, the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'color' property to
+  value is expected to be parsed using the [=rules for parsing a legacy color value=], and
+  if that does not return an error, the user agent is expected to treat the attribute as a [=presentational hint=] setting the element's 'color' property to
   the resulting color.
 
 <h4 id="the-fieldset-and-legend-elements">The <{fieldset}> and <{legend}> elements</h4>
@@ -1148,19 +1116,19 @@ path: includes/cldr.include
 
     <li>The child is a <{legend}> element.</li>
 
-    <li>The child is not <a>out-of-flow</a> (e.g., not absolutely positioned or floated).</li>
+    <li>The child is not [=out-of-flow=] (e.g., not absolutely positioned or floated).</li>
 
     <li>The child is generating a box (e.g., it is not 'display:none').</li>
 
   </ul>
 
-  A <{fieldset}> element's <a>rendered legend</a>, if any, is expected to be
-  rendered over the top <a>border edge</a> of the <{fieldset}> element as a <a>block box</a>
+  A <{fieldset}> element's [=rendered legend=], if any, is expected to be
+  rendered over the top [=border edge=] of the <{fieldset}> element as a [=block box=]
   (overriding any explicit 'display' value). In the absence of an explicit width, the box should
   shrink-wrap. If the <{legend}> element in question has an <{legend/align}> attribute, and its
-  value is an <a>ASCII case-insensitive</a> match for one of the strings in the first column of the
+  value is an [=ASCII case-insensitive=] match for one of the strings in the first column of the
   following table, then the <{legend}> is expected to be rendered horizontally aligned over the
-  <a>border edge</a> in the position given in the corresponding cell on the same row in the second
+  [=border edge=] in the position given in the corresponding cell on the same row in the second
   column. If the attribute is absent or has a value that doesn't match any of the cases in the
   table, then the position is expected to be on the right if the 'direction' property on this
   element has a computed value of ''rtl'', and on the left otherwise.
@@ -1187,28 +1155,27 @@ path: includes/cldr.include
 <h4 id="replaced-elements-embedded-content">Embedded content</h4>
 
   The <{embed}>, <{iframe}>, and <{video}> elements are expected to be
-  treated as <a>replaced elements</a>.
+  treated as [=replaced elements=].
 
-  A <{canvas}> element that <a>represents</a> <a>embedded content</a> is
-  expected to be treated as a <a>replaced element</a>; the contents of such elements are the
-  element's bitmap, if any, or else a transparent black bitmap with the same <a>intrinsic
-  dimensions</a> as the element. Other <{canvas}> elements are expected to be treated
+  A <{canvas}> element that [=represents=] [=embedded content=] is
+  expected to be treated as a [=replaced element=]; the contents of such elements are the
+  element's bitmap, if any, or else a transparent black bitmap with the same [=intrinsic dimensions=] as the element. Other <{canvas}> elements are expected to be treated
   as ordinary elements in the rendering model.
 
-  An <{object}> element that <a>represents</a> an image, plugin, or <a>nested browsing context</a> is expected to be treated as a <a>replaced element</a>. Other
+  An <{object}> element that [=represents=] an image, plugin, or [=nested browsing context=] is expected to be treated as a [=replaced element=]. Other
   <{object}> elements are expected to be treated as ordinary elements in the rendering
   model.
 
-  An <{applet}> element that <a>represents</a> a <a>plugin</a> is expected
-  to be treated as a <a>replaced element</a>. Other <{applet}> elements are expected
+  An <{applet}> element that [=represents=] a [=plugin=] is expected
+  to be treated as a [=replaced element=]. Other <{applet}> elements are expected
   to be treated as ordinary elements in the rendering model.
 
-  The <{audio}> element, when it is <a>exposing a user interface</a>, is expected to be treated as a
-  <a>replaced element</a> about one line high, as wide as is necessary to expose the user
-  agent's user interface features. When an <{audio}> element is not <a>exposing a user interface</a>, the user agent is expected to force
+  The <{audio}> element, when it is [=exposing a user interface=], is expected to be treated as a
+  [=replaced element=] about one line high, as wide as is necessary to expose the user
+  agent's user interface features. When an <{audio}> element is not [=exposing a user interface=], the user agent is expected to force
   its 'display' property to compute to ''display/none'', irrespective of CSS rules.
 
-  Whether a <{video}> element is <a>exposing a user interface</a> is not expected to affect the size of the rendering;
+  Whether a <{video}> element is [=exposing a user interface=] is not expected to affect the size of the rendering;
   controls are expected to be overlaid above the page content without causing any layout changes,
   and are expected to disappear when the user does not need them.
 
@@ -1219,14 +1186,9 @@ path: includes/cldr.include
 
   Any subtitles or captions are expected to be overlayed directly on top of their
   <{video}> element, as defined by the relevant rendering rules; for WebVTT, those are the
-  <a>rules for updating the display of WebVTT text tracks</a>. [[WEBVTT]]
+  [=rules for updating the display of WebVTT text tracks=]. [[WEBVTT]]
 
-  When the user agent starts <a>exposing a user
-  interface</a> for a <{video}> element, the user agent should run the <a>rules for
-  updating the text track rendering</a> of each of the <a>text
-  tracks</a> in the <{video}> element's <a>list of text tracks</a> that are <a mode for="track">showing</a> and whose <a>text track kind</a> is one of <code>subtitles</code> or <code>captions</code> (e.g., for <a>text
-  tracks</a> based on <a>WebVTT</a>, the <a>rules for updating the display of WebVTT
-  text tracks</a>). [[WEBVTT]]
+  When the user agent starts [=exposing a user interface=] for a <{video}> element, the user agent should run the [=rules for updating the text track rendering=] of each of the [=text tracks=] in the <{video}> element's [=list of text tracks=] that are <a mode for="track">showing</a> and whose [=text track kind=] is one of <code>subtitles</code> or <code>captions</code> (e.g., for [=text tracks=] based on [=WebVTT=], the [=rules for updating the display of WebVTT text tracks=]). [[WEBVTT]]
 
   <p class="note">
   Resizing <code>video</code> and <{canvas}> elements does not interrupt
@@ -1251,15 +1213,15 @@ path: includes/cldr.include
 
   <dl class="switch">
 
-    <dt>If the element <a>represents</a> an image</dt>
+    <dt>If the element [=represents=] an image</dt>
 
-    <dd>The user agent is expected to treat the element as a <a>replaced element</a> and
+    <dd>The user agent is expected to treat the element as a [=replaced element=] and
     render the image according to the rules for doing so defined in CSS.</dd>
 
     <dt>
 
-    If the element does not <a>represent</a> an image, but the element
-    already has <a>intrinsic dimensions</a> (e.g., from the <a>dimension attributes</a>
+    If the element does not [=represent=] an image, but the element
+    already has [=intrinsic dimensions=] (e.g., from the [=dimension attributes=]
     or CSS rules), and either:
 
     <ul>
@@ -1269,18 +1231,18 @@ path: includes/cldr.include
 
       <li>the element has no <code>alt</code> attribute, or
 
-      <li>the <code>Document</code> is in <a>quirks mode</a>
+      <li>the <code>Document</code> is in [=quirks mode=]
 
     </ul>
 
     </dt>
 
-    <dd>The user agent is expected to treat the element as a <a>replaced element</a> whose
+    <dd>The user agent is expected to treat the element as a [=replaced element=] whose
     content is the text that the element represents, if any, optionally alongside an icon indicating
     that the image is being obtained (if applicable). For <{input}> elements, the element
-    is expected to appear button-like to indicate that the element is a <a>button</a>.</dd>
+    is expected to appear button-like to indicate that the element is a [=button=].</dd>
 
-    <dt>If the element is an <{img}> element that <a>represents</a> some text and the
+    <dt>If the element is an <{img}> element that [=represents=] some text and the
     user agent does not expect this to change</dt>
 
     <dd>The user agent is expected to treat the element as a non-replaced phrasing element whose
@@ -1288,17 +1250,16 @@ path: includes/cldr.include
     user can request the image be displayed or investigate why it is not rendering. In non-graphical
     contexts, such an icon should be omitted.</dd>
 
-    <dt>If the element is an <{img}> element that <a>represents</a> nothing and the
+    <dt>If the element is an <{img}> element that [=represents=] nothing and the
     user agent does not expect this to change</dt>
 
     <dd>The user agent is expected to treat the element as an empty inline element. (In the absence
     of further styles, this will cause the element to essentially not be rendered.)</dd>
 
-    <dt>If the element is an <{input}> element that does not <a>represent</a> an image and the user agent does not expect this to change</dt>
+    <dt>If the element is an <{input}> element that does not [=represent=] an image and the user agent does not expect this to change</dt>
 
-    <dd>The user agent is expected to treat the element as a <a>replaced element</a>
-    consisting of a button whose content is the element's alternative text. The <a>intrinsic
-    dimensions</a> of the button are expected to be about one line in height and whatever width
+    <dd>The user agent is expected to treat the element as a [=replaced element=]
+    consisting of a button whose content is the element's alternative text. The [=intrinsic dimensions=] of the button are expected to be about one line in height and whatever width
     is necessary to render the text on one line.</dd>
 
   </dl>
@@ -1313,25 +1274,24 @@ path: includes/cldr.include
 
   <hr />
 
-  All animated images with the same <a>absolute URL</a> and the same image data are
+  All animated images with the same [=absolute URL=] and the same image data are
   expected to be rendered synchronized to the same timeline as a group, with the timeline starting
   at the time of the least recent addition to the group.
 
   <p class="note">
-  In other words, when a second image with the same <a>absolute URL</a> and
+  In other words, when a second image with the same [=absolute URL=] and
   animated image data is <a for="document">inserted into a document</a>, it jumps to the point in the animation cycle that
   is currently being displayed by the first image.
   </p>
 
   When a user agent is to <dfn>restart the animation</dfn> for an <{img}> element
-  showing an animated image, all animated images with the same <a>absolute URL</a> and the
-  same image data in that <{img}> element's <a>node document</a> are expected to restart
+  showing an animated image, all animated images with the same [=absolute URL=] and the
+  same image data in that <{img}> element's [=node document=] are expected to restart
   their animation from the beginning.
 
   <hr />
 
-  The following CSS rules are expected to apply when the <code>Document</code> is in <a>quirks
-  mode</a>:
+  The following CSS rules are expected to apply when the <code>Document</code> is in [=quirks mode=]:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -1342,7 +1302,7 @@ path: includes/cldr.include
 
 <h4 id="attributes-for-embedded-content-and-images">Attributes for embedded content and images</h4>
 
-  The following CSS rules are expected to apply as <a>presentational hints</a>:
+  The following CSS rules are expected to apply as [=presentational hints=]:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -1390,24 +1350,23 @@ path: includes/cldr.include
 
   When an <{applet}>, <{embed}>, <{iframe}>, <{img}>, or
   <{object}> element, or an <{input}> element whose <code>type</code> attribute is in the <{input/Image|Image Button}> state, has an <code>align</code>
-  attribute whose value is an <a>ASCII case-insensitive</a> match for the string "<code>center</code>" or the string "<code>middle</code>", the user agent is expected
+  attribute whose value is an [=ASCII case-insensitive=] match for the string "<code>center</code>" or the string "<code>middle</code>", the user agent is expected
   to act as if the element's 'vertical-align' property was set to a value that aligns the vertical
   middle of the element with the parent element's baseline.
 
   The <code>hspace</code> attribute of <{applet}>, <{embed}>,
   <{iframe}>, <{img}>, or <{object}> elements, and <code>input</code>
-  elements with a <code>type</code> attribute in the <{input/Image|Image Button}> state, <a>maps to the dimension properties</a> 'margin-left' and 'margin-right' on the
+  elements with a <code>type</code> attribute in the <{input/Image|Image Button}> state, [=maps to the dimension properties=] 'margin-left' and 'margin-right' on the
   element.
 
   The <code>vspace</code> attribute of <{applet}>, <{embed}>,
   <{iframe}>, <{img}>, or <{object}> elements, and <code>input</code>
-  elements with a <code>type</code> attribute in the <{input/Image|Image Button}> state, <a>maps to the dimension properties</a> 'margin-top' and 'margin-bottom' on the
+  elements with a <code>type</code> attribute in the <{input/Image|Image Button}> state, [=maps to the dimension properties=] 'margin-top' and 'margin-bottom' on the
   element.
 
   When an <{img}> element, <{object}> element, or <{input}> element
-  with a <code>type</code> attribute in the <{input/Image|Image Button}> state has a <code>border</code> attribute whose value, when parsed using the <a>rules for
-  parsing non-negative integers</a>, is found to be a number greater than zero, the user agent is
-  expected to use the parsed value for eight <a>presentational hints</a>: four setting the
+  with a <code>type</code> attribute in the <{input/Image|Image Button}> state has a <code>border</code> attribute whose value, when parsed using the [=rules for parsing non-negative integers=], is found to be a number greater than zero, the user agent is
+  expected to use the parsed value for eight [=presentational hints=]: four setting the
   parsed value as a pixel length for the element's 'border-top-width', 'border-right-width',
   'border-bottom-width', and 'border-left-width' properties, and four setting the element's
   'border-top-style', 'border-right-style', 'border-bottom-style', and 'border-left-style'
@@ -1422,7 +1381,7 @@ path: includes/cldr.include
 
 <h4 id="replaced-elements-image-maps">Image maps</h4>
 
-  Shapes on an <a>image map</a> are expected to act, for the purpose of the CSS cascade, as
+  Shapes on an [=image map=] are expected to act, for the purpose of the CSS cascade, as
   elements independent of the original <{area}> element that happen to match the same style
   rules but inherit from the <{img}> or <{object}> element.
 
@@ -1438,7 +1397,7 @@ path: includes/cldr.include
   Similarly, if an <{area}> element had a CSS rule that set its 'cursor'
   property to ''inherit'' (or if no rule setting the 'cursor' property matched the element at all),
   the shape's cursor would be inherited from the <code>img</code> or <{object}> element of
-  the <a>image map</a>, not from the parent of the <{area}> element.
+  the [=image map=], not from the parent of the <{area}> element.
   </p>
 
 <h3 id="bindings">Bindings</h3>
@@ -1474,10 +1433,10 @@ path: includes/cldr.include
   </pre>
 
   When the <i>details</i> binding applies to a <{details}> element, the element
-  is expected to render as a <a>block box</a>. The element's shadow tree is expected to take the
-  element's first child <{summary}> element, if any, and place it in a first <a>block box</a>
+  is expected to render as a [=block box=]. The element's shadow tree is expected to take the
+  element's first child <{summary}> element, if any, and place it in a first [=block box=]
   container, and then take the element's remaining descendants, if any, and place them in a second
-  <a>block box</a> container.
+  [=block box=] container.
 
   The first container is expected to allow the user to request the details be shown or hidden.
 
@@ -1497,31 +1456,31 @@ path: includes/cldr.include
   render as an ''inline-block'' box rendered as a text field whose contents are obscured.
 
   If these text fields provide a text selection, then, when the user changes the current selection
-  in such a binding, the user agent is expected to <a>queue a task</a> to <a>fire a simple event</a>
+  in such a binding, the user agent is expected to [=queue a task=] to [=fire a simple event=]
   that bubbles named <code>select</code> at the element, using the
-  <a>user interaction task source</a> as the task source.
+  [=user interaction task source=] as the task source.
 
   If an <{input}> element whose <{input/type}> attribute is
   in one of the above states has a <{input/size}> attribute, and parsing
-  that attribute's value using the <a>rules for parsing non-negative integers</a> doesn't
-  generate an error, then the user agent is expected to use the attribute as a <a>presentational hint</a> for the 'width' property on the element,
-  with the value obtained from applying the <a>converting a character width to pixels</a>
+  that attribute's value using the [=rules for parsing non-negative integers=] doesn't
+  generate an error, then the user agent is expected to use the attribute as a [=presentational hint=] for the 'width' property on the element,
+  with the value obtained from applying the [=converting a character width to pixels=]
   algorithm to the value of the attribute.
 
   If an <{input}> element whose <{input/type}> attribute is
   in one of the above states does <em>not</em> have a <{input/size}>
   attribute, then the user agent is expected to act as if it had a user-agent-level style sheet rule
   setting the 'width' property on the element to the value obtained from applying the
-  <a>converting a character width to pixels</a> algorithm to the number 20.
+  [=converting a character width to pixels=] algorithm to the number 20.
 
-  The <dfn>converting a character width to pixels</dfn> algorithm returns (<var>size</var>-1)&times;<var>avg</var>&nbsp;+&nbsp;<var>max</var>,
-  where <var>size</var> is the character width to convert, <var>avg</var> is the
+  The <dfn>converting a character width to pixels</dfn> algorithm returns (|size|-1)&times;|avg|&nbsp;+&nbsp;|max|,
+  where |size| is the character width to convert, |avg| is the
   average character width of the primary font for the element for which the algorithm is being run,
-  in pixels, and <var>max</var> is the maximum character width of that same font, also in
+  in pixels, and |max| is the maximum character width of that same font, also in
   pixels. (The element's 'letter-spacing' property does not affect the result.)
 
   When the <i>input-textfield</i> binding applies to an element, the 'line-height'
-  property, if it has a <a>computed value</a> equivalent to a value that is less than 1.0, must have a used
+  property, if it has a [=computed value=] equivalent to a value that is less than 1.0, must have a used
   value of 1.0.
 
 <h4 id="the-input-element-as-domain-specific-widgets">The <{input}> element as domain-specific widgets</h4>
@@ -1565,13 +1524,13 @@ path: includes/cldr.include
 
   When the control is wider than it is tall (or square), the control is expected to be a
   horizontal slider, with the lowest value on the right if the 'direction' property on this element
-  has a <a>computed value</a> of ''rtl'', and on the left otherwise. When the control is taller than it is
+  has a [=computed value=] of ''rtl'', and on the left otherwise. When the control is taller than it is
   wide, it is expected to be a vertical slider, with the lowest value on the bottom.
 
   Predefined suggested values (provided by the <{input/list}>
   attribute) are expected to be shown as tick marks on the slider, which the slider can snap to.
 
-  User agents are expected to use the <a>used value</a> of the 'direction' property on the element to
+  User agents are expected to use the [=used value=] of the 'direction' property on the element to
   determine the direction in which the slider operates. Typically, a left-to-right (''ltr'')
   horizontal control would have the lowest value on the left and the highest value on the right, and
   vice versa.
@@ -1601,7 +1560,7 @@ path: includes/cldr.include
 
   When the <i>input-file</i> binding applies to an <{input}> element whose
   <{input/type}> attribute is in the <{input/File|File Upload}> state, the element is expected to render as an
-  ''inline-block'' box containing a span of text giving the file name(s) of the <a>selected files</a>, if any, followed by a button that,
+  ''inline-block'' box containing a span of text giving the file name(s) of the [=selected files=], if any, followed by a button that,
   when activated, provides the user with a file picker from which the selection can be changed.
 
 <h4 id="the-input-element-as-a-button">The <{input}> element as a button</h4>
@@ -1616,7 +1575,7 @@ path: includes/cldr.include
 <h4 id="the-marquee-element-rendering">The <{marquee}> element</h4>
 
   When the <i>marquee</i> binding applies to a <{marquee}> element, while the
-  element is <a>turned on</a>, the element is expected to render in
+  element is [=turned on=], the element is expected to render in
   an animated fashion according to its attributes as follows:
 
   <dl>
@@ -1631,16 +1590,14 @@ path: includes/cldr.include
 
     <p class="example">
   For example, if the <{marquee/direction}>
-    attribute is <a attr-value for="marquee/direction"><code>left</code></a> (the default), then the
+    attribute is <{marquee/direction/left}> (the default), then the
     contents would start such that their left edge are off the side of the right edge of the
-    <{marquee}>'s <a>content area</a>, and the contents would then slide up to the point where the
+    <{marquee}>'s [=content area=], and the contents would then slide up to the point where the
     left edge of the contents are flush with the left inner edge of the <{marquee}>'s
-    <a>content area</a>.
+    [=content area=].
   </p>
 
-    Once the animation has ended, the user agent is expected to <a>increment the marquee
-    current loop index</a>. If the element is still <a>turned
-    on</a> after this, then the user agent is expected to restart the animation.
+    Once the animation has ended, the user agent is expected to [=increment the marquee current loop index=]. If the element is still [=turned on=] after this, then the user agent is expected to restart the animation.
 
     </dd>
 
@@ -1655,16 +1612,14 @@ path: includes/cldr.include
 
     <p class="example">
   For example, if the <{marquee/direction}>
-    attribute is <a attr-value for="marquee/direction"><code>left</code></a> (the default), then the
+    attribute is <{marquee/direction/left}> (the default), then the
     contents would start such that their left edge are off the side of the right edge of the
-    <{marquee}>'s <a>content area</a>, and the contents would then slide up to the point where the
+    <{marquee}>'s [=content area=], and the contents would then slide up to the point where the
     <em>right</em> edge of the contents are flush with the left inner edge of the
-    <{marquee}>'s <a>content area</a>.
+    <{marquee}>'s [=content area=].
   </p>
 
-    Once the animation has ended, the user agent is expected to <a>increment the marquee
-    current loop index</a>. If the element is still <a>turned
-    on</a> after this, then the user agent is expected to restart the animation.
+    Once the animation has ended, the user agent is expected to [=increment the marquee current loop index=]. If the element is still [=turned on=] after this, then the user agent is expected to restart the animation.
 
     </dd>
 
@@ -1673,28 +1628,26 @@ path: includes/cldr.include
 
     <dd>
 
-    When the <a>marquee current loop index</a> is even (or zero), slide the contents of the
+    When the [=marquee current loop index=] is even (or zero), slide the contents of the
     element in the direction described by the <{marquee/direction}>
     attribute as defined below, such that it begins flush with the start side of the
     <{marquee}>, and ends flush with the end side of the <{marquee}>.
 
-    When the <a>marquee current loop index</a> is odd, slide the contents of the element in
+    When the [=marquee current loop index=] is odd, slide the contents of the element in
     the opposite direction than that described by the <{marquee/direction}> attribute as defined below, such that it begins
     flush with the end side of the <{marquee}>, and ends flush with the start side of the
     <{marquee}>.
 
     <p class="example">
   For example, if the <{marquee/direction}>
-    attribute is <a attr-value for="marquee/direction"><code>left</code></a> (the default), then the
+    attribute is <{marquee/direction/left}> (the default), then the
     contents would with their right edge flush with the right inner edge of the
-    <{marquee}>'s <a>content area</a>, and the contents would then slide up to the point where the
+    <{marquee}>'s [=content area=], and the contents would then slide up to the point where the
     <em>left</em> edge of the contents are flush with the left inner edge of the
-    <{marquee}>'s <a>content area</a>.
+    <{marquee}>'s [=content area=].
   </p>
 
-    Once the animation has ended, the user agent is expected to <a>increment the marquee
-    current loop index</a>. If the element is still <a>turned
-    on</a> after this, then the user agent is expected to continue the animation.
+    Once the animation has ended, the user agent is expected to [=increment the marquee current loop index=]. If the element is still [=turned on=] after this, then the user agent is expected to continue the animation.
 
     </dd>
 
@@ -1738,14 +1691,12 @@ path: includes/cldr.include
       <td>&uarr; Up (Bottom to Top)
   </table>
 
-  In any case, the animation should proceed such that there is a delay given by the <a>marquee
-  scroll interval</a> between each frame, and such that the content moves at most the distance
+  In any case, the animation should proceed such that there is a delay given by the [=marquee scroll interval=] between each frame, and such that the content moves at most the distance
   given by the <a for="marquee">marquee scroll distance</a> with each frame.
 
   When a <{marquee}> element has a <code>bgcolor</code>
-  attribute set, the value is expected to be parsed using the <a>rules for parsing a legacy color
-  value</a>, and if that does not return an error, the user agent is expected to treat the
-  attribute as a <a>presentational hint</a> setting the element's
+  attribute set, the value is expected to be parsed using the [=rules for parsing a legacy color value=], and if that does not return an error, the user agent is expected to treat the
+  attribute as a [=presentational hint=] setting the element's
   'background-color' property to the resulting color.
 
   The <code>width</code> and <code>height</code> attributes on a <{marquee}> element map to the dimension properties 'width' and 'height'
@@ -1754,10 +1705,9 @@ path: includes/cldr.include
   The <a for="css">intrinsic height</a> of a <{marquee}> element with its <{marquee/direction}> attribute in the <a attr-value for="marquee/direction"><code>up</code></a> or <a attr-value for="marquee/direction"><code>down</code></a> states is 200 CSS pixels.
 
   The <code>vspace</code> attribute of a <{marquee}> element
-  <a>maps to the dimension properties</a> 'margin-top'
+  [=maps to the dimension properties=] 'margin-top'
   and 'margin-bottom' on the element. The <code>hspace</code> attribute
-  of a <{marquee}> element <a>maps to the
-  dimension properties</a> 'margin-left' and 'margin-right' on the element.
+  of a <{marquee}> element [=maps to the dimension properties=] 'margin-left' and 'margin-right' on the element.
 
   The 'overflow' property on the <{marquee}> element is expected to be ignored; overflow
   is expected to always be hidden.
@@ -1770,7 +1720,7 @@ path: includes/cldr.include
 
   When the element is wider than it is tall (or square), the depiction is expected to be of a
   horizontal gauge, with the minimum value on the right if the 'direction' property on this element
-  has a <a>computed value</a> of ''rtl'', and on the left otherwise. When the element is taller than it is
+  has a [=computed value=] of ''rtl'', and on the left otherwise. When the element is taller than it is
   wide, it is expected to depict a vertical gauge, with the minimum value on the bottom.
 
   User agents are expected to use a presentation consistent with platform conventions for gauges,
@@ -1792,7 +1742,7 @@ path: includes/cldr.include
   When the
   element is wider than it is tall, the element is expected to be depicted as a horizontal progress
   bar, with the start on the right and the end on the left if the 'direction' property on this
-  element has a <a>computed value</a> of ''rtl'', and with the start on the left and the end on the right
+  element has a [=computed value=] of ''rtl'', and with the start on the left and the end on the right
   otherwise. When the element is taller than it is wide, it is expected to be depicted as a vertical
   progress bar, with the lowest value on the bottom. When the element is square, it is expected to
   be depicted as a direction-independent progress widget (e.g., a circular progress ring).
@@ -1819,38 +1769,35 @@ path: includes/cldr.include
   When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is present, the element is expected to
   render as a multi-select list box.
 
-  When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is absent, and the element's <a>display size</a> is greater than 1, the element is expected to
+  When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is absent, and the element's [=display size=] is greater than 1, the element is expected to
   render as a single-select list box.
 
   When the element renders as a list box, it is expected to render as an ''inline-block'' box whose
-  'height' is the height necessary to contain as many rows for items as given by the element's <a>display size</a>, or four rows if the attribute is absent, and
+  'height' is the height necessary to contain as many rows for items as given by the element's [=display size=], or four rows if the attribute is absent, and
   whose 'width' is the <a>width of the <code>select</code>'s labels</a> plus the width of a
   scrollbar.
 
-  When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is absent, and the element's <a>display size</a> is 1, the element is expected to render as a
+  When the <i>select</i> binding applies to a <{select}> element whose <code>multiple</code> attribute is absent, and the element's [=display size=] is 1, the element is expected to render as a
   one-line drop down box whose width is the <a>width of the <code>select</code>'s
   labels</a>.
 
   In either case (list box or drop-down box), the element's items are expected to be the
-  element's <a>list of options</a>, with the element's
+  element's [=list of options=], with the element's
   <{optgroup}> element children providing headers for groups of options where
   applicable.
 
   An <{optgroup}> element is expected to be rendered by displaying the element's <code>label</code> attribute.
 
-  An <{option}> element is expected to be rendered by displaying the element's <a>label</a>, indented under its <{optgroup}> element if it
+  An <{option}> element is expected to be rendered by displaying the element's [=label=], indented under its <{optgroup}> element if it
   has one.
 
   The <dfn>width of the <code>select</code>'s labels</dfn> is the wider of the width necessary to
   render the widest <{optgroup}>, and the width necessary to render the widest
-  <{option}> element in the element's <a>list of
-  options</a> (including its indent, if any).
+  <{option}> element in the element's [=list of options=] (including its indent, if any).
 
-  If a <{select}> element contains a <a>placeholder label option</a>, the user
+  If a <{select}> element contains a [=placeholder label option=], the user
   agent is expected to render that <code>option</code> in a manner that conveys that it is a label,
-  rather than a valid option of the control. This can include preventing the <a>placeholder label
-  option</a> from being explicitly selected by the user. When the <a>placeholder label
-  option</a>'s <a state for="option">selectedness</a> is true, the control
+  rather than a valid option of the control. This can include preventing the [=placeholder label option=] from being explicitly selected by the user. When the [=placeholder label option=]'s <a state for="option">selectedness</a> is true, the control
   is expected to be displayed in a fashion that indicates that no valid option is currently
   selected.
 
@@ -1869,109 +1816,105 @@ path: includes/cldr.include
   When the <i>textarea</i> binding applies to a <{textarea}> element, the
   element is expected to render as an ''inline-block'' box rendered as a multiline text field. If this
   text field provides a selection, then, when the user changes the current selection in such a
-  binding, the user agent is expected to <a>queue a task</a> to <a>fire a simple
-  event</a> that bubbles named <code>select</code> at the element, using
-  the <a>user interaction task source</a> as the task source.
+  binding, the user agent is expected to [=queue a task=] to [=fire a simple event=] that bubbles named <code>select</code> at the element, using
+  the [=user interaction task source=] as the task source.
 
   If the element has a {{HTMLTextAreaElement/cols}} attribute, and parsing that
-  attribute's value using the <a>rules for parsing non-negative integers</a> doesn't generate
-  an error, then the user agent is expected to use the attribute as a <a>presentational hint</a> for the 'width' property on the element, with the value being
-  the <a>textarea effective width</a> (as defined below). Otherwise, the user agent is
+  attribute's value using the [=rules for parsing non-negative integers=] doesn't generate
+  an error, then the user agent is expected to use the attribute as a [=presentational hint=] for the 'width' property on the element, with the value being
+  the [=textarea effective width=] (as defined below). Otherwise, the user agent is
   expected to act as if it had a user-agent-level style sheet rule setting the 'width' property on
-  the element to the <a>textarea effective width</a>.
+  the element to the [=textarea effective width=].
 
-  The <dfn>textarea effective width</dfn> of a <{textarea}> element is <var>size</var>&times;<var>avg</var>&nbsp;+&nbsp;<var>sbw</var>, where <var>size</var> is the element's <a>character width</a>, <var>avg</var> is the average
-  character width of the primary font of the element, in CSS pixels, and <var>sbw</var> is
+  The <dfn>textarea effective width</dfn> of a <{textarea}> element is |size|&times;|avg|&nbsp;+&nbsp;|sbw|, where |size| is the element's [=character width=], |avg| is the average
+  character width of the primary font of the element, in CSS pixels, and |sbw| is
   the width of a scroll bar, in CSS pixels. (The element's 'letter-spacing' property does not affect
   the result.)
 
   If the element has a {{HTMLTextAreaElement/rows}} attribute, and parsing that
-  attribute's value using the <a>rules for parsing non-negative integers</a> doesn't generate
-  an error, then the user agent is expected to use the attribute as a <a>presentational hint</a> for the 'height' property on the element, with the value being
-  the <a>textarea effective height</a> (as defined below). Otherwise, the user agent is
+  attribute's value using the [=rules for parsing non-negative integers=] doesn't generate
+  an error, then the user agent is expected to use the attribute as a [=presentational hint=] for the 'height' property on the element, with the value being
+  the [=textarea effective height=] (as defined below). Otherwise, the user agent is
   expected to act as if it had a user-agent-level style sheet rule setting the 'height' property on
-  the element to the <a>textarea effective height</a>.
+  the element to the [=textarea effective height=].
 
   The <dfn>textarea effective height</dfn> of a <{textarea}> element is the height in
-  CSS pixels of the number of lines specified the element's <a>character height</a>, plus the height of a scrollbar in CSS
+  CSS pixels of the number of lines specified the element's [=character height=], plus the height of a scrollbar in CSS
   pixels.
 
   User agents are expected to apply the 'white-space' CSS property to <{textarea}>
-  elements. For historical reasons, if the element has a <code>wrap</code> attribute whose value is an <a>ASCII
-  case-insensitive</a> match for the string "<code>off</code>", then the user agent is expected to treat the attribute as a <a>presentational hint</a> setting the element's 'white-space'
+  elements. For historical reasons, if the element has a <code>wrap</code> attribute whose value is an [=ASCII case-insensitive=] match for the string "<code>off</code>", then the user agent is expected to treat the attribute as a [=presentational hint=] setting the element's 'white-space'
   property to ''pre''.
 
 <h3 id="frames-and-framesets">Frames and framesets</h3>
 
   User agent are expected to render <{frameset}> elements as a box with the height and
-  width of the <a>viewport</a>, with a surface rendered according to the following layout algorithm:
+  width of the [=viewport=], with a surface rendered according to the following layout algorithm:
 
   <ol>
 
     <li>
 
-    The <var>cols</var> and <var>rows</var> variables are lists of zero or more pairs consisting
+    The |cols| and |rows| variables are lists of zero or more pairs consisting
     of a number and a unit, the unit being one of <i>percentage</i>, <i>relative</i>, and
     <i>absolute</i>.
 
-    Use the <a>rules for parsing a list of dimensions</a> to parse the value of the
+    Use the [=rules for parsing a list of dimensions=] to parse the value of the
     element's <code>cols</code> attribute, if there is one.
-    Let <var>cols</var> be the result, or an empty list if there is no such attribute.
+    Let |cols| be the result, or an empty list if there is no such attribute.
 
-    Use the <a>rules for parsing a list of dimensions</a> to parse the value of the
+    Use the [=rules for parsing a list of dimensions=] to parse the value of the
     element's <code>rows</code> attribute, if there is one.
-    Let <var>rows</var> be the result, or an empty list if there is no such attribute.
+    Let |rows| be the result, or an empty list if there is no such attribute.
 
     </li>
 
     <li>
 
-    For any of the entries in <var>cols</var> or <var>rows</var> that have the number zero and
+    For any of the entries in |cols| or |rows| that have the number zero and
     the unit <i>relative</i>, change the entry's number to one.
 
     </li>
 
     <li>
 
-    If <var>cols</var> has no entries, then add a single entry consisting of the value 1 and the
-    unit <i>relative</i> to <var>cols</var>.
+    If |cols| has no entries, then add a single entry consisting of the value 1 and the
+    unit <i>relative</i> to |cols|.
 
-    If <var>rows</var> has no entries, then add a single entry consisting of the value 1 and the
-    unit <i>relative</i> to <var>rows</var>.
-
-    </li>
-
-    <li>
-
-    Invoke the algorithm defined below to <a>convert a list of dimensions to a list of pixel
-    values</a> using <var>cols</var> as the input list, and the width of the surface that the
-    <code>frameset</code> is being rendered into, in CSS pixels, as the input dimension. Let
-    <var>sized cols</var> be the resulting list.
-
-    Invoke the algorithm defined below to <a>convert a list of dimensions to a list of pixel
-    values</a> using <var>rows</var> as the input list, and the height of the surface that the
-    <code>frameset</code> is being rendered into, in CSS pixels, as the input dimension. Let
-    <var>sized rows</var> be the resulting list.
+    If |rows| has no entries, then add a single entry consisting of the value 1 and the
+    unit <i>relative</i> to |rows|.
 
     </li>
 
     <li>
 
-    Split the surface into a grid of <var>w</var>&times;<var>h</var>
-    rectangles, where <var>w</var> is the number of entries in <var>sized cols</var> and
-    <var>h</var> is the number of entries in <var>sized rows</var>.
+    Invoke the algorithm defined below to [=convert a list of dimensions to a list of pixel values=] using |cols| as the input list, and the width of the surface that the
+    <code>frameset</code> is being rendered into, in CSS pixels, as the input dimension. Let
+    |sized cols| be the resulting list.
+
+    Invoke the algorithm defined below to [=convert a list of dimensions to a list of pixel values=] using |rows| as the input list, and the height of the surface that the
+    <code>frameset</code> is being rendered into, in CSS pixels, as the input dimension. Let
+    |sized rows| be the resulting list.
+
+    </li>
+
+    <li>
+
+    Split the surface into a grid of |w|&times;|h|
+    rectangles, where |w| is the number of entries in |sized cols| and
+    |h| is the number of entries in |sized rows|.
 
     Size the columns so that each column in the grid is as many CSS pixels wide as the
-    corresponding entry in the <var>sized cols</var> list.
+    corresponding entry in the |sized cols| list.
 
     Size the rows so that each row in the grid is as many CSS pixels high as the corresponding
-    entry in the <var>sized rows</var> list.
+    entry in the |sized rows| list.
 
     </li>
 
     <li>
 
-    Let <var>children</var> be the list of <code>frame</code> and <{frameset}> elements
+    Let |children| be the list of <code>frame</code> and <{frameset}> elements
     that are children of the <{frameset}> element for which the algorithm was invoked.
 
     </li>
@@ -1991,21 +1934,21 @@ path: includes/cldr.include
 
         <li>
 
-        If there are any elements left in <var>children</var>, take the first element in the
+        If there are any elements left in |children|, take the first element in the
         list, and assign it to the rectangle.
 
         If this is a <{frameset}> element, then recurse the entire <code>frameset</code>
         layout algorithm for that <{frameset}> element, with the rectangle as the
         surface.
 
-        Otherwise, it is a <{frame}> element; render its <a>nested browsing context</a>, positioned and sized to fit the rectangle.
+        Otherwise, it is a <{frame}> element; render its [=nested browsing context=], positioned and sized to fit the rectangle.
 
         </li>
 
         <li>
 
-        If there are any elements left in <var>children</var>, remove the first element from
-        <var>children</var>.
+        If there are any elements left in |children|, remove the first element from
+        |children|.
 
         </li>
 
@@ -2019,12 +1962,12 @@ path: includes/cldr.include
 
     <li>
 
-    If the <{frameset}> element <a>has a border</a>, draw an outer set of borders
-    around the rectangles, using the element's <a>frame border color</a>.
+    If the <{frameset}> element [=has a border=], draw an outer set of borders
+    around the rectangles, using the element's [=frame border color=].
 
     For each rectangle, if there is an element assigned to that rectangle, and that element
-    <a>has a border</a>, draw an inner set of borders around that rectangle, using the
-    element's <a>frame border color</a>.
+    [=has a border=], draw an inner set of borders around that rectangle, using the
+    element's [=frame border color=].
 
     For each (visible) border that does not abut a rectangle that is assigned a
     <{frame}> element with a <code>noresize</code>
@@ -2046,7 +1989,7 @@ path: includes/cldr.include
       false.</li>
 
       <li>Otherwise, if the element has a parent element that is a <{frameset}> element,
-      then return true if <em>that</em> element <a>has a border</a>, and false if it does
+      then return true if <em>that</em> element [=has a border=], and false if it does
       not.</li>
 
       <li>Otherwise, return true.</li>
@@ -2059,11 +2002,11 @@ path: includes/cldr.include
     <ol>
 
       <li>If the element has a <code>bordercolor</code> attribute, and applying the
-      <a>rules for parsing a legacy color value</a> to that attribute's value does not result
+      [=rules for parsing a legacy color value=] to that attribute's value does not result
       in an error, then return the color so obtained.</li>
 
       <li>Otherwise, if the element has a parent element that is a <{frameset}> element,
-      then return the <a>frame border color</a> of that element.
+      then return the [=frame border color=] of that element.
 
       <li>Otherwise, return gray.</li>
 
@@ -2080,81 +2023,80 @@ path: includes/cldr.include
 
     <li>
 
-    Let <var>input list</var> be the list of numbers and units passed to the algorithm.
+    Let |input list| be the list of numbers and units passed to the algorithm.
 
-    Let <var>output list</var> be a list of numbers the same length as <var>input list</var>, all
+    Let |output list| be a list of numbers the same length as |input list|, all
     zero.
 
-    Entries in <var>output list</var> correspond to the entries in <var>input list</var> that
+    Entries in |output list| correspond to the entries in |input list| that
     have the same position.
 
     </li>
 
-    <li>Let <var>input dimension</var> be the size passed to the algorithm.
+    <li>Let |input dimension| be the size passed to the algorithm.
 
     <li>
 
-    Let <var>count percentage</var> be the number of entries in <var>input list</var> whose unit
+    Let |count percentage| be the number of entries in |input list| whose unit
     is <i>percentage</i>.
 
-    Let <var>total percentage</var> be the sum of all the numbers in <var>input list</var> whose
+    Let |total percentage| be the sum of all the numbers in |input list| whose
     unit is <i>percentage</i>.
 
-    Let <var>count relative</var> be the number of entries in <var>input list</var> whose unit is
+    Let |count relative| be the number of entries in |input list| whose unit is
     <i>relative</i>.
 
-    Let <var>total relative</var> be the sum of all the numbers in <var>input list</var> whose
+    Let |total relative| be the sum of all the numbers in |input list| whose
     unit is <i>relative</i>.
 
-    Let <var>count absolute</var> be the number of entries in <var>input list</var> whose unit is
+    Let |count absolute| be the number of entries in |input list| whose unit is
     <i>absolute</i>.
 
-    Let <var>total absolute</var> be the sum of all the numbers in <var>input list</var> whose
+    Let |total absolute| be the sum of all the numbers in |input list| whose
     unit is <i>absolute</i>.
 
-    Let <var>remaining space</var> be the value of <var>input dimension</var>.
+    Let |remaining space| be the value of |input dimension|.
 
     </li>
 
     <li>
 
-    If <var>total absolute</var> is greater than <var>remaining space</var>, then for each entry
-    in <var>input list</var> whose unit is <i>absolute</i>, set the corresponding value in
-    <var>output list</var> to the number of the entry in <var>input list</var> multiplied by
-    <var>remaining space</var> and divided by <var>total absolute</var>. Then, set <var>remaining
-    space</var> to zero.
+    If |total absolute| is greater than |remaining space|, then for each entry
+    in |input list| whose unit is <i>absolute</i>, set the corresponding value in
+    |output list| to the number of the entry in |input list| multiplied by
+    |remaining space| and divided by |total absolute|. Then, set |remaining
+    space| to zero.
 
-    Otherwise, for each entry in <var>input list</var> whose unit is <i>absolute</i>, set the
-    corresponding value in <var>output list</var> to the number of the entry in <var>input
-    list</var>. Then, decrement <var>remaining space</var> by <var>total absolute</var>.
-
-    </li>
-
-    <li>
-
-    If <var>total percentage</var> multiplied by the <var>input dimension</var> and divided by
-    100 is greater than <var>remaining space</var>, then for each entry in <var>input list</var>
-    whose unit is <i>percentage</i>, set the corresponding value in <var>output list</var> to the
-    number of the entry in <var>input list</var> multiplied by <var>remaining space</var> and
-    divided by <var>total percentage</var>. Then, set <var>remaining space</var> to zero.
-
-    Otherwise, for each entry in <var>input list</var> whose unit is <i>percentage</i>, set the
-    corresponding value in <var>output list</var> to the number of the entry in <var>input
-    list</var> multiplied by the <var>input dimension</var> and divided by 100. Then, decrement
-    <var>remaining space</var> by <var>total percentage</var> multiplied by the <var>input
-    dimension</var> and divided by 100.
+    Otherwise, for each entry in |input list| whose unit is <i>absolute</i>, set the
+    corresponding value in |output list| to the number of the entry in |input
+    list|. Then, decrement |remaining space| by |total absolute|.
 
     </li>
 
     <li>
 
-    For each entry in <var>input list</var> whose unit is <i>relative</i>, set the corresponding
-    value in <var>output list</var> to the number of the entry in <var>input list</var> multiplied
-    by <var>remaining space</var> and divided by <var>total relative</var>.
+    If |total percentage| multiplied by the |input dimension| and divided by
+    100 is greater than |remaining space|, then for each entry in |input list|
+    whose unit is <i>percentage</i>, set the corresponding value in |output list| to the
+    number of the entry in |input list| multiplied by |remaining space| and
+    divided by |total percentage|. Then, set |remaining space| to zero.
+
+    Otherwise, for each entry in |input list| whose unit is <i>percentage</i>, set the corresponding
+    value in |output list| to the number of the entry in |input list| multiplied by the
+    |input dimension| and divided by 100. Then, decrement |remaining space| by |total percentage|
+    multiplied by the |input dimension| and divided by 100.
 
     </li>
 
-    <li>Return <var>output list</var>.</li>
+    <li>
+
+    For each entry in |input list| whose unit is <i>relative</i>, set the corresponding
+    value in |output list| to the number of the entry in |input list| multiplied
+    by |remaining space| and divided by |total relative|.
+
+    </li>
+
+    <li>Return |output list|.</li>
 
   </ol>
 
@@ -2168,29 +2110,29 @@ path: includes/cldr.include
 
   The contents of a <{frame}> element that does not have a <code>frameset</code> parent
   are expected to be rendered as transparent black; the user agent is expected to not render the
-  <a>nested browsing context</a> in this case, and that <a>nested browsing context</a>
-  is expected to have a <a>viewport</a> with zero width and zero height.
+  [=nested browsing context=] in this case, and that [=nested browsing context=]
+  is expected to have a [=viewport=] with zero width and zero height.
 
 <h3 id="interactive-media">Interactive media</h3>
 
 <h4 id="links-forms-and-navigation">Links, forms, and navigation</h4>
 
-  User agents are expected to allow the user to control aspects of <a>hyperlink</a>
-  activation and [[#forms-form-submission]], such as which <a>browsing context</a> is to be
-  used for the subsequent <a>navigation</a>.
+  User agents are expected to allow the user to control aspects of [=hyperlink=]
+  activation and [[#forms-form-submission]], such as which [=browsing context=] is to be
+  used for the subsequent [=navigation=].
 
-  User agents are expected to allow users to discover the destination of <a>hyperlinks</a> and of <a>forms</a> before triggering their
-  <a>navigation</a>.
+  User agents are expected to allow users to discover the destination of [=hyperlinks=] and of [=forms=] before triggering their
+  [=navigation=].
 
-  User agents may allow users to <a>navigate</a> <a>browsing contexts</a> to the URLs
+  User agents may allow users to [=navigate=] [=browsing contexts=] to the URLs
   <a lt="parse a URL">indicated</a> by the <{cite}> attributes on <{q}>, <{blockquote}>,
   <{ins}>, and <{del}> elements.
 
-  User agents may surface <a>hyperlinks</a> created by <{link}> elements in their user
+  User agents may surface [=hyperlinks=] created by <{link}> elements in their user
   interface.
 
   <p class="note">
-    While <{link}> elements that create <a>hyperlinks</a> will match the '':link'' or '':visited'' <a>pseudo-classes</a>, will
+    While <{link}> elements that create [=hyperlinks=] will match the '':link'' or '':visited'' [=pseudo-classes=], will
     react to clicks if visible, and so forth, this does not extend to any browser interface constructs
     that expose those same links. Activating a link through the browser's interface, rather than in
     the page itself, does not trigger <code>click</code> events and the like.
@@ -2198,14 +2140,14 @@ path: includes/cldr.include
 
 <h4 id="interactive-media-the-title-attribute">The <{global/title}> attribute</h4>
 
-  User agents are expected to expose the <a>advisory information</a> of elements upon user
+  User agents are expected to expose the [=advisory information=] of elements upon user
   request, and to make the user aware of the presence of such information.
 
   On interactive graphical systems where the user can use a pointing device, this could take the
   form of a tooltip. When the user is unable to use a pointing device, then the user agent is
   expected to make the content available in some other fashion, e.g., by making the element a
-  <i>focusable area</i> and always displaying the <a>advisory information</a> of the currently
-  <a>focused</a> element.
+  <i>focusable area</i> and always displaying the [=advisory information=] of the currently
+  [=focused=] element.
 
   U+000A LINE FEED (LF) characters are expected to cause line breaks in the tooltip; U+0009
   CHARACTER TABULATION (tab) characters are expected to render as a non-zero horizontal shift that
@@ -2213,7 +2155,7 @@ path: includes/cldr.include
   multiples of 8 times the width of a U+0020 SPACE character.
 
   <div class="example">
-    For example, a visual user agent could make elements with a <{global/title}> attribute <a>focusable</a>, and could make any <a>focused</a> element with a
+    For example, a visual user agent could make elements with a <{global/title}> attribute [=focusable=], and could make any [=focused=] element with a
     <{global/title}> attribute show its tooltip under the element while the
     element has focus. This would allow a user to tab around the document to find all the advisory
     text.
@@ -2226,9 +2168,9 @@ path: includes/cldr.include
 
 <h4 id="editing-hosts">Editing hosts</h4>
 
-  The current text editing caret (i.e., the <a>active range</a>, if it is empty and in an
-  <a>editing host</a>), if any, is expected to act like an inline
-  <a>replaced element</a> with the vertical dimensions of the caret and with zero width for
+  The current text editing caret (i.e., the [=active range=], if it is empty and in an
+  [=editing host=]), if any, is expected to act like an inline
+  [=replaced element=] with the vertical dimensions of the caret and with zero width for
   the purposes of the CSS rendering model.
 
   <p class="note">
@@ -2241,9 +2183,9 @@ path: includes/cldr.include
   User agents are expected to honor the Unicode semantics of text that is exposed in user
   interfaces, for example supporting the bidirectional algorithm in text shown in dialogs, title
   bars, pop-up menus, and tooltips. Text from the contents of elements is expected to be rendered in
-  a manner that honors <a>the directionality</a> of the element from which the text was
+  a manner that honors [=the directionality=] of the element from which the text was
   obtained. Text from attributes is expected to be rendered in a manner that honours the
-  <a>directionality of the attribute</a>.
+  [=directionality of the attribute=].
 
   <div class="example">
     Consider the following markup, which has Hebrew text asking for a programming language, the
@@ -2290,7 +2232,7 @@ path: includes/cldr.include
     have a right parenthesis (because the direction is determined <em>from the attribute value</em>
     to be ''rtl'').
 
-    However, if instead the attribute was not a <a>directionality-capable attribute</a>, the
+    However, if instead the attribute was not a [=directionality-capable attribute=], the
     results would be different:
 
     <pre highlight="html">
@@ -2376,20 +2318,20 @@ path: includes/cldr.include
   that use vocabularies for which they lack any built-in knowledge. This section provides for a way
   for user agents to handle such documents in a somewhat useful manner.
 
-  While a {{Document}} is an <a>unstyled document</a>, the user agent is expected
-  to render <a>an unstyled document view</a>.
+  While a {{Document}} is an [=unstyled document=], the user agent is expected
+  to render [=an unstyled document view=].
 
   A {{Document}} is an <dfn>unstyled document</dfn> while it matches the following
   conditions:
 
   <ul>
     <li>The {{Document}} has no author style sheets (whether referenced by HTTP headers, processing instructions, elements like <{link}>, inline elements like <{style}>, or any other mechanism).
-    <li>None of the elements in the {{Document}} have any <a>presentational hints</a>.
-    <li>None of the elements in the {{Document}} have any <a>style attributes</a>.
-    <li>None of the elements in the {{Document}} are in any of the following namespaces: <a>HTML namespace</a>, <a>SVG namespace</a>, <a>MathML namespace</a>
-    <li>The {{Document}} has no <i>focusable area</i> (e.g., from XLink) other than the <a>viewport</a>.
-    <li>The {{Document}} has no <a>hyperlinks</a> (e.g., from XLink).
-    <li>There exists no [=concept/script=] whose <a>settings object</a> specifies this {{Document}} as the <a>responsible document</a>.
+    <li>None of the elements in the {{Document}} have any [=presentational hints=].
+    <li>None of the elements in the {{Document}} have any [=style attributes=].
+    <li>None of the elements in the {{Document}} are in any of the following namespaces: [=HTML namespace=], [=SVG namespace=], [=MathML namespace=]
+    <li>The {{Document}} has no <i>focusable area</i> (e.g., from XLink) other than the [=viewport=].
+    <li>The {{Document}} has no [=hyperlinks=] (e.g., from XLink).
+    <li>There exists no [=concept/script=] whose [=settings object=] specifies this {{Document}} as the [=responsible document=].
     <li>None of the elements in the {{Document}} have any registered event listeners.
   </ul>
 
@@ -2401,7 +2343,7 @@ path: includes/cldr.include
   styled document.
 
   <p class="note">
-  If a {{Document}} stops being an <a>unstyled document</a>, then the
+  If a {{Document}} stops being an [=unstyled document=], then the
   conditions above stop applying, and thus a user agent following these requirements will switch to
   using the regular CSS rendering.
   </p>
