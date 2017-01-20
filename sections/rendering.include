@@ -429,16 +429,16 @@ Rendering {#rendering}
   4. If |position| is past the end of |input|, there is no [=presentational hint=]. Abort these
       steps.
   5. If the character at |position| is a U+002B PLUS SIGN character (+), then let |mode| be
-      <i>relative-plus</i>, and advance |position| to the next character. Otherwise, if the
+      *relative-plus*, and advance |position| to the next character. Otherwise, if the
       character at |position| is a U+002D HYPHEN-MINUS character (-), then let |mode| be
-      <i>relative-minus</i>, and advance |position| to the next character. Otherwise, let |mode| be
-      <i>absolute</i>.
+      *relative-minus*, and advance |position| to the next character. Otherwise, let |mode| be
+      *absolute*.
   6. [=Collect a sequence of characters=] that are [=ASCII digits=], and let the resulting sequence
       be |digits|.
   7. If |digits| is the empty string, there is no [=presentational hint=]. Abort these steps.
   8. Interpret |digits| as a base-ten integer. Let |value| be the resulting number.
-  9. If |mode| is <i>relative-plus</i>, then increment |value| by 3. If |mode| is
-      <i>relative-minus</i>, then let |value| be the result of subtracting |value| from 3.
+  9. If |mode| is *relative-plus*, then increment |value| by 3. If |mode| is
+      *relative-minus*, then let |value| be the result of subtracting |value| from 3.
   10. If |value| is greater than 7, let it be 7.
   11. If |value| is less than 1, let it be 1.
   12. Set 'font-size' to the keyword corresponding to the value of |value| according to the
@@ -621,8 +621,8 @@ path: includes/cldr.include
       margin-block-start: 0; margin-block-end: 0;
     }
 
-    dd { margin-left: 40px; } /* LTR-specific: use 'margin-right' for rtl elements */
-    dir, menu, ol, ul { padding-left: 40px; } /* LTR-specific: use 'padding-right' for rtl elements */
+    dd { margin-inline-start: 40px; }
+    dir, menu, ol, ul { padding-inline-start: 40px; }
 
     ol { list-style-type: decimal; }
 
@@ -660,7 +660,7 @@ path: includes/cldr.include
   the <{li}> element to render the counter in the list item marker.
 
   <p class="critical">This specification does not yet define the CSS-specific rules for rendering
-  <{li}> elements, because CSS doesn't yet provide sufficient hooks for this purpose.
+  <{li}> elements, because CSS doesn't yet provide sufficient hooks for this purpose.</p>
 
 ### Tables ### {#tables}
 
@@ -690,7 +690,7 @@ path: includes/cldr.include
     }
     td, th { padding: 1px; }
     th { font-weight: bold; }
-
+    caption { text-align: center; }
     thead, tbody, tfoot, table > tr { vertical-align: middle; }
     tr, td, th { vertical-align: inherit; }
 
@@ -732,7 +732,7 @@ path: includes/cldr.include
 
     table[align=left i] { float: left; }
     table[align=right i] { float: right; }
-    table[align=center i] { margin-left: auto; margin-right: auto; }
+    table[align=center i] { margin-inline-start: auto; margin-inline-end: auto; }
     thead[align=absmiddle i], tbody[align=absmiddle i], tfoot[align=absmiddle i],
     tr[align=absmiddle i], td[align=absmiddle i], th[align=absmiddle i] {
       text-align: center;
@@ -776,7 +776,7 @@ path: includes/cldr.include
 
     table[rules=none i], table[rules=groups i], table[rules=rows i],
     table[rules=cols i], table[rules=all i] {
-    border-style: hidden;
+      border-style: hidden;
       border-collapse: collapse;
     }
     table[border] { border-style: outset; } /* only if border is not equivalent to zero */
@@ -793,7 +793,7 @@ path: includes/cldr.include
     table[border] > thead > tr > td, table[border] > thead > tr > th,
     table[border] > tbody > tr > td, table[border] > tbody > tr > th,
     table[border] > tfoot > tr > td, table[border] > tfoot > tr > th {
-    /* only if border is not equivalent to zero */
+      /* only if border is not equivalent to zero */
       border-width: 1px;
       border-style: inset;
     }
@@ -817,7 +817,10 @@ path: includes/cldr.include
     table[rules=cols i] > tbody > tr > td, table[rules=cols i] > tbody > tr > th,
     table[rules=cols i] > tfoot > tr > td, table[rules=cols i] > tfoot > tr > th {
       border-width: 1px;
-      border-style: none solid;
+      block-start-style: none;
+      border-inline-end-style: solid;
+      border-block-end-style: none;
+      border-inline-start-style: solid;
     }
     table[rules=all i] > tr > td, table[rules=all i] > tr > th,
     table[rules=all i] > thead > tr > td, table[rules=all i] > thead > tr > th,
@@ -828,26 +831,26 @@ path: includes/cldr.include
     }
 
     table[rules=groups i] > colgroup {
-      border-left-width: 1px;
-      border-left-style: solid;
-      border-right-width: 1px;
-      border-right-style: solid;
+      border-inline-start-width: 1px;
+      border-inline-start-style: solid;
+      border-inline-end-width: 1px;
+      border-inline-end-style: solid;
     }
     table[rules=groups i] > thead,
     table[rules=groups i] > tbody,
     table[rules=groups i] > tfoot {
-      border-top-width: 1px;
-      border-top-style: solid;
-      border-bottom-width: 1px;
-      border-bottom-style: solid;
+      border-block-start-width: 1px;
+      border-block-start-style: solid;
+      border-block-end-width: 1px;
+      border-block-end-style: solid;
     }
 
     table[rules=rows i] > tr, table[rules=rows i] > thead > tr,
     table[rules=rows i] > tbody > tr, table[rules=rows i] > tfoot > tr {
-      border-top-width: 1px;
-      border-top-style: solid;
-      border-bottom-width: 1px;
-      border-bottom-style: solid;
+      border-block-start-width: 1px;
+      border-block-start-style: solid;
+      border-block-end-width: 1px;
+      border-block-end-style: solid;
     }
   </pre>
 
@@ -867,431 +870,428 @@ path: includes/cldr.include
     }
   </pre>
 
-  <hr />
+  ---
 
-  For the purposes of the CSS table model, the <{col}> element is expected to be treated
-  as if it was present as many times as its <{col/span}> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
+  For the purposes of the CSS table model, the <{col}> element is expected to be treated as if it
+  was present as many times as its <{col/span}> attribute
+  [=rules for parsing non-negative integers|specifies=].
 
-  For the purposes of the CSS table model, the <{colgroup}> element, if it contains no
-  <{col}> element, is expected to be treated as if it had as many such children as its
-  <{col/span}> attribute <a lt="rules for parsing non-negative integers">specifies</a>.
+  For the purposes of the CSS table model, the <{colgroup}> element, if it contains no <{col}>
+  element, is expected to be treated as if it had as many such children as its <{col/span}>
+  attribute [=rules for parsing non-negative integers|specifies=].
 
-  For the purposes of the CSS table model, the <code>colspan</code> and
-  <code>rowspan</code> attributes on <{td}> and <{th}>
-  elements are expected to <a lt="rules for parsing non-negative integers">provide</a> the
-  <i>special knowledge</i> regarding cells spanning rows and columns.
+  For the purposes of the CSS table model, the <{tablecells/colspan}> and <{tablecells/rowspan}>
+  attributes on <{td}> and <{th}> elements are expected to
+  [=rules for parsing non-negative integers|provide=] the *special knowledge* regarding cells
+  spanning rows and columns.
 
   In [=HTML documents=], the following rules are also expected to apply:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
 
-    :matches(table, thead, tbody, tfoot, tr) > form {  display: none !important; }
+    :matches(table, thead, tbody, tfoot, tr) > form { display: none !important; }
   </pre>
 
-  <hr />
+  ---
 
-  The <{table}> element's <code>cellspacing</code>
-  attribute [=maps to the pixel length property=] 'border-spacing' on the element.
+  The <{table}> element's <{table/cellspacing}> attribute [=maps to the pixel length property=]
+  'border-spacing' on the element.
 
-  The <{table}> element's <code>cellpadding</code>
-  attribute [=maps to the pixel length properties=] 'padding-top', 'padding-right', 'padding-bottom', and 'padding-left' of any
-  <code>td</code> and <{th}> elements that have corresponding [=cells=] in the [=table=] corresponding to
-  the <{table}> element.
-
-  The <{table}> element's <code>hspace</code> attribute [=maps to the dimension properties=] 'margin-left' and
-  'margin-right' on the <{table}> element.
-
-  The <{table}> element's <code>vspace</code> attribute [=maps to the dimension properties=] 'margin-top' and
-  'margin-bottom' on the <{table}> element.
-
-  The <{table}> element's <code>height</code> attribute
-  [=maps to the dimension property (ignoring zero)=] 'height' on the <code>table</code>
+  The <{table}> element's <{table/cellpadding}> attribute [=maps to the pixel length properties=]
+  'padding-top', 'padding-right', 'padding-bottom', and 'padding-left' of any <{td}> and <{th}>
+  elements that have corresponding [=cells=] in the [=table=] corresponding to the <{table}>
   element.
 
-  The <{table}> element's <code>width</code> attribute
-  [=maps to the dimension property (ignoring zero)=] 'width' on the <code>table</code>
-  element.
+  The <{table}> element's <{table/height}> attribute
+  [=maps to the dimension property (ignoring zero)=] 'height' on the <{table}> element.
 
-  The <{col}> element's <code>width</code> attribute [=maps to the dimension property (ignoring zero)=] 'width' on the <{col}> element.
+  The <{table}> element's <{table/width}> attribute
+  [=maps to the dimension property (ignoring zero)=] 'width' on the <{table}> element.
 
-  The <{tr}> element's <code>height</code> attribute [=maps to the dimension property (ignoring zero)=] 'height' on the <{tr}> element.
+  The <{col}> element's <{col/width}> attribute [=maps to the dimension property (ignoring zero)=]
+  'width' on the <{col}> element.
 
-  The <code>td</code> and <{th}> elements' <code>height</code>
-  attributes [=map to the dimension property (ignoring zero)=] 'height' on the element.
+  The <{tr}> element's <{tr/height}> attribute [=maps to the dimension property (ignoring zero)=]
+  'height' on the <{tr}> element.
 
-  The <code>td</code> and <{th}> elements' <code>width</code>
-  attributes [=map to the dimension property (ignoring zero)=] 'width' on the element.
+  The <{td}> and <{th}> elements' <{tablecells/height}> attributes
+  [=map to the dimension property (ignoring zero)=] 'height' on the element.
 
-  <hr />
+  The <{td}> and <{th}> elements' <{tablecells/width}> attributes
+  [=map to the dimension property (ignoring zero)=] 'width' on the element.
 
-  The <{caption}> element unless specified otherwise below, and the <{thead}>,
-  <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, and <code>th</code>
-  elements when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for either the string "<code>center</code>" or the string
-  "<code>middle</code>", are expected to center text within themselves, as if they had
-  their 'text-align' property set to ''center'' in a [=presentational hint=], and to [=align descendants=] to the center.
+  ---
 
-  The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for
-  the string "<code>left</code>", are expected to left-align text within themselves, as if
-  they had their 'text-align' property set to ''text-align/left'' in a [=presentational hint=], and to [=align descendants=] to the left.
+  The <{thead}>, <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, and <{th}> elements when they have an
+  <{tablecells/align}> attribute whose value is an [=ASCII case-insensitive=] match for either the
+  string "`center`" or the string "`middle`", are expected to center text within themselves, as if
+  they had their 'text-align' property set to ''text-align: center'' in a [=presentational hint=],
+  and to [=align descendants=] to the center.
 
-  The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for
-  the string "<code>right</code>", are expected to right-align text within themselves, as
-  if they had their 'text-align' property set to ''text-align/right'' in a [=presentational hint=], and to [=align descendants=] to the right.
+  The <{thead}>, <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, and <{th}> elements, when they have an
+  <{tablecells/align}> attribute whose value is an [=ASCII case-insensitive=] match for the string
+  "`left`", are expected to left-align text within themselves, as if they had their 'text-align'
+  property set to ''text-align: left'' in a [=presentational hint=], and to [=align descendants=] to
+  the left.
 
-  The <{caption}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, and <{th}> elements, when they have an <code>align</code> attribute whose value is an [=ASCII case-insensitive=] match for
-  the string "<code>justify</code>", are expected to full-justify text within themselves,
-  as if they had their 'text-align' property set to ''text-align/justify'' in a [=presentational hint=], and to [=align descendants=] to the left.
+  The <{thead}>, <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, and <{th}> elements, when they have an
+  <{tablecells/align}> attribute whose value is an [=ASCII case-insensitive=] match for the string
+  "`right`", are expected to right-align text within themselves, as if they had their 'text-align'
+  property set to ''text-align: right'' in a [=presentational hint=], and to [=align descendants=]
+  to the right.
 
-  User agents are expected to have a rule in their user agent stylesheet that matches
-  <{th}> elements that have a parent node whose [=computed value=] for the 'text-align'
-  property is its initial value, whose declaration block consists of just a single declaration that
-  sets the 'text-align' property to the value ''center''.
+  The <{thead}>, <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, and <{th}> elements, when they have an
+  <{tablecells/align}> attribute whose value is an [=ASCII case-insensitive=] match for the string
+  "`justify`", are expected to full-justify text within themselves, as if they had their
+  'text-align' property set to ''text-align: justify'' in a [=presentational hint=], and to
+  [=align descendants=] to the left.
 
-  <hr />
+  User agents are expected to have a rule in their user agent stylesheet that matches <{th}>
+  elements that have a parent node whose [=computed value=] for the 'text-align' property is its
+  initial value, whose declaration block consists of just a single declaration that sets the
+  'text-align' property to the value ''text-align: center''.
 
-  When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, or <{th}> element has a <{common/background}> attribute set to a non-empty value, the new value is
-  expected to be [=parsed=] relative to the element's [=node document=], and if this is
-  successful, the user agent is expected to treat the attribute as a [=presentational hint=]
-  setting the element's 'background-image' property to the
-  [=resulting URL string=].
+  ---
 
-  When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>,
-  <{tr}>, <{td}>, or <{th}> element has a <code>bgcolor</code>
-  attribute set, the new value is expected to be parsed using the [=rules for parsing a legacy color value=], and if that does not return an error, the user agent is expected to treat the
-  attribute as a [=presentational hint=] setting the element's
+  When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, or <{th}> element has a
+  <{common/background}> attribute set to a non-empty value, the new value is expected to be
+  [=parsed=] relative to the element's [=node document=], and if this is successful, the user agent
+  is expected to treat the attribute as a [=presentational hint=] setting the element's
+  'background-image' property to the [=resulting URL string=].
+
+  When a <{table}>, <{thead}>, <{tbody}>, <{tfoot}>, <{tr}>, <{td}>, or <{th}> element has a
+  <{tablecells/bgcolor}> attribute set, the new value is expected to be parsed using the
+  [=rules for parsing a legacy color value=], and if that does not return an error, the user agent
+  is expected to treat the attribute as a [=presentational hint=] setting the element's
   'background-color' property to the resulting color.
 
-  When a <{table}> element has a <code>bordercolor</code>
-  attribute, its value is expected to be parsed using the [=rules for parsing a legacy color value=], and if that does not return an error, the user agent is expected to treat the
-  attribute as a [=presentational hint=] setting the element's
+  When a <{table}> element has a <{table/bordercolor}> attribute, its value is expected to be parsed
+  using the [=rules for parsing a legacy color value=], and if that does not return an error, the
+  user agent is expected to treat the attribute as a [=presentational hint=] setting the element's
   'border-top-color', 'border-right-color', 'border-bottom-color', and 'border-left-color'
   properties to the resulting color.
 
-  <hr />
+  ---
 
-  The <{table}> element's <code>border</code> attribute [=maps to the pixel length properties=]
+  The <{table}> element's <{table/border}> attribute [=maps to the pixel length properties=]
   'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width' on the
-  element. If the attribute is present but parsing the attribute's value using the [=rules for parsing non-negative integers=] generates an error, a default value of 1px is expected to be
-  used for that property instead.
+  element. If the attribute is present but parsing the attribute's value using the
+  [=rules for parsing non-negative integers=] generates an error, a default value of 1px is expected
+  to be used for that property instead.
 
-  Rules marked "<dfn>only if border is not equivalent to zero</dfn>"
-  in the CSS block above is expected to only be applied if the <code>border</code> attribute mentioned in the selectors for the rule is not
-  only present but, when parsed using the [=rules for parsing non-negative integers=], is
-  also found to have a value other than zero or to generate an error.
+  Rules marked "<dfn>only if border is not equivalent to zero</dfn>" in the CSS block above is
+  expected to only be applied if the <{table/border}> attribute mentioned in the selectors for the
+  rule is not only present but, when parsed using the [=rules for parsing non-negative integers=],
+  is also found to have a value other than zero or to generate an error.
 
-  <hr />
+  ---
 
-  In [=quirks mode=], a <{td}> element or a <{th}> element that has a
-  <code>nowrap</code> attribute but also has a <code>width</code> attribute whose value, when parsed using the [=rules for parsing non-zero dimension values=], is found to be a length (not an error or a number
-  classified as a percentage), is expected to have a [=presentational hint=] setting the element's 'white-space' property to ''white-space/normal'',
-  overriding the rule in the CSS block above that sets it to ''white-space/nowrap''.
+  In [=quirks mode=], a <{td}> element or a <{th}> element that has a <{tablecells/nowrap}>
+  attribute but also has a <{tablecells/width}> attribute whose value, when parsed using the
+  [=rules for parsing non-zero dimension values=], is found to be a length (not an error or a number
+  classified as a percentage), is expected to have a [=presentational hint=] setting the element's
+  'white-space' property to ''white-space: normal'', overriding the rule in the CSS block above that
+  sets it to ''white-space: nowrap''.
 
-<h4 id="margin-collapsing-quirks">Margin collapsing quirks</h4>
+### Margin collapsing quirks ### {#margin-collapsing-quirks}
 
-  A node is <dfn>substantial</dfn> if it is a text node
-  that is not [=inter-element white space=], or if it is an element node.
+  A node is <dfn>substantial</dfn> if it is a text node that is not [=inter-element white space=],
+  or if it is an element node.
 
-  A node is <dfn>blank</dfn> if it is an element that contains no
-  [=substantial=] nodes.
+  A node is <dfn>blank</dfn> if it is an element that contains no [=substantial=] nodes.
 
   The <dfn lt="elements with default margins|element with default margins">elements with default margins</dfn>
-  are the following elements: <{blockquote}>, <{dir}>, <{dl}>,
-  <{h1}>, <{h2}>, <{h3}>, <{h4}>, <{h5}>,
-  <{h6}>, <{listing}>, <{menu}>, <{ol}>,
-  <{p}>, <{plaintext}>, <{pre}>, <{ul}>, <code>xmp</code>
+  are the following elements: <{blockquote}>, <{dir}>, <{dl}>, <{h1}>, <{h2}>, <{h3}>, <{h4}>,
+  <{h5}>, <{h6}>, <{listing}>, <{menu}>, <{ol}>, <{p}>, <{plaintext}>, <{pre}>, <{ul}>, <{xmp}>
 
-  In [=quirks mode=], any [=element with default margins=] that is the child of a <{body}>, <{td}>, or
-  <{th}> element and has no [=substantial=]
-  previous siblings is expected to have a user-agent level style sheet rule that sets its
-  'margin-top' property to zero.
+  In [=quirks mode=], any [=element with default margins=] that is the child of a <{body}>, <{td}>,
+  or <{th}> element and has no [=substantial=] previous siblings is expected to have a user-agent
+  level style sheet rule that sets its 'margin-block-start' property to zero.
 
-  In [=quirks mode=], any [=element with default margins=] that is the child of a <{body}>, <{td}>, or
-  <{th}> element, has no [=substantial=]
-  previous siblings, and is [=blank=], is expected to have
-  a user-agent level style sheet rule that sets its 'margin-bottom' property to zero also.
+  In [=quirks mode=], any [=element with default margins=] that is the child of a <{body}>, <{td}>,
+  or <{th}> element, has no [=substantial=] previous siblings, and is [=blank=], is expected to have
+  a user-agent level style sheet rule that sets its 'margin-block-end' property to zero also.
 
-  In [=quirks mode=], any [=element with default margins=] that is the child of a <{td}> or <{th}> element, has
-  no [=substantial=] following siblings, and is [=blank=], is expected to have a user-agent level style sheet
-  rule that sets its 'margin-top' property to zero.
+  In [=quirks mode=], any [=element with default margins=] that is the child of a <{td}> or <{th}>
+  element, has no [=substantial=] following siblings, and is [=blank=], is expected to have a
+  user-agent level style sheet rule that sets its 'margin-block-start' property to zero.
 
-  In [=quirks mode=], any <{p}> element that is the child of a <{td}>
-  or <{th}> element and has no [=substantial=] following siblings, is expected to have a
-  user-agent level style sheet rule that sets its 'margin-bottom' property to zero.
+  In [=quirks mode=], any <{p}> element that is the child of a <{td}> or <{th}> element and has no
+  [=substantial=] following siblings, is expected to have a user-agent level style sheet rule that
+  sets its 'margin-block-end' property to zero.
 
-<h4 id="form-controls">Form controls</h4>
+### Form controls ### {#form-controls}
 
   <pre highlight="css">
-@namespace url(http://www.w3.org/1999/xhtml);
+    @namespace url(http://www.w3.org/1999/xhtml);
 
-  input, select, option, optgroup, button, textarea {
-  text-indent: initial;
-  }
+    input, select, option, optgroup, button, textarea {
+      text-indent: initial;
+    }
 
-  input:matches([type=radio i], [type=checkbox i], [type=reset i], [type=button i],
-  [type=submit i], [type=search i]), select, button {
-  box-sizing: border-box;
-  }
+    input:matches([type=radio i], [type=checkbox i], [type=reset i], [type=button i],
+    [type=submit i], [type=search i]), select, button {
+      box-sizing: border-box;
+    }
+
+    textarea { white-space: pre-wrap; }
   </pre>
 
   In [=quirks mode=], the following rules are also expected to apply:
 
   <pre highlight="css">
-@namespace url(http://www.w3.org/1999/xhtml);
+    @namespace url(http://www.w3.org/1999/xhtml);
 
-  input:not([type=image i]), textarea { box-sizing: border-box; }
+    input:not([type=image i]), textarea { box-sizing: border-box; }
   </pre>
 
-  Each kind of form control is also given a specific default binding, as described in subsequent
-  sections, which implements the look and feel of the control.
+  Each kind of form control is also described in the [[#widgets|Widgets]] section, which describes
+  the look and feel of the control.
 
-<h4 id="the-hr-element-rendering">The <{hr}> element</h4>
+### The <{hr}> element ### {#the-hr-element-rendering}
 
   <pre highlight="css">
-@namespace url(http://www.w3.org/1999/xhtml);
+    @namespace url(http://www.w3.org/1999/xhtml);
 
-  hr { color: gray; border-style: inset; border-width: 1px; margin: 0.5em auto; }
+    hr {
+      color: gray;
+      border-style: inset;
+      border-width: 1px;
+      margin-block-start: 0.5em;
+      margin-inline-end: auto;
+      margin-block-end: 0.5em;
+      margin-inline-start: auto;
+    }
   </pre>
 
   The following rules are also expected to apply, as [=presentational hints=]:
 
   <pre highlight="css">
-@namespace url(http://www.w3.org/1999/xhtml);
+    @namespace url(http://www.w3.org/1999/xhtml);
 
-  hr[align=left] { margin-left: 0; margin-right: auto; }
-  hr[align=right] { margin-left: auto; margin-right: 0; }
-  hr[align=center] { margin-left: auto; margin-right: auto; }
-  hr[color], hr[noshade] { border-style: solid; }
+    hr[align=left i] { margin-left: 0; margin-right: auto; }
+    hr[align=right i] { margin-left: auto; margin-right: 0; }
+    hr[align=center i] { margin-left: auto; margin-right: auto; }
+    hr[color], hr[noshade] { border-style: solid; }
   </pre>
 
-  If an <{hr}> element has either a <code>color</code> attribute
-  or a <code>noshade</code> attribute, and furthermore also has a <code>size</code> attribute, and parsing that attribute's value using the
-  [=rules for parsing non-negative integers=] doesn't generate an error, then the user
-  agent is expected to use the parsed value divided by two as a pixel length for
-  [=presentational hints=] for the properties 'border-top-width', 'border-right-width',
-  'border-bottom-width', and 'border-left-width' on the element.
+  If an <{hr}> element has either a <{hr/color}> attribute or a <{hr/noshade}> attribute, and
+  furthermore also has a <{hr/size}> attribute, and parsing that attribute's value using the
+  [=rules for parsing non-negative integers=] doesn't generate an error, then the user agent is
+  expected to use the parsed value divided by two as a pixel length for [=presentational hints=] for
+  the properties 'border-top-width', 'border-right-width', 'border-bottom-width', and
+  'border-left-width' on the element.
 
-  Otherwise, if an <{hr}> element has neither a <code>color</code>
-  attribute nor a <code>noshade</code> attribute, but does have a <code>size</code> attribute, and parsing that attribute's value using the
-  [=rules for parsing non-negative integers=] doesn't generate an error, then: if the
-  parsed value is one, then the user agent is expected to use the attribute as a [=presentational hint=] setting the element's
-  'border-bottom-width' to 0; otherwise, if the parsed value is greater than one, then the user
-  agent is expected to use the parsed value minus two as a pixel length for [=presentational hints=] for the 'height' property on the element.
+  Otherwise, if an <{hr}> element has neither a <{hr/color}> attribute nor a <{hr/noshade}>
+  attribute, but does have a <{hr/size}> attribute, and parsing that attribute's value using the
+  [=rules for parsing non-negative integers=] doesn't generate an error, then: if the parsed value
+  is one, then the user agent is expected to use the attribute as a [=presentational hint=] setting
+  the element's 'border-bottom-width' to 0; otherwise, if the parsed value is greater than one, then
+  the user agent is expected to use the parsed value minus two as a pixel length for
+  [=presentational hints=] for the 'height' property on the element.
 
-  The <code>width</code> attribute on an <{hr}> element [=maps to the dimension property=] 'width' on the element.
+  The <{hr/width}> attribute on an <{hr}> element [=maps to the dimension property=] 'width' on the
+  element.
 
-  When an <{hr}> element has a <code>color</code> attribute, its
-  value is expected to be parsed using the [=rules for parsing a legacy color value=], and
-  if that does not return an error, the user agent is expected to treat the attribute as a [=presentational hint=] setting the element's 'color' property to
-  the resulting color.
+  When an <{hr}> element has a <{hr/color}> attribute, its value is expected to be parsed using the
+  [=rules for parsing a legacy color value=], and if that does not return an error, the user agent
+  is expected to treat the attribute as a [=presentational hint=] setting the element's 'color'
+  property to the resulting color.
 
-<h4 id="the-fieldset-and-legend-elements">The <{fieldset}> and <{legend}> elements</h4>
+### The <{fieldset}> and <{legend}> elements ### {#the-fieldset-and-legend-elements}
 
   <pre highlight="css">
-@namespace url(http://www.w3.org/1999/xhtml);
+    @namespace url(http://www.w3.org/1999/xhtml);
 
-  fieldset {
-  display: block;
-  margin-left: 2px; margin-right: 2px;
-  border: groove 2px ThreeDFace;
-  padding: 0.35em 0.625em 0.75em;
-  min-width: min-content;
-  }
+    fieldset {
+      display: block;
+      margin-inline-start: 2px;
+      margin-inline-end: 2px;
+      border: groove 2px ThreeDFace;
+      padding-block-start: 0.35em;
+      padding-inline-end: 0.625em;
+      padding-block-end: 0.75em;
+      padding-inline-start: 0.625em;
+      min-width: min-content;
+    }
 
-  legend {
-  padding-left: 2px; padding-right: 2px;
-  }
+    legend {
+      padding-inline-start: 2px; padding-inline-end: 2px;
+    }
   </pre>
 
   The <{fieldset}> element is expected to establish a new block formatting context.
 
-  If the <{fieldset}> element has a child that matches the conditions in the list below,
-  then the first such child is the <{fieldset}> element's <dfn>rendered legend</dfn>:
+  If the <{fieldset}> element has a child that matches the conditions in the list below, then the
+  first such child is the <{fieldset}> element's <dfn>rendered legend</dfn>:
 
   <ul class="brief">
-
-    <li>The child is a <{legend}> element.</li>
-
-    <li>The child is not [=out-of-flow=] (e.g., not absolutely positioned or floated).</li>
-
-    <li>The child is generating a box (e.g., it is not 'display:none').</li>
-
+    * The child is a <{legend}> element.
+    * The child is not [=out-of-flow=] (e.g., not absolutely positioned or floated).
+    * The child is generating a box (e.g., it is not 'display: none' or 'display: contents').
   </ul>
 
-  A <{fieldset}> element's [=rendered legend=], if any, is expected to be
-  rendered over the top [=border edge=] of the <{fieldset}> element as a [=block box=]
-  (overriding any explicit 'display' value). In the absence of an explicit width, the box should
-  shrink-wrap. If the <{legend}> element in question has an <{legend/align}> attribute, and its
-  value is an [=ASCII case-insensitive=] match for one of the strings in the first column of the
-  following table, then the <{legend}> is expected to be rendered horizontally aligned over the
+  A <{fieldset}> element's [=rendered legend=], if any, is expected to be rendered over the
+  block-start [=border edge=] of the <{fieldset}> element as a [=block box=] (overriding any
+  explicit 'display' value). In the absence of an explicit inline size, the box should shrink-wrap.
+  If the <{legend}> element in question has an <{legend/align}> attribute, and its value is an
+  [=ASCII case-insensitive=] match for one of the strings in the first column of the following
+  table, then the <{legend}> is expected to be rendered aligned in the inline direction over the
   [=border edge=] in the position given in the corresponding cell on the same row in the second
   column. If the attribute is absent or has a value that doesn't match any of the cases in the
   table, then the position is expected to be on the right if the 'direction' property on this
-  element has a computed value of ''rtl'', and on the left otherwise.
+  element has a computed value of ''direction/rtl'', and on the inline-start side.
+  [[CSS-WRITING-MODES-3]]
 
   <table>
     <thead>
-    <tr>
-      <th>Attribute value
-      <th>Alignment position
+      <tr>
+        <th>Attribute value</th>
+        <th>Alignment position</th>
+      </tr>
+    </thead>
     <tbody>
-    <tr>
-      <td><code>left</code>
-      <td>On the left
-    <tr>
-      <td><code>right</code>
-      <td>On the right
-    <tr>
-      <td><code>center</code>
-      <td>In the middle
+      <tr>
+        <td>`left`</td>
+        <td>On the inline-left side</td>
+      </tr>
+      <tr>
+        <td>`right`</td>
+        <td>On the inline-right side</td>
+      </tr>
+      <tr>
+        <td>`center`</td>
+        <td>In the middle</td>
+      </tr>
+    </thead>
   </table>
 
-<h3 id="replaced-elements">Replaced elements</h3>
+## Replaced elements ## {#replaced-elements}
 
-<h4 id="replaced-elements-embedded-content">Embedded content</h4>
+### Embedded content ### {#replaced-elements-embedded-content}
 
-  The <{embed}>, <{iframe}>, and <{video}> elements are expected to be
-  treated as [=replaced elements=].
+  The <{embed}>, <{iframe}>, and <{video}> elements are expected to be treated as
+  [=replaced elements=].
 
-  A <{canvas}> element that [=represents=] [=embedded content=] is
-  expected to be treated as a [=replaced element=]; the contents of such elements are the
-  element's bitmap, if any, or else a transparent black bitmap with the same [=intrinsic dimensions=] as the element. Other <{canvas}> elements are expected to be treated
-  as ordinary elements in the rendering model.
+  A <{canvas}> element that [=represents=] [=embedded content=] is expected to be treated as a
+  [=replaced element=]; the contents of such elements are the element's bitmap, if any, or else a
+  transparent black bitmap with the same [=intrinsic dimensions=] as the element. Other <{canvas}>
+  elements are expected to be treated as ordinary elements in the rendering model.
 
-  An <{object}> element that [=represents=] an image, plugin, or [=nested browsing context=] is expected to be treated as a [=replaced element=]. Other
-  <{object}> elements are expected to be treated as ordinary elements in the rendering
-  model.
+  An <{object}> element that [=represents=] an image, plugin, or [=nested browsing context=] is
+  expected to be treated as a [=replaced element=]. Other <{object}> elements are expected to be
+  treated as ordinary elements in the rendering model.
 
-  An <{applet}> element that [=represents=] a [=plugin=] is expected
-  to be treated as a [=replaced element=]. Other <{applet}> elements are expected
-  to be treated as ordinary elements in the rendering model.
+  An <{applet}> element that [=represents=] a [=plugin=] is expected to be treated as a
+  [=replaced element=]. Other <{applet}> elements are expected to be treated as ordinary elements in
+  the rendering model.
 
   The <{audio}> element, when it is [=exposing a user interface=], is expected to be treated as a
-  [=replaced element=] about one line high, as wide as is necessary to expose the user
-  agent's user interface features. When an <{audio}> element is not [=exposing a user interface=], the user agent is expected to force
-  its 'display' property to compute to ''display/none'', irrespective of CSS rules.
+  [=replaced element=] about one line high, as wide as is necessary to expose the user agent's user
+  interface features. When an <{audio}> element is not [=exposing a user interface=], the user agent
+  is expected to force its 'display' property to compute to ''display/none'', irrespective of CSS
+  rules.
 
-  Whether a <{video}> element is [=exposing a user interface=] is not expected to affect the size of the rendering;
-  controls are expected to be overlaid above the page content without causing any layout changes,
-  and are expected to disappear when the user does not need them.
+  Whether a <{video}> element is [=exposing a user interface=] is not expected to affect the size of
+  the rendering; controls are expected to be overlaid above the page content without causing any
+  layout changes, and are expected to disappear when the user does not need them.
 
-  When a <{video}> element represents a poster frame or frame of video, the poster frame
-  or frame of video is expected to be rendered at the largest size that maintains the aspect ratio
-  of that poster frame or frame of video without being taller or wider than the <{video}>
-  element itself, and is expected to be centered in the <{video}> element.
+  When a <{video}> element represents a poster frame or frame of video, the poster frame or frame of
+  video is expected to be rendered at the largest size that maintains the aspect ratio of that
+  poster frame or frame of video without being taller or wider than the <{video}> element itself,
+  and is expected to be centered in the <{video}> element.
 
-  Any subtitles or captions are expected to be overlayed directly on top of their
-  <{video}> element, as defined by the relevant rendering rules; for WebVTT, those are the
+  Any subtitles or captions are expected to be overlayed directly on top of their <{video}> element,
+  as defined by the relevant rendering rules; for WebVTT, those are the
   [=rules for updating the display of WebVTT text tracks=]. [[WEBVTT]]
 
-  When the user agent starts [=exposing a user interface=] for a <{video}> element, the user agent should run the [=rules for updating the text track rendering=] of each of the [=text tracks=] in the <{video}> element's [=list of text tracks=] that are <a mode for="track">showing</a> and whose [=text track kind=] is one of <code>subtitles</code> or <code>captions</code> (e.g., for [=text tracks=] based on [=WebVTT=], the [=rules for updating the display of WebVTT text tracks=]). [[WEBVTT]]
+  When the user agent starts [=exposing a user interface=] for a <{video}> element, the user agent
+  should run the [=rules for updating the text track rendering=] of each of the [=text tracks=] in
+  the <{video}> element's [=list of text tracks=] that are <a mode for="track">showing</a> and whose
+  [=text track kind=] is one of `subtitles` or `captions` (e.g., for [=text tracks=] based on
+  [=WebVTT=], the [=rules for updating the display of WebVTT text tracks=]). [[WEBVTT]]
 
-  <p class="note">
-  Resizing <code>video</code> and <{canvas}> elements does not interrupt
-  video playback or clear the canvas.
-  </p>
+  Note: Resizing <{video}> and <{canvas}> elements does not interrupt video playback or clear the
+  canvas.
 
-  <hr />
+  ---
 
   The following CSS rules are expected to apply:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
 
+    iframe { border: 2px inset; }
     video { object-fit: contain; }
   </pre>
 
-<h4 id="replaced-elements-images">Images</h4>
+### Images ### {#replaced-elements-images}
 
-  User agents are expected to render <{img}> elements and <{input}> elements
-  whose <code>type</code> attributes are in the <{input/Image|Image Button}> state, according to the first applicable rules
+  User agents are expected to render <{img}> elements and <{input}> elements whose <{input/type}>
+  attributes are in the <{input/Image|Image Button}> state, according to the first applicable rules
   from the following list:
 
   <dl class="switch">
+    : If the element [=represents=] an image
+    :: The user agent is expected to treat the element as a [=replaced element=] and render the
+        image according to the rules for doing so defined in CSS.
 
-    <dt>If the element [=represents=] an image</dt>
+    : If the element does not [=represent=] an image, but the element already has
+        [=intrinsic dimensions=] (e.g., from the [=dimension attributes=] or CSS rules), and either:
+        * the user agent has reason to believe that the image will become *available* and be
+            rendered in due course, or
+        * the element has no <{img/alt}> attribute, or
+        * the [=Document=] is in [=quirks mode=]
+    :: The user agent is expected to treat the element as a [=replaced element=] whose content is
+        the text that the element represents, if any, optionally alongside an icon indicating that
+        the image is being obtained (if applicable). For <{input}> elements, the element is expected
+        to appear button-like to indicate that the element is a [=button=].
 
-    <dd>The user agent is expected to treat the element as a [=replaced element=] and
-    render the image according to the rules for doing so defined in CSS.</dd>
+    : If the element is an <{img}> element that [=represents=] some text and the user agent does not
+        expect this to change
+    :: The user agent is expected to treat the element as a non-replaced phrasing element whose
+        content is the text, optionally with an icon indicating that an image is missing, so that
+        the user can request the image be displayed or investigate why it is not rendering. In
+        non-graphical contexts, such an icon should be omitted.
 
-    <dt>
+    : If the element is an <{img}> element that [=represents=] nothing and the user agent does not
+        expect this to change
+    :: The user agent is expected to treat the element as an empty inline element. (In the absence
+        of further styles, this will cause the element to essentially not be rendered.)
 
-    If the element does not [=represent=] an image, but the element
-    already has [=intrinsic dimensions=] (e.g., from the [=dimension attributes=]
-    or CSS rules), and either:
+    : If the element is an <{input}> element that does not [=represent=] an image and the user agent
+        does not expect this to change
+    :: The user agent is expected to treat the element as a [=replaced element=] consisting of a
+        button whose content is the element's alternative text. The [=intrinsic dimensions=] of the
+        button are expected to be about one line in height and whatever width is necessary to render
+        the text on one line.
 
-    <ul>
-
-      <li>the user agent has reason to believe that the image will become <i>available</i> and be rendered in due
-      course, or
-
-      <li>the element has no <code>alt</code> attribute, or
-
-      <li>the <code>Document</code> is in [=quirks mode=]
-
-    </ul>
-
-    </dt>
-
-    <dd>The user agent is expected to treat the element as a [=replaced element=] whose
-    content is the text that the element represents, if any, optionally alongside an icon indicating
-    that the image is being obtained (if applicable). For <{input}> elements, the element
-    is expected to appear button-like to indicate that the element is a [=button=].</dd>
-
-    <dt>If the element is an <{img}> element that [=represents=] some text and the
-    user agent does not expect this to change</dt>
-
-    <dd>The user agent is expected to treat the element as a non-replaced phrasing element whose
-    content is the text, optionally with an icon indicating that an image is missing, so that the
-    user can request the image be displayed or investigate why it is not rendering. In non-graphical
-    contexts, such an icon should be omitted.</dd>
-
-    <dt>If the element is an <{img}> element that [=represents=] nothing and the
-    user agent does not expect this to change</dt>
-
-    <dd>The user agent is expected to treat the element as an empty inline element. (In the absence
-    of further styles, this will cause the element to essentially not be rendered.)</dd>
-
-    <dt>If the element is an <{input}> element that does not [=represent=] an image and the user agent does not expect this to change</dt>
-
-    <dd>The user agent is expected to treat the element as a [=replaced element=]
-    consisting of a button whose content is the element's alternative text. The [=intrinsic dimensions=] of the button are expected to be about one line in height and whatever width
-    is necessary to render the text on one line.</dd>
-
-  </dl>
-
-  The icons mentioned above are expected to be relatively small so as not to disrupt most text
-  but be easily clickable. In a visual environment, for instance, icons could be 16 pixels by 16
-  pixels square, or 1em by 1em if the images are scalable. In an audio environment, the icon could
-  be a short bleep. The icons are intended to indicate to the user that they can be used to get to
-  whatever options the user agent provides for images, and, where appropriate, are expected to provide
-  access to the context menu that would have come up if the user interacted with the actual
+  The icons mentioned above are expected to be relatively small so as not to disrupt most text but
+  be easily clickable. In a visual environment, for instance, icons could be 16 pixels by 16 pixels
+  square, or 1em by 1em if the images are scalable. In an audio environment, the icon could be a
+  short bleep. The icons are intended to indicate to the user that they can be used to get to
+  whatever options the user agent provides for images, and, where appropriate, are expected to
+  provide access to the context menu that would have come up if the user interacted with the actual
   image.
 
-  <hr />
+  ---
 
-  All animated images with the same [=absolute URL=] and the same image data are
-  expected to be rendered synchronized to the same timeline as a group, with the timeline starting
-  at the time of the least recent addition to the group.
+  All animated images with the same [=absolute URL=] and the same image data are expected to be
+  rendered synchronized to the same timeline as a group, with the timeline starting at the time of
+  the least recent addition to the group.
 
-  <p class="note">
-  In other words, when a second image with the same [=absolute URL=] and
-  animated image data is <a for="document">inserted into a document</a>, it jumps to the point in the animation cycle that
-  is currently being displayed by the first image.
-  </p>
+  Note: In other words, when a second image with the same [=absolute URL=] and animated image data
+  is [=document/inserted into a document=], it jumps to the point in the animation cycle that is
+  currently being displayed by the first image.
 
-  When a user agent is to <dfn>restart the animation</dfn> for an <{img}> element
-  showing an animated image, all animated images with the same [=absolute URL=] and the
-  same image data in that <{img}> element's [=node document=] are expected to restart
-  their animation from the beginning.
+  When a user agent is to <dfn>restart the animation</dfn> for an <{img}> element showing an
+  animated image, all animated images with the same [=absolute URL=] and the same image data in that
+  <{img}> element's [=node document=] are expected to restart their animation from the beginning.
 
-  <hr />
+  ---
 
-  The following CSS rules are expected to apply when the <code>Document</code> is in [=quirks mode=]:
+  The following CSS rules are expected to apply when the {{Document}} is in [=quirks mode=]:
 
   <pre highlight="css">
     @namespace url(http://www.w3.org/1999/xhtml);
@@ -1300,7 +1300,7 @@ path: includes/cldr.include
     img[align=right i] { margin-left: 3px; }
   </pre>
 
-<h4 id="attributes-for-embedded-content-and-images">Attributes for embedded content and images</h4>
+### Attributes for embedded content and images ### {#attributes-for-embedded-content-and-images}
 
   The following CSS rules are expected to apply as [=presentational hints=]:
 
@@ -1348,61 +1348,59 @@ path: includes/cldr.include
     }
   </pre>
 
-  When an <{applet}>, <{embed}>, <{iframe}>, <{img}>, or
-  <{object}> element, or an <{input}> element whose <code>type</code> attribute is in the <{input/Image|Image Button}> state, has an <code>align</code>
-  attribute whose value is an [=ASCII case-insensitive=] match for the string "<code>center</code>" or the string "<code>middle</code>", the user agent is expected
-  to act as if the element's 'vertical-align' property was set to a value that aligns the vertical
-  middle of the element with the parent element's baseline.
+  When an <{applet}>, <{embed}>, <{iframe}>, <{img}>, or <{object}> element, or an <{input}> element
+  whose <{input/type}> attribute is in the <{input/Image|Image Button}> state, has an
+  <{input/align}> attribute whose value is an [=ASCII case-insensitive=] match for the string
+  "`center`" or the string "`middle`", the user agent is expected to act as if the element's
+  'vertical-align' property was set to a value that aligns the vertical middle of the element with
+  the parent element's baseline.
 
-  The <code>hspace</code> attribute of <{applet}>, <{embed}>,
-  <{iframe}>, <{img}>, or <{object}> elements, and <code>input</code>
-  elements with a <code>type</code> attribute in the <{input/Image|Image Button}> state, [=maps to the dimension properties=] 'margin-left' and 'margin-right' on the
-  element.
+  The <{img/hspace}> attribute of <{applet}>, <{embed}>, <{iframe}>, <{img}>, or <{object}>
+  elements, and <{input}> elements with a <{input/type}> attribute in the
+  <{input/Image|Image Button}> state, [=maps to the dimension properties=] 'margin-left' and
+  'margin-right' on the element.
 
-  The <code>vspace</code> attribute of <{applet}>, <{embed}>,
-  <{iframe}>, <{img}>, or <{object}> elements, and <code>input</code>
-  elements with a <code>type</code> attribute in the <{input/Image|Image Button}> state, [=maps to the dimension properties=] 'margin-top' and 'margin-bottom' on the
-  element.
+  The <{img/vspace}> attribute of <{applet}>, <{embed}>, <{iframe}>, <{img}>, or <{object}>
+  elements, and <{input}> elements with a <{input/type}> attribute in the
+  <{input/Image|Image Button}> state, [=maps to the dimension properties=] 'margin-top' and
+  'margin-bottom' on the element.
 
-  When an <{img}> element, <{object}> element, or <{input}> element
-  with a <code>type</code> attribute in the <{input/Image|Image Button}> state has a <code>border</code> attribute whose value, when parsed using the [=rules for parsing non-negative integers=], is found to be a number greater than zero, the user agent is
-  expected to use the parsed value for eight [=presentational hints=]: four setting the
-  parsed value as a pixel length for the element's 'border-top-width', 'border-right-width',
-  'border-bottom-width', and 'border-left-width' properties, and four setting the element's
-  'border-top-style', 'border-right-style', 'border-bottom-style', and 'border-left-style'
-  properties to the value ''solid''.
+  When an <{img}> element, <{object}> element, or <{input}> element with a <{input/type}> attribute
+  in the <{input/Image|Image Button}> state has a <{input/border}> attribute whose value, when
+  parsed using the [=rules for parsing non-negative integers=], is found to be a number greater than
+  zero, the user agent is expected to use the parsed value for eight [=presentational hints=]: four
+  setting the parsed value as a pixel length for the element's 'border-top-width',
+  'border-right-width', 'border-bottom-width', and 'border-left-width' properties, and four setting
+  the element's 'border-top-style', 'border-right-style', 'border-bottom-style', and
+  'border-left-style' properties to the value ''solid''.
 
-  The <code>width</code> and <code>height</code> attributes on <{applet}>, <{embed}>,
-  <{iframe}>, <{img}>, <code>object</code> or <{video}> elements, and
-  <{input}> elements with a <code>type</code> attribute in the
-  <{input/Image|Image Button}> state and that either represents an image
-  or that the user expects will eventually represent an image, map to the dimension properties 'width' and 'height' on the element
-  respectively.
+  The <{img/width}> and <{img/height}> attributes on <{applet}>, <{embed}>, <{iframe}>, <{img}>,
+  <{object}> or <{video}> elements, and <{input}> elements with a <{input/type}> attribute in the
+  <{input/Image|Image Button}> state and that either represents an image or that the user expects
+  will eventually represent an image, map to the dimension properties 'width' and 'height' on the
+  element respectively.
 
-<h4 id="replaced-elements-image-maps">Image maps</h4>
+### Image maps ### {#replaced-elements-image-maps}
 
-  Shapes on an [=image map=] are expected to act, for the purpose of the CSS cascade, as
-  elements independent of the original <{area}> element that happen to match the same style
-  rules but inherit from the <{img}> or <{object}> element.
+  Shapes on an [=image map=] are expected to act, for the purpose of the CSS cascade, as elements
+  independent of the original <{area}> element that happen to match the same style rules but inherit
+  from the <{img}> or <{object}> element.
 
   For the purposes of the rendering, only the 'cursor' property is expected to have any effect on
   the shape.
 
-  <p class="example">
-  Thus, for example, if an <{area}> element has a <{global/style}> attribute that sets the 'cursor' property to ''cursor/help'', then when the
-  user designates that shape, the cursor would change to a Help cursor.
-  </p>
+  <p class="example">Thus, for example, if an <{area}> element has a <{global/style}> attribute that
+  sets the 'cursor' property to ''cursor/help'', then when the user designates that shape, the
+  cursor would change to a Help cursor.</p>
 
-  <p class="example">
-  Similarly, if an <{area}> element had a CSS rule that set its 'cursor'
-  property to ''inherit'' (or if no rule setting the 'cursor' property matched the element at all),
-  the shape's cursor would be inherited from the <code>img</code> or <{object}> element of
-  the [=image map=], not from the parent of the <{area}> element.
-  </p>
+  <p class="example">Similarly, if an <{area}> element had a CSS rule that set its 'cursor' property
+  to ''inherit'' (or if no rule setting the 'cursor' property matched the element at all), the
+  shape's cursor would be inherited from the <code>img</code> or <{object}> element of the
+  [=image map=], not from the parent of the <{area}> element.</p>
 
-<h3 id="bindings">Bindings</h3>
+## Widgets ## {#widgets}
 
-<h4 id="bindings-introduction">Introduction</h4>
+### Introduction ### {#widgets-introduction}
 
   Exactly how the bindings are implemented is not specified by this specification. User agents
   are encouraged to make their bindings set the 'appearance' CSS property appropriately to achieve
@@ -2106,7 +2104,7 @@ path: includes/cldr.include
   <i>percentage</i>, then equally (not proportionally) to each entry whose unit is <i>absolute</i>,
   and finally, failing all else, to the last entry.
 
-  <hr />
+  ---
 
   The contents of a <{frame}> element that does not have a <code>frameset</code> parent
   are expected to be rendered as transparent black; the user agent is expected to not render the
