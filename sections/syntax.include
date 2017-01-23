@@ -1566,7 +1566,7 @@
   the "[=before html=]" [=insertion mode=].)</p>
 
   The <{html}> node, however it is created, is the topmost node of the stack. It only gets popped
-  off the stack when the parser [=finishes=].
+  off the stack when the parser [=stop parsing|finishes=].
 
   The <dfn>current node</dfn> is the bottommost node in this [=stack of open elements=].
 
@@ -2268,7 +2268,7 @@
   <dl class="switch">
     : U+002D HYPHEN-MINUS (-)
     :: Switch to the [=script data escaped dash dash state=]. Emit a U+002D HYPHEN-MINUS character
-      token.
+        token.
 
     : U+003C LESS-THAN SIGN (&lt;)
     :: Switch to the [=script data escaped less-than sign state=].
@@ -3845,161 +3845,129 @@
       [=custom element constructor=]; it is appended in this step, along with all other
       attributes.</p>
   9. If |will execute script| is true, then:
-      1. Let |queue| be the result of popping the [=current element queue=] from the [=custom element reactions stack=]. (This will be the same [=element queue=] as was pushed above.)
+      1. Let |queue| be the result of popping the [=current element queue=] from the
+          [=custom element reactions stack=]. (This will be the same [=element queue=] as was pushed
+          above.)
       2. [=Invoke custom element reactions=] in |queue|.
       3. Decrement |document|'s [=throw-on-dynamic-markup-insertion counter=].
-  10. If |element| has an <{xmlns/xmlns}> attribute *in the
-    [=XMLNS namespace=]* whose value is not exactly the same as the element's namespace,
-    that is a [=parse error=]. Similarly, if |element| has an <{xlink/xlink|xmlns:xlink}> attribute in the [=XMLNS namespace=] whose value is not the
-    [=XLink namespace=], that is a [=parse error=].
-  11. If |element| is a [=resettable element=],
-    invoke its [=reset algorithm=]. (This initializes the
-    element's <a for="forms">value</a> and <a for="forms">checkedness</a> based on the element's attributes.)
-  12. If |element| is a <a>form-associated element</a>, and the [=`form` element pointer=] is not null, and there is no <code>template</code>
-    element on the [=stack of open elements=], and |element| is either not [=listed elements|listed=] or doesn't have a <{formelements/form}> attribute, and the |intended parent| is in
-    the same [=tree=] as the element pointed to by the [=`form` element pointer=], [=associate=] |element| with the
-    <{form}> element pointed to by the <a><code>form</code> element
-    pointer</a>, and suppress the running of the [=reset the form owner=] algorithm when
-    the parser subsequently attempts to insert the element.
+  10. If |element| has an <{xmlns/xmlns}> attribute *in the [=XMLNS namespace=]* whose value is not
+      exactly the same as the element's namespace, that is a [=parse error=]. Similarly, if
+      |element| has an <{xlink/xlink|xmlns:xlink}> attribute in the [=XMLNS namespace=] whose value
+      is not the [=XLink namespace=], that is a [=parse error=].
+  11. If |element| is a [=resettable element=], invoke its [=reset algorithm=]. (This initializes
+      the element's [=forms/value=] and [=forms/checkedness=] based on the element's attributes.)
+  12. If |element| is a [=form-associated element=], and the [=`form` element pointer=] is not null,
+      and there is no <{template}> element on the [=stack of open elements=], and |element| is
+      either not [=listed elements|listed=] or doesn't have a <{formelements/form}> attribute, and
+      the |intended parent| is in the same [=tree=] as the element pointed to by the
+      [=`form` element pointer=], [=associate=] |element| with the <{form}> element pointed to by
+      the [=`form` element pointer=], and suppress the running of the [=reset the form owner=]
+      algorithm when the parser subsequently attempts to insert the element.
   13. Return |element|.
 
   ---
 
-  When the steps below require the user agent to <dfn>insert a foreign element</dfn> for a token
-  in a given namespace, the user agent must run these steps:
+  When the steps below require the user agent to <dfn>insert a foreign element</dfn> for a token in
+  a given namespace, the user agent must run these steps:
 
-  <ol>
+  1. Let the |adjusted insertion location| be the [=appropriate place for inserting a node=].
+  2. Let |element| be the result of
+      [=create an element for the token|creating an element for the token=] in the given namespace,
+      with the intended parent being the element in which the |adjusted insertion location| finds
+      itself.
+  3. If it is possible to insert |element| at the |adjusted insertion location|, then:
+      1. Push a new [=element queue=] onto the [=custom element reactions stack=].
+      2. Insert |element| at the |adjusted insertion location|.
+      3. Pop the [=element queue=] from the [=custom element reactions stack=], and
+          [=invoke custom element reactions=] in that queue.
 
-    <li>Let the |adjusted insertion location| be the <a>appropriate place for
-    inserting a node</a>.</li>
+      <p class="note">If the |adjusted insertion location| cannot accept more elements, e.g.,
+      because it's a {{Document}} that already has an element child, then |element| is dropped on
+      the floor.</p>
+  4. Push |element| onto the [=stack of open elements=] so that it is the new [=current node=].
+  5. Return |element|.
 
-    <li>Let |element| be the result of [=create an element for the token|creating an element for the token=] in the given namespace, with the intended
-    parent being the element in which the |adjusted insertion location| finds
-    itself.</li>
-
-    <li>
-
-    If it is possible to insert |element| at the |adjusted insertion location|, then:
-
-    <ol>
-       <li>
-
-          <p>Push a new [=element queue=] onto the [=custom element reactions stack=].</p>
-
-   </li>
-
-   <li>
-
-    Insert |element| at the |adjusted insertion location|.
-
-   </li>
-
-   <li>
-
-    <p>Pop the [=element queue=] from the [=custom element reactions stack=], and [=invoke custom element reactions=] in that queue.</p>
-
-   </li>
-
-  </ol>
-
-
-
-    <p class="note">
-  If the |adjusted insertion location| cannot accept more
-    elements, e.g., because it's a {{Document}} that already has an element child, then |element| is dropped on the floor.
-  </p>
-
-    </li>
-
-    <li>Push |element| onto the [=stack of open elements=] so that it is the new
-    [=current node=].</li>
-
-    <li>Return |element|.</li>
-
-  </ol>
-
-  When the steps below require the user agent to <dfn>insert an HTML element</dfn> for a token,
-  the user agent must [=insert a foreign element=] for the token, in the <a>HTML
-  namespace</a>.
+  When the steps below require the user agent to <dfn>insert an HTML element</dfn> for a token, the
+  user agent must [=insert a foreign element=] for the token, in the [=HTML namespace=].
 
   ---
 
   When the steps below require the user agent to <dfn>adjust MathML attributes</dfn> for a token,
-  then, if the token has an attribute named <code>definitionurl</code>, change its name to
-  <code>definitionURL</code> (note the case difference).
+  then, if the token has an attribute named `definitionurl`, change its name to `definitionURL`
+  (note the case difference).
 
-  When the steps below require the user agent to <dfn>adjust SVG attributes</dfn> for a token,
-  then, for each attribute on the token whose attribute name is one of the ones in the first column
-  of the following table, change the attribute's name to the name given in the corresponding cell in
-  the second column. (This fixes the case of SVG attributes that are not all lowercase.)
+  When the steps below require the user agent to <dfn>adjust SVG attributes</dfn> for a token, then,
+  for each attribute on the token whose attribute name is one of the ones in the first column of the
+  following table, change the attribute's name to the name given in the corresponding cell in the
+  second column. (This fixes the case of SVG attributes that are not all lowercase.)
 
   <table>
     <thead>
     <tr> <th> Attribute name on token <th> Attribute name on element
     <tbody>
-    <tr> <td> <code>attributename</code> <td> <code>attributeName</code>
-    <tr> <td> <code>attributetype</code> <td> <code>attributeType</code>
-    <tr> <td> <code>basefrequency</code> <td> <code>baseFrequency</code>
-    <tr> <td> <code>baseprofile</code> <td> <code>baseProfile</code>
-    <tr> <td> <code>calcmode</code> <td> <code>calcMode</code>
-    <tr> <td> <code>clippathunits</code> <td> <code>clipPathUnits</code>
-    <tr> <td> <code>diffuseconstant</code> <td> <code>diffuseConstant</code>
-    <tr> <td> <code>edgemode</code> <td> <code>edgeMode</code>
-    <tr> <td> <code>filterunits</code> <td> <code>filterUnits</code>
-    <tr> <td> <code>glyphref</code> <td> <code>glyphRef</code>
-    <tr> <td> <code>gradienttransform</code> <td> <code>gradientTransform</code>
-    <tr> <td> <code>gradientunits</code> <td> <code>gradientUnits</code>
-    <tr> <td> <code>kernelmatrix</code> <td> <code>kernelMatrix</code>
-    <tr> <td> <code>kernelunitlength</code> <td> <code>kernelUnitLength</code>
-    <tr> <td> <code>keypoints</code> <td> <code>keyPoints</code>
-    <tr> <td> <code>keysplines</code> <td> <code>keySplines</code>
-    <tr> <td> <code>keytimes</code> <td> <code>keyTimes</code>
-    <tr> <td> <code>lengthadjust</code> <td> <code>lengthAdjust</code>
-    <tr> <td> <code>limitingconeangle</code> <td> <code>limitingConeAngle</code>
-    <tr> <td> <code>markerheight</code> <td> <code>markerHeight</code>
-    <tr> <td> <code>markerunits</code> <td> <code>markerUnits</code>
-    <tr> <td> <code>markerwidth</code> <td> <code>markerWidth</code>
-    <tr> <td> <code>maskcontentunits</code> <td> <code>maskContentUnits</code>
-    <tr> <td> <code>maskunits</code> <td> <code>maskUnits</code>
-    <tr> <td> <code>numoctaves</code> <td> <code>numOctaves</code>
-    <tr> <td> <code>pathlength</code> <td> <code>pathLength</code>
-    <tr> <td> <code>patterncontentunits</code> <td> <code>patternContentUnits</code>
-    <tr> <td> <code>patterntransform</code> <td> <code>patternTransform</code>
-    <tr> <td> <code>patternunits</code> <td> <code>patternUnits</code>
-    <tr> <td> <code>pointsatx</code> <td> <code>pointsAtX</code>
-    <tr> <td> <code>pointsaty</code> <td> <code>pointsAtY</code>
-    <tr> <td> <code>pointsatz</code> <td> <code>pointsAtZ</code>
-    <tr> <td> <code>preservealpha</code> <td> <code>preserveAlpha</code>
-    <tr> <td> <code>preserveaspectratio</code> <td> <code>preserveAspectRatio</code>
-    <tr> <td> <code>primitiveunits</code> <td> <code>primitiveUnits</code>
-    <tr> <td> <code>refx</code> <td> <code>refX</code>
-    <tr> <td> <code>refy</code> <td> <code>refY</code>
-    <tr> <td> <code>repeatcount</code> <td> <code>repeatCount</code>
-    <tr> <td> <code>repeatdur</code> <td> <code>repeatDur</code>
-    <tr> <td> <code>requiredextensions</code> <td> <code>requiredExtensions</code>
-    <tr> <td> <code>requiredfeatures</code> <td> <code>requiredFeatures</code>
-    <tr> <td> <code>specularconstant</code> <td> <code>specularConstant</code>
-    <tr> <td> <code>specularexponent</code> <td> <code>specularExponent</code>
-    <tr> <td> <code>spreadmethod</code> <td> <code>spreadMethod</code>
-    <tr> <td> <code>startoffset</code> <td> <code>startOffset</code>
-    <tr> <td> <code>stddeviation</code> <td> <code>stdDeviation</code>
-    <tr> <td> <code>stitchtiles</code> <td> <code>stitchTiles</code>
-    <tr> <td> <code>surfacescale</code> <td> <code>surfaceScale</code>
-    <tr> <td> <code>systemlanguage</code> <td> <code>systemLanguage</code>
-    <tr> <td> <code>tablevalues</code> <td> <code>tableValues</code>
-    <tr> <td> <code>targetx</code> <td> <code>targetX</code>
-    <tr> <td> <code>targety</code> <td> <code>targetY</code>
-    <tr> <td> <code>textlength</code> <td> <code>textLength</code>
-    <tr> <td> <code>viewbox</code> <td> <code>viewBox</code>
-    <tr> <td> <code>viewtarget</code> <td> <code>viewTarget</code>
-    <tr> <td> <code>xchannelselector</code> <td> <code>xChannelSelector</code>
-    <tr> <td> <code>ychannelselector</code> <td> <code>yChannelSelector</code>
-    <tr> <td> <code>zoomandpan</code> <td> <code>zoomAndPan</code>
+    <tr> <td> `attributename`       <td> `attributeName`
+    <tr> <td> `attributetype`       <td> `attributeType`
+    <tr> <td> `basefrequency`       <td> `baseFrequency`
+    <tr> <td> `baseprofile`         <td> `baseProfile`
+    <tr> <td> `calcmode`            <td> `calcMode`
+    <tr> <td> `clippathunits`       <td> `clipPathUnits`
+    <tr> <td> `diffuseconstant`     <td> `diffuseConstant`
+    <tr> <td> `edgemode`            <td> `edgeMode`
+    <tr> <td> `filterunits`         <td> `filterUnits`
+    <tr> <td> `glyphref`            <td> `glyphRef`
+    <tr> <td> `gradienttransform`   <td> `gradientTransform`
+    <tr> <td> `gradientunits`       <td> `gradientUnits`
+    <tr> <td> `kernelmatrix`        <td> `kernelMatrix`
+    <tr> <td> `kernelunitlength`    <td> `kernelUnitLength`
+    <tr> <td> `keypoints`           <td> `keyPoints`
+    <tr> <td> `keysplines`          <td> `keySplines`
+    <tr> <td> `keytimes`            <td> `keyTimes`
+    <tr> <td> `lengthadjust`        <td> `lengthAdjust`
+    <tr> <td> `limitingconeangle`   <td> `limitingConeAngle`
+    <tr> <td> `markerheight`        <td> `markerHeight`
+    <tr> <td> `markerunits`         <td> `markerUnits`
+    <tr> <td> `markerwidth`         <td> `markerWidth`
+    <tr> <td> `maskcontentunits`    <td> `maskContentUnits`
+    <tr> <td> `maskunits`           <td> `maskUnits`
+    <tr> <td> `numoctaves`          <td> `numOctaves`
+    <tr> <td> `pathlength`          <td> `pathLength`
+    <tr> <td> `patterncontentunits` <td> `patternContentUnits`
+    <tr> <td> `patterntransform`    <td> `patternTransform`
+    <tr> <td> `patternunits`        <td> `patternUnits`
+    <tr> <td> `pointsatx`           <td> `pointsAtX`
+    <tr> <td> `pointsaty`           <td> `pointsAtY`
+    <tr> <td> `pointsatz`           <td> `pointsAtZ`
+    <tr> <td> `preservealpha`       <td> `preserveAlpha`
+    <tr> <td> `preserveaspectratio` <td> `preserveAspectRatio`
+    <tr> <td> `primitiveunits`      <td> `primitiveUnits`
+    <tr> <td> `refx`                <td> `refX`
+    <tr> <td> `refy`                <td> `refY`
+    <tr> <td> `repeatcount`         <td> `repeatCount`
+    <tr> <td> `repeatdur`           <td> `repeatDur`
+    <tr> <td> `requiredextensions`  <td> `requiredExtensions`
+    <tr> <td> `requiredfeatures`    <td> `requiredFeatures`
+    <tr> <td> `specularconstant`    <td> `specularConstant`
+    <tr> <td> `specularexponent`    <td> `specularExponent`
+    <tr> <td> `spreadmethod`        <td> `spreadMethod`
+    <tr> <td> `startoffset`         <td> `startOffset`
+    <tr> <td> `stddeviation`        <td> `stdDeviation`
+    <tr> <td> `stitchtiles`         <td> `stitchTiles`
+    <tr> <td> `surfacescale`        <td> `surfaceScale`
+    <tr> <td> `systemlanguage`      <td> `systemLanguage`
+    <tr> <td> `tablevalues`         <td> `tableValues`
+    <tr> <td> `targetx`             <td> `targetX`
+    <tr> <td> `targety`             <td> `targetY`
+    <tr> <td> `textlength`          <td> `textLength`
+    <tr> <td> `viewbox`             <td> `viewBox`
+    <tr> <td> `viewtarget`          <td> `viewTarget`
+    <tr> <td> `xchannelselector`    <td> `xChannelSelector`
+    <tr> <td> `ychannelselector`    <td> `yChannelSelector`
+    <tr> <td> `zoomandpan`          <td> `zoomAndPan`
   </table>
 
-  When the steps below require the user agent to <dfn>adjust foreign attributes</dfn> for a
-  token, then, if any of the attributes on the token match the strings given in the first column of
-  the following table, let the attribute be a namespaced attribute, with the prefix being the string
+  When the steps below require the user agent to <dfn>adjust foreign attributes</dfn> for a token,
+  then, if any of the attributes on the token match the strings given in the first column of the
+  following table, let the attribute be a namespaced attribute, with the prefix being the string
   given in the corresponding cell in the second column, the local name being the string given in the
   corresponding cell in the third column, and the namespace being the namespace given in the
   corresponding cell in the fourth column. (This fixes the use of namespaced attributes, in
@@ -4009,1333 +3977,943 @@
     <thead>
     <tr> <th> Attribute name <th> Prefix <th> Local name <th> Namespace
     <tbody>
-    <tr> <td> <{xlink/actuate|xlink:actuate}> <td> <code>xlink</code> <td> <code>actuate</code> <td> [=XLink namespace=]
-    <tr> <td> <{xlink/arcrole|xlink:arcrole}> <td> <code>xlink</code> <td> <code>arcrole</code> <td> [=XLink namespace=]
-    <tr> <td> <{xlink/href|xlink:href}>    <td> <code>xlink</code> <td> <code>href</code>    <td> [=XLink namespace=]
-    <tr> <td> <{xlink/role|xlink:role}>    <td> <code>xlink</code> <td> <code>role</code>    <td> [=XLink namespace=]
-    <tr> <td> <{xlink/show|xlink:show}>    <td> <code>xlink</code> <td> <code>show</code>    <td> [=XLink namespace=]
-    <tr> <td> <{xlink/title|xlink:title}>   <td> <code>xlink</code> <td> <code>title</code>   <td> [=XLink namespace=]
-    <tr> <td> <{xlink/type|xlink:type}>    <td> <code>xlink</code> <td> <code>type</code>    <td> [=XLink namespace=]
-    <tr> <td> <{xml/lang|xml:lang}>      <td> <code>xml</code>   <td> <code>lang</code>    <td> [=XML namespace=]
-    <tr> <td> <{xml/space|xml:space}>    <td> <code>xml</code>   <td> <code>space</code>   <td> [=XML namespace=]
-    <tr> <td> <{xmlns/xmlns}>         <td> (none)             <td> <code>xmlns</code>   <td> [=XMLNS namespace=]
-    <tr> <td> <code>xmlns:xlink</code>   <td> <code>xmlns</code> <td> <code>xlink</code>   <td> [=XMLNS namespace=]
+    <tr> <td> <{xlink/actuate|xlink:actuate}> <td> `xlink` <td> `actuate` <td> [=XLink namespace=]
+    <tr> <td> <{xlink/arcrole|xlink:arcrole}> <td> `xlink` <td> `arcrole` <td> [=XLink namespace=]
+    <tr> <td> <{xlink/href|xlink:href}>       <td> `xlink` <td> `href`    <td> [=XLink namespace=]
+    <tr> <td> <{xlink/role|xlink:role}>       <td> `xlink` <td> `role`    <td> [=XLink namespace=]
+    <tr> <td> <{xlink/show|xlink:show}>       <td> `xlink` <td> `show`    <td> [=XLink namespace=]
+    <tr> <td> <{xlink/title|xlink:title}>     <td> `xlink` <td> `title`   <td> [=XLink namespace=]
+    <tr> <td> <{xlink/type|xlink:type}>       <td> `xlink` <td> `type`    <td> [=XLink namespace=]
+    <tr> <td> <{xml/lang|xml:lang}>           <td> `xml`   <td> `lang`    <td> [=XML namespace=]
+    <tr> <td> <{xml/space|xml:space}>         <td> `xml`   <td> `space`   <td> [=XML namespace=]
+    <tr> <td> <{xmlns/xmlns}>                 <td> (none)  <td> `xmlns`   <td> [=XMLNS namespace=]
+    <tr> <td> <{xlink/xlink|xmlns:xlink}>     <td> `xmlns` <td> `xlink`   <td> [=XMLNS namespace=]
   </table>
 
   ---
 
-  When the steps below require the user agent to <dfn lt="insert characters|insert a character|insert the token's character|insert the character">insert a character</dfn> while processing a
-  token, the user agent must run the following steps:
+  When the steps below require the user agent to
+  <dfn lt="insert a character|insert the character|insert the token's character">insert a character</dfn>
+  while processing a token, the user agent must run the following steps:
 
-  <ol>
+  1. Let |data| be the characters passed to the algorithm, or, if no characters were explicitly
+      specified, the character of the character token being processed.
+  2. Let the |adjusted insertion location| be the [=appropriate place for inserting a node=].
+  3. If the |adjusted insertion location| is in a {{Document}} node, then abort these steps.
 
-    <li>Let |data| be the characters passed to the algorithm, or, if no
-    characters were explicitly specified, the character of the character token being
-    processed.</li>
+      <p class="note">The DOM will not let {{Document}} nodes have {{Text}} node children, so they
+      are dropped on the floor.</p>
+  4. If there is a {{Text}} node immediately before the |adjusted insertion location|, then append
+      |data| to that {{Text}} node's data.
 
-    <li>Let the |adjusted insertion location| be the <a>appropriate
-    place for inserting a node</a>.</li>
-
-    <li>
-
-    If the |adjusted insertion location| is in a {{Document}} node,
-    then abort these steps.
-
-    <p class="note">
-  The DOM will not let {{Document}} nodes have {{Text}} node
-    children, so they are dropped on the floor.
-
-    </li>
-
-    <li>
-
-    If there is a {{Text}} node immediately before the |adjusted insertion
-    location|, then append |data| to that {{Text}} node's data.
-
-    Otherwise, create a new {{Text}} node whose data is |data| and
-    whose [=node document=] is the same as that of the
-    element in which the |adjusted insertion location| finds itself, and insert
-    the newly created node at the |adjusted insertion location|.
-
-    </li>
-
-  </ol>
+      Otherwise, create a new {{Text}} node whose data is |data| and whose [=node document=] is the
+      same as that of the element in which the |adjusted insertion location| finds itself, and
+      insert the newly created node at the |adjusted insertion location|.
 
   <div class="example">
-    Here are some sample inputs to the parser and the corresponding number of {{Text}}
-    nodes that they result in, assuming a user agent that executes scripts.
+    Here are some sample inputs to the parser and the corresponding number of {{Text}} nodes that
+    they result in, assuming a user agent that executes scripts.
 
     <table>
     <thead>
-      <tr>
-      <th>Input <th>Number of {{Text}} nodes
+    <tr><th>Input <th>Number of {{Text}} nodes
     <tbody>
-      <tr>
+    <tr>
       <td><pre highlight="html">
-  A&lt;script>
-  var&nbsp;script&nbsp;=&nbsp;document.getElementsByTagName('script')[0];
-  document.body.removeChild(script);
-  &lt;/script>B</pre>
+      A&lt;script>
+      var&nbsp;script&nbsp;=&nbsp;document.getElementsByTagName('script')[0];
+      document.body.removeChild(script);
+      &lt;/script>B</pre>
       <td>One {{Text}} node in the document, containing "AB".
-      <tr>
+    <tr>
       <td><pre highlight="html">
-  A&lt;script>
-  var&nbsp;text&nbsp;=&nbsp;document.createTextNode('B');
-  document.body.appendChild(text);
-  &lt;/script>C</pre>
-      <td>Three {{Text}} nodes; "A" before the script, the script's contents, and "BC" after the script (the parser appends to the {{Text}} node created by the script).
-      <tr>
+      A&lt;script>
+      var&nbsp;text&nbsp;=&nbsp;document.createTextNode('B');
+      document.body.appendChild(text);
+      &lt;/script>C</pre>
+      <td>Three {{Text}} nodes; "A" before the script, the script's contents, and "BC" after the
+      script (the parser appends to the {{Text}} node created by the script).
+    <tr>
       <td><pre highlight="html">
-  A&lt;script>
-  var&nbsp;text&nbsp;=&nbsp;document.getElementsByTagName('script')[0].firstChild;
-  text.data&nbsp;=&nbsp;'B';
-  document.body.appendChild(text);
-  &lt;/script>C</pre>
+      A&lt;script>
+      var&nbsp;text&nbsp;=&nbsp;document.getElementsByTagName('script')[0].firstChild;
+      text.data&nbsp;=&nbsp;'B';
+      document.body.appendChild(text);
+      &lt;/script>C</pre>
       <td>Two adjacent {{Text}} nodes in the document, containing "A" and "BC".
-      <tr>
+    <tr>
       <td><pre highlight="html">
-  A&lt;table>B&lt;tr>C&lt;/tr>D&lt;/table></pre>
-      <td>One {{Text}} node before the table, containing "ABCD". (This is caused by [=foster parenting=].)
-      <tr>
+      A&lt;table>B&lt;tr>C&lt;/tr>D&lt;/table></pre>
+      <td>One {{Text}} node before the table, containing "ABCD". (This is caused by
+      [=foster parenting=].)
+    <tr>
       <td><pre highlight="html">
-  A&lt;table>&lt;tr>&nbsp;B&lt;/tr>&nbsp;C&lt;/table></pre>
-      <td>One {{Text}} node before the table, containing "A&nbsp;B&nbsp;C" (A-space-B-space-C). (This is caused by [=foster parenting=].)
-      <tr>
+      A&lt;table>&lt;tr>&nbsp;B&lt;/tr>&nbsp;C&lt;/table></pre>
+      <td>One {{Text}} node before the table, containing "A&nbsp;B&nbsp;C" (A-space-B-space-C).
+      (This is caused by [=foster parenting=].)
+    <tr>
       <td><pre highlight="html">
-  A&lt;table>&lt;tr>&nbsp;B&lt;/tr>&nbsp;&lt;/em>C&lt;/table></pre>
-      <td>One {{Text}} node before the table, containing "A&nbsp;BC" (A-space-B-C), and one {{Text}} node inside the table (as a child of a <{tbody}>) with a single space character. (Space characters separated from non-space characters by non-character tokens are not affected by [=foster parenting=], even if those other tokens then get ignored.)
+      A&lt;table>&lt;tr>&nbsp;B&lt;/tr>&nbsp;&lt;/em>C&lt;/table></pre>
+      <td>One {{Text}} node before the table, containing "A&nbsp;BC" (A-space-B-C), and one {{Text}}
+      node inside the table (as a child of a <{tbody}>) with a single space character. (Space
+      characters separated from non-space characters by non-character tokens are not affected by
+      [=foster parenting=], even if those other tokens then get ignored.)
     </table>
   </div>
 
   ---
 
   When the steps below require the user agent to <dfn>insert a comment</dfn> while processing a
-  comment token, optionally with an explicitly insertion position |position|, the
-  user agent must run the following steps:
+  comment token, optionally with an explicitly insertion position |position|, the user agent must
+  run the following steps:
 
-  <ol>
-
-    <li>Let |data| be the data given in the comment token being
-    processed.</li>
-
-    <li>If |position| was specified, then let the |adjusted
-    insertion location| be |position|. Otherwise, let |adjusted
-    insertion location| be the [=appropriate place for inserting a node=].</li>
-
-    <li>Create a <code>Comment</code> node whose <code>data</code> attribute is set to
-    |data| and whose [=node document=] is
-    the same as that of the node in which the |adjusted insertion location| finds
-    itself.
-
-    <li>Insert the newly created node at the |adjusted insertion
-    location|.</li>
-
-  </ol>
+  1. Let |data| be the data given in the comment token being processed.
+  2. If |position| was specified, then let the |adjusted insertion location| be |position|.
+      Otherwise, let |adjusted insertion location| be the
+      [=appropriate place for inserting a node=].
+  3. Create a {{Comment}} node whose {{CharacterData/data}} attribute is set to |data| and whose
+      [=node document=] is the same as that of the node in which the |adjusted insertion location|
+      finds itself.
+  4. Insert the newly created node at the |adjusted insertion location|.
 
   ---
 
-  DOM mutation events must not fire for changes caused by the UA
-  parsing the document. This includes the parsing of any content inserted using {{Document/write()|document.write()}} and <code>document.writeln()</code> calls. [[!UIEVENTS]]
+  DOM mutation events must not fire for changes caused by the UA parsing the document. This includes
+  the parsing of any content inserted using {{Document/write()|document.write()}} and
+  {{Document/writeln()|document.writeln()}} calls. [[!UIEVENTS]]
 
   However, [=mutation observers=] *do* fire, as required by the DOM specification.
 
 #### Parsing elements that contain only text #### {#parsing-elements-that-contain-only-text}
 
-  The <dfn>generic raw text element parsing algorithm</dfn> and the <dfn>generic RCDATA element
-  parsing algorithm</dfn> consist of the following steps. These algorithms are always invoked in
-  response to a start tag token.
+  The <dfn>generic raw text element parsing algorithm</dfn> and the
+  <dfn>generic RCDATA element parsing algorithm</dfn> consist of the following steps. These
+  algorithms are always invoked in response to a start tag token.
 
-  <ol>
-
-    <li>[=Insert an HTML element=] for the token.</li>
-
-    <li>If the algorithm that was invoked is the <a>generic raw text element parsing
-    algorithm</a>, switch the tokenizer to the [=RAWTEXT state=]; otherwise the algorithm
-    invoked was the [=generic RCDATA element parsing algorithm=], switch the tokenizer to
-    the [=RCDATA state=].</li>
-
-    <li>Let the [=original insertion mode=] be the current <a>insertion
-    mode</a>.
-
-    <li>Then, switch the [=insertion mode=] to "[=in text|text=]".</li>
-
-  </ol>
+  1. [=Insert an HTML element=] for the token.
+  2. If the algorithm that was invoked is the [=generic raw text element parsing algorithm=], switch
+      the tokenizer to the [=RAWTEXT state=]; otherwise the algorithm invoked was the
+      [=generic RCDATA element parsing algorithm=], switch the tokenizer to the [=RCDATA state=].
+  3. Let the [=original insertion mode=] be the current [=insertion mode=].
+  4. Then, switch the [=insertion mode=] to "[=in text|text=]".
 
 #### Closing elements that have implied end tags #### {#closing-elements-that-have-implied-end-tags}
 
-  When the steps below require the UA to <dfn>generate implied end
-  tags</dfn>, then, while the [=current node=] is a
-  <{dd}> element, a <{dt}> element, an
-  <{li}> element, a <{menuitem}> element, an
-  <{optgroup}> element, an <{option}> element, a <{p}> element, an
-  <{rb}> element, an <{rp}> element, an <code>rt</code>
-  element, or an <{rtc}> element, the UA must
-  pop the [=current node=] off the <a>stack of open
-  elements</a>.
-
-  If a step requires the UA to generate implied end tags but lists
-  an element to exclude from the process, then the UA must perform the
-  above steps as if that element was not in the above list.
-
-  When the steps below require the UA to <dfn>generate all implied end tags thoroughly</dfn>,
-  then, while the [=current node=] is a <{caption}> element, a
-  <{colgroup}> element, a <{dd}> element, a <{dt}> element, an
-  <{li}> element, an <{optgroup}> element, an <{option}> element, a
-  <{p}> element, an <{rb}> element, an <{rp}> element, an <code>rt</code>
-  element, an <{rtc}> element, a <{tbody}> element, a <{td}> element, a
-  <{tfoot}> element, a <{th}> element, a <{thead}> element, or a
-  <{tr}> element, the UA must pop the [=current node=] off the
+  When the steps below require the UA to <dfn>generate implied end tags</dfn>, then, while the
+  [=current node=] is a <{dd}> element, a <{dt}> element, an <{li}> element, a <{menuitem}> element,
+  an <{optgroup}> element, an <{option}> element, a <{p}> element, an <{rb}> element, an <{rp}>
+  element, an <{rt}> element, or an <{rtc}> element, the UA must pop the [=current node=] off the
   [=stack of open elements=].
+
+  If a step requires the UA to generate implied end tags but lists an element to exclude from the
+  process, then the UA must perform the above steps as if that element was not in the above list.
+
+  When the steps below require the UA to <dfn>generate all implied end tags thoroughly</dfn>, then,
+  while the [=current node=] is a <{caption}> element, a <{colgroup}> element, a <{dd}> element, a
+  <{dt}> element, an <{li}> element, an <{optgroup}> element, an <{option}> element, a <{p}>
+  element, an <{rb}> element, an <{rp}> element, an <{rt}> element, an <{rtc}> element, a <{tbody}>
+  element, a <{td}> element, a <{tfoot}> element, a <{th}> element, a <{thead}> element, or a <{tr}>
+  element, the UA must pop the [=current node=] off the [=stack of open elements=].
 
 #### The rules for parsing tokens in HTML content #### {#the-rules-for-parsing-tokens-in-html-content}
 
 ##### The "<dfn>initial</dfn>" insertion mode ##### {#the-initial-insertion-mode}
 
-  When the user agent is to apply the rules for the "[=initial=]" [=insertion mode=], the user agent must handle the token as
-  follows:
+  When the user agent is to apply the rules for the "[=initial=]" [=insertion mode=], the user agent
+  must handle the token as follows:
 
   <dl class="switch">
+    : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
+        FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+    :: Ignore the token.
 
-  : A character token that is one of U+0009 CHARACTER
-    TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF),
-    U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-  ::
-    Ignore the token.
-    </dd>
+    : A comment token
+    :: [=Insert a comment=] as the last child of the {{Document}} object.
 
-  : A comment token
-  ::
-    [=Insert a comment=] as the last child of the {{Document}} object.
-    </dd>
+    : A DOCTYPE token
+    :: If the DOCTYPE token's name is not a [=case-sensitive=] match for the string "`html`", or the
+        token's public identifier is not missing, or the token's system identifier is neither
+        missing nor a [=case-sensitive=] match for the string
+        "<a scheme><code>about:legacy-compat</code></a>", and none of the sets of conditions in the
+        following list are matched, then there is a [=parse error=].
 
-  : A DOCTYPE token
-  ::
+        * The DOCTYPE token's name is a [=case-sensitive=] match for the string "`html`", the
+            token's public identifier is the [=case-sensitive=] string
+            "`-//W3C//DTD&nbsp;HTML&nbsp;4.0//EN`", and the token's system identifier is either
+            missing or the [=case-sensitive=] string "`http://www.w3.org/TR/REC-html40/strict.dtd`".
+        * The DOCTYPE token's name is a [=case-sensitive=] match for the string "`html`", the
+            token's public identifier is the [=case-sensitive=] string
+            "`-//W3C//DTD&nbsp;HTML&nbsp;4.01//EN`", and the token's system identifier is either
+            missing or the [=case-sensitive=] string "`http://www.w3.org/TR/html4/strict.dtd`".
+        * The DOCTYPE token's name is a [=case-sensitive=] match for the string "`html`", the
+            token's public identifier is the [=case-sensitive=] string
+            "`-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN`", and the token's system identifier
+            is the [=case-sensitive=] string "`http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd`".
+        * The DOCTYPE token's name is a [=case-sensitive=] match for the string "`html`", the
+            token's public identifier is the [=case-sensitive=] string
+            "`-//W3C//DTD&nbsp;XHTML&nbsp;1.1//EN`", and the token's system identifier is the
+            [=case-sensitive=] string "`http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd`".
 
-    If the DOCTYPE token's name is not a [=case-sensitive=] match for the string "<code>html</code>", or the token's public identifier is not missing, or the token's system
-    identifier is neither missing nor a [=case-sensitive=] match for the string
-    "<a scheme><code>about:legacy-compat</code></a>", and none of the sets of conditions in the following list are
-    matched, then there is a [=parse error=].
+        Conformance checkers may, based on the values (including presence or lack thereof) of the
+        DOCTYPE token's name, public identifier, or system identifier, switch to a conformance
+        checking mode for another language (e.g., based on the DOCTYPE token a conformance checker
+        could recognize that the document is an HTML 4.01-era document, and defer to an HTML 4.01
+        conformance checker.)
 
-    <ul>
+        Append a {{DocumentType}} node to the {{Document}} node, with the {{DocumentType/name}}
+        attribute set to the name given in the DOCTYPE token, or the empty string if the name was
+        missing; the {{DocumentType/publicId}} attribute set to the public identifier given in the
+        DOCTYPE token, or the empty string if the public identifier was missing; the
+        {{DocumentType/systemId}} attribute set to the system identifier given in the DOCTYPE token,
+        or the empty string if the system identifier was missing; and the other attributes specific
+        to {{DocumentType}} objects set to null and empty lists as appropriate. Associate the
+        {{DocumentType}} node with the {{Document}} object so that it is returned as the value of
+        the {{Document/doctype}} attribute of the {{Document}} object.
 
-      <li>The DOCTYPE token's name is a [=case-sensitive=] match for the string "<code>html</code>", the token's public identifier is the [=case-sensitive=] string
-      "<code>-//W3C//DTD&nbsp;HTML&nbsp;4.0//EN</code>", and the token's system identifier
-      is either missing or the [=case-sensitive=] string "<code>http://www.w3.org/TR/REC-html40/strict.dtd</code>".</li>
+        Then, if the document is *not* [=an `iframe` `srcdoc` document=], and the DOCTYPE token
+        matches one of the conditions in the following list, then set the {{Document}} to
+        [=quirks mode=]:
 
-      <li>The DOCTYPE token's name is a [=case-sensitive=] match for the string "<code>html</code>", the token's public identifier is the [=case-sensitive=] string
-      "<code>-//W3C//DTD&nbsp;HTML&nbsp;4.01//EN</code>", and the token's system identifier
-      is either missing or the [=case-sensitive=] string "<code>http://www.w3.org/TR/html4/strict.dtd</code>".</li>
+        <ul class="brief">
+          * The |[=force-quirks flag=]| is set to *on*.
+          * The name is set to anything other than "`html`" (compared [=case-sensitively=]).
+          * The public identifier is set to: "`-//W3O//DTD W3 HTML Strict 3.0//EN//`"
+          * The public identifier is set to: "`-/W3C/DTD HTML 4.0 Transitional/EN`"
+          * The public identifier is set to: "`HTML`"
+          * The system identifier is set to:
+              "`http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd`"
+          * The public identifier starts with: "`+//Silmaril//dtd html Pro v0r11 19970101//`"
+          * The public identifier starts with: "`-//AS//DTD HTML 3.0 asWedit + extensions//`"
+          * The public identifier starts with:
+              "`-//AdvaSoft Ltd//DTD HTML 3.0 asWedit + extensions//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 2.0 Level 1//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 2.0 Level 2//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 2.0 Strict Level 1//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 2.0 Strict Level 2//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 2.0 Strict//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 2.0//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 2.1E//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 3.0//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 3.2 Final//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 3.2//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML 3//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Level 0//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Level 1//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Level 2//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Level 3//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Strict Level 0//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Strict Level 1//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Strict Level 2//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Strict Level 3//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML Strict//`"
+          * The public identifier starts with: "`-//IETF//DTD HTML//`"
+          * The public identifier starts with: "`-//Metrius//DTD Metrius Presentational//`"
+          * The public identifier starts with:
+              "`-//Microsoft//DTD Internet Explorer 2.0 HTML Strict//`"
+          * The public identifier starts with: "`-//Microsoft//DTD Internet Explorer 2.0 HTML//`"
+          * The public identifier starts with: "`-//Microsoft//DTD Internet Explorer 2.0 Tables//`"
+          * The public identifier starts with:
+              "`-//Microsoft//DTD Internet Explorer 3.0 HTML Strict//`"
+          * The public identifier starts with: "`-//Microsoft//DTD Internet Explorer 3.0 HTML//`"
+          * The public identifier starts with: "`-//Microsoft//DTD Internet Explorer 3.0 Tables//`"
+          * The public identifier starts with: "`-//Netscape Comm. Corp.//DTD HTML//`"
+          * The public identifier starts with: "`-//Netscape Comm. Corp.//DTD Strict HTML//`"
+          * The public identifier starts with: "`-//O'Reilly and Associates//DTD HTML 2.0//`"
+          * The public identifier starts with:
+              "`-//O'Reilly and Associates//DTD HTML Extended 1.0//`"
+          * The public identifier starts with:
+              "`-//O'Reilly and Associates//DTD HTML Extended Relaxed 1.0//`"
+          * The public identifier starts with: "`-//SQ//DTD HTML 2.0 HoTMetaL + extensions//`"
+          * The public identifier starts with:
+              "`-//SoftQuad Software//DTD HoTMetaL PRO 6.0::19990601::extensions to HTML 4.0//`"
+          * The public identifier starts with:
+              "`-//SoftQuad//DTD HoTMetaL PRO 4.0::19971010::extensions to HTML 4.0//`"
+          * The public identifier starts with: "`-//Spyglass//DTD HTML 2.0 Extended//`"
+          * The public identifier starts with: "`-//Sun Microsystems Corp.//DTD HotJava HTML//`"
+          * The public identifier starts with:
+              "`-//Sun Microsystems Corp.//DTD HotJava Strict HTML//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML 3 1995-03-24//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML 3.2 Draft//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML 3.2 Final//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML 3.2//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML 3.2S Draft//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML 4.0 Frameset//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML 4.0 Transitional//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML Experimental 19960712//`"
+          * The public identifier starts with: "`-//W3C//DTD HTML Experimental 970421//`"
+          * The public identifier starts with: "`-//W3C//DTD W3 HTML//`"
+          * The public identifier starts with: "`-//W3O//DTD W3 HTML 3.0//`"
+          * The public identifier starts with: "`-//WebTechs//DTD Mozilla HTML 2.0//`"
+          * The public identifier starts with: "`-//WebTechs//DTD Mozilla HTML//`"
+          * The system identifier is missing and the public identifier starts with:
+              "`-//W3C//DTD HTML 4.01 Frameset//`"
+          * The system identifier is missing and the public identifier starts with:
+              "`-//W3C//DTD HTML 4.01 Transitional//`"
 
-      <li>The DOCTYPE token's name is a [=case-sensitive=] match for the string "<code>html</code>", the token's public identifier is the [=case-sensitive=] string
-      "<code>-//W3C//DTD&nbsp;XHTML&nbsp;1.0&nbsp;Strict//EN</code>", and the token's system
-      identifier is the [=case-sensitive=] string "<code>http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</code>".</li>
+        </ul>
 
-      <li>The DOCTYPE token's name is a [=case-sensitive=] match for the string "<code>html</code>", the token's public identifier is the [=case-sensitive=] string
-      "<code>-//W3C//DTD&nbsp;XHTML&nbsp;1.1//EN</code>", and the token's system identifier
-      is the [=case-sensitive=] string "<code>http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd</code>".</li>
+        Otherwise, if the document is *not* [=an `iframe` `srcdoc` document=], and the DOCTYPE token
+        matches one of the conditions in the following list, then set the {{Document}} to
+        [=limited-quirks mode=]:
 
-    </ul>
+        <ul class="brief">
+          * The public identifier starts with: "`-//W3C//DTD XHTML 1.0 Frameset//`"
+          * The public identifier starts with: "`-//W3C//DTD XHTML 1.0 Transitional//`"
+          * The system identifier is not missing and the public identifier starts with:
+              "`-//W3C//DTD HTML 4.01 Frameset//`"
+          * The system identifier is not missing and the public identifier starts with:
+              "`-//W3C//DTD HTML 4.01 Transitional//`"
 
-    Conformance checkers may, based on the values (including presence or lack thereof) of the
-    DOCTYPE token's name, public identifier, or system identifier, switch to a conformance checking
-    mode for another language (e.g., based on the DOCTYPE token a conformance checker could recognize
-    that the document is an HTML 4.01-era document, and defer to an HTML 4.01 conformance checker.)
+        </ul>
 
-    Append a <code>DocumentType</code> node to the {{Document}} node, with the <code>name</code> attribute set to the name given in the DOCTYPE token, or the empty string
-    if the name was missing; the <code>publicId</code> attribute set to the public
-    identifier given in the DOCTYPE token, or the empty string if the public identifier was missing;
-    the <code>systemId</code> attribute set to the system identifier given in the DOCTYPE
-    token, or the empty string if the system identifier was missing; and the other attributes
-    specific to <code>DocumentType</code> objects set to null and empty lists as appropriate.
-    Associate the <code>DocumentType</code> node with the {{Document}} object so that it is
-    returned as the value of the <code>doctype</code> attribute of the
-    {{Document}} object.
+        The system identifier and public identifier strings must be compared to the values given in
+        the lists above in an [=ASCII case-insensitive=] manner. A system identifier whose value is
+        the empty string is not considered missing for the purposes of the conditions above.
 
-    Then, if the document is *not* <a lt="iframe srcdoc document">an <code>iframe</code>
-    <code>srcdoc</code> document</a>, and the DOCTYPE token matches
-    one of the conditions in the following list, then set the {{Document}} to <a>quirks
-    mode</a>:
+        Then, switch the [=insertion mode=] to "[=before html=]".
 
-    <ul class="brief">
-      <li> The |[=force-quirks flag=]| is set to *on*. </li>
-      <li> The name is set to anything other than "<code>html</code>" (compared <a>case-sensitively</a>). </li>
-      <li> The public identifier is set to: "<code>-//W3O//DTD W3 HTML Strict 3.0//EN//</code>" </li>
-      <li> The public identifier is set to: "<code>-/W3C/DTD HTML 4.0 Transitional/EN</code>" </li>
-      <li> The public identifier is set to: "<code>HTML</code>" </li>
-      <li> The system identifier is set to: "<code>http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd</code>" </li>
-      <li> The public identifier starts with: "<code>+//Silmaril//dtd html Pro v0r11 19970101//</code>" </li>
-      <li> The public identifier starts with: "<code>-//AS//DTD HTML 3.0 asWedit + extensions//</code>" </li>
-      <li> The public identifier starts with: "<code>-//AdvaSoft Ltd//DTD HTML 3.0 asWedit + extensions//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 2.0 Level 1//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 2.0 Level 2//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 2.0 Strict Level 1//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 2.0 Strict Level 2//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 2.0 Strict//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 2.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 2.1E//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 3.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 3.2 Final//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 3.2//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML 3//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Level 0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Level 1//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Level 2//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Level 3//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Strict Level 0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Strict Level 1//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Strict Level 2//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Strict Level 3//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML Strict//</code>" </li>
-      <li> The public identifier starts with: "<code>-//IETF//DTD HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Metrius//DTD Metrius Presentational//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Microsoft//DTD Internet Explorer 2.0 HTML Strict//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Microsoft//DTD Internet Explorer 2.0 HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Microsoft//DTD Internet Explorer 2.0 Tables//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Microsoft//DTD Internet Explorer 3.0 HTML Strict//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Microsoft//DTD Internet Explorer 3.0 HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Microsoft//DTD Internet Explorer 3.0 Tables//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Netscape Comm. Corp.//DTD HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Netscape Comm. Corp.//DTD Strict HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//O'Reilly and Associates//DTD HTML 2.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//O'Reilly and Associates//DTD HTML Extended 1.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//O'Reilly and Associates//DTD HTML Extended Relaxed 1.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//SQ//DTD HTML 2.0 HoTMetaL + extensions//</code>" </li>
-      <li> The public identifier starts with: "<code>-//SoftQuad Software//DTD HoTMetaL PRO 6.0::19990601::extensions to HTML 4.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//SoftQuad//DTD HoTMetaL PRO 4.0::19971010::extensions to HTML 4.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Spyglass//DTD HTML 2.0 Extended//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Sun Microsystems Corp.//DTD HotJava HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//Sun Microsystems Corp.//DTD HotJava Strict HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML 3 1995-03-24//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML 3.2 Draft//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML 3.2 Final//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML 3.2//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML 3.2S Draft//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML 4.0 Frameset//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML 4.0 Transitional//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML Experimental 19960712//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD HTML Experimental 970421//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD W3 HTML//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3O//DTD W3 HTML 3.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//WebTechs//DTD Mozilla HTML 2.0//</code>" </li>
-      <li> The public identifier starts with: "<code>-//WebTechs//DTD Mozilla HTML//</code>" </li>
-      <li> The system identifier is missing and the public identifier starts with: "<code>-//W3C//DTD HTML 4.01 Frameset//</code>" </li>
-      <li> The system identifier is missing and the public identifier starts with: "<code>-//W3C//DTD HTML 4.01 Transitional//</code>" </li>
-    </ul>
+    : Anything else
+    :: If the document is *not* [=an `iframe` `srcdoc` document=], then this is a [=parse error=];
+        set the {{Document}} to [=quirks mode=].
 
-    Otherwise, if the document is *not* <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>, and the DOCTYPE token matches one of
-    the conditions in the following list, then set the {{Document}} to <a>limited-quirks
-    mode</a>:
-
-    <ul class="brief">
-      <li> The public identifier starts with: "<code>-//W3C//DTD XHTML 1.0 Frameset//</code>" </li>
-      <li> The public identifier starts with: "<code>-//W3C//DTD XHTML 1.0 Transitional//</code>" </li>
-      <li> The system identifier is not missing and the public identifier starts with: "<code>-//W3C//DTD HTML 4.01 Frameset//</code>" </li>
-      <li> The system identifier is not missing and the public identifier starts with: "<code>-//W3C//DTD HTML 4.01 Transitional//</code>" </li>
-    </ul>
-
-    The system identifier and public identifier strings must be compared to the values given in
-    the lists above in an [=ASCII case-insensitive=] manner. A system identifier whose
-    value is the empty string is not considered missing for the purposes of the conditions
-    above.
-
-    Then, switch the [=insertion mode=] to "[=before html=]".
-
-    </dd>
-
-  : Anything else
-  ::
-
-    If the document is *not* <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>, then this is a [=parse error=]; set the {{Document}} to [=quirks mode=].
-
-    In any case, switch the [=insertion mode=] to "[=before html=]", then reprocess the token.
-
-    </dd>
-
+        In any case, switch the [=insertion mode=] to "[=before html=]", then reprocess the token.
   </dl>
 
-<h6 id="the-before-html-insertion-mode">The "<dfn>before html</dfn>" insertion mode</h6>
+##### The "<dfn>before html</dfn>" insertion mode ##### {#the-before-html-insertion-mode}
 
-  When the user agent is to apply the rules for the "[=before html=]" [=insertion mode=], the user agent must handle the token as
-  follows:
+  When the user agent is to apply the rules for the "[=before html=]" [=insertion mode=], the user
+  agent must handle the token as follows:
 
   <dl class="switch">
+    : A DOCTYPE token
+    :: [=Parse error=].
 
-  : A DOCTYPE token
-  ::
-    [=Parse error=].
-    </dd>
+    : A comment token
+    :: [=Insert a comment=] as the last child of the {{Document}} object.
 
-  : A comment token
-  ::
-    [=Insert a comment=] as the last child of the {{Document}} object.
-    </dd>
+    : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
+        FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+    :: Ignore the token.
 
-  : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
-    FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-  ::
-    Ignore the token.
-    </dd>
+    : A start tag whose tag name is "html"
+    :: [=Create an element for the token=] in the [=HTML namespace=], with the {{Document}} as the
+        intended parent. Append it to the {{Document}} object. Put this element in the
+        [=stack of open elements=].
 
-  : <dfn lt="in the html parser|in the parser"></dfn>A start tag whose tag name is "html"
-  ::
+        <!-- App cache --><!--
+        If the {{Document}} is being loaded as part of [=navigation=] of a [=browsing context=], run
+        these steps:
 
-    [=Create an element for the token=] in the [=HTML namespace=], with the
-    {{Document}} as the intended parent. Append it to the {{Document}} object. Put
-    this element in the [=stack of open elements=].
+        1. If the result of running [=match service worker registration=] for the document's [=URL=]
+            is non-null, run the [=application cache selection algorithm=] passing the {{Document}}
+            object with no manifest.
+        2. Otherwise, run these substeps:
+            1. If the newly created element has a <{html/manifest}> attribute whose value is not the
+                empty string, then [=parse=] the value of that attribute, relative to the newly
+                created element's [=node document=], and if that is successful, run the
+                [=application cache selection algorithm=] passing the {{Document}} object with the
+                result of applying the [=URL serializer=] algorithm to the [=resulting URL record=]
+                with the |exclude fragment flag| set.
+            2. Otherwise, run the [=application cache selection algorithm=] passing the {{Document}}
+                object with no manifest. -->
 
-    <!-- App cache -->
-      <!--
-      <p>If the {{Document}} is being loaded as part of [=navigation=] of a [=browsing context=], run these steps:</p>
+        Switch the [=insertion mode=] to "[=before head=]".
 
+    : An end tag whose tag name is one of: "head", "body", "html", "br"
+    :: Act as described in the "anything else" entry below.
 
-  <ol>
+    : Any other end tag
+    :: [=Parse error=].
 
-   <li>
+    : Anything else
+    :: Create an <{html}> element whose [=node document=] is the {{Document}} object. Append it to
+        the {{Document}} object. Put this element in the [=stack of open elements=].
 
-    <p>If the result of running [=match service worker registration=] for the document's [=URL=] is non-null, run the [=application cache selection algorithm=] passing the {{Document}} object with no manifest.</p>
+        <!-- App Cache --><!--
+        If the {{Document}} is being loaded as part of [=navigation=] of a [=browsing context=],
+        then: run the [=application cache selection algorithm=] with no manifest, passing it the
+        {{Document}} object. -->
 
-   </li>
+        Switch the [=insertion mode=] to "[=before head=]", then reprocess the token.
 
-   <li>
+  The [=document element=] can end up being removed from the {{Document}} object, e.g., by scripts;
+  nothing in particular happens in such cases, content continues being appended to the nodes as
+  described in the next section.
 
-    <p>Otherwise, run these substeps:</p>
+##### The "<dfn>before head</dfn>" insertion mode ##### {#the-before-head-insertion-mode}
 
-    <ol>
+  When the user agent is to apply the rules for the "[=before head=]" [=insertion mode=], the user
+  agent must handle the token as follows:
 
-     <li>
+  <dl class="switch">
+    : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
+        FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+    :: Ignore the token.
 
-      <p>If the newly created element has a <{html/manifest}> attribute whose value is not the empty string, then [=parse=] the value of that attribute, relative to the newly created element's [=node document=], and if that is successful, run the [=application cache selection algorithm=] passing the {{Document}} object with the result of applying the [=URL serializer=] algorithm to the [=resulting URL record=] with the |exclude fragment flag| set.</p>
+    : A comment token
+    :: [=Insert a comment=].
 
-     </li>
+    : A DOCTYPE token
+    :: [=Parse error=].
 
-     <li>
+    : A start tag whose tag name is "html"
+    :: Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
 
-      <p>Otherwise, run the [=application cache selection algorithm=] passing the {{Document}} object with no manifest.</p>
+    : A start tag whose tag name is "head"
+    :: [=Insert an HTML element=] for the token.
 
-     </li>
+        Set the [=`head` element pointer=] to the newly created <{head}> element.
 
-    </ol>
+        Switch the [=insertion mode=] to "[=in head=]".
 
-   </li>
+    : An end tag whose tag name is one of: "head", "body", "html", "br"
+    :: Act as described in the "anything else" entry below.
 
-  </ol>
--->
-    Switch the [=insertion mode=] to "<a>before
-    head</a>".
+    : Any other end tag
+    :: [=Parse error=].
 
-    </dd>
+    : Anything else
+    :: [=Insert an HTML element=] for a "head" start tag token with no attributes.
 
-  : An end tag whose tag name is one of: "head", "body", "html", "br"
-  ::
-    Act as described in the "anything else" entry below.
-    </dd>
+        Set the [=`head` element pointer=] to the newly created <{head}> element.
 
-  : Any other end tag
-  ::
-    [=Parse error=].
-    </dd>
+        Switch the [=insertion mode=] to "[=in head=]".
 
-  : Anything else
-  ::
-
-    Create an <{html}> element whose [=node document=] is the {{Document}} object. Append
-    it to the {{Document}} object. Put this element in the <a>stack of open
-    elements</a>.
-
-    <!-- App Cache -->
-    <!--
-    <p>If the {{Document}} is being loaded as part of [=navigation=] of a [=browsing context=], then: run the [=application cache selection algorithm=] with no manifest, passing it the {{Document}} object.</p>
-    -->
-    Switch the [=insertion mode=] to "[=before head=]", then reprocess the token.
-
-    </dd>
-
+        Reprocess the current token.
   </dl>
 
-  The [=document element=] can end up being removed from the {{Document}} object, e.g., by
-  scripts; nothing in particular happens in such cases, content continues being appended to the
-  nodes as described in the next section.
+##### The "<dfn>in head</dfn>" insertion mode ##### {#the-in-head-insertion-mode}
 
-<h6 id="the-before-head-insertion-mode">The "<dfn>before head</dfn>" insertion mode</h6>
-
-  When the user agent is to apply the rules for the "[=before head=]" [=insertion mode=], the user agent must handle the token as
-  follows:
+  When the user agent is to apply the rules for the "[=in head=]" [=insertion mode=], the user agent
+  must handle the token as follows:
 
   <dl class="switch">
+    : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
+        FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+    :: [=Insert the character=].
 
-  : A character token that is one of U+0009 CHARACTER
-    TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF),
-    U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-  ::
-    Ignore the token.
-    </dd>
+    : A comment token
+    :: [=Insert a comment=].
 
-  : A comment token
-  ::
-    [=Insert a comment=].
-    </dd>
+    : A DOCTYPE token
+    :: [=Parse error=].
 
-  : A DOCTYPE token
-  ::
-    [=Parse error=].
-    </dd>
+    : A start tag whose tag name is "html"
+    :: Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
 
-  : A start tag whose tag name is "html"
-  ::
-    Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
-    </dd>
+    : A start tag whose tag name is one of: "base", "basefont", "bgsound", "link"
+    :: [=Insert an HTML element=] for the token. Immediately pop the [=current node=] off the
+        [=stack of open elements=].
 
-  : A start tag whose tag name is "head"
-  ::
+        [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
 
-    [=Insert an HTML element=] for the token.
+    : A start tag whose tag name is "meta"
+    :: [=Insert an HTML element=] for the token. Immediately pop the [=current node=] off the
+        [=stack of open elements=].
 
-    Set the [=`head` element pointer=] to the newly created
-    <{head}> element.
+        [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
 
-    Switch the [=insertion mode=] to "<a>in
-    head</a>".
+        <dfn lt="used during the parsing"></dfn>If the element has a <{meta/charset}> attribute, and
+        [=getting an encoding=] from its value results in an [=encoding=], and the [=confidence=] is
+        currently *tentative*, then [=change the encoding=] to the resulting encoding.
 
-    </dd>
+        Otherwise, if the element has an <{meta/http-equiv}> attribute whose value is an
+        [=ASCII case-insensitive=] match for the string "`Content-Type`", and the element has a
+        <{meta/content}> attribute, and applying the
+        [=algorithm for extracting a character encoding from a `meta` element=] to that attribute's
+        value returns an [=encoding=], and the [=confidence=] is currently *tentative*, then
+        [=change the encoding=] to the extracted encoding.
 
-  : An end tag whose tag name is one of: "head", "body", "html", "br"
-  ::
+    : A start tag whose tag name is "title"
+    :: Follow the [=generic RCDATA element parsing algorithm=].
 
-    Act as described in the "anything else" entry below.
+    : A start tag whose tag name is "noscript", if the [=scripting flag=] is enabled
+    : A start tag whose tag name is one of: "noframes", "style"
+    :: Follow the [=generic raw text element parsing algorithm=].
 
-    </dd>
+    : A start tag whose tag name is "noscript", if the [=scripting flag=] is disabled
+    :: [=Insert an HTML element=] for the token.
 
-  : Any other end tag
-  ::
+        Switch the [=insertion mode=] to "[=in head noscript=]".
 
-    [=Parse error=].
+    : A start tag whose tag name is "script"
+    :: Run these steps:
+        1. Let the |adjusted insertion location| be the [=appropriate place for inserting a node=].
+        2. [=Create an element for the token=] in the [=HTML namespace=], with the intended parent
+            being the element in which the |adjusted insertion location| finds itself.
+        3. Mark the element as being [="parser-inserted"=] and unset the element's
+            [="non-blocking"=] flag.
 
-    </dd>
+            <p class="note">This ensures that, if the script is external, any
+            {{Document/write()|document.write()}} calls in the script will execute in-line, instead
+            of blowing the document away, as would happen in most other cases. It also prevents the
+            script from executing until the end tag is seen.</p>
+        4. If the parser was originally created for the [=HTML fragment parsing algorithm=], then
+            mark the <{script}> element as [="already started"=]. ([=fragment case=])
+        5. Insert the newly created element at the |adjusted insertion location|.
+        6. Push the element onto the [=stack of open elements=] so that it is the new
+            [=current node=].
+        7. Switch the tokenizer to the [=script data state=].
+        8. Let the [=original insertion mode=] be the current [=insertion mode=].
+        9. Switch the [=insertion mode=] to "[=in text|text=]".
 
-  : Anything else
-  ::
+    : An end tag whose tag name is "head"
+    :: Pop the [=current node=] (which will be the <{head}> element) off the
+        [=stack of open elements=].
 
-    [=Insert an HTML element=] for a "head" start tag token with no attributes.
+        Switch the [=insertion mode=] to "[=after head=]".
 
-    Set the [=`head` element pointer=] to the newly created
-    <{head}> element.
+    : An end tag whose tag name is one of: "body", "html", "br"
+    :: Act as described in the "anything else" entry below.
 
-    Switch the [=insertion mode=] to "<a>in
-    head</a>".
+    : A start tag whose tag name is "template"
+    :: [=Insert an HTML element=] for the token.
 
-    Reprocess the current token.
+        Insert a [=marker=] at the end of the [=list of active formatting elements=].
 
-    </dd>
+        Set the [=frameset-ok flag=] to "not ok".
 
+        Switch the [=insertion mode=] to "[=in template=]".
+
+        Push "[=in template=]" onto the [=stack of template insertion modes=] so that it is the new
+        [=current template insertion mode=].
+
+    : An end tag whose tag name is "template"
+    :: If there is no <{template}> element on the [=stack of open elements=], then this is a
+        [=parse error=]; ignore the token.
+
+        Otherwise, run these steps:
+
+        1. [=Generate all implied end tags thoroughly=].
+        2. If the [=current node=] is not a <{template}> element, then this is a [=parse error=].
+        3. Pop elements from the [=stack of open elements=] until a <{template}> element has been
+            popped from the stack.
+        4. [=Clear the list of active formatting elements up to the last marker=].
+        5. Pop the [=current template insertion mode=] off the
+            [=stack of template insertion modes=].
+        6. [=Reset the insertion mode appropriately=].
+
+    : A start tag whose tag name is "head"
+    : Any other end tag
+    :: [=Parse error=].
+
+    : Anything else
+    :: Pop the [=current node=] (which will be the <{head}> element) off the
+        [=stack of open elements=].
+
+        Switch the [=insertion mode=] to "[=after head=]".
+
+        Reprocess the token.
   </dl>
 
-<h6 id="the-in-head-insertion-mode">The "<dfn>in head</dfn>" insertion mode</h6>
+##### The "<dfn>in head noscript</dfn>" insertion mode ##### {#the-in-head-noscript-insertion-mode}
 
-  When the user agent is to apply the rules for the "<a>in
-  head</a>" [=insertion mode=], the user agent must handle the token as follows:
+  When the user agent is to apply the rules for the "[=in head noscript=]" [=insertion mode=], the
+  user agent must handle the token as follows:
 
   <dl class="switch">
+    : A DOCTYPE token
+    :: [=Parse error=].
 
-  : A character token that is one of U+0009 CHARACTER
-    TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF),
-    U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-  ::
-    [=Insert the character=].
-    </dd>
+    : A start tag whose tag name is "html"
+    :: Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
 
-  : A comment token
-  ::
-    [=Insert a comment=].
-    </dd>
+    : An end tag whose tag name is "noscript"
+    :: Pop the [=current node=] (which will be a <{noscript}> element) from the
+        [=stack of open elements=]; the new [=current node=] will be a <{head}> element.
 
-  : A DOCTYPE token
-  ::
-    [=Parse error=].
-    </dd>
+        Switch the [=insertion mode=] to "[=in head=]".
 
-  : A start tag whose tag name is "html"
-  ::
-    Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
-    </dd>
+    : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
+        FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+    : A comment token
+    : A start tag whose tag name is one of: "basefont", "bgsound", "link", "meta", "noframes",
+        "style"
+    :: Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
 
-  : A start tag whose tag name is one of: "base", "basefont",
-    "bgsound", "link"
-  ::
+    : An end tag whose tag name is "br"
+    :: Act as described in the "anything else" entry below.
 
-    [=Insert an HTML element=] for the token. Immediately pop the <a>current
-    node</a> off the [=stack of open elements=].
+    : A start tag whose tag name is one of: "head", "noscript"
+    : Any other end tag
+    :: [=Parse error=].
 
-    [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
+    : Anything else
+    :: [=Parse error=].
 
-    </dd>
+        Pop the [=current node=] (which will be a <{noscript}> element) from the
+        [=stack of open elements=]; the new [=current node=] will be a <{head}> element.
 
-  : A start tag whose tag name is "meta"
-  ::
+        Switch the [=insertion mode=] to "[=in head=]".
 
-    [=Insert an HTML element=] for the token. Immediately pop the <a>current
-    node</a> off the [=stack of open elements=].
-
-    [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
-
-    <dfn lt="used during the parsing"></dfn>If the element has a <code>charset</code> attribute, and [=getting an encoding=] from
-    its value results in an [=encoding=], and the
-    [=confidence=] is currently *tentative*, then
-    [=change the encoding=] to the resulting encoding.
-
-    Otherwise, if the element has an <code>http-equiv</code>
-    attribute whose value is an [=ASCII case-insensitive=] match for the string "<code>Content-Type</code>", and the element has a <code>content</code> attribute, and applying the <a>algorithm for
-    extracting a character encoding from a <code>meta</code> element</a> to that attribute's
-    value returns an [=encoding=], and the
-    [=confidence=] is currently *tentative*, then
-    [=change the encoding=] to the extracted encoding.
-
-    </dd>
-
-  : A start tag whose tag name is "title"
-  ::
-    Follow the [=generic RCDATA element parsing algorithm=].
-    </dd>
-
-  : A start tag whose tag name is "noscript", if the [=scripting flag=] is enabled
-  : A start tag whose tag name is one of: "noframes", "style"
-  ::
-    Follow the [=generic raw text element parsing algorithm=].
-    </dd>
-
-  : A start tag whose tag name is "noscript", if the [=scripting flag=] is disabled
-  ::
-
-    [=Insert an HTML element=] for the token.
-
-    Switch the [=insertion mode=] to "<a>in
-    head noscript</a>".
-
-    </dd>
-
-  : A start tag whose tag name is "script"
-  ::
-
-    Run these steps:
-
-    <ol>
-
-      <li>Let the |adjusted insertion location| be the <a>appropriate place
-      for inserting a node</a>.</li>
-
-      <li>[=Create an element for the token=] in the [=HTML namespace=], with
-      the intended parent being the element in which the |adjusted insertion
-      location| finds itself.</li>
-
-      <li>
-
-      Mark the element as being <a>"parser-inserted"</a> and unset the element's
-      <a>"non-blocking"</a> flag.
-
-      <p class="note">This ensures that, if the script is external, any {{Document/write()|document.write()}} calls in the script will execute in-line,
-      instead of blowing the document away, as would happen in most other cases. It also prevents
-      the script from executing until the end tag is seen.</p>
-
-      </li>
-
-      <li>If the parser was originally created for the <a>HTML fragment parsing
-      algorithm</a>, then mark the <{script}> element as <a>"already started"</a>.
-      ([=fragment case=])</li>
-
-      <li>Insert the newly created element at the |adjusted insertion
-      location|.</li>
-
-      <li>Push the element onto the [=stack of open elements=] so that it is the new
-      [=current node=].</li>
-
-      <li>Switch the tokenizer to the [=script data state=].</li>
-
-      <li>Let the [=original insertion mode=] be the current <a>insertion
-      mode</a>.
-
-      <li>Switch the [=insertion mode=] to "[=in text|text=]".</li>
-
-    </ol>
-
-    </dd>
-
-  : An end tag whose tag name is "head"
-  ::
-
-    Pop the [=current node=] (which will be the <{head}> element) off the
-    [=stack of open elements=].
-
-    Switch the [=insertion mode=] to "<a>after
-    head</a>".
-
-    </dd>
-
-  : An end tag whose tag name is one of: "body", "html", "br"
-  ::
-    Act as described in the "anything else" entry below.
-    </dd>
-
-  : A start tag whose tag name is "template"
-  ::
-
-    [=Insert an HTML element=] for the token.
-
-    Insert a [=marker=] at the end of the [=list of active formatting elements=].
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    Switch the [=insertion mode=] to "<a>in
-    template</a>".
-
-    Push "[=in template=]" onto the <a>stack of
-    template insertion modes</a> so that it is the new <a>current template insertion
-    mode</a>.
-
-    </dd>
-
-  : An end tag whose tag name is "template"
-  ::
-
-    If there is no <{template}> element on the [=stack of open elements=], then
-    this is a [=parse error=]; ignore the token.
-
-    Otherwise, run these steps:
-
-    <ol>
-
-      <li>[=Generate all implied end tags thoroughly=].</li>
-
-      <li>If the [=current node=] is not a <{template}> element, then this is a
-      [=parse error=].</li>
-
-      <li>Pop elements from the [=stack of open elements=] until a <code>template</code>
-      element has been popped from the stack.</li>
-
-      <li>[=Clear the list of active formatting elements up to the last marker=].</li>
-
-      <li>Pop the [=current template insertion mode=] off the <a>stack of template
-      insertion modes</a>.
-
-      <li>[=Reset the insertion mode appropriately=].</li>
-
-    </ol>
-
-    </dd>
-
-  : A start tag whose tag name is "head"
-  : Any other end tag
-  ::
-    [=Parse error=].
-    </dd>
-
-  : Anything else
-  ::
-
-    Pop the [=current node=] (which will be the <{head}> element) off the
-    [=stack of open elements=].
-
-    Switch the [=insertion mode=] to "<a>after
-    head</a>".
-
-    Reprocess the token.
-
-    </dd>
-
+        Reprocess the token.
   </dl>
 
-<h6 id="the-in-head-noscript-insertion-mode">The "<dfn>in head noscript</dfn>" insertion mode</h6>
+##### The "<dfn>after head</dfn>" insertion mode ##### {#the-after-head-insertion-mode}
 
-  When the user agent is to apply the rules for the "[=in head noscript=]" [=insertion mode=], the user agent must handle the
-  token as follows:
+  When the user agent is to apply the rules for the "[=after head=]" [=insertion mode=], the user
+  agent must handle the token as follows:
 
   <dl class="switch">
 
-  : A DOCTYPE token
-  ::
-    [=Parse error=].
-    </dd>
+    : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
+        FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+    :: [=Insert the character=].
 
-  : A start tag whose tag name is "html"
-  ::
+    : A comment token
+    :: [=Insert a comment=].
 
-    Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
+    : A DOCTYPE token
+    :: [=Parse error=].
 
-    </dd>
+    : A start tag whose tag name is "html"
+    :: Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
 
-  : An end tag whose tag name is "noscript"
-  ::
+    : A start tag whose tag name is "body"
+    :: [=Insert an HTML element=] for the token.
 
-    Pop the [=current node=] (which will be a <{noscript}> element) from the
-    [=stack of open elements=]; the new [=current node=] will be a
-    <{head}> element.
+        Set the [=frameset-ok flag=] to "not ok".
 
-    Switch the [=insertion mode=] to "<a>in
-    head</a>".
+        Switch the [=insertion mode=] to "[=in body=]".
 
-    </dd>
+    : A start tag whose tag name is "frameset"
+    :: [=Insert an HTML element=] for the token.
 
-  : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
-    FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-  : A comment token
-  : A start tag whose tag name is one of: "basefont", "bgsound", "link", "meta", "noframes",
-    "style"
-  ::
+        Switch the [=insertion mode=] to "[=in frameset=]".
 
-    Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
+    : A start tag whose tag name is one of: "base", "basefont", "bgsound", "link", "meta",
+        "noframes", "script", "style", "template", "title"
+    :: [=Parse error=].
 
-    </dd>
+        Push the node pointed to by the [=`head` element pointer=] onto the
+        [=stack of open elements=].
 
-  : An end tag whose tag name is "br"
-  ::
-    Act as described in the "anything else" entry below.
-    </dd>
+        Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
 
-  : A start tag whose tag name is one of: "head", "noscript"
-  : Any other end tag
-  ::
-    [=Parse error=].
-    </dd>
+        Remove the node pointed to by the [=`head` element pointer=] from the
+        [=stack of open elements=]. (It might not be the [=current node=] at this point.)
 
-  : Anything else
-  ::
+        <p class="note">The [=`head` element pointer=] cannot be null at this point.</p>
 
-    [=Parse error=].
+    : An end tag whose tag name is "template"
+    :: Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
 
-    Pop the [=current node=] (which will be a <{noscript}> element) from the
-    [=stack of open elements=]; the new [=current node=] will be a
-    <{head}> element.
+    : An end tag whose tag name is one of: "body", "html", "br"
+    :: Act as described in the "anything else" entry below.
 
-    Switch the [=insertion mode=] to "<a>in
-    head</a>".
+    : A start tag whose tag name is "head"
+    : Any other end tag
+    :: [=Parse error=].
 
-    Reprocess the token.
+    : Anything else
+    :: [=Insert an HTML element=] for a "body" start tag token with no attributes.
 
-    </dd>
+        Switch the [=insertion mode=] to "[=in body=]".
 
+        Reprocess the current token.
   </dl>
 
-<h6 id="the-after-head-insertion-mode">The "<dfn>after head</dfn>" insertion mode</h6>
+##### The "<dfn>in body</dfn>" insertion mode ##### {#the-in-body-insertion-mode}
 
-  When the user agent is to apply the rules for the "[=after head=]" [=insertion mode=], the user agent must handle the token as
-  follows:
-
-  <dl class="switch">
-
-  : A character token that is one of U+0009 CHARACTER
-    TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF),
-    U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-  ::
-    [=Insert the character=].
-    </dd>
-
-  : A comment token
-  ::
-    [=Insert a comment=].
-    </dd>
-
-  : A DOCTYPE token
-  ::
-    [=Parse error=].
-    </dd>
-
-  : A start tag whose tag name is "html"
-  ::
-
-    Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
-
-    </dd>
-
-  : A start tag whose tag name is "body"
-  ::
-
-    [=Insert an HTML element=] for the token.
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    Switch the [=insertion mode=] to "<a>in
-    body</a>".
-
-    </dd>
-
-  : A start tag whose tag name is "frameset"
-  ::
-
-    [=Insert an HTML element=] for the token.
-
-    Switch the [=insertion mode=] to "<a>in
-    frameset</a>".
-
-    </dd>
-
-  : A start tag whose tag name is one of: "base", "basefont", "bgsound", "link", "meta",
-    "noframes", "script", "style", "template", "title"
-  ::
-
-    [=Parse error=].
-
-    Push the node pointed to by the [=`head` element pointer=] onto
-    the [=stack of open elements=].
-
-    Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
-
-    Remove the node pointed to by the [=`head` element pointer=]
-    from the [=stack of open elements=]. (It might not be the [=current node=] at
-    this point.)
-
-    <p class="note">The [=`head` element pointer=] cannot be null at this point.</p>
-
-    </dd>
-
-  : An end tag whose tag name is "template"
-  ::
-    Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
-    </dd>
-
-  : An end tag whose tag name is one of: "body", "html", "br"
-  ::
-    Act as described in the "anything else" entry below.
-    </dd>
-
-  : A start tag whose tag name is "head"
-  : Any other end tag
-  ::
-    [=Parse error=].
-    </dd>
-
-  : Anything else
-  ::
-
-    [=Insert an HTML element=] for a "body" start tag token with no attributes.
-
-    Switch the [=insertion mode=] to "<a>in
-    body</a>".
-
-    Reprocess the current token.
-
-    </dd>
-
-  </dl>
-
-<h6 id="the-in-body-insertion-mode">The "<dfn>in body</dfn>" insertion mode</h6>
-
-  When the user agent is to apply the rules for the "<a>in
-  body</a>" [=insertion mode=], the user agent must handle the token as follows:
+  When the user agent is to apply the rules for the "[=in body=]" [=insertion mode=], the user agent
+  must handle the token as follows:
 
   <dl class="switch">
+    : A character token that is U+0000 NULL
+    :: [=Parse error=].
 
-  : A character token that is U+0000 NULL
-  ::
+    : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
+        FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+    :: [=Reconstruct the active formatting elements=], if any.
 
-    [=Parse error=].
+        [=Insert the token's character=].
 
-    </dd>
+    : Any other character token
+    :: [=Reconstruct the active formatting elements=], if any.
 
-  : A character token that is one of U+0009 CHARACTER TABULATION,
-    U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE
-    RETURN (CR), or U+0020 SPACE
-  ::
+        [=Insert the token's character=].
 
-    [=Reconstruct the active formatting elements=], if any.
+        Set the [=frameset-ok flag=] to "not ok".
 
-    <a>Insert the token's character</a>.
+    : A comment token
+    :: [=Insert a comment=].
 
-    </dd>
+    : A DOCTYPE token
+    :: [=Parse error=].
 
-  : Any other character token
-  ::
+    : A start tag whose tag name is "html"
+    :: [=Parse error=].
 
-    [=Reconstruct the active formatting elements=], if any.
+        If there is a <{template}> element on the [=stack of open elements=], then ignore the token.
 
-    <a>Insert the token's character</a>.
+        Otherwise, for each attribute on the token, check to see if the attribute is already present
+        on the top element of the [=stack of open elements=]. If it is not, add the attribute and
+        its corresponding value to that element.
 
-    Set the [=frameset-ok flag=] to "not ok".
+    : A start tag whose tag name is one of: "base", "basefont", "bgsound", "link", "meta",
+        "noframes", "script", "style", "template", "title"
+    : An end tag whose tag name is "template"
+    :: Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
 
-    </dd>
+    : A start tag whose tag name is "body"
+    :: [=Parse error=].
 
-  : A comment token
-  ::
-    [=Insert a comment=].
-    </dd>
+        If the second element on the [=stack of open elements=] is not a <{body}> element, if the
+        [=stack of open elements=] has only one node on it, or if there is a <{template}> element on
+        the [=stack of open elements=], then ignore the token. ([=fragment case=])
 
-  : A DOCTYPE token
-  ::
-    [=Parse error=].
-    </dd>
+        Otherwise, set the [=frameset-ok flag=] to "not ok"; then, for each attribute on the token,
+        check to see if the attribute is already present on the <{body}> element (the second
+        element) on the [=stack of open elements=], and if it is not, add the attribute and its
+        corresponding value to that element.
 
-  : A start tag whose tag name is "html"
-  ::
+    : A start tag whose tag name is "frameset"
+    :: [=Parse error=].
 
-    [=Parse error=].
+        If the [=stack of open elements=] has only one node on it, or if the second element on the
+        [=stack of open elements=] is not a <{body}> element, then ignore the token.
+        ([=fragment case=])
 
-    If there is a <{template}> element on the [=stack of open elements=], then
-    ignore the token.
+        If the [=frameset-ok flag=] is set to "not ok", ignore the token.
 
-    Otherwise, for each attribute on the token, check to see if the attribute is already present
-    on the top element of the [=stack of open elements=]. If it is not, add the attribute
-    and its corresponding value to that element.
+        Otherwise, run the following steps:
 
-    </dd>
+        1. Remove the second element on the [=stack of open elements=] from its parent node, if it
+            has one.
+        2. Pop all the nodes from the bottom of the [=stack of open elements=], from the
+            [=current node=] up to, but not including, the root <{html}> element.
+        3. [=Insert an HTML element=] for the token.
+        4. Switch the [=insertion mode=] to "[=in frameset=]".
 
-  : A start tag whose tag name is one of: "base", "basefont", "bgsound", "link", "meta",
-    "noframes", "script", "style", "template", "title"
-  : An end tag whose tag name is "template"
-  ::
-    Process the token [=using the rules for=] the "[=in head=]" [=insertion mode=].
-    </dd>
+    : An end-of-file token
+    :: If the [=stack of template insertion modes=] is not empty, then process the token
+        [=using the rules for=] the "[=in template=]" [=insertion mode=].
 
-  : A start tag whose tag name is "body"
-  ::
+        Otherwise, follow these steps:
 
-    [=Parse error=].
+        1. If there is a node in the [=stack of open elements=] that is not either a <{dd}> element,
+            a <{dt}> element, an <{li}> element, a <{menuitem}> element, an <{optgroup}> element, an
+            <{option}> element, a <{p}> element, an <{rb}> element, an <{rp}> element, an <{rt}>
+            element, an <{rtc}> element, a <{tbody}> element, a <{td}> element, a <{tfoot}> element,
+            a <{th}> element, a <{thead}> element, a <{tr}> element, the <{body}> element, or the
+            <{html}> element, then this is a [=parse error=].
+        2. [=Stop parsing=].
 
-    If the second element on the [=stack of open elements=] is not a <code>body</code>
-    element, if the [=stack of open elements=] has only one node on it, or if there is a
-    <{template}> element on the [=stack of open elements=], then ignore the token.
-    ([=fragment case=])
+    : An end tag whose tag name is "body"
+    :: If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this
+        is a [=parse error=]; ignore the token.
 
-    Otherwise, set the [=frameset-ok flag=] to "not ok"; then, for each attribute on the
-    token, check to see if the attribute is already present on the <{body}> element (the
-    second element) on the [=stack of open elements=], and if it is not, add the attribute
-    and its corresponding value to that element.
+        Otherwise, if there is a node in the [=stack of open elements=] that is not either a <{dd}>
+        element, a <{dt}> element, an <{li}> element, a <{menuitem}> element, an <{optgroup}>
+        element, an <{option}> element, a <{p}> element, an <{rb}> element, an <{rp}> element, an
+        <{rt}> element, an <{rtc}> element, a <{tbody}> element, a <{td}> element, a <{tfoot}>
+        element, a <{th}> element, a <{thead}> element, a <{tr}> element, the <{body}> element, or
+        the <{html}> element, then this is a [=parse error=].
 
-    </dd>
+        Switch the [=insertion mode=] to "[=after body=]".
 
-  : A start tag whose tag name is "frameset"
-  ::
+    : An end tag whose tag name is "html"
+    :: If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this
+        is a [=parse error=]; ignore the token.
 
-    [=Parse error=].
+        Otherwise, if there is a node in the [=stack of open elements=] that is not either a <{dd}>
+        element, a <{dt}> element, an <{li}> element, a <{menuitem}> element, an <{optgroup}>
+        element, an <{option}> element, a <{p}> element, an <{rb}> element, an <{rp}> element, an
+        <{rt}> element, an <{rtc}> element, a <{tbody}> element, a <{td}> element, a <{tfoot}>
+        element, a <{th}> element, a <{thead}> element, a <{tr}> element, the <{body}> element, or
+        the <{html}> element, then this is a [=parse error=].
 
-    If the [=stack of open elements=] has only one node on it, or if the second element
-    on the [=stack of open elements=] is not a <{body}> element, then ignore the
-    token. ([=fragment case=])
+        Switch the [=insertion mode=] to "[=after body=]".
 
-    If the [=frameset-ok flag=] is set to "not ok", ignore the token.
+        Reprocess the token.
 
-    Otherwise, run the following steps:
+    : A start tag whose tag name is one of: "address", "article", "aside", "blockquote", "center",
+        "details", "dialog", "dir", "div", "dl", "fieldset", "figcaption", "figure", "footer",
+        "header", "main", "nav", "ol", "p", "section", "summary", "ul"
+    :: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-    <ol>
+        [=Insert an HTML element=] for the token.
 
-      <li>Remove the second element on the [=stack of open elements=] from its parent
-      node, if it has one.</li>
+    : A start tag whose tag name is "menu"
+    :: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-      <li>Pop all the nodes from the bottom of the [=stack of open elements=], from the
-      [=current node=] up to, but not including, the root <{html}> element.
+        If the [=current node=] is a <{menuitem}> element, pop that node from the
+        [=stack of open elements=].
 
-      <li>[=Insert an HTML element=] for the token.</li>
+        [=Insert an HTML element=] for the token.
 
-      <li>Switch the [=insertion mode=] to "<a>in
-      frameset</a>".
+    : A start tag whose tag name is one of: "h1", "h2", "h3", "h4", "h5", "h6"
+    :: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-    </ol>
+        If the [=current node=] is an [=HTML element=] whose tag name is one of "h1", "h2", "h3",
+        "h4", "h5", or "h6", then this is a [=parse error=]; pop the [=current node=] off the
+        [=stack of open elements=].
 
-    </dd>
+        [=Insert an HTML element=] for the token.
 
-  : An end-of-file token
-  ::
+    : A start tag whose tag name is one of: "pre", "listing"
+    :: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-    If the [=stack of template insertion modes=] is not empty, then process the token
-    [=using the rules for=] the "<a>in
-    template</a>" [=insertion mode=].
+        [=Insert an HTML element=] for the token.
 
-    Otherwise, follow these steps:
+        If the [=next token=] is a U+000A LINE FEED (LF) character token, then ignore that token and
+        move on to the next one. (Newlines at the start of <{pre}> blocks are ignored as an
+        authoring convenience.)
 
-    <ol>
+        Set the [=frameset-ok flag=] to "not ok".
 
-      <li>If there is a node in the [=stack of open elements=] that is not either a
-      <{dd}> element, a <{dt}> element, an <{li}> element, a <{menuitem}> element, an
-      <{optgroup}> element, an <{option}> element, a <{p}> element, an
-      <{rb}> element, an <{rp}> element, an <{rt}> element, an
-      <{rtc}> element, a <{tbody}> element, a <{td}> element, a
-      <{tfoot}> element, a <{th}> element, a <{thead}> element, a
-      <{tr}> element, the <{body}> element, or the <{html}> element, then
-      this is a [=parse error=].</li>
+    : A start tag whose tag name is "form"
+    :: If the [=`form` element pointer=] is not null, and there is no <{template}> element on the
+        [=stack of open elements=], then this is a [=parse error=]; ignore the token.
 
-      <li><a lt="stops parsing">Stop parsing</a>.</li>
+        Otherwise:
 
-    </ol>
+        If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-    </dd>
+        [=Insert an HTML element=] for the token, and, if there is no <{template}> element on the
+        [=stack of open elements=], set the [=`form` element pointer=] to point to the element
+        created.
 
-  : An end tag whose tag name is "body"
-  ::
+    : A start tag whose tag name is "li"
+    :: Run these steps:
 
-    If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this is a [=parse error=];
-    ignore the token.
+        1. Set the [=frameset-ok flag=] to "not ok".
+        2. Initialize |node| to be the [=current node=] (the bottommost node of the stack).
+        3. |Loop|: If |node| is an <{li}> element, then run these substeps:
+            1. [=Generate implied end tags=], except for <{li}> elements.
+            2. If the [=current node=] is not an <{li}> element, then this is a [=parse error=].
+            3. Pop elements from the [=stack of open elements=] until an <{li}> element has been
+                popped from the stack.
+            4. Jump to the step labeled |Done| below.
+        4. If |node| is in the [=special=] category, but is not an <{address}>, <{div}>, or <{p}>
+            element, then jump to the step labeled |Done| below.
+        5. Otherwise, set |node| to the previous entry in the [=stack of open elements=] and return
+            to the step labeled |Loop|.
+        6. |Done|: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+            [=close a `p` element=].
+        7. Finally, [=insert an HTML element=] for the token.
 
-    Otherwise, if there is a node in the [=stack of open elements=] that is not either a
-    <{dd}> element, a <{dt}> element, an <{li}> element, a <{menuitem}> element, an
-    <{optgroup}> element, an <{option}> element, a <{p}> element, an
-    <{rb}> element, an <{rp}> element, an <{rt}> element, an
-    <{rtc}> element, a <{tbody}> element, a <{td}> element, a
-    <{tfoot}> element, a <{th}> element, a <{thead}> element, a
-    <{tr}> element, the <{body}> element, or the <{html}> element, then
-    this is a [=parse error=].
+    : A start tag whose tag name is one of: "dd", "dt"
+    ::
 
-    Switch the [=insertion mode=] to "<a>after
-    body</a>".
-
-    </dd>
-
-  : An end tag whose tag name is "html"
-  ::
-
-    If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this is a [=parse error=];
-    ignore the token.
-
-    Otherwise, if there is a node in the [=stack of open elements=] that is not either a
-    <{dd}> element, a <{dt}> element, an <{li}> element, a <{menuitem}> element, an
-    <{optgroup}> element, an <{option}> element, a <{p}> element, an
-    <{rb}> element, an <{rp}> element, an <{rt}> element, an
-    <{rtc}> element, a <{tbody}> element, a <{td}> element, a
-    <{tfoot}> element, a <{th}> element, a <{thead}> element, a
-    <{tr}> element, the <{body}> element, or the <{html}> element, then
-    this is a [=parse error=].
-
-    Switch the [=insertion mode=] to "<a>after
-    body</a>".
-
-    Reprocess the token.
-
-    </dd>
-
-  : A start tag whose tag name is one of: "address", "article", "aside", "blockquote", "center",
-    "details", "dialog", "dir", "div", "dl", "fieldset", "figcaption", "figure", "footer", "header",
-    "main", "nav", "ol", "p", "section", "summary", "ul"
-  ::
-
-    If the [=stack of open elements=] <a>has a <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-    [=Insert an HTML element=] for the token.
-
-    </dd>
-
-  : A start tag whose tag name is "menu"
-
-
-
-  :: <p>If the [=stack of open elements=] <a>has a <code>p</code> element in button scope</a>, then <a>close a <code>p</code> element</a>.</p>
-
-      <p>If the [=current node=] is a <{menuitem}> element, pop that node from the [=stack of open elements=].</p>
-
-      <p>[=Insert an HTML element=] for the token.</p>
-
- </dd>
-
-
-  : A start tag whose tag name is one of: "h1", "h2", "h3", "h4",
-    "h5", "h6"
-  ::
-
-    If the [=stack of open elements=] <a>has a <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-    If the [=current node=] is an [=HTML element=] whose
-    tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6", then this is a [=parse error=]; pop the [=current node=] off the [=stack of open elements=].
-
-    [=Insert an HTML element=] for the token.
-
-    </dd>
-
-  : A start tag whose tag name is one of: "pre", "listing"
-  ::
-
-    If the [=stack of open elements=] <a>has
-    a <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-    [=Insert an HTML element=] for the token.
-
-    If the [=next token=] is a U+000A LINE FEED (LF) character token, then ignore that
-    token and move on to the next one. (Newlines at the start of <{pre}> blocks are ignored
-    as an authoring convenience.)
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    </dd>
-
-  : A start tag whose tag name is "form"
-  ::
-
-    If the [=`form` element pointer=] is not null, and there is
-    no <{template}> element on the [=stack of open elements=], then this is a
-    [=parse error=]; ignore the token.
-
-    Otherwise:
-
-    If the [=stack of open elements=] <a>has
-    a <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-    [=Insert an HTML element=] for the token, and, if there is no <code>template</code>
-    element on the [=stack of open elements=], set the [=`form` element pointer=] to point to the element created.
-
-    </dd>
-
-  : A start tag whose tag name is "li"
-  ::
-
-    Run these steps:
-
-    <ol>
-
-      <li>Set the [=frameset-ok flag=] to "not ok".</li>
-
-      <li>Initialize |node| to be the <a>current
-      node</a> (the bottommost node of the stack).</li>
-
-      <li>
-
-      |Loop|: If |node| is an <{li}> element, then run these
-      substeps:
+      Run these steps:
 
       <ol>
 
-        <li>[=Generate implied end tags=], except for <{li}> elements.</li>
+        <li>Set the [=frameset-ok flag=] to "not ok".</li>
 
-        <li>If the [=current node=] is not an <{li}> element, then this is a
-        [=parse error=].</li>
+        <li>Initialize |node| to be the <a>current
+        node</a> (the bottommost node of the stack).</li>
 
-        <li>Pop elements from the [=stack of open elements=] until an <code>li</code>
-        element has been popped from the stack.</li>
+        <li>
 
-        <li>Jump to the step labeled |Done| below.</li>
+        |Loop|: If |node| is a <{dd}> element, then run these
+        substeps:
+
+        <ol>
+
+          <li>[=Generate implied end tags=], except for <{dd}> elements.</li>
+
+          <li>If the [=current node=] is not a <{dd}> element, then this is a
+          [=parse error=].</li>
+
+          <li>Pop elements from the [=stack of open elements=] until a <code>dd</code>
+          element has been popped from the stack.</li>
+
+          <li>Jump to the step labeled |Done| below.</li>
+
+        </ol>
+
+        </li>
+
+        <li>
+
+        If |node| is a <{dt}> element, then run these substeps:
+
+        <ol>
+
+          <li>[=Generate implied end tags=], except for <{dt}> elements.</li>
+
+          <li>If the [=current node=] is not a <{dt}> element, then this is a
+          [=parse error=].</li>
+
+          <li>Pop elements from the [=stack of open elements=] until a <code>dt</code>
+          element has been popped from the stack.</li>
+
+          <li>Jump to the step labeled |Done| below.</li>
+
+        </ol>
+
+        </li>
+
+        <li>If |node| is in the [=special=] category, but is not an
+        <{address}>, <{div}>, or <{p}> element, then jump to the step
+        labeled |Done| below.</li>
+
+        <li>Otherwise, set |node| to the previous entry in the <a>stack of open
+        elements</a> and return to the step labeled |Loop|.</li>
+
+        <li>|Done|: If the [=stack of open elements=] [=has a `p` element in button scope=], then <a>close a
+        <code>p</code> element</a>.</li>
+
+        <li>Finally, [=insert an HTML element=] for the token.</li>
 
       </ol>
 
-      </li>
+      </dd>
 
-      <li>If |node| is in the [=special=] category, but is not an
-      <code>address</code>, <code>div</code>, or <{p}> element, then jump to the step
-      labeled |Done| below.</li>
+    : A start tag whose tag name is "plaintext"
+    ::
 
-      <li>Otherwise, set |node| to the previous entry in the <a>stack of open
-      elements</a> and return to the step labeled |Loop|.</li>
+      If the [=stack of open elements=] <a>has a
+      <code>p</code> element in button scope</a>, then [=close a `p` element=].
 
-      <li>|Done|: If the [=stack of open elements=] <a>has a <code>p</code> element in button scope</a>, then <a>close a <code>p</code> element</a>.</li>
+      [=Insert an HTML element=] for the token.
 
-      <li>Finally, [=insert an HTML element=] for the token.</li>
+      Switch the tokenizer to the [[#plaintext-state]].
 
-    </ol>
+      <p class="note">Once a start tag with the tag name "plaintext" has been seen, that will be the
+      last token ever seen other than character tokens (and the end-of-file token), because there is
+      no way to switch out of the [[#plaintext-state]].</p>
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is one of: "dd", "dt"
-  ::
-
-    Run these steps:
-
-    <ol>
-
-      <li>Set the [=frameset-ok flag=] to "not ok".</li>
-
-      <li>Initialize |node| to be the <a>current
-      node</a> (the bottommost node of the stack).</li>
-
-      <li>
-
-      |Loop|: If |node| is a <{dd}> element, then run these
-      substeps:
+    : A start tag whose tag name is "button"
+    ::
 
       <ol>
 
-        <li>[=Generate implied end tags=], except for <{dd}> elements.</li>
+        <li>
 
-        <li>If the [=current node=] is not a <{dd}> element, then this is a
-        [=parse error=].</li>
+        If the [=stack of open elements=] [=in scope|has a `button` element in scope=], then run these substeps:
 
-        <li>Pop elements from the [=stack of open elements=] until a <code>dd</code>
-        element has been popped from the stack.</li>
+        <ol>
 
-        <li>Jump to the step labeled |Done| below.</li>
+          <li>[=Parse error=].</li>
 
-      </ol>
+          <li>[=Generate implied end tags=].</li>
 
-      </li>
+          <li>Pop elements from the [=stack of open elements=] until a <code>button</code>
+          element has been popped from the stack.</li>
 
-      <li>
+        </ol>
 
-      If |node| is a <{dt}> element, then run these substeps:
+        </li>
 
-      <ol>
+        <li>[=Reconstruct the active formatting elements=], if any.</li>
 
-        <li>[=Generate implied end tags=], except for <{dt}> elements.</li>
+        <li>[=Insert an HTML element=] for the token.</li>
 
-        <li>If the [=current node=] is not a <{dt}> element, then this is a
-        [=parse error=].</li>
-
-        <li>Pop elements from the [=stack of open elements=] until a <code>dt</code>
-        element has been popped from the stack.</li>
-
-        <li>Jump to the step labeled |Done| below.</li>
+        <li>Set the [=frameset-ok flag=] to "not ok".</li>
 
       </ol>
 
-      </li>
-
-      <li>If |node| is in the [=special=] category, but is not an
-      <code>address</code>, <code>div</code>, or <{p}> element, then jump to the step
-      labeled |Done| below.</li>
-
-      <li>Otherwise, set |node| to the previous entry in the <a>stack of open
-      elements</a> and return to the step labeled |Loop|.</li>
-
-      <li>|Done|: If the [=stack of open elements=] <a>has a <code>p</code> element in button scope</a>, then <a>close a
-      <code>p</code> element</a>.</li>
-
-      <li>Finally, [=insert an HTML element=] for the token.</li>
-
-    </ol>
-
-    </dd>
-
-  : A start tag whose tag name is "plaintext"
-  ::
-
-    If the [=stack of open elements=] <a>has a
-    <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-    [=Insert an HTML element=] for the token.
-
-    Switch the tokenizer to the [[#plaintext-state]].
-
-    <p class="note">Once a start tag with the tag name "plaintext" has been seen, that will be the
-    last token ever seen other than character tokens (and the end-of-file token), because there is
-    no way to switch out of the [[#plaintext-state]].</p>
-
-    </dd>
-
-  : A start tag whose tag name is "button"
-  ::
-
-    <ol>
-
-      <li>
-
-      If the [=stack of open elements=] [=in scope|has a `button` element in scope=], then run these substeps:
-
-      <ol>
-
-        <li>[=Parse error=].</li>
-
-        <li>[=Generate implied end tags=].</li>
-
-        <li>Pop elements from the [=stack of open elements=] until a <code>button</code>
-        element has been popped from the stack.</li>
-
-      </ol>
-
-      </li>
-
-      <li>[=Reconstruct the active formatting elements=], if any.</li>
-
-      <li>[=Insert an HTML element=] for the token.</li>
-
-      <li>Set the [=frameset-ok flag=] to "not ok".</li>
-
-    </ol>
-
-    </dd>
+      </dd>
 
   : An end tag whose tag name is one of: "address", "article", "aside", "blockquote", "button",
     "center", "details", "dialog", "dir", "div", "dl", "fieldset", "figcaption", "figure", "footer",
@@ -6053,7 +5631,7 @@
   : A character token
   ::
 
-    <a>Insert the token's character</a>.
+    [=Insert the token's character=].
 
     <p class="note">This can never be a U+0000 NULL character; the tokenizer converts those to
     U+FFFD REPLACEMENT CHARACTER characters.</p>
@@ -6066,7 +5644,7 @@
     [=Parse error=].
 
     If the [=current node=] is a <{script}> element, mark the
-    <{script}> element as <a>"already started"</a>.
+    <{script}> element as [="already started"=].
 
     Pop the [=current node=] off the [=stack of open elements=].
 
@@ -6194,7 +5772,7 @@
 
   </dl>
 
-<h6 id="the-in-table-insertion-mode">The "<dfn>in table</dfn>" insertion mode</h6>
+##### The "<dfn>in table</dfn>" insertion mode ##### {#the-in-table-insertion-mode}
 
   When the user agent is to apply the rules for the "<a>in
   table</a>" [=insertion mode=], the user agent must handle the token as follows:
@@ -6397,7 +5975,7 @@
   process is a [=fragment case=].
   </p>
 
-<h6 id="the-in-table-text-insertion-mode">The "<dfn>in table text</dfn>" insertion mode</h6>
+##### The "<dfn>in table text</dfn>" insertion mode ##### {#the-in-table-text-insertion-mode}
 
   When the user agent is to apply the rules for the "[=in table text=]" [=insertion mode=], the user agent must handle the token as
   follows:
@@ -6427,7 +6005,7 @@
     character tokens in the |pending table character
     tokens| list using the rules given in the "anything else" entry in the "[=in table=]" insertion mode.
 
-    Otherwise, <a lt="insert a character">insert the characters</a> given by the |pending table character tokens| list.
+    Otherwise, [=insert the characters=] given by the |pending table character tokens| list.
 
     Switch the [=insertion mode=] to the [=original insertion mode=] and
     reprocess the token.
@@ -6436,7 +6014,7 @@
 
   </dl>
 
-<h6 id="the-in-caption-insertion-mode">The "<dfn>in caption</dfn>" insertion mode</h6>
+##### The "<dfn>in caption</dfn>" insertion mode ##### {#the-in-caption-insertion-mode}
 
   When the user agent is to apply the rules for the "<a>in
   caption</a>" [=insertion mode=], the user agent must handle the token as follows:
@@ -6506,7 +6084,7 @@
 
   </dl>
 
-<h6 id="the-in-column-group-insertion-mode">The "<dfn>in column group</dfn>" insertion mode</h6>
+##### The "<dfn>in column group</dfn>" insertion mode ##### {#the-in-column-group-insertion-mode}
 
   When the user agent is to apply the rules for the "[=in column group=]" [=insertion mode=], the user agent must handle the token
   as follows:
@@ -6595,7 +6173,7 @@
 
   </dl>
 
-<h6 id="the-in-table-body-insertion-mode">The "<dfn>in table body</dfn>" insertion mode</h6>
+##### The "<dfn>in table body</dfn>" insertion mode ##### {#the-in-table-body-insertion-mode}
 
   When the user agent is to apply the rules for the "[=in table body=]" [=insertion mode=], the user agent must handle the token as
   follows:
@@ -6684,7 +6262,7 @@
   process is a [=fragment case=].
   </p>
 
-<h6 id="the-in-row-insertion-mode">The "<dfn>in row</dfn>" insertion mode</h6>
+##### The "<dfn>in row</dfn>" insertion mode ##### {#the-in-row-insertion-mode}
 
   When the user agent is to apply the rules for the "<a>in
   row</a>" [=insertion mode=], the user agent must handle the token as follows:
@@ -6781,7 +6359,7 @@
   process is a [=fragment case=].
   </p>
 
-<h6 id="the-in-cell-insertion-mode">The "<dfn>in cell</dfn>" insertion mode</h6>
+##### The "<dfn>in cell</dfn>" insertion mode ##### {#the-in-cell-insertion-mode}
 
   When the user agent is to apply the rules for the "[=in cell=]" [=insertion mode=], the user agent must handle the token as follows:
 
@@ -6870,7 +6448,7 @@
   same time, nor can it have neither when the [=close the cell=] algorithm is invoked.
   </p>
 
-<h6 id="the-in-select-insertion-mode">The "<dfn>in select</dfn>" insertion mode</h6>
+##### The "<dfn>in select</dfn>" insertion mode ##### {#the-in-select-insertion-mode}
 
   When the user agent is to apply the rules for the "<a>in
   select</a>" [=insertion mode=], the user agent must handle the token as follows:
@@ -6885,7 +6463,7 @@
   : Any other character token
   ::
 
-    <a>Insert the token's character</a>.
+    [=Insert the token's character=].
 
     </dd>
 
@@ -7026,7 +6604,7 @@
 
   </dl>
 
-<h6 id="the-in-select-in-table-insertion-mode">The "<dfn>in select in table</dfn>" insertion mode</h6>
+##### The "<dfn>in select in table</dfn>" insertion mode ##### {#the-in-select-in-table-insertion-mode}
 
   When the user agent is to apply the rules for the "[=in select in table=]" [=insertion mode=], the user agent must handle the
   token as follows:
@@ -7076,7 +6654,7 @@
 
   </dl>
 
-<h6 id="the-in-template-insertion-mode">The "<dfn>in template</dfn>" insertion mode</h6>
+##### The "<dfn>in template</dfn>" insertion mode ##### {#the-in-template-insertion-mode}
 
   When the user agent is to apply the rules for the "<a>in
   template</a>" [=insertion mode=], the user agent must handle the token as follows:
@@ -7182,11 +6760,11 @@
   ::
 
     If there is no <{template}> element on the [=stack of open elements=], then
-    <a lt="stops parsing">stop parsing</a>. ([=fragment case=])
+    <a>stop parsing</a>. ([=fragment case=])
 
     Otherwise, this is a [=parse error=].
 
-    Pop elements from the [=stack of open elements=] until a <code>template</code>
+    Pop elements from the [=stack of open elements=] until a <{template}>
     element has been popped from the stack.
 
     [=Clear the list of active formatting elements up to the last marker=].
@@ -7202,7 +6780,7 @@
 
   </dl>
 
-<h6 id="the-after-body-insertion-mode">The "<dfn>after body</dfn>" insertion mode</h6>
+##### The "<dfn>after body</dfn>" insertion mode ##### {#the-after-body-insertion-mode}
 
   When the user agent is to apply the rules for the "[=after body=]" [=insertion mode=], the user agent must handle the token as follows:
 
@@ -7249,7 +6827,7 @@
 
   : An end-of-file token
   ::
-    <a lt="stops parsing">Stop parsing</a>.
+    [=Stop parsing=].
     </dd>
 
   : Anything else
@@ -7261,7 +6839,7 @@
 
   </dl>
 
-<h6 id="the-in-frameset-insertion-mode">The "<dfn>in frameset</dfn>" insertion mode</h6>
+##### The "<dfn>in frameset</dfn>" insertion mode ##### {#the-in-frameset-insertion-mode}
 
   When the user agent is to apply the rules for the "<a>in
   frameset</a>" [=insertion mode=], the user agent must handle the token as follows:
@@ -7336,7 +6914,7 @@
 
     <p class="note">The [=current node=] can only be the root <{html}> element in the [=fragment case=].</p>
 
-    <a lt="stops parsing">Stop parsing</a>.
+    [=Stop parsing=].
 
     </dd>
 
@@ -7347,7 +6925,7 @@
 
   </dl>
 
-<h6 id="the-after-frameset-insertion-mode">The "<dfn>after frameset</dfn>" insertion mode</h6>
+##### The "<dfn>after frameset</dfn>" insertion mode ##### {#the-after-frameset-insertion-mode}
 
   When the user agent is to apply the rules for the "[=after frameset=]" [=insertion mode=], the user agent must handle the token
   as follows:
@@ -7393,7 +6971,7 @@
 
   : An end-of-file token
   ::
-    <a lt="stops parsing">Stop parsing</a>.
+    [=Stop parsing=].
     </dd>
 
   : Anything else
@@ -7403,7 +6981,7 @@
 
   </dl>
 
-<h6 id="the-after-after-body-insertion-mode">The "<dfn>after after body</dfn>" insertion mode</h6>
+##### The "<dfn>after after body</dfn>" insertion mode ##### {#the-after-after-body-insertion-mode}
 
   When the user agent is to apply the rules for the "[=after after body=]" [=insertion mode=], the user agent must handle the token
   as follows:
@@ -7427,7 +7005,7 @@
 
   : An end-of-file token
   ::
-    <a lt="stops parsing">Stop parsing</a>.
+    [=Stop parsing=].
     </dd>
 
   : Anything else
@@ -7439,7 +7017,7 @@
 
   </dl>
 
-<h6 id="the-after-after-frameset-insertion-mode">The "<dfn>after after frameset</dfn>" insertion mode</h6>
+##### The "<dfn>after after frameset</dfn>" insertion mode ##### {#the-after-after-frameset-insertion-mode}
 
   When the user agent is to apply the rules for the "[=after after frameset=]" [=insertion mode=], the user agent must handle the
   token as follows:
@@ -7463,7 +7041,7 @@
 
   : An end-of-file token
   ::
-    <a lt="stops parsing">Stop parsing</a>.
+    [=Stop parsing=].
     </dd>
 
   : A start tag whose tag name is "noframes"
@@ -7490,7 +7068,7 @@
   : A character token that is U+0000 NULL
   ::
 
-    [=Parse error=]. <a lt="insert a character">Insert a U+FFFD REPLACEMENT CHARACTER character</a>.
+    [=Parse error=]. [=insert a character|Insert a U+FFFD REPLACEMENT CHARACTER character=].
 
     </dd>
 
@@ -7498,14 +7076,14 @@
     FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
   ::
 
-    <a>Insert the token's character</a>.
+    [=Insert the token's character=].
 
     </dd>
 
   : Any other character token
   ::
 
-    <a>Insert the token's character</a>.
+    [=Insert the token's character=].
 
     Set the [=frameset-ok flag=] to "not ok".
 
@@ -7709,7 +7287,7 @@
 
 ### The end ### {#the-end}
 
-  Once the user agent <dfn lt="stopped|stops parsing|finishes|stopped parsing">stops parsing</dfn> the document, the user agent
+  Once the user agent <dfn lt="stop parsing|stopped parsing">stops parsing</dfn> the document, the user agent
   must run the following steps:
 
   <ol>
@@ -7791,8 +7369,7 @@
     </ol>
 
     </li>
-    <!-- App cache -->
-    <!--
+    <!-- App cache --><!--
     <li>If the {{Document}} has any [=pending application cache download process tasks=], then
     [=queue=] each such [=task=] in the order they were added to the list of
     [=pending application cache download process tasks=], and then empty the list of
@@ -8344,7 +7921,7 @@
 
         </dd>
 
-      : If |current node| is a <code>DocumentType</code>
+      : If |current node| is a {{DocumentType}}
 
       ::
 
