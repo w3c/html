@@ -927,15 +927,15 @@
   correct or not. Certain points in the parsing algorithm are said to be <dfn>parse errors</dfn>.
   The error handling for parse errors is well-defined (that's the processing rules described
   throughout this specification), but user agents, while parsing an HTML document, may
-  [=abort the parser=] at the first [=parse errors=] that they encounter for which they do not wish
+  [=abort the parser=] at the first [=parse error=] that they encounter for which they do not wish
   to apply the rules described in this specification.
 
-  Conformance checkers must report at least one [=parse errors=] condition to the user if one or
-  more [=parse errors=] conditions exist in the document and must not report [=parse errors=]
+  Conformance checkers must report at least one [=parse error=] condition to the user if one or
+  more [=parse error=] conditions exist in the document and must not report [=parse error=]
   conditions if none exist in the document. Conformance checkers may report more than one
-  [=parse errors=] condition if more than one [=parse errors=] condition exists in the document.
+  [=parse error=] condition if more than one [=parse error=] condition exists in the document.
 
-  <p class="note">[=parse errors=] are only errors with the *syntax* of HTML. In addition to
+  <p class="note">[=Parse errors=] are only errors with the *syntax* of HTML. In addition to
   checking for [=parse errors=], conformance checkers will also verify that the document obeys all
   the other conformance requirements described in this specification.</p>
 
@@ -1436,7 +1436,7 @@
   are all [=control characters=] or permanently undefined Unicode characters (noncharacters).
 
   Any [=character=] that is a not a [=Unicode character=], i.e., any isolated surrogate, is a
-  [=parse errors=]. (These can only find their way into the input stream via script APIs such as
+  [=parse error=]. (These can only find their way into the input stream via script APIs such as
   {{Document/write()|document.write()}}.)
 
   U+000D CARRIAGE RETURN (CR) characters and U+000A LINE FEED (LF) characters are treated specially.
@@ -1831,11 +1831,11 @@
 
   When a start tag token is emitted with its [=self-closing flag=] set, if the flag is not
   <dfn>acknowledged</dfn> when it is processed by the tree construction stage, that is a
-  [=parse errors=].
+  [=parse error=].
 
-  When an end tag token is emitted with attributes, that is a [=parse errors=].
+  When an end tag token is emitted with attributes, that is a [=parse error=].
 
-  When an end tag token is emitted with its [=self-closing flag=] set, that is a [=parse errors=].
+  When an end tag token is emitted with its [=self-closing flag=] set, that is a [=parse error=].
 
   An <dfn>appropriate end tag token</dfn> is an end tag token whose tag name matches the tag name of
   the last start tag to have been emitted from this tokenizer, if any. If no start tag has been
@@ -2588,7 +2588,7 @@
   When the user agent leaves the attribute name state (and before emitting the tag token, if
   appropriate), the complete attribute's name must be compared to the other attributes on the same
   token; if there is already an attribute on the token with the exact same name, then this is a
-  [=parse errors=] and the new attribute must be removed from the token.
+  [=parse error=] and the new attribute must be removed from the token.
 
   <p class="note">If an attribute is so removed from a token, it, and the value that gets associated
   with it, if any, are never subsequently used by the parser, and are therefore effectively
@@ -2802,7 +2802,7 @@
   "[CDATA[" (the five uppercase letters "CDATA" with a U+005B LEFT SQUARE BRACKET character before
   and after), then consume those characters and switch to the [=CDATA section state=].
 
-  Otherwise, this is a [=parse errors=]. Create a comment token whose data is the empty string.
+  Otherwise, this is a [=parse error=]. Create a comment token whose data is the empty string.
   Switch to the [=bogus comment state=] (don't consume anything in the current state).
 
 #### <dfn id="tokenizer-comment-start-state">Comment start state</dfn> #### {#comment-start-state}
@@ -3081,7 +3081,7 @@
         [=ASCII case-insensitive=] match for the word "SYSTEM", then consume those characters and
         switch to the [=after DOCTYPE system keyword state=].
 
-        Otherwise, this is a [=parse errors=]. Set the DOCTYPE token's |[=force-quirks flag=]| to
+        Otherwise, this is a [=parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to
         *on*. Switch to the [=bogus DOCTYPE state=].
   </dl>
 
@@ -3264,34 +3264,31 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+0009 CHARACTER TABULATION (tab)
+    : U+000A LINE FEED (LF)
+    : U+000C FORM FEED (FF)
+    : U+0020 SPACE
+    :: Switch to the [=before DOCTYPE system identifier state=].
 
-  : U+0009 CHARACTER TABULATION (tab)
-  : U+000A LINE FEED (LF)
-  : U+000C FORM FEED (FF)
+    : U+0022 QUOTATION MARK (&quot;)
+    :: [=Parse error=]. Set the DOCTYPE token's system identifier to the empty string (not missing),
+        then switch to the [=DOCTYPE system identifier (double-quoted) state=].
 
-  : U+0020 SPACE
-  :: Switch to the [[#before-doctype-system-identifier-state]].
+    : U+0027 APOSTROPHE (')
+    :: [=Parse error=]. Set the DOCTYPE token's system identifier to the empty string (not missing),
+        then switch to the [=DOCTYPE system identifier (single-quoted) state=].
 
-  : U+0022 QUOTATION MARK (&quot;)
-  :: [=Parse error=]. Set the DOCTYPE token's system identifier to the empty string (not
-    missing), then switch to the [=DOCTYPE system identifier (double-quoted) state=].
+    : U+003E GREATER-THAN SIGN (&gt;)
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Switch to the
+        [=data state=]. Emit that DOCTYPE token.
 
-  : U+0027 APOSTROPHE (')
-  :: [=Parse error=]. Set the DOCTYPE token's system identifier to the empty string (not
-    missing), then switch to the [=DOCTYPE system identifier (single-quoted) state=].
+    : EOF
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Emit that DOCTYPE
+        token. Emit an end-of-file token.
 
-  : U+003E GREATER-THAN SIGN (&gt;)
-  :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*.
-    Switch to the [=data state=]. Emit that DOCTYPE token.
-
-  : EOF
-  :: [=Parse error=]. Set the DOCTYPE token's
-    |[=force-quirks flag=]| to *on*. Emit that DOCTYPE token. Emit an end-of-file token.
-
-  : Anything else
-  :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*.
-    Switch to the [=bogus DOCTYPE state=].
-
+    : Anything else
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Switch to the
+        [=bogus DOCTYPE state=].
   </dl>
 
 #### <dfn id="tokenizer-before-doctype-system-identifier-state">Before DOCTYPE system identifier state</dfn> #### {#before-doctype-system-identifier-state}
@@ -3299,34 +3296,31 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+0009 CHARACTER TABULATION (tab)
+    : U+000A LINE FEED (LF)
+    : U+000C FORM FEED (FF)
+    : U+0020 SPACE
+    :: Ignore the character.
 
-  : U+0009 CHARACTER TABULATION (tab)
-  : U+000A LINE FEED (LF)
-  : U+000C FORM FEED (FF)
+    : U+0022 QUOTATION MARK (&quot;)
+    :: Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to
+        the [=DOCTYPE system identifier (double-quoted) state=].
 
-  : U+0020 SPACE
-  :: Ignore the character.
+    : U+0027 APOSTROPHE (')
+    :: Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to
+        the [=DOCTYPE system identifier (single-quoted) state=].
 
-  : U+0022 QUOTATION MARK (&quot;)
-  :: Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to
-    the [=DOCTYPE system identifier (double-quoted) state=].
+    : U+003E GREATER-THAN SIGN (&gt;)
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Switch to the
+        [=data state=]. Emit that DOCTYPE token.
 
-  : U+0027 APOSTROPHE (')
-  :: Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to
-    the [=DOCTYPE system identifier (single-quoted) state=].
+    : EOF
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Emit that DOCTYPE
+        token. Emit an end-of-file token.
 
-  : U+003E GREATER-THAN SIGN (&gt;)
-  :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*.
-    Switch to the [=data state=]. Emit that DOCTYPE token.
-
-  : EOF
-  :: [=Parse error=]. Set the DOCTYPE token's
-    |[=force-quirks flag=]| to *on*. Emit that DOCTYPE token. Emit an end-of-file token.
-
-  : Anything else
-  :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*.
-    Switch to the [=bogus DOCTYPE state=].
-
+    : Anything else
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Switch to the
+        [=bogus DOCTYPE state=].
   </dl>
 
 #### <dfn id="tokenizer-doctype-system-identifier-double-quoted-state">DOCTYPE system identifier (double-quoted) state</dfn> #### {#doctype-system-identifier-double-quoted-state}
@@ -3334,26 +3328,23 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+0022 QUOTATION MARK (&quot;)
+    :: Switch to the [=after DOCTYPE system identifier state=].
 
-  : U+0022 QUOTATION MARK (&quot;)
-  :: Switch to the [[#after-doctype-system-identifier-state]].
+    : U+0000 NULL
+    :: [=Parse error=]. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE
+        token's system identifier.
 
-  : U+0000 NULL
-  :: [=Parse error=]. Append a U+FFFD REPLACEMENT CHARACTER character to the current
-    DOCTYPE token's system identifier.
+    : U+003E GREATER-THAN SIGN (&gt;)
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Switch to the
+        [=data state=]. Emit that DOCTYPE token.
 
-  : U+003E GREATER-THAN SIGN (&gt;)
-  :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*.
-    Switch to the [=data state=]. Emit that DOCTYPE token.
+    : EOF
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Emit that DOCTYPE
+        token. Emit an end-of-file token.
 
-  : EOF
-  :: [=Parse error=]. Set the DOCTYPE token's
-    |[=force-quirks flag=]| to *on*. Emit that DOCTYPE token. Emit an end-of-file token.
-
-  : Anything else
-  :: Append the [=current input character=] to the current DOCTYPE token's system
-    identifier.
-
+    : Anything else
+    :: Append the [=current input character=] to the current DOCTYPE token's system identifier.
   </dl>
 
 #### <dfn id="tokenizer-doctype-system-identifier-single-quoted-state">DOCTYPE system identifier (single-quoted) state</dfn> #### {#doctype-system-identifier-single-quoted-state}
@@ -3361,26 +3352,23 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+0027 APOSTROPHE (')
+    :: Switch to the [=after DOCTYPE system identifier state=].
 
-  : U+0027 APOSTROPHE (')
-  :: Switch to the [[#after-doctype-system-identifier-state]].
+    : U+0000 NULL
+    :: [=Parse error=]. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE
+        token's system identifier.
 
-  : U+0000 NULL
-  :: [=Parse error=]. Append a U+FFFD REPLACEMENT CHARACTER character to the current
-    DOCTYPE token's system identifier.
+    : U+003E GREATER-THAN SIGN (&gt;)
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Switch to the
+        [=data state=]. Emit that DOCTYPE token.
 
-  : U+003E GREATER-THAN SIGN (&gt;)
-  :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*.
-    Switch to the [=data state=]. Emit that DOCTYPE token.
+    : EOF
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Emit that DOCTYPE
+        token. Emit an end-of-file token.
 
-  : EOF
-  :: [=Parse error=]. Set the DOCTYPE token's
-    |[=force-quirks flag=]| to *on*. Emit that DOCTYPE token. Emit an end-of-file token.
-
-  : Anything else
-  :: Append the [=current input character=] to the current DOCTYPE token's system
-    identifier.
-
+    : Anything else
+    :: Append the [=current input character=] to the current DOCTYPE token's system identifier.
   </dl>
 
 #### <dfn id="tokenizer-after-doctype-system-identifier-state">After DOCTYPE system identifier state</dfn> #### {#after-doctype-system-identifier-state}
@@ -3388,25 +3376,22 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+0009 CHARACTER TABULATION (tab)
+    : U+000A LINE FEED (LF)
+    : U+000C FORM FEED (FF)
+    : U+0020 SPACE
+    :: Ignore the character.
 
-  : U+0009 CHARACTER TABULATION (tab)
-  : U+000A LINE FEED (LF)
-  : U+000C FORM FEED (FF)
+    : U+003E GREATER-THAN SIGN (&gt;)
+    :: Switch to the [=data state=]. Emit the current DOCTYPE token.
 
-  : U+0020 SPACE
-  :: Ignore the character.
+    : EOF
+    :: [=Parse error=]. Set the DOCTYPE token's |[=force-quirks flag=]| to *on*. Emit that DOCTYPE
+        token. Emit an end-of-file token.
 
-  : U+003E GREATER-THAN SIGN (&gt;)
-  :: Switch to the [=data state=]. Emit the current DOCTYPE token.
-
-  : EOF
-  :: [=Parse error=]. Set the DOCTYPE token's
-    |[=force-quirks flag=]| to *on*. Emit that DOCTYPE token. Emit an end-of-file token.
-
-  : Anything else
-  :: [=Parse error=]. Switch to the [=bogus DOCTYPE state=]. (This does
-    *not* set the DOCTYPE token's |[=force-quirks flag=]| to *on*.)
-
+    : Anything else
+    :: [=Parse error=]. Switch to the [=bogus DOCTYPE state=]. (This does *not* set the DOCTYPE
+        token's |[=force-quirks flag=]| to *on*.)
   </dl>
 
 #### <dfn id="tokenizer-bogus-doctype-state">Bogus DOCTYPE state</dfn> #### {#bogus-doctype-state}
@@ -3414,16 +3399,14 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+003E GREATER-THAN SIGN (&gt;)
+    :: Switch to the [=data state=]. Emit the DOCTYPE token.
 
-  : U+003E GREATER-THAN SIGN (&gt;)
-  :: Switch to the [=data state=]. Emit the DOCTYPE token.
+    : EOF
+    :: Emit the DOCTYPE token. Emit an end-of-file token.
 
-  : EOF
-  :: Emit the DOCTYPE token. Emit an end-of-file token.
-
-  : Anything else
-  :: Ignore the character.
-
+    : Anything else
+    :: Ignore the character.
   </dl>
 
 #### <dfn id="tokenizer-cdata-section-state">CDATA section state</dfn> #### {#CDATA-section-state}
@@ -3431,44 +3414,48 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+005D RIGHT SQUARE BRACKET (])
+    :: Switch to the [=CDATA section bracket state=].
 
-  : U+005D RIGHT SQUARE BRACKET (])
-  :: Switch to the [[#CDATA-section-bracket-state]].
+    : EOF
+    :: [=Parse error=]. Emit an end-of-file token.
 
-  : EOF
-  :: [=Parse error=]. Emit an end-of-file token.
+    : Anything else
+    :: Emit the [=current input character=] as a character token.
+  </dl>
 
-  : Anything else
-  :: Emit the [=current input character=] as a character token.
-
-    <p class="note">U+0000 NULL characters are handled in the tree construction stage, as part of the [[#the-rules-for-parsing-tokens-in-foreign-content|in foreign content]] insertion mode, which is the only place where CDATA sections can appear.</p>
+  <p class="note">U+0000 NULL characters are handled in the tree construction stage, as part of
+  the [[#the-rules-for-parsing-tokens-in-foreign-content|in foreign content]] insertion mode,
+  which is the only place where CDATA sections can appear.</p>
 
 #### <dfn id="tokenizer-cdata-section-bracket-state">CDATA section bracket state</dfn> #### {#CDATA-section-bracket-state}
 
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+005D RIGHT SQUARE BRACKET (])
+    :: Switch to the [=CDATA section end state=].
 
-  : U+005D RIGHT SQUARE BRACKET (])
-  :: Switch to the [[#CDATA-section-end-state]].
-
-  : Anything else
-  :: Emit a U+005D RIGHT SQUARE BRACKET character token. [=Reconsume=] in the [=CDATA section state=]
+    : Anything else
+    :: Emit a U+005D RIGHT SQUARE BRACKET character token. [=Reconsume=] in the
+        [=CDATA section state=]
+  </dl>
 
 #### <dfn id="tokenizer-cdata-section-end-state">CDATA section end state</dfn> #### {#CDATA-section-end-state}
 
   Consume the [=next input character=]:
 
   <dl class="switch">
+    : U+005D RIGHT SQUARE BRACKET (])
+    :: Emit a U+005D RIGHT SQUARE BRACKET character token.
 
-  : U+005D RIGHT SQUARE BRACKET (])
-  :: Emit a U+005D RIGHT SQUARE BRACKET character token.
+    : U+003E GREATER-THAN SIGN (&gt;)
+    :: Switch to the [=data state=].
 
-  : U+003E GREATER-THAN SIGN (&gt;)
-  :: Switch to the [=data state=].
-
-  : Anything else
-  :: Emit two U+005D RIGHT SQUARE BRACKET character tokens. [=Reconsume=] in the [=CDATA section state=]
+    : Anything else
+    :: Emit two U+005D RIGHT SQUARE BRACKET character tokens. [=Reconsume=] in the
+        [=CDATA section state=]
+  </dl>
 
 #### <dfn id="tokenizer-character-reference-state">Character reference state</dfn> #### {#character-reference-state}
 
@@ -3477,40 +3464,56 @@
   Consume the [=next input character=]:
 
   <dl class="switch">
-  : U+0009 CHARACTER TABULATION (tab)
-  : U+000A LINE FEED (LF)
-  : U+000C FORM FEED (FF)
-  : U+0020 SPACE
-  : U+003C LESS-THAN SIGN
-  : U+0026 AMPERSAND
-  : EOF
-  :: [=Reconsume=] in the [[#character-reference-end-state]].
+    : U+0009 CHARACTER TABULATION (tab)
+    : U+000A LINE FEED (LF)
+    : U+000C FORM FEED (FF)
+    : U+0020 SPACE
+    : U+003C LESS-THAN SIGN
+    : U+0026 AMPERSAND
+    : EOF
+    :: [=Reconsume=] in the [=character reference end state=].
 
-  : U+0023 NUMBER SIGN (#)
-  :: Append the [=current input character=] to the |[=temporary buffer=]|. Switch to the [[#numeric-character-reference-state]].
+    : U+0023 NUMBER SIGN (#)
+    :: Append the [=current input character=] to the |[=temporary buffer=]|. Switch to the
+        [=numeric character reference state=].
 
-  : Anything else
-  :: Consume the maximum number of characters possible, with the consumed characters matching one of the identifiers in the first column of the [[#named-character-references]] table (in a [=case-sensitive=] manner). Append each character to the |[=temporary buffer=]| when it's consumed.
+    : Anything else
+    :: Consume the maximum number of characters possible, with the consumed characters matching one
+        of the identifiers in the first column of the [[#named-character-references]] table (in a
+        [=case-sensitive=] manner). Append each character to the |[=temporary buffer=]| when it's
+        consumed.
 
-        If no match can be made and the |[=temporary buffer=]| consists of a U+0026 AMPERSAND character (&) followed by a sequence of one or more [=alphanumeric ASCII characters=] and a U+003B SEMICOLON character (;), then this is a [=parse errors=].
+        If no match can be made and the |[=temporary buffer=]| consists of a U+0026 AMPERSAND
+        character (&) followed by a sequence of one or more [=alphanumeric ASCII characters=] and a
+        U+003B SEMICOLON character (;), then this is a [=parse error=].
 
-        If no match can be made, switch to the [[#character-reference-end-state]].
+        If no match can be made, switch to the [=character reference end state=].
 
-        If the character reference was consumed as part of an attribute (|[=return state=]| is either [=attribute value (double-quoted) state=], [=attribute value (single-quoted) state=] or [=attribute value (unquoted) state=]), and the last character matched is not a U+003B SEMICOLON character (;), and the [=next input character=] is either a U+003D EQUALS SIGN character (=) or an [=alphanumeric ASCII character=], then, for historical reasons, switch to the [[#character-reference-end-state]].
+        If the character reference was consumed as part of an attribute (|[=return state=]| is
+        either [=attribute value (double-quoted) state=], [=attribute value (single-quoted) state=]
+        or [=attribute value (unquoted) state=]), and the last character matched is not a U+003B
+        SEMICOLON character (;), and the [=next input character=] is either a U+003D EQUALS SIGN
+        character (=) or an [=alphanumeric ASCII character=], then, for historical reasons, switch
+        to the [=character reference end state=].
 
-        If the last character matched is not a U+003B SEMICOLON character (;), this is a [=parse errors=].
+        If the last character matched is not a U+003B SEMICOLON character (;), this is a
+        [=parse error=].
 
-        Set the |[=temporary buffer=]| to the empty string. Append one or two characters corresponding to the character reference name (as given by the second column of the [[#named-character-references]] table) to the |[=temporary buffer=]|.
+        Set the |[=temporary buffer=]| to the empty string. Append one or two characters
+        corresponding to the character reference name (as given by the second column of the
+        [[#named-character-references]] table) to the |[=temporary buffer=]|.
 
-        Switch to the [[#character-reference-end-state]].
+        Switch to the [=character reference end state=].
 
         <div class="example">
+          If the markup contains (not in an attribute) the string `I'm &amp;notit; I tell you`, the
+          character reference is parsed as "not", as in, `I'm ¬it; I tell you` (and this is a parse
+          error). But if the markup was `I'm &amp;notin; I tell you`, the character reference would
+          be parsed as "notin;", resulting in `I'm ∉ I tell you` (and no parse error).
 
-          If the markup contains (not in an attribute) the string <code>I'm &amp;notit; I tell you</code>, the character reference is parsed as "not", as in, <code>I'm ¬it; I tell you</code> (and this is a parse error). But if the markup was <code>I'm &amp;notin; I tell you</code>, the character reference would be parsed as "notin;", resulting in <code>I'm ∉ I tell you</code> (and no parse error).
-
-          However, if the markup contains the string <code>I'm &amp;notit; I tell you</code> in an attribute, no character reference is parsed and string remains intact (and there is no parse error).
+          However, if the markup contains the string `I'm &amp;notit; I tell you` in an attribute,
+          no character reference is parsed and string remains intact (and there is no parse error).
         </div>
-
   </dl>
 
 #### <dfn id="tokenizer-numeric-character-reference-state">Numeric character reference state</dfn> #### {#numeric-character-reference-state}
@@ -3522,10 +3525,11 @@
   <dl class="switch">
     : U+0078 LATIN SMALL LETTER X
     : U+0058 LATIN CAPITAL LETTER X
-    :: Append the [=current input character=] to the |[=temporary buffer=]|. Switch to the [[#hexadecimal-character-reference-start-state]].
+    :: Append the [=current input character=] to the |[=temporary buffer=]|. Switch to the
+        [=hexadecimal character reference start state=].
 
     : Anything else
-    :: [=Reconsume=] in the [[#decimal-character-reference-start-state]].
+    :: [=Reconsume=] in the [=decimal character reference start state=].
   </dl>
 
 #### <dfn id="tokenizer-hexadecimal-character-reference-start-state">Hexadecimal character reference start state</dfn> #### {#hexadecimal-character-reference-start-state}
@@ -3534,10 +3538,10 @@
 
   <dl class="switch">
     : [=ASCII hex digit=]
-    :: [=Reconsume=] in the [[#hexadecimal-character-reference-state]].
+    :: [=Reconsume=] in the [=hexadecimal character reference state=].
 
     : Anything else
-    :: [=Parse error=]. [=Reconsume=] in the [[#character-reference-end-state]].
+    :: [=Parse error=]. [=Reconsume=] in the [=character reference end state=].
   </dl>
 
 #### <dfn id="tokenizer-decimal-character-reference-start-state">Decimal character reference start state</dfn> #### {#decimal-character-reference-start-state}
@@ -3546,10 +3550,10 @@
 
   <dl class="switch">
     : [=ASCII digit=]
-    :: [=Reconsume=] in the [[#decimal-character-reference-state]].
+    :: [=Reconsume=] in the [=decimal character reference state=].
 
     : Anything else
-    :: [=Parse error=]. [=Reconsume=] in the [[#character-reference-end-state]].
+    :: [=Parse error=]. [=Reconsume=] in the [=character reference end state=].
   </dl>
 
 #### <dfn id="tokenizer-hexadecimal-character-reference-state">Hexadecimal character reference state</dfn> #### {#hexadecimal-character-reference-state}
@@ -3558,19 +3562,25 @@
 
   <dl class="switch">
     : [=Uppercase ASCII hex digit=]
-    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the [=current input character=] as a hexademical digit (subtract 0x0037 from the character's code point) to the |[=character reference code=]|.
+    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the
+        [=current input character=] as a hexademical digit (subtract 0x0037 from the character's
+        code point) to the |[=character reference code=]|.
 
     : [=Lowercase ASCII hex digit=]
-    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the [=current input character=] as a hexademical digit (subtract 0x0057 from the character's code point) to the |[=character reference code=]|.
+    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the
+        [=current input character=] as a hexademical digit (subtract 0x0057 from the character's
+        code point) to the |[=character reference code=]|.
 
     : [=ASCII digit=]
-    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the [=current input character=] (subtract 0x0030 from the character's code point) to the |[=character reference code=]|.
+    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the
+        [=current input character=] (subtract 0x0030 from the character's code point) to the
+        |[=character reference code=]|.
 
     : U+003B SEMICOLON character (;)
-    :: Switch to the [[#numeric-character-reference-end-state]].
+    :: Switch to the [=numeric character reference end state=].
 
     : Anything else
-    :: [=Parse error=]. [=Reconsume=] in the [[#numeric-character-reference-end-state]].
+    :: [=Parse error=]. [=Reconsume=] in the [=numeric character reference end state=].
   </dl>
 
 #### <dfn id="tokenizer-decimal-character-reference-state">Decimal character reference state</dfn> #### {#decimal-character-reference-state}
@@ -3579,72 +3589,71 @@
 
   <dl class="switch">
     : [=ASCII digit=]
-    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the [=current input character=] (subtract 0x0030 from the character's code point) to the |[=character reference code=]|.
+    :: Multiply the |[=character reference code=]| by 16. Add a numeric version of the
+        [=current input character=] (subtract 0x0030 from the character's code point) to the
+        |[=character reference code=]|.
 
     : U+003B SEMICOLON character (;)
-    :: Switch to the [[#numeric-character-reference-end-state]].
+    :: Switch to the [=numeric character reference end state=].
 
     : Anything else
-    :: [=Parse error=]. [=Reconsume=] in the [[#numeric-character-reference-end-state]].
+    :: [=Parse error=]. [=Reconsume=] in the [=numeric character reference end state=].
   </dl>
 
 #### <dfn id="tokenizer-numeric-character-reference-end-state">Numeric character reference end state</dfn> #### {#numeric-character-reference-end-state}
 
-    Check the |[=character reference code=]|.
+  Check the |[=character reference code=]|.
 
-    If that number is one of the numbers in the first column of the following table, then this is
-    a [=parse errors=]. Find the row with that number in the first column, and set the
-    |[=character reference code=]| to the number in the second column of that row.
+  If that number is one of the numbers in the first column of the following table, then this is a
+  [=parse error=]. Find the row with that number in the first column, and set the
+  |[=character reference code=]| to the number in the second column of that row.
 
-    <table>
-      <thead>
-      <tr><th>Number <th colspan=2>Unicode character
-      <tbody>
-      <tr><td>0x00 <td>U+FFFD <td>REPLACEMENT CHARACTER
+  <table>
+  <thead>
+  <tr><th>Number <th colspan=2>Unicode character
+  <tbody>
+  <tr><td>0x00 <td>U+FFFD <td>REPLACEMENT CHARACTER
+  <tr><td>0x80 <td>U+20AC <td>EURO SIGN (&#x20AC;)
+  <tr><td>0x82 <td>U+201A <td>SINGLE LOW-9 QUOTATION MARK (&#x201A;)
+  <tr><td>0x83 <td>U+0192 <td>LATIN SMALL LETTER F WITH HOOK (&#x0192;)
+  <tr><td>0x84 <td>U+201E <td>DOUBLE LOW-9 QUOTATION MARK (&#x201E;)
+  <tr><td>0x85 <td>U+2026 <td>HORIZONTAL ELLIPSIS (&#x2026;)
+  <tr><td>0x86 <td>U+2020 <td>DAGGER (&#x2020;)
+  <tr><td>0x87 <td>U+2021 <td>DOUBLE DAGGER (&#x2021;)
+  <tr><td>0x88 <td>U+02C6 <td>MODIFIER LETTER CIRCUMFLEX ACCENT (&#x02C6;)
+  <tr><td>0x89 <td>U+2030 <td>PER MILLE SIGN (&#x2030;)
+  <tr><td>0x8A <td>U+0160 <td>LATIN CAPITAL LETTER S WITH CARON (&#x0160;)
+  <tr><td>0x8B <td>U+2039 <td>SINGLE LEFT-POINTING ANGLE QUOTATION MARK (&#x2039;)
+  <tr><td>0x8C <td>U+0152 <td>LATIN CAPITAL LIGATURE OE (&#x0152;)
+  <tr><td>0x8E <td>U+017D <td>LATIN CAPITAL LETTER Z WITH CARON (&#x017D;)
+  <tr><td>0x91 <td>U+2018 <td>LEFT SINGLE QUOTATION MARK (&#x2018;)
+  <tr><td>0x92 <td>U+2019 <td>RIGHT SINGLE QUOTATION MARK (&#x2019;)
+  <tr><td>0x93 <td>U+201C <td>LEFT DOUBLE QUOTATION MARK (&#x201C;)
+  <tr><td>0x94 <td>U+201D <td>RIGHT DOUBLE QUOTATION MARK (&#x201D;)
+  <tr><td>0x95 <td>U+2022 <td>BULLET (&#x2022;)
+  <tr><td>0x96 <td>U+2013 <td>EN DASH (&#x2013;)
+  <tr><td>0x97 <td>U+2014 <td>EM DASH (&#x2014;)
+  <tr><td>0x98 <td>U+02DC <td>SMALL TILDE (&#x02DC;)
+  <tr><td>0x99 <td>U+2122 <td>TRADE MARK SIGN (&#x2122;)
+  <tr><td>0x9A <td>U+0161 <td>LATIN SMALL LETTER S WITH CARON (&#x0161;)
+  <tr><td>0x9B <td>U+203A <td>SINGLE RIGHT-POINTING ANGLE QUOTATION MARK (&#x203A;)
+  <tr><td>0x9C <td>U+0153 <td>LATIN SMALL LIGATURE OE (&#x0153;)
+  <tr><td>0x9E <td>U+017E <td>LATIN SMALL LETTER Z WITH CARON (&#x017E;)
+  <tr><td>0x9F <td>U+0178 <td>LATIN CAPITAL LETTER Y WITH DIAERESIS (&#x0178;)
+  </table>
 
-      <tr><td>0x80 <td>U+20AC <td>EURO SIGN (&#x20AC;)
+  If the number is in the range 0xD800 to 0xDFFF or is greater than 0x10FFFF, then this is a
+  [=parse error=]. Set the |[=character reference code=]| to 0xFFFD.
 
-      <tr><td>0x82 <td>U+201A <td>SINGLE LOW-9 QUOTATION MARK (&#x201A;)
-      <tr><td>0x83 <td>U+0192 <td>LATIN SMALL LETTER F WITH HOOK (&#x0192;)
-      <tr><td>0x84 <td>U+201E <td>DOUBLE LOW-9 QUOTATION MARK (&#x201E;)
-      <tr><td>0x85 <td>U+2026 <td>HORIZONTAL ELLIPSIS (&#x2026;)
-      <tr><td>0x86 <td>U+2020 <td>DAGGER (&#x2020;)
-      <tr><td>0x87 <td>U+2021 <td>DOUBLE DAGGER (&#x2021;)
-      <tr><td>0x88 <td>U+02C6 <td>MODIFIER LETTER CIRCUMFLEX ACCENT (&#x02C6;)
-      <tr><td>0x89 <td>U+2030 <td>PER MILLE SIGN (&#x2030;)
-      <tr><td>0x8A <td>U+0160 <td>LATIN CAPITAL LETTER S WITH CARON (&#x0160;)
-      <tr><td>0x8B <td>U+2039 <td>SINGLE LEFT-POINTING ANGLE QUOTATION MARK (&#x2039;)
-      <tr><td>0x8C <td>U+0152 <td>LATIN CAPITAL LIGATURE OE (&#x0152;)
+  If the number is in the range 0x0001 to 0x0008, 0x000D to 0x001F,  0x007F  to 0x009F, 0xFDD0 to
+  0xFDEF, or is one of 0x000B, 0xFFFE, 0xFFFF, 0x1FFFE, 0x1FFFF, 0x2FFFE, 0x2FFFF, 0x3FFFE, 0x3FFFF,
+  0x4FFFE, 0x4FFFF, 0x5FFFE, 0x5FFFF, 0x6FFFE, 0x6FFFF, 0x7FFFE, 0x7FFFF, 0x8FFFE, 0x8FFFF, 0x9FFFE,
+  0x9FFFF, 0xAFFFE, 0xAFFFF, 0xBFFFE, 0xBFFFF, 0xCFFFE, 0xCFFFF, 0xDFFFE, 0xDFFFF, 0xEFFFE, 0xEFFFF,
+  0xFFFFE, 0xFFFFF, 0x10FFFE, or 0x10FFFF, then this is a [=parse error=].
 
-      <tr><td>0x8E <td>U+017D <td>LATIN CAPITAL LETTER Z WITH CARON (&#x017D;)
-
-      <tr><td>0x91 <td>U+2018 <td>LEFT SINGLE QUOTATION MARK (&#x2018;)
-      <tr><td>0x92 <td>U+2019 <td>RIGHT SINGLE QUOTATION MARK (&#x2019;)
-      <tr><td>0x93 <td>U+201C <td>LEFT DOUBLE QUOTATION MARK (&#x201C;)
-      <tr><td>0x94 <td>U+201D <td>RIGHT DOUBLE QUOTATION MARK (&#x201D;)
-      <tr><td>0x95 <td>U+2022 <td>BULLET (&#x2022;)
-      <tr><td>0x96 <td>U+2013 <td>EN DASH (&#x2013;)
-      <tr><td>0x97 <td>U+2014 <td>EM DASH (&#x2014;)
-      <tr><td>0x98 <td>U+02DC <td>SMALL TILDE (&#x02DC;)
-      <tr><td>0x99 <td>U+2122 <td>TRADE MARK SIGN (&#x2122;)
-      <tr><td>0x9A <td>U+0161 <td>LATIN SMALL LETTER S WITH CARON (&#x0161;)
-      <tr><td>0x9B <td>U+203A <td>SINGLE RIGHT-POINTING ANGLE QUOTATION MARK (&#x203A;)
-      <tr><td>0x9C <td>U+0153 <td>LATIN SMALL LIGATURE OE (&#x0153;)
-
-      <tr><td>0x9E <td>U+017E <td>LATIN SMALL LETTER Z WITH CARON (&#x017E;)
-      <tr><td>0x9F <td>U+0178 <td>LATIN CAPITAL LETTER Y WITH DIAERESIS (&#x0178;)
-    </table>
-
-    If the number is in the range 0xD800 to 0xDFFF or is greater
-    than 0x10FFFF, then this is a [=parse errors=]. Set the |[=character reference code=]| to 0xFFFD.
-
-    If the number is in the range 0x0001 to 0x0008,    0x000D to 0x001F,  0x007F  to 0x009F, 0xFDD0 to 0xFDEF, or is
-    one of 0x000B, 0xFFFE, 0xFFFF, 0x1FFFE, 0x1FFFF, 0x2FFFE, 0x2FFFF, 0x3FFFE, 0x3FFFF, 0x4FFFE,
-    0x4FFFF, 0x5FFFE, 0x5FFFF, 0x6FFFE, 0x6FFFF, 0x7FFFE, 0x7FFFF, 0x8FFFE, 0x8FFFF, 0x9FFFE,
-    0x9FFFF, 0xAFFFE, 0xAFFFF, 0xBFFFE, 0xBFFFF, 0xCFFFE, 0xCFFFF, 0xDFFFE, 0xDFFFF, 0xEFFFE,
-    0xEFFFF, 0xFFFFE, 0xFFFFF, 0x10FFFE, or 0x10FFFF, then this is a [=parse errors=].
-
-    Set the |[=temporary buffer=]| to the empty string. Append the Unicode character with code point equal to the |[=character reference code=]| to the |[=temporary buffer=]|. Switch to the [[#character-reference-end-state]].
+  Set the |[=temporary buffer=]| to the empty string. Append the Unicode character with code point
+  equal to the |[=character reference code=]| to the |[=temporary buffer=]|. Switch to the
+  [=character reference end state=].
 
 #### <dfn id="tokenizer-character-reference-end-state">Character reference end state</dfn> #### {#character-reference-end-state}
 
@@ -3656,10 +3665,12 @@
     : [=attribute value (double-quoted) state=]
     : [=attribute value (single-quoted) state=]
     : [=attribute value (unquoted) state=]
-    :: Append each character in the |[=temporary buffer=]| (in the order they were added to the buffer) to the current attribute's value.
+    :: Append each character in the |[=temporary buffer=]| (in the order they were added to the
+        buffer) to the current attribute's value.
 
     : Anything else
-    :: For each of the characters in the |[=temporary buffer=]| (in the order they were added to the buffer), emit the character as a character token.
+    :: For each of the characters in the |[=temporary buffer=]| (in the order they were added to the
+        buffer), emit the character as a character token.
   </dl>
 
   [=Reconsume=] in the |[=return state=]|.
@@ -3668,210 +3679,179 @@
 
   The input to the tree construction stage is a sequence of tokens from the
   [[#tokenization|tokenization]] stage. The tree construction stage is associated with a DOM
-  <code>Document</code> object when a parser is created. The "output" of this stage consists of
-  dynamically modifying or extending that document's DOM tree.
+  {{Document}} object when a parser is created. The "output" of this stage consists of dynamically
+  modifying or extending that document's DOM tree.
 
-  This specification does not define when an interactive user agent has to render the
-  <code>Document</code> so that it is available to the user, or when it has to begin accepting user
-  input.
+  This specification does not define when an interactive user agent has to render the {{Document}}
+  so that it is available to the user, or when it has to begin accepting user input.
 
   ---
 
-  As each token is emitted from the tokenizer, the user agent must follow the appropriate steps
-  from the following list, known as the <dfn>tree construction dispatcher</dfn>:
+  As each token is emitted from the tokenizer, the user agent must follow the appropriate steps from
+  the following list, known as the <dfn>tree construction dispatcher</dfn>:
 
   <dl class="switch">
+    : If the [=stack of open elements=] is empty
+    : If the [=adjusted current node=] is an element in the [=HTML namespace=]
+    : If the [=adjusted current node=] is a [=MathML text integration point=] and the token is a
+        start tag whose tag name is neither "mglyph" nor "malignmark"
+    : If the [=adjusted current node=] is a [=MathML text integration point=] and the token is a
+        character token
+    : If the [=adjusted current node=] is a MathML <{annotation-xml}> element and the token is a
+        start tag whose tag name is "svg"
+    : If the [=adjusted current node=] is an [=HTML integration point=] and the token is a start tag
+    : If the [=adjusted current node=] is an [=HTML integration point=] and the token is a character
+        token
+    : If the token is an end-of-file token
+    :: Process the token according to the rules given in the section corresponding to the current
+        [=insertion mode=] in HTML content.
 
-  : If the [=stack of open elements=] is empty
-  : If the [=adjusted current node=] is an element in the [=HTML namespace=]
-  : If the [=adjusted current node=] is a [=MathML text integration point=] and the token is a start tag whose tag name is neither "mglyph" nor "malignmark"
-  : If the [=adjusted current node=] is a [=MathML text integration point=] and the token is a character token
-  : If the [=adjusted current node=] is a <a>MathML <code>annotation-xml</code></a> element and the token is a start tag whose tag name is "svg"
-  : If the [=adjusted current node=] is an [=HTML integration point=] and the token is a start tag
-  : If the [=adjusted current node=] is an [=HTML integration point=] and the token is a character token
-  : If the token is an end-of-file token
-
-  :: Process the token according to the rules given in the section corresponding to the current
-      [=insertion mode=] in HTML content.
-
-  : Otherwise
-
-  :: Process the token according to the rules given in the section for parsing tokens [=in foreign content=].
-
+    : Otherwise
+    :: Process the token according to the rules given in the section for parsing tokens
+        [=in foreign content=].
   </dl>
 
-  The <dfn>next token</dfn> is the token that is about to be processed by the <a>tree
-  construction dispatcher</a> (even if the token is subsequently just ignored).
+  The <dfn>next token</dfn> is the token that is about to be processed by the
+  [=tree construction dispatcher=] (even if the token is subsequently just ignored).
 
-  A node is a <dfn>MathML text integration point</dfn> if it is one of the following
-  elements:
+  A node is a <dfn>MathML text integration point</dfn> if it is one of the following elements:
 
   <ul class="brief">
-    <li>A <a>MathML <code>mi</code></a> element</li>
-    <li>A <a>MathML <code>mo</code></a> element</li>
-    <li>A <a>MathML <code>mn</code></a> element</li>
-    <li>A <a>MathML <code>ms</code></a> element</li>
-    <li>A <a>MathML <code>mtext</code></a> element</li>
+    * A MathML <{mi}> element
+    * A MathML <{mo}> element
+    * A MathML <{mn}> element
+    * A MathML <{ms}> element
+    * A MathML <{mtext}> element
   </ul>
 
   A node is an <dfn>HTML integration point</dfn> if it is one of the following elements:
 
   <ul class="brief">
-    <li>A <a>MathML <code>annotation-xml</code></a> element whose
-    start tag token had an attribute with the name "encoding" whose value was
-    an [=ASCII case-insensitive=] match for the string "<code>[[#text-html|text/html]]</code>"</li>
-    <li>A <a>MathML <code>annotation-xml</code></a> element whose
-    start tag token had an attribute with the name "encoding" whose value was
-    an [=ASCII case-insensitive=] match for the string "<code>application/xhtml+xml</code>"</li>
-    <li>An SVG <{foreignObject}> element</li>
-    <li>An SVG <{desc}> element</li>
-    <li>An SVG <a element for="svg"><code>title</code></a> element</li>
+    * A MathML <{annotation-xml}> element whose start tag token had an attribute with the name
+        "encoding" whose value was an [=ASCII case-insensitive=] match for the string
+        "`[[#text-html|text/html]]`"
+    * A MathML <{annotation-xml}> element whose start tag token had an attribute with the name
+        "encoding" whose value was an [=ASCII case-insensitive=] match for the string
+        "`application/xhtml+xml`"
+    * An SVG <{foreignObject}> element
+    * An SVG <{desc}> element
+    * An SVG <a element for="svg"><code>title</code></a> element
   </ul>
 
-  <p class="note">
-  If the node in question is the [=context=] element passed to the <a>HTML fragment
-  parsing algorithm</a>, then the start tag token for that element is the "fake" token created
-  during by that [=HTML fragment parsing algorithm=].
-  </p>
+  <p class="note">If the node in question is the [=context=] element passed to the
+  [=HTML fragment parsing algorithm=], then the start tag token for that element is the "fake" token
+  created during by that [=HTML fragment parsing algorithm=].</p>
 
   ---
 
-  <p class="note">
-  Not all of the tag names mentioned below are conformant tag names in this
+  <p class="note">Not all of the tag names mentioned below are conformant tag names in this
   specification; many are included to handle legacy content. They still form part of the algorithm
-  that implementations are required to implement to claim conformance.
-  </p>
+  that implementations are required to implement to claim conformance.</p>
 
-  <p class="note">
-  The algorithm described below places no limit on the depth of the DOM tree
-  generated, or on the length of tag names, attribute names, attribute values, {{Text}}
-  nodes, etc. While implementors are encouraged to avoid arbitrary limits, it is recognized that [=practical concerns=] will likely force user agents to impose nesting
-  depth constraints.
-  </p>
+  <p class="note">The algorithm described below places no limit on the depth of the DOM tree
+  generated, or on the length of tag names, attribute names, attribute values, {{Text}} nodes, etc.
+  While implementors are encouraged to avoid arbitrary limits, it is recognized that
+  [=practical concerns=] will likely force user agents to impose nesting depth constraints.</p>
 
 #### Creating and inserting nodes #### {#creating-and-inserting-nodes}
 
-  While the parser is processing a token, it can enable or disable <dfn lt="foster parent|foster parented|foster parenting">foster parenting</dfn>. This affects the following algorithm.
+  While the parser is processing a token, it can enable or disable <dfn>foster parenting</dfn>. This
+  affects the following algorithm.
 
   The <dfn>appropriate place for inserting a node</dfn>, optionally using a particular
   |override target|, is the position in an element returned by running the following steps:
 
-  <ol>
+  1. If there was an |override target| specified, then let |target| be the |override target|.
 
-    <li>
+      Otherwise, let |target| be the [=current node=].
+  2. Determine the |adjusted insertion location| using the first matching steps from the following
+      list:
 
-    If there was an |override target| specified, then let |target| be the
-    |override target|.
+      <dl class="switch">
+        : If [=foster parenting=] is enabled and |target| is a <{table}>, <{tbody}>, <{tfoot}>,
+            <{thead}>, or <{tr}> element
+        :: <p class="note">Foster parenting happens when content is misnested in tables.</p>
 
-    Otherwise, let |target| be the [=current node=].
+            Run these substeps:
 
-    </li>
+            1. Let |last template| be the last <{template}> element in the
+                [=stack of open elements=], if any.
+            2. Let |last table| be the last <{table}> element in the [=stack of open elements=], if
+                any.
+            3. If there is a |last template| and either there is no |last table|, or there is one,
+                but |last template| is lower (more recently added) than |last table| in the
+                [=stack of open elements=], then: let |adjusted insertion location| be inside
+                |last template|'s [=template contents=], after its last child (if any), and abort
+                these substeps.
+            4. If there is no |last table|, then let |adjusted insertion location| be inside the
+                first element in the [=stack of open elements=] (the <{html}> element), after its
+                last child (if any), and abort these substeps. ([=fragment case=])
+            5. If |last table| has a parent node, then let |adjusted insertion location| be inside
+                |last table|'s parent node, immediately before |last table|, and abort these
+                substeps.
+            6. Let |previous element| be the element immediately above |last table| in the
+                [=stack of open elements=].
+            7. Let |adjusted insertion location| be inside |previous element|, after its last child
+                (if any).
 
-    <li>
+            <p class="note">These steps are involved in part because it's possible for elements, the
+            <{table}> element in this case in particular, to have been moved by a script around in
+            the DOM, or indeed removed from the DOM entirely, after the element was inserted by the
+            parser.</p>
 
-    Determine the |adjusted insertion location| using the first matching steps
-    from the following list:
+        : Otherwise
+        :: Let |adjusted insertion location| be inside |target|, after its last child (if any).
 
-    <dl class="switch">
-
-    : If [=foster parenting=] is enabled and |target| is a <{table}>, <{tbody}>, <{tfoot}>,
-        <{thead}>, or <{tr}> element
-
-    :: <p class="note">Foster parenting happens when content is misnested in tables.</p>
-
-        Run these substeps:
-
-        <ol>
-
-          <li>Let |last template| be the last <{template}> element in the
-          [=stack of open elements=], if any.
-
-          <li>Let |last table| be the last <{table}> element in the
-          [=stack of open elements=], if any.
-
-          <li>If there is a |last template| and either there is no |last table|, or there is one, but |last template| is lower
-          (more recently added) than |last table| in the <a>stack of open
-          elements</a>, then: let |adjusted insertion location| be inside |last template|'s [=template contents=], after its last child (if any),
-          and abort these substeps.</li>
-
-          <li>If there is no |last table|,  then let |adjusted insertion
-          location| be inside the first element in the [=stack of open elements=] (the
-          <{html}> element), after its last child (if any), and abort these substeps.
-          ([=fragment case=])
-
-          <li>If |last table| has a parent node, then let |adjusted insertion location| be inside |last table|'s parent
-          node, immediately before |last table|, and abort these
-          substeps.</li>
-
-          <li>Let |previous element| be the element immediately above |last table| in the [=stack of open elements=].</li>
-
-          <li>Let |adjusted insertion location| be inside |previous
-          element|, after its last child (if any).</li>
-
-        </ol>
-
-        <p class="note">These steps are involved in part because it's possible for elements, the
-        <{table}> element in this case in particular, to have been moved by a script around
-        in the DOM, or indeed removed from the DOM entirely, after the element was inserted by the
-        parser.</p>
-
-
-    : Otherwise
-
-    ::
-
-      Let |adjusted insertion location| be inside |target|,
-      after its last child (if any).
-
-      </dd>
-
-    </dl>
-
-    </li>
-
-    <li>
-
-    If the |adjusted insertion location| is inside a <code>template</code>
-    element, let it instead be inside the <{template}> element's [=template contents=], after its
-    last child (if any).
-
-    </li>
-
-    <li>
-
-    Return the |adjusted insertion location|.
-
-    </li>
-
-  </ol>
+      </dl>
+  3. If the |adjusted insertion location| is inside a <{template}> element, let it instead be
+      inside the <{template}> element's [=template contents=], after its last child (if any).
+  4. Return the |adjusted insertion location|.
 
   ---
 
-  When the steps below require the UA to <dfn lt="create an element for the token|create an element for a token|creating an element for the token">create an element for a token</dfn> in a particular |given namespace| and with a
-  particular |intended parent|, the UA must run the following steps:
+  When the steps below require the UA to
+  <dfn lt="create an element for the token">create an element for a token</dfn> in a particular
+  |given namespace| and with a particular |intended parent|, the UA must run the following steps:
 
   1. Let |document| be |intended parent|'s [=node document=].
   2. Let |local name| be the tag name of the token.
-  3. Let |is| be the value of the "<code>is</code>" attribute in the given token, if such an attribute exists, or null otherwise.
-  4. Let |definition| be the result of [=looking up a custom element definition=] given |document|, |given namespace|, |local name|, and |is|.
-  5. If |definition| is non-null and the parser was not originally created for the [=HTML fragment parsing algorithm=], then let |will execute script| be true. Otherwise, let it be false.
+  3. Let |is| be the value of the "`is`" attribute in the given token, if such an attribute exists,
+      or null otherwise.
+  4. Let |definition| be the result of [=looking up a custom element definition=] given |document|,
+      |given namespace|, |local name|, and |is|.
+  5. If |definition| is non-null and the parser was not originally created for the
+      [=HTML fragment parsing algorithm=], then let |will execute script| be true. Otherwise, let it
+      be false.
   6. If |will execute script| is true, then:
-    1. Increment |document|'s [=throw-on-dynamic-markup-insertion counter=].
-    2. If the [=JavaScript execution context stack=] is empty, then [=perform a microtask checkpoint=].
-    3. Push a new [=element queue=] onto the [=custom element reactions stack=].
-  7. Let |element| be the result of [=creating an element=] given |document|, |local name|, |given namespace|, null, and |is|. If |will execute script| is true, set the synchronous custom elements flag; otherwise, leave it unset.
-    <p class="note">This will cause [=custom element constructors=] to run, if will execute script is true. However, since we incremented the [=throw-on-dynamic-markup-insertion counter=], this cannot cause {{Document/write()|new characters to be inserted into the tokenizer}}, or {{Document/open()|the document to be blown away}}.</p>
+      1. Increment |document|'s [=throw-on-dynamic-markup-insertion counter=].
+      2. If the [=JavaScript execution context stack=] is empty, then
+          [=perform a microtask checkpoint=].
+      3. Push a new [=element queue=] onto the [=custom element reactions stack=].
+  7. Let |element| be the result of [=creating an element=] given |document|, |local name|,
+      |given namespace|, null, and |is|. If |will execute script| is true, set the synchronous
+      custom elements flag; otherwise, leave it unset.
+
+      <p class="note">This will cause [=custom element constructors=] to run, if will execute script
+      is true. However, since we incremented the [=throw-on-dynamic-markup-insertion counter=], this
+      cannot cause {{Document/write()|new characters to be inserted into the tokenizer}}, or
+      {{Document/open()|the document to be blown away}}.</p>
   8. [=Append=] each attribute in the given token to |element|.
-    <p class="note">This can [=enqueue a custom element callback reaction=] for the <code>attributeChangedCallback</code>, which might run immediately (in the next step).</p>
-    <p class="note">Even though the <code>is</code> attribute governs the [=create an element|creation=] of a [=customized built-in element=], it is not present during the execution of the relevant [=custom element constructor=]; it is appended in this step, along with all other attributes.</p>
+
+      <p class="note">This can [=enqueue a custom element callback reaction=] for the
+      `attributeChangedCallback`, which might run immediately (in the next step).</p>
+
+      <p class="note">Even though the `is` attribute governs the [=create an element|creation=] of a
+      [=customized built-in element=], it is not present during the execution of the relevant
+      [=custom element constructor=]; it is appended in this step, along with all other
+      attributes.</p>
   9. If |will execute script| is true, then:
-    1. Let |queue| be the result of popping the [=current element queue=] from the [=custom element reactions stack=]. (This will be the same [=element queue=] as was pushed above.)
-    2. [=Invoke custom element reactions=] in |queue|.
-    3. Decrement |document|'s [=throw-on-dynamic-markup-insertion counter=].
+      1. Let |queue| be the result of popping the [=current element queue=] from the [=custom element reactions stack=]. (This will be the same [=element queue=] as was pushed above.)
+      2. [=Invoke custom element reactions=] in |queue|.
+      3. Decrement |document|'s [=throw-on-dynamic-markup-insertion counter=].
   10. If |element| has an <{xmlns/xmlns}> attribute *in the
     [=XMLNS namespace=]* whose value is not exactly the same as the element's namespace,
-    that is a [=parse errors=]. Similarly, if |element| has an <{xlink/xlink|xmlns:xlink}> attribute in the [=XMLNS namespace=] whose value is not the
-    [=XLink namespace=], that is a [=parse errors=].
+    that is a [=parse error=]. Similarly, if |element| has an <{xlink/xlink|xmlns:xlink}> attribute in the [=XMLNS namespace=] whose value is not the
+    [=XLink namespace=], that is a [=parse error=].
   11. If |element| is a [=resettable element=],
     invoke its [=reset algorithm=]. (This initializes the
     element's <a for="forms">value</a> and <a for="forms">checkedness</a> based on the element's attributes.)
@@ -3893,7 +3873,7 @@
     <li>Let the |adjusted insertion location| be the <a>appropriate place for
     inserting a node</a>.</li>
 
-    <li>Let |element| be the result of [=creating an element for the token=] in the given namespace, with the intended
+    <li>Let |element| be the result of [=create an element for the token|creating an element for the token=] in the given namespace, with the intended
     parent being the element in which the |adjusted insertion location| finds
     itself.</li>
 
@@ -3926,7 +3906,7 @@
 
     <p class="note">
   If the |adjusted insertion location| cannot accept more
-    elements, e.g., because it's a <code>Document</code> that already has an element child, then |element| is dropped on the floor.
+    elements, e.g., because it's a {{Document}} that already has an element child, then |element| is dropped on the floor.
   </p>
 
     </li>
@@ -4058,11 +4038,11 @@
 
     <li>
 
-    If the |adjusted insertion location| is in a <code>Document</code> node,
+    If the |adjusted insertion location| is in a {{Document}} node,
     then abort these steps.
 
     <p class="note">
-  The DOM will not let <code>Document</code> nodes have {{Text}} node
+  The DOM will not let {{Document}} nodes have {{Text}} node
     children, so they are dropped on the floor.
 
     </li>
@@ -4225,7 +4205,7 @@
 
   : A comment token
   ::
-    [=Insert a comment=] as the last child of the <code>Document</code> object.
+    [=Insert a comment=] as the last child of the {{Document}} object.
     </dd>
 
   : A DOCTYPE token
@@ -4234,7 +4214,7 @@
     If the DOCTYPE token's name is not a [=case-sensitive=] match for the string "<code>html</code>", or the token's public identifier is not missing, or the token's system
     identifier is neither missing nor a [=case-sensitive=] match for the string
     "<a scheme><code>about:legacy-compat</code></a>", and none of the sets of conditions in the following list are
-    matched, then there is a [=parse errors=].
+    matched, then there is a [=parse error=].
 
     <ul>
 
@@ -4261,19 +4241,19 @@
     mode for another language (e.g., based on the DOCTYPE token a conformance checker could recognize
     that the document is an HTML 4.01-era document, and defer to an HTML 4.01 conformance checker.)
 
-    Append a <code>DocumentType</code> node to the <code>Document</code> node, with the <code>name</code> attribute set to the name given in the DOCTYPE token, or the empty string
+    Append a <code>DocumentType</code> node to the {{Document}} node, with the <code>name</code> attribute set to the name given in the DOCTYPE token, or the empty string
     if the name was missing; the <code>publicId</code> attribute set to the public
     identifier given in the DOCTYPE token, or the empty string if the public identifier was missing;
     the <code>systemId</code> attribute set to the system identifier given in the DOCTYPE
     token, or the empty string if the system identifier was missing; and the other attributes
     specific to <code>DocumentType</code> objects set to null and empty lists as appropriate.
-    Associate the <code>DocumentType</code> node with the <code>Document</code> object so that it is
+    Associate the <code>DocumentType</code> node with the {{Document}} object so that it is
     returned as the value of the <code>doctype</code> attribute of the
-    <code>Document</code> object.
+    {{Document}} object.
 
     Then, if the document is *not* <a lt="iframe srcdoc document">an <code>iframe</code>
     <code>srcdoc</code> document</a>, and the DOCTYPE token matches
-    one of the conditions in the following list, then set the <code>Document</code> to <a>quirks
+    one of the conditions in the following list, then set the {{Document}} to <a>quirks
     mode</a>:
 
     <ul class="brief">
@@ -4343,7 +4323,7 @@
     </ul>
 
     Otherwise, if the document is *not* <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>, and the DOCTYPE token matches one of
-    the conditions in the following list, then set the <code>Document</code> to <a>limited-quirks
+    the conditions in the following list, then set the {{Document}} to <a>limited-quirks
     mode</a>:
 
     <ul class="brief">
@@ -4365,7 +4345,7 @@
   : Anything else
   ::
 
-    If the document is *not* <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>, then this is a [=parse errors=]; set the <code>Document</code> to [=quirks mode=].
+    If the document is *not* <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a>, then this is a [=parse error=]; set the {{Document}} to [=quirks mode=].
 
     In any case, switch the [=insertion mode=] to "[=before html=]", then reprocess the token.
 
@@ -4716,7 +4696,7 @@
   ::
 
     If there is no <{template}> element on the [=stack of open elements=], then
-    this is a [=parse errors=]; ignore the token.
+    this is a [=parse error=]; ignore the token.
 
     Otherwise, run these steps:
 
@@ -4725,7 +4705,7 @@
       <li>[=Generate all implied end tags thoroughly=].</li>
 
       <li>If the [=current node=] is not a <{template}> element, then this is a
-      [=parse errors=].</li>
+      [=parse error=].</li>
 
       <li>Pop elements from the [=stack of open elements=] until a <code>template</code>
       element has been popped from the stack.</li>
@@ -5067,7 +5047,7 @@
       <{rtc}> element, a <{tbody}> element, a <{td}> element, a
       <{tfoot}> element, a <{th}> element, a <{thead}> element, a
       <{tr}> element, the <{body}> element, or the <{html}> element, then
-      this is a [=parse errors=].</li>
+      this is a [=parse error=].</li>
 
       <li><a lt="stops parsing">Stop parsing</a>.</li>
 
@@ -5078,7 +5058,7 @@
   : An end tag whose tag name is "body"
   ::
 
-    If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this is a [=parse errors=];
+    If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this is a [=parse error=];
     ignore the token.
 
     Otherwise, if there is a node in the [=stack of open elements=] that is not either a
@@ -5088,7 +5068,7 @@
     <{rtc}> element, a <{tbody}> element, a <{td}> element, a
     <{tfoot}> element, a <{th}> element, a <{thead}> element, a
     <{tr}> element, the <{body}> element, or the <{html}> element, then
-    this is a [=parse errors=].
+    this is a [=parse error=].
 
     Switch the [=insertion mode=] to "<a>after
     body</a>".
@@ -5098,7 +5078,7 @@
   : An end tag whose tag name is "html"
   ::
 
-    If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this is a [=parse errors=];
+    If the [=stack of open elements=] does not [=in scope|have a `body` element in scope=], this is a [=parse error=];
     ignore the token.
 
     Otherwise, if there is a node in the [=stack of open elements=] that is not either a
@@ -5108,7 +5088,7 @@
     <{rtc}> element, a <{tbody}> element, a <{td}> element, a
     <{tfoot}> element, a <{th}> element, a <{thead}> element, a
     <{tr}> element, the <{body}> element, or the <{html}> element, then
-    this is a [=parse errors=].
+    this is a [=parse error=].
 
     Switch the [=insertion mode=] to "<a>after
     body</a>".
@@ -5150,7 +5130,7 @@
     element</a>.
 
     If the [=current node=] is an [=HTML element=] whose
-    tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6", then this is a [=parse errors=]; pop the [=current node=] off the [=stack of open elements=].
+    tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6", then this is a [=parse error=]; pop the [=current node=] off the [=stack of open elements=].
 
     [=Insert an HTML element=] for the token.
 
@@ -5178,7 +5158,7 @@
 
     If the [=`form` element pointer=] is not null, and there is
     no <{template}> element on the [=stack of open elements=], then this is a
-    [=parse errors=]; ignore the token.
+    [=parse error=]; ignore the token.
 
     Otherwise:
 
@@ -5213,7 +5193,7 @@
         <li>[=Generate implied end tags=], except for <{li}> elements.</li>
 
         <li>If the [=current node=] is not an <{li}> element, then this is a
-        [=parse errors=].</li>
+        [=parse error=].</li>
 
         <li>Pop elements from the [=stack of open elements=] until an <code>li</code>
         element has been popped from the stack.</li>
@@ -5261,7 +5241,7 @@
         <li>[=Generate implied end tags=], except for <{dd}> elements.</li>
 
         <li>If the [=current node=] is not a <{dd}> element, then this is a
-        [=parse errors=].</li>
+        [=parse error=].</li>
 
         <li>Pop elements from the [=stack of open elements=] until a <code>dd</code>
         element has been popped from the stack.</li>
@@ -5281,7 +5261,7 @@
         <li>[=Generate implied end tags=], except for <{dt}> elements.</li>
 
         <li>If the [=current node=] is not a <{dt}> element, then this is a
-        [=parse errors=].</li>
+        [=parse error=].</li>
 
         <li>Pop elements from the [=stack of open elements=] until a <code>dt</code>
         element has been popped from the stack.</li>
@@ -5363,7 +5343,7 @@
     "ul"
   ::
 
-    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
 
     Otherwise, run these steps:
 
@@ -5373,7 +5353,7 @@
 
       <li>If the [=current node=] is not an [=HTML element=] with
       the same tag name as that of the token, then this is a
-      [=parse errors=].</li>
+      [=parse error=].</li>
 
       <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same tag name as the token has been popped from the
       stack.</li>
@@ -5397,12 +5377,12 @@
 
       <li>If |node| is null or if the [=stack of open elements=] does
       not [=in scope|have |node| in scope=], then
-      this is a [=parse errors=]; abort these steps and ignore the token.</li>
+      this is a [=parse error=]; abort these steps and ignore the token.</li>
 
       <li>[=Generate implied end tags=].</li>
 
       <li>If the [=current node=] is not |node|, then this is a
-      [=parse errors=].</li>
+      [=parse error=].</li>
 
       <li>Remove |node| from the [=stack of open elements=].</li>
 
@@ -5413,12 +5393,12 @@
 
     <ol>
 
-      <li>If the [=stack of open elements=] does not [=in scope|have a `form` element in scope=], then this is a [=parse errors=]; abort these steps and ignore the token.</li>
+      <li>If the [=stack of open elements=] does not [=in scope|have a `form` element in scope=], then this is a [=parse error=]; abort these steps and ignore the token.</li>
 
       <li>[=Generate implied end tags=].</li>
 
       <li>If the [=current node=] is not a <{form}> element, then this is a
-      [=parse errors=].</li>
+      [=parse error=].</li>
 
       <li>Pop elements from the [=stack of open elements=] until a <code>form</code>
       element has been popped from the stack.</li>
@@ -5430,7 +5410,7 @@
   : An end tag whose tag name is "p"
   ::
 
-    If the [=stack of open elements=] does not [=has a p element in button scope|have a `p` element in button scope=], then this is a [=parse errors=]; [=insert an HTML element=] for a "p" start tag token with no
+    If the [=stack of open elements=] does not [=has a p element in button scope|have a `p` element in button scope=], then this is a [=parse error=]; [=insert an HTML element=] for a "p" start tag token with no
     attributes.
 
     <a>Close a <code>p</code> element</a>.
@@ -5440,7 +5420,7 @@
   : An end tag whose tag name is "li"
   ::
 
-    If the [=stack of open elements=] does not <a>have an <code>li</code> element in list item scope</a>, then this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not <a>have an <code>li</code> element in list item scope</a>, then this is a [=parse error=]; ignore the token.
 
     Otherwise, run these steps:
 
@@ -5449,7 +5429,7 @@
       <li>[=Generate implied end tags=], except for <{li}> elements.</li>
 
       <li>If the [=current node=] is not an <{li}> element, then this is a
-      [=parse errors=].</li>
+      [=parse error=].</li>
 
       <li>Pop elements from the [=stack of open elements=] until an <code>li</code>
       element has been popped from the stack.</li>
@@ -5461,7 +5441,7 @@
   : An end tag whose tag name is one of: "dd", "dt"
   ::
 
-    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
 
     Otherwise, run these steps:
 
@@ -5470,7 +5450,7 @@
       <li>[=Generate implied end tags=], except for [=HTML elements=] with the
       same tag name as the token.</li>
 
-      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=].</li>
+      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=].</li>
 
       <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same tag name as the token has been popped from the
       stack.</li>
@@ -5483,7 +5463,7 @@
   ::
 
     If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] and whose tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6", then this is
-    a [=parse errors=]; ignore the token.
+    a [=parse error=]; ignore the token.
 
     Otherwise, run these steps:
 
@@ -5491,7 +5471,7 @@
 
       <li>[=Generate implied end tags=].</li>
 
-      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=].</li>
+      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=].</li>
 
       <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] whose tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6"
       has been popped from the stack.</li>
@@ -5511,7 +5491,7 @@
 
     If the [=list of active formatting elements=] contains an <{a}> element
     between the end of the list and the last [=marker=] on
-    the list (or the start of the list if there is no [=marker=] on the list), then this is a [=parse errors=]; run the [=adoption agency algorithm=] for the token, then remove
+    the list (or the start of the list if there is no [=marker=] on the list), then this is a [=parse error=]; run the [=adoption agency algorithm=] for the token, then remove
     that element from the [=list of active formatting elements=] and the <a>stack of
     open elements</a> if the [=adoption agency algorithm=] didn't already remove it (it
     might not have if the element is not <a>in table
@@ -5549,7 +5529,7 @@
 
     [=Reconstruct the active formatting elements=], if any.
 
-    If the [=stack of open elements=] [=in scope|has a `nobr` element in scope=], then this is a [=parse errors=]; run the
+    If the [=stack of open elements=] [=in scope|has a `nobr` element in scope=], then this is a [=parse error=]; run the
     [=adoption agency algorithm=] for the token, then once again
     [=Reconstruct the active formatting elements=], if any.
 
@@ -5583,7 +5563,7 @@
   : An end tag token whose tag name is one of: "applet", "marquee", "object"
   ::
 
-    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
 
     Otherwise, run these steps:
 
@@ -5591,7 +5571,7 @@
 
       <li>[=Generate implied end tags=].</li>
 
-      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=].</li>
+      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=].</li>
 
       <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same tag name as the token has been popped from the
       stack.</li>
@@ -5605,7 +5585,7 @@
   : A start tag whose tag name is "table"
   ::
 
-    If the <code>Document</code> is *not* set to [=quirks mode=], and the
+    If the {{Document}} is *not* set to [=quirks mode=], and the
     [=stack of open elements=] <a>has a
     <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
     element</a>.
@@ -5793,7 +5773,7 @@
   ::
     If the [=stack of open elements=] [=in scope|has a `ruby` element in scope=], then [=generate implied end tags=]. If the
     [=current node=] is not now a <{ruby}> element, this is a
-    [=parse errors=].
+    [=parse error=].
 
     [=Insert an HTML element=] for the token.
 
@@ -5804,7 +5784,7 @@
 
     If the [=stack of open elements=] [=in scope|has a `ruby` element in scope=], then [=generate implied end tags=], except
     for <{rtc}> elements. If the [=current node=] is not now a <{rtc}> element or a <{ruby}>
-    element, this is a [=parse errors=].
+    element, this is a [=parse error=].
 
     [=Insert an HTML element=] for the token.
     </dd>
@@ -5883,7 +5863,7 @@
         same tag name as the token.</li>
 
         <li>If |node| is not the [=current node=], then this is a
-        [=parse errors=].</li>
+        [=parse error=].</li>
 
         <li>Pop all the nodes from the [=current node=] up to |node|,
         including |node|, then stop these steps.</li>
@@ -5893,7 +5873,7 @@
       </li>
 
       <li>Otherwise, if |node| is in the [=special=] category, then
-      this is a [=parse errors=]; ignore the token, and abort these steps.</li>
+      this is a [=parse error=]; ignore the token, and abort these steps.</li>
 
       <li>Set |node| to the previous entry in the <a>stack of open
       elements</a>.</li>
@@ -5914,7 +5894,7 @@
     <li>[=Generate implied end tags=], except for <{p}> elements.</li>
 
     <li>If the [=current node=] is not a <{p}> element, then this is a
-    [=parse errors=].</li>
+    [=parse error=].</li>
 
     <li>Pop elements from the [=stack of open elements=] until a <{p}> element
     has been popped from the stack.</li>
@@ -5960,15 +5940,15 @@
     </li>
 
     <li>If |formatting element| is not in the <a>stack of open
-    elements</a>, then this is a [=parse errors=]; remove the element from the list, and
+    elements</a>, then this is a [=parse error=]; remove the element from the list, and
     abort these steps.</li>
 
     <li>If |formatting element| is in the [=stack of open elements=],
     but the element is not [=in scope=], then this is a
-    [=parse errors=]; abort these steps.</li>
+    [=parse error=]; abort these steps.</li>
 
     <li>If |formatting element| is not the [=current node=], this is a
-    [=parse errors=]. (But do not abort these steps.)</li>
+    [=parse error=]. (But do not abort these steps.)</li>
 
     <li>Let |furthest block| be the topmost node in the <a>stack of open
     elements</a> that is lower in the stack than |formatting element|, and is an
@@ -6156,9 +6136,9 @@
         <li>Block the [[#tokenization|tokenizer]] for this instance of the
         [=HTML parser=], such that the [=event loop=] will not run [=tasks=] that invoke the [[#tokenization|tokenizer]].</li>
 
-        <li>If the parser's <code>Document</code> [=has a style sheet that is blocking scripts=]
+        <li>If the parser's {{Document}} [=has a style sheet that is blocking scripts=]
         or |the script|'s <a>"ready to be parser-executed"</a>
-        flag is not set: [=spin the event loop=] until the parser's <code>Document</code>
+        flag is not set: [=spin the event loop=] until the parser's {{Document}}
         [=has no style sheet that is blocking scripts=] and |the script|'s
         <a>"ready to be parser-executed"</a> flag is set.</li>
 
@@ -6323,7 +6303,7 @@
   : An end tag whose tag name is "table"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have a `table` element in table scope=], this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not [=in table scope|have a `table` element in table scope=], this is a [=parse error=]; ignore the token.
 
     Otherwise:
 
@@ -6443,7 +6423,7 @@
   ::
 
     If any of the tokens in the |pending table
-    character tokens| list are character tokens that are not [=space characters=], then this is a [=parse errors=]: reprocess the
+    character tokens| list are character tokens that are not [=space characters=], then this is a [=parse error=]: reprocess the
     character tokens in the |pending table character
     tokens| list using the rules given in the "anything else" entry in the "[=in table=]" insertion mode.
 
@@ -6466,14 +6446,14 @@
   : An end tag whose tag name is "caption"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have a `caption` element in table scope=], this is a [=parse errors=]; ignore the token. ([=fragment case=])
+    If the [=stack of open elements=] does not [=in table scope|have a `caption` element in table scope=], this is a [=parse error=]; ignore the token. ([=fragment case=])
 
     Otherwise:
 
     [=Generate implied end tags=].
 
     Now, if the [=current node=] is not a <{caption}> element, then this is a
-    [=parse errors=].
+    [=parse error=].
 
     Pop elements from this stack until a <{caption}> element has been popped from the
     stack.
@@ -6490,14 +6470,14 @@
   : An end tag whose tag name is "table"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have a `caption` element in table scope=], this is a [=parse errors=]; ignore the token. ([=fragment case=])
+    If the [=stack of open elements=] does not [=in table scope|have a `caption` element in table scope=], this is a [=parse error=]; ignore the token. ([=fragment case=])
 
     Otherwise:
 
     [=Generate implied end tags=].
 
     Now, if the [=current node=] is not a <{caption}> element, then this is a
-    [=parse errors=].
+    [=parse error=].
 
     Pop elements from this stack until a <{caption}> element has been popped from the
     stack.
@@ -6569,7 +6549,7 @@
   ::
 
     If the [=current node=] is not a <{colgroup}> element, then this is a
-    [=parse errors=]; ignore the token.
+    [=parse error=]; ignore the token.
 
     Otherwise, pop the [=current node=] from the [=stack of open elements=].
     Switch the [=insertion mode=] to "<a>in
@@ -6601,7 +6581,7 @@
   ::
 
     If the [=current node=] is not a <{colgroup}> element, then this is a
-    [=parse errors=]; ignore the token.
+    [=parse error=]; ignore the token.
 
     Otherwise, pop the [=current node=] from the <a>stack of open
     elements</a>.
@@ -6651,7 +6631,7 @@
     "thead"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as the token, this is a [=parse errors=];
+    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as the token, this is a [=parse error=];
     ignore the token.
 
     Otherwise:
@@ -6668,7 +6648,7 @@
   : An end tag whose tag name is "table"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have a `tbody`, `thead`, or `tfoot` element in table scope=], this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not [=in table scope|have a `tbody`, `thead`, or `tfoot` element in table scope=], this is a [=parse error=]; ignore the token.
 
     Otherwise:
 
@@ -6726,7 +6706,7 @@
   : An end tag whose tag name is "tr"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have a `tr` element in table scope=], this is a [=parse errors=];
+    If the [=stack of open elements=] does not [=in table scope|have a `tr` element in table scope=], this is a [=parse error=];
     ignore the token.
 
     Otherwise:
@@ -6743,7 +6723,7 @@
   : An end tag whose tag name is "table"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have a `tr` element in table scope=], this is a [=parse errors=];
+    If the [=stack of open elements=] does not [=in table scope|have a `tr` element in table scope=], this is a [=parse error=];
     ignore the token.
 
     Otherwise:
@@ -6760,7 +6740,7 @@
   : An end tag whose tag name is one of: "tbody", "tfoot", "thead"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as the token, this is a [=parse errors=];
+    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as the token, this is a [=parse error=];
     ignore the token.
 
     If the [=stack of open elements=] does not [=in table scope|have a `tr` element in table scope=], ignore the token.
@@ -6810,13 +6790,13 @@
   : An end tag whose tag name is one of: "td", "th"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
 
     Otherwise:
 
     [=Generate implied end tags=].
 
-    Now, if the [=current node=] is not an [=HTML element=] with the same tag name as the token, then this is a [=parse errors=].
+    Now, if the [=current node=] is not an [=HTML element=] with the same tag name as the token, then this is a [=parse error=].
 
     Pop elements from the [=stack of open elements=] stack until an [=HTML element=] with the same tag name as the token has been popped from the
     stack.
@@ -6833,7 +6813,7 @@
   ::
 
     If the [=stack of open elements=] does *not* [=in table scope|have a `td` or `th` element in table scope=], then this
-    is a [=parse errors=]; ignore the token. ([=fragment case=])
+    is a [=parse error=]; ignore the token. ([=fragment case=])
 
     Otherwise, [=close the cell=] (see below) and reprocess the token.
 
@@ -6849,7 +6829,7 @@
     "tfoot", "thead", "tr"
   ::
 
-    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse errors=]; ignore the token.
+    If the [=stack of open elements=] does not [=in table scope|have an element in table scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
 
     Otherwise, [=close the cell=] (see below) and reprocess the token.
 
@@ -6872,7 +6852,7 @@
     <li>[=Generate implied end tags=].</li>
 
     <li>If the [=current node=] is not now a <{td}> element or a <code>th</code>
-    element, then this is a [=parse errors=].</li>
+    element, then this is a [=parse error=].</li>
 
     <li>Pop elements from the [=stack of open elements=] stack until a <{td}>
     element or a <{th}> element has been popped from the stack.</li>
@@ -6958,7 +6938,7 @@
     elements</a>.
 
     If the [=current node=] is an <{optgroup}> element, then pop that node from
-    the [=stack of open elements=]. Otherwise, this is a [=parse errors=]; ignore
+    the [=stack of open elements=]. Otherwise, this is a [=parse error=]; ignore
     the token.
 
     </dd>
@@ -6967,7 +6947,7 @@
   ::
 
     If the [=current node=] is an <{option}> element, then pop that node from
-    the [=stack of open elements=]. Otherwise, this is a [=parse errors=]; ignore
+    the [=stack of open elements=]. Otherwise, this is a [=parse error=]; ignore
     the token.
 
     </dd>
@@ -6975,7 +6955,7 @@
   : An end tag whose tag name is "select"
   ::
 
-    If the [=stack of open elements=] does not [=have a `select` element in select scope=], this is a [=parse errors=]; ignore the token. ([=fragment case=])
+    If the [=stack of open elements=] does not [=have a `select` element in select scope=], this is a [=parse error=]; ignore the token. ([=fragment case=])
 
     Otherwise:
 
@@ -7204,7 +7184,7 @@
     If there is no <{template}> element on the [=stack of open elements=], then
     <a lt="stops parsing">stop parsing</a>. ([=fragment case=])
 
-    Otherwise, this is a [=parse errors=].
+    Otherwise, this is a [=parse error=].
 
     Pop elements from the [=stack of open elements=] until a <code>template</code>
     element has been popped from the stack.
@@ -7260,7 +7240,7 @@
   ::
 
     If the parser was originally created as part of the <a>HTML fragment parsing
-    algorithm</a>, this is a [=parse errors=]; ignore the token. (<a>fragment
+    algorithm</a>, this is a [=parse error=]; ignore the token. (<a>fragment
     case</a>)
 
     Otherwise, switch the [=insertion mode=] to "[=after after body=]".
@@ -7320,7 +7300,7 @@
   ::
 
     If the [=current node=] is the root <{html}> element, then this is a
-    [=parse errors=]; ignore the token. ([=fragment case=])
+    [=parse error=]; ignore the token. ([=fragment case=])
 
     Otherwise, pop the [=current node=] from the <a>stack of open
     elements</a>.
@@ -7352,7 +7332,7 @@
   ::
 
     If the [=current node=] is not the root <{html}> element, then this is a
-    [=parse errors=].
+    [=parse error=].
 
     <p class="note">The [=current node=] can only be the root <{html}> element in the [=fragment case=].</p>
 
@@ -7432,7 +7412,7 @@
 
   : A comment token
   ::
-    [=Insert a comment=] as the last child of the <code>Document</code> object.
+    [=Insert a comment=] as the last child of the {{Document}} object.
     </dd>
 
   : A DOCTYPE token
@@ -7699,7 +7679,7 @@
       node of the stack).</li>
 
       <li>If |node|'s tag name, converted to [=ASCII lowercase=], is
-      not the same as the tag name of the token, then this is a [=parse errors=].</li>
+      not the same as the tag name of the token, then this is a [=parse error=].</li>
 
       <li>|Loop|: If |node| is the topmost element in the <a>stack of
       open elements</a>, abort these steps. ([=fragment case=])</li>
@@ -7747,7 +7727,7 @@
 
       <li>[=Spin the event loop=] until the first <code>script</code> in the <a>list
       of scripts that will execute when the document has finished parsing</a> has its <a>"ready
-      to be parser-executed"</a> flag set *and* the parser's <code>Document</code>
+      to be parser-executed"</a> flag set *and* the parser's {{Document}}
       [=has no style sheet that is blocking scripts=].</li>
 
       <li>[=Execute=] the first <code>script</code> in
@@ -7794,7 +7774,7 @@
 
     <li>
 
-    If the <code>Document</code> has a [=browsing context=], then <a>queue a
+    If the {{Document}} has a [=browsing context=], then <a>queue a
     task</a> to run the following substeps:
 
     <ol>
@@ -7821,9 +7801,9 @@
     <li>If the <code>Document</code>'s [=print when loaded=] flag is set, then run the
     [=printing steps=].</li>
 
-    <li>The <code>Document</code> is now <dfn>ready for post-load tasks</dfn>.</li>
+    <li>The {{Document}} is now <dfn>ready for post-load tasks</dfn>.</li>
 
-    <li>[=Queue a task=] to mark the <code>Document</code> as <dfn>completely
+    <li>[=Queue a task=] to mark the {{Document}} as <dfn>completely
     loaded</dfn>.</li>
 
   </ol>
@@ -8093,7 +8073,7 @@
   insertion mode but with [=foster parenting=].
 
   When <a lt="reconstruct the active formatting elements">the active formatting elements
-  are reconstructed</a>, a <{b}> element is created and [=foster parented=], and then the "bbb" {{Text}} node is appended to it:
+  are reconstructed</a>, a <{b}> element is created and [=foster parenting|foster parented=], and then the "bbb" {{Text}} node is appended to it:
 
   <ul class="domTree"><li class="t1"><{html}><ul><li class="t1"><{head}></li><li class="t1"><{body}><ul><li class="t1"><{b}></li><li class="t1"><{b}><ul><li class="t3"><code>#text</code>: <span>bbb</span></li></ul></li><li class="t1"><{table}><ul><li class="t1"><{tbody}><ul><li class="t1"><{tr}><ul><li class="t1"><{td}><ul><li class="t3"><code>#text</code>: <span>aaa</span></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>
 
@@ -8147,14 +8127,14 @@
 
   <ul class="domTree"><li class="t1"><{html}><ul><li class="t1"><{head}></li><li class="t1"><{body}></li></ul></li></ul>
 
-  They are, at this point, in the <code>Document</code> of the aforementioned outer
+  They are, at this point, in the {{Document}} of the aforementioned outer
   [=browsing context=]. However, the [=stack of open elements=] *still contains
   the <{div}> element*.
 
   Thus, when the second <{script}> element is parsed, it is inserted *into the outer
-  <code>Document</code> object*.
+  {{Document}} object*.
 
-  Those parsed into different <code>Document</code>s than the one the parser was created for do
+  Those parsed into different {{Document}}s than the one the parser was created for do
   not execute, so the first alert does not show.
 
   Once the <{div}> element's end tag is parsed, the <{div}> element is popped
@@ -8171,7 +8151,7 @@
 
   Elaborating on the example in the previous section, consider the case where the second
   <{script}> element is an external script (i.e., one with a <code>src</code> attribute). Since the element was not in the parser's
-  <code>Document</code> when it was created, that external script is not even downloaded.
+  {{Document}} when it was created, that external script is not even downloaded.
 
   In a case where a <{script}> element with a <code>src</code>
   attribute is parsed normally into its parser's {{Document}}, but while the external
@@ -8179,7 +8159,7 @@
   download, but does not execute.
 
   <p class="note">
-  In general, moving <{script}> elements between <code>Document</code>s is
+  In general, moving <{script}> elements between {{Document}}s is
   considered a bad practice.
   </p>
 
@@ -8698,7 +8678,7 @@ Hello.&lt;/pre&gt;</pre>
 
     <li>
 
-    Create a new <code>Document</code> node, and mark it as being an [=HTML document=].
+    Create a new {{Document}} node, and mark it as being an [=HTML document=].
 
     </li>
 
@@ -8706,18 +8686,18 @@ Hello.&lt;/pre&gt;</pre>
 
     If the
     [=node document=] of the |context| element is in
-    [=quirks mode=], then let the <code>Document</code> be in [=quirks mode=].
+    [=quirks mode=], then let the {{Document}} be in [=quirks mode=].
     Otherwise, the
     [=node document=] of the |context| element is in
-    <a>limited-quirks mode</a>, then let the <code>Document</code> be in <a>limited-quirks
-    mode</a>. Otherwise, leave the <code>Document</code> in <a>no-quirks mode</a>.
+    <a>limited-quirks mode</a>, then let the {{Document}} be in <a>limited-quirks
+    mode</a>. Otherwise, leave the {{Document}} in <a>no-quirks mode</a>.
 
     </li>
 
     <li>
 
     Create a new [=HTML parser=], and associate it with the just created
-    <code>Document</code> node.
+    {{Document}} node.
 
     </li>
 
@@ -8778,7 +8758,7 @@ Hello.&lt;/pre&gt;</pre>
 
     <li>
 
-    Append the element |root| to the <code>Document</code> node created
+    Append the element |root| to the {{Document}} node created
     above.
 
     </li>
