@@ -1556,7 +1556,7 @@
   Initially, the <dfn>stack of open elements</dfn> is empty. The stack grows downwards; the topmost
   node on the stack is the first one added to the stack, and the bottommost node of the stack is the
   most recently added node in the stack (notwithstanding when the stack is manipulated in a random
-  access fashion as part of [=the handling for misnested tags=]).
+  access fashion as part of [=adoption agency algorithm|the handling for misnested tags=]).
 
   <p class="note">The "[=before html=]" [=insertion mode=] creates the <{html}>
   [=document element=], which is then added to the stack.</p>
@@ -1690,8 +1690,9 @@
   in this situation. This can cause, amongst other strange effects, content to be appended to nodes
   that are no longer in the DOM.
 
-  <p class="note">In some cases (namely, when [=closing misnested formatting elements=]), the stack
-  is manipulated in a random-access fashion.</p>
+  <p class="note">In some cases (namely, when
+  [=adoption agency algorithm|closing misnested formatting elements=]), the stack is manipulated in
+  a random-access fashion.</p>
 
 #### The list of active formatting elements #### {#the-list-of-active-formatting-elements}
 
@@ -4555,7 +4556,6 @@
   agent must handle the token as follows:
 
   <dl class="switch">
-
     : A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C
         FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
     :: [=Insert the character=].
@@ -4799,1165 +4799,775 @@
         7. Finally, [=insert an HTML element=] for the token.
 
     : A start tag whose tag name is one of: "dd", "dt"
-    ::
+    :: Run these steps:
 
-      Run these steps:
-
-      <ol>
-
-        <li>Set the [=frameset-ok flag=] to "not ok".</li>
-
-        <li>Initialize |node| to be the <a>current
-        node</a> (the bottommost node of the stack).</li>
-
-        <li>
-
-        |Loop|: If |node| is a <{dd}> element, then run these
-        substeps:
-
-        <ol>
-
-          <li>[=Generate implied end tags=], except for <{dd}> elements.</li>
-
-          <li>If the [=current node=] is not a <{dd}> element, then this is a
-          [=parse error=].</li>
-
-          <li>Pop elements from the [=stack of open elements=] until a <code>dd</code>
-          element has been popped from the stack.</li>
-
-          <li>Jump to the step labeled |Done| below.</li>
-
-        </ol>
-
-        </li>
-
-        <li>
-
-        If |node| is a <{dt}> element, then run these substeps:
-
-        <ol>
-
-          <li>[=Generate implied end tags=], except for <{dt}> elements.</li>
-
-          <li>If the [=current node=] is not a <{dt}> element, then this is a
-          [=parse error=].</li>
-
-          <li>Pop elements from the [=stack of open elements=] until a <code>dt</code>
-          element has been popped from the stack.</li>
-
-          <li>Jump to the step labeled |Done| below.</li>
-
-        </ol>
-
-        </li>
-
-        <li>If |node| is in the [=special=] category, but is not an
-        <{address}>, <{div}>, or <{p}> element, then jump to the step
-        labeled |Done| below.</li>
-
-        <li>Otherwise, set |node| to the previous entry in the <a>stack of open
-        elements</a> and return to the step labeled |Loop|.</li>
-
-        <li>|Done|: If the [=stack of open elements=] [=has a `p` element in button scope=], then <a>close a
-        <code>p</code> element</a>.</li>
-
-        <li>Finally, [=insert an HTML element=] for the token.</li>
-
-      </ol>
-
-      </dd>
+        1. Set the [=frameset-ok flag=] to "not ok".
+        2. Initialize |node| to be the [=current node=] (the bottommost node of the stack).
+        3. |Loop|: If |node| is a <{dd}> element, then run these substeps:
+            1. [=Generate implied end tags=], except for <{dd}> elements.
+            2. If the [=current node=] is not a <{dd}> element, then this is a [=parse error=].
+            3. Pop elements from the [=stack of open elements=] until a <{dd}> element has been
+                popped from the stack.
+            4. Jump to the step labeled |Done| below.
+        4. If |node| is a <{dt}> element, then run these substeps:
+            1. [=Generate implied end tags=], except for <{dt}> elements.
+            2. If the [=current node=] is not a <{dt}> element, then this is a [=parse error=].
+            3. Pop elements from the [=stack of open elements=] until a <{dt}> element has been
+                popped from the stack.
+            4. Jump to the step labeled |Done| below.
+        5. If |node| is in the [=special=] category, but is not an <{address}>, <{div}>, or <{p}>
+            element, then jump to the step labeled |Done| below.
+        6. Otherwise, set |node| to the previous entry in the [=stack of open elements=] and return
+            to the step labeled |Loop|.
+        7. |Done|: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+            [=close a `p` element=].
+        8. Finally, [=insert an HTML element=] for the token.
 
     : A start tag whose tag name is "plaintext"
-    ::
+    :: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-      If the [=stack of open elements=] <a>has a
-      <code>p</code> element in button scope</a>, then [=close a `p` element=].
+        [=Insert an HTML element=] for the token.
 
-      [=Insert an HTML element=] for the token.
+        Switch the tokenizer to the [[#plaintext-state]].
 
-      Switch the tokenizer to the [[#plaintext-state]].
-
-      <p class="note">Once a start tag with the tag name "plaintext" has been seen, that will be the
-      last token ever seen other than character tokens (and the end-of-file token), because there is
-      no way to switch out of the [[#plaintext-state]].</p>
-
-      </dd>
+        <p class="note">Once a start tag with the tag name "plaintext" has been seen, that will be
+        the last token ever seen other than character tokens (and the end-of-file token), because
+        there is no way to switch out of the [[#plaintext-state]].</p>
 
     : A start tag whose tag name is "button"
     ::
+        1. If the [=stack of open elements=] [=in scope|has a `button` element in scope=], then run
+            these substeps:
+
+            1. [=Parse error=].
+            2. [=Generate implied end tags=].
+            3. Pop elements from the [=stack of open elements=] until a <{button}> element has been
+                popped from the stack.
+        2. [=Reconstruct the active formatting elements=], if any.
+        3. [=Insert an HTML element=] for the token.
+        4. Set the [=frameset-ok flag=] to "not ok".
+
+    : An end tag whose tag name is one of: "address", "article", "aside", "blockquote", "button",
+        "center", "details", "dialog", "dir", "div", "dl", "fieldset", "figcaption", "figure",
+        "footer", "header", "listing", "main", "menu", "nav", "ol", "pre", "section", "summary",
+        "ul"
+    :: If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an
+        [=HTML element=] with the same tag name as that of the token, then this is a
+        [=parse error=]; ignore the token.
+
+        Otherwise, run these steps:
+
+        1. [=Generate implied end tags=].
+        2. If the [=current node=] is not an [=HTML element=] with the same tag name as that of the
+            token, then this is a [=parse error=].
+        3. Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same
+            tag name as the token has been popped from the stack.
+
+    : An end tag whose tag name is "form"
+    :: If there is no <{template}> element on the [=stack of open elements=], then run these
+        substeps:
+
+        1. Let |node| be the element that the [=`form` element pointer=] is set to, or null if it is
+            not set to an element.
+        2. Set the [=`form` element pointer=] to null.
+        3. If |node| is null or if the [=stack of open elements=] does not
+            [=in scope|have |node| in scope=], then this is a [=parse error=]; abort these steps and
+            ignore the token.
+        4. [=Generate implied end tags=].
+        5. If the [=current node=] is not |node|, then this is a [=parse error=].
+        6. Remove |node| from the [=stack of open elements=].
+
+        If there *is* a <{template}> element on the [=stack of open elements=], then run these
+        substeps instead:
+
+        1. If the [=stack of open elements=] does not [=in scope|have a `form` element in scope=],
+            then this is a [=parse error=]; abort these steps and ignore the token.
+        2. [=Generate implied end tags=].
+        3. If the [=current node=] is not a <{form}> element, then this is a [=parse error=].
+        4. Pop elements from the [=stack of open elements=] until a <{form}> element has been popped
+            from the stack.
+
+    : An end tag whose tag name is "p"
+    :: If the [=stack of open elements=] does not
+        [=has a p element in button scope|have a `p` element in button scope=], then this is a
+        [=parse error=]; [=insert an HTML element=] for a "p" start tag token with no attributes.
+
+        [=Close a `p` element=].
+
+    : An end tag whose tag name is "li"
+    :: If the [=stack of open elements=] does not [=have an `li` element in list item scope=], then
+        this is a [=parse error=]; ignore the token.
+
+        Otherwise, run these steps:
+
+        1. [=Generate implied end tags=], except for <{li}> elements.
+        2. If the [=current node=] is not an <{li}> element, then this is a [=parse error=].
+        3. Pop elements from the [=stack of open elements=] until an <{li}> element has been popped
+            from the stack.
+
+    : An end tag whose tag name is one of: "dd", "dt"
+    :: If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an
+        [=HTML element=] with the same tag name as that of the token, then this is a
+        [=parse error=]; ignore the token.
+
+        Otherwise, run these steps:
+
+        1. [=Generate implied end tags=], except for [=HTML elements=] with the same tag name as the
+            token.
+        2. If the [=current node=] is not an [=HTML element=] with the same tag name as that of the
+            token, then this is a [=parse error=].
+        3. Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same
+            tag name as the token has been popped from the stack.
+
+    : An end tag whose tag name is one of: "h1", "h2", "h3", "h4", "h5", "h6"
+    :: If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an
+        [=HTML element=] and whose tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6", then
+        this is a [=parse error=]; ignore the token.
+
+        Otherwise, run these steps:
+
+        1. [=Generate implied end tags=].
+        2. If the [=current node=] is not an [=HTML element=] with the same tag name as that of the
+            token, then this is a [=parse error=].
+        3. Pop elements from the [=stack of open elements=] until an [=HTML element=] whose tag name
+            is one of "h1", "h2", "h3", "h4", "h5", or "h6" has been popped from the stack.
+
+    : An end tag whose tag name is "sarcasm"
+    :: Take a deep breath, then act as described in the "any other end tag" entry below.
+
+    : A start tag whose tag name is "a"
+    :: If the [=list of active formatting elements=] contains an <{a}> element between the end of
+        the list and the last [=marker=] on the list (or the start of the list if there is no
+        [=marker=] on the list), then this is a [=parse error=]; run the
+        [=adoption agency algorithm=] for the token, then remove that element from the
+        [=list of active formatting elements=] and the [=stack of open elements=] if the
+        [=adoption agency algorithm=] didn't already remove it (it might not have if the element is
+        not [=in table scope=]).
 
-      <ol>
+        <p class="example">In the non-conforming stream
+        `&lt;a&nbsp;href="a">a&lt;table>&lt;a&nbsp;href="b">b&lt;/table>x`, the first <{a}> element
+        would be closed upon seeing the second one, and the "x" character would be inside a link to
+        "b", not to "a". This is despite the fact that the outer <{a}> element is not in table scope
+        (meaning that a regular `&lt;/a>` end tag at the start of the table wouldn't close the outer
+        <{a}> element). The result is that the two <{a}> elements are indirectly nested inside each
+        other &mdash; non-conforming markup will often result in non-conforming DOMs when
+        parsed.</p>
 
-        <li>
+        [=Reconstruct the active formatting elements=], if any.
 
-        If the [=stack of open elements=] [=in scope|has a `button` element in scope=], then run these substeps:
+        [=Insert an HTML element=] for the token.
+        [=Push onto the list of active formatting elements=] that element.
 
-        <ol>
+    : A start tag whose tag name is one of: "b", "big", "code", "em", "font", "i", "s", "small",
+        "strike", "strong", "tt", "u"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-          <li>[=Parse error=].</li>
+        [=Insert an HTML element=] for the token.
+        [=Push onto the list of active formatting elements=] that element.
 
-          <li>[=Generate implied end tags=].</li>
+    : A start tag whose tag name is "nobr"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-          <li>Pop elements from the [=stack of open elements=] until a <code>button</code>
-          element has been popped from the stack.</li>
+        If the [=stack of open elements=] [=in scope|has a `nobr` element in scope=], then this is a
+        [=parse error=]; run the [=adoption agency algorithm=] for the token, then once again
+        [=Reconstruct the active formatting elements=], if any.
 
-        </ol>
+        [=Insert an HTML element=] for the token.
+        [=Push onto the list of active formatting elements=] that element.
 
-        </li>
+    : An end tag whose tag name is one of: "a", "b", "big", "code", "em", "font", "i", "nobr", "s",
+        "small", "strike", "strong", "tt", "u"
+    :: Run the [=adoption agency algorithm=] for the token.
 
-        <li>[=Reconstruct the active formatting elements=], if any.</li>
+    : A start tag whose tag name is one of: "applet", "marquee", "object"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-        <li>[=Insert an HTML element=] for the token.</li>
+        [=Insert an HTML element=] for the token.
 
-        <li>Set the [=frameset-ok flag=] to "not ok".</li>
+        Insert a [=marker=] at the end of the [=list of active formatting elements=].
 
-      </ol>
+        Set the [=frameset-ok flag=] to "not ok".
 
-      </dd>
+    : An end tag token whose tag name is one of: "applet", "marquee", "object"
+    :: If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an
+        [=HTML element=] with the same tag name as that of the token, then this is a
+        [=parse error=]; ignore the token.
 
-  : An end tag whose tag name is one of: "address", "article", "aside", "blockquote", "button",
-    "center", "details", "dialog", "dir", "div", "dl", "fieldset", "figcaption", "figure", "footer",
-    "header", "listing", "main", "menu", "nav", "ol", "pre", "section", "summary",
-    "ul"
-  ::
+        Otherwise, run these steps:
 
-    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
+        1. [=Generate implied end tags=].
+        2. If the [=current node=] is not an [=HTML element=] with the same tag name as that of the
+            token, then this is a [=parse error=].
+        3. Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same
+            tag name as the token has been popped from the stack.
+        4. [=Clear the list of active formatting elements up to the last marker=].
 
-    Otherwise, run these steps:
+    : A start tag whose tag name is "table"
+    :: If the {{Document}} is *not* set to [=quirks mode=], and the [=stack of open elements=]
+        [=has a `p` element in button scope=], then [=close a `p` element=].
 
-    <ol>
+        [=Insert an HTML element=] for the token.
 
-      <li>[=Generate implied end tags=].</li>
+        Set the [=frameset-ok flag=] to "not ok".
 
-      <li>If the [=current node=] is not an [=HTML element=] with
-      the same tag name as that of the token, then this is a
-      [=parse error=].</li>
+        Switch the [=insertion mode=] to "[=in table=]".
 
-      <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same tag name as the token has been popped from the
-      stack.</li>
+    : An end tag whose tag name is "br"
+    :: [=Parse error=]. Drop the attributes from the token, and act as described in the next entry;
+        i.e., act as if this was a "br" start tag token with no attributes, rather than the end tag
+        token that it actually is.
 
-    </ol>
+    : A start tag whose tag name is one of: "area", "br", "embed", "img", "wbr"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-    </dd>
+        [=Insert an HTML element=] for the token. Immediately pop the [=current node=] off the
+        [=stack of open elements=].
 
-  : An end tag whose tag name is "form"
-  ::
+        [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
 
-    If there is no <{template}> element on the [=stack of open elements=], then
-    run these substeps:
+        Set the [=frameset-ok flag=] to "not ok".
 
-    <ol>
+    : A start tag whose tag name is "input"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-      <li>Let |node| be the element that the <a><code>form</code>
-      element pointer</a> is set to, or null if it is not set to an element.</li>
+        [=Insert an HTML element=] for the token. Immediately pop the [=current node=] off the
+        [=stack of open elements=].
 
-      <li>Set the [=`form` element pointer=] to null.</li>
+        [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
 
-      <li>If |node| is null or if the [=stack of open elements=] does
-      not [=in scope|have |node| in scope=], then
-      this is a [=parse error=]; abort these steps and ignore the token.</li>
+        If the token does not have an attribute with the name "type", or if it does, but that
+        attribute's value is not an [=ASCII case-insensitive=] match for the string "`hidden`",
+        then: set the [=frameset-ok flag=] to "not ok".
 
-      <li>[=Generate implied end tags=].</li>
+    : A start tag whose tag name is one of: "param", "source", "track"
+    :: [=Insert an HTML element=] for the token. Immediately pop the [=current node=] off the
+        [=stack of open elements=].
 
-      <li>If the [=current node=] is not |node|, then this is a
-      [=parse error=].</li>
+        [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
 
-      <li>Remove |node| from the [=stack of open elements=].</li>
+    : A start tag whose tag name is "hr"
+    :: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-    </ol>
+        If the [=current node=] is a <{menuitem}> element, pop that node from the
+        [=stack of open elements=].
 
-    If there *is* a <{template}> element on the <a>stack of open
-    elements</a>, then run these substeps instead:
+        [=Insert an HTML element=] for the token. Immediately pop the [=current node=] off the
+        [=stack of open elements=].
 
-    <ol>
+        [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
 
-      <li>If the [=stack of open elements=] does not [=in scope|have a `form` element in scope=], then this is a [=parse error=]; abort these steps and ignore the token.</li>
+        Set the [=frameset-ok flag=] to "not ok".
 
-      <li>[=Generate implied end tags=].</li>
+    : A start tag whose tag name is "image"
+    :: [=Parse error=]. Change the token's tag name to "img" and reprocess it. (Don't ask.)
 
-      <li>If the [=current node=] is not a <{form}> element, then this is a
-      [=parse error=].</li>
+    : A start tag whose tag name is "textarea"
+    :: Run these steps:
 
-      <li>Pop elements from the [=stack of open elements=] until a <code>form</code>
-      element has been popped from the stack.</li>
+        1. [=Insert an HTML element=] for the token.
+        2. If the [=next token=] is a U+000A LINE FEED (LF) character token, then ignore that token
+            and move on to the next one. (Newlines at the start of <{textarea}> elements are ignored
+            as an authoring convenience.)
+        3. Switch the tokenizer to the [=RCDATA state=].
+        4. Let the [=original insertion mode=] be the current [=insertion mode=].
+        5. Set the [=frameset-ok flag=] to "not ok".
+        6. Switch the [=insertion mode=] to "[=in text|text=]".
 
-    </ol>
+    : A start tag whose tag name is "xmp"
+    :: If the [=stack of open elements=] [=has a `p` element in button scope=], then
+        [=close a `p` element=].
 
-    </dd>
+        [=Reconstruct the active formatting elements=], if any.
 
-  : An end tag whose tag name is "p"
-  ::
+        Set the [=frameset-ok flag=] to "not ok".
 
-    If the [=stack of open elements=] does not [=has a p element in button scope|have a `p` element in button scope=], then this is a [=parse error=]; [=insert an HTML element=] for a "p" start tag token with no
-    attributes.
+        Follow the [=generic raw text element parsing algorithm=].
 
-    <a>Close a <code>p</code> element</a>.
+    : A start tag whose tag name is "iframe"
+    :: Set the [=frameset-ok flag=] to "not ok".
 
-    </dd>
+        Follow the [=generic raw text element parsing algorithm=].
 
-  : An end tag whose tag name is "li"
-  ::
+    : A start tag whose tag name is "noembed"
+    : A start tag whose tag name is "noscript", if the [=scripting flag=] is enabled
+    :: Follow the [=generic raw text element parsing algorithm=].
 
-    If the [=stack of open elements=] does not <a>have an <code>li</code> element in list item scope</a>, then this is a [=parse error=]; ignore the token.
+    : A start tag whose tag name is "select"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-    Otherwise, run these steps:
+        [=Insert an HTML element=] for the token.
 
-    <ol>
+        Set the [=frameset-ok flag=] to "not ok".
 
-      <li>[=Generate implied end tags=], except for <{li}> elements.</li>
+        If the [=insertion mode=] is one of "[=in table=]", "[=in caption=]", "[=in table body=]",
+        "[=in row=]", or "[=in cell=]", then switch the [=insertion mode=] to
+        "[=in select in table=]". Otherwise, switch the [=insertion mode=] to "[=in select=]".
 
-      <li>If the [=current node=] is not an <{li}> element, then this is a
-      [=parse error=].</li>
+    : A start tag whose tag name is one of: "optgroup", "option"
+    :: If the [=current node=] is an <{option}> element, then pop the [=current node=] off the
+        [=stack of open elements=].
 
-      <li>Pop elements from the [=stack of open elements=] until an <code>li</code>
-      element has been popped from the stack.</li>
+        [=Reconstruct the active formatting elements=], if any.
 
-    </ol>
+        [=Insert an HTML element=] for the token.
 
-    </dd>
+    : A start tag whose tag name is "menuitem"
+    :: If the [=current node=] is a <{menuitem}> element, then pop the [=current node=] off the
+        [=stack of open elements=].
 
-  : An end tag whose tag name is one of: "dd", "dt"
-  ::
+        [=Reconstruct the active formatting elements=], if any.
 
-    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
+        [=Insert an HTML element=] for the token.
 
-    Otherwise, run these steps:
+    : A start tag whose tag name is one of: "rb", "rtc"
+    :: If the [=stack of open elements=] [=in scope|has a `ruby` element in scope=], then
+        [=generate implied end tags=]. If the [=current node=] is not now a <{ruby}> element, this
+        is a [=parse error=].
 
-    <ol>
+        [=Insert an HTML element=] for the token.
 
-      <li>[=Generate implied end tags=], except for [=HTML elements=] with the
-      same tag name as the token.</li>
+    : A start tag whose tag name is one of: "rp", "rt"
+    :: If the [=stack of open elements=] [=in scope|has a `ruby` element in scope=], then
+        [=generate implied end tags=], except for <{rtc}> elements. If the [=current node=] is not
+        now a <{rtc}> element or a <{ruby}> element, this is a [=parse error=].
 
-      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=].</li>
+        [=Insert an HTML element=] for the token.
 
-      <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same tag name as the token has been popped from the
-      stack.</li>
+    : A start tag whose tag name is "math"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-    </ol>
+        [=Adjust MathML attributes=] for the token. (This fixes the case of MathML attributes that
+        are not all lowercase.)
 
-    </dd>
+        [=Adjust foreign attributes=] for the token. (This fixes the use of namespaced attributes,
+        in particular XLink.)
 
-  : An end tag whose tag name is one of: "h1", "h2", "h3", "h4", "h5", "h6"
-  ::
+        [=Insert a foreign element=] for the token, in the [=MathML namespace=].
 
-    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] and whose tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6", then this is
-    a [=parse error=]; ignore the token.
+        If the token has its [=self-closing flag=] set, pop the [=current node=] off the
+        [=stack of open elements=] and [=acknowledged|acknowledge the token's *self-closing flag*=].
 
-    Otherwise, run these steps:
+    : A start tag whose tag name is "svg"
+    :: [=Reconstruct the active formatting elements=], if any.
 
-    <ol>
+        [=Adjust SVG attributes=] for the token. (This fixes the case of SVG attributes that are not
+        all lowercase.)
 
-      <li>[=Generate implied end tags=].</li>
+        [=Adjust foreign attributes=] for the token. (This fixes the use of namespaced attributes,
+        in particular XLink in SVG.)
 
-      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=].</li>
+        [=Insert a foreign element=] for the token, in the [=SVG namespace=].
 
-      <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] whose tag name is one of "h1", "h2", "h3", "h4", "h5", or "h6"
-      has been popped from the stack.</li>
+        If the token has its [=self-closing flag=] set, pop the [=current node=] off the
+        [=stack of open elements=] and [=acknowledged|acknowledge the token's *self-closing flag*=].
 
-    </ol>
+    : A start  tag whose tag name is one of: "caption", "col", "colgroup", "frame", "head", "tbody",
+        "td", "tfoot", "th", "thead", "tr"
+    :: [=Parse error=].
 
-    </dd>
+    : Any other start tag
+    :: [=Reconstruct the active formatting elements=], if any.
 
-  : An end tag whose tag name is "sarcasm"
-  ::
-    Take a deep breath, then act as described in the "any other end
-    tag" entry below.
-    </dd>
+        [=Insert an HTML element=] for the token.
 
-  : A start tag whose tag name is "a"
-  ::
+        <p class="note">This element will be an [=ordinary=]element.</p>
 
-    If the [=list of active formatting elements=] contains an <{a}> element
-    between the end of the list and the last [=marker=] on
-    the list (or the start of the list if there is no [=marker=] on the list), then this is a [=parse error=]; run the [=adoption agency algorithm=] for the token, then remove
-    that element from the [=list of active formatting elements=] and the <a>stack of
-    open elements</a> if the [=adoption agency algorithm=] didn't already remove it (it
-    might not have if the element is not <a>in table
-    scope</a>).
+    : Any other end tag
+    :: Run these steps:
 
-    <p class="example">In the non-conforming stream
-    <code>&lt;a&nbsp;href="a">a&lt;table>&lt;a&nbsp;href="b">b&lt;/table>x</code>, the first
-    <{a}> element would be closed upon seeing the second one, and the "x" character would
-    be inside a link to "b", not to "a". This is despite the fact that the outer <{a}>
-    element is not in table scope (meaning that a regular <code>&lt;/a></code> end tag at the start
-    of the table wouldn't close the outer <{a}> element). The result is that the two
-    <{a}> elements are indirectly nested inside each other &mdash; non-conforming markup
-    will often result in non-conforming DOMs when parsed.</p>
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token. <a>Push onto the list of active
-    formatting elements</a> that element.
-
-    </dd>
-
-  : A start tag whose tag name is one of: "b", "big", "code", "em",
-    "font", "i", "s", "small", "strike", "strong", "tt", "u"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token. <a>Push onto the list of active
-    formatting elements</a> that element.
-
-    </dd>
-
-  : A start tag whose tag name is "nobr"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    If the [=stack of open elements=] [=in scope|has a `nobr` element in scope=], then this is a [=parse error=]; run the
-    [=adoption agency algorithm=] for the token, then once again
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token. <a>Push onto the list of active
-    formatting elements</a> that element.
-
-    </dd>
-
-  : An end tag whose tag name is one of: "a",
-    "b", "big", "code", "em", "font", "i", "nobr", "s", "small",
-    "strike", "strong", "tt", "u"
-  ::
-
-    Run the [=adoption agency algorithm=] for the token.
-
-    </dd>
-
-  : A start tag whose tag name is one of: "applet", "marquee", "object"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token.
-
-    Insert a [=marker=] at the end of the [=list of active formatting elements=].
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    </dd>
-
-  : An end tag token whose tag name is one of: "applet", "marquee", "object"
-  ::
-
-    If the [=stack of open elements=] does not [=in scope|have an element in scope=] that is an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=]; ignore the token.
-
-    Otherwise, run these steps:
-
-    <ol>
-
-      <li>[=Generate implied end tags=].</li>
-
-      <li>If the [=current node=] is not an [=HTML element=] with the same tag name as that of the token, then this is a [=parse error=].</li>
-
-      <li>Pop elements from the [=stack of open elements=] until an [=HTML element=] with the same tag name as the token has been popped from the
-      stack.</li>
-
-      <li>[=Clear the list of active formatting elements up to the last marker=].</li>
-
-    </ol>
-
-    </dd>
-
-  : A start tag whose tag name is "table"
-  ::
-
-    If the {{Document}} is *not* set to [=quirks mode=], and the
-    [=stack of open elements=] <a>has a
-    <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-    [=Insert an HTML element=] for the token.
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    Switch the [=insertion mode=] to "<a>in
-    table</a>".
-
-    </dd>
-
-  : An end tag whose tag name is "br"
-  ::
-
-    [=Parse error=]. Drop the attributes from the token, and act as described in the
-    next entry; i.e., act as if this was a "br" start tag token with no attributes, rather than the
-    end tag token that it actually is.
-
-    </dd>
-
-  : A start tag whose tag name is one of: "area", "br", "embed",
-    "img", "wbr"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token. Immediately pop the <a>current
-    node</a> off the [=stack of open elements=].
-
-    [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    </dd>
-
-  : A start tag whose tag name is "input"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token. Immediately pop the <a>current
-    node</a> off the [=stack of open elements=].
-
-    [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
-
-    If the token does not have an attribute with the name "type", or if it does, but that
-    attribute's value is not an [=ASCII case-insensitive=] match for the string "<code>hidden</code>", then: set the [=frameset-ok flag=] to "not ok".
-
-    </dd>
-
-  : A start tag whose tag name is one of: "param", "source", "track"
-  ::
-
-    [=Insert an HTML element=] for the token. Immediately pop the <a>current
-    node</a> off the [=stack of open elements=].
-
-    [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
-
-    </dd>
-
-  : A start tag whose tag name is "hr"
-  ::
-
-    If the [=stack of open elements=] <a>has a
-    <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-      <p>If the [=current node=] is a <{menuitem}> element, pop that node from the [=stack of open elements=].</p>
-
-    [=Insert an HTML element=] for the token. Immediately pop the <a>current
-    node</a> off the [=stack of open elements=].
-
-    [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    </dd>
-
-  : A start tag whose tag name is "image"
-  ::
-
-    [=Parse error=]. Change the token's tag name to "img" and reprocess it. (Don't
-    ask.)
-    </dd>
-
-  : A start tag whose tag name is "textarea"
-  ::
-
-    Run these steps:
-
-    <ol>
-
-      <li>[=Insert an HTML element=] for the token.</li>
-
-      <li>If the [=next token=] is a U+000A LINE FEED (LF) character token, then ignore
-      that token and move on to the next one. (Newlines at the start of <code>textarea</code>
-      elements are ignored as an authoring convenience.)</li>
-
-      <li>Switch the tokenizer to the [=RCDATA state=].</li>
-
-      <li>Let the [=original insertion mode=] be the current <a>insertion
-      mode</a>.
-
-      <li>Set the [=frameset-ok flag=] to "not ok".</li>
-
-      <li>Switch the [=insertion mode=] to "[=in text|text=]".</li>
-
-    </ol>
-
-    </dd>
-
-  : A start tag whose tag name is "xmp"
-  ::
-
-    If the [=stack of open elements=] <a>has a
-    <code>p</code> element in button scope</a>, then <a>close a <code>p</code>
-    element</a>.
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    Follow the [=generic raw text element parsing algorithm=].
-
-    </dd>
-
-  : A start tag whose tag name is "iframe"
-  ::
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    Follow the [=generic raw text element parsing algorithm=].
-
-    </dd>
-
-  : A start tag whose tag name is "noembed"
-  : A start tag whose tag name is "noscript", if the [=scripting flag=] is enabled
-  ::
-
-    Follow the [=generic raw text element parsing algorithm=].
-
-    </dd>
-
-  : A start tag whose tag name is "select"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token.
-
-    Set the [=frameset-ok flag=] to "not ok".
-
-    If the [=insertion mode=] is one of "<a>in
-    table</a>", "[=in caption=]", "[=in table body=]", "[=in row=]", or "[=in cell=]", then switch the
-    [=insertion mode=] to "<a>in select in
-    table</a>". Otherwise, switch the [=insertion mode=] to "[=in select=]".
-
-    </dd>
-
-  : A start tag whose tag name is one of: "optgroup", "option"
-  ::
-
-    If the [=current node=] is an <{option}> element, then pop the
-    [=current node=] off the [=stack of open elements=].
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token.
-
-    </dd>
-
-  : A start tag whose tag name is "menuitem"
-
-  :: <p>If the [=current node=] is a <{menuitem}> element, then pop the [=current node=] off the [=stack of open elements=].</p>
-
-      <p>[=Reconstruct the active formatting elements=], if any.</p>
-
-      <p>[=Insert an HTML element=] for the token.</p>
-
- </dd>
-
-  : A start tag whose tag name is one of: "rb", "rtc"
-  ::
-    If the [=stack of open elements=] [=in scope|has a `ruby` element in scope=], then [=generate implied end tags=]. If the
-    [=current node=] is not now a <{ruby}> element, this is a
-    [=parse error=].
-
-    [=Insert an HTML element=] for the token.
-
-    </dd>
-
-  : A start tag whose tag name is one of: "rp", "rt"
-  ::
-
-    If the [=stack of open elements=] [=in scope|has a `ruby` element in scope=], then [=generate implied end tags=], except
-    for <{rtc}> elements. If the [=current node=] is not now a <{rtc}> element or a <{ruby}>
-    element, this is a [=parse error=].
-
-    [=Insert an HTML element=] for the token.
-    </dd>
-
-  : A start tag whose tag name is "math"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Adjust MathML attributes=] for the token. (This fixes the case of MathML
-    attributes that are not all lowercase.)
-
-    [=Adjust foreign attributes=] for the token. (This fixes the use of namespaced
-    attributes, in particular XLink.)
-
-    [=Insert a foreign element=] for the token, in the [=MathML namespace=].
-
-    If the token has its [=self-closing flag=] set, pop the [=current node=] off the
-    [=stack of open elements=] and [=acknowledged|acknowledge the token's *self-closing flag*=].
-
-    </dd>
-
-  : A start tag whose tag name is "svg"
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Adjust SVG attributes=] for the token. (This fixes the case of SVG attributes that
-    are not all lowercase.)
-
-    [=Adjust foreign attributes=] for the token. (This fixes the use of namespaced
-    attributes, in particular XLink in SVG.)
-
-    [=Insert a foreign element=] for the token, in the [=SVG namespace=].
-
-    If the token has its [=self-closing flag=] set, pop the [=current node=] off the
-    [=stack of open elements=] and [=acknowledged|acknowledge the token's *self-closing flag*=].
-
-    </dd>
-
-  : A start  tag whose tag name is one of: "caption", "col", "colgroup", "frame",
-    "head", "tbody", "td", "tfoot", "th", "thead", "tr"
-
-  ::
-
-    [=Parse error=].
-
-    </dd>
-
-  : Any other start tag
-  ::
-
-    [=Reconstruct the active formatting elements=], if any.
-
-    [=Insert an HTML element=] for the token.
-
-    <p class="note">This element will be an [=ordinary=]element.</p>
-
-    </dd>
-
-  : Any other end tag
-  ::
-
-    Run these steps:
-
-    <ol>
-
-      <li>Initialize |node| to be the [=current node=] (the bottommost
-      node of the stack).</li>
-
-      <li>|Loop|: If |node| is an [=HTML element=] with the same tag name as the token, then:
-
-      <ol>
-
-        <li>[=Generate implied end tags=], except for [=HTML elements=] with the
-        same tag name as the token.</li>
-
-        <li>If |node| is not the [=current node=], then this is a
-        [=parse error=].</li>
-
-        <li>Pop all the nodes from the [=current node=] up to |node|,
-        including |node|, then stop these steps.</li>
-
-      </ol>
-
-      </li>
-
-      <li>Otherwise, if |node| is in the [=special=] category, then
-      this is a [=parse error=]; ignore the token, and abort these steps.</li>
-
-      <li>Set |node| to the previous entry in the <a>stack of open
-      elements</a>.</li>
-
-      <li>Return to the step labeled |Loop|.</li>
-
-    </ol>
-
-    </dd>
+        1. Initialize |node| to be the [=current node=] (the bottommost node of the stack).
+        2. |Loop|: If |node| is an [=HTML element=] with the same tag name as the token, then:
+            1. [=Generate implied end tags=], except for [=HTML elements=] with the same tag name as
+                the token.
+            2. If |node| is not the [=current node=], then this is a [=parse error=].
+            3. Pop all the nodes from the [=current node=] up to |node|, including |node|, then stop
+                these steps.
+        3. Otherwise, if |node| is in the [=special=] category, then this is a [=parse error=];
+            ignore the token, and abort these steps.
+        4. Set |node| to the previous entry in the [=stack of open elements=].
+        5. Return to the step labeled |Loop|.
 
   </dl>
 
-  When the steps above say the UA is to <dfn>close a <{p}> element</dfn>, it
-  means that the UA must run the following steps:
+  When the steps above say the UA is to <dfn>close a <{p}> element</dfn>, it means that the UA must
+  run the following steps:
 
-  <ol>
+  1. [=Generate implied end tags=], except for <{p}> elements.
+  2. If the [=current node=] is not a <{p}> element, then this is a [=parse error=].
+  3. Pop elements from the [=stack of open elements=] until a <{p}> element has been popped from the
+      stack.
 
-    <li>[=Generate implied end tags=], except for <{p}> elements.</li>
+  The <dfn>adoption agency algorithm</dfn>, which takes as its only argument a token |token| for
+  which the algorithm is being run, consists of the following steps:
 
-    <li>If the [=current node=] is not a <{p}> element, then this is a
-    [=parse error=].</li>
+  1. Let |subject| be |token|'s tag name.
+  2. If the [=current node=] is an [=HTML element=] whose tag name is |subject|, and the
+      [=current node=] is not in the [=list of active formatting elements=], then pop the
+      [=current node=] off the [=stack of open elements=], and abort these steps.
+  3. Let |outer loop counter| be zero.
+  4. |Outer loop|: If |outer loop counter| is greater than or equal to eight, then abort these
+      steps.
+  5. Increment |outer loop counter| by one.
+  6. Let |formatting element| be the last element in the [=list of active formatting elements=]
+      that:
 
-    <li>Pop elements from the [=stack of open elements=] until a <{p}> element
-    has been popped from the stack.</li>
+      * is between the end of the list and the last [=marker=] in the list, if any, or the start of
+          the list otherwise, and
+      * has the tag name |subject|.
 
-  </ol>
+      If there is no such element, then abort these steps and instead act as described in the "any
+      other end tag" entry above.
+  7. If |formatting element| is not in the [=stack of open elements=], then this is a
+      [=parse error=]; remove the element from the list, and abort these steps.
+  8. If |formatting element| is in the [=stack of open elements=], but the element is not
+      [=in scope=], then this is a [=parse error=]; abort these steps.
+  9. If |formatting element| is not the [=current node=], this is a [=parse error=]. (But do not
+      abort these steps.)
+  10. Let |furthest block| be the topmost node in the [=stack of open elements=] that is lower in
+      the stack than |formatting element|, and is an element in the [=special=] category. There
+      might not be one.
+  11. If there is no |furthest block|, then the UA must first pop all the nodes from the bottom of
+      the [=stack of open elements=], from the [=current node=] up to and including
+      |formatting element|, then remove |formatting element| from the
+      [=list of active formatting elements=], and finally abort these steps.
+  12. Let |common ancestor| be the element immediately above |formatting element| in the
+      [=stack of open elements=].
+  13. Let a bookmark note the position of |formatting element| in the
+      [=list of active formatting elements=] relative to the elements on either side of it in the
+      list.
+  14. Let |node| and |last node| be |furthest block|. Follow these steps:
 
-  The <dfn lt="closing misnested formatting elements|adoption agency algorithm|the handling for misnested tags">adoption agency algorithm</dfn>, which takes as its only argument
-  a token |token| for which the algorithm is being run, consists of the
-  following steps:
+      1. Let |inner loop counter| be zero.
+      2. |Inner loop|: Increment |inner loop counter| by one.
+      3. Let |node| be the element immediately above |node| in the [=stack of open elements=], or
+          if |node| is no longer in the [=stack of open elements=] (e.g., because it got removed by
+          this algorithm), the element that was immediately above |node| in the
+          [=stack of open elements=] before |node| was removed.
+      4. If |node| is |formatting element|, then go to the next step in the overall algorithm.
+      5. If |inner loop counter| is greater than three and |node| is in the
+          [=list of active formatting elements=], then remove |node| from the
+          [=list of active formatting elements=].
+      6. If |node| is not in the [=list of active formatting elements=], then remove |node| from the
+          [=stack of open elements=] and then go back to the step labeled |Inner loop|.
+      7. [=Create an element for the token=] for which the element |node| was created, in the
+          [=HTML namespace=], with |common ancestor| as the intended parent; replace the entry for
+          |node| in the [=list of active formatting elements=] with an entry for the new element,
+          replace the entry for |node| in the [=stack of open elements=] with an entry for the new
+          element, and let |node| be the new element.
+      8. If |last node| is |furthest block|, then move the aforementioned bookmark to be immediately
+          after the new |node| in the [=list of active formatting elements=].
+      9. Insert |last node| into |node|, first removing it from its previous parent node if any.
+      10. Let |last node| be |node|.
+      11. Return to the step labeled |Inner loop|.
+  15. Insert whatever |last node| ended up being in the previous step at the
+      [=appropriate place for inserting a node=], but using |common ancestor| as the
+      |override target|.
+  16. [=Create an element for the token=] for which |formatting element| was created, in the
+      [=HTML namespace=], with |furthest block| as the intended parent.
+  17. Take all of the child nodes of |furthest block| and append them to the element created in the
+      last step.
+  18. Append that new element to |furthest block|.
+  19. Remove |formatting element| from the [=list of active formatting elements=], and insert the
+      new element into the [=list of active formatting elements=] at the position of the
+      aforementioned bookmark.
+  20. Remove |formatting element| from the [=stack of open elements=], and insert the new element
+      into the [=stack of open elements=] immediately below the position of |furthest block| in that
+      stack.
+  21. Jump back to the step labeled |Outer loop|.
 
-  <ol>
-    <li><p>Let |subject| be |token|'s tag name.</p></li>
-
-    <li>If the [=current node=] is an [=HTML element=]
-    whose tag name is |subject|, and the [=current node=] is not in the
-    [=list of active formatting elements=], then pop the [=current node=] off the
-    [=stack of open elements=], and abort these steps.</li>
-
-    <li>Let |outer loop counter| be zero.</li>
-
-    <li>|Outer loop|: If |outer loop counter| is greater than or equal to
-    eight, then abort these steps.</li>
-
-    <li>Increment |outer loop counter| by one.</li>
-
-    <li>
-
-    Let |formatting element| be the last element in the <a>list of active
-    formatting elements</a> that:
-
-    <ul>
-
-      <li>is between the end of the list and the last [=marker=] in the list, if any, or the start of the list
-      otherwise, and</li>
-
-      <li>has the tag name |subject|.</li>
-
-    </ul>
-
-    If there is no such element, then abort these steps and instead act as described in the "any
-    other end tag" entry above.
-
-    </li>
-
-    <li>If |formatting element| is not in the <a>stack of open
-    elements</a>, then this is a [=parse error=]; remove the element from the list, and
-    abort these steps.</li>
-
-    <li>If |formatting element| is in the [=stack of open elements=],
-    but the element is not [=in scope=], then this is a
-    [=parse error=]; abort these steps.</li>
-
-    <li>If |formatting element| is not the [=current node=], this is a
-    [=parse error=]. (But do not abort these steps.)</li>
-
-    <li>Let |furthest block| be the topmost node in the <a>stack of open
-    elements</a> that is lower in the stack than |formatting element|, and is an
-    element in the [=special=] category. There might not be one.</li>
-
-    <li>If there is no |furthest block|, then the UA must first pop all the
-    nodes from the bottom of the [=stack of open elements=], from the <a>current
-    node</a> up to and including |formatting element|, then remove |formatting element| from the [=list of active formatting elements=], and
-    finally abort these steps.</li>
-
-    <li>Let |common ancestor| be the element immediately above |formatting element| in the [=stack of open elements=].</li>
-
-    <li>Let a bookmark note the position of |formatting element| in the
-    [=list of active formatting elements=] relative to the elements on either side of it in
-    the list.</li>
-
-    <li>
-
-    Let |node| and |last node| be |furthest
-    block|. Follow these steps:
-
-    <ol>
-
-      <li>Let |inner loop counter| be zero.</li>
-
-      <li>|Inner loop|: Increment |inner loop counter| by one.</li>
-
-      <li>Let |node| be the element immediately above |node|
-      in the [=stack of open elements=], or if |node| is no longer in the
-      [=stack of open elements=] (e.g., because it got removed by this algorithm), the element that was immediately above |node| in the [=stack of open elements=] before |node|
-      was removed.</li>
-
-      <li>If |node| is |formatting element|, then go to the
-      next step in the overall algorithm.</li>
-
-      <li>If |inner loop counter| is greater than three and |node| is in the [=list of active formatting elements=], then remove |node| from the [=list of active formatting elements=].</li>
-
-      <li>If |node| is not in the <a>list of active
-      formatting elements</a>, then remove |node| from the <a>stack of open
-      elements</a> and then go back to the step labeled |Inner loop|.</li>
-
-      <li>[=Create an element for the token=] for which the element |node| was created, in the [=HTML namespace=], with |common
-      ancestor| as the intended parent; replace the entry for |node| in the
-      [=list of active formatting elements=] with an entry for the new element, replace the
-      entry for |node| in the [=stack of open elements=] with an entry for
-      the new element, and let |node| be the new element.</li>
-
-      <li>If |last node| is |furthest block|, then move the
-      aforementioned bookmark to be immediately after the new |node| in the
-      [=list of active formatting elements=].</li>
-
-      <li>Insert |last node| into |node|, first removing it
-      from its previous parent node if any.</li>
-
-      <li>Let |last node| be |node|.</li>
-
-      <li>Return to the step labeled |Inner loop|.</li>
-
-    </ol>
-
-    </li>
-
-    <li>Insert whatever |last node| ended up being in the previous step at the
-    [=appropriate place for inserting a node=], but using |common
-    ancestor| as the |override target|.</li>
-
-    <li>[=Create an element for the token=] for which |formatting
-    element| was created, in the [=HTML namespace=], with |furthest
-    block| as the intended parent.</li>
-
-    <li>Take all of the child nodes of |furthest block| and append them to the
-    element created in the last step.</li>
-
-    <li>Append that new element to |furthest block|.</li>
-
-    <li>Remove |formatting element| from the <a>list of active formatting
-    elements</a>, and insert the new element into the <a>list of active formatting
-    elements</a> at the position of the aforementioned bookmark.</li>
-
-    <li>Remove |formatting element| from the <a>stack of open
-    elements</a>, and insert the new element into the [=stack of open elements=]
-    immediately below the position of |furthest block| in that stack.</li>
-
-    <li>Jump back to the step labeled |Outer loop|.</li>
-
-  </ol>
-
-  <p class="note">
-  This algorithm's name, the "adoption agency algorithm", comes from the way it
+  <p class="note">This algorithm's name, the "adoption agency algorithm", comes from the way it
   causes elements to change parents, and is in contrast with other possible algorithms for dealing
   with misnested content, which included the "incest algorithm", the "secret affair algorithm", and
-  the "Heisenberg algorithm".
-  </p>
+  the "Heisenberg algorithm".</p>
 
-<h6 id="sec-the-text-insertion-mode"><dfn lt="in text">The "text" insertion mode</dfn></h6>
+##### <dfn lt="in text">The "text" insertion mode</dfn> ##### {#sec-the-text-insertion-mode}
 
-  When the user agent is to apply the rules for the "[=in text|text=]" [=insertion mode=], the user agent must handle the token as
-  follows:
+  When the user agent is to apply the rules for the "[=in text|text=]" [=insertion mode=], the user
+  agent must handle the token as follows:
 
   <dl class="switch">
+    : A character token
+    :: [=Insert the token's character=].
 
-  : A character token
-  ::
+        <p class="note">This can never be a U+0000 NULL character; the tokenizer converts those to
+        U+FFFD REPLACEMENT CHARACTER characters.</p>
 
-    [=Insert the token's character=].
+    : An end-of-file token
+    :: [=Parse error=].
 
-    <p class="note">This can never be a U+0000 NULL character; the tokenizer converts those to
-    U+FFFD REPLACEMENT CHARACTER characters.</p>
+        If the [=current node=] is a <{script}> element, mark the <{script}> element as
+        [="already started"=].
 
-    </dd>
+        Pop the [=current node=] off the [=stack of open elements=].
 
-  : An end-of-file token
-  ::
+        Switch the [=insertion mode=] to the [=original insertion mode=] and reprocess the token.
 
-    [=Parse error=].
+    : An end tag whose tag name is "script"
+    :: If the [=JavaScript execution context stack=] is empty, [=perform a microtask checkpoint=].
 
-    If the [=current node=] is a <{script}> element, mark the
-    <{script}> element as [="already started"=].
+        Let |script| be the [=current node=] (which will be a <{script}> element).
 
-    Pop the [=current node=] off the [=stack of open elements=].
+        Pop the [=current node=] off the [=stack of open elements=].
 
-    Switch the [=insertion mode=] to the [=original insertion mode=] and
-    reprocess the token.
+        Switch the [=insertion mode=] to the [=original insertion mode=].
 
-    </dd>
+        Let the |old insertion point| have the same value as the current [=insertion point=]. Let
+        the [=insertion point=] be just before the [=next input character=].
 
-  : An end tag whose tag name is "script"
-  ::
+        Increment the parser's [=script nesting level=] by one.
 
-    If the [=JavaScript execution context stack=] is empty, [=perform a microtask checkpoint=].
+        Prepare the |script|. This might cause some script to execute, which might cause
+        {{Document/write()|new characters to be inserted into the tokenizer}}, and might cause the
+        tokenizer to output more tokens, resulting in a
+        [=reentrant|reentrant invocation of the parser=].
 
-    Let |script| be the [=current node=] (which will be a
-    <{script}> element).
+        Decrement the parser's [=script nesting level=] by one. If the parser's
+        [=script nesting level=] is zero, then set the [=parser pause flag=] to false.
 
-    Pop the [=current node=] off the [=stack of open elements=].
+        Let the [=insertion point=] have the value of the |old insertion point|. (In other words,
+        restore the [=insertion point=] to its previous value. This value might be the "undefined"
+        value.)
 
-    Switch the [=insertion mode=] to the [=original insertion mode=].
+        At this stage, if there is a [=pending parsing-blocking script=], then:
 
-    Let the |old insertion point| have the same value as the current
-    [=insertion point=]. Let the [=insertion point=] be just before the <a>next
-    input character</a>.
+        <dl class="switch">
+          : If the [=script nesting level=] is not zero:
+          :: Set the [=parser pause flag=] to true, and abort the processing of any nested
+              invocations of the tokenizer, yielding control back to the caller. (Tokenization will
+              resume when the caller returns to the "outer" tree construction stage.)
 
-    Increment the parser's [=script nesting level=] by one.
+              <p class="note">The tree construction stage of this particular parser is
+              [=reentrant|being called reentrantly=], say from a call to
+              {{Document/write()|document.write()}}.</p>
 
-    Prepare the |script|. This might
-    cause some script to execute, which might cause <a method for="Document" lt="write()">new characters
-    to be inserted into the tokenizer</a>, and might cause the tokenizer to output more tokens,
-    resulting in a <a lt="reentrant">reentrant invocation of the parser</a>.
+          : Otherwise:
+          :: Run these steps:
 
-    Decrement the parser's [=script nesting level=] by one. If the parser's <a>script
-    nesting level</a> is zero, then set the [=parser pause flag=] to false.
+              1. Let |the script| be the [=pending parsing-blocking script=]. There is no longer a
+                  [=pending parsing-blocking script=].
+              2. Block the [[#tokenization|tokenizer]] for this instance of the [=HTML parser=],
+                  such that the [=event loop=] will not run [=tasks=] that invoke the
+                  [[#tokenization|tokenizer]].
+              3. If the parser's {{Document}} [=has a style sheet that is blocking scripts=] or
+                  |the script|'s [="ready to be parser-executed"=] flag is not set:
+                  [=spin the event loop=] until the parser's {{Document}}
+                  [=has no style sheet that is blocking scripts=] and |the script|'s
+                  [="ready to be parser-executed"=] flag is set.
+              4. If this [=abort a parser|parser has been aborted=] in the meantime, abort these
+                  steps.
 
-    Let the [=insertion point=] have the value of the |old insertion
-    point|. (In other words, restore the [=insertion point=] to its previous value.
-    This value might be the "undefined" value.)
+                  <p class="note">This could happen if, e.g., while the [=spin the event loop=]
+                  algorithm is running, the [=browsing context=] gets closed, or the
+                  {{Document/open()|document.open()}} method gets invoked on the {{Document}}.</p>
+              5. Unblock the [[#tokenization|tokenizer]] for this instance of the [=HTML parser=],
+                  such that [=tasks=] that invoke the [[#tokenization|tokenizer]] can again be run.
+              6. Let the [=insertion point=] be just before the [=next input character=].
+              7. Increment the parser's [=script nesting level=] by one (it should be zero before
+                  this step, so this sets it to one).
+              8. [=Execute=] |the script|.
+              9. Decrement the parser's [=script nesting level=] by one. If the parser's
+                  [=script nesting level=] is zero (which it always should be at this point), then
+                  set the [=parser pause flag=] to false.
+              10. Let the [=insertion point=] be undefined again.
+              11. If there is once again a [=pending parsing-blocking script=], then repeat these
+                  steps from step 1.
 
-    At this stage, if there is a <a>pending parsing-blocking
-    script</a>, then:
+        </dl>
 
-    <dl class="switch">
+    : Any other end tag
+    :: Pop the [=current node=] off the [=stack of open elements=].
 
-    : If the [=script nesting level=] is not zero:
-
-    ::
-
-      Set the [=parser pause flag=] to true, and abort the processing of any nested
-      invocations of the tokenizer, yielding control back to the caller. (Tokenization will resume
-      when the caller returns to the "outer" tree construction stage.)
-
-      <p class="note">The tree construction stage of this particular parser is <a lt="reentrant">being called reentrantly</a>, say from a call to {{Document/write()|document.write()}}.</p>
-
-      </dd>
-
-    : Otherwise:
-
-    ::
-
-      Run these steps:
-
-      <ol>
-
-        <li>Let |the script| be the <a>pending parsing-blocking
-        script</a>. There is no longer a <a>pending parsing-blocking script</a>.</li>
-
-        <li>Block the [[#tokenization|tokenizer]] for this instance of the
-        [=HTML parser=], such that the [=event loop=] will not run [=tasks=] that invoke the [[#tokenization|tokenizer]].</li>
-
-        <li>If the parser's {{Document}} [=has a style sheet that is blocking scripts=]
-        or |the script|'s <a>"ready to be parser-executed"</a>
-        flag is not set: [=spin the event loop=] until the parser's {{Document}}
-        [=has no style sheet that is blocking scripts=] and |the script|'s
-        <a>"ready to be parser-executed"</a> flag is set.</li>
-
-        <li>
-
-        If this <a lt="abort a parser">parser has been aborted</a> in the meantime,
-        abort these steps.
-
-        <p class="note">This could happen if, e.g., while the [=spin the event loop=]
-        algorithm is running, the [=browsing context=] gets closed, or the <code>document.open()</code> method gets invoked on the
-        {{Document}}.</p>
-
-        </li>
-
-        <li>Unblock the [[#tokenization|tokenizer]] for this instance of the
-        [=HTML parser=], such that [=tasks=] that invoke the
-        [[#tokenization|tokenizer]] can again be run.</li>
-
-        <li>Let the [=insertion point=] be just before the <a>next input
-        character</a>.</li>
-
-        <li>Increment the parser's [=script nesting level=] by one (it should be zero
-        before this step, so this sets it to one).</li>
-
-        <li>[=Execute=] |the
-        script|.</li>
-
-        <li>Decrement the parser's [=script nesting level=] by one. If the parser's
-        [=script nesting level=] is zero (which it always should be at this point), then set
-        the [=parser pause flag=] to false.
-
-        <li>Let the [=insertion point=] be undefined again.</li>
-
-        <li>If there is once again a <a>pending parsing-blocking script</a>, then repeat
-        these steps from step 1.</li>
-
-      </ol>
-
-      </dd>
-
-    </dl>
-
-    </dd>
-
-  : Any other end tag
-  ::
-
-    Pop the [=current node=] off the [=stack of open elements=].
-
-    Switch the [=insertion mode=] to the [=original insertion mode=].
-
-    </dd>
-
+        Switch the [=insertion mode=] to the [=original insertion mode=].
   </dl>
 
 ##### The "<dfn>in table</dfn>" insertion mode ##### {#the-in-table-insertion-mode}
 
-  When the user agent is to apply the rules for the "<a>in
-  table</a>" [=insertion mode=], the user agent must handle the token as follows:
+  When the user agent is to apply the rules for the "[=in table=]" [=insertion mode=], the user
+  agent must handle the token as follows:
 
   <dl class="switch">
 
-  : A character token, if the [=current node=] is <{table}>, <{tbody}>, <{tfoot}>, <{thead}>, or <{tr}> element
-  ::
+    : A character token, if the [=current node=] is <{table}>, <{tbody}>, <{tfoot}>, <{thead}>, or <{tr}> element
+    ::
 
-      Let the <dfn>|pending table character
-      tokens|</dfn> be an empty list of tokens.
+        Let the <dfn>|pending table character
+        tokens|</dfn> be an empty list of tokens.
 
-      Let the [=original insertion mode=] be the current [=insertion mode=].
+        Let the [=original insertion mode=] be the current [=insertion mode=].
 
-      Switch the [=insertion mode=] to "<a>in
-      table text</a>" and reprocess the token.
+        Switch the [=insertion mode=] to "<a>in
+        table text</a>" and reprocess the token.
 
-    </dd>
+      </dd>
 
-  : A comment token
-  ::
-    [=Insert a comment=].
-    </dd>
+    : A comment token
+    ::
+      [=Insert a comment=].
+      </dd>
 
-  : A DOCTYPE token
-  ::
-    [=Parse error=].
-    </dd>
+    : A DOCTYPE token
+    ::
+      [=Parse error=].
+      </dd>
 
-  : A start tag whose tag name is "caption"
-  ::
+    : A start tag whose tag name is "caption"
+    ::
 
-    [=Clear the stack back to a table context=]. (See below.)
+      [=Clear the stack back to a table context=]. (See below.)
 
-    Insert a [=marker=] at the end of the [=list of active formatting elements=].
+      Insert a [=marker=] at the end of the [=list of active formatting elements=].
 
-    [=Insert an HTML element=] for the token, then switch the <a>insertion
-    mode</a> to "[=in caption=]".
+      [=Insert an HTML element=] for the token, then switch the <a>insertion
+      mode</a> to "[=in caption=]".
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is "colgroup"
-  ::
+    : A start tag whose tag name is "colgroup"
+    ::
 
-    [=Clear the stack back to a table context=]. (See below.)
+      [=Clear the stack back to a table context=]. (See below.)
 
-    [=Insert an HTML element=] for the token, then switch the <a>insertion
-    mode</a> to "[=in column group=]".
+      [=Insert an HTML element=] for the token, then switch the <a>insertion
+      mode</a> to "[=in column group=]".
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is "col"
-  ::
+    : A start tag whose tag name is "col"
+    ::
 
-    [=Clear the stack back to a table context=]. (See below.)
+      [=Clear the stack back to a table context=]. (See below.)
 
-    [=Insert an HTML element=] for a "colgroup" start tag token with no attributes, then
-    switch the [=insertion mode=] to "<a>in
-    column group</a>".
+      [=Insert an HTML element=] for a "colgroup" start tag token with no attributes, then
+      switch the [=insertion mode=] to "<a>in
+      column group</a>".
 
-    Reprocess the current token.
+      Reprocess the current token.
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is one of: "tbody", "tfoot", "thead"
-  ::
+    : A start tag whose tag name is one of: "tbody", "tfoot", "thead"
+    ::
 
-    [=Clear the stack back to a table context=]. (See below.)
+      [=Clear the stack back to a table context=]. (See below.)
 
-    [=Insert an HTML element=] for the token, then switch the <a>insertion
-    mode</a> to "[=in table body=]".
+      [=Insert an HTML element=] for the token, then switch the <a>insertion
+      mode</a> to "[=in table body=]".
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is one of: "td", "th", "tr"
-  ::
+    : A start tag whose tag name is one of: "td", "th", "tr"
+    ::
 
-    [=Clear the stack back to a table context=]. (See below.)
+      [=Clear the stack back to a table context=]. (See below.)
 
-    [=Insert an HTML element=] for a "tbody" start tag token with no attributes, then
-    switch the [=insertion mode=] to "<a>in table
-    body</a>".
+      [=Insert an HTML element=] for a "tbody" start tag token with no attributes, then
+      switch the [=insertion mode=] to "<a>in table
+      body</a>".
 
-    Reprocess the current token.
+      Reprocess the current token.
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is "table"
-  ::
+    : A start tag whose tag name is "table"
+    ::
 
-    [=Parse error=].
+      [=Parse error=].
 
-    If the [=stack of open elements=] does not [=in table scope|have a `table` element in table scope=], ignore the token.
+      If the [=stack of open elements=] does not [=in table scope|have a `table` element in table scope=], ignore the token.
 
-    Otherwise:
+      Otherwise:
 
-    Pop elements from this stack until a <{table}> element has been popped from the
-    stack.
+      Pop elements from this stack until a <{table}> element has been popped from the
+      stack.
 
-    [=Reset the insertion mode appropriately=].
+      [=Reset the insertion mode appropriately=].
 
-    Reprocess the token.
+      Reprocess the token.
 
-    </dd>
+      </dd>
 
-  : An end tag whose tag name is "table"
-  ::
+    : An end tag whose tag name is "table"
+    ::
 
-    If the [=stack of open elements=] does not [=in table scope|have a `table` element in table scope=], this is a [=parse error=]; ignore the token.
+      If the [=stack of open elements=] does not [=in table scope|have a `table` element in table scope=], this is a [=parse error=]; ignore the token.
 
-    Otherwise:
+      Otherwise:
 
-    Pop elements from this stack until a <{table}> element has been popped from the
-    stack.
+      Pop elements from this stack until a <{table}> element has been popped from the
+      stack.
 
-    [=Reset the insertion mode appropriately=].
+      [=Reset the insertion mode appropriately=].
 
-    </dd>
+      </dd>
 
-  : An end tag whose tag name is one of: "body", "caption", "col", "colgroup", "html", "tbody",
-    "td", "tfoot", "th", "thead", "tr"
-  ::
-    [=Parse error=].
-    </dd>
+    : An end tag whose tag name is one of: "body", "caption", "col", "colgroup", "html", "tbody",
+      "td", "tfoot", "th", "thead", "tr"
+    ::
+      [=Parse error=].
+      </dd>
 
-  : A start tag whose tag name is one of: "style", "script", "template"
-  : An end tag whose tag name is "template"
-  ::
+    : A start tag whose tag name is one of: "style", "script", "template"
+    : An end tag whose tag name is "template"
+    ::
 
-    Process the token [=using the rules for=] the "[=in head=]" <a>insertion
-    mode</a>.
+      Process the token [=using the rules for=] the "[=in head=]" <a>insertion
+      mode</a>.
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is "input"
-  ::
+    : A start tag whose tag name is "input"
+    ::
 
-    If the token does not have an attribute with the name "type", or if it does, but that
-    attribute's value is not an [=ASCII case-insensitive=] match for the string "<code>hidden</code>", then: act as described in the "anything else" entry below.
+      If the token does not have an attribute with the name "type", or if it does, but that
+      attribute's value is not an [=ASCII case-insensitive=] match for the string "<code>hidden</code>", then: act as described in the "anything else" entry below.
 
-    Otherwise:
+      Otherwise:
 
-    [=Parse error=].
+      [=Parse error=].
 
-    [=Insert an HTML element=] for the token.
+      [=Insert an HTML element=] for the token.
 
-    Pop that <{input}> element off the [=stack of open elements=].
+      Pop that <{input}> element off the [=stack of open elements=].
 
-    [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
+      [=acknowledged|Acknowledge the token's *self-closing flag*=], if it is set.
 
-    </dd>
+      </dd>
 
-  : A start tag whose tag name is "form"
-  ::
+    : A start tag whose tag name is "form"
+    ::
 
-    [=Parse error=].
+      [=Parse error=].
 
-    If there is a <{template}> element on the [=stack of open elements=], or if
-    the [=`form` element pointer=] is not null, ignore the
-    token.
+      If there is a <{template}> element on the [=stack of open elements=], or if
+      the [=`form` element pointer=] is not null, ignore the
+      token.
 
-    Otherwise:
+      Otherwise:
 
-    [=Insert an HTML element=] for the token, and set the [=`form` element pointer=] to point to the element created.
+      [=Insert an HTML element=] for the token, and set the [=`form` element pointer=] to point to the element created.
 
-    Pop that <{form}> element off the [=stack of open elements=].
+      Pop that <{form}> element off the [=stack of open elements=].
 
-    </dd>
+      </dd>
 
-  : An end-of-file token
-  ::
+    : An end-of-file token
+    ::
 
-    Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
+      Process the token [=using the rules for=] the "[=in body=]" [=insertion mode=].
 
-    </dd>
+      </dd>
 
-  : Anything else
-  ::
+    : Anything else
+    ::
 
-    [=Parse error=]. Enable [=foster parenting=], process
-    the token [=using the rules for=] the "<a>in
-    body</a>" [=insertion mode=], and then disable <a>foster
-    parenting</a>.
+      [=Parse error=]. Enable [=foster parenting=], process
+      the token [=using the rules for=] the "<a>in
+      body</a>" [=insertion mode=], and then disable <a>foster
+      parenting</a>.
 
-    </dd>
+      </dd>
 
   </dl>
 
