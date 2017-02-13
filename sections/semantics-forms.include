@@ -223,7 +223,7 @@
   POST requests. To specify the exact method used, the <{form/method}>
   attribute is specified on the <{form}> element. This doesn't specify how the form data is
   encoded, though; to specify that, you use the <{form/enctype}>
-  attribute. You also have to specify the <a for="url">URL</a> of the service that will handle the
+  attribute. You also have to specify the [=url/URL=] of the service that will handle the
   submitted data, using the <{form/action}> attribute.
 
   For each form control you want submitted, you then have to give a name that will be used to
@@ -526,39 +526,30 @@
   Similar issues exist with dates, with the added complication that even the order of the
   components is not always consistent — for example, in Cyprus the first of February 2003
   would typically be written "1/2/03", while that same date in Japan would typically be written
-  as "2003年02月01日".
+  as "2003年02月01日"  — and even with numbers, where locales differ, for example, in what punctuation 
+  is used as the decimal separator and the thousands separator.
 
-  The same applies to the way numbers are written in different places. For example, in some
-  locales, such as US English, "1,234" usually means "one thousand two hundred and thirty-four",
-  while "1.234" means "one and two hundred and thirty-four thousandths", or "one point two
-  three four", while in many other locales the meanings are exactly reversed.
+  It is therefore important to distinguish the time, date, and number formats used in HTML and in 
+  form submissions, which are always the formats defined in this specification (and based on the 
+  well-established ISO 8601 standard for computer-readable date and time formats), from the time, 
+  date, and number formats presented to the user by the browser and accepted as input from the user 
+  by the browser.
 
-  The format used "on the wire", i.e., in HTML markup and as the values for <a>form
-  submissions</a>, is intended to be computer-readable and consistent irrespective of the
-  user's locale, to allow scripts in pages and on servers to process times, dates, and
-  numbers in a consistent manner with minimal work.
+  The format used "on the wire", i.e. in HTML markup and in form submissions, is intended to be 
+  computer-readable and consistent irrespective of the user's locale. Dates, for instance, are always
+  written in the format "YYYY-MM-DD", as in "2003-02-01". Users are not expected to ever see this format.
 
-  In HTML markup and form submission dates and times are always written in a locale-neutral format derived from the ISO-8601 standard. For example, dates are generally in a format such as 2016-06-19.
+  The time, date, or number given by the page in the wire format is then translated to the user's 
+  preferred presentation (based on user preferences or on the locale of the page itself), before 
+  being displayed to the user. Similarly, after the user inputs a time, date, or number using their 
+  preferred format, the user agent converts it back to the wire format before putting it in the DOM 
+  or submitting it.
 
-  Likewise, in markup and <a>form submission</a> numbers are always written without grouping
-  separators, and a FULL STOP character "." @@ as a decimal separator.
+  This allows scripts in pages and on servers to process times, dates, and numbers in a consistent 
+ manner without needing to support dozens of different formats, while still supporting the users' needs.
 
-  The time, date, or number may be translated to the user's preferred presentation
-  (based on expressed preferences or on the locale of the page itself), before being
-  displayed to the user. Similarly, user agents may allow a user to input a time, date,
-  or number using their preferred format, then converts it back to the wire format
-  before putting it in the DOM or submitting it.
-
-  This allows scripts in pages and on servers to process times, dates, and numbers in a
-  consistent manner without needing to support dozens of different formats, while still supporting
-  the users' needs.
-
-  <div class="impl">
-  <p class="note">
-    See also the <a>implementation notes</a> regarding
-  localization of form controls.
-  </p>
-  </div>
+  <p class="note">See also the <a>implementation notes</a> regarding
+  localization of form controls.</p>
 
 <h4 id="form-categories">Categories</h4>
 
@@ -667,7 +658,7 @@
 
   <ul class="brief category-list">
     <li><{button}></li>
-    <li><{input}> (if the <{input/type}> attribute is <em>not</em> in the <a>Hidden</a> state)</li>
+    <li><{input}> (if the <{input/type}> attribute is <em>not</em> in the <{input/Hidden}> state)</li>
     <li><{meter}></li>
     <li><{output}></li>
     <li><{progress}></li>
@@ -819,18 +810,18 @@
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><{form/accept-charset}> - Character encodings to use for [[#forms-form-submission]]</dd>
-    <dd><{form/action}> - <a for="url">URL</a> to use for [[#forms-form-submission]]</dd>
+    <dd><{form/action}> - [=url/URL=] to use for [[#forms-form-submission]]</dd>
     <dd><{form/autocomplete}> - Default setting for autofill feature for controls in the form </dd>
     <dd><{form/enctype}> - Form data set encoding type to use for [[#forms-form-submission]]</dd>
     <dd><{form/method}> - HTTP method to use for [[#forms-form-submission]]</dd>
     <dd><{form/name}> -  Name of form to use in the {{Document/forms|document.forms}} API</dd>
     <dd><{form/novalidate}> - Bypass form control validation for [[#forms-form-submission]]</dd>
     <dd><{form/target}> - <a>browsing context</a> for [[#forms-form-submission]]</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     dd><code>form</code>
-    (default - <a><em>do not set</em></a>),  <a value for="role"><code>search</code></a> or  
-    <a value for="role"><code>presentation</code></a>.
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    (default - <a><em>do not set</em></a>),  <a attr-value for="aria/role"><code>search</code></a> or
+    <a attr-value for="aria/role"><code>presentation</code></a>.
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -984,7 +975,7 @@
   {{HTMLFormControlsCollection}} rooted at the <{form}> element, whose filter matches
   <a>listed elements</a> whose <a>form owner</a> is the <{form}> element, with the exception of
   <{input}> elements whose <{input/type}> attribute is in the
-  <a element-state for="input">image button</a> state, which must, for historical reasons, be
+  <{input/Image|Image Button}> state, which must, for historical reasons, be
   excluded from this particular collection.
 
   The <dfn attribute for="HTMLFormElement"><code>length</code></dfn> IDL attribute must return the
@@ -1017,12 +1008,12 @@
     For each <a>listed element</a> <var>candidate</var>
     whose <a>form owner</a> is the <{form}> element, with the exception of any
     <{input}> elements whose <{input/type}> attribute is in the
-    <a element-state for="input">image button</a> state, run these substeps:
+    <{input/Image|Image Button}> state, run these substeps:
 
     <ol>
 
-      <li>If <var>candidate</var> has an <code>id</code> attribute, add
-      an entry to <var>sourced names</var> with that <code>id</code>
+      <li>If <var>candidate</var> has an <{global/id}> attribute, add
+      an entry to <var>sourced names</var> with that <{global/id}>
       attribute's value as the string, <var>candidate</var> as the element, and <i>id</i> as
       the source.</li>
 
@@ -1041,8 +1032,8 @@
 
     <ol>
 
-      <li>If <var>candidate</var> has an <code>id</code> attribute, add
-      an entry to <var>sourced names</var> with that <code>id</code>
+      <li>If <var>candidate</var> has an <{global/id}> attribute, add
+      an entry to <var>sourced names</var> with that <{global/id}>
       attribute's value as the string, <var>candidate</var> as the element, and <i>id</i> as
       the source.</li>
 
@@ -1089,10 +1080,10 @@
         the <a>listed elements</a> whose <a>form owner</a> is the <{form}> element that have either
         an <{global/id}> attribute or a <{formelements/name}> attribute equal to <var>name</var>,
         with the exception of <{input}> elements whose <{input/type}> attribute is in the
-        <a element-state for="input">Image Button</a> state, in <a>tree order</a>.
+        <{input/Image|Image Button}> state, in <a>tree order</a>.
     2. If <var>candidates</var> is empty, let <var>candidates</var> be a <a>live</a>
         <code>RadioNodeList</code> object containing all the <{img}> elements that are descendants
-        of the <{form}> element and that have either an <code>id</code> attribute or a
+        of the <{form}> element and that have either an <{global/id}> attribute or a
         <{formelements/name}> attribute equal to <var>name</var>, in <a>tree order</a>.
     3. If <var>candidates</var> is empty, <var>name</var> is the name of one of the entries in the
         <{form}> element's <a>past names map</a>: return the object associated with <var>name</var>
@@ -1173,9 +1164,9 @@
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><{label/for}> - Associate the label with form control</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
@@ -1218,7 +1209,7 @@
   <pre highlight="html">
 &lt;form&gt;
   &lt;table&gt;
-    &lt;caption&gt;Example &lt;<code>label</code>:gt;'s <code>for</code> attribute with &lt;<code>label</code>&gt;&lt;/caption&gt;
+    &lt;caption&gt;Example &lt;label&gt;'s for attribute with &lt;label&gt;&lt;/caption&gt;
     &lt;tr&gt;
       &lt;th&gt;&lt;label for="name"&gt;Customer name: &lt;/label&gt;&lt;/th&gt;
       &lt;td&gt;&lt;input name="name" id="name"&gt;&lt;/td&gt;
@@ -1226,7 +1217,7 @@
   &lt;/table&gt;
 &lt;/form&gt;
     </pre>
-<p>Note that the <code>id</code> attribute is required to associate the <{label/for}> attribute,
+<p>Note that the <{global/id}> attribute is required to associate the <{label/for}> attribute,
 while the <{label/name}> attribute is required so the value of the input will be submitted as
 part of the form.</p>
 </div>
@@ -1356,10 +1347,10 @@ part of the form.</p>
     <dt><a>Categories</a>:</dt>
     <dd><a>Flow content</a>.</dd>
     <dd><a>Phrasing content</a>.</dd>
-    <dd>If the <{input/type}> attribute is <em>not</em> in the <a>Hidden</a> state: <a>interactive content</a>.</dd>
-    <dd>If the <{input/type}> attribute is <em>not</em> in the <a>Hidden</a> state: <a lt="listed element">listed</a>, <a>labelable</a>, <a>submittable</a>, <a>resettable</a>, and <a>reassociateable</a> <a>form-associated element</a>.</dd>
-    <dd>If the <{input/type}> attribute is in the <a>Hidden</a> state: <a lt="listed element">listed</a>, <a>submittable</a>, <a>resettable</a>, and <a>reassociateable</a> <a>form-associated element</a>.</dd>
-    <dd>If the <{input/type}> attribute is <em>not</em> in the <a>Hidden</a> state: <a>Palpable content</a>.</dd>
+    <dd>If the <{input/type}> attribute is <em>not</em> in the <{input/Hidden}> state: <a>interactive content</a>.</dd>
+    <dd>If the <{input/type}> attribute is <em>not</em> in the <{input/Hidden}> state: <a lt="listed element">listed</a>, <a>labelable</a>, <a>submittable</a>, <a>resettable</a>, and <a>reassociateable</a> <a>form-associated element</a>.</dd>
+    <dd>If the <{input/type}> attribute is in the <{input/Hidden}> state: <a lt="listed element">listed</a>, <a>submittable</a>, <a>resettable</a>, and <a>reassociateable</a> <a>form-associated element</a>.</dd>
+    <dd>If the <{input/type}> attribute is <em>not</em> in the <{input/Hidden}> state: <a>Palpable content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>Where <a>phrasing content</a> is expected.</dd>
     <dt><a>Content model</a>:</dt>
@@ -1368,7 +1359,7 @@ part of the form.</p>
     <dd>No <a>end tag</a></dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><{input/accept}> - Hint for expected file type in <a element-state for="input">file upload controls</a></dd>
+    <dd><{input/accept}> - Hint for expected file type in <{input/File|File Upload}> controls</dd>
     <dd><{input/alt}> - Replacement text for use when images are not available</dd>
     <dd><{input/autocomplete}> - Hint for form autofill feature</dd>
     <dd><{input/autofocus}> - Automatically focus the form control when the page is loaded</dd>
@@ -1376,7 +1367,7 @@ part of the form.</p>
     <dd><{input/dirname}> - Name of form field to use for sending the element's <a>directionality</a> in [[#forms-form-submission]]</dd>
     <dd><{input/disabled}> - Whether the form control is disabled</dd>
     <dd><{input/form}> - Associates the control with a <{form}> element</dd>
-    <dd><{input/formaction}> - <a for="url">URL</a> to use for [[#forms-form-submission]]</dd>
+    <dd><{input/formaction}> - [=url/URL=] to use for [[#forms-form-submission]]</dd>
     <dd><{input/formenctype}> - Form data set encoding type to use for [[#forms-form-submission]]</dd>
     <dd><{input/formmethod}> - HTTP method to use for [[#forms-form-submission]]</dd>
     <dd><{input/formnovalidate}> - Bypass form control validation for [[#forms-form-submission]]</dd>
@@ -1402,9 +1393,9 @@ part of the form.</p>
     <dd><{input/width}> - Horizontal dimension</dd>
     <dd>Also, the <{input/title}> attribute has special semantics on this element
     when used in conjunction with the <{input/pattern}> attribute.</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>Depends upon <a>state of the <code>type</code> attribute</a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -1481,7 +1472,7 @@ part of the form.</p>
   The <dfn element-attr for="input"><code>type</code></dfn> attribute controls the data type of the
   element. It is an <a>enumerated attribute</a>. The data type is used to select the control to
   use for the <{input}>. Some data types allow either a text field or combo box control to be used,
-  based on the absence or presence of a <code>list</code> attribute on the element.
+  based on the absence or presence of a <{input/list}> attribute on the element.
   The following table lists the keywords and states for the attribute — the keywords in the
   left column map to the state, data type and control(s) in the cells on the same row.
 
@@ -1495,118 +1486,118 @@ part of the form.</p>
     </th></tr></thead><tbody>
     <tr>
       <td> <dfn attr-value for="input/type"><code>hidden</code></dfn>
-      </td><td> <a element-state for="input">Hidden</a>
+      </td><td> <{input/Hidden}>
       </td><td> An arbitrary string
       </td><td> n/a
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>text</code></dfn>
-      </td><td> <a element-state for="input">Text</a>
+      </td><td> <{input/Text}>
       </td><td> Text with no line breaks
       </td><td> A text field or combo box
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>search</code></dfn>
-      </td><td> <a element-state for="input">Search</a>
+      </td><td> <{input/Search}>
       </td><td> Text with no line breaks
       </td><td> Search field or combo box
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>tel</code></dfn>
-      </td><td> <a element-state for="input">Telephone</a>
+      </td><td> <{input/Telephone}>
       </td><td> Text with no line breaks
       </td><td> A text field or combo box
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>url</code></dfn>
-      </td><td> <a element-state for="input">URL</a>
+      </td><td> <{input/URL}>
       </td><td> An absolute URL
       </td><td> A text field or combo box
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>email</code></dfn>
-      </td><td> <a element-state for="input">E-mail</a>
+      </td><td> <{input/E-mail}>
       </td><td> An e-mail address or list of e-mail addresses
       </td><td> A text field or combo box
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>password</code></dfn>
-      </td><td> <a element-state for="input">Password</a>
+      </td><td> <{input/Password}>
       </td><td> Text with no line breaks (sensitive information)
       </td><td> A text field that obscures data entry
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>datetime</code></dfn>
-      </td><td> <a element-state for="input">Date and Time</a>
+      </td><td> <{input/DateTime|Date and Time}>
       </td><td> A date and time (year, month, day, hour, minute, second, fraction of a second) with the time zone set to UTC
       </td><td> A date and time control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>date</code></dfn>
-      </td><td> <a element-state for="input">Date</a>
+      </td><td> <{input/Date}>
       </td><td> A date (year, month, day) with no time zone
       </td><td> A date control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>month</code></dfn>
-      </td><td> <a element-state for="input">Month</a>
+      </td><td> <{input/Month}>
       </td><td> A date consisting of a year and a month with no time zone
       </td><td> A month control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>week</code></dfn>
-      </td><td> <a element-state for="input">Week</a>
+      </td><td> <{input/Week}>
       </td><td> A date consisting of a week-year number and a week number with no time zone
       </td><td> A week control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>time</code></dfn>
-      </td><td> <a element-state for="input">Time</a>
+      </td><td> <{input/Time}>
       </td><td> A time (hour, minute, seconds, fractional seconds) with no time zone
       </td><td> A time control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>datetime-local</code></dfn>
-      </td><td> <a element-state for="input">Local Date and Time</a>
+      </td><td> <{input/LocalDateTime|Local Date and Time}>
       </td><td> A date and time (year, month, day, hour, minute, second, fraction of a second) with no timezone offset
       </td><td> A date and time control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>number</code></dfn>
-      </td><td> <a element-state for="input">Number</a>
+      </td><td> <{input/Number}>
       </td><td> A numerical value
       </td><td> A text field or combo box or spinner control
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>range</code></dfn>
-      </td><td> <a element-state for="input">Range</a>
+      </td><td> <{input/Range}>
       </td><td> A numerical value, with the extra semantic that the exact value is not important
       </td><td> A slider control or similar
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>color</code></dfn>
-      </td><td> <a element-state for="input">Color</a>
+      </td><td> <{input/Color}>
       </td><td> An sRGB color with 8-bit red, green, and blue components
       </td><td> A color well
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>checkbox</code></dfn>
-      </td><td> <a element-state for="input">Checkbox</a>
+      </td><td> <{input/Checkbox}>
       </td><td> A set of zero or more values from a predefined list
       </td><td> A checkbox
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>radio</code></dfn>
-      </td><td> <a element-state for="input">Radio Button</a>
+      </td><td> <{input/Radio|Radio Button}>
       </td><td> An enumerated value
       </td><td> A radio button
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>file</code></dfn>
-      </td><td> <a element-state for="input">File Upload</a>
+      </td><td> <{input/File|File Upload}>
       </td><td> Zero or more files each with a <a>MIME type</a> and optionally a file name
       </td><td> A label and a button
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>submit</code></dfn>
-      </td><td> <a element-state for="input">submit button</a>
+      </td><td> <{input/Submit|Submit Button}>
       </td><td> An enumerated value, with the extra semantic that it must be the last value selected and initiates <a>form submission</a>
       </td><td> A button
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>image</code></dfn>
-      </td><td> <a element-state for="input">image button</a>
+      </td><td> <{input/Image|Image Button}>
       </td><td> A coordinate, relative to a particular image's size, with the extra semantic that it must
       be the last value selected and initiates <a>form submission</a>
       </td><td> Either a clickable image, or a button
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>reset</code></dfn>
-      </td><td> <a element-state for="input">reset button</a>
+      </td><td> <{input/Reset|Reset Button}>
       </td><td> n/a
       </td><td> A button
     </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>button</code></dfn>
-      </td><td> <a element-state for="input">Button</a>
+      </td><td> <{input/Button}>
       </td><td> n/a
       </td><td> A button
   </td></tr></tbody></table>
@@ -1670,29 +1661,29 @@ part of the form.</p>
     <thead>
     <tr>
       <th>
-      </th><th> <a element-state for="input">Hidden</a>
-      </th><th> <a element-state for="input">Text</a>,
-          <a element-state for="input">Search</a>
-      </th><th> <a element-state for="input">URL</a>,
-          <a element-state for="input">Telephone</a>
-      </th><th> <a element-state for="input">E-mail</a>
-      </th><th> <a element-state for="input">Password</a>
-      </th><th> <a element-state for="input">Date and Time</a>,
-          <a element-state for="input">Date</a>,
-          <a element-state for="input">Month</a>,
-          <a element-state for="input">Week</a>,
-          <a element-state for="input">Time</a>
+      </th><th> <{input/Hidden}>
+      </th><th> <{input/Text}>,
+          <{input/Search}>
+      </th><th> <{input/URL}>,
+          <{input/Telephone}>
+      </th><th> <{input/E-mail}>
+      </th><th> <{input/Password}>
+      </th><th> <{input/DateTime|Date and Time}>,
+          <{input/Date}>,
+          <{input/Month}>,
+          <{input/Week}>,
+          <{input/Time}>
 
-      </th><th> <a element-state for="input">Number</a>
-      </th><th> <a element-state for="input">Range</a>
-      </th><th> <a element-state for="input">Color</a>
-      </th><th> <a element-state for="input">Checkbox</a>,
-          <a element-state for="input">Radio Button</a>
-      </th><th> <a element-state for="input">File Upload</a>
-      </th><th> <a element-state for="input">submit button</a>
-      </th><th> <a element-state for="input">image button</a>
-      </th><th> <a element-state for="input">reset button</a>,
-          <a element-state for="input">Button</a>
+      </th><th> <{input/Number}>
+      </th><th> <{input/Range}>
+      </th><th> <{input/Color}>
+      </th><th> <{input/Checkbox}>,
+          <{input/Radio|Radio Button}>
+      </th><th> <{input/File|File Upload}>
+      </th><th> <{input/Submit|Submit Button}>
+      </th><th> <{input/Image|Image Button}>
+      </th><th> <{input/Reset|Reset Button}>,
+          <{input/Button}>
 
     </th></tr></thead><tbody>
     <tr>
@@ -2621,7 +2612,7 @@ part of the form.</p>
 
   <p class="note">
     The <{input/readonly}> attribute can also in some
-  cases (e.g., for the <a element-state for="input">Date</a> state, but not the <a element-state for="input">Checkbox</a> state) stop an <{input}> element from
+  cases (e.g., for the <{input/Date}> state, but not the <{input/Checkbox}> state) stop an <{input}> element from
   being <a>mutable</a>.
   </p>
 
@@ -2658,7 +2649,7 @@ part of the form.</p>
 
     <li>Update the element's rendering and behavior to the new state's.</li>
 
-    <li><dfn lt="a type change is signalled|signal a type change">Signal a type change</dfn> for the element. (The <a element-state for="input">Radio Button</a> state uses this, in particular.)</li>
+    <li><dfn lt="a type change is signalled|signal a type change">Signal a type change</dfn> for the element. (The <{input/Radio|Radio Button}> state uses this, in particular.)</li>
 
     <li>Invoke the <a>value sanitization algorithm</a>, if one is defined for the <{input/type}> attribute's new state.</li>
 
@@ -2680,9 +2671,10 @@ part of the form.</p>
 
   The <dfn attribute for="HTMLInputElement"><code>indeterminate</code></dfn> IDL attribute must
   initially be set to false. On getting, it must return the last value it was set to. On setting, it
-  must be set to the new value. It has no effect except for changing the appearance of <a element-state for="input">checkbox</a> controls.
+  must be set to the new value. It has no effect except for changing the appearance of <{input/checkbox}> controls.
 
-  The <dfn attribute for="HTMLInputElement"><code>accept</code></dfn>,
+  The
+  <dfn attribute for="HTMLInputElement"><code>accept</code></dfn>,
   <dfn attribute for="HTMLInputElement"><code>alt</code></dfn>,
   <dfn attribute for="HTMLInputElement"><code>max</code></dfn>,
   <dfn attribute for="HTMLInputElement"><code>min</code></dfn>,
@@ -2723,7 +2715,7 @@ part of the form.</p>
   being rendered to a visual medium; or else the <a>intrinsic width and height</a> of the image,
   in CSS pixels, if an image is <i>available</i> but not being rendered to a visual medium;
   or else 0, if no image is <i>available</i>. When the <{input}> element's
-  <{input/type}> attribute is not in the <a element-state for="input">image button</a> state,
+  <{input/type}> attribute is not in the <{input/Image|Image Button}> state,
   then no image is <i>available</i>. [[!CSS-2015]]
 
   On setting, they must act as if they <a>reflected</a> the respective
@@ -2758,9 +2750,9 @@ part of the form.</p>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -2768,7 +2760,7 @@ part of the form.</p>
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a>Hidden</a> state, the rules in this section apply.
+  the <{input/Hidden}> state, the rules in this section apply.
 
   </div>
 
@@ -2777,7 +2769,7 @@ part of the form.</p>
 
   <div class="impl">
 
-  <strong>Constraint validation</strong>: If an <{input}> element's <{input/type}> attribute is in the <a>Hidden</a> state, it is <a>barred from constraint
+  <strong>Constraint validation</strong>: If an <{input}> element's <{input/type}> attribute is in the <{input/Hidden}> state, it is <a>barred from constraint
   validation</a>.
 
   </div>
@@ -2845,11 +2837,11 @@ part of the form.</p>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>textbox</code></a>, <code>searchbox</code> with no <{input/list}> attribute
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>textbox</code></a>, <code>searchbox</code> with no <{input/list}> attribute
     (default - <a><em>do not set</em></a>) or with a <{input/list}> attribute:
-    <a value for="role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
-	<dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
+	<dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -2859,7 +2851,7 @@ part of the form.</p>
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Text</a> state or the <a element-state for="input">Search</a> state, the rules in this section apply.
+  the <{input/Text}> state or the <{input/Search}> state, the rules in this section apply.
 
   </div>
 
@@ -2867,9 +2859,9 @@ part of the form.</p>
   the element's <a for="forms">value</a>.
 
   <p class="note">
-    The difference between the <a element-state for="input">Text</a> state
-  and the <a element-state for="input">Search</a> state is primarily stylistic: on
-  platforms where search fields are distinguished from regular text fields, the <a element-state for="input">Search</a> state might result in an appearance consistent with
+    The difference between the <{input/Text}> state
+  and the <{input/Search}> state is primarily stylistic: on
+  platforms where search fields are distinguished from regular text fields, the <{input/Search}> state might result in an appearance consistent with
   the platform's search fields rather than appearing like a regular text field.
   </p>
 
@@ -2968,11 +2960,11 @@ part of the form.</p>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-     <dd><a value for="role"><code>textbox</code></a> with no <{input/list}> attribute
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+     <dd><a attr-value for="aria/role"><code>textbox</code></a> with no <{input/list}> attribute
     (default - <a><em>do not set</em></a>) or with a <{input/list}> attribute:
-    <a value for="role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
-	<dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
+	<dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -2982,7 +2974,7 @@ part of the form.</p>
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Telephone</a> state, the rules in this section apply.
+  the <{input/Telephone}> state, the rules in this section apply.
 
   </div>
 
@@ -3009,7 +3001,7 @@ part of the form.</p>
   </div>
 
   <p class="note">
-    Unlike the <a element-state for="input">URL</a> and <a element-state for="input">E-mail</a> types, the <a element-state for="input">Telephone</a> type does not enforce a particular syntax. This is
+    Unlike the <{input/URL}> and <{input/E-mail}> types, the <{input/Telephone}> type does not enforce a particular syntax. This is
   intentional; in practice, telephone number fields tend to be free-form fields, because there are a
   wide variety of valid phone numbers. Systems that need to enforce a particular format are
   encouraged to use the <code>pattern</code> attribute or the {{HTMLInputElement/setCustomValidity()}} method to hook into the client-side
@@ -3078,11 +3070,11 @@ part of the form.</p>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-     <dd><a value for="role"><code>textbox</code></a> with no <{input/list}> attribute
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+     <dd><a attr-value for="aria/role"><code>textbox</code></a> with no <{input/list}> attribute
     (default - <a><em>do not set</em></a>) or with a <{input/list}> attribute:
-    <a value for="role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
-	<dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
+	<dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -3092,7 +3084,7 @@ part of the form.</p>
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">URL</a> state, the rules in this section apply.
+  the <{input/URL}> state, the rules in this section apply.
 
   </div>
 
@@ -3120,7 +3112,7 @@ part of the form.</p>
 
   <strong>The <a>value sanitization algorithm</a> is as follows</strong>: <a>Strip line
   breaks</a> from the <a for="forms">value</a>, then <a>strip leading and
-  trailing whitespace</a> from the <a for="forms">value</a>.
+  trailing white space</a> from the <a for="forms">value</a>.
 
   <strong>Constraint validation</strong>: While the <a for="forms">value</a>
   of the element is neither the empty string nor a <a lt="valid url">valid</a>
@@ -3220,15 +3212,15 @@ part of the form.</p>
 
   </div>
 
-<h6 id="email-state-typeemail"><dfn element-state for="input" lt="e-mail|email">E-mail</dfn> state (<code>type=email</code>)</h6>
+<h6 id="email-state-typeemail"><dfn element-state for="input">E-mail</dfn> state (<code>type=email</code>)</h6>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-     <dd><a value for="role"><code>textbox</code></a> with no <{input/list}> attribute
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+     <dd><a attr-value for="aria/role"><code>textbox</code></a> with no <{input/list}> attribute
     (default - <a><em>do not set</em></a>) or with a <{input/list}> attribute:
-    <a value for="role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
-	<dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>combobox</code></a> (default - <a><em>do not set</em></a>).</dd>
+	<dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -3238,11 +3230,11 @@ part of the form.</p>
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">E-mail</a> state, the rules in this section apply.
+  the <{input/E-mail}> state, the rules in this section apply.
 
   </div>
 
-  How the <a element-state for="input">E-mail</a> state operates depends on whether the
+  How the <{input/E-mail}> state operates depends on whether the
   <code>multiple</code> attribute is specified or not.
 
   <dl class="switch">
@@ -3278,7 +3270,7 @@ part of the form.</p>
 
     <strong>The <a>value sanitization algorithm</a> is as follows</strong>: <a>Strip
     line breaks</a> from the <a for="forms">value</a>, then <a>strip
-    leading and trailing whitespace</a> from the <a for="forms">value</a>.
+    leading and trailing white space</a> from the <a for="forms">value</a>.
 
     <strong>Constraint validation</strong>: While the <a for="forms">value</a>
     of the element is neither the empty string nor a single <a>valid e-mail address</a>, the
@@ -3319,7 +3311,7 @@ part of the form.</p>
 
       <li>Let <var>latest values</var> be a copy of the element's <a for="forms">value<em>s</em></a>.</li>
 
-      <li><a>Strip leading and trailing whitespace</a> from each value in <var>latest values</var>.</li>
+      <li><a>Strip leading and trailing white space</a> from each value in <var>latest values</var>.</li>
 
       <li>Let the element's <a for="forms">value</a> be the result of
       concatenating all the values in <var>latest values</var>, separating each value from
@@ -3338,7 +3330,7 @@ part of the form.</p>
 
     <ol>
 
-      <li><a lt="split a string on commas">Split on commas</a> the element's <a for="forms">value</a>, <a>strip leading and trailing whitespace</a> from
+      <li><a lt="split a string on commas">Split on commas</a> the element's <a for="forms">value</a>, <a>strip leading and trailing white space</a> from
       each resulting token, if any, and let the element's <a for="forms">values</a> be the (possibly empty) resulting list of
       (possibly empty) tokens, maintaining the original order.</li>
 
@@ -3377,7 +3369,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   <p class="note">
     This requirement is a <a>willful violation</a> of RFC 5322, which defines a
   syntax for e-mail addresses that is simultaneously too strict (before the "@" character), too
-  vague (after the "@" character), and too lax (allowing comments, whitespace characters, and quoted
+  vague (after the "@" character), and too lax (allowing comments, white space characters, and quoted
   strings in manners unfamiliar to most users) to be of practical use here.
   </p>
 
@@ -3387,7 +3379,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     above definition.
 
     <pre highlight="javascript">
-/^[a-zA-Z0-9.!#$%&amp;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+/^[a-zA-Z0-9.!#$%&amp;'*+\/=?^_&#x60;{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
     </pre>
 
   </div>
@@ -3459,9 +3451,9 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -3553,13 +3545,13 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
   </div>
 
-<h6 id="date-and-time-state-typedatetime"><dfn element-state for="input">Date and Time</dfn> state (<code>type=datetime</code>)</h6>
+<h6 id="date-and-time-state-typedatetime"><dfn element-state for="input" lt="DateTime">Date and Time</dfn> state (<code>type=datetime</code>)</h6>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -3567,7 +3559,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Date and Time</a> state, the rules in this section
+  the <{input/DateTime|Date and Time}> state, the rules in this section
   apply.
 
   </div>
@@ -3651,21 +3643,21 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
   <div class="note" id="only-contemporary-times">
 
-    The <a element-state for="input">Date and Time</a> state (and other date-related states are not
+    The <{input/DateTime|Date and Time}> state (and other date-related states are not
     useful for vague values, and are only useful for dates ranging from recent history through a
     few thousand years. For example, "one millisecond after the big bang", "the Ides of March, 44BC",
     "the early part of the Jurassic period", or "a winter around 250 BCE", and many other expressions
     of time cannot be sensibly expressed in HTML <{form}> states.
 
     For the input of dates before the introduction of the Gregorian calendar, authors are
-    encouraged to not use the <a element-state for="input">Date and Time</a> state (and
+    encouraged to not use the <{input/DateTime|Date and Time}> state (and
     the other date- and time-related states described in subsequent sections), as user agents are not
     required to support converting dates and times from earlier periods to the Gregorian calendar,
     and asking users to do so manually puts an undue burden on users. (This is complicated by the
     manner in which the Gregorian calendar was phased in, which occurred at different times in
     different countries, ranging from partway through the 16th century all the way to early in the
     20th.) Instead, authors are encouraged to provide fine-grained input controls using the
-    <{select}> element and <{input}> elements with the <a element-state for="input">Number</a> state.
+    <{select}> element and <{input}> elements with the <{input/Number}> state.
 
   </div>
 
@@ -3760,9 +3752,9 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -3770,7 +3762,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Date</a> state, the rules in this section apply.
+  the <{input/Date}> state, the rules in this section apply.
 
   </div>
 
@@ -3855,7 +3847,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
   <p class="note">
     See <a href="#only-contemporary-times">the note on historical dates</a> in the
-  <a element-state for="input">Date and Time</a> state section.
+  <{input/DateTime|Date and Time}> state section.
   </p>
 
   <div class="bookkeeping">
@@ -3919,9 +3911,9 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -4066,9 +4058,9 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -4214,9 +4206,9 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -4357,27 +4349,27 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
   </div>
 
-<h6 id="local-date-and-time-state-typedatetimelocal"><dfn element-state for="input">Local Date and Time</dfn> state (<code>type=datetime-local</code>)</h6>
+<h6 id="local-date-and-time-state-typedatetimelocal"><dfn element-state for="input" lt="LocalDateTime">Local Date and Time</dfn> state (<code>type=datetime-local</code>)</h6>
 
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Local Date and Time</a> state, the rules in
+  the <{input/LocalDateTime|Local Date and Time}> state, the rules in
   this section apply.
 
   </div>
 
   The <{input}> element <a>represents</a> a control for setting the element's
-  <a for="forms">value</a> to a string representing a <a element-state for="input">local date and time</a>, with no time-zone offset
+  <a for="forms">value</a> to a string representing a <{input/LocalDateTime|Local Date and Time}>, with no time-zone offset
   information.
 
   <div class="impl">
 
   If the element is <a>mutable</a>, the user agent should allow the
-  user to change the <a element-state for="input">date and time</a> represented by its
+  user to change the <{input/DateTime|Date and Time}> represented by its
   <a for="forms">value</a>, as obtained by <a>parsing a date and time</a> from it. User agents must not allow the user to set
   the <a for="forms">value</a> to a non-empty string that is not a <a>valid normalized global date and time string</a>. If the user agent provides a user interface for
-  selecting a <a element-state for="input">local date and time</a>, then the <a for="forms">value</a> must be set to a <a>valid normalized global date and time string</a> representing the user's selection. User agents should allow the user to set the
+  selecting a <{input/LocalDateTime|Local Date and Time}>, then the <a for="forms">value</a> must be set to a <a>valid normalized global date and time string</a> representing the user's selection. User agents should allow the user to set the
   <a for="forms">value</a> to the empty string.
 
   <strong>Constraint validation</strong>: While the user interface describes input that the user
@@ -4431,7 +4423,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
   <p class="note">
     See <a href="#only-contemporary-times">the note on historical dates</a> in the
-  <a element-state for="input">Date and Time</a> state section.
+  <{input/DateTime|Date and Time}> state section.
   </p>
 
   <div class="bookkeeping">
@@ -4523,10 +4515,10 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>spinbutton</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>spinbutton</code></a>
     (default - <a><em>do not set</em></a>).</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -4536,7 +4528,7 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Number</a> state, the rules in this section apply.
+  the <{input/Number}> state, the rules in this section apply.
 
   </div>
 
@@ -4697,22 +4689,22 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
 <h6 id="range-state-typerange"><dfn element-state for="input">Range</dfn> state (<code>type=range</code>)</h6>
 
   <div class="note">
-    : Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:
-    :: <a value for="role"><code>slider</code></a> (default - <a><em>do not set</em></a>).
+    : [=Allowed ARIA role attribute values=]:
+    :: <a attr-value for="aria/role"><code>slider</code></a> (default - <a><em>do not set</em></a>).
 
-    : Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:
+    : [=Allowed ARIA state and property attributes=]:
     :: <a>Global aria-* attributes</a>
     :: Any <code>aria-*</code> attributes
         <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.
   </div>
 
   When an <{input}> element's <{input/type}> attribute is in the
-  <a element-state for="input">Range</a> state, the rules in this section apply.
+  <{input/Range}> state, the rules in this section apply.
 
   The <{input}> element <a>represents</a> a control for setting the element's
   <a for="forms">value</a> to a string representing a number, but with the caveat that the exact
   value is not important, letting user agents provide a simpler interface than they do for the
-  <a element-state for="input">Number</a> state.
+  <{input/Number}> state.
 
   If the element is <a>mutable</a>, the user agent should allow the user to change the number
   represented by its <a for="forms">value</a>, as obtained from applying the
@@ -4911,9 +4903,9 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -4921,7 +4913,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Color</a> state, the rules in this section apply.
+  the <{input/Color}> state, the rules in this section apply.
 
   </div>
 
@@ -4959,7 +4951,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   <strong>The <a>value sanitization algorithm</a> is as follows</strong>: If the
   <a for="forms">value</a> of the element is a <a>valid simple color</a>, then set it to the
-  <a for="forms">value</a> of the element <a>converted to ASCII lowercase</a>; otherwise, set it to
+  <a for="forms">value</a> of the element in <a>ASCII lowercase</a>; otherwise, set it to
   the string "<code>#000000</code>".
 
   </div>
@@ -5023,11 +5015,11 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>checkbox</code></a>
-    (default - <a><em>do not set</em></a>), <a value for="role"><code>menuitemcheckbox</code></a>, 
-    <a value for="role"><code>option</code></a> or <a value for="role"><code>switch</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>checkbox</code></a>
+    (default - <a><em>do not set</em></a>), <a attr-value for="aria/role"><code>menuitemcheckbox</code></a>,
+    <a attr-value for="aria/role"><code>option</code></a> or <a attr-value for="aria/role"><code>switch</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -5037,7 +5029,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Checkbox</a> state, the rules in this section
+  the <{input/Checkbox}> state, the rules in this section
   apply.
 
   </div>
@@ -5076,7 +5068,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
     <dd>
 
-    When set, overrides the rendering of <a element-state for="input">checkbox</a>
+    When set, overrides the rendering of <{input/checkbox}>
     controls so that the current value is not visible.
 
     </dd>
@@ -5138,14 +5130,14 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   </div>
 
-<h6 id="radio-button-state-typeradio"><dfn element-state for="input">Radio Button</dfn> state (<code>type=radio</code>)</h6>
+<h6 id="radio-button-state-typeradio"><dfn element-state for="input" lt="Radio">Radio Button</dfn> state (<code>type=radio</code>)</h6>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>radio</code></a>
-    (default - <a><em>do not set</em></a>) or <a value for="role"><code>menuitemradio</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>radio</code></a>
+    (default - <a><em>do not set</em></a>) or <a attr-value for="aria/role"><code>menuitemradio</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -5155,7 +5147,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Radio Button</a> state, the rules in this section
+  the <{input/Radio|Radio Button}> state, the rules in this section
   apply.
 
   </div>
@@ -5173,8 +5165,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   <ul>
 
-    <li>The <{input}> element <var>b</var>'s <{input/type}> attribute is in the <a element-state for="input">Radio
-    Button</a> state.</li>
+    <li>The <{input}> element <var>b</var>'s <{input/type}> attribute is in the <{input/Radio|Radio Button}> state.</li>
 
     <li>Either <var>a</var> and <var>b</var> have the same <a>form owner</a>,
     or they both have no <a>form owner</a>.</li>
@@ -5291,13 +5282,13 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   </div>
 
-<h6 id="file-upload-state-typefile"><dfn element-state for="input" lt="file upload|file upload controls">File Upload</dfn> state (<code>type=file</code>)</h6>
+<h6 id="file-upload-state-typefile"><dfn element-state for="input" lt="File">File Upload</dfn> state (<code>type=file</code>)</h6>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     </dl>
     </div>
@@ -5305,7 +5296,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">File Upload</a> state, the rules in this section
+  the <{input/File|File Upload}> state, the rules in this section
   apply.
 
   </div>
@@ -5318,7 +5309,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   File names must not contain <a>path components</a>, even
   in the case that a user has selected an entire directory hierarchy or multiple files with the same
   name from different directories. <dfn>Path components</dfn>, for
-  the purposes of the <a element-state for="input">File Upload</a> state, are those parts
+  the purposes of the <{input/File|File Upload}> state, are those parts
   of file names that are separated by U+005C REVERSE SOLIDUS character (\) characters.
 
   Unless the <code>multiple</code> attribute is set, there must be
@@ -5540,14 +5531,14 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
     {{HTMLInputElement/stepUp()}} methods.
   </div>
 
-<h6 id="submit-button-state-typesubmit"><dfn element-state for="input">Submit Button</dfn> state (<code>type=submit</code>)</h6>
+<h6 id="submit-button-state-typesubmit"><dfn element-state for="input" lt="Submit">Submit Button</dfn> state (<code>type=submit</code>)</h6>
 
   <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>button</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>button</code></a>
     (default - <a><em>do not set</em></a>).</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -5557,7 +5548,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">submit button</a> state, the rules in this section
+  the <{input/Submit|Submit Button}> state, the rules in this section
   apply.
 
   </div>
@@ -5652,19 +5643,19 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   </div>
 
-<h6 id="image-button-state-typeimage"><dfn element-state for="input">Image Button</dfn> state (<code>type=image</code>)</h6>
+<h6 id="image-button-state-typeimage"><dfn element-state for="input" lt="Image">Image Button</dfn> state (<code>type=image</code>)</h6>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>button</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>button</code></a>
     (default - <a><em>do not set</em></a>),
-    <a value for="role"><code>link</code></a>,
-      <a value for="role"><code>menuitem</code></a>,
-    <a value for="role"><code>menuitemcheckbox</code></a>,
-      <a value for="role"><code>menuitemradio</code></a>
-    or <a value for="role"><code>radio</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>link</code></a>,
+      <a attr-value for="aria/role"><code>menuitem</code></a>,
+    <a attr-value for="aria/role"><code>menuitemcheckbox</code></a>,
+      <a attr-value for="aria/role"><code>menuitemradio</code></a>
+    or <a attr-value for="aria/role"><code>radio</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -5674,14 +5665,14 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">image button</a> state, the rules in this section
+  the <{input/Image|Image Button}> state, the rules in this section
   apply.
 
   </div>
 
   The <{input}> element <a>represents</a> either an image from which a user can
   select a coordinate and submit the form, or alternatively a button from which the user can submit
-  the form. The element is a <a>button</a>, specifically a <a element-state for="input">submit button</a>.
+  the form. The element is a <a>button</a>, specifically a <{input/Submit|Submit Button}>.
 
   <p class="note">
     The coordinate is sent to the server <a>during form submission</a> by sending two entries for the element, derived from the name
@@ -5704,16 +5695,16 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <ul>
 
     <li>the <{input}> element's <{input/type}> attribute is
-    first set to the <a element-state for="input">Image Button</a> state (possibly when
+    first set to the <{input/Image|Image Button}> state (possibly when
     the element is first created), and the <{input/src}> attribute is
     present</li>
 
     <li>the <{input}> element's <{input/type}> attribute is
-    changed back to the <a element-state for="input">Image Button</a> state, and the <{input/src}> attribute is present, and its value has changed since the last
-    time the <{input/type}> attribute was in the <a element-state for="input">Image Button</a> state</li>
+    changed back to the <{input/Image|Image Button}> state, and the <{input/src}> attribute is present, and its value has changed since the last
+    time the <{input/type}> attribute was in the <{input/Image|Image Button}> state</li>
 
     <li>the <{input}> element's <{input/type}> attribute is in
-    the <a element-state for="input">Image Button</a> state, and the <{input/src}> attribute is set or changed</li>
+    the <{input/Image|Image Button}> state, and the <{input/src}> attribute is set or changed</li>
 
   </ul>
 
@@ -5724,7 +5715,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   <ol>
     <li>Let <var>request</var> be a new <a>request</a> whose
-    <a for="url">URL</a> is the <a>resulting URL string</a>,
+    [=url/URL=] is the <a>resulting URL string</a>,
     <a>client</a> is the element's <a>node document</a>'s
     <code>Window</code> object's <a>environment settings object</a>, <a for="request">type</a> is "<code>image</code>", <a>destination</a> is "<code>subresource</code>",
     <a>omit-<code>Origin</code>-header flag</a> is set, <a>credentials mode</a> is "<code>include</code>", and whose <a>use-URL-credentials flag</a> is set.</li>
@@ -5917,14 +5908,14 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
   </div>
 
-<h6 id="reset-button-state-typereset"><dfn element-state for="input">Reset Button</dfn> state (<code>type=reset</code>)</h6>
+<h6 id="reset-button-state-typereset"><dfn element-state for="input" lt="Reset">Reset Button</dfn> state (<code>type=reset</code>)</h6>
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>button</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>button</code></a>
     (default - <a><em>do not set</em></a>).</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -5934,7 +5925,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
-  the <a element-state for="input">Reset Button</a> state, the rules in this section
+  the <{input/Reset|Reset Button}> state, the rules in this section
   apply.
 
   </div>
@@ -6023,16 +6014,16 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 
     <div class="note">
     <dl>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>button</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>button</code></a>
     (default - <a><em>do not set</em></a>),
-    <a value for="role"><code>link</code></a>,
-    <a value for="role"><code>menuitem</code></a>,
-    <a value for="role"><code>menuitemcheckbox</code></a>,
-    <a value for="role"><code>menuitemradio</code></a>,
-    <a value for="role"><code>radio</code></a> or
-    <a value for="role"><code>switch</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>link</code></a>,
+    <a attr-value for="aria/role"><code>menuitem</code></a>,
+    <a attr-value for="aria/role"><code>menuitemcheckbox</code></a>,
+    <a attr-value for="aria/role"><code>menuitemradio</code></a>,
+    <a attr-value for="aria/role"><code>radio</code></a> or
+    <a attr-value for="aria/role"><code>switch</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -6426,7 +6417,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   such as in a tooltip or read out by assistive technology when the
   control gains focus.
 
-  <p class="warning">Relying on the <code>title</code> attribute for the visual display
+  <p class="warning">Relying on the <{input/title}> attribute for the visual display
   of text content is currently discouraged as many user agents do not expose the attribute in an accessible manner
   as required by this specification (e.g., requiring a pointing device such as a mouse to cause a tooltip to appear,
   which excludes keyboard-only users and touch-only users, such as anyone with a modern phone or
@@ -6445,7 +6436,7 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 You cannot submit this form when the field is incorrect.</samp></pre>
   </div>
 
-  When a control has a <code>pattern</code> attribute, the <code>title</code> attribute, if used, must describe the pattern. Additional
+  When a control has a <{input/pattern}> attribute, the <{input/title}> attribute, if used, must describe the pattern. Additional
   information could also be included, so long as it assists the user in filling in the control.
   Otherwise, assistive technology would be impaired.
 
@@ -6453,9 +6444,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   assistive technology could end up saying something like <samp>The text you have entered does not
   match the required pattern. Birthday</samp>, which is not useful.</p>
 
-  user agents may still show the <code>title</code> in non-error situations (for
+  user agents may still show the <{input/title}> in non-error situations (for
   example, as a tooltip when hovering over the control), so authors should be careful not to word
-  <code>title</code>s as if an error has necessarily occurred.
+  <{input/title}>s as if an error has necessarily occurred.
 
 <h6 id="the-min-and-max-attributes">The <code>min</code> and <code>max</code> attributes</h6>
 
@@ -6619,11 +6610,11 @@ You cannot submit this form when the field is incorrect.</samp></pre>
       zero, then the <a>allowed value step</a> is the <a>default step</a> multiplied by the
       <a>step scale factor</a>.
   5. If the element's <{input/type}> attribute is in the
-      <a element-state for="input">Date and Time</a>,
-      <a element-state for="input">Date</a>,
-      <a element-state for="input">Month</a>,
-      <a element-state for="input">Week</a>, or
-      <a element-state for="input">Time</a> state, then round <var>step value</var> to the nearest
+      <{input/DateTime|Date and Time}>,
+      <{input/Date}>,
+      <{input/Month}>,
+      <{input/Week}>, or
+      <{input/Time}> state, then round <var>step value</var> to the nearest
       whole number using the "round to nearest + round half up" technique, unless the value is
       less-than one, in which case let <var>step value</var> be 1.
   6. The <a>allowed value step</a> is <var>step value</var> multiplied by the
@@ -6695,7 +6686,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   </div>
 
-<h6 id="the-list-attribute">The <code>list</code> attribute</h6>
+<h6 id="the-list-attribute">The <{input/list}> attribute</h6>
 
   The <dfn element-attr for="input"><code>list</code></dfn> attribute is used to identify an
   element that lists predefined options suggested to the user.
@@ -6707,8 +6698,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   The <dfn>suggestions source element</dfn> is the first element in
   the document in <a>tree order</a> to have an <a>ID</a> equal to the
-  value of the <code>list</code> attribute, if that element is a
-  <{datalist}> element. If there is no <code>list</code> attribute,
+  value of the <{input/list}> attribute, if that element is a
+  <{datalist}> element. If there is no <{input/list}> attribute,
   or if there is no element with that <a>ID</a>, or if the first element
   with that <a>ID</a> is not a <{datalist}> element, then there is
   no <a>suggestions source element</a>.
@@ -6736,7 +6727,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     </dd>
 
-    <dt>If the element's <{input/type}> attribute is in the <a element-state for="input">Range</a> state and the element has a <code>multiple</code> attribute specified</dt>
+    <dt>If the element's <{input/type}> attribute is in the <{input/Range}> state and the element has a <code>multiple</code> attribute specified</dt>
 
     <dd>
 
@@ -6747,7 +6738,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     </dd>
 
-    <dt>If the element's <{input/type}> attribute is in the <a element-state for="input">E-mail</a> state and the element has a <code>multiple</code> attribute specified</dt>
+    <dt>If the element's <{input/type}> attribute is in the <{input/E-mail}> state and the element has a <code>multiple</code> attribute specified</dt>
 
     <dd>
 
@@ -6765,8 +6756,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   <hr />
 
-  If the <code>list</code> attribute <a>does not
-  apply</a>, there is no <a>suggestions source element</a>.
+  If the <{input/list}> attribute [=does not apply=], there is no <a>suggestions source element</a>.
 
   </div>
 
@@ -6920,7 +6910,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     Can be set, to change the value.
 
     Throws an "{{InvalidStateError}}" {{DOMException}} if it is set to any value other than the empty
-    string when the control is a <a element-state for="input">file upload</a> control.</dd>
+    string when the control is a <{input/File|File Upload}> control.</dd>
 
     <dt><var>input</var> . {{HTMLInputElement/checked}} [ = <var>value</var> ]</dt>
     <dd>Returns the current <a for="forms">checkedness</a> of the form control.
@@ -6961,7 +6951,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     nor numeric, or if the <{input/step}> attribute's value is "<code>any</code>".</dd>
 
     <dt><var>input</var> . {{HTMLInputElement/list}}</dt>
-    <dd>Returns the <{datalist}> element indicated by the <code>list</code> attribute.</dd>
+    <dd>Returns the <{datalist}> element indicated by the <{input/list}> attribute.</dd>
   </dl>
 
   The <dfn attribute for="HTMLInputElement"><code>value</code></dfn> IDL attribute allows scripts to
@@ -6994,7 +6984,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
       <a>selected files</a>; otherwise, it must throw an "{{InvalidStateError}}" {{DOMException}}.
 
       <p class="note">This "fakepath" requirement is a sad accident of history. See the example in
-      the <a element-state for="input">File Upload</a> state section for more information.</p>
+      the <{input/File|File Upload}> state section for more information.</p>
 
       <p class="note">Since <a>path components</a> are not permitted in file names in the list of
       <a>selected files</a>, the "<code>\fakepath\</code>" cannot be mistaken for a path component.
@@ -7101,7 +7091,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
             </pre>
             Invoking the {{HTMLInputElement/stepUp()}} method will snap the <{input/value}> to 3.6;
             subsequent invocations will increment the value by 2.6 (e.g., 6.2, then 8.8). Likewise,
-            the following <{input}> element in the <a element-state for="input">Week</a> state will
+            the following <{input}> element in the <{input/Week}> state will
             also <a>step-align</a> in similar fashion, though in this state, the <{input/step}>
             value is rounded to 3, per the derivation of the <a>allowed value step</a>.
 
@@ -7192,7 +7182,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 <h5 id="common-event-behaviors">Common event behaviors</h5>
 
   When the <code>input</code> and <code>change</code> events <a>apply</a>
-  (which is the case for all <{input}> controls other than <a>buttons</a> and those with the <{input/type}> attribute in the <a>Hidden</a> state), the events are fired to indicate that the
+  (which is the case for all <{input}> controls other than <a>buttons</a> and those with the <{input/type}> attribute in the <{input/Hidden}> state), the events are fired to indicate that the
   user has interacted with the control. The <dfn event for="input"><code>input</code></dfn>
   event fires whenever the user has modified the data of the control. The <dfn event for="input"><code>change</code></dfn> event fires when the value is committed, if
   that makes sense for the control, or else when the control <a>loses focus</a>. In all cases, the <code>input</code> event comes before the corresponding <code>change</code> event (if any).
@@ -7200,7 +7190,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   When an <{input}> element has a defined <a>activation behavior</a>, the rules
   for dispatching these events, if they <a>apply</a>, are given
   in the section above that defines the <{input/type}> attribute's
-  state. (This is the case for all <{input}> controls with the <{input/type}> attribute in the <a element-state for="input">Checkbox</a> state, the <a element-state for="input">Radio Button</a> state, or the <a element-state for="input">File Upload</a> state.)
+  state. (This is the case for all <{input}> controls with the <{input/type}> attribute in the <{input/Checkbox}> state, the <{input/Radio|Radio Button}> state, or the <{input/File|File Upload}> state.)
 
   For <{input}> elements without a defined <a>activation behavior</a>, but to
   which these events <a>apply</a>, and for which the user
@@ -7212,7 +7202,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   <{input}> element.
 
   <p class="example">An example of a user interface involving both interactive manipulation and a
-  commit action would be a <a element-state for="input">Range</a> controls that use a
+  commit action would be a <{input/Range}> controls that use a
   slider, when manipulated using a pointing device. While the user is dragging the control's knob,
   <code>input</code> events would fire whenever the position changed,
   whereas the <code>change</code> event would only fire when the user
@@ -7227,18 +7217,18 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   <a>fire a simple event</a> that bubbles named <code>change</code> at the <{input}> element.
 
   <p class="example">An example of a user interface with a commit action would be a
-  <a element-state for="input">Color</a> control that consists of a single button that brings
+  <{input/Color}> control that consists of a single button that brings
   up a color wheel: if the <a for="forms">value</a> only changes when the dialog
   is closed, then that would be the explicit commit action. On the other hand, if manipulating the
   control changes the color interactively, then there might be no commit action.</p>
 
   <p class="example">Another example of a user interface with a commit action would be a
-  <a element-state for="input">Date</a> control that allows both text-based user input and user
+  <{input/Date}> control that allows both text-based user input and user
   selection from a drop-down calendar: while text input does not have an explicit commit step,
   selecting a date from the drop down calendar and then dismissing the drop down would be a commit
   action.</p>
 
-  <p class="example">The <a element-state for="input">Range</a> control is also an example of a
+  <p class="example">The <{input/Range}> control is also an example of a
   user interface that has a commit action when used with a pointing device (rather than a keyboard):
   during the time that the pointing device starts manipulating the slider until the time that the
   slider is released, no commit action is taken (though <code>input</code> events are fired as the
@@ -7257,7 +7247,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   changes to the value, e.g., hitting the "delete" key in an empty text field, or replacing some text
   in the field with text from the clipboard that happens to be exactly the same text.</p>
 
-  <p class="example">A <a element-state for="input">Range</a> control in the form of a
+  <p class="example">A <{input/Range}> control in the form of a
   slider that the user has <a>focused</a> and is interacting with using a keyboard would be
   another example of the user changing the element's <a for="forms">value</a>
   without a commit step.</p>
@@ -7304,7 +7294,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><{button/autofocus}> - Automatically focus the form control when the page is loaded</dd>
     <dd><{button/disabled}> - Whether the form control is disabled</dd>
     <dd><{button/form}> - Associates the control with a <{form}> element</dd>
-    <dd><{button/formaction}> - <a for="url">URL</a> to use for [[#forms-form-submission]]</dd>
+    <dd><{button/formaction}> - [=url/URL=] to use for [[#forms-form-submission]]</dd>
     <dd><{button/formenctype}> - Form data set encoding type to use for [[#forms-form-submission]]</dd>
     <dd><{button/formmethod}> - HTTP method to use for [[#forms-form-submission]]</dd>
     <dd><{button/formnovalidate}> - Bypass form control validation for [[#forms-form-submission]]</dd>
@@ -7313,16 +7303,16 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><{button/name}> - Name of form control to use for [[#forms-form-submission]] and in the {{HTMLFormElement/elements|form.elements}} API </dd>
     <dd><{button/type}> - Type of button</dd>
     <dd><{button/value}> - Value to be used for [[#forms-form-submission]]</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>button</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>button</code></a>
     (default - <a><em>do not set</em></a>),
-    <a value for="role"><code>link</code></a>,
-    <a value for="role"><code>menuitem</code></a>,
-    <a value for="role"><code>menuitemcheckbox</code></a>,
-    <a value for="role"><code>menuitemradio</code></a>,
-    <a value for="role"><code>radio</code></a> or
-    <a value for="role"><code>switch</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>link</code></a>,
+    <a attr-value for="aria/role"><code>menuitem</code></a>,
+    <a attr-value for="aria/role"><code>menuitemcheckbox</code></a>,
+    <a attr-value for="aria/role"><code>menuitemradio</code></a>,
+    <a attr-value for="aria/role"><code>radio</code></a> or
+    <a attr-value for="aria/role"><code>switch</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -7556,11 +7546,11 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><{select/name}> - Name of form control to use for [[#forms-form-submission]] and in the {{HTMLFormElement/elements|form.elements}} API </dd>
     <dd><{select/required}> - Whether the control is required for [[#forms-form-submission]]</dd>
     <dd><{select/size}> - Size of the control</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>listbox</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>listbox</code></a>
     (default - <a><em>do not set</em></a>) or
-    <a value for="role"><code>menu</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>menu</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -7690,7 +7680,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   false, set its <a state for="option">dirtiness</a> to true, and then
   <a>send <code>select</code> update notifications</a>.
 
-  If <a for="Node" lt="insert">nodes are inserted</a> or <a for="Node" lt="remove">nodes are removed</a> causing the <a>list of options</a> to gain or lose one or more
+  If <a lt="insert">nodes are inserted</a> or <a lt="remove">nodes are removed</a> causing the <a>list of options</a> to gain or lose one or more
   <{option}> elements, or if an <{option}> element in the <a>list of options</a> <dfn lt="ask for a reset|asks for a reset">asks for a reset</dfn>, then, if the <{select}> element's <code>multiple</code> attribute is absent, the user agent must run the
   first applicable set of steps from the following list:
 
@@ -8047,10 +8037,10 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>listbox</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>listbox</code></a>
     (default - <a><em>do not set</em></a>).</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -8111,7 +8101,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   </div>
 
-  The <{datalist}> element is hooked up to an <{input}> element using the <code>list</code> attribute on the <{input}> element.
+  The <{datalist}> element is hooked up to an <{input}> element using the <{input/list}> attribute on the <{input}> element.
 
   Each <{option}> element that is a descendant of the <{datalist}> element,
   that is not disabled, and whose <a for="forms">value</a> is a string that isn't the empty string, represents a
@@ -8157,9 +8147,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><a>Global attributes</a></dd>
     <dd><{optgroup/disabled}> - Whether the form control is disabled</dd>
     <dd><{optgroup/label}> - User-visible label</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
@@ -8249,7 +8239,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dt><a>Content model</a>:</dt>
     <dd>If the element has a <{option/label}> attribute and a <{option/value}> attribute: <a>Nothing</a>.</dd>
     <dd>If the element has a <{option/label}> attribute but no <{option/value}> attribute: <a>Text</a>.</dd>
-    <dd>If the element has no <{option/label}> attribute: and is not a child of a <{datalist}> element: <a>Text</a> that is not <a>inter-element whitespace</a>.</dd>
+    <dd>If the element has no <{option/label}> attribute: and is not a child of a <{datalist}> element: <a>Text</a> that is not <a>inter-element white space</a>.</dd>
     <dd>If the element has no <{option/label}> attribute and is a child of a <{datalist}> element: <a>Text</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>An <{option}> element's <a>end tag</a> may be omitted if
@@ -8262,13 +8252,13 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><{option/label}> - User-visible label</dd>
     <dd><{option/selected}> - Whether the option is selected by default</dd>
     <dd><{option/value}> - Value to be used for [[#forms-form-submission]]</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>option</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>option</code></a>
     (default - <a><em>do not set</em></a>),
-    <a value for="role"><code>menuitem</code></a>,
-    <a value for="role"><code>menuitemradio</code></a>
-    or <a value for="role"><code>separator</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <a attr-value for="aria/role"><code>menuitem</code></a>,
+    <a attr-value for="aria/role"><code>menuitemradio</code></a>
+    or <a attr-value for="aria/role"><code>separator</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -8406,7 +8396,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   element's <a>index</a>.
 
   The <dfn attribute for="HTMLOptionElement"><code>text</code></dfn> IDL attribute, on getting, must
-  return the result of <a>stripping and collapsing whitespace</a> from the <a>child text content</a>
+  return the result of <a>stripping and collapsing white space</a> from the <a>child text content</a>
   of the <{option}> element, in <a>tree order</a>,
   excluding any that are descendants of descendants of the <{option}> element that are themselves
   <{script}> elements in the <a>HTML namespace</a> or <{script}> elements in the
@@ -8470,10 +8460,10 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><{textarea/required}> - Whether the control is required for [[#forms-form-submission]]</dd>
     <dd><{textarea/rows}> - Number of lines to show</dd>
     <dd><{textarea/wrap}> - How the value of the form control is to be wrapped for [[#forms-form-submission]]</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>textbox</code></a> with the <code>aria-multiline</code> property set to "true"
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>textbox</code></a> with the <{aria/aria-multiline}> property set to "true"
     (default - <a><em>do not set</em></a>).</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -8884,10 +8874,10 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><{output/for}> - Specifies controls from which the output was calculated</dd>
     <dd><{output/form}> - Associates the control with a <{form}> element</dd>
     <dd><{output/name}> - Name of form control to use for [[#forms-form-submission]] and in the {{HTMLFormElement/elements|form.elements}} API   </dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>status</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>status</code></a>
     (default - <a><em>do not set</em></a>), <a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -9071,10 +9061,10 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><a>Global attributes</a></dd>
     <dd><{progress/value}> - Current value of the element</dd>
     <dd><{progress/max}> - Upper bound of range</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>progressbar</code></a>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>progressbar</code></a>
     (default - <a><em>do not set</em></a>).</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -9238,9 +9228,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     <dd><{meter/low}> - High limit of low range</dd>
     <dd><{meter/high}> - Low limit of high range</dd>
     <dd><{meter/optimum}> - Optimum value in gauge</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
@@ -9629,10 +9619,10 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     <dd><{fieldset/disabled}> - Whether the form control is disabled</dd>
     <dd><{fieldset/form}> - Associates the control with a <{form}> element</dd>
     <dd><{fieldset/name}> - Name of form control to use for [[#forms-form-submission]] and in the {{HTMLFormElement/elements|form.elements}} API  </dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
-    <dd><a value for="role"><code>group</code></a>
-    or <a value for="role"><code>presentation</code></a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd><a attr-value for="aria/role"><code>group</code></a>
+    or <a attr-value for="aria/role"><code>presentation</code></a>.</dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -9817,9 +9807,9 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
@@ -9860,7 +9850,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
 <h5 id="a-form-control-value">A form control value</h5>
 
-  Most form controls have a <dfn for="forms" lt="value|values">value</dfn> and a <dfn for="forms">checkedness</dfn>. (The latter is only used by <{input}>
+  Most form controls have a <dfn for="forms">value</dfn> and a <dfn for="forms">checkedness</dfn>. (The latter is only used by <{input}>
   elements.) These are used to describe how the user interacts with the control.
 
   A control's <a for="forms">value</a> is its internal state. As such, it
@@ -9869,9 +9859,9 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   <p class="example">For instance, if a user enters the word "<kbd>three</kbd>" into a numeric field that expects digits, the user's input would
   be the string "three" but the control's <a for="forms">value</a> would remain
   unchanged. Or, if a user enters the email address "<kbd>&nbsp;&nbsp;awesome@example.com</kbd>"
-  (with leading whitespace) into <a element-state for="input" lt="email">an email field</a>, the
+  (with leading white space) into <{input/E-mail|an email field}>, the
   user's input would be the string "&nbsp;&nbsp;awesome@example.com" but the browser's UI for
-  email fields might translate that into a <a for="forms">value</a> of "<code>awesome@example.com</code>" (without the leading whitespace).</p>
+  email fields might translate that into a <a for="forms">value</a> of "<code>awesome@example.com</code>" (without the leading white space).</p>
 
   To define the behavior of constraint validation in the face of the <{input}>
   element's <{input/multiple}> attribute, <{input}> elements
@@ -10012,7 +10002,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     associations.
 
     This example is a non-conforming document, though, as it is a violation of the content models
-    to nest <{form}> elements, and there is a <a for="parser">parse error</a> for the <code>&lt;/form></code> tag.
+    to nest <{form}> elements, and there is a [=parse error=] for the <code>&lt;/form></code> tag.
 
   </div>
 
@@ -10048,7 +10038,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   "<code>_charset_</code>" is special:
 
   : <dfn attr-value for="formelements/name"><code>_charset_</code></dfn>
-  :: This value, if used as the name of a <a element-state for="input">Hidden</a>
+  :: This value, if used as the name of a <{input/Hidden}>
      control with no <code>value</code> attribute, is automatically given a
      value during submission consisting of the submission character encoding.
 
@@ -10214,7 +10204,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
   <dfn for="forms">Attributes for form submission</dfn> can be specified both on <{form}> elements
   and on <a>submit buttons</a> (elements that represent buttons
-  that submit forms, e.g., an <{input}> element whose <{input/type}> attribute is in the <a element-state for="input">submit button</a> state).
+  that submit forms, e.g., an <{input}> element whose <{input/type}> attribute is in the <{input/Submit|Submit Button}> state).
 
   The <a>attributes for form submission</a> that may be specified on <{form}> elements are
   <{form/action}>, <{form/enctype}>, <{form/method}>, <{form/novalidate}>, and <{form/target}>.
@@ -10229,7 +10219,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   have a value that is a <a>valid non-empty URL potentially surrounded by spaces</a>.
 
   The <dfn>action</dfn> of an element is the value of the element's
-  <{submitbuttonelements/formaction}> attribute, if the element is a <a element-state for="input">submit button</a> and has such an attribute, or the value of its
+  <{submitbuttonelements/formaction}> attribute, if the element is a <{input/Submit|Submit Button}> and has such an attribute, or the value of its
   <a>form owner</a>'s <{form/action}> attribute, if <em>it</em> has
   one, or else the empty string.
 
@@ -10258,7 +10248,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   <{submitbuttonelements/formmethod}> attribute.)
 
   The <dfn for="forms">method</dfn> of an element is one of those states. If the element is a
-  <a element-state for="input">submit button</a> and has a <{submitbuttonelements/formmethod}>
+  <{input/Submit|Submit Button}> and has a <{submitbuttonelements/formmethod}>
   attribute, then the element's <a for="forms">method</a> is that attribute's state; otherwise, it
   is the <a>form owner</a>'s <{form/method}> attribute's state.
 
@@ -10332,7 +10322,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   attribute.)
 
   The <dfn>enctype</dfn> of an element is one of those three states.
-  If the element is a <a element-state for="input">submit button</a> and has a <{submitbuttonelements/formenctype}> attribute, then the element's <a>enctype</a> is that attribute's state; otherwise, it is the
+  If the element is a <{input/Submit|Submit Button}> and has a <{submitbuttonelements/formenctype}> attribute, then the element's <a>enctype</a> is that attribute's state; otherwise, it is the
   <a>form owner</a>'s <{form/enctype}> attribute's state.
 
   <hr />
@@ -10343,7 +10333,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   names or keywords</a>.
 
   The <{form/target}> of an element is the value of the element's
-  <{submitbuttonelements/formtarget}> attribute, if the element is a <a element-state for="input">submit button</a> and has such an attribute; or the value of its
+  <{submitbuttonelements/formtarget}> attribute, if the element is a <{input/Submit|Submit Button}> and has such an attribute; or the value of its
   <a>form owner</a>'s <{form/target}> attribute, if <em>it</em> has
   such an attribute; or, if the {{Document}} contains a <{base}> element with a
   <{form/target}> attribute, then the value of the <{form/target}> attribute of the first such <{base}> element; or,
@@ -10356,7 +10346,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   not to be validated during submission.
 
   The <dfn>no-validate state</dfn> of an element is true if the
-  element is a <a element-state for="input">submit button</a> and the element's <{submitbuttonelements/formnovalidate}> attribute is present, or if the element's
+  element is a <{input/Submit|Submit Button}> and the element's <{submitbuttonelements/formnovalidate}> attribute is present, or if the element's
   <a>form owner</a>'s <{form/novalidate}> attribute is present,
   and false otherwise.
 
@@ -10385,7 +10375,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
   The <dfn attribute for="HTMLFormElement"><code>action</code></dfn> IDL attribute must <a>reflect</a> the
   content attribute of the same name, except that on getting, when the content attribute is missing
-  or its value is the empty string, <a>the document's address</a> must be returned instead.
+  or its value is the empty string, the document's [=Document/URL=] must be returned instead.
 
   The <dfn attribute for="HTMLFormElement"><code>target</code></dfn> IDL attribute must <a>reflect</a> the
   content attribute of the same name.
@@ -10402,7 +10392,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
   The <dfn attribute for="HTMLInputElement,HTMLButtonElement"><code>formAction</code></dfn> IDL attribute must <a>reflect</a> the
   <{input/formaction}> content attribute, except that on getting, when the content attribute is
-  missing or its value is the empty string, <a>the document's address</a> must be returned instead.
+  missing or its value is the empty string, the document's [=Document/URL=] must be returned instead.
 
   The <dfn attribute for="HTMLInputElement,HTMLButtonElement"><code>formEnctype</code></dfn> IDL attribute must <a>reflect</a> the
   <{input/formenctype}> content attribute, <a>limited to only known values</a>.
@@ -10424,6 +10414,15 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   author to indicate that a control is to be focused as soon as the page is loaded or as soon as the
   <code>dialog</code> within which it finds itself is shown, allowing the user to just start typing
   without having to manually focus the main control.
+ <div  class="warning">
+  <p>Use of the <{formelements/autofocus}> attribute can reduce usability and accessibility
+  for users. Users of assistive technology can be adversively affected, because its use overrides
+  the default behaviour of assistive technology to display content at the top of a document in the
+  viewport, or announce content from the start of the document. Users with cognitive disabilities can
+  also be disorientated by unexpected focus movement upon page load.</p>
+  
+  <p>User agents should provide a method for users to disable the <{formelements/autofocus}> attribute behaviour.</p>
+  </div>
 
   The <{formelements/autofocus}> attribute is a <a>boolean attribute</a>.
 
@@ -10453,13 +10452,13 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     <li>If <var>target</var>'s <a>active sandboxing flag set</a> has the
     <a>sandboxed automatic features browsing context flag</a>, abort these steps.</li>
 
-    <li>If <var>target</var>'s <a for="concept">origin</a> is not the same as the
-    <a for="concept">origin</a> of the <a>node document</a> of the currently
+    <li>If <var>target</var>'s [=concept/origin=] is not the same as the
+    [=concept/origin=] of the <a>node document</a> of the currently
     focused element in <var>target</var>'s <a>top-level browsing context</a>, abort
     these steps.</li>
 
-    <li>If <var>target</var>'s <a for="concept">origin</a> is not the same as the
-    <a for="concept">origin</a> of the <a>active document</a> of <var>target</var>'s
+    <li>If <var>target</var>'s [=concept/origin=] is not the same as the
+    [=concept/origin=] of the <a>active document</a> of <var>target</var>'s
     <a>top-level browsing context</a>, abort these steps.</li>
 
     <li>If the user agent has already reached the last step of this list of steps in response to
@@ -10670,7 +10669,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   value.
 
   On an <{input}> element whose <{input/type}> attribute is
-  in the <a>Hidden</a> state, the <{input/autocomplete}> attribute wears the <a>autofill anchor
+  in the <{input/Hidden}> state, the <{input/autocomplete}> attribute wears the <a>autofill anchor
   mantle</a>. In all other cases, it wears the <a>autofill expectation mantle</a>.
 
   When wearing the <a>autofill expectation mantle</a>, the <{autocompleteelements/autocomplete}> attribute, if specified, must have a value that
@@ -10961,75 +10960,75 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       </td><td>Full name
       </td><td>Free-form text, no newlines
       </td><td>Sir Timothy John Berners-Lee, OM, KBE, FRS, FREng, FRSA
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td rowspan="5" class="non-rectangular-cell-indentation">
       </td><td colspan="3">"<code>honorific-prefix</code>"
       </td><td>Prefix or title (e.g., "Mr.", "Ms.", "Dr.", "<span lang="fr">M<sup>lle</sup></span>")
       </td><td>Free-form text, no newlines
       </td><td>Sir
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>given-name</code>"
       </td><td>Given name (in some Western cultures, also known as the <i>first name</i>)
       </td><td>Free-form text, no newlines
       </td><td>Timothy
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>additional-name</code>"
       </td><td>Additional names (in some Western cultures, also known as <i>middle names</i>, forenames other than the first name)
       </td><td>Free-form text, no newlines
       </td><td>John
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>family-name</code>"
       </td><td>Family name (in some Western cultures, also known as the <i>last name</i> or <i>surname</i>)
       </td><td>Free-form text, no newlines
       </td><td>Berners-Lee
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>honorific-suffix</code>"
       </td><td>Suffix (e.g., "Jr.", "B.Sc.", "MBASW", "II")
       </td><td>Free-form text, no newlines
       </td><td>OM, KBE, FRS, FREng, FRSA
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>nickname</code>"
       </td><td>Nickname, screen name, handle: a typically short name used instead of the full name
       </td><td>Free-form text, no newlines
       </td><td>Tim
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>organization-title</code>"
       </td><td>Job title (e.g., "Software Engineer", "Senior Vice President", "Deputy Managing Director")
       </td><td>Free-form text, no newlines
       </td><td>Professor
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>username</code>"
       </td><td>A username
       </td><td>Free-form text, no newlines
       </td><td>timbl
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>new-password</code>"
       </td><td>A new password (e.g., when creating an account or changing a password)
       </td><td>Free-form text, no newlines
       </td><td>GUMFXbadyrS3
-      </td><td><a element-state for="input">Password</a>
+      </td><td><{input/Password}>
     </td></tr><tr>
       <td colspan="4">"<code>current-password</code>"
       </td><td>The current password for the account identified by the <code>username</code> field (e.g., when logging in)
       </td><td>Free-form text, no newlines
       </td><td>qwerty
-      </td><td><a element-state for="input">Password</a>
+      </td><td><{input/Password}>
     </td></tr></tbody><tbody>
     <tr>
       <td colspan="4">"<code>organization</code>"
       </td><td>Company name corresponding to the person, address, or contact information in the other fields associated with this field
       </td><td>Free-form text, no newlines
       </td><td>World Wide Web Consortium
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>street-address</code>"
       </td><td>Street address (multiple lines, newlines preserved)
@@ -11042,31 +11041,31 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       </td><td rowspan="3">Street address (one line per field)
       </td><td>Free-form text, no newlines
       </td><td>32 Vassar Street
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>address-line2</code>"
       </td><td>Free-form text, no newlines
       </td><td>MIT Room 32-G524
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>address-line3</code>"
       </td><td>Free-form text, no newlines
       </td><td>
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>address-level4</code>"
       </td><td>The most fine-grained <a>administrative level</a>, in
       addresses with four administrative levels
       </td><td>Free-form text, no newlines
       </td><td>
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>address-level3</code>"
       </td><td>The <a>third administrative level</a>, in addresses with
       three or more administrative levels
       </td><td>Free-form text, no newlines
       </td><td>
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>address-level2</code>"
       </td><td>The <a>second administrative level</a>, in addresses with
@@ -11075,7 +11074,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       address is found
       </td><td>Free-form text, no newlines
       </td><td>Cambridge
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>address-level1</code>"
       </td><td>The broadest <a>administrative level</a> in the address,
@@ -11083,151 +11082,151 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       state; in Switzerland it would be the canton; in the UK, the post town
       </td><td>Free-form text, no newlines
       </td><td>MA
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>country</code>"
       </td><td>Country code
       </td><td>Valid <a>ISO 3166-1-alpha-2 country code</a> [[!ISO3166]]
       </td><td>US
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>country-name</code>"
       </td><td>Country name
       </td><td>Free-form text, no newlines; <a>derived from <code>country</code> in some cases</a>
       </td><td>US
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>postal-code</code>"
       </td><td>Postal code, post code, ZIP code, CEDEX code (if CEDEX, append "CEDEX", and the <i lang="fr">dissement</i>, if relevant, to the <code>address-level2</code> field)
       </td><td>Free-form text, no newlines
       </td><td>02139
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr></tbody><tbody>
     <tr>
       <td colspan="4">"<code>cc-name</code>"
       </td><td>Full name as given on the payment instrument
       </td><td>Free-form text, no newlines
       </td><td>Tim Berners-Lee
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td rowspan="3" class="non-rectangular-cell-indentation">
       </td><td colspan="3">"<code>cc-given-name</code>"
       </td><td>Given name as given on the payment instrument (in some Western cultures, also known as the <i>first name</i>)
       </td><td>Free-form text, no newlines
       </td><td>Tim
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>cc-additional-name</code>"
       </td><td>Additional names given on the payment instrument (in some Western cultures, also known as <i>middle names</i>, forenames other than the first name)
       </td><td>Free-form text, no newlines
       </td><td>
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>cc-family-name</code>"
       </td><td>Family name given on the payment instrument (in some Western cultures, also known as the <i>last name</i> or <i>surname</i>)
       </td><td>Free-form text, no newlines
       </td><td>Berners-Lee
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>cc-number</code>"
       </td><td>Code identifying the payment instrument (e.g., the credit card number)
       </td><td><a>ASCII digits</a>
       </td><td>4114360123456785
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>cc-exp</code>"
       </td><td>Expiration date of the payment instrument
       </td><td><a>Valid month string</a>
       </td><td>2014-12
-      </td><td><a element-state for="input">Month</a>
+      </td><td><{input/Month}>
     </td></tr><tr>
       <td rowspan="2" class="non-rectangular-cell-indentation">
       </td><td colspan="3">"<code>cc-exp-month</code>"
       </td><td>Month component of the expiration date of the payment instrument
       </td><td><a>valid integer</a> in the range 1..12
       </td><td>12
-      </td><td><a element-state for="input" lt="number">Numeric</a>
+      </td><td><{input/Number|Numeric}>
     </td></tr><tr>
       <td colspan="3">"<code>cc-exp-year</code>"
       </td><td>Year component of the expiration date of the payment instrument
       </td><td><a>valid integer</a> greater than zero
       </td><td>2014
-      </td><td><a element-state for="input" lt="number">Numeric</a>
+      </td><td><{input/Number|Numeric}>
     </td></tr><tr>
       <td colspan="4">"<code>cc-csc</code>"
       </td><td>Security code for the payment instrument (also known as the card security code (CSC), card validation code (CVC), card verification value (CVV), signature panel code (SPC), credit card ID (CCID), etc)
       </td><td><a>ASCII digits</a>
       </td><td>419
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>cc-type</code>"
       </td><td>Type of payment instrument
       </td><td>Free-form text, no newlines
       </td><td>Visa
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr></tbody><tbody>
     <tr>
       <td colspan="4">"<code>transaction-currency</code>"
       </td><td>The currency that the user would prefer the transaction to use
       </td><td>ISO 4217 currency code [[!ISO4217]]
       </td><td>GBP
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>transaction-amount</code>"
       </td><td>The amount that the user would like for the transaction (e.g., when entering a bid or sale price)
       </td><td><a>Valid floating-point number</a>
       </td><td>401.00
-      </td><td><a element-state for="input" lt="number">Numeric</a>
+      </td><td><{input/Number|Numeric}>
     </td></tr></tbody><tbody>
     <tr>
       <td colspan="4">"<code>language</code>"
       </td><td>Preferred language
       </td><td>Valid BCP 47 language tag [[!BCP47]]
       </td><td>en
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>bday</code>"
       </td><td>Birthday
       </td><td><a>Valid date string</a>
       </td><td>1955-06-08
-      </td><td><a element-state for="input">Date</a>
+      </td><td><{input/Date}>
     </td></tr><tr>
       <td rowspan="3" class="non-rectangular-cell-indentation">
       </td><td colspan="3">"<code>bday-day</code>"
       </td><td>Day component of birthday
       </td><td><a>valid integer</a> in the range 1..31
       </td><td>8
-      </td><td><a element-state for="input" lt="number">Numeric</a>
+      </td><td><{input/Number|Numeric}>
     </td></tr><tr>
       <td colspan="3">"<code>bday-month</code>"
       </td><td>Month component of birthday
       </td><td><a>valid integer</a> in the range 1..12
       </td><td>6
-      </td><td><a element-state for="input" lt="number">Numeric</a>
+      </td><td><{input/Number|Numeric}>
     </td></tr><tr>
       <td colspan="3">"<code>bday-year</code>"
       </td><td>Year component of birthday
       </td><td><a>valid integer</a> greater than zero
       </td><td>1955
-      </td><td><a element-state for="input" lt="number">Numeric</a>
+      </td><td><{input/Number|Numeric}>
     </td></tr><tr>
       <td colspan="4">"<code>sex</code>"
       </td><td>Gender identity (e.g., Female, Fa'afafine)
       </td><td>Free-form text, no newlines
       </td><td>Male
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>url</code>"
       </td><td>Home page or other Web page corresponding to the company, person, address, or contact information in the other fields associated with this field
       </td><td><a>Valid URL</a>
       </td><td>https://www.w3.org/People/Berners-Lee/
-      </td><td><a element-state for="input">URL</a>
+      </td><td><{input/URL}>
     </td></tr><tr>
       <td colspan="4">"<code>photo</code>"
       </td><td>Photograph, icon, or other image corresponding to the company, person, address, or contact information in the other fields associated with this field
       </td><td> <a>Valid URL</a>
       </td><td>https://www.w3.org/Press/Stock/Berners-Lee/2001-europaeum-eighth.jpg
-      </td><td> <a element-state for="input">URL</a>
+      </td><td> <{input/URL}>
     </td></tr></tbody><tbody>
     <tr>
       <td colspan="4">"<code>tel</code>"
@@ -11241,57 +11240,57 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       </td><td>Country code component of the telephone number
       </td><td><a>ASCII digits</a> prefixed by a U+002B PLUS SIGN character (+)
       </td><td>+1
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="3">"<code>tel-national</code>"
       </td><td>Telephone number without the county code component, with a country-internal prefix applied if applicable
       </td><td><a>ASCII digits</a> and U+0020 SPACE characters
       </td><td>617 253 5702
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td rowspan="4" class="non-rectangular-cell-indentation">
         </td><td colspan="2">"<code>tel-area-code</code>"
         </td><td>Area code component of the telephone number, with a country-internal prefix applied if applicable
         </td><td><a>ASCII digits</a>
         </td><td>617
-        </td><td><a element-state for="input">Text</a>
+        </td><td><{input/Text}>
     </td></tr><tr>
         <td colspan="2">"<code>tel-local</code>"
         </td><td>Telephone number without the country code and area code components
         </td><td><a>ASCII digits</a>
         </td><td>2535702
-        </td><td><a element-state for="input">Text</a>
+        </td><td><{input/Text}>
     </td></tr><tr>
         <td rowspan="2" class="non-rectangular-cell-indentation">
         </td><td>"<code>tel-local-prefix</code>"
         </td><td>First part of the component of the telephone number that follows the area code, when that component is split into two components
         </td><td><a>ASCII digits</a>
         </td><td>253
-        </td><td><a element-state for="input">Text</a>
+        </td><td><{input/Text}>
     </td></tr><tr>
         <td>"<code>tel-local-suffix</code>"
         </td><td>Second part of the component of the telephone number that follows the area code, when that component is split into two components
         </td><td><a>ASCII digits</a>
         </td><td>5702
-        </td><td><a element-state for="input">Text</a>
+        </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>tel-extension</code>"
       </td><td>Telephone number internal extension code
       </td><td><a>ASCII digits</a>
       </td><td>1000
-      </td><td><a element-state for="input">Text</a>
+      </td><td><{input/Text}>
     </td></tr><tr>
       <td colspan="4">"<code>email</code>"
       </td><td>E-mail address
       </td><td><a>Valid e-mail address</a>
       </td><td>timbl@w3.org
-      </td><td><a element-state for="input">E-mail</a>
+      </td><td><{input/E-mail}>
     </td></tr><tr>
       <td colspan="4">"<code>impp</code>"
       </td><td>URL representing an instant messaging protocol endpoint (for example, "<code>aim:goim?screenname=example</code>" or "<code>xmpp:fred@example.net</code>")
       </td><td><a>Valid URL</a>
       </td><td>irc://example.org/timbl,isuser
-      </td><td><a element-state for="input">URL</a>
+      </td><td><{input/URL}>
   </td></tr></tbody></table>
 
   The groups correspond to controls as follows:
@@ -11300,78 +11299,78 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
     <dt>Text
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>Multiline
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>Password
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Password</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Password}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>URL
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">URL</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/URL}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>E-mail
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">E-mail</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/E-mail}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>Tel
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Telephone</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Telephone}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>Numeric
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Number</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Number}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>Month
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Month</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Month}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
     </dd><dt>Date
 
-    </dt><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Hidden</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Text</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Search</a> state
-    </dd><dd><{input}> elements with a <{input/type}> attribute in the <a element-state for="input">Date</a> state
+    </dt><dd><{input}> elements with a <{input/type}> attribute in the <{input/Hidden}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Text}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Search}> state
+    </dd><dd><{input}> elements with a <{input/type}> attribute in the <{input/Date}> state
     </dd><dd><{textarea}> elements
     </dd><dd><{select}> elements
 
@@ -11764,8 +11763,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
     an <a>ASCII case-insensitive</a> match for the string "<code>section-</code>", then jump to the
     step labeled <i>default</i>.</li>
 
-    <li>Let <var>section</var> be the <var>index</var>th token in <var>tokens</var>,
-    <a>converted to ASCII lowercase</a>.</li>
+    <li>Let <var>section</var> be the <var>index</var>th token in <var>tokens</var>, in
+    <a>ASCII lowercase</a>.</li>
 
     <li>Insert <var>section</var> at the start of <var>scope tokens</var>.</li>
 
@@ -11811,7 +11810,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   <dl>
 
     <dt>An <{input}> element with its <{input/type}> attribute
-    in the <a element-state for="input">E-mail</a> state and with the <code>multiple</code> attribute specified</dt>
+    in the <{input/E-mail}> state and with the <code>multiple</code> attribute specified</dt>
 
     <dd>The element's <a for="forms">value<em>s</em></a>.</dd>
 
@@ -11972,7 +11971,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   "<code>section-spouse</code>".</p>
 
   The autocompletion mechanism must be implemented by the user agent acting as if the user had
-  modified the <a>control's data</a>, and must be done at a time where the element is <a>mutable</a> (e.g., just after the element has been <a for="document">inserted into the document</a>, or when the user agent <a lt="stops parsing">stops parsing</a>). User agents
+  modified the <a>control's data</a>, and must be done at a time where the element is <a>mutable</a> (e.g., just after the element has been <a for="document">inserted into the document</a>, or when the user agent [=stop parsing|stops parsing=]). User agents
   must only prefill controls using values that the user could have entered.
 
   <p class="example">For example, if a <{select}> element only has <{option}>
@@ -12095,7 +12094,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       <td>
 
       an <{input}> element whose <{input/type}> attribute is in
-      the <a element-state for="input">Text</a> state that is followed by an
+      the <{input/Text}> state that is followed by an
       <{input}> element whose <{input/type}> attribute is in
       the <a>Password</a> state
 
@@ -12108,7 +12107,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       <td>
 
       an <{input}> element whose <{input/type}> attribute is in
-      the <a element-state for="input">Password</a> state that is preceded by an
+      the <{input/Password}> state that is preceded by an
       <{input}> element whose <a>autofill field name</a> is "<code>username</code>"
 
       </td><td>
@@ -12120,7 +12119,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       <td>
 
       an <{input}> element whose <{input/type}> attribute is in
-      the <a element-state for="input">Password</a> state that is preceded by an
+      the <{input/Password}> state that is preceded by an
       <{input}> element whose <a>autofill field name</a> is "<code>current-password</code>"
 
       </td><td>
@@ -12132,7 +12131,7 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
       <td>
 
       an <{input}> element whose <{input/type}> attribute is in
-      the <a element-state for="input">Password</a> state that is preceded by an
+      the <{input/Password}> state that is preceded by an
       <{input}> element whose <a>autofill field name</a> is "<code>new-password</code>"
 
       </td><td>
@@ -12547,8 +12546,8 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
 
   : <dfn lt="suffer from a type mismatch|suffering from a type mismatch">Suffering from a type mismatch</dfn>
   :: When a control that allows arbitrary user input has a <a for="forms">value</a> that is not in
-     the correct syntax (<a element-state for="input">E-mail</a>,
-     <a element-state for="input">URL</a>).
+     the correct syntax (<{input/E-mail}>,
+     <{input/URL}>).
 
   : <dfn lt="suffer from a pattern mismatch|suffering from a pattern mismatch">Suffering from a pattern mismatch</dfn>
   :: When a control has a <a for="forms">value</a> that doesn't satisfy the <{input/pattern}>
@@ -12675,7 +12674,7 @@ control.setSelectionRange(oldStart + prefix.length, oldEnd + prefix.length, oldD
     user's attention. User agents may report more than one constraint violation. User agents may
     coalesce related constraint violation reports if appropriate (e.g., if multiple radio buttons in a
     <a>group</a> are marked as required, only one error need be
-    reported). If one of the controls is not <a>being rendered</a> (e.g., it has the <code>hidden</code> attribute set) then user agents may report a script
+    reported). If one of the controls is not <a>being rendered</a> (e.g., it has the <{global/hidden}> attribute set) then user agents may report a script
     error.</li>
 
     <li>Return a <i>negative</i> result.</li>
@@ -13008,7 +13007,7 @@ fur
 
 <h5 id="implicit-submission">Implicit submission</h5>
 
-  A <{form}> element's <dfn>default button</dfn> is the first <a element-state for="input">submit button</a> in <a>tree order</a> whose <a>form
+  A <{form}> element's <dfn>default button</dfn> is the first <{input/Submit|Submit Button}> in <a>tree order</a> whose <a>form
   owner</a> is that <{form}> element.
 
   If the user agent supports letting the user submit a form implicitly (for example, on some
@@ -13029,7 +13028,7 @@ fur
   </p>
 
   If the form has
-  no <a element-state for="input">submit button</a>, then the implicit submission
+  no <{input/Submit|Submit Button}>, then the implicit submission
   mechanism must do nothing if the form has more than one <i>field that blocks implicit
   submission</i>, and must <a>submit</a> the <{form}>
   element from the <{form}> element itself otherwise.
@@ -13037,18 +13036,18 @@ fur
   For the purpose of the previous paragraph, an element is a <i>field that blocks implicit
   submission</i> of a <{form}> element if it is an <{input}> element whose
   <a>form owner</a> is that <{form}> element and whose <{input/type}> attribute is in one of the following states:
-  <a element-state for="input">Text</a>,
-  <a element-state for="input">Search</a>,
-  <a element-state for="input">URL</a>,
-  <a element-state for="input">Telephone</a>,
-  <a element-state for="input">E-mail</a>,
-  <a element-state for="input">Password</a>,
-  <a element-state for="input">Date and Time</a>,
-  <a element-state for="input">Date</a>,
-  <a element-state for="input">Month</a>,
-  <a element-state for="input">Week</a>,
-  <a element-state for="input">Time</a>,
-  <a element-state for="input">Number</a>
+  <{input/Text}>,
+  <{input/Search}>,
+  <{input/URL}>,
+  <{input/Telephone}>,
+  <{input/E-mail}>,
+  <{input/Password}>,
+  <{input/DateTime|Date and Time}>,
+  <{input/Date}>,
+  <{input/Month}>,
+  <{input/Week}>,
+  <{input/Time}>,
+  <{input/Number}>
 
   </div>
 
@@ -13092,18 +13091,18 @@ fur
     <li>
 
     If <var>action</var> is the empty string, let <var>action</var> be
-    <a>the document's address</a> of the <var>form document</var>.
+    the document's [=Document/URL=] of the <var>form document</var>.
 
     </li>
 
-    <li><a>Parse</a> the <a for="url">URL</a> <var>action</var>, relative to the <var>submitter</var> element's <a>node document</a>. If this fails,
+    <li><a>Parse</a> the [=url/URL=] <var>action</var>, relative to the <var>submitter</var> element's <a>node document</a>. If this fails,
     abort these steps.</li>
 
     <li>Let <var>action</var> be the <a>resulting URL string</a>.</li>
 
     <li>Let <var>action components</var> be the <a>resulting URL record</a>.</li>
 
-    <li>Let <var>scheme</var> be the <a for="url">scheme</a> of
+    <li>Let <var>scheme</var> be the [=url/scheme=] of
     the <a>resulting URL record</a>.</li>
 
     <li>Let <var>enctype</var> be the <var>submitter</var> element's <a>enctype</a>.</li>
@@ -13223,7 +13222,7 @@ fur
 
         Set <var>parsed action</var>'s <a for="url">query</a> component to <var>query</var>.
 
-        Let <var>destination</var> be a new <a for="url">URL</a> formed by applying the
+        Let <var>destination</var> be a new [=url/URL=] formed by applying the
         <a>URL serializer</a> algorithm to <var>parsed action</var>.
 
         <a>Plan to navigate</a> to <var>destination</var>.
@@ -13247,7 +13246,7 @@ fur
         : If <var>enctype</var> is <code>text/plain</code>
         :: Let <var>MIME type</var> be "<code>text/plain</code>".
 
-        Otherwise, <a>plan to navigate</a> to a new <a>request</a> whose <a for="url">URL</a> is
+        Otherwise, <a>plan to navigate</a> to a new <a>request</a> whose [=url/URL=] is
         <var>action</var>, <a for="request">method</a> is <var>method</var>, <a for="request">header list</a>
         consists of <code>Content-Type</code>/<var>MIME type</var>, and <a for="request">body</a> is
         <var>entity body</var>.
@@ -13323,7 +13322,7 @@ fur
         attribute, do nothing. Otherwise, proceed as follows:
 
         If <var>submitter</var> is an <{input}> element whose <{input/type}> attribute is in
-        the <a element-state for="input">image button</a> state, then let <var>result</var>
+        the <{input/Image|Image Button}> state, then let <var>result</var>
         be the string formed by concatenating the <a>selected coordinate</a>'s
         <var>x</var>-component, expressed as a base-ten number using <a>ASCII digits</a>, a
         U+002C COMMA character (,), and the <a>selected coordinate</a>'s <var>y</var>-component,
@@ -13385,11 +13384,11 @@ fur
         <li>The <var>field</var> element is a <a>button</a> but
         it is not <var>submitter</var>.</li>
 
-        <li>The <var>field</var> element is an <{input}> element whose <{input/type}> attribute is in the <a element-state for="input">Checkbox</a> state and whose <a for="forms">checkedness</a> is false.</li>
+        <li>The <var>field</var> element is an <{input}> element whose <{input/type}> attribute is in the <{input/Checkbox}> state and whose <a for="forms">checkedness</a> is false.</li>
 
-        <li>The <var>field</var> element is an <{input}> element whose <{input/type}> attribute is in the <a element-state for="input">Radio Button</a> state and whose <a for="forms">checkedness</a> is false.</li>
+        <li>The <var>field</var> element is an <{input}> element whose <{input/type}> attribute is in the <{input/Radio|Radio Button}> state and whose <a for="forms">checkedness</a> is false.</li>
 
-        <li>The <var>field</var> element is not an <{input}> element whose <{input/type}> attribute is in the <a element-state for="input">image button</a> state, and either the <var>field</var> element does not have a <{formelements/name}> attribute
+        <li>The <var>field</var> element is not an <{input}> element whose <{input/type}> attribute is in the <{input/Image|Image Button}> state, and either the <var>field</var> element does not have a <{formelements/name}> attribute
         specified, or its <{formelements/name}> attribute's value is the empty
         string.</li>
 
@@ -13407,7 +13406,7 @@ fur
 
       <li>
 
-      If the <var>field</var> element is an <{input}> element whose <{input/type}> attribute is in the <a element-state for="input">image button</a> state, then run these further nested
+      If the <var>field</var> element is an <{input}> element whose <{input/type}> attribute is in the <{input/Image|Image Button}> state, then run these further nested
       substeps:
 
       <ol>
@@ -13452,7 +13451,7 @@ fur
       <li>
 
       Otherwise, if the <var>field</var> element is an <{input}> element whose
-      <{input/type}> attribute is in the <a element-state for="input">Checkbox</a> state or the <a element-state for="input">Radio Button</a> state, then run these further nested
+      <{input/type}> attribute is in the <{input/Checkbox}> state or the <{input/Radio|Radio Button}> state, then run these further nested
       substeps:
 
       <ol>
@@ -13469,7 +13468,7 @@ fur
       </li>
 
       <li>Otherwise, if the <var>field</var> element is an <{input}> element
-      whose <{input/type}> attribute is in the <a element-state for="input">File Upload</a> state, then for each file <a>selected</a> in the <{input}> element,
+      whose <{input/type}> attribute is in the <{input/File|File Upload}> state, then for each file <a>selected</a> in the <{input}> element,
       append an entry to the <var>form data set</var> with the <var>name</var> as
       the name, the file (consisting of the name, the type, and the body) as the value, and <var>type</var> as the type. If there are no <a>selected files</a>, then append an entry to the
       <var>form data set</var> with the <var>name</var> as the name, the empty
@@ -13503,7 +13502,7 @@ fur
       <p class="note">
     An element can only have a <code>dirname</code>
       attribute if it is a <{textarea}> element or an <{input}> element whose
-      <{input/type}> attribute is in either the <a element-state for="input">Text</a> state or the <a element-state for="input">Search</a> state.
+      <{input/type}> attribute is in either the <{input/Text}> state or the <{input/Search}> state.
   </p>
 
       </li>
@@ -13527,7 +13526,7 @@ fur
     conversion of the control's <a>raw value</a> into the
     control's <a for="forms">value</a> (which also performs any necessary line
     wrapping). In the case of <{input}> elements <{input/type}>
-    attributes in the <a element-state for="input">File Upload</a> state, the value is not
+    attributes in the <{input/File|File Upload}> state, the value is not
     normalized.
   </p>
 
@@ -13553,7 +13552,8 @@ fur
           <a lt="split a string on spaces">splitting <var>input</var> on spaces</a>.
       3. Let <var>candidate encodings</var> be an empty list of <a>character encodings</a>.
       4. For each token in <var>candidate encoding labels</var> in turn (in the order in which they
-          were found in <var>input</var>), <a>get an encoding</a> for the token and, if this does
+          were found in <var>input</var>), <a lt="getting an encoding">get an encoding</a> for
+          the token and, if this does
           not result in failure, append the <a>encoding</a> to <var>candidate encodings</var>.
       5. If <var>candidate encodings</var> is empty, return <a>UTF-8</a>.
       6. Return the first encoding in <var>candidate encodings</var>.
@@ -13561,7 +13561,7 @@ fur
 
 <h5 id="urlencoded-form-data">URL-encoded form data</h5>
 
-  See the WHATWG URL standard for details on <code>application/x-www-form-urlencoded</code>. [[!URL]]
+  See the WHATWG URL specification for details on <code>application/x-www-form-urlencoded</code>. [[!URL]]
 
   The <dfn><code>application/x-www-form-urlencoded</code> encoding algorithm</dfn> is as follows:
 

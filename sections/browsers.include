@@ -59,11 +59,30 @@
   <a>creator browsing context</a>. Otherwise, the <a>browsing context</a> has no
   <a>creator browsing context</a>.
 
-  If a <a>browsing context</a> <var>A</var> has a <a>creator browsing context</a>, then the
-  <dfn>creator origin</dfn>, <dfn>creator URL</dfn>, and <dfn>creator base URL</dfn> are the
-  <a for="concept">origin</a>, <a lt="document url">URL</a>, and <a lt='document base URL'>base URL</a>, respectively, of
-  the {{Document}} that was the <a>active document</a> of that <a>creator browsing context</a> at
-  the time <var>A</var> was created.
+  <p>If a [=browsing context=] <var>context</var> has a [=creator browsing context=]
+  <var>creator</var>, it also has the following properties. In what follows, let
+  <var>creator document</var> be <var>creator</var>'s [=active document=] at the time
+  <var>context</var> is created:</p>
+
+  <dl>
+   <dt><dfn>creator origin</dfn></dt>
+   <dd>|creator document|'s [=concept/origin=]</dd>
+
+   <dt><dfn>creator URL</dfn></dt>
+   <dd>|creator document|'s [=document url|URL=]</dd>
+
+   <dt><dfn>creator base URL</dfn></dt>
+   <dd>|creator document|'s [=base URL=]</dd>
+
+   <dt><dfn>creator referrer policy</dfn></dt>
+   <dd>|creator document|'s [=referrer policy=]</dd>
+
+   <dt><dfn>creator context security</dfn></dt>
+   <dd>The result of executing <span>Is environment settings object a secure context?</span> on
+   |creator document|'s [=relevant settings object=]</dd>
+  </dl>
+
+  <div w-nodev>
 
   To <dfn lt="creating a new browsing context|create a new browsing context">create a new browsing context</dfn>:
 
@@ -76,14 +95,14 @@
          <p class="note">The internal slot value is updated when navigations occur.</p>
       * Let <var>realm execution context</var> be the created <a>JavaScript execution context</a>.
   2. Set the new <a>browsing context</a>'s associated {{WindowProxy}} to <var>windowProxy</var>.
-  3. Let <var>document</var> be a new {{Document}}, whose <a for="url">URL</a> is
+  3. Let <var>document</var> be a new {{Document}}, whose [=url/URL=] is
       <a scheme>about:blank</a>, which is marked as being an <a>HTML document</a>, whose
-      <a>character encoding</a> is UTF-8, and which is both <a>ready for post-load tasks</a> and
+      <a>character encoding</a> is UTF-8, and which is both [=ready for post-load tasks=] and
       <a>completely loaded</a> immediately.
-  4. Set the <a for="concept">origin</a> of <var>document</var>:
+  4. Set the [=concept/origin=] of <var>document</var>:
       * If the new <a>browsing context</a> has a <a>creator browsing context</a>, then the
-         <a for="concept">origin</a> of <var>document</var> is the <a>creator origin</a>.
-      * Otherwise, the <a for="concept">origin</a> of <var>document</var> is a unique
+         [=concept/origin=] of <var>document</var> is the <a>creator origin</a>.
+      * Otherwise, the [=concept/origin=] of <var>document</var> is a unique
          <a>opaque origin</a> assigned when the new <a>browsing context</a> is created.
   5. If the new <a>browsing context</a> has a <a>creator browsing context</a>, then set
       <var>document</var>'s <a>referrer</a> to the <a>creator URL</a>.
@@ -164,6 +183,16 @@
   consists of the union of all the <a>document families</a> of the
   <a>browsing contexts</a> that are <a>nested through</a> the {{Document}} object.
 
+  The <dfn>content document</dfn> of a [=browsing context container=] |container| is the result of
+  the following algorithm:
+
+  1. If |container|'s [=nested browsing context=] is null, then return null.
+  2. Let |context| be |container|'s [=nested browsing context=].
+  3. Let |document| be |context|'s [=active document=].
+  4. If |document|'s [=concept/origin=] and the [=security/origin=] specified by the
+      [=current settings object=] are not [=same origin-domain=], then return null.
+  5. Return |document|.
+
 <h5 id="navigating-nested-browsing-contexts-in-the-dom">Navigating nested browsing contexts in the DOM</h5>
 
   <dl class="domintro">
@@ -219,8 +248,8 @@
   3. If <var>context</var> is not a <a>nested browsing context</a>, return null and abort these
       steps.
   4. Let <var>container</var> be <var>context</var>'s <a>browsing context container</a>.
-  5. If <var>container</var>'s <a>node document</a>'s <a for="concept">origin</a> is not
-      <a>same origin-domain</a> with the <a>entry settings object</a>'s <a for="concept">origin</a>,
+  5. If <var>container</var>'s <a>node document</a>'s [=concept/origin=] is not
+      <a>same origin-domain</a> with the <a>entry settings object</a>'s [=concept/origin=],
       then return null and abort these steps.
   6. Return <var>container</var>.
 
@@ -259,8 +288,8 @@
 
   <ul>
 
-    <li>Either the <a for="concept">origin</a> of the <a>active document</a> of <var>A</var>
-    is the same as the <a for="concept">origin</a> of the <a>active
+    <li>Either the [=concept/origin=] of the <a>active document</a> of <var>A</var>
+    is the same as the [=concept/origin=] of the <a>active
     document</a> of <var>B</var>, or</li>
 
     <li>The browsing context <var>A</var> is a <a>nested browsing context</a> with a
@@ -312,10 +341,10 @@
   An element has a <dfn>browsing context scope origin</dfn> if its {{Document}}'s
   <a>browsing context</a> is a <a>top-level browsing context</a> or if all of its
   {{Document}}'s <a>ancestor browsing contexts</a>
-  all have <a>active documents</a> whose <a for="concept">origin</a> are the
-  <a>same origin</a> as the element's <a>node document</a>'s <a for="concept">origin</a>. If an
+  all have <a>active documents</a> whose [=concept/origin=] are the
+  <a>same origin</a> as the element's <a>node document</a>'s [=concept/origin=]. If an
   element has a <a>browsing context scope origin</a>, then its value is the
-  <a for="concept">origin</a> of the element's <a>node document</a>.
+  [=concept/origin=] of the element's <a>node document</a>.
 
 <h4 id="groupings-of-browsing-contexts">Groupings of browsing contexts</h4>
 
@@ -334,7 +363,7 @@
 
   Each <a>unit of related browsing contexts</a> is then further divided into the smallest number of
   groups such that every member of each group has an <a>active document</a> with an
-  <a for="concept">origin</a> that, through appropriate manipulation of the
+  [=concept/origin=] that, through appropriate manipulation of the
   {{Document/domain|document.domain}} attribute, could be made to be <a>same origin-domain</a> with
   other members of the group, but could not be made the same as members of any other group. Each
   such group is a
@@ -605,7 +634,7 @@
 
       <dt><dfn lt="causes the opener attribute to remain null"></dfn>If the user agent has been configured such that in this instance it will
       create a new browsing context, and the browsing context is being requested as part of <a>following a hyperlink</a> whose <a>link
-      types</a> include the <code>noreferrer</code> keyword</dt>
+      types</a> include the <a attr-value for="link/type"><code>noreferrer</code></a> keyword</dt>
 
       <dd>A new <a>top-level browsing context</a> must be created. If the given browsing
       context name is not <code>_blank</code>, then the new top-level browsing context's
@@ -619,7 +648,7 @@
   </p></dd>
 
       <dt>If the user agent has been configured such that in this instance it will create a new
-      browsing context, and the <code>noreferrer</code> keyword doesn't
+      browsing context, and the <a attr-value for="link/type"><code>noreferrer</code></a> keyword doesn't
       apply</dt>
 
       <dd>A new <a>auxiliary browsing context</a> must be created, with the <a>opener
@@ -676,7 +705,7 @@
 
   1. Let <var>realm</var> be the value of <var>execution context</var>'s Realm component.
   2. Let <var>window</var> be <var>realm</var>'s <a>global object</a>.
-  3. Let <var>url</var> be a copy of the <a for="url">URL</a> of the {{Document}} with which
+  3. Let <var>url</var> be a copy of the [=url/URL=] of the {{Document}} with which
       <var>window</var> is associated.
   4. Let <var>settings object</var> be a new <a>environment settings object</a> whose algorithms are
       defined as follows:
@@ -706,8 +735,8 @@
       :: Return the current <a lt='document base URL'>base URL</a> of the {{Document}} with which <var>window</var> is
           currently associated.
 
-      : The <a for="concept">origin</a>
-      :: Return the <a for="concept">origin</a> of the {{Document}} with which <var>window</var> is
+      : The [=concept/origin=]
+      :: Return the [=concept/origin=] of the {{Document}} with which <var>window</var> is
           currently associated.
 
       : The <a>creation URL</a>
@@ -857,9 +886,9 @@
 
 <h5 id="isplatformobjectsameorigin-algorithm"><dfn>IsPlatformObjectSameOrigin</dfn> ( <var>O</var> )</h5>
 
-  1. Return true if the <a>current settings object</a>'s <a for="concept">origin</a> is
+  1. Return true if the <a>current settings object</a>'s [=concept/origin=] is
       <a>same origin-domain</a> with <var>O</var>'s <a>relevant settings object</a>'s
-      <a for="concept">origin</a>, and false otherwise.
+      [=concept/origin=], and false otherwise.
 
 <h5 id="crossorigingetownpropertyhelper-algorithm"><dfn>CrossOriginGetOwnPropertyHelper</dfn> ( <var>O</var>, <var>P</var> )</h5>
 
@@ -871,8 +900,8 @@
       { \[[Value]]: undefined, \[[Writable]]: false, \[[Enumerable]]: false,
       \[[Configurable]]: true }.
   2. Let <var>crossOriginKey</var> be a tuple consisting of the <a>current settings object</a>'s
-      <a for="concept">origin</a>'s <a>effective domain</a>, <var>O</var>'s relevant settings
-      object's <a for="concept">origin</a>'s <a>effective domain</a>, and <var>P</var>.
+      [=concept/origin=]'s <a>effective domain</a>, <var>O</var>'s relevant settings
+      object's [=concept/origin=]'s <a>effective domain</a>, and <var>P</var>.
   3. Repeat for each <var>e</var> that is an element of <a>CrossOriginProperties</a>(<var>O</var>):
      1. If <a>SameValue</a>(<var>e</var>.\[[Property]], <var>P</var>) is true, then:
          1. If the value of the [[<a>CrossOriginPropertyDescriptorMap</a>]] internal slot of
@@ -923,7 +952,7 @@
   2. Let <var>wrappedFunction</var> be the \[[Wrapped]] internal slot of <var>F</var>.
   3. Return <a>Call</a>(<var>wrappedFunction</var>, this, <var>argumentsList</var>).
 
-  <p class="note">Due to this being invoked from a different <a for="concept">origin</a>, a
+  <p class="note">Due to this being invoked from a different [=concept/origin=], a
   <a>cross-origin wrapper function</a> will have a different value for
   <code>Function.prototype</code> from the function being wrapped. This follows from how JavaScript
   creates anonymous built-in functions.</p>
@@ -993,7 +1022,7 @@
     getter object (DOMString name);
     // Since this is the global object, the IDL named getter adds a NamedPropertiesObject exotic
     // object on the prototype chain. Indeed, this does not make the global object an exotic object.
-    // Indexed access is taken care of by the {{WindowProxy}} exotic object.
+    // Indexed access is taken care of by the WindowProxy exotic object.
 
     // the user agent
     readonly attribute Navigator navigator;
@@ -1198,7 +1227,7 @@
 
       <dt>If <var>new</var> is true</dt>
 
-      <dd>Let <var>resource</var> be the <a for="url">URL</a> "<code>about:blank</code>".</dd>
+      <dd>Let <var>resource</var> be the [=url/URL=] "<code>about:blank</code>".</dd>
 
     </dl>
 
@@ -1212,7 +1241,7 @@
       <li>Let <var>resource</var> be a resource representing an inline error page.</li>
 
       <li>If <var>new</var> is false, jump to the step labeled <i>end</i>, otherwise, let
-      <var>resource</var> be the <a for="url">URL</a> "<code>about:blank</code>".</li>
+      <var>resource</var> be the [=url/URL=] "<code>about:blank</code>".</li>
 
     </ul>
 
@@ -1335,8 +1364,8 @@
   * the value of the <code>name</code> content attribute for all <{a}>, <{applet}>, <{area}>,
      <{embed}>, <{form}>, <{frameset}>, <{img}>, and <{object}> elements in the
      <a>active document</a> that have a non-empty <code>name</code> content attribute, and
-  * the value of the <code>id</code> content attribute of any <a>HTML element</a> in the
-     <a>active document</a> with a non-empty <code>id</code> content attribute.
+  * the value of the <{global/id}> content attribute of any <a>HTML element</a> in the
+     <a>active document</a> with a non-empty <{global/id}> content attribute.
 
   To <a spec="webidl">determine the value of a named property</a> <var>name</var> when
   <dfn>the <code>Window</code> object is indexed for property retrieval</dfn>, the user agent must
@@ -1391,7 +1420,7 @@
     <{form}>, <{frameset}>, <{img}>, or <{object}> elements that
     have a <code>name</code> content attribute whose value is <var>name</var>, or</li>
 
-    <li><a>html elements</a> that have an <code>id</code> content attribute
+    <li><a>HTML elements</a> that have an <{global/id}> content attribute
     whose value is <var>name</var>.</li>
 
   </ul>
@@ -1412,7 +1441,7 @@
   <code>WindowProxy</code> object.
   </p>
 
-  Each <a for="concept">script</a> has a strong reference to its <a>settings
+  Each [=concept/script=] has a strong reference to its <a>settings
   object</a>, and each <a>environment settings object</a> has strong references to its
   <a>global object</a>, <a>responsible browsing context</a>, and <a>responsible
   document</a> (if any).
@@ -1425,7 +1454,7 @@
     <li>Set the {{Document}}'s <i>salvageable</i> state to false.</li>
 
     <li>Run any <a>unloading document cleanup steps</a> for the {{Document}} that
-    are defined by this specification and <a lt="applicable specification">other applicable specifications</a>.</li>
+    are defined by this specification and [=other applicable specifications=].</li>
 
     <li><a>Abort the <code>Document</code></a>.</li>
 
@@ -1545,7 +1574,7 @@
     <dt><dfn>The location bar <code>BarProp</code> object</dfn></dt>
 
     <dd>Represents the user interface element that contains a control that displays the
-    <a for="url">URL</a> of the <a>active document</a>, or some similar interface concept.</dd>
+    [=url/URL=] of the <a>active document</a>, or some similar interface concept.</dd>
 
     <dt><dfn>The menu bar <code>BarProp</code> object</dfn></dt>
 
@@ -1771,7 +1800,7 @@
   : A <dfn lt="tuple origin|tuple">tuple origin</dfn>
   :: A <a>tuple</a> consists of:
 
-      * A <dfn lt="origin scheme">scheme</dfn> (a <a for="url">scheme</a>).
+      * A <dfn lt="origin scheme">scheme</dfn> (a [=url/scheme=]).
       * A <dfn lt="origin host">host</dfn> (a <a for="url">host</a>).
       * A <dfn lt="origin port">port</dfn> (a <a for="url">port</a>).
       * A <dfn lt="origin domain">domain</dfn> (null or a <a for="url">domain</a>). Null unless
@@ -1782,7 +1811,7 @@
   <a>tuple origin</a> can be changed, and only through the {{Document/domain|document.domain}} API.
   </p>
 
-  The <dfn>effective domain</dfn> of an <a for="concept">origin</a> <var>origin</var> is computed as
+  The <dfn>effective domain</dfn> of an [=concept/origin=] <var>origin</var> is computed as
   follows:
 
   1. If <var>origin</var> is an <a>opaque origin</a>, then return <var>origin</var>.
@@ -1790,7 +1819,7 @@
       <var>origin</var>'s <a lt="origin domain">domain</a>.
   3. Return <var>origin</var>'s <a lt="origin host">host</a>.
 
-  Various specification objects are defined to have an <a for="concept">origin</a>. These
+  Various specification objects are defined to have an [=concept/origin=]. These
   <a for="concept">origins</a> are determined as follows:
 
   : For {{Document}} objects
@@ -1802,14 +1831,14 @@
         <dt>If the {{Document}} was generated from a <a scheme lt="data:"><code>data:</code> URL</a></dt>
         <dd>A unique <a>opaque origin</a> is assigned when the {{Document}} is created.</dd>
 
-        <dt>If the {{Document}}'s <a for="url">URL</a>'s <a for="url">scheme</a> is a
+        <dt>If the {{Document}}'s [=url/URL=]'s [=url/scheme=] is a
         <a>network scheme</a></dt>
-        <dd>A copy of the {{Document}}'s <a for="url">URL</a>'s <a for="url">origin</a> assigned
+        <dd>A copy of the {{Document}}'s [=url/URL=]'s <a for="url">origin</a> assigned
         when the {{Document}} is created.
 
         <p class="note">The {{Document/open()|document.open()}} method can change the {{Document}}'s
-        <a for="url">URL</a> to "<code>about:blank</code>". Therefore the
-        <a for="concept">origin</a> is assigned when the {{Document}} is created.</p>
+        [=url/URL=] to "<code>about:blank</code>". Therefore the
+        [=concept/origin=] is assigned when the {{Document}} is created.</p>
         </dd>
 
         <dt>If the {{Document}} is the initial "<code>about:blank</code>" document</dt>
@@ -1818,26 +1847,26 @@
 
         <dt>If the {{Document}} is a non-initial "<code>about:blank</code>" document</dt>
 
-        <dd>The <a for="concept">origin</a> of the <a>incumbent settings object</a> when the
-        <a>navigate</a> algorithm was invoked, or, if no <a for="concept">script</a> was involved,
+        <dd>The [=concept/origin=] of the <a>incumbent settings object</a> when the
+        <a>navigate</a> algorithm was invoked, or, if no [=concept/script=] was involved,
         of the <a>node document</a> of the element that initiated the <a>navigation</a> to that
-        <a for="url">URL</a>.</dd>
+        [=url/URL=].</dd>
 
         <dt>If the {{Document}} was created as part of the processing for
         <a><code>javascript:</code> URLs</a></dt>
-        <dd>The <a for="concept">origin</a> of the <a>active document</a> of the
+        <dd>The [=concept/origin=] of the <a>active document</a> of the
         <a>browsing context</a> being navigated when the <a>navigate</a> algorithm was invoked.</dd>
 
         <dt>If the {{Document}} is
-        <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a></dt>
-        <dd>The <a for="concept">origin</a> of the {{Document}}'s <a>browsing context</a>'s
+        <a>an `iframe` `srcdoc` document</a></dt>
+        <dd>The [=concept/origin=] of the {{Document}}'s <a>browsing context</a>'s
         <a>browsing context container</a>'s <a>node document</a>.</dd>
 
         <dt>If the {{Document}} was obtained in some other manner (e.g., a
         {{Document}} created using the {{DOMImplementation/createDocument()}} API, etc)</dt>
-        <dd>The default behavior as defined in the DOM standard applies. [[!DOM]].
+        <dd>The default behavior as defined in the DOM specification applies. [[!DOM]].
 
-        <p class="note">The <a for="concept">origin</a> is a unique <a>opaque origin</a> assigned
+        <p class="note">The [=concept/origin=] is a unique <a>opaque origin</a> assigned
         when the {{Document}} is created.</p>
         </dd>
       </dl>
@@ -1848,7 +1877,7 @@
         <dd>A unique <a>opaque origin</a> assigned when the image is created.</dd>
 
         <dt>If the image data is <a>CORS-same-origin</a></dt>
-        <dd>The <{img}> element's <a>node document</a>'s <a for="concept">origin</a>.</dd>
+        <dd>The <{img}> element's <a>node document</a>'s [=concept/origin=].</dd>
       </dl>
   : For <{audio}> and <{video}> elements
   ::
@@ -1858,7 +1887,7 @@
 
         <dt>If the <a>media data</a> is <a>CORS-same-origin</a></dt>
         <dd>The <a lt="media elements">media element</a>'s <a>node document</a>'s
-        <a for="concept">origin</a>.
+        [=concept/origin=].
         </dd>
       </dl>
   : For fonts
@@ -1866,7 +1895,7 @@
       <a>URL record</a> used to obtain the font (after any redirects). [[!CSS-FONTS-3]]
       [[CSS-FONT-LOADING-3]]
 
-      For a locally installed system font it is the <a for="concept">origin</a> of the {{Document}}
+      For a locally installed system font it is the [=concept/origin=] of the {{Document}}
       in which that font is being used.
 
   Other specifications can override the above definitions by themselves specifying the origin of
@@ -1876,7 +1905,7 @@
 
   The <dfn lt="unicode serialization|unicode serialization of an origin">Unicode serialization of an origin</dfn>
   is the string obtained by applying the following algorithm to the given
-  <a for="concept">origin</a> <var>origin</var>:
+  [=concept/origin=] <var>origin</var>:
 
   1. If <var>origin</var> is an <a>opaque origin</a>, then return "<code>null</code>".
   2. Let <var>host</var> be <var>origin</var>'s <a lt="origin host">host</a>.
@@ -1897,7 +1926,7 @@
   </div>
 
   The <dfn>ASCII serialization of an origin</dfn> is the string obtained by applying the
-  following algorithm to the given <a for="concept">origin</a> <var>origin</var>:
+  following algorithm to the given [=concept/origin=] <var>origin</var>:
 
   1. If <var>origin</var> is an <a>opaque origin</a>, then return "<code>null</code>".
   2. Otherwise, let <var>result</var> be <var>origin</var>'s <a lt="origin scheme">scheme</a>.
@@ -1977,7 +2006,7 @@
     <dt><var>document</var> . {{Document/domain}} [ = <var>domain</var> ]</dt>
     <dd>Returns the current domain used for security checks.
 
-    Can be set to a value that removes subdomains, to change the <a for="concept">origin</a>'s
+    Can be set to a value that removes subdomains, to change the [=concept/origin=]'s
     <a lt="origin domain">domain</a> to allow pages on other subdomains of the same domain (if they
     do the same thing) to access each other. (Can't be set in sandboxed <{iframe}>s.)
     </dd>
@@ -1988,7 +2017,7 @@
 
   1. If this {{Document}} object does not have a <a>browsing context</a>, then return the empty
       string.
-  2. Let <var>effectiveDomain</var> be this {{Document}}'s <a for="concept">origin</a>'s
+  2. Let <var>effectiveDomain</var> be this {{Document}}'s [=concept/origin=]'s
      <a>effective domain</a>.
   3. If <var>effectiveDomain</var> is an <a>opaque origin</a>, then return the empty string.
   4. Return <var>effectiveDomain</var>, <a lt="host serializer">serialised</a>.
@@ -2003,7 +2032,7 @@
   3. If the given value is the empty string, then throw a "{{SecurityError}}" {{DOMException}}.
   4. Let <var>host</var> be the result of <a lt="host parser">parsing</a> the given value.
   5. If <var>host</var> is failure, then throw a "{{SecurityError}}" {{DOMException}}.
-  6. Let <var>effectiveDomain</var> be this {{Document}} object's <a for="concept">origin</a>'s
+  6. Let <var>effectiveDomain</var> be this {{Document}} object's [=concept/origin=]'s
       <a>effective domain</a>.
   7. If <var>host</var> is not <a lt="host equals">equal</a> to <var>effectiveDomain</var>, then run
       these substeps:
@@ -2096,7 +2125,7 @@
     <dd>
 
     This flag <a>forces content into a unique origin</a>, thus preventing
-    it from accessing other content from the same <a for="concept">origin</a>.
+    it from accessing other content from the same [=concept/origin=].
 
     This flag also <a lt="cookie-averse">prevents script from reading from or writing to the
     <code>document.cookie</code> IDL attribute</a>, and blocks access to
@@ -2331,14 +2360,14 @@
   The sequence of {{Document}}s in a <a>browsing context</a> is its <dfn>session
   history</dfn>. Each <a>browsing context</a>, including <a>nested browsing contexts</a>, has a distinct session history. A <a>browsing
   context</a>'s session history consists of a flat list of <a>session history entries</a>. Each <dfn>session history entry</dfn> consists, at a
-  minimum, of a <a for="url">URL</a>, and each entry may in addition have a <a>state object</a>, a
+  minimum, of a [=url/URL=], and each entry may in addition have a <a>state object</a>, a
   title, a {{Document}} object, form data, a <a>scroll restoration mode</a>, a scroll
   position, and other information associated with it.
 
   <p class="note">
   Each entry, when first created, has a {{Document}}. However, when a
   {{Document}} is not <a lt="fully active">active</a>, it's possible for it to be
-  <a>discarded</a> to free resources. The <a for="url">URL</a> and
+  <a>discarded</a> to free resources. The [=url/URL=] and
   other data in a <a>session history entry</a> is then used to bring a new
   {{Document}} into being to take the place of the original, should the user agent find
   itself having to reactivate that {{Document}}.
@@ -2346,7 +2375,7 @@
 
   <p class="note">
   Titles associated with <a>session history
-  entries</a> need not have any relation with the current <code>title</code> of the
+  entries</a> need not have any relation with the current <{title}> of the
   {{Document}}. The title of a <a>session history entry</a> is intended to explain
   the state of the document at that point, so that the user can navigate the document's history.
   </p>
@@ -2377,7 +2406,7 @@
 
   <div class="note">
     <a>State objects</a> are intended to be used for two main purposes:
-    first, storing a preparsed description of the state in the <a for="url">URL</a> so that in the simple
+    first, storing a preparsed description of the state in the [=url/URL=] so that in the simple
     case an author doesn't have to do the parsing (though one would still need the parsing for
     handling <a for="url">URLs</a> passed around by users, so it's only a minor
     optimization), and second, so that the author can store state that one wouldn't store in the URL
@@ -2388,7 +2417,7 @@
     which a pop-up <code>div</code> was made to animate, so that if the user goes back, it can be
     made to animate to the same location. Or alternatively, it could be used to keep a pointer into a
     cache of data that would be fetched from the server based on the information in the
-    <a for="url">URL</a>, so that when going back and forward, the information doesn't have to be fetched
+    [=url/URL=], so that when going back and forward, the information doesn't have to be fetched
     again.
   </div>
 
@@ -2400,7 +2429,7 @@
   specification, e.g., during <a>session history traversal</a>.
 
   <p class="note">
-    The <a>current entry</a> is usually an entry for the <a>address</a> of the
+    The <a>current entry</a> is usually an entry for the [=Document/URL=] of the
     {{Document}}. However, it can also be one of the entries for <a>state objects</a> added
     to the history by that document.
   </p>
@@ -2729,7 +2758,7 @@
   the history.
 
   The <dfn method for="History"><code>replaceState()</code></dfn> method updates the state object,
-  title, and optionally the <a for="url">URL</a> of the <a>current entry</a> in the history.
+  title, and optionally the [=url/URL=] of the <a>current entry</a> in the history.
 
   When either of these methods is invoked, the user agent must run the following steps:
 
@@ -2746,17 +2775,17 @@
       1. <a>Parse</a> the value of the third argument, relative to the <a>entry settings object</a>.
       2. If that fails, throw a "{{SecurityError}}" {{DOMException}} and abort these steps.
       3. Let <var>new URL</var> be the <a>resulting URL record</a>.
-      4. Compare <var>new URL</var> to the document's <a for="url">URL</a>. If any component of
+      4. Compare <var>new URL</var> to the document's [=url/URL=]. If any component of
           these two <a>URL records</a> differ other than the <a>path</a>,
           <a for="url">query</a>, and <a for="url">fragment</a> components, then throw a
           "{{SecurityError}}" {{DOMException}} and abort these steps.
       5. If the <a for="url">origin</a> of <var>new URL</var> is not the same as the
-          <a for="concept">origin</a> of the <a>responsible document</a> specified by the
+          [=concept/origin=] of the <a>responsible document</a> specified by the
           <a>entry settings object</a>, and either the <a>path</a> or <a for="url">query</a>
           components of the two <a>URL records</a> compared in the previous step differ, throw a
           "{{SecurityError}}" {{DOMException}} and abort these steps. (This prevents
           sandboxed content from spoofing other pages on the same origin.)
-  6. If the third argument is null, then let <var>new URL</var> be the <a for="url">URL</a> of the
+  6. If the third argument is null, then let <var>new URL</var> be the [=url/URL=] of the
       <a>current entry</a>.
   7. If the method invoked was the {{History/pushState()}} method:
       1. Remove all the entries in the <a>browsing context</a>'s <a>session history</a> after the
@@ -2772,7 +2801,7 @@
           wishes to persist. The entry is then said to be <a>an entry with persisted user state</a>.
       4. Add a <a>state object</a> entry to the session history, after the <a>current entry</a>,
           with <var>cloned data</var> as the <a>state object</a>, the given <var>title</var> as the
-          title, <var>new URL</var> as the <a for="url">URL</a> of the entry, and the
+          title, <var>new URL</var> as the [=url/URL=] of the entry, and the
           <a>scroll restoration mode</a> of the current entry in the <a>session history</a> as the
           scroll restoration mode.
       5. Update the <a>current entry</a> to be this newly added entry.
@@ -2781,10 +2810,10 @@
 
       1. Update the <a>current entry</a> in the session history so that <var>cloned data</var> is
           the entry's new state object, the given <var>title</var> is the new title, and
-          <var>new URL</var> is the entry's new <a for="url">URL</a>.
+          <var>new URL</var> is the entry's new [=url/URL=].
   8. If the <a>current entry</a> in the session history represents a non-GET request (e.g., it was
       the result of a POST submission) then update it to instead represent a GET request.
-  9. Set the document's <a for="url">URL</a> to <var>new URL</var>.
+  9. Set the document's [=url/URL=] to <var>new URL</var>.
 
       <p class="note">Since this is neither a <a>navigation</a> of the <a>browsing context</a> nor a
       <a>history traversal</a>, it does not cause a <code>hashchange</code> event to be fired.</p>
@@ -2869,8 +2898,8 @@
 
   <div class="example">
     Applications might not use the same title for a <a>session history entry</a> as the
-    value of the document's <a element for="html"><code>title</code></a> element at that time. For example, here is a simple
-    page that shows a block in the <a element for="html"><code>title</code></a> element. Clearly, when navigating backwards to
+    value of the document's <{title}> element at that time. For example, here is a simple
+    page that shows a block in the <{title}> element. Clearly, when navigating backwards to
     a previous state the user does not go back in time, and therefore it would be inappropriate to
     put the time in the session history title.
 
@@ -2980,7 +3009,7 @@
   The <dfn attribute for="Window"><code>location</code></dfn> attribute of the {{Window}} interface
   must return the {{Location}} object for that {{Window}} object.
 
-  {{Location}} objects provide a representation of the <a for="url">URL</a> of the
+  {{Location}} objects provide a representation of the [=url/URL=] of the
   <a>active document</a> of their {{Document}}'s <a>browsing context</a>, and allow the
   <a>current entry</a> of the <a>browsing context</a>'s session history to be changed, by adding or
   replacing entries in the {{Window/history}} object.
@@ -3081,7 +3110,7 @@
   <a>active document</a>.
 
   A {{Location}} object has an associated <dfn for="Location">url</dfn>, which is this {{Location}}
-  object's <a>relevant <code>Document</code></a>'s <a lt="document url">URL</a>.
+  object's <a>relevant <code>Document</code></a>'s [=document url|URL=].
 
   A {{Location}} object has an associated <dfn>ancestor origins array</dfn>. When a {{Location}}
   object is created, its <a>ancestor origins array</a> must be set to a array created from the list
@@ -3094,7 +3123,7 @@
     the step labeled <var>End</var>.
   4. Let <var>current</var> be <var>current</var>'s <a>parent browsing context</a>.
   5. Append the <a>Unicode serialization</a> of <var>current</var>'s <a>active document</a>'s
-      <a for="concept">origin</a> to <var>output</var> as a new value.
+      [=concept/origin=] to <var>output</var> as a new value.
   6. Return to the step labeled <var>Loop</var>.
   7. <var>End</var>: Return <var>output</var>.
 
@@ -3123,16 +3152,16 @@
 
       If the <var>replacement flag</var> is set or the <a>browsing context</a>'s
       <a>session history</a> contains only one {{Document}}, and that was the
-      <code>about:blank</code> {{Document}} created when the <a>browsing context</a> was created,
+      <a scheme><code>about:blank</code></a> {{Document}} created when the <a>browsing context</a> was created,
       then the navigation must be done with <a>replacement enabled</a>.
 
   The <dfn attribute for="Location"><code>href</code></dfn> attribute's getter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Return this {{Location}} object's <a for="url">URL</a>, <a>serialized</a>.
+  2. Return this {{Location}} object's [=url/URL=], <a>serialized</a>.
 
   The {{Location/href}} attribute's setter must run these steps:
 
@@ -3146,11 +3175,11 @@
   steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Return the <a>Unicode serialization</a> of this {{Location}} object's <a for="url">URL</a>'s
-      <a for="concept">origin</a>.
+  2. Return the <a>Unicode serialization</a> of this {{Location}} object's [=url/URL=]'s
+      [=concept/origin=].
 
   <p class="note">It returns the Unicode rather than the ASCII serialization for compatibility with
   <code>MessageEvent</code>.</p>
@@ -3159,24 +3188,24 @@
   steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Return this {{Location}} object's <a for="url">URL</a>'s <a for="url">scheme</a>, followed by
+  2. Return this {{Location}} object's [=url/URL=]'s [=url/scheme=], followed by
       "<code>:</code>".
 
   The {{Location/protocol}} attribute's setter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>copyURL</var> be a copy of this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>copyURL</var> be a copy of this {{Location}} object's [=url/URL=].
   3. Let <var>possibleFailure</var> be the result of <a lt="basic url parser">basic URL parsing</a>
       the given value, followed by "<code>:</code>", with <var>copyURL</var> as <var>url</var> and
       <a>scheme start state</a> as <var>state override</var>.
   4. If <var>possibleFailure</var> is failure, throw a <code>TypeError</code> exception.
-  5. If <var>copyURL</var>'s <a for="url">scheme</a> is not "<code>http</code>" or
+  5. If <var>copyURL</var>'s [=url/scheme=] is not "<code>http</code>" or
       "<code>https</code>", terminate these steps.
   6. <a><code>Location</code>-object-setter navigate</a> to <var>copyURL</var>.
 
@@ -3184,10 +3213,10 @@
   steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>url</var> be this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>url</var> be this {{Location}} object's [=url/URL=].
   3. If <var>url</var>'s <a for="url">host</a> is null, return the empty string.
   4. If <var>url</var>'s <a for="url">port</a> is null, return <var>url</var>'s
       <a for="url">host</a>, serialized.
@@ -3197,10 +3226,10 @@
   The {{Location/host}} attribute's setter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>copyURL</var> be a copy of this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>copyURL</var> be a copy of this {{Location}} object's [=url/URL=].
   3. If <var>copyURL</var>'s <a>non-relative flag</a> is set, terminate these steps.
   4. <a lt="basic url parser">Basic URL parse</a> the given value, with <var>copyURL</var> as
       <var>url</var> and <a>host state</a> as <var>state override</var>.
@@ -3210,21 +3239,21 @@
   steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. If this {{Location}} object's <a for="url">URL</a>'s <a for="url">host</a> is null, return the
+  2. If this {{Location}} object's [=url/URL=]'s <a for="url">host</a> is null, return the
       empty string.
-  3. Return this {{Location}} object's <a for="url">URL</a>'s <a for="url">host</a>,
+  3. Return this {{Location}} object's [=url/URL=]'s <a for="url">host</a>,
       <a>serialized</a>.
 
   The {{Location/hostname}} attribute's setter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>copyURL</var> be a copy of this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>copyURL</var> be a copy of this {{Location}} object's [=url/URL=].
   3. If <var>copyURL</var>'s <a>non-relative flag</a> is set, terminate these steps.
   4. <a lt="url parser">Basic URL parse</a> the given value, with <var>copyURL</var> as
       <var>url</var> and <a>hostname state</a> as <var>state override</var>.
@@ -3233,23 +3262,23 @@
   The <dfn attribute for="Location"><code>port</code></dfn> attribute's getter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. If this {{Location}} object's <a for="url">URL</a>'s <a for="url">port</a> is null, return the
+  2. If this {{Location}} object's [=url/URL=]'s <a for="url">port</a> is null, return the
       empty string.
-  3. Return this {{Location}} object's <a for="url">URL</a>'s <a for="url">port</a>,
+  3. Return this {{Location}} object's [=url/URL=]'s <a for="url">port</a>,
       <a>serialized</a>.
 
   The {{Location/port}} attribute's setter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>copyURL</var> be a copy of this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>copyURL</var> be a copy of this {{Location}} object's [=url/URL=].
   3. If <var>copyURL</var>'s <a for="url">host</a> is null, <var>copyURL</var>'s
-      <a>non-relative flag</a> is set, or <var>copyURL</var>'s <a for="url">scheme</a> is
+      <a>non-relative flag</a> is set, or <var>copyURL</var>'s [=url/scheme=] is
       "<code>file</code>", terminate these steps.
   4. <a lt="url parser">Basic URL parse</a> the given value, with <var>copyURL</var> as
       <var>url</var> and <a>port state</a> as <var>state override</var>.
@@ -3259,10 +3288,10 @@
   steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>url</var> be this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>url</var> be this {{Location}} object's [=url/URL=].
   3. If <var>url</var>'s <a>non-relative flag</a> is set, return the first string in
       <var>url</var>'s <a>path</a>.
   4. Return "<code>/</code>", followed by the strings in <var>url</var>'s <a>path</a> (including
@@ -3271,10 +3300,10 @@
   The {{Location/pathname}} attribute's setter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>copyURL</var> be a copy of this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>copyURL</var> be a copy of this {{Location}} object's [=url/URL=].
   3. If <var>copyURL</var>'s <a>non-relative flag</a> is set, terminate these steps.
   4. Set <var>copyURL</var>'s <a>path</a> to the empty list.
   5. <a lt="url parser">Basic URL parse</a> the given value, with <var>copyURL</var> as
@@ -3285,21 +3314,21 @@
   steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. If this {{Location}} object's <a for="url">URL</a>'s <a for="url">query</a> is either null or
+  2. If this {{Location}} object's [=url/URL=]'s <a for="url">query</a> is either null or
       the empty string, return the empty string.
-  3. Return "<code>?</code>", followed by this {{Location}} object's <a for="url">URL</a>'s
+  3. Return "<code>?</code>", followed by this {{Location}} object's [=url/URL=]'s
       <a for="url">query</a>.
 
   The {{Location/search}} attribute's setter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>copyURL</var> be a copy of this {{Location}} object's <a for="url">URL</a>.
+  2. Let <var>copyURL</var> be a copy of this {{Location}} object's [=url/URL=].
   3. If the given value is the empty string, set <var>copyURL</var>'s <a for="url">query</a> to
       null.
   4. Otherwise, run these substeps:
@@ -3315,22 +3344,22 @@
   The <dfn attribute for="Location"><code>hash</code></dfn> attribute's getter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. If this {{Location}} object's <a for="url">URL</a>'s <a for="url">fragment</a> is either null
+  2. If this {{Location}} object's [=url/URL=]'s <a for="url">fragment</a> is either null
       or the empty string, return the empty string.
-  3. Return "<code>#</code>", followed by this {{Location}} object's <a for="url">URL</a>'s
+  3. Return "<code>#</code>", followed by this {{Location}} object's [=url/URL=]'s
       <a for="url">fragment</a>.
 
   The {{Location/hash}} attribute's setter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. Let <var>copyURL</var> be a copy of this {{Location}} object's <a for="url">URL</a>.
-  3. If <var>copyURL</var>'s <a for="url">scheme</a> is "<code>javascript</code>", terminate these
+  2. Let <var>copyURL</var> be a copy of this {{Location}} object's [=url/URL=].
+  3. If <var>copyURL</var>'s [=url/scheme=] is "<code>javascript</code>", terminate these
       steps.
   4. Let <var>input</var> be the given value with a single leading "<code>#</code>" removed, if any.
   5. Set <var>copyURL</var>'s <a for="url">fragment</a> to the empty string.
@@ -3348,8 +3377,8 @@
   method is invoked, the user agent must run the following steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
   2. <a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If that failed,
       throw a "{{SyntaxError}}" {{DOMException}}.
@@ -3370,8 +3399,8 @@
 
   <dl class="switch">
     <dt>If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-    <a for="concept">origin</a> is not <a>same origin</a> with <a>entry settings object</a>'s
-    <a for="concept">origin</a></dt>
+    [=concept/origin=] is not <a>same origin</a> with <a>entry settings object</a>'s
+    [=concept/origin=]</dt>
     <dd>Throw a "{{SecurityError}}" {{DOMException}}.
 
     <dt>If the currently executing <a>task</a> is the dispatch of a <code>resize</code> event in
@@ -3379,7 +3408,7 @@
     <dd>Repaint the <a>browsing context</a> and abort these steps.</dd>
 
     <dt>If the <a>browsing context</a>'s <a>active document</a> is
-    <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a></dt>
+    <a>an `iframe` `srcdoc` document</a></dt>
     <dd><a>Reprocess the <code>iframe</code> attributes</a> of the <a>browsing context</a>'s
     <a>browsing context container</a>.</dd>
 
@@ -3389,7 +3418,7 @@
     <a>responsible browsing context</a>.</dd>
 
     <dt>Otherwise</dt>
-    <dd><a>Navigate</a> the <a>browsing context</a> to the document's <a lt="document url">URL</a>
+    <dd><a>Navigate</a> the <a>browsing context</a> to the document's [=document url|URL=]
     with the <a>exceptions enabled flag</a> set and <a>replacement enabled</a>.
     The <a>source browsing context</a> must be the <a>browsing context</a> being navigated. This is
     a <a>reload-triggered navigation</a>. Rethrow any exceptions.</dd>
@@ -3410,8 +3439,8 @@
   these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
-      <a for="concept">origin</a> is not <a>same origin-domain</a> with the
-      <a>entry settings object</a>'s <a for="concept">origin</a>, then throw a
+      [=concept/origin=] is not <a>same origin-domain</a> with the
+      <a>entry settings object</a>'s [=concept/origin=], then throw a
       "{{SecurityError}}" {{DOMException}}.
   2. Otherwise, return this {{Location}} object's <a>ancestor origins array</a>.
 
@@ -3503,7 +3532,7 @@
   <p class="note">
   A <i>resource</i> has a URL, but that might not be the only information necessary
   to identify it. For example, a <a>form submission</a> that uses HTTP POST would also have the HTTP method
-  and payload. Similarly, <a lt="iframe srcdoc document">an <code>iframe</code> <code>srcdoc</code> document</a> needs to know the data it is to use.
+  and payload. Similarly, <a>an `iframe` `srcdoc` document</a> needs to know the data it is to use.
   </p>
 
   Navigation always involves <dfn>source browsing context</dfn>, which is the browsing context which
@@ -3540,9 +3569,9 @@
     <li>If there is a preexisting attempt to navigate the <a>browsing context</a>, and the
     <a>source browsing context</a> is the same as the <a>browsing context</a> being
     navigated, and that attempt is currently running the <a>unload a document</a> algorithm,
-    and the <a for="concept">origin</a> of the <a for="url">URL</a> of the resource being loaded in
-    that navigation is not the <a>same origin</a> as the <a for="concept">origin</a> of the
-    <a for="url">URL</a> of the resource being loaded in <em>this</em> navigation, then abort these
+    and the [=concept/origin=] of the [=url/URL=] of the resource being loaded in
+    that navigation is not the <a>same origin</a> as the [=concept/origin=] of the
+    [=url/URL=] of the resource being loaded in <em>this</em> navigation, then abort these
     steps without affecting the preexisting attempt to navigate the <a>browsing context</a>.</li>
 
     <li>If a <a>task</a> queued by the <a>traverse the history by a
@@ -3571,7 +3600,7 @@
 
     <li><dfn lt="the step labeled fragments"><var>Fragments</var></dfn>: If this is not a
     <dfn>reload-triggered navigation</dfn>: apply the <a>URL parser</a> algorithm to the
-    <a>absolute URL</a> of the new resource and the <a>address</a> of the <a>active document</a> of the <a>browsing context</a>
+    <a>absolute URL</a> of the new resource and the [=Document/URL=] of the <a>active document</a> of the <a>browsing context</a>
     being navigated; if all the components of the resulting <a>parsed
     URLs</a>, ignoring any <a for="url">fragment</a> components, are
     identical, and the new resource is to be fetched using <code>GET</code>, and the
@@ -3643,7 +3672,7 @@
 
       <dd>Skip this step. The data is already available.</dd>
 
-      <dt>If the new resource is a <a for="url">URL</a> whose <a for="url">scheme</a> is <code>javascript</code></dt>
+      <dt>If the new resource is a [=url/URL=] whose [=url/scheme=] is <code>javascript</code></dt>
 
       <dd>
 
@@ -3651,12 +3680,12 @@
       <dfn lt="javascript: urls|javascript: url|dereferencing a javascript: url">these "<code>javascript:</code> URL" steps</dfn>,
       associated with the <a>active document</a> of the <a>browsing context</a> being navigated:
 
-      1. If the <a for="concept">origin</a> of the <a>source browsing context</a> is not the <a>same origin</a> as
-          the <a for="concept">origin</a> of the <a>active document</a> of the <a>browsing context</a> being
+      1. If the [=concept/origin=] of the <a>source browsing context</a> is not the <a>same origin</a> as
+          the [=concept/origin=] of the <a>active document</a> of the <a>browsing context</a> being
           navigated, then let <var>result</var> be undefined, and jump to the step labeled
           <i>process results</i> below.
       2. Let <var>urlRecord</var> be the result of running the <a>URL parser</a> on the
-          <a for="url">URL</a> of the new resource.
+          [=url/URL=] of the new resource.
       3. Let <var>script source</var> be the empty string.
       4. Append the first string of <var>urlRecord</var>'s <a>path</a> component to <var>script
           source</var>.
@@ -3671,7 +3700,7 @@
           <a>percent decode</a> algorithm to <var>script source</var>.
       8. Replace <var>script source</var> with the result of applying the <a>UTF-8 decode</a>
           algorithm to <var>script source</var>.
-      9. Let <var>address</var> be the <a>address</a> of the <a>active document</a> of the
+      9. Let <var>address</var> be the [=Document/URL=] of the <a>active document</a> of the
           <a>browsing context</a> being navigated.
       10. Let <var>settings</var> be the <a>relevant settings object</a> of the <a>browsing
            context</a> being navigated.
@@ -3685,10 +3714,10 @@
            <a>response</a> whose <a>status</a> is <code>204</code>.
 
            Otherwise, the result of obtaining the resource for the URL is a <a>response</a> whose
-           <a for="response">header list</a> consists of
-           <code>Content-Type</code>/<a href="#text-html"><code>text/html</code></a> and whose
-           <a for="response">body</a> is <var>result</var>, and whose
-           <a for="response">HTTPS state</a> is <var>settings</var>'s
+           [=response/header list=] consists of
+           <code>Content-Type</code>/<code>[[#text-html|text/html]]</code> and whose
+           [=response/body=] is <var>result</var>, and whose
+           [=response/HTTPS state=] is <var>settings</var>'s
            <a for="settings">HTTPS state</a>.
 
            When it comes time to <a>set the document's address</a> in the
@@ -3715,7 +3744,7 @@
       <ol>
         <li>Let <var>request</var> be the new resource.</li>
 
-        <li>If <var>request</var> is a URL, set <var>request</var> to a new <a>request</a> whose <a for="url">URL</a>
+        <li>If <var>request</var> is a URL, set <var>request</var> to a new <a>request</a> whose [=url/URL=]
         is <var>request</var>.</li>
 
         <li>Set <var>request</var>'s <a>client</a> to the
@@ -3729,7 +3758,7 @@
         <li>If <var>request</var>'s <a for="request">method</a> is not
         <code>GET</code>, or, if the <a>navigation algorithm</a>
         was invoked as a result of the <a>form submission
-        algorithm</a>, then if there is an <a for="concept">origin</a> of the <a>active document</a>
+        algorithm</a>, then if there is an [=concept/origin=] of the <a>active document</a>
         of the <a>source browsing context</a>, unset <var>request</var>'s
         <a>omit-<code>Origin</code>-header flag</a>.</li>
 
@@ -3765,12 +3794,12 @@
     <li>
 
     <i>Handle redirects</i>: If fetching the resource results in a redirect, and either the
-    <a for="url">URL</a> of the target of the redirect has the <a>same origin</a> as the original
+    [=url/URL=] of the target of the redirect has the <a>same origin</a> as the original
     resource, or the resource is being obtained using the POST method or a safe method (in HTTP
-    terms), return to <a>the step labeled <var>Fragments</var></a> with the new resource, except that if the <a for="url">URL</a> of the target of
-    the redirect does not have a <a for="url">fragment</a> and the <a for="url">URL</a> of the resource that
+    terms), return to <a>the step labeled <var>Fragments</var></a> with the new resource, except that if the [=url/URL=] of the target of
+    the redirect does not have a <a for="url">fragment</a> and the [=url/URL=] of the resource that
     led to the redirect does, then the <a for="url">fragment</a> of the resource that led to the redirect
-    must be propagated to the <a for="url">URL</a> of the target of the redirect.
+    must be propagated to the [=url/URL=] of the target of the redirect.
 
     <p class="example">
   So for instance, if the original URL was "<code>https://example.com/#!sample</code>" and "<code>https://example.com/</code>" is
@@ -3778,7 +3807,7 @@
     will be "<code>https://example.com/#!sample</code>".
   </p>
 
-    Otherwise, if fetching the resource results in a redirect but the <a for="url">URL</a> of the
+    Otherwise, if fetching the resource results in a redirect but the [=url/URL=] of the
     target of the redirect does not have the <a>same origin</a> as the original resource and
     the resource is being obtained using a method that is neither the POST method nor a safe method
     (in HTTP terms), then abort these steps. The user agent may indicate to the user that the
@@ -3803,7 +3832,7 @@
       </ul>
     </div>
 
-    Responses with HTTP <code>Content-Disposition</code>
+    Responses with HTTP <a http-header><code>Content-Disposition</code></a>
     headers specifying the <code>attachment</code> disposition type must be handled
     <a>as a download</a>.
 
@@ -3884,11 +3913,11 @@
 
     <dfn lt="set the document's address|setting the document's address">Setting the document's address</dfn>: If there is no
     <dfn>override URL</dfn>, then any {{Document}} created by these steps must have its
-    <a>address</a> set to the <a for="url">URL</a> that was
+    [=Document/URL=] set to the [=url/URL=] that was
     originally to be fetched, ignoring any other data that was used to obtain the resource. However,
     if there <em>is</em> an <a>override URL</a>, then any {{Document}} created by
-    these steps must have its <a>address</a> set to that
-    <a for="url">URL</a> instead.
+    these steps must have its [=Document/URL=] set to that
+    [=url/URL=] instead.
 
     <p class="note">
     An <a>override URL</a> is set when <a>dereferencing a <code>javascript:</code> URL</a> and when
@@ -3925,10 +3954,10 @@
   3. Set <var>browsingContext</var>'s {{WindowProxy}} object's \[[Window]] internal slot value to
       <var>window</var>.
   4. Set the {{Document}}'s <a for="document">HTTPS state</a> to the
-      <a for="response">HTTPS state</a> of the resource used to generate the document.
+      [=response/HTTPS state=] of the resource used to generate the document.
   5. Execute the <a>Initialize a <code>Document</code>'s CSP list</a> algorithm on the {{Document}}
       object and the resource used to generate the document. [[CSP3]]
-  6. Set <a>the document's referrer</a> to the
+  6. Set [=the document's referrer=] to the
       <em>address of the resource from which Request-URIs are obtained</em> as determined when the
       fetch algorithm obtained the resource, if that algorithm was used and determined such a value;
       otherwise, set it to the empty string.
@@ -3971,7 +4000,7 @@
   When a resource is handled by <dfn lt="proceed with that mechanism instead|passing its URL or data to an external software package|process the resource appropriately">passing its URL or data to an external software package</dfn> separate from the user agent (e.g., handing a <code>mailto:</code> URL to a mail client, or a Word document to a word
   processor), user agents should attempt to mitigate the risk that this is an attempt to exploit the
   target software, e.g., by prompting the user to confirm that the <a>source browsing
-  context</a>'s <a>active document</a>'s <a for="concept">origin</a> is to be allowed to invoke the
+  context</a>'s <a>active document</a>'s [=concept/origin=] is to be allowed to invoke the
   specified software. In particular, if the <a>navigate</a> algorithm, when it was invoked,
   was not <a>allowed to show a popup</a>, the user agent should not invoke the external
   software package without prior user confirmation.
@@ -4072,10 +4101,10 @@
     amount of time, as desired by the user agent implementor. (This is intended to allow the user
     agent to optimize the user experience in the face of performance concerns.)</li>
 
-    <li>If the {{Document}} object has no parser, or its parser has <a>stopped parsing</a>, or the user agent has reason to believe the user is no longer
+    <li>If the {{Document}} object has no parser, or its parser has [=stop parsing|stopped parsing=], or the user agent has reason to believe the user is no longer
     interested in scrolling to the <a for="url">fragment</a>, then abort these steps.</li>
 
-    <li><a>Scroll to the fragment</a> given in <a>the document's address</a>. If this fails to find <a>an
+    <li><a>Scroll to the fragment</a> given in the document's [=Document/URL=]. If this fails to find <a>an
     indicated part of the document</a>, then return to the <var><a for="url">fragment</a> loop</var>
     step.</li>
 
@@ -4087,7 +4116,7 @@
 <h4 id="page-load-processing-model-for-html-files">Page load processing model for HTML files</h4>
 
   When an HTML document is to be loaded in a <a>browsing context</a>, the user agent must
-  <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to "<a href="#text-html"><code>text/html</code></a>",
+  <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to "<code>[[#text-html|text/html]]</code>",
   initialize the {{Document}} object, and finally create an <a>HTML
   parser</a> and associate it with the {{Document}}. Each <a>task</a> that the <a>networking task source</a> places on the
   <a>task queue</a> while fetching runs must then fill the parser's <a>input byte
@@ -4096,7 +4125,7 @@
 
   <p class="note">
   The <a>input byte stream</a> converts bytes into characters for use in the
-  <a>tokenizer</a>. This process relies, in part, on character encoding
+  [[#tokenization|tokenizer]]. This process relies, in part, on character encoding
   information found in the real <a>Content-Type metadata</a> of the
   resource; the "computed type" is not used for this purpose.
   </p>
@@ -4105,7 +4134,7 @@
   to process the implied EOF character, which eventually causes a <code>load</code> event to be fired.
 
   After creating the {{Document}} object, but before any script execution, certainly
-  before the parser <a lt="stops parsing">stops</a>, the user agent must <a>update the
+  before the parser <a lt="stop parsing">stops</a>, the user agent must <a>update the
   session history with the new page</a>.
 
   The <a>task source</a> for the two tasks mentioned in this section must be the
@@ -4172,7 +4201,7 @@
   parsing, the user agent must <a>update the session history with the new page</a>.
 
   User agents may add content to the <{head}> element of the {{Document}}, e.g.,
-  to link to a style sheet, provide a script, give the document a <a element for="html"><code>title</code></a>, etc.
+  to link to a style sheet, provide a script, give the document a <{title}>, etc.
 
   <p class="note">
   In particular, if the user agent supports the <code>Format=Flowed</code>
@@ -4236,14 +4265,13 @@
           <td> <code>src</code>
   </table>
 
-  Then, the user agent must act as if it had <a>stopped
-  parsing</a>.
+  Then, the user agent must act as if it had [=stop parsing|stopped parsing=].
 
   After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
   User agents may add content to the <{head}> element of the {{Document}}, or
-  attributes to the element <var>host element</var>, e.g., to link to a style sheet, provide a script, give the document a <a element for="html"><code>title</code></a>, make the media
+  attributes to the element <var>host element</var>, e.g., to link to a style sheet, provide a script, give the document a <{title}>, make the media
   <a element-attr for="media">autoplay</a>, etc.
 
 <h4 id="page-load-processing-model-for-content-that-uses-plugins">Page load processing model for content that uses plugins</h4>
@@ -4265,15 +4293,14 @@
   can't be used to evade <code>plugin-types</code> directives. [[!CSP3]]
   </p>
 
-  Then, the user agent must act as if it had <a>stopped
-  parsing</a>.
+  Then, the user agent must act as if it had [=stop parsing|stopped parsing=].
 
   After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
   User agents may add content to the <{head}> element of the {{Document}}, or
   attributes to the <{embed}> element, e.g., to link to a style sheet,
-  to give the document a <a element for="html"><code>title</code></a>, etc.
+  to give the document a <{title}>, etc.
 
   <p class="note">
   If the {{Document}}'s <a>active sandboxing
@@ -4285,13 +4312,13 @@
 <h4 id="page-load-processing-model-for-inline-content-that-doesnt-have-a-dom"><dfn lt="display the inline content">Page load processing model for inline content that doesn't have a DOM</dfn></h4>
 
   When the user agent is to display a user agent page inline in a <a>browsing context</a>,
-  the user agent should create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to "<a href="#text-html"><code>text/html</code></a>",
+  the user agent should create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to "<code>[[#text-html|text/html]]</code>",
   initialize the {{Document}} object, and then either associate that
   {{Document}} with a custom rendering that is not rendered using the normal
   {{Document}} rendering rules, or mutate that {{Document}} until it represents
   the content the user agent wants to render.
 
-  Once the page has been set up, the user agent must act as if it had <a lt="stops parsing">stopped parsing</a>.
+  Once the page has been set up, the user agent must act as if it had [=stop parsing|stopped parsing=].
 
   After creating the <code>Document</code> object, but potentially before the page has been
   completely set up, the user agent must <a>update the session history with the new
@@ -4322,11 +4349,11 @@
     <a>top-level browsing context</a>'s <a>document family</a>.</li>
 
     <li>Append a new entry at the end of the <code>History</code> object representing the new
-    resource and its {{Document}} object, related state, and current history scroll restoration preference. Its <a for="url">URL</a> must be set to the address to which the user
+    resource and its {{Document}} object, related state, and current history scroll restoration preference. Its [=url/URL=] must be set to the address to which the user
    agent was <a>navigating</a>. The title must be left unset.</li>
 
     <li><a>Traverse the history</a> to the new entry, with the <i>non-blocking events</i> flag
-    set. This will <a>scroll to the fragment</a> given in what is now <a>the document's address</a>.</li>
+    set. This will <a>scroll to the fragment</a> given in what is now the document's [=Document/URL=].</li>
 
   </ol>
 
@@ -4374,7 +4401,7 @@
 
   <ol>
 
-    <li>Apply the <a>URL parser</a> algorithm to the <a for="url">URL</a>, and let <var>fragid</var> be the <a for="url">fragment</a> component of the
+    <li>Apply the <a>URL parser</a> algorithm to the [=url/URL=], and let <var>fragid</var> be the <a for="url">fragment</a> component of the
     <a>resulting URL record</a>.</li>
 
     <li>If <var>fragid</var> is the empty string, then <a>the indicated part of the
@@ -4468,8 +4495,8 @@
 
       <li>
 
-      If the <a for="concept">origin</a> of the {{Document}} of the <var>specified entry</var> is not the same as
-      the <a for="concept">origin</a> of the {{Document}} of the <a>current entry</a>, then run the
+      If the [=concept/origin=] of the {{Document}} of the <var>specified entry</var> is not the same as
+      the [=concept/origin=] of the {{Document}} of the <a>current entry</a>, then run the
       following sub-sub-steps:
 
       <ol>
@@ -4529,7 +4556,7 @@
         <li>
 
         Run any <dfn>session history document visibility change steps</dfn> for {{Document}} that
-        are defined by <a lt="applicable specification">other applicable specifications</a>.
+        are defined by [=other applicable specifications=].
 
         <p class="note">
   This is specifically intended for use by the Page Visibility specification. [[PAGE-VISIBILITY]]
@@ -4540,7 +4567,7 @@
         <li><a>Fire</a> a <a>trusted</a> event with the name <code>pageshow</code> at the <code>Window</code> object of that
         {{Document}}, with <i>target override</i> set to the {{Document}}
         object,
-        using the <code>PageTransitionEvent</code> interface, with the <code>persisted</code> attribute initialized to true.
+        using the <code>PageTransitionEvent</code> interface, with the {{PageTransitionEvent/persisted}} attribute initialized to true.
         This event must not bubble, must not be cancelable, and has no default action.</li>
 
       </ol>
@@ -4551,7 +4578,7 @@
 
     </li>
 
-    <li>Set <a>the document's address</a> to the URL of the <var>specified
+    <li>Set the document's [=Document/URL=] to the URL of the <var>specified
     entry</var>.</li>
 
     <li>If the <var>specified entry</var> has a URL whose <a for="url">fragment</a> differs
@@ -4638,8 +4665,8 @@
 
   <p class="note">This can even include updating the <code>dir</code> attribute
   of <{textarea}> elements or <{input}> elements whose <code>type</code> attribute
-  is in either the <a element-state for="input">Text</a> state or the
-  <a element-state for="input">Search</a> state, if the persisted state includes the
+  is in either the <{input/Text}> state or the
+  <{input/Search}> state, if the persisted state includes the
   directionality of user input in such controls.</p>
 
 <h5 id="the-popstateevent-interface">The <code>PopStateEvent</code> interface</h5>
@@ -4693,12 +4720,12 @@
   <dl class="domintro">
     <dt><var>event</var> . <code>oldURL</code></dt>
     <dd>
-      Returns the <a for="url">URL</a> of the <a>session history entry</a> that was previously
+      Returns the [=url/URL=] of the <a>session history entry</a> that was previously
       current.
     </dd>
     <dt><var>event</var> . <code>newURL</code></dt>
     <dd>
-      Returns the <a for="url">URL</a> of the <a>session history entry</a> that is now current.
+      Returns the [=url/URL=] of the <a>session history entry</a> that is now current.
     </dd>
   </dl>
 
@@ -4726,7 +4753,7 @@
   </pre>
 
   <dl class="domintro">
-    <dt><var>event</var> . <code>persisted</code></dt>
+    <dt><var>event</var> . {{PageTransitionEvent/persisted}}</dt>
     <dd>
       For the <code>pageshow</code> event, returns false if the page is newly being loaded (and the
       <code>load</code> event will fire). Otherwise, returns true.
@@ -4857,14 +4884,14 @@
     <li><a>Fire</a> a <a>trusted</a> event with the name <code>pagehide</code> at the <code>Window</code> object of the
     {{Document}}, with <i>target override</i> set to the {{Document}}
     object, using the <code>PageTransitionEvent</code> interface,
-    with the <code>persisted</code> attribute initialized
+    with the {{PageTransitionEvent/persisted}} attribute initialized
     to true if the {{Document}} object's <i>salvageable</i> state is true, and false otherwise. This
     event must not bubble, must not be cancelable, and has no default action.</li>
 
     <li>
 
     Run any <dfn>unloading document visibility change steps</dfn> for {{Document}} that
-    are defined by <a lt="applicable specification">other applicable specifications</a>.
+    are defined by [=other applicable specifications=].
 
     <p class="note">
   This is specifically intended for use by the Page Visibility specification. [[PAGE-VISIBILITY]]
@@ -4885,7 +4912,7 @@
     to false and set the {{Document}}'s <a>fired unload</a> flag to true.</li>
 
     <li>Run any <a>unloading document cleanup steps</a> for {{Document}} that are
-    defined by this specification and <a lt="applicable specification">other applicable specifications</a>.</li>
+    defined by this specification and [=other applicable specifications=].</li>
 
     <li>If this algorithm was invoked by another instance of the "unload a document" algorithm
     (i.e., by the steps below that invoke this algorithm for all descendant browsing contexts), then

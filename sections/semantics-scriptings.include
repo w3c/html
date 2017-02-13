@@ -54,9 +54,9 @@
     <dd><{script/defer}> - Defer script execution</dd>
     <dd><{script/crossorigin}> - How the element handles crossorigin requests</dd>
     <dd><{script/nonce}> - Cryptographic nonce used in <em>Content Security Policy</em> checks [[CSP3]]</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
@@ -99,14 +99,14 @@
 
   <p class="note">The requirement that <a>data blocks</a> must be denoted using a
   <a>valid MIME type</a> is in place to avoid potential future collisions. If this specification
-  ever adds additional types of <a for="concept">script</a>, they will be triggered by setting the
+  ever adds additional types of [=concept/script=], they will be triggered by setting the
   <{script/type}> attribute to something which is not a MIME type, like how the "<code>module</code>"
   value denotes <a>module scripts</a>. By using a valid MIME type now, you ensure that your data block
   will not ever be reinterpreted as a different script type, even in future user agents.</p>
 
   <a>Classic scripts</a> and <a>module scripts</a> may either be embedded inline or may be imported
   from an external file using the <dfn element-attr for="script"><code>src</code></dfn> attribute,
-  which if specified gives the <a for="url">URL</a> of the external script resource to use. If <{script/src}>
+  which if specified gives the [=url/URL=] of the external script resource to use. If <{script/src}>
   is specified, it must be a <a>valid non-empty URL potentially surrounded by spaces</a>. The
   contents of inline <{script}> elements, or the external script resource, must conform with the
   requirements of the JavaScript specification's <a for="ecma">Script</a> or
@@ -160,9 +160,9 @@
   reasons, somewhat non-trivial, involving a number of aspects of HTML. The implementation
   requirements are therefore by necessity scattered throughout the specification. The algorithms
   below (in this section) describe the core of this processing, but these algorithms reference and
-  are referenced by the parsing rules for <{script}> <a lt="start tag">start</a> and
-  <a lt="end tag">end</a> tags in HTML, <a>in foreign content</a>, and in XML, the rules for the
-  <a method lt="write()"><code>document.write()</code></a> method, the handling of
+  are referenced by the parsing rules for <{script}> [=start tag|start=] and
+  [=end tag|end=] tags in HTML, <a>in foreign content</a>, and in XML, the rules for the
+  {{Document/write()|document.write()}} method, the handling of
   <a for="concept">scripting</a>, etc.</p>
 
   The <{script/defer}> attribute may be specified even if the <{script/async}> attribute is
@@ -199,11 +199,11 @@
   <a>reflect</a> the <{script/crossorigin}> content attribute.
 
   The <dfn attribute for="HTMLScriptElement"><code>async</code></dfn> IDL attribute controls whether
-  the element will execute <a>in parallel</a> or not. If the element's <a>"non-blocking"</a> flag is
+  the element will execute <a>in parallel</a> or not. If the element's "[=non-blocking=]" flag is
   set, then, on getting, the {{HTMLScriptElement/async}} IDL attribute must return true, and on
-  setting, the <a>"non-blocking"</a> flag must first be unset, and then the content attribute must
+  setting, the "[=non-blocking=]" flag must first be unset, and then the content attribute must
   be removed if the IDL attribute's new value is false, and must be set to the empty string if the
-  IDL attribute's new value is true. If the element's <a>"non-blocking"</a> flag is <em>not</em>
+  IDL attribute's new value is true. If the element's "[=non-blocking=]" flag is <em>not</em>
   set, the IDL attribute must <a>reflect</a> the <{script/async}> content attribute.
 
   <dl class="domintro">
@@ -219,7 +219,7 @@
   <a>child text content</a> of the <{script}> element. On setting, it must act the same way as the
   {{Node/textContent}} IDL attribute.
 
-  <p class="note">When inserted using the <a method lt="write()"><code>document.write()</code></a>
+  <p class="note">When inserted using the {{Document/write()|document.write()}}
   method, <{script}> elements execute (typically blocking further script execution or HTML parsing),
   but when inserted using <code>innerHTML</code> and <code>outerHTML</code> attributes, they do not
   execute at all.</p>
@@ -346,25 +346,25 @@ o............A....e
   A <{script}> element has several associated pieces of state.
 
   The first is a flag indicating whether or not the script block has been
-  <dfn>"already started"</dfn>. Initially, <{script}> elements must have this flag unset (script
+  "<dfn>already started</dfn>". Initially, <{script}> elements must have this flag unset (script
   blocks, when created, are not "already started"). The <a>cloning steps</a> for <{script}> elements
   must set the "already started" flag on the copy if it is set on the element being cloned.
 
-  The second is a flag indicating whether the element was <dfn>"parser-inserted"</dfn>.
+  The second is a flag indicating whether the element was "<dfn>parser-inserted</dfn>".
   Initially, <{script}> elements must have this flag unset. It is set by the <a>HTML parser</a>
   and the <a>XML parser</a> on <{script}> elements they insert and affects the processing of those
   elements.
 
-  The third is a flag indicating whether the element will <dfn>"non-blocking"</dfn>. Initially,
+  The third is a flag indicating whether the element will "<dfn>non-blocking</dfn>". Initially,
   <{script}> elements must have this flag set. It is unset by the <a>HTML parser</a>
   and the <a>XML parser</a> on <{script}> elements they insert. In addition, whenever
-  a <{script}> element whose <a>"non-blocking"</a> flag is set has an <{script/async}> content
-  attribute added, the element's <a>"non-blocking"</a> flag must be unset.
+  a <{script}> element whose "[=non-blocking=]" flag is set has an <{script/async}> content
+  attribute added, the element's "[=non-blocking=]" flag must be unset.
 
   The fourth is a flag indicating whether or not the script block is
-  <dfn>"ready to be parser-executed"</dfn>. Initially, <{script}> elements must have this flag unset
+  "<dfn>ready to be parser-executed</dfn>". Initially, <{script}> elements must have this flag unset
   (script blocks, when created, are not "ready to be parser-executed"). This flag is used only for
-  elements that are also <a>"parser-inserted"</a>, to let the parser know when to execute the
+  elements that are also "[=parser-inserted=]", to let the parser know when to execute the
   script.
 
   The fifth is <dfn>the script's type</dfn>, which is either "<code>classic</code>" or
@@ -384,7 +384,7 @@ o............A....e
   <a>delay the load event</a> of the element's <a>node document</a> until
   <a>the script is ready</a>.
 
-  When a <{script}> element that is not marked as being <a>"parser-inserted"</a> experiences one of
+  When a <{script}> element that is not marked as being "[=parser-inserted=]" experiences one of
   the events listed in the following list, the user agent must <a>immediately</a> <a>prepare</a> the
   <{script}> element:
 
@@ -400,17 +400,17 @@ o............A....e
   To <dfn lt="prepare a script|preparing|prepared">prepare a script</dfn>, the user agent must act
   as follows:
 
-  1. If the <{script}> element is marked as having <a>"already started"</a>, then the user agent
+  1. If the <{script}> element is marked as having "[=already started=]", then the user agent
       must abort these steps at this point. The script is not executed.
-  2. If the element has its <a>"parser-inserted"</a> flag set, then set
-      <var>was-parser-inserted</var> to true and unset the element's <a>"parser-inserted"</a> flag.
+  2. If the element has its "[=parser-inserted=]" flag set, then set
+      <var>was-parser-inserted</var> to true and unset the element's "[=parser-inserted=]" flag.
       Otherwise, set <var>was-parser-inserted</var> to false.
 
       <p class="note">This is done so that if parser-inserted <{script}> elements fail to run when
       the parser tries to run them, e.g., because they are empty or specify an unsupported
       scripting language, another script can later mutate them and cause them to run again.</p>
   3. If <var>was-parser-inserted</var> is true and the element does not have an <{script/async}>
-      attribute, then set the element's <a>"non-blocking"</a> flag to true.
+      attribute, then set the element's "[=non-blocking=]" flag to true.
 
       <p class="note">This is done so that if a parser-inserted <{script}> element fails to run when
       the parser tries to run it, but it is later executed after a script dynamically updates it, it
@@ -433,7 +433,7 @@ o............A....e
 
       Otherwise, if the <{script}> element has a <{script/type}> attribute, let
       <var>the script block's type string</var> for this <{script}> element be the value of that
-      attribute with any leading or trailing sequences of <a>space characters</a> removed.
+      attribute with any leading or trailing sequences of [=space characters=] removed.
 
       Otherwise, the element has a non-empty <{script/language}> attribute; let
       <var>the script block's type string</var> for this <{script}> element be the
@@ -450,10 +450,10 @@ o............A....e
          the string "<code>module</code>", <a>the script's type</a> is "<code>module</code>".
       * If neither of the above conditions are true, then abort these steps at this point. No script
          is executed.
-  7. If <var>was-parser-inserted</var> is true, then flag the element as <a>"parser-inserted"</a>
-      again, and set the element's <a>"non-blocking"</a> flag to false.
-  8. The user agent must set the element's <a>"already started"</a> flag.
-  9. If the element is flagged as <a>"parser-inserted"</a>, but the element's <a>node document</a>
+  7. If <var>was-parser-inserted</var> is true, then flag the element as "[=parser-inserted=]"
+      again, and set the element's "[=non-blocking=]" flag to false.
+  8. The user agent must set the element's "[=already started=]" flag.
+  9. If the element is flagged as "[=parser-inserted=]", but the element's <a>node document</a>
       is not the {{Document}} of the parser that created the element, then abort these steps.
   10. If <a>scripting is disabled</a> for the <{script}> element, then abort these steps at this
        point. The script is not executed.
@@ -475,7 +475,7 @@ o............A....e
 
        1. Let <var>for</var> be the value of the <{script/for}> attribute.
        2. Let <var>event</var> be the value of the <{script/event}> attribute.
-       3. <a>Strip leading and trailing whitespace</a> from <var>event</var> and <var>for</var>.
+       3. <a>Strip leading and trailing white space</a> from <var>event</var> and <var>for</var>.
        4. If <var>for</var> is not an <a>ASCII case-insensitive</a> match for the string "<code>window</code>",
            then the user agent must abort these steps at this point. The script is not executed.
        5. If <var>event</var> is not an <a>ASCII case-insensitive</a> match for either the string
@@ -497,7 +497,7 @@ o............A....e
 
        Otherwise, let <var>cryptographic nonce</var> be the empty string.
   16. Let <var>parser state</var> be "<code>parser-inserted</code>" if the <{script}> element has been flagged
-       as <a>"parser-inserted"</a>, and "`not parser-inserted`" otherwise.
+       as "[=parser-inserted=]", and "`not parser-inserted`" otherwise.
   17. Let <var>settings</var> be the element's <a>node document</a>'s {{Window}} object's
        <a>environment settings object</a>.
   18. If the element has a <{script/src}> content attribute, run these substeps:
@@ -597,14 +597,14 @@ o............A....e
                <td>yes
                <td>yes
                <td>no
-               <td>element flagged as <a>"parser-inserted"</a>
+               <td>element flagged as "[=parser-inserted=]"
              </tr>
              <tr>
                <td><code>"module"</code>
                <td>yes or no
                <td>n/a
                <td>no
-               <td>element flagged as <a>"parser-inserted"</a>
+               <td>element flagged as "[=parser-inserted=]"
              </tr>
            </tbody>
          </table>
@@ -612,7 +612,7 @@ o............A....e
          document has finished parsing</dfn> associated with the {{Document}} of the parser that
          created the element.
 
-         When the <a>the script is ready</a>, set the element's <a>"ready to be parser-executed"</a>
+         When the <a>the script is ready</a>, set the element's "[=ready to be parser-executed=]"
          flag. The parser will handle executing the script.</dd>
 
          <dt></dt>
@@ -633,7 +633,7 @@ o............A....e
                <td>yes
                <td>no
                <td>no
-               <td>element flagged as <a>"parser-inserted"</a>
+               <td>element flagged as "[=parser-inserted=]"
              </tr>
            </tbody>
          </table>
@@ -641,7 +641,7 @@ o............A....e
          parser that created the element. (There can only be one such script per {{Document}} at a
          time.)
 
-         When <a>the script is ready</a>, set the element's <a>"ready to be parser-executed"</a>
+         When <a>the script is ready</a>, set the element's "[=ready to be parser-executed=]"
          flag. The parser will handle executing the script.
          </dd>
 
@@ -663,14 +663,14 @@ o............A....e
                <td>yes
                <td>yes or no
                <td>no
-               <td><a>"non-blocking"</a> flag not set on element
+               <td>"[=non-blocking=]" flag not set on element
              </tr>
              <tr>
                <td><code>"module"</code>
                <td>yes or no
                <td>n/a
                <td>no
-               <td><a>"non-blocking"</a> flag not set on element
+               <td>"[=non-blocking=]" flag not set on element
              </tr>
            </tbody>
          </table>
@@ -750,7 +750,7 @@ o............A....e
                <td>yes or no
                <td>All of the following:
 
-                    * element flagged as <a>"parser-inserted"</a>
+                    * element flagged as "[=parser-inserted=]"
                     * an <a>XML parser</a> or an <a>HTML parser</a> whose
                         <a>script nesting level</a> is not greater than one created the <{script}>
                     * the {{Document}} of the <a>XML parser</a> or <a>HTML parser</a> that created
@@ -762,7 +762,7 @@ o............A....e
          parser that created the element. (There can only be one such script per {{Document}} at a
          time.)
 
-         Set the element's <a>"ready to be parser-executed"</a> flag. The parser will handle
+         Set the element's "[=ready to be parser-executed=]" flag. The parser will handle
          executing the script.</dd>
 
          <dt>Otherwise</dt>
@@ -783,7 +783,7 @@ o............A....e
 
   When the user agent is required to <dfn lt="execute a script block|execute|execute the script block">execute a script block</dfn>, it must run the following steps:
 
-  1. If the element is flagged as <a>"parser-inserted"</a>, but the element's <a>node document</a>
+  1. If the element is flagged as "[=parser-inserted=]", but the element's <a>node document</a>
       is not the {{Document}} of the parser that created the element, then abort these steps.
   2. If <a>the script's script</a> is null, <a>fire a simple event</a> named <code>error</code> at the element,
       and abort these steps.
@@ -1060,21 +1060,21 @@ o............A....e
 
   * When an XSLT transformation program is triggered by an `&lt;?xml-stylesheet?&gt;` processing
      instruction and the browser implements a direct-to-DOM transformation, <{script}> elements
-     created by the XSLT processor need to be marked <a>"parser-inserted"</a> and run in document
+     created by the XSLT processor need to be marked "[=parser-inserted=]" and run in document
      order (modulo scripts marked <{script/defer}> or <{script/async}>), <a>immediately</a>, as the
      transformation is occurring.
   * The <code>XSLTProcessor.transformToDocument()</code> method [[XSLTP]] adds elements to a
      {{Document}} that is not in a <a>browsing context</a>, and, accordingly, any <{script}>
-     elements they create need to have their <a>"already started"</a> flag set in the
+     elements they create need to have their "[=already started=]" flag set in the
      <a>prepare a script</a> algorithm and never get executed (<a>scripting is disabled</a>). Such
-     <{script}> elements still need to be marked <a>"parser-inserted"</a>, though, such that their
+     <{script}> elements still need to be marked "[=parser-inserted=]", though, such that their
      {{HTMLScriptElement/async}} IDL attribute will return false in the absence of an
      <{script/async}> content attribute.
   * The <code>XSLTProcessor.transformToFragment()</code> method needs to create a fragment that is
      equivalent to one built manually by creating the elements using
      {{Document/createElementNS()|document.createElementNS()}}. For instance, it needs to create
-     <{script}> elements that aren't <a>"parser-inserted"</a> and that don't have their
-     <a>"already started"</a> flag set, so that they will execute when the fragment is
+     <{script}> elements that aren't "[=parser-inserted=]" and that don't have their
+     "[=already started=]" flag set, so that they will execute when the fragment is
      <a for="document">inserted into a document</a>.
 
   The main distinction between the first two cases and the last case is that the first two
@@ -1098,9 +1098,9 @@ o............A....e
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>Uses {{HTMLElement}}.</dd>
@@ -1122,7 +1122,7 @@ o............A....e
       element and the text contents as the <var>input</var> must result in a list of nodes that
       consists only of <{link}>, <{style}>, and <{meta}> elements that would be conforming if they
       were children of the <{noscript}> element, and no
-      <a for="parser">parse errors</a>.
+      [=parse errors=].
 
   : Outside of <{head}> elements, if <a>scripting is disabled</a> for the <{noscript}> element
   :: The <{noscript}> element's content model is <a>transparent</a>, with the additional restriction
@@ -1133,7 +1133,7 @@ o............A....e
   :: The <{noscript}> element must contain only text, except that the text must be such that running
       the following algorithm results in a <a lt="conforming document">conforming document</a> with
       no <{noscript}> elements and no <{script}> elements, and such that no step in the algorithm
-      throws an exception or causes an <a>HTML parser</a> to flag a <a for="parser">parse error</a>:
+      throws an exception or causes an <a>HTML parser</a> to flag a [=parse error=]:
 
       1. Remove every <{script}> element from the document.
       2. Make a list of every <{noscript}> element in the document. For every <{noscript}> element
@@ -1146,7 +1146,7 @@ o............A....e
 
   <p class="note">All these contortions are required because, for historical reasons, the
   <{noscript}> element is handled differently by the <a>HTML parser</a> based on whether
-  <a>scripting was enabled or not</a> when the parser was invoked.</p>
+  [=scripting flag|scripting was enabled or not=] when the parser was invoked.</p>
 
   The <{noscript}> element must not be used in <a>XML documents</a>.
 
@@ -1256,9 +1256,9 @@ o............A....e
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
@@ -1411,9 +1411,9 @@ o............A....e
 
   <ol>
 
-    <li>If the <var>clone children flag</var> is not set in the calling <a for="Node">clone</a> algorithm, abort these steps.</li>
+    <li>If the <var>clone children flag</var> is not set in the calling <a lt="clone a node">clone</a> algorithm, abort these steps.</li>
 
-    <li>Let <var>copied contents</var> be the result of <a for="Node">cloning</a> all the children of <var>node</var>'s
+    <li>Let <var>copied contents</var> be the result of <a lt="clone a node">cloning</a> all the children of <var>node</var>'s
     <a>template contents</a>, with <var>document</var> set to <var>copy</var>'s <a>template contents</a>'s <a>node
     document</a>, and with the <var>clone children
     flag</var> set.</li>
@@ -1518,9 +1518,9 @@ o............A....e
     <dd><a>Global attributes</a></dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
-    <dt>Allowed <a href="#aria-role-attribute">ARIA role attribute</a> values:</dt>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
-    <dt>Allowed <a href="#state-and-property-attributes">ARIA state and property attributes</a>:</dt>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
     <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
@@ -1977,7 +1977,7 @@ o............A....e
 
   <em>This section is non-normative.</em>
 
-  <strong>Information leakage</strong> can occur if scripts from one <a for="concept">origin</a> can
+  <strong>Information leakage</strong> can occur if scripts from one [=concept/origin=] can
   access information (e.g., read pixels) from images from another origin (one that isn't the same).
 
   To mitigate this, bitmaps used with <{canvas}> elements and <code>ImageBitmap</code>

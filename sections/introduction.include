@@ -135,12 +135,12 @@
   features. In mid 2012, a new editing team was introduced at the W3C to take care of creating a
   HTML 5.0 Recommendation and prepare a Working Draft for the next HTML version.
 
-  Since then, the W3C HTML WG has been cherry picking patches from the WHATWG that resolved bugs
-  registered on the W3C HTML specification or more accurately represented implemented reality in
+  Since then, the W3C Web Platform WG has been cherry picking patches from the WHATWG that resolved
+  bugs registered on the W3C HTML specification or more accurately represented implemented reality in
   user agents. At time of publication of this document, patches from the
   <a>WHATWG HTML specification</a> have been merged until January 12, 2016. The W3C HTML editors
-  have also added patches that resulted from discussions and decisions made by the W3C HTML WG as
-  well a bug fixes from bugs not shared by the WHATWG.
+  have also added patches that resulted from discussions and decisions made by the W3C Web Platform
+  WG as well a bug fixes from bugs not shared by the WHATWG.
 
   A separate document is published to document the differences between the HTML specified in this
   document and the language described in the HTML 4.01 specification. [[HTML5-DIFF]]
@@ -212,7 +212,7 @@
   * Authors can extend APIs using the JavaScript prototyping mechanism. This is widely used by
     script libraries, for instance.
 
-<h3 id="html-vs-xhtml">HTML vs XHTML</h3>
+<h3 id="html-vs-xhtml">HTML vs XML Syntax</h3>
 
   <em>This section is non-normative.</em>
 
@@ -227,7 +227,7 @@
 
   The first such concrete syntax is the HTML syntax. This is the format suggested for most authors.
   It is compatible with most legacy Web browsers. If a document is transmitted with the
-  <a href="#text-html"><code>text/html</code></a> <a>MIME type</a>, then it will be processed as an
+  <code>[[#text-html|text/html]]</code> <a>MIME type</a>, then it will be processed as an
   HTML document by Web browsers. This specification defines the latest version of the HTML syntax,
   known simply as "HTML".
 
@@ -255,7 +255,7 @@
 
   <div dfn-for="spec">
     : [[#introduction]]
-    :: Non-normative materials providing a context for the HTML standard.
+    :: Non-normative materials providing a context for the HTML specification.
     : [[#infrastructure]]
     :: The conformance classes, algorithms, definitions, and the common underpinnings of the rest of
         the specification.
@@ -347,7 +347,7 @@
 
     <pre class="css" highlight="css">/* this is a CSS fragment */</pre>
 
-    The defining instance of a term is marked up like <dfn noexport>this</dfn>. 
+    The defining instance of a term is marked up like <dfn noexport>this</dfn>.
     Uses of that term are marked up like [=this=] or like <a><i>this</i></a>.
 
     The defining instance of an element, attribute, or API is marked up like
@@ -357,7 +357,7 @@
     Other code fragments are marked up <code>like this</code>.
 
     Byte sequences with bytes in the range 0x00 to 0x7F, inclusive, are marked up like
-    `<code>this</code>`.
+    `this`.
 
     Variables are marked up like <var>this</var>.
 
@@ -482,7 +482,7 @@
   <a lt="attribute">Attributes</a> are placed inside the start tag, and consist of a
   <a lt="attribute names">name</a> and a <a lt="attribute values">value</a>, separated by an
   "<code>=</code>" character. The attribute value can remain <a>unquoted</a> if it doesn't contain
-  <a>space characters</a> or any of <code>"</code> <code>'</code> <code>`</code> <code>=</code>
+  [=space characters=] or any of <code>"</code> <code>'</code> <code>&#x60;</code> <code>=</code>
   <code>&lt;</code> or <code>&gt;</code>. Otherwise, it has to be quoted using either single or
   double quotes. The value, along with the "<code>=</code>" character, can be omitted altogether if
   the value is the empty string.
@@ -517,7 +517,7 @@
           <ul>
             <li class="t3"><code>#text</code>: <span>&#x23CE;&#x2423;&#x2423;</span></li>
             <li class="t1">
-              <a element for="html"><code>title</code></a>
+              <{title}>
               <ul>
                 <li class="t3"><code>#text</code>: <span>Sample page</span></li>
               </ul>
@@ -561,17 +561,17 @@
 
   The {{document}} element of this tree is the <{html}> element, which is the element always found
   in that position in HTML documents. It contains two elements, <{head}> and <{body}>, as well as a
-  {{Text!!interface}} node between them.
+  {{Text}} node between them.
 
-  There are many more {{Text!!interface}} nodes in the DOM tree than one would initially expect,
+  There are many more {{Text}} nodes in the DOM tree than one would initially expect,
   because the source contains a number of spaces (represented here by "&#x2423;") and line breaks
-  ("&#x23CE;") that all end up as {{Text!!interface}} nodes in the DOM. However, for historical
+  ("&#x23CE;") that all end up as {{Text}} nodes in the DOM. However, for historical
   reasons not all of the spaces and line breaks in the original markup appear in the DOM. In
-  particular, all the whitespace before <{head}> start tag ends up being dropped silently, and all
-  the whitespace after the <{body}> end tag ends up placed at the end of the <{body}>.
+  particular, all the white space before <{head}> start tag ends up being dropped silently, and all
+  the white space after the <{body}> end tag ends up placed at the end of the <{body}>.
 
-  The <{head}> element contains a <a element for="html"><code>title</code></a> element, which itself
-  contains a {{Text!!interface}} node with the text "Sample page". Similarly, the <{body}> element
+  The <{head}> element contains a <{title}> element, which itself
+  contains a {{Text}} node with the text "Sample page". Similarly, the <{body}> element
   contains an <{h1}> element, a <{p}> element, and a comment.
 
   <hr />
@@ -876,7 +876,7 @@
   : Errors with optional error recovery
   :: To allow user agents to be used in controlled environments without having to implement the more
       bizarre and convoluted error handling rules, user agents are permitted to fail whenever
-      encountering a <a for="parser">parse error</a>.
+      encountering a [=parse error=].
   : Errors where the error-handling behavior is not compatible with streaming user agents
   :: Some error-handling behavior, such as the behavior for the <{table}><{hr}>...
       example mentioned above, are incompatible with streaming user agents (user agents that process
@@ -1022,7 +1022,7 @@
       user agents, and are therefore marked as non-conforming to help authors avoid them.
 
       <p class="example">
-        For example, this is why the U+0060 GRAVE ACCENT character (`) is not allowed in unquoted
+        For example, this is why the U+0060 GRAVE ACCENT character (&#x60;) is not allowed in unquoted
         attributes. In certain legacy user agents, it is sometimes treated as a quote character.
       </p>
 
@@ -1211,7 +1211,7 @@
       </p>
 
       <p class="example">
-        Another example would be the restrictions on the values of <code>xmlns</code> attributes
+        Another example would be the restrictions on the values of <{xmlns/xmlns}> attributes
         in the HTML serialization, which are intended to ensure that elements in conforming
         documents end up in the same namespaces whether processed as HTML or XML.
       </p>
@@ -1247,7 +1247,7 @@
         This Architectural Specification provides authors of specifications, software developers,
         and content developers with a common reference for interoperable text manipulation on the
         World Wide Web, building on the Universal Character Set, defined jointly by the Unicode
-        Standard and ISO/IEC 10646. Topics addressed include use of the terms &quot;character&quot;,
+        specification and ISO/IEC 10646. Topics addressed include use of the terms &quot;character&quot;,
         &quot;encoding&quot; and &quot;string&quot;, a reference processing model, choice and
         identification of character encodings, character escaping, and string indexing.
       </blockquote>
@@ -1305,7 +1305,7 @@
         named entity references, and the use of scripts and style.
       </blockquote>
 
-  : <cite>HTML Accessibility APIs Mappings 1.0</cite> [[!HTML-AAM-1.0]]
+  : <cite>HTML Accessibility APIs Mappings 1.0</cite> [[!html-aam-1.0]]
   :: <blockquote>
         Defines how user agents map HTML 5.1 elements and attributes to platform accessibility APIs.
         Documenting these mappings promotes interoperable exposure of roles, states, properties, and
