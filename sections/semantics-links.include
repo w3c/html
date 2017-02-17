@@ -86,9 +86,8 @@
   <a>supported tokens</a> are the keywords defined in
   <a>HTML link types</a> which are allowed on <{a}> and
   <{area}> elements, impact the processing model, and are supported by the user agent. The
-  possible supported tokens are
-  <a attr-value for="link/type"><code>noreferrer</code></a>, and
-  <code>noopener</code>.
+  possible <a>supported tokens</a> are
+  <{link/type/noreferrer}>, and <{link/type/noopener}>.
   <{links/rel}>'s
   <a>supported tokens</a> must only include the tokens from
   this list that the user agent implements the processing model for.
@@ -628,6 +627,9 @@
 
     </li>
 
+    <li>If |subject|'s [=link types=] include the `noreferrer` or <{link/type/noopener}> keyword,
+    and |replace| is true, then [=disowned its opener|disown target's opener=].</li>
+
     <li><a>Parse</a> the [=url/URL=] given by
     <var>subject</var>'s <{links/href}> attribute, relative to
     <var>subject</var>'s <a>node document</a>.</li>
@@ -981,11 +983,11 @@
     </tr>
 
     <tr>
-      <td><code>noopener</code></td>
+      <td><{link/type/noopener}></td>
       <td><em>not allowed</em></td>
       <td><a>Annotation</a></td>
       <td class="no"> &middot; </td>
-      <td>Requires that any <a>browsing context</a> created by following the hyperlink must not have an <a>opener browsing context</a>.</td>
+      <td>Requires that any <a>browsing context</a> created by following the hyperlink to [=disowned its opener|disown its opener=].</td>
     </tr>
 
     <tr>
@@ -1441,16 +1443,26 @@
 
   It indicates that no referrer information is to be leaked when following the link.
 
-  <div class="impl">
-
   If a user agent follows a link defined by an <{a}> or <{area}> element that
   has the <a attr-value for="link/type"><code>noreferrer</code></a> keyword, the user agent must set their
   <a>request</a>'s <a>referrer</a> to "<code>no-referrer</code>".
 
-  This keyword also <a>causes the <code>opener</code>
-  attribute to remain null</a> if the hyperlink creates a new <a>browsing context</a>.
+  <p class="note">For historical reasons, the <{link/type/noreferrer}> keyword implies the behavior
+  associated with the <{link/type/noopener}> keyword when present on a hyperlink that
+  [=creating a new browsing context|creates=] a new [=browsing context=]. That is,
+  <code highlight="html">&lt;a href="..." rel="noreferrer" target="_blank"></code> has the same
+  behavior as
+  <code highlight="html">&lt;a href="..." rel="noreferrer noopener" target="_blank"></code>.</p>
 
-  </div>
+<h5 id="link-type-noopener">Link type "<dfn attr-value for="link/type"><code>noopener</code></dfn>"</h5>
+
+  The <{link/type/noopener}> keyword may be used with <{a}> and <{area}> elements. This keyword does
+  not create a [=hyperlink=], but [=annotates=] any other hyperlinks created by the element (the
+  implied hyperlink, if no other keywords create one).
+
+  The keyword indicates that any newly created [=browsing context=] which results from following the
+  [=hyperlink=] will have [=disowned its opener=], which means that its
+  {{Window/opener|window.opener}} property will be `null`.
 
 <h5 id="link-type-search">Link type "<dfn attr-value for="link/type"><code>search</code></dfn>"</h5>
 
@@ -1566,8 +1578,8 @@
 
         The CSS <a>environment encoding</a> is the result of running the following steps: [[!CSS-SYNTAX-3]]
 
-        1. If the element has a <code>charset</code> attribute, 
-            <a lt="getting an encoding">get an encoding</a> from that attribute's value. If that 
+        1. If the element has a <code>charset</code> attribute,
+            <a lt="getting an encoding">get an encoding</a> from that attribute's value. If that
             succeeds, return the resulting encoding and abort these steps. [[!ENCODING]]
         2. Otherwise, return the <a>document's character encoding</a>. [[!DOM]]
   </div>
