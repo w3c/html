@@ -5252,14 +5252,12 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   users of these older browsers informing them of how to access the video contents.
 
   <p class="note">
-    In particular, this content is not intended to address accessibility concerns. To
-  make video content accessible to the partially sighted, the blind, the hard-of-hearing, the deaf,
-  and those with other physical or cognitive disabilities, a variety of features are available.
-  Captions can be provided, either embedded in the video stream or as external files using the
-  <{track}> element. Sign-language tracks can be provided, again either embedded in the
-  video stream. Audio descriptions can be provided, either as a separate track embedded in the video
-  stream, or in text form using a <a>WebVTT file</a> referenced using the <{track}> element and
-  synthesized into speech by the user agent. WebVTT can also be used to provide chapter titles. For
+  In particular, this content is not intended to address accessibility concerns. To
+  make video content accessible to people with disabilities, a variety of features are available.
+  Captions and sign language tracks can be embedded in the video stream, or as external files using the
+  <{track}> element. Audio descriptions can be provided, either as a separate track embedded in the video
+  stream, or by referencing a <a>WebVTT file</a> with the <{track}> element that the user agent can present
+  as synthesized speech. WebVTT can also be used to provide chapter titles. For
   users who would rather not use a media element at all, transcripts or other textual alternatives
   can be provided by simply linking to them in the prose near the <{video}> element. [[WEBVTT]]
   </p>
@@ -6471,20 +6469,19 @@ zero or more <{track}> elements, then
         attribute's value is the empty string, then end the <a>synchronous section</a>, and jump
         down to the <i>failed with attribute</i> step below.</li>
 
-        <li>&#x231B; Let <var>urlString</var> be the <a>resulting URL string</a> that
-        would have resulted from <a>parsing</a> the [=url/URL=]
-        specified by the <code>src</code> attribute's value relative to the
-        <a>media element</a>'s <a>node document</a> when the <code>src</code> attribute was last
-      changed.
+        <li>&#x231B; Let |urlString| and |urlRecord| be the [=resulting URL string=] and the
+        [=resulting URL record=], respectively, that would have resulted from [=parsing=] the
+        [=url/URL=] specified by the <{media/src}> attribute's value relative to the
+        [=media element=]'s [=node document=] when the <{media/src}> attribute was last changed.
+        <!-- i.e., changing <base> after src="" has no effect -->
 
         </li><li>&#x231B; If <var>urlString</var> was obtained successfully, set the <code>currentSrc</code> attribute to <var>urlString</var>.</li>
 
         <li>End the <a>synchronous section</a>, continuing the remaining steps
         <a>in parallel</a>.</li>
 
-        <li>If <var>urlString</var> was obtained successfully, run the <a>resource fetch algorithm</a> with
-        <var>urlString</var>. If that algorithm returns without aborting <em>this</em> one, then the load
-        failed.</li>
+        <li>If |urlRecord| was obtained successfully, run the [=resource fetch algorithm=] with
+        |urlRecord|. If that algorithm returns without aborting *this* one, then the load failed.</li>
 
         <li><i>Failed with attribute</i>: Reaching this step indicates that the media resource
         failed to load or that the given [=url/URL=] could not be <a>parsed</a>.
@@ -6545,10 +6542,11 @@ zero or more <{track}> elements, then
         <a>synchronous section</a>, and jump down to the <i>failed with elements</i> step
         below.</li>
 
-        <li>&#x231B; Let <var>urlString</var> be the <a>resulting URL string</a> that
-        would have resulted from <a>parsing</a> the [=url/URL=]
-      specified by <var>candidate</var>'s <code>src</code>
-      attribute's value relative to the <var>candidate</var>'s <a>node document</a> when the <code>src</code> attribute was last changed.
+        <li>&#x231B; Let |urlString| and |urlRecord| be the [=resulting URL string=] and the
+        [=resulting URL record=], respectively, that would have resulted from [=parsing=] the
+        [=url/URL=] specified by |candidate|'s <{source/src}> attribute's value relative to the
+        |candidate|'s [=node document=] when the <{source/src}> attribute was last changed.
+        <!-- i.e. changing <base> after src="" has no effect -->
 
         </li><li>&#x231B; If <var>urlString</var> was not obtained successfully, then end the
         <a>synchronous section</a>, and jump down to the <var>Failed with elements</var> step
@@ -6565,7 +6563,7 @@ zero or more <{track}> elements, then
         <a>in parallel</a>.</li>
 
         <li>Run the <a>resource fetch algorithm</a> with
-        <var>urlString</var>. If that algorithm returns without aborting <em>this</em> one,
+        <var>urlRecord</var>. If that algorithm returns without aborting <em>this</em> one,
         then the load failed.</li>
 
         <li><var>Failed with elements</var>: <a>Queue a task</a> to <a>fire a simple
@@ -6651,16 +6649,17 @@ zero or more <{track}> elements, then
 
   </ol>
 
-  The <dfn>resource fetch algorithm</dfn> for a <a>media element</a> and a given <a>absolute URL</a> or <a>media provider object</a> is as
+  The <dfn>resource fetch algorithm</dfn> for a <a>media element</a> and a given [=URL record=] or <a>media provider object</a> is as
   follows:
 
   <ol>
 
-    <li>If the algorithm was invoked with a [=url/URL=], then let <var>mode</var> be
-    <i>remote</i>, otherwise let <var>mode</var> be <i>local</i>.</li>
+    <li>If the algorithm was invoked with [=media provider object=] or a [=URL record=] whose
+    [=url/object=] is a [=media provider object=], then let |mode| be *local*. Otherwise let |mode|
+    be *remote*.</li>
 
     <li>If <var>mode</var> is <i>remote</i>, then let the <var>current media resource</var> be the
-    resource given by the <a>absolute URL</a> passed to this algorithm; otherwise, let the
+    resource given by the [=URL record=] passed to this algorithm; otherwise, let the
     <var>current media resource</var> be the resource given by the <a>media provider
     object</a>. Either way, the <var>current media resource</var> is now the element's <a>media
     resource</a>.</li>
@@ -6714,7 +6713,7 @@ zero or more <{track}> elements, then
         <li>
 
         Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
-        <var>current media resource</var>'s <a>absolute URL</a> and the <a>media element</a>'s <code>crossorigin</code> content attribute
+        <var>current media resource</var>'s [=URL record=] and the <a>media element</a>'s <code>crossorigin</code> content attribute
         value.
 
         Set <var>request</var>'s <a>client</a> to the

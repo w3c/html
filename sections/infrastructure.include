@@ -3262,7 +3262,7 @@
   containing any U+002C COMMA characters (,), and optionally surrounded by [=space characters=].
 
   <p class="example">
-    For instance, the string "<code>&nbsp;a&nbsp;,b,d&nbsp;d&nbsp;</code>" consists of four tokens:
+    For instance, the string "<code>&nbsp;a&nbsp;,b, ,d&nbsp;d&nbsp;</code>" consists of four tokens:
     "a", "b", the empty string, and "d&nbsp;d". Leading and trailing white space around each token
     doesn't count as part of the token, and the empty string can be a token.
   </p>
@@ -4305,45 +4305,52 @@
   act like the identically named attribute on the <{select}> element on which the
   {{HTMLOptionsCollection}} is rooted
 
-<h4 id="the-domelementmap-interface">The {{DOMElementMap}} interface</h4>
+<h4 id="the-domstringlist-interface">The {{DOMStringList}} interface</h4>
 
-  The <dfn interface><code>DOMElementMap</code></dfn> interface represents a set of name-element
-  mappings. It exposes these using the scripting language's native mechanisms for property access.
-
-
-  When a {{DOMElementMap}} object is instantiated, it is associated with three algorithms, one for
-  getting the list of name-element mappings, one for mapping a name to a certain element, and one
-  for deleting mappings by name.
+  The <dfn interface><code>DOMStringList</code></dfn> interface is a non-fashionable retro way of
+  representing a list of strings.
 
   <pre class="idl" data-highlight="webidl">
-    interface DOMElementMap {
-      getter Element (DOMString name);
-      setter creator void (DOMString name, Element value);
-      deleter void (DOMString name);
+    interface DOMStringList {
+      readonly attribute unsigned long length;
+      getter DOMString? item(unsigned long index);
+      boolean contains(DOMString string);
     };
   </pre>
 
-  The <a spec="webidl">supported property names</a> on a {{DOMElementMap}} object at any instant are
-  the names for each mapping returned from the algorithm for getting the list of name-element
-  mappings at that instant, in the order returned.
+  <p class="warning">New APIs must use `sequence<DOMString>` or equivalent rather than
+  {{DOMStringList}}.</p>
 
-  To <a spec="webidl">determine the value of a named property</a> <var>name</var> in a
-  {{DOMElementMap}}, the user agent must return the element component of the name-element
-  mapping whose name component is <var>name</var> in the list returned by the algorithm for getting
-  the list of name-element mappings.
+  <dl class="domintro">
+    : |strings| . {{DOMStringList/length}}
+    :: Returns the number of strings in |strings|.
 
-  To set the value of a <dfn>new</dfn> or <dfn>existing</dfn> named property <var>name</var> to
-  value <var>value</var>, the algorithm for mapping a name to a certain element must be run, passing
-  <var>name</var> as the name <var>value</var> as the element.
+    : |strings|[|index|]
+    : |strings| . {{DOMStringList/item()}}(|index|)
+    :: Returns the string with index |index| from |strings|.
 
-  To <a>delete an existing named property</a> <var>name</var>, the algorithm for deleting
-  mappings must be run, passing <var>name</var> as the name component of the mapping to be deleted.
+    : |strings| . {{DOMStringList/contains()}}(|string|)
+    :: Returns true if |strings| contains |string|, and false otherwise.
+  </dl>
 
-  <p class="note">
-    The {{DOMElementMap}} interface definition here is only intended for JavaScript environments.
-    Other language bindings will need to define how {{DOMElementMap}} is to be implemented for those
-    languages.
-  </p>
+  Each {{DOMStringList}} object has an associated [=/list=].
+
+  The [=supported property indices=] for a {{DOMStringList}} object are the numbers zero to the
+  associated list's [=size=] minus one. If its associated list [=list/is empty=], it has no
+  [=supported property indices=].
+
+  The <dfn attribute for="DOMStringList"><code>length</code></dfn> attribute's getter must this
+  {{DOMStringList}} object's associated list's [=size=].
+
+  The <dfn method for="DOMStringList" lt="item()|item(index)"><code>item(index)</code></dfn> method,
+  when invoked, must return the |index|th item in this {{DOMStringList}} object's associated list,
+  or null if |index| plus one is less than this {{DOMStringList}} object's associated list's
+  [=size=].
+
+  The
+  <dfn method for="DOMStringList" lt="contains()|contains(string)"><code>contains(string)</code></dfn>
+  method, when invoked, must return true if this {{DOMStringList}} object's associated list
+  [=contains=] |string|, and false otherwise.
 
 <h4 id="garbage-collection">Garbage collection</h4>
 
