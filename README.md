@@ -20,7 +20,7 @@ The specification is built using Bikeshed. If you would like to propose edits, p
 3. Install [Pip.py](https://bootstrap.pypa.io/get-pip.py).
 4. Run: c:\python27\python -m pip install pygments lxml==3.6.0 --upgrade
 5.  Clone Bikeshed: git clone https://github.com/tabatkins/bikeshed.git
-6. Run: c:\python27\python -m pip install --editable c:\Users\tink\OneDrive\Projects\bikeshed
+6. Run: c:\python27\python -m pip install --editable [path to bikeshed]
 
 ### Multi-page script installation
 For the multipage version, one can do as follows:
