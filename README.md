@@ -4,7 +4,7 @@
 
 This is the repository for the [Working Draft of the HTML specification](https://w3c.github.io/html/). This repository is managed by the [W3C Web Platform Working Group](https://www.w3.org/WebPlatform/WG/).
 
-## Editorial Documentation
+## Build documentation
 
 The specification is built using Bikeshed. If you would like to propose edits, please make sure that they result in a specification that will build correctly, by testing in your own clone of the repository.
 
@@ -13,10 +13,22 @@ The specification is built using Bikeshed. If you would like to propose edits, p
 3. run bikeshed update: `bikeshed update`
 4. run bikeshed: `bikeshed spec`
 
+### Quick Windows Bikeshed install
+
+1.  Install [Python2.7](https://www.python.org/downloads/release/python-2713/) (32bit version) in the default location.
+2. In an elevated command prompt, run: setx /m PATH "%PATH%;C:\Python27;C:\Python27\Scripts"
+3. Install [Pip.py](https://bootstrap.pypa.io/get-pip.py).
+4. Run: c:\python27\python -m pip install pygments lxml==3.6.0 --upgrade
+5.  Clone Bikeshed: git clone https://github.com/tabatkins/bikeshed.git
+6. Run: c:\python27\python -m pip install --editable c:\Users\tink\OneDrive\Projects\bikeshed
+
+### Multi-page script installation
 For the multipage version, one can do as follows:
 
 1. Install [multipage](https://github.com/adrianba/multipage)
 2. Follow the instructions there to regenerate the HTML files
+
+## Editorial Documentation
 
 There are some conventions for linking to things. For example,
 * For definitions of standard terms, use `<a>term known to bikeshed</a>`
