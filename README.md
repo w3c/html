@@ -4,19 +4,31 @@
 
 This is the repository for the [Working Draft of the HTML specification](https://w3c.github.io/html/). This repository is managed by the [W3C Web Platform Working Group](https://www.w3.org/WebPlatform/WG/).
 
-## Editorial Documentation
+## Building the spec
 
 The specification is built using Bikeshed. If you would like to propose edits, please make sure that they result in a specification that will build correctly, by testing in your own clone of the repository.
 
-1. Install [bikeshed](https://github.com/tabatkins/bikeshed)
-2. From the HTML folder open a command prompt
-3. run bikeshed update: `bikeshed update`
-4. run bikeshed: `bikeshed spec`
+In the HTML folder:
+1. run bikeshed update: `bikeshed update`
+2. run bikeshed: `bikeshed spec`
+
+### Quick Windows Bikeshed install
+ 
+1.  Install [Python2.7](https://www.python.org/downloads/release/python-2713/) (32bit version) in the default location.
+2. In an elevated command prompt, run: setx /m PATH "%PATH%;C:\Python27;C:\Python27\Scripts"
+3. Install [Pip.py](https://bootstrap.pypa.io/get-pip.py).
+4. Run: c:\python27\python -m pip install pygments lxml==3.6.0 --upgrade
+5.  Clone Bikeshed: git clone https://github.com/tabatkins/bikeshed.git
+6. Run: c:\python27\python -m pip install --editable [path to bikeshed\]bikeshed
+
+## Multipage script
 
 For the multipage version, one can do as follows:
 
 1. Install [multipage](https://github.com/adrianba/multipage)
 2. Follow the instructions there to regenerate the HTML files
+
+## Editorial conventions
 
 There are some conventions for linking to things. For example,
 * For definitions of standard terms, use `<a>term known to bikeshed</a>`
@@ -28,7 +40,7 @@ There are some conventions for linking to things. For example,
 
 
 And we try to follow these best-practices:
-* For spec text that differs from WHATWG and must not be overwritten is indicated by wrapping in a comment: `<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`
+* Spec text that differs from WHATWG and must not be overwritten is indicated by wrapping in a comment: `<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`
 * Line wrap at column `100` to keep lines easily readable
 * Replace tab characters by `2 spaces` (use `2` as the tab stop interval)
 * Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
@@ -59,7 +71,7 @@ And we try to follow these best-practices:
       </dl>
       ```
       (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
-* Prefer markdown syntax for its brevity and readability. In particular:
+* Prefer markdown syntax. In particular:
    
       ```markdown
       * unordered list item
