@@ -16,10 +16,11 @@ Tested on Windows 10.
 
 1.  Install [Python2.7](https://www.python.org/downloads/release/python-2713/) (32bit version) in the default location.
 2. In an elevated command prompt, run: setx /m PATH "%PATH%;C:\Python27;C:\Python27\Scripts"
-3. Install [Pip.py](https://bootstrap.pypa.io/get-pip.py).
-4. Run: c:\python27\python -m pip install pygments lxml==3.6.0 --upgrade
-5.  Clone Bikeshed: git clone https://github.com/tabatkins/bikeshed.git
-6. Run: c:\python27\python -m pip install --editable [path to bikeshed]
+3. Download [Pip.py](https://bootstrap.pypa.io/get-pip.py).
+4. Run `python get-pip.py` where you downloaded the file (??)
+5. Run: c:\python27\python -m pip install pygments lxml==3.6.0 --upgrade
+6. Clone Bikeshed: `git clone https://github.com/tabatkins/bikeshed.git` or use a desktop client
+7. Run: c:\python27\python -m pip install --editable [path to bikeshed]
 
 ## Installing the multi-page script (optional)
 
