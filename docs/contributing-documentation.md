@@ -69,7 +69,7 @@ When making a contribution, these editorial conventions should be followed.
 ### Markdown conventions
 
 Use markdown for contributions, unless otherwise stated.
-* Use [bikeshed definition list syntax](https://github.com/tabatkins/bikeshed/blob/master/docs/markup.md) where possible. E.g., prefer:
+* Use [bikeshed definition list syntax](https://tabatkins.github.io/bikeshed/#markdown) where possible. E.g., prefer:
 
       ```bikeshed
       : define term
