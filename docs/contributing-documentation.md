@@ -4,7 +4,7 @@ This document contains information about contributing to the HTML specification.
 
 ## Making a contribution
 
-The HTML specification is governed by the [W3C Patent Policy]((http://www.w3.org/Consortium/Patent-Policy-20040205/), and [Software and Document License](http://www.w3.org/Consortium/Legal/copyright-software). This ensures that the HTML standard will remain royalty free for everyone to use.
+The HTML specification is governed by the [W3C Patent Policy](http://www.w3.org/Consortium/Patent-Policy-20040205/), and [Software and Document License](http://www.w3.org/Consortium/Legal/copyright-software). This ensures that the HTML standard will remain royalty free for everyone to use.
 
 To make a substantive contribution to the HTML specification, you must either be a member of the [Web Platform Working Group](https://www.w3.org/WebPlatform/WG/) or have made a non-member patent licensing commitment.
 
