@@ -26,7 +26,7 @@ Use the standard fork, branch, and pull request workflow to propose changes to t
 
 ### Branches and versions
 
-The `master` branch is the "work in progress" version of the HTML specification. It is available at [https://www.w3.org/TR/html/](https://www.w3.org/TR/html/).
+The `master` branch is the "work in progress" version of the HTML specification. It is available at [https://w3c.github.io/html/](https://w3c.github.io/html/)
 
 Once a year, the HTML editors create a new `<version>` branch for the HTML specification. It only contains features that the Working Group believes can be shipped as part of the W3C Recommendation. That branch becomes associated with a specific version of the HTML specification. For a *limited period* of time, the Editor Team only accepts editorial changes or removal of features at risks in this branch. It becomes frozen once that version of HTML becomes a W3C Recommendation. Unless you're targetting a specific version of HTML (and really, you shouldn't), pull requests MUST always be made against the `master` branch.
 
