@@ -213,16 +213,14 @@
     <dd>If the element's <code>type</code> attribute is in the <a state for="menu">toolbar</a> state: <a>Palpable content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>Where <a>flow content</a> is expected.</dd>
-    <dd>If the element's <code>type</code> attribute is in the <a state for="menu">popup menu</a> state: as the child of a <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">popup menu</a> state.</dd>
+    <dd>As the child of a <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">context menu</a> state.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd>If the element's <code>type</code> attribute is in the <a state for="menu">toolbar</a> state: either zero or more <code>li</code> and <a>script-supporting elements</a>, or, <a>flow content</a>.</dd>
-    <dd>If the element's <code>type</code> attribute is in the <a state for="menu">popup menu</a> state: in any order, zero or more <{menuitem}> elements, zero or more <{hr}> elements, zero or more <{menu}> elements whose <code>type</code> attributes are in the <a state for="menu">popup menu</a> state, and zero or more <a>script-supporting elements</a>.</dd>
+    <dd>If the element's <code>type</code> attribute is in the <a state for="menu">context menu</a> state: in any order, zero or more <{menuitem}> elements, zero or more <{hr}> elements, zero or more <{menu}> elements whose <code>type</code> attributes are in the <a state for="menu">context menu</a> state, and zero or more <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>type</code> - Type of menu</dd>
-    <dd><code>label</code> - User-visible label</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a attr-value for="aria/role"><code>menu</code></a>
     (default - <a><em>do not set</em></a>).</dd>
@@ -244,34 +242,22 @@
   The <{menu}> element represents a group of commands.
 
   The <dfn element-attr for="menu"><code>type</code></dfn> attribute is an <a>enumerated
-  attribute</a> indicating the kind of menu being declared. The attribute has two states. The
-  "<dfn attr-value for="menu/type"><code>context</code></dfn>" keyword maps to the <dfn state for="menu">popup menu</dfn> state, in which the element is declaring a context menu
-  or the menu for a <a element-state for="button/type">menu button</a>. The "<dfn attr-value for="menu/type"><code>toolbar</code></dfn>" keyword maps to the <dfn state for="menu">toolbar</dfn> state, in which the element is declaring a toolbar. The attribute may also be
-  omitted. The <i>missing value default</i> is the <a state for="menu">popup menu</a>
-  state if the parent element is a <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">popup
-  menu</a> state; otherwise, it is the <a state for="menu">toolbar</a> state.
+  attribute</a> indicating the kind of menu being declared. The attribute has one states. The
+  "<dfn attr-value for="menu/type"><code>context</code></dfn>" keyword maps to the
+  <dfn state for="menu">context menu</dfn> state, in which the element is declaring a context menu.
+  The <i>missing value default</i> is the <var>null</var>.
 
   If a <{menu}> element's <code>type</code> attribute is in the
-  <a state for="menu">popup menu</a> state, then the element <a>represents</a>
-  the commands of a popup menu, and the user can only examine and interact with the commands if that
-  popup menu is activated through some other element, either via the <{global/contextmenu}> attribute or the <{button}> element's <code>menu</code> attribute.
-
-  If a <{menu}> element's <code>type</code> attribute is in the
-  <a state for="menu">toolbar</a> state, then the element <a>represents</a> a
-  toolbar consisting of its contents, in the form of either an unordered list of items (represented
-  by <{li}> elements), each of which represents a command that the user can perform or
-  activate, or, if the element has no <{li}> element children, <a>flow content</a>
-  describing available commands.
+  <a state for="menu">context menu</a> state, then the element <a>represents</a>
+  commands for a context menu. The user can only examine and interact with the commands if that
+  context menu is activated.
 
   The <dfn element-attr for="menu"><code>label</code></dfn> attribute gives the label of the
-  menu. It is used by user agents to display nested menus in the UI: a context menu containing
+  menu, to display nested menus in the UI: a context menu containing
   another menu would use the nested menu's <code>label</code> attribute for
   the submenu's menu label. The <code>label</code> attribute must only be
-  specified on <{menu}> elements whose parent element is a <{menu}> element whose
-  <code>type</code> attribute is in the <a state for="menu">popup
-  menu</a> state.
+  specified on <{menu}> elements whose parent element is a <{menu}> element.
 
-  <div class="impl">
 
   <hr />
 
@@ -304,10 +290,12 @@
 
     Display <var>pop-up menu</var> to the user, and let the algorithm that invoked this one continue.
 
-    If the user selects a <a>menu item construct</a> that corresponds to an element that still represents a <a>command</a> when the user selects it, then the user agent must invoke that
+    If the user selects a <a>menu item construct</a> that corresponds to an element
+    that still represents a <a>command</a> when the user selects it, then the user agent must invoke that
     command's <a>Action</a>. If the command's <a>Action</a> is defined as <a>firing
     a <code>click</code> event</a>, either directly or via the <a>run
-    synthetic click activation steps</a> algorithm, then the <code>relatedTarget</code> attribute of that <code>click</code> event must be initialized to <var>subject</var>.
+    synthetic click activation steps</a> algorithm, then the <code>relatedTarget</code> attribute
+    of that <code>click</code> event must be initialized to <var>subject</var>.
 
     Pop-up menus must not, while being shown, reflect changes in the DOM. The menu is constructed
     from the DOM before being shown, and is then immutable.
@@ -368,7 +356,8 @@
     <li>Remove from <var>output</var> any <a>menu item construct</a> representing a <a>command</a> whose <a>Label</a> is
     the empty string.</li>
 
-    <li>Collapse all sequences of two or more adjacent <a>separators</a> in <var>output</var> to a single <a>separator</a>.</li>
+    <li>Collapse all sequences of two or more adjacent <a>separators</a> in <var>output</var>
+    to a single <a>separator</a>.</li>
 
     <li>If the first <a>menu item construct</a> in <var>output</var> is a <a>separator</a>, then remove it.</li>
 
@@ -386,47 +375,7 @@
   The <dfn attribute for="HTMLMenuElement"><code>label</code></dfn> IDL attribute must
   <a>reflect</a> the content attribute of the same name.
 
-  </div>
 
-  <div class="example">
-    In this example, the <{menu}> element is used to describe a toolbar with three menu
-    buttons on it, each of which has a dropdown menu with a series of options:
-
-  <pre highlight="html">
-&lt;menu&gt;
-  &lt;li&gt;
-  &lt;button type=menu value="File" menu="filemenu"&gt;
-  &lt;menu id="filemenu" type="context"&gt;
-    &lt;menuitem onclick="fnew()" label="New..."&gt;
-    &lt;menuitem onclick="fopen()" label="Open..."&gt;
-    &lt;menuitem onclick="fsave()" label="Save"&gt;
-    &lt;menuitem onclick="fsaveas()" label="Save as..."&gt;
-  &lt;/menu&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-  &lt;button type=menu value="Edit" menu="editmenu"&gt;
-  &lt;menu id="editmenu" type="context"&gt;
-    &lt;menuitem onclick="ecopy()" label="Copy"&gt;
-    &lt;menuitem onclick="ecut()" label="Cut"&gt;
-    &lt;menuitem onclick="epaste()" label="Paste"&gt;
-  &lt;/menu&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-  &lt;button type=menu value="Help" menu="helpmenu"&gt;
-  &lt;menu id="helpmenu" type="context"&gt;
-    &lt;menuitem onclick="location='help.html'" label="Help"&gt;
-    &lt;menuitem onclick="location='about.html'" label="About"&gt;
-  &lt;/menu&gt;
-  &lt;/li&gt;
-&lt;/menu&gt;
-    </pre>
-
-    In a supporting user agent, this might look like this (assuming the user has just activated the
-    second button):
-
-    <img src="images/sample-toolbar-1.png" width="303" height="101" alt="A toolbar with three buttons, labeled 'File', 'Edit', and 'Help'; where if you select the 'Edit' button you get a drop-down menu with three more options, 'Copy', 'Cut', and 'Paste'." />
-
-  </div>
 
 <h4 id="the-menuitem-element">The <dfn element><code>menuitem</code></dfn> element</h4>
 
@@ -434,19 +383,17 @@
     <dt><a>Categories</a>:</dt>
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">popup menu</a> state.</dd>
+    <dd>As a child of a <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">context menu</a> state.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd><a>Nothing</a>.</dd>
+    <dd><a>Text content</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>No <a>end tag</a>.</dd>
+    <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>type</code> - Type of command</dd>
     <dd><code>label</code> - User-visible label</dd>
     <dd><code>icon</code> - Icon for the command</dd>
     <dd><code>disabled</code> Whether the command or control is disabled</dd>
-    <dd><code>checked</code> Whether the command or control is checked</dd>
-    <dd><code>radiogroup</code> Name of group of commands to treat as a radio button group</dd>
     <dd><code>default</code> - Mark the command as being a default command</dd>
     <dd>Also, the <{menuitem/title}> attribute has special semantics on this element.</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -475,24 +422,16 @@
   The <{menuitem}> element represents a command that the user can invoke from a popup
   menu (either a <a>context menu</a> or the menu of a <a element-state for="button/type">menu button</a>).
 
-  A <{menuitem}> element that uses one or more of the
-    <code>type</code>,
-    <code>label</code>,
-    <code>icon</code>,
-    <code>disabled</code>,
-    <code>checked</code>, and
-    <code>radiogroup</code>
-  attributes defines a new command.
+  A <{menuitem}> element with a <code>label</code> attribute, or with
+  <a>text content</a> defines a new command.
 
   <hr />
 
-  The <dfn element-attr for="menuitem"><code>type</code></dfn> attribute indicates the kind of
-  command: either a normal command with an associated action, or a state or option that can be
-  toggled, or a selection of one item from a list of items.
-
-  The attribute is an <a>enumerated attribute</a> with three keywords and states. The
+  The <dfn element-attr for="menuitem"><code>type</code></dfn> attribute is an
+  <a>enumerated attribute</a> with one keyword and state. The
   "<dfn attr-value for="menuitem/type"><code>command</code></dfn>" keyword maps to the
-  <a state for="menuitem">Command</a> state, the "<dfn attr-value for="menuitem/type"><code>checkbox</code></dfn>" keyword maps to the <a state for="menuitem">Checkbox</a> state, and the "<dfn attr-value for="menuitem/type"><code>radio</code></dfn>" keyword maps to the <a state for="menuitem">Radio</a> state. The <i>missing value default</i> is the <a state for="menuitem">Command</a> state.
+  <a state for="menuitem">Command</a> state.
+  The <i>missing value default</i> is the <a state for="menuitem">Command</a> state.
 
   <dl>
 
@@ -500,19 +439,14 @@
 
     <dd>The element <a>represents</a> a normal command with an associated action.</dd>
 
-    <dt>The <dfn state for="menuitem">Checkbox</dfn> state</dt>
-
-    <dd>The element <a>represents</a> a state or option that can be toggled.</dd>
-
-    <dt>The <dfn state for="menuitem">Radio</dfn> state</dt>
-
-    <dd>The element <a>represents</a> a selection of one item from a list of items.</dd>
-
   </dl>
 
-  The <dfn element-attr for="menuitem"><code>label</code></dfn> attribute gives the name of the
-  command, as shown to the user. If the attribute is
+  The <dfn element-attr for="menuitem"><code>label</code></dfn> attribute can be used to give 
+  the name of the command, as shown to the user. If the attribute is
   specified, it must have a value that is not the empty string.
+
+  If the <{menuitem/label}> attribute is not present, and there is text content in the element,
+  that provides the name of the content as shown to the user.
 
   The <dfn element-attr for="menuitem"><code>icon</code></dfn> attribute gives a picture that
   represents the command. If the attribute is specified, the attribute's value must contain a
@@ -535,17 +469,6 @@
   eaten.
   </p>
 
-  The <dfn element-attr for="menuitem"><code>checked</code></dfn> attribute is a <a>boolean
-  attribute</a> that, if present, indicates that the command is selected. The attribute must be
-  omitted unless the <code>type</code> attribute is in either the <a state for="menuitem">Checkbox</a> state or the <a state for="menuitem">Radio</a> state.
-
-  The <dfn element-attr for="menuitem"><code>radiogroup</code></dfn> attribute gives the
-  name of the group of commands that will be toggled when the command itself is toggled, for
-  commands whose <code>type</code> attribute has the value "<code>radio</code>". The scope of the name is the child list of the parent element. The
-  attribute must be omitted unless the <code>type</code> attribute is in
-  the <a state for="menuitem">Radio</a> state. When specified, the
-  attribute's value must be a non-empty string.
-
   <hr />
 
   The <dfn element-attr for="menuitem"><code>title</code></dfn> attribute gives a hint describing
@@ -563,36 +486,16 @@
   <a>reflect</a> the content attribute of the same name, <a>limited to only known
   values</a>.
 
-  The <dfn attribute for="HTMLMenuItemElement"><code>label</code></dfn>, <dfn attribute for="HTMLMenuItemElement"><code>icon</code></dfn>, <dfn attribute for="HTMLMenuItemElement"><code>disabled</code></dfn>, <dfn attribute for="HTMLMenuItemElement"><code>checked</code></dfn>, and <dfn attribute for="HTMLMenuItemElement"><code>radiogroup</code></dfn>, and <dfn attribute for="HTMLMenuItemElement"><code>default</code></dfn> IDL attributes must <a>reflect</a>
+  The <dfn attribute for="HTMLMenuItemElement"><code>label</code></dfn>,
+  <dfn attribute for="HTMLMenuItemElement"><code>icon</code></dfn>,
+  <dfn attribute for="HTMLMenuItemElement"><code>disabled</code></dfn>, and
+  <dfn attribute for="HTMLMenuItemElement"><code>default</code></dfn> IDL attributes must <a>reflect</a>
   the respective content attributes of the same name.
 
   <hr />
 
   If the element's <a facet for="menuitem">Disabled State</a> is false
-  (enabled) then the element's <a>activation behavior</a> depends on the element's <code>type</code> attribute, as follows:
-
-  <dl class="switch">
-
-    <dt>If the <code>type</code> attribute is in the <{input/Checkbox}> state</dt>
-
-    <dd>If the element has a <code>checked</code> attribute, the user agent
-    must remove that attribute. Otherwise, the user agent must add a <code>checked</code> attribute, with the literal value "<code>checked</code>".</dd>
-
-    <dt>If the <code>type</code> attribute is in the <a state for="menuitem">Radio</a> state</dt>
-
-    <dd>If the element has a parent, then the user agent must walk the list of child nodes of that parent
-    element, and for each node that is a <{menuitem}> element, if that element has a <code>radiogroup</code> attribute whose value exactly matches the
-    current element's (treating missing <code>radiogroup</code>
-    attributes as if they were the empty string), and has a <code>checked</code> attribute, must remove that attribute.
-
-    Then, the element's <code>checked</code> attribute must be set
-    to the literal value "<code>checked</code>".</dd>
-
-    <dt>Otherwise</dt>
-
-    <dd>The element's <a>activation behavior</a> is to do nothing.</dd>
-
-  </dl>
+  (enabled) then the element's <a>activation behavior</a> is to do nothing.
 
   <p class="note">
     Firing a synthetic <code>click</code> event at the element
@@ -605,7 +508,7 @@
   </div>
 
   <p class="note">
-    The <{menuitem}> element is not rendered except as <a element lt="menu">part of a popup menu</a>.
+    The <{menuitem}> element is not rendered except as <a element lt="menu">part of a context menu</a>.
   </p>
 
   <div class="example">
@@ -615,17 +518,17 @@
     is disabled.
 
     <pre highlight="html">
-&lt;button type=menu menu=editmenu&gt;Commands...&lt;/button&gt;
+&lt;button contextmenu="editmenu"&gt;Commands...&lt;/button&gt;
 &lt;menu type="context" id="editmenu"&gt;
-  &lt;menuitem type="radio" radiogroup="alignment" checked="checked"
-          label="Left" icon="icons/alL.png" onclick="setAlign('left')"&gt;
-  &lt;menuitem type="radio" radiogroup="alignment"
-          label="Center" icon="icons/alC.png" onclick="setAlign('center')"&gt;
-  &lt;menuitem type="radio" radiogroup="alignment"
-          label="Right" icon="icons/alR.png" onclick="setAlign('right')"&gt;
+  &lt;menuitem label="Left" icon="icons/alL.png" onclick="setAlign('left')"&gt;
+  &lt;/menuitem&gt;
+  &lt;menuitem label="Center" icon="icons/alC.png" onclick="setAlign('center')"&gt;
+  &lt;/menuitem&gt;
+  &lt;menuitem label="Right" icon="icons/alR.png" onclick="setAlign('right')"&gt;
+  &lt;/menuitem&gt;
   &lt;hr&gt;
-  &lt;menuitem type="command" disabled
-          label="Publish" icon="icons/pub.png" onclick="publish()"&gt;
+  &lt;menuitem disabled label="Publish" icon="icons/pub.png" onclick="publish()"&gt;
+  &lt;/menuitem&gt;
 &lt;/menu&gt;
     </pre>
 
@@ -638,7 +541,7 @@
   The <dfn element-attr for="global"><code>contextmenu</code></dfn> attribute gives the element's
   context menu. The value must be the <a>ID</a> of a <{menu}>
   element in the same <a>tree</a> whose <code>type</code>
-  attribute is in the <a state for="menu">popup menu</a> state.
+  attribute is in the <a state for="menu">context menu</a> state.
 
   <p class="note">
     When a user right-clicks on an element with a <{global/contextmenu}> attribute, the user agent will first fire a <code>contextmenu</code> event at the element, and then, if that event is not
@@ -653,7 +556,9 @@
   &lt;label&gt;Character name: &lt;input name=char type=text contextmenu=namemenu required&gt;&lt;/label&gt;
   &lt;menu type=context id=namemenu&gt;
   &lt;menuitem label="Pick random name" onclick="document.forms.npc.elements.char.value = getRandomName()"&gt;
+    &lt;/menuitem&gt;
   &lt;menuitem label="Prefill other fields based on name" onclick="prefillFields(document.forms.npc.elements.char.value)"&gt;
+    &lt;/menuitem&gt;
   &lt;/menu&gt;
 &lt;/form&gt;
     </pre>
@@ -664,18 +569,17 @@
 
   </div>
 
-  <div class="impl">
 
 <h5 id="context-menu-processing-model">Processing model</h5>
 
-  Each element has an <dfn>assigned context menu</dfn>, which can be null. If an element <var>A</var> has a <{global/contextmenu}> attribute, and there is
+  Each element has an <dfn>assigned context menu</dfn>, which can be null. 
+  If an element <var>A</var> has a <{global/contextmenu}> attribute, and there is
   an element with the ID given by <var>A</var>'s <{global/contextmenu}> attribute's value in <var>A</var>'s
   <a>tree</a>, and the first such element in <a>tree order</a> is a
-  <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">popup menu</a> state, then <var>A</var>'s <a>assigned
-  context menu</a> is that element. Otherwise, if <var>A</var> has a parent element,
-  then <var>A</var>'s <a>assigned context menu</a> is the <a>assigned context
-  menu</a> of its parent element. Otherwise, <var>A</var>'s <a>assigned context
-  menu</a> is null.
+  <{menu}> element, then <var>A</var>'s <a>assigned context menu</a> is that element.
+  Otherwise, if <var>A</var> has a parent element,
+  then <var>A</var>'s <a>assigned context menu</a> is the <a>assigned context menu</a> of its parent element.
+  Otherwise, <var>A</var>'s <a>assigned context menu</a> is null.
 
   When an element's context menu is requested (e.g., by the user right-clicking the element, or
   pressing a context menu key), the user agent must apply the appropriate rules from the following
@@ -700,7 +604,8 @@
   </dl>
 
   <p class="note">
-    Typically, therefore, the firing of the <code>contextmenu</code> event will be the default action of a <code>mouseup</code> or <code>keyup</code> event. The exact
+    Typically, therefore, the firing of the <code>contextmenu</code> event will be the
+  default action of a <code>mouseup</code> or <code>keyup</code> event. The exact
   sequence of events is user agent-dependent, as it will vary based on platform conventions.
   </p>
 
@@ -715,7 +620,8 @@
   Otherwise, let <var>subject</var> be the element for which the menu was requested, and let
   <var>menu</var> be the <a>assigned context menu</a> of <var>target</var> immediately after
   the <code>contextmenu</code> event's dispatch has completed. The user
-  agent must <a>fire</a> a <a>trusted</a> event with the name <code>show</code> at <var>menu</var>, using the <code>RelatedEvent</code> interface,
+  agent must <a>fire</a> a <a>trusted</a> event with the name <code>show</code> at <var>menu</var>,
+  using the <code>RelatedEvent</code> interface,
   with the <code>relatedTarget</code> attribute initialized
   to <var>subject</var>. The event must be cancelable.
 
@@ -738,11 +644,6 @@
 
   <hr />
 
-  The <dfn attribute for="HTMLElement"><code>contextMenu</code></dfn> IDL attribute must
-  <a>reflect</a> the <{global/contextmenu}> content attribute.
-
-  </div>
-
   <div class="example">
     In this example, an image of cats is given a context menu with four possible commands:
 
@@ -752,8 +653,8 @@
   &lt;menuitem label="Pet the kittens" onclick="kittens.pet()"&gt;
   &lt;menuitem label="Cuddle with the kittens" onclick="kittens.cuddle()"&gt;
   &lt;menu label="Feed the kittens"&gt;
-  &lt;menuitem label="Fish" onclick="kittens.feed(fish)"&gt;
-  &lt;menuitem label="Chicken" onclick="kittens.feed(chicken)"&gt;
+    &lt;menuitem label="Fish" onclick="kittens.feed(fish)"&gt;
+    &lt;menuitem label="Chicken" onclick="kittens.feed(chicken)"&gt;
   &lt;/menu&gt;
 &lt;/menu&gt;
     </pre>
@@ -840,7 +741,6 @@
 
   <p class="example">For example, such commands could be listed in the user agent's menu bar.</p>
 
-  <div class="impl">
 
 <h5 id="using-the-a-element-to-define-a-command">Using the <{a}> element to define a command</h5>
 
@@ -1039,7 +939,6 @@
     <a>fire a <code>click</code> event</a> at the element.</li>
 
   </ol>
-  </div>
 
 <h4 id="the-dialog-element">The <dfn element><code>dialog</code></dfn> element</h4>
 
@@ -1108,14 +1007,12 @@
     <img src="images/dialog.png" alt="Add to Wallet Dialog">
   </div>
 
-  <div class="impl">
 
   A <{dialog}> element without an <code>open</code> attribute
   specified should not be shown to the user. This requirement may be implemented indirectly through
   the style layer. For example, user agents that <a>support the suggested
   default rendering</a> implement this requirement using the CSS rules described in [[#rendering]].
 
-  </div>
 
   The <{global/tabindex}> attribute must not be specified on
   <{dialog}> elements.
@@ -1166,7 +1063,6 @@
 
   </dl>
 
-  <div class="impl">
 
   When the <dfn method for="HTMLDialogElement"><code>show()</code></dfn> method is invoked, the user
   agent must run the following steps:
@@ -1559,7 +1455,6 @@
   The <dfn attribute for="HTMLDialogElement"><code>open</code></dfn> IDL attribute must
   <a>reflect</a> the <code>open</code> content attribute.
 
-  </div>
 
 
 <h5 id="anchor-points">Anchor points</h5>
