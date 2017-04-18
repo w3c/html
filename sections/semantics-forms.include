@@ -3227,15 +3227,23 @@ part of the form.</p>
     </dl>
     </div>
 
-  <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
   the <{input/E-mail}> state, the rules in this section apply.
 
-  </div>
+  User agents may transform the <a for="forms">values</a> for display and editing.
+  
+  User agents should convert punycode in the domain labels of
+  the <a for="forms">value</a> to Internationalized Domain Names in the display, and vice versa.
 
-  How the <{input/E-mail}> state operates depends on whether the
-  <code>multiple</code> attribute is specified or not.
+  User agents should allow the user to set the <a for="forms">value</a> to a string that
+  is not a <a>valid e-mail address</a> or <a>valid e-mail address list</a>.
+  
+  User agents must not allow users to insert U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters
+  into the <a for="forms">value</a>.
+  
+  Some aspects of how the <{input/E-mail}> state operates depend on whether the
+  <code>multiple</code> attribute is present.
 
   <dl class="switch">
 
@@ -3247,26 +3255,19 @@ part of the form.</p>
     The <{input}> element <a>represents</a> a control for editing an e-mail
     address given in the element's <a for="forms">value</a>.
 
-    <div class="impl">
-
     If the element is <a>mutable</a>, the user agent should allow the
-    user to change the e-mail address represented by its <a for="forms">value</a>. User agents may allow the user to set the <a for="forms">value</a> to a string that is not a <a>valid e-mail
-    address</a>. The user agent should act in a manner consistent with expecting the user to
-    provide a single e-mail address. User agents should allow the user to set the <a for="forms">value</a> to the empty string. User agents must not allow users to
-    insert U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters into the <a for="forms">value</a>. User agents may transform the <a for="forms">value</a> for display and editing; in particular, user agents should
-    convert punycode in the domain labels of the <a for="forms">value</a> to IDN in the display and
-    vice versa.
+    user to change the e-mail address represented by its <a for="forms">value</a>,
+    including setting the <a for="forms">value</a> to the empty string.
 
+    The user agent should act in a manner consistent with expecting the user to
+    provide a single e-mail address.
+    
     <strong>Constraint validation</strong>: While the user interface is representing input that
     the user agent cannot convert to punycode, the control is <a>suffering from bad
     input</a>.
 
-    </div>
-
     The <code>value</code> attribute, if specified and not empty, must
     have a value that is a single <a>valid e-mail address</a>.
-
-    <div class="impl">
 
     <strong>The <a>value sanitization algorithm</a> is as follows</strong>: <a>Strip
     line breaks</a> from the <a for="forms">value</a>, then <a>strip
@@ -3276,7 +3277,6 @@ part of the form.</p>
     of the element is neither the empty string nor a single <a>valid e-mail address</a>, the
     element is <a>suffering from a type mismatch</a>.
 
-    </div>
 
     </dd>
 
@@ -3286,26 +3286,23 @@ part of the form.</p>
     <dd>
 
     The <{input}> element <a>represents</a> a control for adding, removing, and
-    editing the e-mail addresses given in the element's <a for="forms">value<em>s</em></a>.
-
-    <div class="impl">
+    editing a list of e-mail addresses given in the element's <a for="forms">value<em>s</em></a>.
 
     If the element is <a>mutable</a>, the user agent should allow the
-    user to add, remove, and edit the e-mail addresses represented by its <a for="forms">values</a>. User agents may allow the user to set any
-    individual value in the list of <a for="forms">value<em>s</em></a> to a
-    string that is not a <a>valid e-mail address</a>, but must not allow users to set any
-    individual value to a string containing U+002C COMMA (,), U+000A LINE FEED (LF), or U+000D
-    CARRIAGE RETURN (CR) characters. User agents should allow the user to remove all the addresses
-    in the element's <a for="forms">values</a>. User agents may
-    transform the <a for="forms">values</a> for display and editing; in
-    particular, user agents should convert punycode in the domain labels of the <a for="forms">value</a> to IDN in the display and vice versa.
-
+    user to add, remove, and edit the e-mail addresses represented by its <a for="forms">values</a>,
+    including removing all addresses and setting the <a for="forms">value</a> to the empty string.
+    
+    User agents may allow the user to set any individual value in the
+    list of <a for="forms">value<em>s</em></a> to a string that is not a <a>valid e-mail address</a>,
+    but must not allow users to set any individual value to a string containing U+002C COMMA (,)
+    as well as the U+000A LINE FEED (LF), or U+000D CARRIAGE RETURN (CR) characters.
+    
     <strong>Constraint validation</strong>: While the user interface describes a situation where
     an individual value contains a U+002C COMMA (,) or is representing input that the user agent
     cannot convert to punycode, the control is <a>suffering from bad input</a>.
 
-    Whenever the user changes the element's <a for="forms">value<em>s</em></a>, the user agent must run the following
-    steps:
+    Whenever the user changes the element's <a for="forms">value<em>s</em></a>,
+    the user agent must run the following steps:
 
     <ol>
 
@@ -3319,19 +3316,16 @@ part of the form.</p>
 
     </ol>
 
-    </div>
-
     The <code>value</code> attribute, if specified, must have a value
     that is a <a>valid e-mail address list</a>.
-
-    <div class="impl">
 
     <strong>The <a>value sanitization algorithm</a> is as follows</strong>:
 
     <ol>
 
-      <li><a lt="split a string on commas">Split on commas</a> the element's <a for="forms">value</a>, <a>strip leading and trailing white space</a> from
-      each resulting token, if any, and let the element's <a for="forms">values</a> be the (possibly empty) resulting list of
+      <li><a lt="split a string on commas">Split on commas</a> the element's <a for="forms">value</a>,
+      <a>strip leading and trailing white space</a> from each resulting token, if any,
+      and let the element's <a for="forms">values</a> be the (possibly empty) resulting list of
       (possibly empty) tokens, maintaining the original order.</li>
 
       <li>Let the element's <a for="forms">value</a> be the result of
@@ -3344,8 +3338,6 @@ part of the form.</p>
     <strong>Constraint validation</strong>: While the <a for="forms">value</a>
     of the element is not a <a>valid e-mail address list</a>, the element is <a>suffering
     from a type mismatch</a>.
-
-    </div>
 
     </dd>
 
@@ -3360,18 +3352,33 @@ part of the form.</p>
 
   <pre data-highlight="abnf">
 email         = 1*( atext / "." ) "@" label *( "." label )
-label         = let-dig [ [ ldh-str ] let-dig ]  ; limited to a length of 63 characters by <a>RFC 1034 section 3.5</a>
-atext         = &lt; as defined in <a>RFC 5322 section 3.2.3</a> &gt;
-let-dig       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
-ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
+
+label         = let-dig [ [ ldh-str ] let-dig ]
+                        ; limited to a length of 63 characters by <a>RFC 1034 section 3.5</a>
+			
+atext         = ALPHA / DIGIT /    ; Printable US-ASCII characters not including "specials".
+                "!" / "#" /        ;  
+                "$" / "%" /        ; This is as defined in <a>RFC 5322 section 3.2.3</a>
+                "&" / "'" /
+                "*" / "+" / "-" / "/" / "=" / "?" /
+                "^" / "_" / "`" / "{" / "|" / "}" / "~"
+
+let-dig       = ALPHA / DIGIT ; defined in <a>RFC 1034 section 3.5</a>
+ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
     </pre>
 
-  <p class="note">
-    This requirement is a <a>willful violation</a> of RFC 5322, which defines a
-  syntax for e-mail addresses that is simultaneously too strict (before the "@" character), too
-  vague (after the "@" character), and too lax (allowing comments, white space characters, and quoted
-  strings in manners unfamiliar to most users) to be of practical use here.
-  </p>
+  <div class="note">
+  
+    This requirement is a <a>willful violation</a> of RFC 5322.
+    
+    This syntax allows e-mail addresses with Internationalised Domain Names using punycode, such as
+    <code>example@xn--d1acpjx3f.xn--p1ai</code>. A user agent should represent that in the user interface
+    as <samp>example@яндекс.рф</samp>
+    
+    This syntax does not allow valid internationalised email addresses, such as <samp>我買@屋企.香港</samp>.
+    See also <a href="https://github.com/w3c/html/issues/845">Issue 845</a>.
+  
+  </div>
 
   <div class="note">
 
@@ -3385,8 +3392,9 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   </div>
 
   A <dfn>valid e-mail address list</dfn> is a <a>set of comma-separated tokens</a>, where
-  each token is itself a <a>valid e-mail address</a>. <span class="impl">To obtain the list of
-  tokens from a <a>valid e-mail address list</a>, an implementation must <a lt="split a string on commas">split the string on commas</a>.</span>
+  each token is itself a <a>valid e-mail address</a>. To obtain the list of
+  tokens from a <a>valid e-mail address list</a>,
+  an implementation must <a lt="split a string on commas">split the string on commas</a>.
 
   <div class="bookkeeping">
 
@@ -3458,34 +3466,28 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     </dl>
     </div>
 
-  <div class="impl">
 
   When an <{input}> element's <{input/type}> attribute is in
   the <a>Password</a> state, the rules in this section
   apply.
 
-  </div>
 
   The <{input}> element <a>represents</a> a one line plain text edit control for
   the element's <a for="forms">value</a>. The user agent should obscure the value
   so that people other than the user cannot see it.
 
-  <div class="impl">
 
   If the element is <a>mutable</a>, its <a for="forms">value</a> should be editable by the user. User agents must not allow
   users to insert U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters into the <a for="forms">value</a>.
 
-  </div>
 
   The <code>value</code> attribute, if specified, must have a value that
   contains no U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters.
 
-  <div class="impl">
 
   <strong>The <a>value sanitization algorithm</a> is as follows</strong>: <a>Strip line
   breaks</a> from the <a for="forms">value</a>.
 
-  </div>
 
   <div class="bookkeeping">
 
@@ -3556,17 +3558,13 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
     </dl>
     </div>
 
-  <div class="impl">
-
   When an <{input}> element's <{input/type}> attribute is in
   the <{input/DateTime|Date and Time}> state, the rules in this section
   apply.
 
-  </div>
-
   The <{input}> element <a>represents</a> a control for setting the element's
-  <a for="forms">value</a> to a string representing a specific <a>global date and time</a>. <span class="impl">User agents may display
-  the date and time in whatever time zone is appropriate for the user.</span>
+  <a for="forms">value</a> to a string representing a specific <a>global date and time</a>.
+  User agents may display the date and time in whatever time zone is appropriate for the user.
 
   <div class="impl">
 
