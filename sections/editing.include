@@ -1638,6 +1638,9 @@
   The exact shortcut is determined by the user agent, potentially using information about the user's
   preferences, what keyboard shortcuts already exist on the platform, and what other shortcuts have
   been specified on the page, as well as the value of the <{global/accesskey}> attribute.
+  
+  <p class="warning">User agents may not assign any shortcut, or assigned shortcuts may be overridden
+  by other browser- or system-level shortcuts.</p>
 
   A valid value for <{global/accesskey}> consists of a single character, such as a letter or digit.
 
@@ -1661,10 +1664,17 @@
   by the user agent as a guide for creating a keyboard shortcut that activates or focuses the
   element.
 
-  If specified, the value must be a single printable character: a string exactly one Unicode code point in length.
-
-  Authors should not use <samp>" "</samp>, nor characters that normally require a modifier key to
-  generate, as a value of <{global/accesskey}>.
+  If specified, the value must be a single printable character:
+  typically a string one Unicode code point in length.
+  
+  <p class="warning">Character references such as <code>accesskey="&#65"</code> are not valid values, 
+  because they will cause no shortcut to be assigned in many browsers. 
+  However certain printable characters that may represent more than one Unicode code point, such as 
+  <code>accesskey="श्र"</code> are valid.</p>
+  
+  Authors should not use <samp>" "</samp>,
+  nor characters that cannot be generated with a single keystroke and no modifier keys,
+  as a value of <{global/accesskey}>.
 
   <div class="example">
     In the following example, a variety of links are given with access keys so that keyboard users
@@ -1707,8 +1717,8 @@
     <li>The user agent may strip content from <var>value</var> to reduce the length of
     <var>value</var> to a single unicode code point.</li>
 
-    <li>If <var>value</var> is not a string exactly one Unicode code point in length, then
-    abort these steps.</li>
+    <li>If <var>value</var> is not a string of exactly one printable character,
+    then the user agent may abort these steps.</li>
 
     <li>The user agent may assign a combination of a mix of zero or more modifier keys and
     <var>value</var> as the element's <a>assigned access key</a> and abort these steps.</li>
