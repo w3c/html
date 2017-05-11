@@ -1209,15 +1209,18 @@
           browsing context</a> is <var>B</var>.
 
           <p class="note">
-            Whether a <a>top-level browsing context</a> would benefit from having its rendering
-            updated depends on various factors, such as the update frequency. For example, if the
-            browser is attempting to achieve a 60 Hz refresh rate, then these steps are only
-            necessary every 60th of a second (about 16.7ms). If the browser finds that a
-            <a>top-level browsing context</a> is not able to sustain this rate, it might drop to a
-            more sustainable 30Hz for that set of {{Document}}s, rather than occasionally dropping
-            frames. (This specification does not mandate any particular model for when to update the
-            rendering.) Similarly, if a <a>top-level browsing context</a> is in the background, the
-            user agent might decide to drop that page to a much slower 4Hz, or even less.
+            There are many factors that affect the ideal update frequency for the <a>top-level
+            browsing context</a> including performance, power, background operation, quality of
+            user experience, refresh rate of display(s), etc. When in foreground and not
+            constrained by resources (i.e. performance, battery versus mains power, other resource
+            limits), the user agent normally prioritizes for maximum quality of user
+            experience for that set of {{Document}}s by matching update frequency and
+            <a lt='run the animation frame callbacks'>animation frame callback</a> rate to the
+            current refresh rate of the current display (usually 60Hz, but refresh rate may be
+            higher or lower). When accommodating constraints on resources, the update frequency
+            might automatically run at a lower rate. Also, if a <a>top-level browsing context</a>
+            is in the background, the user agent might decide to drop that page to a much slower
+            4Hz, or even less.
           </p>
 
           <p class="note">
@@ -1225,8 +1228,11 @@
             <a>tasks</a> are executed immediately after each other, with only
             <a>microtask checkpoints</a> interleaved (and without, e.g.,
             <a lt='run the animation frame callbacks'>animation frame callbacks</a> interleaved).
-            For example, a user agent might wish to coalesce timer callbacks together, with no
-            intermediate rendering updates.
+            For example, a user agent might wish to coalesce callbacks together, with no
+            intermediate rendering updates. However, when are no constraints on resources,
+            there must not be an arbitrary permanent user agent limit on the update rate and
+            <a lt='run the animation frame callbacks'>animation frame callback</a> rate
+            (i.e., high refresh rate displays and/or low latency applications).
           </p>
       4. If there are a <a>nested browsing contexts</a> <var>B</var> that the user agent believes
           would not benefit from having their rendering updated at this time, then remove from
