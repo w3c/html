@@ -8495,16 +8495,14 @@ zero or more <{track}> elements, then
     video.autoplay = true;
     video.controls = true;
     container.appendChild(video);
-    video.onloadedmetadata = function (event) {
-      for (var i = 0; i &lt; video.videoTracks.length; i += 1) {
-        if (video.videoTracks[i].kind == 'sign') {
-          var sign = document.createElement('video');
-          sign.src = url + '#track=' + video.videoTracks[i].id;
+    video.videoTracks.onaddtrack = function (event) {
+       if (event.track.kind == 'sign') {
+         var sign = document.createElement('video');
+         sign.src = url + '#track=' + event.track.id; 
           sign.autoplay = true;
           container.appendChild(sign);
           return;
         }
-      }
     };
   }
 &lt;/script&gt;
