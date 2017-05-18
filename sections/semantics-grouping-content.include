@@ -165,6 +165,10 @@
       This example still has five structural paragraphs, but now the author can style just the
       <code>div</code> instead of having to consider each part of the example separately.
     </div>
+
+    In general, elements that cannot be children of <{p}> elements include any elements that
+    are inline blocks, inline tables, as well as floated and positioned block-level elements.
+
   </div>
 
   <h4 id="the-address-element">The <dfn element><code>address</code></dfn> element</h4>
@@ -421,11 +425,9 @@
   can be used with a <{samp}> element. Similarly, the <{kbd}> element can be used
   within a <{pre}> element to indicate text that the user is to enter.
 
-  <div class="impl">
     <p class="note">
       This element <a href="#bidireq">has rendering requirements involving the bidirectional algorithm</a>.
     </p>
-  </div>
 
   <div class="example">
     In the following snippet, a sample of computer code is presented.
@@ -818,7 +820,6 @@
   The <dfn element-attr for="ol"><code>start</code></dfn> attribute, if present, must be a <a>valid integer</a> giving the
   <a>ordinal value</a> of the first list item.
 
-  <div class="impl">
     If the <code>start</code> attribute is present, user agents must <a>parse it as an integer</a>,
     in order to determine the attribute's value. The default value, used if the attribute is missing
     or if the value cannot be converted to a number according to the referenced algorithm, is 1 if
@@ -833,16 +834,15 @@
     Each subsequent item in the list has the <a>ordinal value</a> given by its <code>value</code>
     attribute, if it has one, or, if it doesn't, the <a>ordinal value</a> of the previous item, plus
     one if the <code>reversed</code> is absent, or minus one if it is present.
-  </div>
 
   The <dfn element-attr for="ol"><code>type</code></dfn> attribute can be used to specify the kind of marker to use in the
   list, in the cases where that matters (e.g., because items are to be referenced by their
   number/letter). The attribute, if specified, must have a value that is a <a>case-sensitive</a>
   match for one of the characters given in the first cell of one of the rows of the following table.
-  <span class="impl">The <code>type</code> attribute represents the state given in the cell in the
+  The <code>type</code> attribute represents the state given in the cell in the
   second column of the row whose first cell matches the attribute's value; if none of the cells
   match, or if the attribute is omitted, then the attribute represents the <a state for="ol">decimal</a>
-  state.</span>
+  state.
 
   <table>
     <thead>
@@ -922,7 +922,6 @@
     </tbody>
   </table>
 
-  <div class="impl">
     User agents should render the items of the list in a manner consistent with the state of the
     <code>type</code> attribute of the <{ol}> element. Numbers less than or equal to zero
     should always use the decimal system regardless of the <code>type</code> attribute.
@@ -932,21 +931,18 @@
       given in the [[#rendering]] section (the mapping is straightforward: the states above have
       the same names as their corresponding CSS values).
     </p>
-  </div>
 
   <p class="note">
     It is possible to redefine the default CSS list styles used to implement this attribute in CSS
     user agents; doing so will affect how list items are rendered.
   </p>
 
-  <div class="impl">
     The <dfn attribute for="HTMLOListElement"><code>reversed</code></dfn>, <dfn attribute for="HTMLOListElement"><code>start</code></dfn>, and
     <dfn attribute for="HTMLOListElement"><code>type</code></dfn> IDL attributes must <a>reflect</a> the respective content
     attributes of the same name. The <code>start</code> IDL attribute has the same default as its
     content attribute.
-  </div>
 
-  <div class="example">
+<div class="example">
     The following markup shows a list where the order matters, and where the <code>ol</code>
     element is therefore appropriate. Compare this list to the equivalent list in the
     <code>ul</code> section to see an example of the same items using the <{ul}> element.
@@ -1104,7 +1100,6 @@
   The <dfn element-attr for="li"><code>value</code></dfn> attribute, if present, must be a <a>valid integer</a> giving the
   <a>ordinal value</a> of the list item.
 
-  <div class="impl">
     If the <code>value</code> attribute is present, user agents must <a>parse it as an integer</a>,
     in order to determine the attribute's value. If the attribute's value cannot be converted to a
     number, the attribute must be treated as if it was absent. The attribute has no default value.
@@ -1114,7 +1109,6 @@
 
     The <dfn attribute for="HTMLLIElement"><code>value</code></dfn> IDL attribute must <a>reflect</a> the value of the
     <code>value</code> content attribute.
-  </div>
 
   <div class="example">
     The following example, the top ten movies are listed (in reverse order). Note the way the list
@@ -1630,14 +1624,30 @@
 
   <p class="note">
     The <{main}> element is not <a>sectioning content</a> and has no effect on the document
-    <a>outline</a>
+    <a>outline</a>.
   </p>
   The main <a>content area</a> of a document includes content that is unique to that document and excludes
   content that is repeated  across a set of documents such as site navigation links, copyright
   information, site logos and banners and search forms (unless the document or application's main
   function is that of a search form).
 
-  There must not be more than one <{main}> in a document.
+  There must not be more than one visible <{main}> element in a document. If greater than one 
+  <{main}> element is present in a document, all other instances must be hidden using [[#the-hidden-attribute]].
+  
+  <div class="example">
+  <pre highlight="html">
+    &lt;!-- conforming example -->
+    &lt;main>...&lt;/main>
+    &lt;main hidden>...&lt;/main>
+    &lt;main hidden>...&lt;/main>
+  
+    &lt;!-- non-conforming example -->
+    &lt;main>...&lt;/main>
+    &lt;main>...&lt;/main>
+    &lt;main>...&lt;/main>
+  </pre>
+  </div>
+  
 
   Authors must not include the <{main}> element as a descendant of an <{article}>,
   <{aside}>, <{footer}>, <code>header</code> or <{nav}> element.

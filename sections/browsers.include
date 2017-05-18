@@ -520,7 +520,6 @@
   other algorithms, e.g., the <a>navigation</a> algorithm, not <a>the rules
   for choosing a browsing context given a browsing context name</a> given below.</small>
 
-  <div class="impl">
 
   <hr />
 
@@ -696,8 +695,6 @@
 
   </ol>
 
-  </div>
-
 <h4 id="script-settings-for-browsing-contexts">Script settings for browsing contexts</h4>
 
   When the user agent is required to
@@ -811,16 +808,16 @@
 
   1. Assert: <var>O</var> is a {{Location}} or {{Window}} object.
   2. If <var>O</var> is a {{Location}} object, then return <pre>
-      « {
+      ? {
           [[Property]]: "href",
           [[NeedsGet]]: false,
           [[NeedsSet]]: true
         },
         {
           [[Property]]: "replace"
-        } »</pre>
+        } ?</pre>
   3. Let <var>crossOriginWindowProperties</var> be <pre>
-      « {
+      ? {
           [[Property]]: "window",
           [[NeedsGet]]: true,
           [[NeedsSet]]: false
@@ -876,7 +873,7 @@
         },
         {
           [[Property]]: "postMessage"
-        } »</pre>
+        } ?</pre>
   4. Repeat for each <var>e</var> that is an element of the
       <a>child browsing context name property set</a>:
       1. Add { \[[Property]]: <var>e</var> } as the last element of <var>crossOriginWindowProperties</var>.
@@ -975,7 +972,7 @@
   3. If <a>IsAccessorDescriptor</a>(<var>desc</var>) is true, then:
       1. Let <var>setter</var> be <var>desc</var>.\[[Set]].
       2. If <var>setter</var> is undefined, return false.
-      3. Perform <a>Call</a>(<var>setter</var>, <var>Receiver</var>, «V»).
+      3. Perform <a>Call</a>(<var>setter</var>, <var>Receiver</var>, ?V?).
       4. Return true.
   4. Return false.
 
@@ -1150,8 +1147,6 @@
 
   </dl>
 
-  <div class="impl">
-
   The <dfn method for="Window"><code>open()</code></dfn> method on <code>Window</code> objects
   provides a mechanism for <a>navigating</a> an existing <a>browsing
   context</a> or opening and navigating an <a>auxiliary browsing context</a>.
@@ -1202,7 +1197,7 @@
     Otherwise, apply <a>the rules for choosing a browsing context given a browsing context
     name</a> using <var>target</var> as the name and <var>source browsing context</var> as the
     context in which the algorithm is executed. If this results in there not being a chosen browsing
-    context, then throw an <code>InvalidAccessError</code> exception and abort these steps.
+    context, then throw an {{InvalidAccessError}} exception and abort these steps.
     Otherwise, let <var>target browsing context</var> be the <a>browsing context</a> so
     obtained.
 
@@ -1320,8 +1315,6 @@
   algorithm, cancel that <a>navigation</a>; then, it must <a>abort</a> the <a>active document</a> of the <a>browsing
   context</a> of the <code>Window</code> object on which it was invoked.
 
-  </div>
-
 <h4 id="accessing-other-browsing-contexts">Accessing other browsing contexts</h4>
 
   <dl class="domintro">
@@ -1431,8 +1424,6 @@
 
   </ul>
 
-  <div class="impl">
-
 <h4 id="garbage-collection-and-browsing-contexts">Garbage collection and browsing contexts</h4>
 
   A <a>browsing context</a> has a strong reference to each of its {{Document}}s
@@ -1487,8 +1478,6 @@
   User agents may <a>discard</a> <a>top-level browsing contexts</a> at any time (typically, in
   response to user requests, e.g., when a user force-closes a window containing one or more <a>top-level browsing contexts</a>). Other <a>browsing contexts</a> must be discarded once their
   <code>WindowProxy</code> object is eligible for garbage collection.
-
-  </div>
 
 <h4 id="closing-browsing-contexts">Closing browsing contexts</h4>
 
@@ -1564,8 +1553,6 @@
 
   </dl>
 
-  <div class="impl">
-
   The <dfn attribute for="BarProp">visible</dfn> attribute, on getting, must return either
   true or a value determined by the user agent to most accurately represent the visibility state of
   the user interface element that the object represents, as described below.
@@ -1640,8 +1627,6 @@
   on the <code>Window</code> object must, on getting, return the last string it was set to, and on
   setting, must set itself to the new value. When the <code>Window</code> object is created, the
   attribute must be set to the empty string. It does not do anything else.
-
-  </div>
 
 <h4 id="the-windowproxy-object">The <code>WindowProxy</code> object</h4>
 
@@ -1928,7 +1913,7 @@
 
   <div class="example">
   The <a>Unicode serialization</a> of ("<code>https</code>", "<code>xn--maraa-rta.example</code>",
-  null, null) is "<code>https://maraña.example</code>".
+  null, null) is "<code>https://mara?xample</code>".
   </div>
 
   The <dfn>ASCII serialization of an origin</dfn> is the string obtained by applying the
@@ -1981,26 +1966,26 @@
       <tr>
         <td>("<code>https</code>", "<code>example.org</code>", null, null)
         <td>("<code>https</code>", "<code>example.org</code>", null, null)
-        <td>✅
-        <td>✅
+        <td>?
+        <td>?
       </tr>
       <tr>
         <td>("<code>https</code>", "<code>example.org</code>", 314, "<code>example.org</code>")
         <td>("<code>https</code>", "<code>example.org</code>", 420, "<code>example.org</code>")
-        <td>❌
-        <td>✅
+        <td>?
+        <td>?
       </tr>
       <tr>
         <td>("<code>https</code>", "<code>example.org</code>", null, null)
         <td>("<code>https</code>", "<code>example.org</code>", null, "<code>example.org</code>")
-        <td>✅
-        <td>❌
+        <td>?
+        <td>?
       </tr>
       <tr>
         <td>("<code>https</code>", "<code>example.org</code>", null, "<code>example.org</code>")
         <td>("http", "<code>example.org</code>", null, "<code>example.org</code>")
-        <td>❌
-        <td>❌
+        <td>?
+        <td>?
       </tr>
     </tbody>
   </table>
@@ -2219,6 +2204,14 @@
 
     </dd>
 
+    <dt>The <dfn>sandboxed presentation browsing context flag</dfn></dt>
+
+    <dd>
+
+    This flag disables the Presentation API. [[!PRESENTATION-API]]
+
+    </dd>
+
   </dl>
 
   When the user agent is to <dfn lt="parse the sandboxing directive|parse a sandboxing directive">parse a sandboxing directive</dfn>, given a string <var>input</var>, a <a>sandboxing flag set</a> <var>output</var>, and
@@ -2300,6 +2293,9 @@
       keyword.</li>
 
       <li>The <a>sandboxed modals flag</a>, unless <var>tokens</var> contains the <dfn><code>allow-modals</code></dfn> keyword.</li>
+
+      <li>The <a>sandboxed presentation browsing context flag</a>, unless <var>tokens</var>
+      contains the <dfn><code>allow-presentation</code></dfn> keyword.</li>
 
     </ul>
 
@@ -2394,11 +2390,9 @@
   history</a> is associated with a unique <code>History</code> object which must all model the
   same underlying <a>session history</a>.
 
-  <div class="impl">
     The <dfn attribute for="Window"><code>history</code></dfn> attribute of the <code>Window</code> interface must return
     the object implementing the <code>History</code> interface for that {{Window}}
     object's newest {{Document}}.
-  </div>
 
   <hr />
 
@@ -2485,8 +2479,6 @@
   context</a>'s <a>session history</a> was most recently traversed. When a
   {{Document}} is created, it initially has no <a>latest entry</a>.
 
-  <div class="impl">
-
   User agents may <a>discard</a> the {{Document}}
   objects of entries other than the <a>current entry</a> that are not referenced from any
   script, reloading the pages afresh when the user or script navigates back to such pages. This
@@ -2497,8 +2489,6 @@
   the algorithms given below, act as if they had not. When the user or script navigates back or
   forwards to a page which has no in-memory DOM objects, any other entries that shared the same
   {{Document}} object with it must share the new object as well.
-
-  </div>
 
 <h4 id="the-history-interface">The <code>History</code> interface</h4>
 
@@ -2620,8 +2610,6 @@
   each other later, they might disagree about the length of the <a>joint session
   history</a>.
   </p>
-
-  <div class="impl">
 
   The <dfn attribute for="History"><code>length</code></dfn> attribute of the
   <code>History</code> interface, on getting, must return the number of entries in the
@@ -2837,8 +2825,6 @@
   first entry for that {{Document}} object in the session history after having added the new
   entry. (Thus the state history acts as a FIFO buffer for eviction, but as a LIFO buffer for
   navigation.)
-
-  </div>
 
   <div class="example">
     Consider a game where the user can navigate along a line, such that the user is always at some
@@ -3519,8 +3505,6 @@
   2. Return ! <a>CrossOriginOwnPropertyKeys</a>(<b>this</b>).
 
 <h3 id="browsing-the-web">Browsing the Web</h3>
-
-  <div class="impl">
 
 <h4 id="navigating-across-documents">Navigating across documents</h4>
 
@@ -4441,11 +4425,8 @@
   The <a>task source</a> for the task mentioned in this section must be the <a>DOM
   manipulation task source</a>.
 
-  </div>
 
 <h4 id="history-traversal">History traversal</h4>
-
-  <div class="impl">
 
   When a user agent is required to <dfn lt="traverse the history|history traversal|session history traversal|traversing the history">traverse the history</dfn> to a <var>specified
   entry</var>, optionally with <a>replacement enabled</a>, and optionally with the
@@ -4646,10 +4627,7 @@
   The <a>task source</a> for the tasks mentioned above is the <a>DOM manipulation task
   source</a>.
 
-  </div>
-
   <h5 id="persisted-user-state-restoration">Persisted user state restoration</h5>
-  <div class="impl">
 
   <p>When the user agent is to <dfn>restore persisted user state</dfn> from a history entry, it must
   run the following steps immediately:</p>
@@ -4666,7 +4644,6 @@
    form fields, that the user agent had previously recorded.</li>
 
   </ol>
-  </div>
 
   <p class="note">This can even include updating the <code>dir</code> attribute
   of <{textarea}> elements or <{input}> elements whose <code>type</code> attribute
@@ -4697,13 +4674,9 @@
     </dd>
   </dl>
 
-  <div class="impl">
-
   The <dfn attribute for="PopStateEvent"><code>state</code></dfn> attribute must return the value it
   was initialized to. It represents the context information for the event, or null, if the state
   represented is the initial state of the {{Document}}.
-
-  </div>
 
 <h5 id="the-hashchangeevent-interface">The <code>HashChangeEvent</code> interface</h5>
 
@@ -5005,16 +4978,10 @@
   There are no <code>BeforeUnloadEvent</code>-specific initialization methods.
   </p>
 
-  <div class="impl">
-
   The <dfn attribute for="BeforeUnloadEvent"><code>returnValue</code></dfn> attribute
   represents the message to show the user. When the event is created, the attribute must be set to
   the empty string. On getting, it must return the last value it was set to. On setting, the
   attribute must be set to the new value.
-
-  </div>
-
-  <div class="impl">
 
 <h4 id="aborting-a-document-load">Aborting a document load</h4>
 
@@ -5045,8 +5012,6 @@
   task</a> to <a>fire a simple event</a> named <code>abort</code> at
   that {{Document}}'s <code>Window</code> object before invoking the <a>abort</a> algorithm.
 
-  </div>
-
 <h4 id="browser-state">Browser state</h4>
 
   <pre class="idl" data-highlight="webidl">
@@ -5071,8 +5036,6 @@
 
   </dl>
 
-  <div class="impl">
-
   The <dfn attribute for="NavigatorOnLine" lt="onLine|navigator.onLine"><code>navigator.onLine</code></dfn> attribute must return
   false if the user agent will not contact the network when the user follows links or when a script
   requests a remote page (or knows that such an attempt would fail), and must return true
@@ -5090,8 +5053,6 @@
 
   The <a>task source</a> for these <a>tasks</a> is the
   <a>networking task source</a>.
-
-  </div>
 
   <p class="note">
   This attribute is inherently unreliable. A computer can be connected to a network
