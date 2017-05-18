@@ -325,13 +325,13 @@
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>href</code> — Address of the <a>hyperlink</a></dd>
+    <dd><code>crossorigin</code> — How the element handles crossorigin requests</dd>
     <dd><{link/rel}> — Relationship of this document (or subsection/topic) to the destination resource</dd>
     <dd><{link/rev}> — <a>Reverse link</a> relationship of the destination resource to this document (or subsection/topic)</dd>
-    <dd><code>hreflang</code> — Language of the linked resource</dd>
     <dd><code>media</code> — Applicable media</dd>
-    <dd><code>type</code> — Hint for the type of the referenced resource</dd>
-    <dd><code>crossorigin</code> — How the element handles crossorigin requests</dd>
     <dd><code>nonce</code> — Cryptographic nonce used in Content Security Policy checks [[CSP3]]</dd>
+    <dd><code>hreflang</code> — Language of the linked resource</dd>
+    <dd><code>type</code> — Hint for the type of the referenced resource</dd>
     <dd><code>sizes</code> — Sizes of the icons (for <{link/rel}>="<code>icon</code>")</dd>
     <dd>
       Also, the <{link/title}> attribute has special semantics on this element:  Title of the
@@ -365,11 +365,13 @@
 
   The <{link}> element allows authors to link their document to other resources.
 
-  The destination of the link(s) is given by the <dfn element-attr for="link"><code>href</code></dfn> attribute, which must
-  be present and must contain a <a>valid non-empty URL potentially surrounded by spaces</a>.
-  If the <{link/href}> attribute is absent, then the element does not define a link.
+  The destination of the link(s) is given by the
+  <dfn element-attr for="link"><code>href</code></dfn> attribute, which must be present and must
+  contain a <a>valid non-empty URL potentially surrounded by spaces</a>. If the <{link/href}>
+  attribute is absent, then the element does not define a link.
 
-  A <{link}> element must have a <{link/rel}> attribute.
+  The <dfn element-attr for="link"><code>crossorigin</code></dfn> attribute is a
+  <a>CORS settings attribute</a>. It is intended for use with <a>external resource links</a>.
 
   The types of link indicated (the relationships) are given by the value of the
   <dfn element-attr for="link"><code>rel</code></dfn> attribute, which, if present, must have a
@@ -396,17 +398,19 @@
   <{link/rel}>'s <a>supported tokens</a> must only include the tokens from this list that the user
   agent implements the processing model for.
 
-  If a <code>link</code> element has a <code>rel</code> attribute that contains only keywords that are
+  A <{link}> element must have a <{link/rel}> attribute.
+
+  If a <{link}> element has a <{link/rel> attribute that contains only keywords that are
   <a>body-ok</a>, then the element is said to be <dfn>allowed in the body</dfn>. This means
   that the element can be used where <a>phrasing content</a> is expected.
 
   Two categories of links can be created using the <{link}> element:
   <a>Links to external resources</a> and <a>hyperlinks</a>. The [[#sec-link-types]] section defines
-  whether a particular link type is an external resource or a hyperlink. One <code>link</code>
-  element can create multiple links (of which some might be external resource links and some might
-  be hyperlinks); exactly which and how many links are created depends on the keywords given in the
-  <{link/rel}> attribute. User agents must process the links on a per-link
-  basis, not a per-element basis.
+  whether a particular link type is an external resource or a hyperlink. One <{link}> element can
+  create multiple links (of which some might be [=external resource links=] and some might
+  be [=hyperlinks=]); exactly which and how many links are created depends on the keywords given in
+  the <{link/rel}> attribute. User agents must process the links on a per-link basis, not a
+  per-element basis.
 
   <p class="note">
     Each link created for a <{link}> element is handled separately. For instance, if there
@@ -420,7 +424,7 @@
   </p>
 
   <div class="example">
-    For example, the following <{link}> element creates two hyperlinks (to the same page):
+    For example, the following <{link}> element creates two [=hyperlinks=] (to the same page):
 
     <pre highlight="html">&lt;link rel="author license" href="/about"></pre>
 
@@ -430,27 +434,36 @@
   </div>
 
   <p class="note">
-    Hyperlinks created with the <{link}> element and its <{link/rel}> attribute apply
-    to the whole page. This contrasts with the <{links/rel}> attribute of <{a}> and
-    <{area}> elements, which indicates the type of a link whose context is given by the
-    link's location within the document.
+    [=Hyperlinks=] created with the <{link}> element and its <{link/rel}> attribute apply to the
+    whole document. This contrasts with the <{links/rel}> attribute of <{a}> and <{area}> elements,
+    which indicates the type of a link whose context is given by the link's location within the
+    document.
   </p>
 
-  The exact behavior for links to external resources depends on the exact relationship, as defined
-  for the relevant link type. Some of the attributes control whether or not the external resource is
-  to be applied (as defined below).
-
-  The <dfn element-attr for="link"><code>hreflang</code></dfn> attribute on the <{link}> element has
-  the same semantics as the {{HTMLLinkElement/hreflang}} attribute on the <{a}> element.
+  The exact behavior for [=external resource links|links to external resources=] depends on the
+  exact relationship, as defined for the relevant [=link type=]. Some of the attributes control
+  whether or not the external resource is to be applied (as defined below).
 
   The <dfn element-attr for="link"><code>media</code></dfn> attribute says which media the resource
   applies to. The value must be a <a>valid media query list</a>.
+
+  The <dfn element-attr for="link"><code>nonce</code></dfn> attribute represents a cryptographic
+  nonce ("number used once") which can be used by <cite>Content Security Policy</cite>
+  to determine whether or not an [=external resource links|external resource specified by the link=]
+  will be loaded and applied to the document. The value is text. [[CSP3]]
+
+  <!-- def <{link/integrity}> -->
+
+  The <dfn element-attr for="link"><code>hreflang</code></dfn> attribute on the <{link}> element has
+  the same semantics as the {{HTMLLinkElement/hreflang}} attribute on the <{a}> element.
 
   The <dfn element-attr for="link"><code>type</code></dfn> attribute gives the <a>MIME type</a> of
   the linked resource. It is purely advisory. The value must be a <a>valid mime type</a>.
 
   For <a>external resource links</a>, the <{link/type}> attribute is used as a hint to user agents
   so that they can avoid fetching resources they do not support.
+
+  <!-- def <{link/referrerpolicy}> -->
 
   The <dfn element-attr for="link"><code>title</code></dfn> attribute gives the title of the link.
   With one exception, it is purely advisory. The value is text. The exception is for style sheet
@@ -462,40 +475,47 @@
     the parent element: it merely has no title.
   </p>
 
-  <!-- def <{link/as}> -->
+  <hr>
 
-  The <dfn element-attr for="link"><code>crossorigin</code></dfn> attribute is a
-  <a>CORS settings attribute</a>. It is intended for use with external resource links.
-
-  <!-- def <{link/integrity}> -->
-
-  The <dfn element-attr for="link"><code>nonce</code></dfn> attribute represents a
-  cryptographic nonce ("number used once") which can be used by <cite>Content Security Policy</cite>
-  to determine whether or not an external resource specified by the link will be loaded and applied
-  to the document. The value is text. [[CSP3]]
-
-  <!-- def <{link/referrerpolicy}> -->
-
-  <!-- def <{link/scope}> -->
-
-  The <{link/sizes}> attribute is used with the <{link/icon}> link type. The attribute must not be
+  The <dfn element-attr for="link"><code>sizes</code></dfn> attribute gives the sizes of icons
+  for visual media. Its value, if present, is merely advisory. User agents may use the value to
+  decide which icon(s) to use if multiple icons are available. If specified, the attribute must have
+  a value that is an [=unordered set of unique space-separated tokens=] which are
+  [=ASCII case-insensitive=]. Each value must be either an [=ASCII case-insensitive=] match for the
+  string "<code>any</code>", or a value that consists of two [=valid non-negative integers=] that do
+  not have a leading U+0030 DIGIT ZERO (0) character and that are separated by a single
+  U+0078 LATIN SMALL LETTER X or U+0058 LATIN CAPITAL LETTER X character. The attribute must not be
   specified on <{link}> elements that do not have a <{link/rel}> attribute that specifies the
   <{link/icon}> keyword or the <code>apple-touch-icon</code> keyword.
 
-  Note: The <code>apple-touch-icon</code> keyword is a registered
-  <a lt="extensions to the predefined set of link types">extension to the predefined set of link types</a>,
-  but user agents are not required to support it in any way.
+  <p class="note">
+    The <code>apple-touch-icon</code> keyword is a registered
+    <a lt="extensions to the predefined set of link types">extension to the predefined set of link types</a>,
+    but user agents are not required to support it in any way.
+  </p>
+
+  <hr>
+
+  <!-- def <{link/as}> -->
+
+  <!-- def <{link/scope}> -->
 
   <!-- def <{link/usecache}> -->
 
   <!-- def <{link/workertype}> -->
 
-  The IDL attributes <dfn attribute for="HTMLLinkElement"><code>href</code></dfn>,
+  <!-- def <{link/color}> -->
+
+  The IDL attributes
+  <!-- <dfn attribute for="HTMLLinkElement"><code>as</code></dfn>, -->
+  <dfn attribute for="HTMLLinkElement"><code>href</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>hreflang</code></dfn>,
+  <!-- <dfn attribute for="HTMLLinkElement"><code>integrity</code></dfn>, -->
   <dfn attribute for="HTMLLinkElement"><code>media</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>nonce</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>rel</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>rev</code></dfn>,
+  <!-- <dfn attribute for="HTMLLinkElement"><code>scope</code></dfn>, -->
   <dfn attribute for="HTMLLinkElement"><code>sizes</code></dfn>, and
   <dfn attribute for="HTMLLinkElement"><code>type</code></dfn>
   each must <a>reflect</a> the respective content attributes of the same name.
@@ -522,7 +542,7 @@
   attribute's value <a>matches the environment</a> and the other relevant conditions apply, and
   must not apply it otherwise.
 
-  The default, if the <code>media</code> attribute is omitted, is "<code>all</code>", meaning that
+  The default, if the <{link/media}> attribute is omitted, is "<code>all</code>", meaning that
   by default links apply to all media.
 
   <p class="note">The external resource might have further restrictions defined within that limit
@@ -549,8 +569,8 @@
   actual type. Only the actual type (as defined in the next paragraph) is used to determine
   whether to <em>apply</em> the resource, not the aforementioned assumed type.
 
-  <dfn lt="determining the type of the resource"></dfn>If the external resource link type defines
-  rules for processing the resource's <a>Content-Type metadata</a>, then those rules apply.
+  <dfn lt="determining the type of the resource"></dfn>If the [=external resource link=] type
+  defines rules for processing the resource's <a>Content-Type metadata</a>, then those rules apply.
   Otherwise, if the resource is expected to be an image, user agents may apply the
   <a>image sniffing rules</a>, with the <var>official type</var> being the type determined from
   the resource's <a>Content-Type metadata</a>, and use the resulting
@@ -562,42 +582,6 @@
 
   <p class="note">The <{link/stylesheet}> link type defines rules for processing the resource's
   <a>Content-Type metadata</a>.</p>
-
-  Once the user agent has established the type of the resource, the user agent must apply the
-  resource if it is of a supported type and the other relevant conditions apply, and must ignore
-  the resource otherwise.
-
-  <div class="example">
-    If a document contains style sheet links labeled as follows:
-
-    <pre highlight="html">
-      &lt;link rel="stylesheet" href="A" type="text/plain"&gt;
-      &lt;link rel="stylesheet" href="B" type="text/css"&gt;
-      &lt;link rel="stylesheet" href="C"&gt;
-    </pre>
-
-    ...then a compliant user agent that supported only CSS style sheets would fetch the B and C
-    files, and skip the A file (since <code>text/plain</code> is not the <a>MIME type</a> for CSS
-    style sheets).
-
-    For files B and C, it would then check the actual types returned by the server. For those that
-    are sent as <code>text/css</code>, it would apply the styles, but for those labeled as
-    <code>text/plain</code>, or any other type, it would not.
-
-    If one of the two files was returned without a <a>Content-Type</a> metadata, or with a
-    syntactically incorrect type like <code>Content-Type:&nbsp;"null"</code>, then the default type
-    for <code>stylesheet</code> links would kick in. Since that default type is
-    <code>text/css</code>, the style sheet <em>would</em> nonetheless be applied.
-  </div>
-
-<h5 id="hyperlink-activation-behavior">Activation behavior of <{link}> elements that create hyperlinks</h5>
-
-  The <a>activation behavior</a> of <{link}> elements that create <a>hyperlinks</a> is to
-  run the following steps:
-
-  1. If the <{link}> element's <a>node document</a> is not <a>fully active</a>, then
-      abort these steps.
-  2. <a>Follow the hyperlink</a> created by the<code>link</code> element.
 
 <h5 id="get-link-resource">Obtaining a resource from a <{link}> element</h5>
 
@@ -644,6 +628,62 @@
   that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
   to be needed, do not <a>delay the load event</a>.)
 
+<h5 id="processing-link-headers">Processing <code>Link</code> headers</h5>
+
+  HTTP <code>Link:</code> headers, if supported, must be assumed to come before any links in the
+  document, in the order that they were given in the HTTP message. These headers are to be
+  processed according to the rules given in the relevant specifications. [[!HTTP]] [[!RFC5988]]
+
+  <p class="note">Registration of relation types in HTTP Link: headers is distinct from
+  <a>HTML link types</a>, and thus their semantics can be different from same-named HTML types.</p>
+
+
+
+
+
+
+
+
+
+  --
+
+  Once the user agent has established the type of the resource, the user agent must apply the
+  resource if it is of a supported type and the other relevant conditions apply, and must ignore
+  the resource otherwise.
+
+  <div class="example">
+    If a document contains style sheet links labeled as follows:
+
+    <pre highlight="html">
+      &lt;link rel="stylesheet" href="A" type="text/plain"&gt;
+      &lt;link rel="stylesheet" href="B" type="text/css"&gt;
+      &lt;link rel="stylesheet" href="C"&gt;
+    </pre>
+
+    ...then a compliant user agent that supported only CSS style sheets would fetch the B and C
+    files, and skip the A file (since <code>text/plain</code> is not the <a>MIME type</a> for CSS
+    style sheets).
+
+    For files B and C, it would then check the actual types returned by the server. For those that
+    are sent as <code>text/css</code>, it would apply the styles, but for those labeled as
+    <code>text/plain</code>, or any other type, it would not.
+
+    If one of the two files was returned without a <a>Content-Type</a> metadata, or with a
+    syntactically incorrect type like <code>Content-Type:&nbsp;"null"</code>, then the default type
+    for <code>stylesheet</code> links would kick in. Since that default type is
+    <code>text/css</code>, the style sheet <em>would</em> nonetheless be applied.
+  </div>
+
+<h5 id="hyperlink-activation-behavior">Activation behavior of <{link}> elements that create hyperlinks</h5>
+
+  The <a>activation behavior</a> of <{link}> elements that create <a>hyperlinks</a> is to
+  run the following steps:
+
+  1. If the <{link}> element's <a>node document</a> is not <a>fully active</a>, then
+      abort these steps.
+  2. <a>Follow the hyperlink</a> created by the<code>link</code> element.
+
+
 <h5 id="users-can-follow-hyperlinks">Providing users with a means to follow hyperlinks created using the <{link}> element</h5>
 
   Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
@@ -662,14 +702,14 @@
   User agents could also include other information, such as the type of the resource (as given by
   the <{link/type}> attribute).
 
-<h5 id="processing-link-headers">Processing <code>Link</code> headers</h5>
 
-  HTTP <code>Link:</code> headers, if supported, must be assumed to come before any links in the
-  document, in the order that they were given in the HTTP message. These headers are to be
-  processed according to the rules given in the relevant specifications. [[!HTTP]] [[!RFC5988]]
+  --
 
-  <p class="note">Registration of relation types in HTTP Link: headers is distinct from
-  <a>HTML link types</a>, and thus their semantics can be different from same-named HTML types.</p>
+
+
+
+
+
 
 <h5 id="the-linkstyle-interface">The {{LinkStyle}} interface</h5>
 
