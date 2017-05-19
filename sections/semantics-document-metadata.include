@@ -380,7 +380,7 @@
   keywords, or if none of the keywords used are allowed according to the definitions in this
   specification, then the element does not create any links.
 
-  <{link/rel>'s [=supported tokens=] are the keywords defined in [=HTML link types=] which are
+  <{link/rel}>'s [=supported tokens=] are the keywords defined in [=HTML link types=] which are
   allowed on <{link}> elements, impact the processing model, and are supported by the user agent.
   The possible [=supported tokens=] are
   <{link/alternate}>,
@@ -400,7 +400,7 @@
 
   A <{link}> element must have a <{link/rel}> attribute.
 
-  If a <{link}> element has a <{link/rel> attribute that contains only keywords that are
+  If a <{link}> element has a <{link/rel}> attribute that contains only keywords that are
   <a>body-ok</a>, then the element is said to be <dfn>allowed in the body</dfn>. This means
   that the element can be used where <a>phrasing content</a> is expected.
 
@@ -583,6 +583,33 @@
   <p class="note">The <{link/stylesheet}> link type defines rules for processing the resource's
   <a>Content-Type metadata</a>.</p>
 
+  Once the user agent has established the type of the resource, the user agent must apply the
+  resource if it is of a supported type and the other relevant conditions apply, and must ignore
+  the resource otherwise.
+
+  <div class="example">
+    If a document contains style sheet links labeled as follows:
+
+    <pre highlight="html">
+      &lt;link rel="stylesheet" href="A" type="text/plain"&gt;
+      &lt;link rel="stylesheet" href="B" type="text/css"&gt;
+      &lt;link rel="stylesheet" href="C"&gt;
+    </pre>
+
+    ...then a compliant user agent that supported only CSS style sheets would fetch the B and C
+    files, and skip the A file (since <code>text/plain</code> is not the <a>MIME type</a> for CSS
+    style sheets).
+
+    For files B and C, it would then check the actual types returned by the server. For those that
+    are sent as <code>text/css</code>, it would apply the styles, but for those labeled as
+    <code>text/plain</code>, or any other type, it would not.
+
+    If one of the two files was returned without a <a>Content-Type</a> metadata, or with a
+    syntactically incorrect type like <code>Content-Type:&nbsp;"null"</code>, then the default type
+    for <code>stylesheet</code> links would kick in. Since that default type is
+    <code>text/css</code>, the style sheet <em>would</em> nonetheless be applied.
+  </div>
+
 <h5 id="get-link-resource">Obtaining a resource from a <{link}> element</h5>
 
   For external resources that are represented in the DOM (for example, style sheets), the DOM
@@ -631,69 +658,18 @@
 <h5 id="processing-link-headers">Processing <code>Link</code> headers</h5>
 
   HTTP <code>Link:</code> headers, if supported, must be assumed to come before any links in the
-  document, in the order that they were given in the HTTP message. These headers are to be
-  processed according to the rules given in the relevant specifications. [[!HTTP]] [[!RFC5988]]
-
-  <p class="note">Registration of relation types in HTTP Link: headers is distinct from
-  <a>HTML link types</a>, and thus their semantics can be different from same-named HTML types.</p>
-
-
-
-
-
-
-
-
-
-  --
-
-  Once the user agent has established the type of the resource, the user agent must apply the
-  resource if it is of a supported type and the other relevant conditions apply, and must ignore
-  the resource otherwise.
-
-  <div class="example">
-    If a document contains style sheet links labeled as follows:
-
-    <pre highlight="html">
-      &lt;link rel="stylesheet" href="A" type="text/plain"&gt;
-      &lt;link rel="stylesheet" href="B" type="text/css"&gt;
-      &lt;link rel="stylesheet" href="C"&gt;
-    </pre>
-
-    ...then a compliant user agent that supported only CSS style sheets would fetch the B and C
-    files, and skip the A file (since <code>text/plain</code> is not the <a>MIME type</a> for CSS
-    style sheets).
-
-    For files B and C, it would then check the actual types returned by the server. For those that
-    are sent as <code>text/css</code>, it would apply the styles, but for those labeled as
-    <code>text/plain</code>, or any other type, it would not.
-
-    If one of the two files was returned without a <a>Content-Type</a> metadata, or with a
-    syntactically incorrect type like <code>Content-Type:&nbsp;"null"</code>, then the default type
-    for <code>stylesheet</code> links would kick in. Since that default type is
-    <code>text/css</code>, the style sheet <em>would</em> nonetheless be applied.
-  </div>
-
-<h5 id="hyperlink-activation-behavior">Activation behavior of <{link}> elements that create hyperlinks</h5>
-
-  The <a>activation behavior</a> of <{link}> elements that create <a>hyperlinks</a> is to
-  run the following steps:
-
-  1. If the <{link}> element's <a>node document</a> is not <a>fully active</a>, then
-      abort these steps.
-  2. <a>Follow the hyperlink</a> created by the<code>link</code> element.
-
+  document, in the order that they were given in the HTTP message. These headers are distinct from
+  <a>HTML link types</a>, and thus their semantics can be different from same-named HTML types.
 
 <h5 id="users-can-follow-hyperlinks">Providing users with a means to follow hyperlinks created using the <{link}> element</h5>
 
   Interactive user agents may provide users with a means to <a>follow the hyperlinks</a> created
-  using the <{link}> element, somewhere within their user interface. The exact interface
-  is not defined by this specification, but it could include the following information (obtained
-  from the element's attributes, again as defined below), in some form or another (possibly
-  simplified), for each hyperlink created with each <{link}> element in the document:
+  using the <{link}> element, somewhere within their user interface. The exact interface is not
+  defined by this specification, but it could include the following information (obtained from the
+  element's attributes, again as defined below), in some form or another (possibly simplified), for
+  each hyperlink created with each <{link}> element in the document:
 
-  * The relationship between this document and the resource (given by the <{link/rel}>
-      attribute)
+  * The relationship between this document and the resource (given by the <{link/rel}> attribute)
   * The title of the resource (given by the <{link/title}> attribute).
   * The address of the resource (given by the <{link/href}> attribute).
   * The language of the resource (given by the <{link/hreflang}> attribute).
@@ -702,14 +678,12 @@
   User agents could also include other information, such as the type of the resource (as given by
   the <{link/type}> attribute).
 
+  The <a>activation behavior</a> of <{link}> elements that create <a>hyperlinks</a> is to
+  run the following steps:
 
-  --
-
-
-
-
-
-
+  1. If the <{link}> element's <a>node document</a> is not <a>fully active</a>, then abort these
+      steps.
+  2. <a>Follow the hyperlink</a> created by the<code>link</code> element.
 
 <h5 id="the-linkstyle-interface">The {{LinkStyle}} interface</h5>
 
