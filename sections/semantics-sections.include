@@ -1255,10 +1255,10 @@
   The <code>h1</code>–<code>h6</code> elements are headings.
 
   The first element of <a>heading content</a> in an element of <a>sectioning content</a>
-  <a>represents</a> the heading for that section. Subsequent headings of equal or higher <a>rank</a>
-  start new (implied) sections, headings of lower <a>rank</a> start implied subsections that are
-  part of the previous one. In both cases, the element <a>represents</a> the heading of the implied
-  section.
+  <a>represents</a> the heading for that explicit section. Subsequent headings of equal or higher <a>rank</a>
+  start new (implied) subsections that are part of the previous section's parent section. Subsequent
+  headings of lower <a>rank</a> start new implied subsections that are part of the previous one.
+  In both cases, the element <a>represents</a> the heading of the implied section.
 
   <code>h1</code>–<code>h6</code> elements must not be used to markup subheadings, subtitles,
   alternative titles and taglines unless intended to be the heading for a new section or subsection.
@@ -1351,10 +1351,10 @@
             &lt;h3&gt;Sweet&lt;/h3&gt;
             &lt;p&gt;Red apples are sweeter than green ones.&lt;/p&gt;
           &lt;/section&gt;
-        &lt;section&gt;
-          &lt;h3&gt;Color&lt;/h3&gt;
-          &lt;p&gt;Apples come in various colors.&lt;/p&gt;
-        &lt;/section&gt;
+          &lt;section&gt;
+            &lt;h3&gt;Color&lt;/h3&gt;
+            &lt;p&gt;Apples come in various colors.&lt;/p&gt;
+          &lt;/section&gt;
         &lt;/section&gt;
       &lt;/body&gt;
     </pre>
@@ -1376,7 +1376,25 @@
     This section defines an algorithm for creating an outline for a <a>sectioning content</a>
     element or a <a>sectioning root</a> element. It is defined in terms of a walk over the nodes
     of a DOM tree, in <a>tree order</a>, with each node being visited when it is <i>entered</i> and
-    when it is <i>exited</i> during the walk.
+    when it is <i>exited</i> during the walk. Each time a node is visited, it can be seen as
+    triggering an <i>enter</i> or <i>exit</i> event.
+
+    <div class="example">
+      The following pseudocode fragment:
+
+      <pre>
+        visitNode(node)
+          onEnter(node)
+          child = node.firstChild
+          while(child != null)
+            visitNode(child)
+            child = child.nextSibling
+          onExit(node)
+      </pre>
+
+      ...exemplifies how to traverse the node tree and when to trigger the <i>entered</i> and
+      <i>exited</i> events.
+    </div>
 
   The <dfn>outline</dfn> for a <a>sectioning content</a> element or a <a>sectioning root</a> element
   consists of a list of one or more potentially nested <a>sections</a>. The element for which an
@@ -1384,7 +1402,7 @@
 
   A <dfn>section</dfn> is a container that corresponds to some nodes in the original DOM tree. Each
   section can have one heading associated with it, and can contain any number of further nested
-  sections. The algorithm for the outline also associates each node in the DOM
+  subsections. The algorithm for the outline also associates each node in the DOM
   tree with a particular section and potentially a heading. (The sections in the outline
   aren't <a element>section</a> elements, though some may correspond to such elements — they are
   merely conceptual sections.)
@@ -1418,7 +1436,7 @@
     <a>sectioning content</a> element or a <a>sectioning root</a> element to determine that
     element's <a>outline</a> is as follows:
 
-    1. Let <var>current outline target</var> be null. (It holds the element whose <a>outline</a> is
+    1. Let <var>current outline owner</var> be null. (It holds the element whose <a>outline</a> is
         being created.)
     2. Let <var>current section</var> be null. (It holds a pointer to a <a>section</a>, so that
         elements in the DOM can all be associated with a section.)
@@ -1455,15 +1473,15 @@
           <dt>When entering a <a>sectioning content</a> element</dt>
           <dd>
             Run these steps:
-            1. If <var>current outline target</var> is not null, run these substeps:
+            1. If <var>current outline owner</var> is not null, run these substeps:
                 1. If the <var>current section</var> has no heading, create an implied heading and
                     let that be the heading for the <var>current section</var>.
-                2. Push <var>current outline target</var> onto the stack.
-            2. Let <var>current outline target</var> be the element that is being entered.
+                2. Push <var>current outline owner</var> onto the stack.
+            2. Let <var>current outline owner</var> be the element that is being entered.
             3. Let <var>current section</var> be a newly created <a>section</a> for the
-                <var>current outline target</var> element.
-            4. Associate <var>current outline target</var> with <var>current section</var>.
-            5. Let there be a new <a>outline</a> for the new <var>current outline target</var>,
+                <var>current outline owner</var> element.
+            4. Associate <var>current outline owner</var> with <var>current section</var>.
+            5. Let there be a new <a>outline</a> for the new <var>current outline owner</var>,
                 initialized with just the new <var>current section</var> as the only <a>section</a>
                 in the outline.
           </dd>
@@ -1473,10 +1491,10 @@
             Run these steps:
             1. If the <var>current section</var> has no heading, create an implied heading and let
                 that be the heading for the <var>current section</var>.
-            2. Pop the top element from the stack, and let the <var>current outline target</var> be
+            2. Pop the top element from the stack, and let the <var>current outline owner</var> be
                 that element.
             3. Let <var>current section</var> be the last section in the <a>outline</a> of the
-                <var>current outline target</var> element.
+                <var>current outline owner</var> element.
             4. Append the <a>outline</a> of the <a>sectioning content</a> element being exited to
                 the <var>current section</var>. (This does not change which section is the last
                 section in the <a>outline</a>.)
@@ -1485,14 +1503,14 @@
           <dt>When entering a <a>sectioning root</a> element</dt>
           <dd>
             Run these steps:
-            1. If <var>current outline target</var> is not null, push
-                <var>current outline target</var> onto the stack.
-            2. Let <var>current outline target</var> be the element that is being entered.
-            3. Let <var>current outline target</var>'s <i>parent section</i> be
+            1. If <var>current outline owner</var> is not null, push
+                <var>current outline owner</var> onto the stack.
+            2. Let <var>current outline owner</var> be the element that is being entered.
+            3. Let <var>current outline owner</var>'s <i>parent section</i> be
                 <var>current section</var>.
             4. Let <var>current section</var> be a newly created <a>section</a> for the
-                <var>current outline target</var> element.
-            5. Let there be a new <a>outline</a> for the new <var>current outline target</var>,
+                <var>current outline owner</var> element.
+            5. Let there be a new <a>outline</a> for the new <var>current outline owner</var>,
                 initialized with just the new <var>current section</var> as the only <a>section</a>
                 in the outline.
           </dd>
@@ -1502,9 +1520,9 @@
             Run these steps:
             1. If the <var>current section</var> has no heading, create an implied heading and let
                 that be the heading for the <var>current section</var>.
-            2. Let <var>current section</var> be <var>current outline target</var>'s
+            2. Let <var>current section</var> be <var>current outline owner</var>'s
                 <i>parent section</i>.
-            3. Pop the top element from the stack, and let the <var>current outline target</var> be
+            3. Pop the top element from the stack, and let the <var>current outline owner</var> be
                 that element.
           </dd>
 
@@ -1514,7 +1532,7 @@
           </dt>
           <dd>
             <p class="note">
-              The <var>current outline target</var> is the element being exited, and it is the
+              The <var>current outline owner</var> is the element being exited, and it is the
               <a>sectioning content</a> element or a <a>sectioning root</a> element at the root of
               the subtree for which an outline is being generated.
             </p>
@@ -1530,12 +1548,12 @@
             If the <var>current section</var> has no heading, let the element being entered be the
             heading for the <var>current section</var>.
 
-            Otherwise, if the element being entered has a <a>rank</a> equal to or higher than the
-            heading of the last section of the <a>outline</a> of the
-            <var>current outline target</var>, or if the heading of the last section of the
-            <a>outline</a> of the <var>current outline target</var> is an implied heading, then
+            Otherwise, if the heading of the last section of the <a>outline</a> of the
+            <var>current outline owner</var> is an implied heading, or if the heading being
+            entered has a <a>rank</a> equal to or higher than the heading of the last section
+            of the <a>outline</a> of the <var>current outline owner</var>, then
             create a new <a>section</a> and append it to the <a>outline</a> of the
-            <var>current outline target</var> element, so that this new section is the new last
+            <var>current outline owner</var> element, so that this new section is the new last
             section of that outline. Let <var>current section</var> be that new section. Let the
             element being entered be the new heading for the <var>current section</var>.
 
@@ -1549,7 +1567,7 @@
                 <var>current section</var>. Abort these substeps.
             3. Let <var>new candidate section</var> be the <a>section</a> that contains
                 <var>candidate section</var> in the <a>outline</a> of
-                <var>current outline target</var>.
+                <var>current outline owner</var>.
             4. Let <var>candidate section</var> be <var>new candidate section</var>.
             5. Return to the step labeled <i>heading loop</i>.
 
