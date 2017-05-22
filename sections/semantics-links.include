@@ -66,7 +66,8 @@
   Whether determined by the user's preferences or via the presence or absence of the attribute,
   if the decision is to use the hyperlink for <a>navigation</a> then the user
   agent must <a>follow the hyperlink</a>, and if the decision is
-  to use the hyperlink to download a resource, the user agent must <a>download the hyperlink</a>. These terms are defined in subsequent sections
+  to use the hyperlink to download a resource, the user agent must <a>download the hyperlink</a>.
+  These terms are defined in subsequent sections
   below.
 
   The <dfn element-attr for="a,area,links"><code>download</code></dfn> attribute, if present,
@@ -76,6 +77,8 @@
   allowed values, but authors are cautioned that most file systems have limitations with regard to
   what punctuation is supported in file names, and user agents are likely to adjust file names
   accordingly.
+
+  <!-- def [ping] -->
 
   The <dfn element-attr for="a,area,links"><code>rel</code></dfn> attribute on <{a}> and
   <{area}> elements controls what kinds of links the elements create. The attribute's value
@@ -87,20 +90,76 @@
   <a>HTML link types</a> which are allowed on <{a}> and
   <{area}> elements, impact the processing model, and are supported by the user agent. The
   possible <a>supported tokens</a> are
-  <{link/type/noreferrer}>, and <{link/type/noopener}>.
+  <{link/noreferrer}>, and <{link/noopener}>.
   <{links/rel}>'s
   <a>supported tokens</a> must only include the tokens from
   this list that the user agent implements the processing model for.
 
-  Other specifications may add <a>HTML link types</a> as
-  defined in <a>Other link types</a>. These specifications may require
-  that their link types be included in <{links/rel}>'s supported
-  tokens.
+  Other specifications may add <a>HTML link types</a> as defined in <a>Other link types</a>, with
+  the following additional requirements:
+
+  * Such specifications may require that their link types be included in <{links/rel}>'s supported
+      tokens.
+  * Such specifications may specify that their link types are <a>body-ok</a>.
 
   The <{links/rel}> attribute has no default value. If the
   attribute is omitted or if none of the values in the attribute are recognized by the user agent,
   then the document has no particular relationship with the destination resource other than there
   being a hyperlink between the two.
+
+  <!-- W3C START - DO NOT OVERWRITE -->
+
+  <{link}> and <{a}> elements may also have a
+  <dfn element-attr for="a,link,links"><code>rev</code></dfn> attribute, which is used to describe
+  a <a>reverse link</a> relationship from the resource specified by the <{links/href}> to the
+  current document. If present, the value of this attribute must be a <a>set of space-separated
+  tokens</a>. Like the <{links/rel}> attribute, [[#sec-link-types]] describes the <a>allowed
+  keywords and their meanings</a> for the <{links/rev}> attribute. Both the <{links/rel}> and
+  <{links/rev}> attributes may be present on the same element.
+
+  <dfn lt="reverse link|Reverse links">Reverse links</dfn> are a way to express the reverse
+  directional relationship of a link. In contrast to the <{links/rel}> attribute, whose value
+  conveys a forward directional relationship ("how is the link related to me"), the <{links/rev}>
+  attribute allows for similiar relationships to be expressed in the reverse direction ("how am I
+  related to this link"). These values can enable user agents to build a more comprehensive map of
+  linked documents.
+
+  <div class="example">
+    Given two documents, each containing a chapter of a book, the links between them could be
+    described with the <{link/rel}> and <{links/rev}> attributes as follows:
+
+    Document with URL "chapter1.html"
+    <pre highlight="html">&lt;link href="chapter2.html" rel="next" rev="prev"&gt;</pre>
+
+    Document with URL "chapter2.html"
+    <pre highlight="html">
+    &lt;link href="chapter1.html" rel="prev" rev="next"&gt;
+    &lt;link href="chapter3.html" rel="next" rev="prev"&gt;
+    </pre>
+
+    From chapter1.html, the link to chapter2.html is the "<code>next</code>" chapter in the series
+    in the forward direction, and the "<code>previous</code>" chapter in the reverse diretion (from
+    chapter2.html to chapter1.html).
+  </div>
+
+  <div class="example">
+    The links in a table of contents document might be described using <{links/rel}> and
+    <{links/rev}> as follows:
+
+    <pre highlight="html">
+    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="chapter1.html" rev="toc" rel="next"&gt;chapter 1&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="chapter2.html" rev="toc"&gt;&lt;/a&gt;chapter 2&lt;/li&gt;
+      &lt;li&gt;&lt;a href="chapter3.html" rev="toc"&gt;&lt;/a&gt;chapter 3&lt;/li&gt;
+    &lt;/ol&gt;
+    </pre>
+
+    From the table of contents, the "<code>next</code>" logical path is to the first chapter,
+    expressed using <{links/rel}>. Each chapter link has a "<code>toc</code>" <{links/rev}> value
+    which indicates that the current document is the table of contents document for every chapter.
+  </div>
+
+  <!-- END W3C END -->
 
   The <dfn element-attr for="a,links"><code>hreflang</code></dfn> attribute on
   <{a}> elements that create <a>hyperlinks</a>, if present, gives
@@ -621,7 +680,7 @@
 
     </li>
 
-    <li>If |subject|'s [=link types=] include the `noreferrer` or <{link/type/noopener}> keyword,
+    <li>If |subject|'s [=link types=] include the `noreferrer` or <{link/noopener}> keyword,
     and |replace| is true, then [=disowned its opener|disown target's opener=].</li>
 
     <li><a>Parse</a> the [=url/URL=] given by
@@ -872,7 +931,7 @@
 
   Keywords that are <dfn>body-ok</dfn> affect whether <{link}> elements are
   <a>allowed in the body</a>. The <a>body-ok</a> keywords defined by this specification are
-  <code>prefetch</code>, and <code>stylesheet</code>. Other specifications
+  <code>prefetch</code>, and <{link/stylesheet}>. Other specifications
   can also define <span>body-ok</span> keywords.
 
   <table>
@@ -891,7 +950,7 @@
     <tbody>
 
     <tr>
-      <td><code>alternate</code></td>
+      <td><{link/alternate}></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -899,7 +958,7 @@
     </tr>
 
     <tr>
-      <td><code>author</code></td>
+      <td><{link/author}></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -907,7 +966,7 @@
     </tr>
 
     <tr>
-      <td><code>bookmark</code></td>
+      <td><{link/bookmark}></td>
       <td><em>not allowed</em></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -915,15 +974,15 @@
     </tr>
 
     <tr>
-      <td><code data-x="rel-external">external</code></td>
+      <td><code>external</code></td>
       <td><em>not allowed</em></td>
-      <td><span data-x="hyperlink annotation">Annotation</span></td>
+      <td>Annotation</td>
       <td class="no"> &middot; </td>
       <td>Indicates that the referenced document is not part of the same site as the current document.</td>
     </tr>
 
     <tr>
-      <td><code>help</code></td>
+      <td><{link/help}></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -931,7 +990,7 @@
     </tr>
 
     <tr>
-      <td><code>icon</code></td>
+      <td><{link/icon}></td>
       <td><a>External Resource</a></td>
       <td><em>not allowed</em></td>
       <td class="no"> &middot; </td>
@@ -939,7 +998,7 @@
     </tr>
 
     <tr>
-      <td><code>license</code></td>
+      <td><{link/license}></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -947,7 +1006,7 @@
     </tr>
 
     <tr>
-      <td><code>next</code></td>
+      <td><{link/next}></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -955,7 +1014,7 @@
     </tr>
 
     <tr>
-      <td><code>nofollow</code></td>
+      <td><{link/nofollow}></td>
       <td><em>not allowed</em></td>
       <td><a>Annotation</a></td>
       <td class="no"> &middot; </td>
@@ -963,7 +1022,7 @@
     </tr>
 
     <tr>
-      <td><a attr-value for="link/type"><code>noreferrer</code></a></td>
+      <td><{link/noreferrer}></td>
       <td><em>not allowed</em></td>
       <td><a>Annotation</a></td>
       <td class="no"> &middot; </td>
@@ -971,7 +1030,7 @@
     </tr>
 
     <tr>
-      <td><{link/type/noopener}></td>
+      <td><{link/noopener}></td>
       <td><em>not allowed</em></td>
       <td><a>Annotation</a></td>
       <td class="no"> &middot; </td>
@@ -987,7 +1046,7 @@
     </tr>
 
     <tr>
-      <td><code>prev</code></td>
+      <td><{link/prev}></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -995,7 +1054,7 @@
     </tr>
 
     <tr>
-      <td><code>search</code></td>
+      <td><{link/search}></td>
       <td><a>hyperlink</a></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -1003,7 +1062,7 @@
     </tr>
 
     <tr>
-      <td><code>stylesheet</code></td>
+      <td><{link/stylesheet}></td>
       <td><a>External Resource</a></td>
       <td><em>not allowed</em></td>
       <td class="no"> &middot; </td>
@@ -1011,7 +1070,7 @@
     </tr>
 
     <tr>
-      <td><code>tag</code></td>
+      <td><{link/tag}></td>
       <td><em>not allowed</em></td>
       <td><a>hyperlink</a></td>
       <td class="no"> &middot; </td>
@@ -1021,26 +1080,40 @@
     </tbody>
   </table>
 
-<h5 id="link-type-alternate">Link type "<dfn attr-value for="link/type"><code>alternate</code></dfn>"</h5>
+<h5 id="link-type-alternate">Link type "<dfn element-state for="link"><code>alternate</code></dfn>"</h5>
 
-  The <code>alternate</code> keyword may be used with <{link}>,
-  <{a}>, and <{area}> elements.
+  The <{link/alternate}> keyword may be used with <{link}>, <{a}>, and <{area}> elements.
 
   The meaning of this keyword depends on the values of the other attributes.
 
   <dl class="switch">
 
     <dt>If the element is a <{link}> element and the <{link/rel}>
-    attribute also contains the keyword <code>stylesheet</code></dt>
+    attribute also contains the keyword <{link/stylesheet}></dt>
 
     <dd>
 
-    The <code>alternate</code> keyword modifies the meaning of the <code>stylesheet</code> keyword in the way described for that keyword. The
-    <code>alternate</code> keyword does not create a link of its own.
+    The <{link/alternate}> keyword modifies the meaning of the <{link/stylesheet}> keyword in the way described for that keyword. The
+    <{link/alternate}> keyword does not create a link of its own.
+
+    <div class="example">
+      Here, a set of <{link}> elements provide some style sheets:
+
+      <pre>&lt;!-- a persistent style sheet -->
+      &lt;link rel="stylesheet" href="default.css">
+
+      &lt;!-- the preferred alternate style sheet -->
+      &lt;link rel="stylesheet" href="green.css" title="Green styles">
+
+      &lt;!-- some alternate style sheets -->
+      &lt;link rel="alternate stylesheet" href="contrast.css" title="High contrast">
+      &lt;link rel="alternate stylesheet" href="big.css" title="Big fonts">
+      &lt;link rel="alternate stylesheet" href="wide.css" title="Wide screen"></pre>
+    </div>
 
     </dd>
 
-    <dt>If the <code>alternate</code> keyword is used with the <code>type</code> attribute set to the value <code>application/rss+xml</code> or the value <code>application/atom+xml</code></dt>
+    <dt>If the <{link/alternate}> keyword is used with the <code>type</code> attribute set to the value <code>application/rss+xml</code> or the value <code>application/atom+xml</code></dt>
 
     <dd>
 
@@ -1048,7 +1121,7 @@
     necessarily syndicating exactly the same content as the current page).
 
     The first <{link}> or <{a}> element in the document (in <a>tree order</a>) with the
-    <code>alternate</code> keyword used with the <code>type</code> attribute set to the value
+    <{link/alternate}> keyword used with the <code>type</code> attribute set to the value
     <code>application/rss+xml</code> or the value <code>application/atom+xml</code>
     must be treated as the default syndication feed for the purposes of feed autodiscovery.
 
@@ -1081,26 +1154,31 @@
 
     The nature of the referenced document is given by the <code>hreflang</code>, and <code>type</code> attributes.
 
-    If the <code>alternate</code> keyword is used with the <code>hreflang</code> attribute, and that attribute's value differs
+    If the <{link/alternate}> keyword is used with the <code>hreflang</code> attribute, and that attribute's value differs
     from the <a>document element</a>'s <a>language</a>, it indicates that the referenced
     document is a translation.
 
-    If the <code>alternate</code> keyword is used with the <code>type</code> attribute, it indicates that the referenced document is
+    If the <{link/alternate}> keyword is used with the <code>type</code> attribute, it indicates that the referenced document is
     a reformulation of the current document in the specified format.
 
-    The <code>hreflang</code> and <code>type</code> attributes can be combined when specified with the <code>alternate</code> keyword.
+    The <code>hreflang</code> and <code>type</code> attributes can be combined when specified with the <{link/alternate}> keyword.
 
     <div class="example">
-      For example, the following link is a French translation that uses the PDF format:
+      The following example shows how you can specify versions of the page that use alternative
+      formats, are aimed at other languages, and that are intended for other media:
 
-      <pre highlight="html">
-&lt;link rel=alternate type=application/pdf hreflang=fr href=manual-fr&gt;
-    </pre>
+      <pre>&lt;link rel=alternate href="/en/html" hreflang=en type=text/html title="English HTML">
+      &lt;link rel=alternate href="/fr/html" hreflang=fr type=text/html title="French HTML">
+      &lt;link rel=alternate href="/en/html/print" hreflang=en type=text/html media=print title="English HTML (for printing)">
+      &lt;link rel=alternate href="/fr/html/print" hreflang=fr type=text/html media=print title="French HTML (for printing)">
+      &lt;link rel=alternate href="/en/pdf" hreflang=en type=application/pdf title="English PDF">
+      &lt;link rel=alternate href="/fr/pdf" hreflang=fr type=application/pdf title="French PDF">
+      </pre>
 
     </div>
 
     This relationship is transitive — that is, if a document links to two other documents
-    with the link type "<code>alternate</code>", then, in addition to implying
+    with the link type "<{link/alternate}>", then, in addition to implying
     that those documents are alternative representations of the first document, it is also implying
     that those two documents are alternative representations of each other.
 
@@ -1108,17 +1186,17 @@
 
   </dl>
 
-<h5 id="link-type-author">Link type "<dfn attr-value for="link/type"><code>author</code></dfn>"</h5>
+<h5 id="link-type-author">Link type "<dfn element-state for="link"><code>author</code></dfn>"</h5>
 
-  The <code>author</code> keyword may be used with <{link}>,
+  The <{link/author}> keyword may be used with <{link}>,
   <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  For <{a}> and <{area}> elements, the <code>author</code>
+  For <{a}> and <{area}> elements, the <{link/author}>
   keyword indicates that the referenced document provides further information about the author of
   the nearest <{article}> element ancestor of the element defining the hyperlink, if there
   is one, or of the page as a whole, otherwise.
 
-  For <{link}> elements, the <code>author</code> keyword indicates
+  For <{link}> elements, the <{link/author}> keyword indicates
   that the referenced document provides further information about the author for the page as a
   whole.
 
@@ -1127,14 +1205,14 @@
   </p>
 
   <strong>Synonyms</strong>: For historical reasons, user agents must also treat
-  <{link}>, <{a}>, and <{area}> elements that have a <{links/rev}> attribute with the value "<code>made</code>" as having the <code>author</code> keyword specified as a link relationship.
+  <{link}>, <{a}>, and <{area}> elements that have a <{links/rev}> attribute with the value "<code>made</code>" as having the <{link/author}> keyword specified as a link relationship.
 
-<h5 id="link-type-bookmark">Link type "<dfn attr-value for="link/type"><code>bookmark</code></dfn>"</h5>
+<h5 id="link-type-bookmark">Link type "<dfn element-state for="link"><code>bookmark</code></dfn>"</h5>
 
-  The <code>bookmark</code> keyword may be used with <{a}> and
+  The <{link/bookmark}> keyword may be used with <{a}> and
   <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  The <code>bookmark</code> keyword gives a permalink for the nearest
+  The <{link/bookmark}> keyword gives a permalink for the nearest
   ancestor <{article}> element of the linking element in question, or of <a lt="associate section">the section the linking element is most closely associated with</a>, if
   there are no ancestor <{article}> elements.
 
@@ -1166,12 +1244,12 @@
     </pre>
   </div>
 
-<h5 id="link-type-help">Link type "<dfn attr-value for="link/type"><code>help</code></dfn>"</h5>
+<h5 id="link-type-help">Link type "<dfn element-state for="link"><code>help</code></dfn>"</h5>
 
-  The <code>help</code> keyword may be used with <{link}>,
+  The <{link/help}> keyword may be used with <{link}>,
   <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  For <{a}> and <{area}> elements, the <code>help</code>
+  For <{a}> and <{area}> elements, the <{link/help}>
   keyword indicates that the referenced document provides further help information for the parent of
   the element defining the hyperlink, and its children.
 
@@ -1186,14 +1264,14 @@
 
   </div>
 
-  For <{link}> elements, the <code>help</code> keyword indicates that
+  For <{link}> elements, the <{link/help}> keyword indicates that
   the referenced document provides help for the page as a whole.
 
-  For <{a}> and <{area}> elements, on some browsers, the <code>help</code> keyword causes the link to use a different cursor.
+  For <{a}> and <{area}> elements, on some browsers, the <{link/help}> keyword causes the link to use a different cursor.
 
-<h5 id="link-type-icon">Link type "<dfn value for="link/type"><code>icon</code></dfn>"</h5>
+<h5 id="link-type-icon">Link type "<dfn element-state for="link"><code>icon</code></dfn>"</h5>
 
-  The <code>icon</code> keyword may be used with <{link}> elements.
+  The <{link/icon}> keyword may be used with <{link}> elements.
   This keyword creates an <a>external resource link</a>.
 
   The specified resource is an icon representing the page or site, and should be used by the user
@@ -1213,20 +1291,10 @@
   are encouraged to do so.
   </p>
 
-  There is no default type for resources given by the <code>icon</code> keyword.
+  There is no default type for resources given by the <{link/icon}> keyword.
   However, for the purposes of <a>determining the type of the resource</a>, user agents must expect the resource to be an image.
 
-  The <dfn element-attr for="link"><code>sizes</code></dfn> attribute gives the sizes of icons
-  for visual media. Its value, if present, is merely advisory. User agents may use the value to
-  decide which icon(s) to use if multiple icons are available.
-
-  If specified, the attribute must have a value that is an <a>unordered set of unique
-  space-separated tokens</a> which are <a>ASCII case-insensitive</a>. Each value must be
-  either an <a>ASCII case-insensitive</a> match for the string "<code>any</code>", or a value that consists of two <a>valid non-negative integers</a> that do not have a leading U+0030 DIGIT
-  ZERO (0) character and that are separated by a single U+0078 LATIN SMALL LETTER X or U+0058 LATIN
-  CAPITAL LETTER X character.
-
-  The keywords represent icon sizes in raw pixels (as opposed to CSS pixels).
+  The <{link/sizes}> keyword represent icon sizes in raw pixels (as opposed to CSS pixels).
 
   <p class="note">
     An icon that is 50 CSS pixels wide intended for displays with a device pixel
@@ -1273,7 +1341,7 @@
   The keywords specified on the <code>sizes</code> attribute must not
   represent icon sizes that are not actually available in the linked resource.
 
-  In the absence of a <code>link</code> with the <code>icon</code> keyword, for
+  In the absence of a <code>link</code> with the <{link/icon}> keyword, for
   {{Document}} objects obtained over HTTP or HTTPS, user agents may instead run these
   steps <a>in parallel</a>:
 
@@ -1290,7 +1358,7 @@
     <li>Let <var>response</var> be the result of <a>fetching</a> <var>request</var>.</li>
 
     <li>Use <var>response</var>'s unsafe response as an icon as if it had been
-    declared using the <code>icon</code> keyword.</li>
+    declared using the <{link/icon}> keyword.</li>
   </ol>
 
   <div class="example">
@@ -1316,18 +1384,18 @@
 
   </div>
 
-  For historical reasons, the <code>icon</code> keyword may be preceded by the
+  For historical reasons, the <{link/icon}> keyword may be preceded by the
   keyword "<code>shortcut</code>". If the "<code>shortcut</code>" keyword is
   present, the <{link/rel}> attribute's entire value must be an
   <a>ASCII case-insensitive</a> match for the string "<code>shortcut&nbsp;icon</code>" (with a single U+0020 SPACE character between the tokens and
   no other [=space characters=]).
 
-<h5 id="link-type-license">Link type "<dfn attr-value for="link/type"><code>license</code></dfn>"</h5>
+<h5 id="link-type-license">Link type "<dfn element-state for="link"><code>license</code></dfn>"</h5>
 
-  The <code>license</code> keyword may be used with <{link}>,
+  The <{link/license}> keyword may be used with <{link}>,
   <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  The <code>license</code> keyword indicates that the referenced document
+  The <{link/license}> keyword indicates that the referenced document
   provides the copyright license terms under which the main content of the current document is
   provided.
 
@@ -1369,7 +1437,7 @@
 &lt;/html&gt;
     </pre>
 
-    In this case the <code>license</code>
+    In this case the <{link/license}>
     applies to just the photo (the main content of the document), not
     the whole document. In particular not the design of the page
     itself, which is covered by the copyright given at the bottom of
@@ -1382,41 +1450,41 @@
   </div>
 
   <strong>Synonyms</strong>: For historical reasons, user agents must also treat the keyword
-  "<code>copyright</code>" like the <code>license</code> keyword.
+  "<code>copyright</code>" like the <{link/license}> keyword.
 
-<h5 id="link-type-nofollow">Link type "<dfn attr-value for="link/type"><code>nofollow</code></dfn>"</h5>
+<h5 id="link-type-nofollow">Link type "<dfn element-state for="link"><code>nofollow</code></dfn>"</h5>
 
-  The <code>nofollow</code> keyword may be used with <{a}> and
+  The <{link/nofollow}> keyword may be used with <{a}> and
   <{area}> elements. This keyword does not create a <a>hyperlink</a>, but <a>annotates</a> any other hyperlinks created by the element (the
   implied hyperlink, if no other keywords create one).
 
-  The <code>nofollow</code> keyword indicates that the link is not endorsed
+  The <{link/nofollow}> keyword indicates that the link is not endorsed
   by the original author or publisher of the page, or that the link to the referenced document was
   included primarily because of a commercial relationship between people affiliated with the two
   pages.
 
-<h5 id="link-type-noreferrer">Link type "<dfn attr-value for="link/type"><code>noreferrer</code></dfn>"</h5>
+<h5 id="link-type-noreferrer">Link type "<dfn element-state for="link"><code>noreferrer</code></dfn>"</h5>
 
-  The <a attr-value for="link/type"><code>noreferrer</code></a> keyword may be used with <{a}> and
+  The <{link/noreferrer}> keyword may be used with <{a}> and
   <{area}> elements. This keyword does not create a <a>hyperlink</a>, but <a>annotates</a> any other hyperlinks created by the element (the
   implied hyperlink, if no other keywords create one).
 
   It indicates that no referrer information is to be leaked when following the link.
 
   If a user agent follows a link defined by an <{a}> or <{area}> element that
-  has the <a attr-value for="link/type"><code>noreferrer</code></a> keyword, the user agent must set their
+  has the <{link/noreferrer}> keyword, the user agent must set their
   <a>request</a>'s <a>referrer</a> to "<code>no-referrer</code>".
 
-  <p class="note">For historical reasons, the <{link/type/noreferrer}> keyword implies the behavior
-  associated with the <{link/type/noopener}> keyword when present on a hyperlink that
+  <p class="note">For historical reasons, the <{link/noreferrer}> keyword implies the behavior
+  associated with the <{link/noopener}> keyword when present on a hyperlink that
   [=creating a new browsing context|creates=] a new [=browsing context=]. That is,
   <code highlight="html">&lt;a href="..." rel="noreferrer" target="_blank"></code> has the same
   behavior as
   <code highlight="html">&lt;a href="..." rel="noreferrer noopener" target="_blank"></code>.</p>
 
-<h5 id="link-type-noopener">Link type "<dfn attr-value for="link/type"><code>noopener</code></dfn>"</h5>
+<h5 id="link-type-noopener">Link type "<dfn element-state for="link"><code>noopener</code></dfn>"</h5>
 
-  The <{link/type/noopener}> keyword may be used with <{a}> and <{area}> elements. This keyword does
+  The <{link/noopener}> keyword may be used with <{a}> and <{area}> elements. This keyword does
   not create a [=hyperlink=], but [=annotates=] any other hyperlinks created by the element (the
   implied hyperlink, if no other keywords create one).
 
@@ -1424,35 +1492,35 @@
   [=hyperlink=] will have [=disowned its opener=], which means that its
   {{Window/opener|window.opener}} property will be `null`.
 
-<h5 id="link-type-search">Link type "<dfn attr-value for="link/type"><code>search</code></dfn>"</h5>
+<h5 id="link-type-search">Link type "<dfn element-state for="link"><code>search</code></dfn>"</h5>
 
-  The <code>search</code> keyword may be used with <{link}>,
+  The <{link/search}> keyword may be used with <{link}>,
   <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  The <code>search</code> keyword indicates that the referenced document
+  The <{link/search}> keyword indicates that the referenced document
   provides an interface specifically for searching the document and its related resources.
 
   <p class="note">
     OpenSearch description documents can be used with <{link}> elements and
-  the <code>search</code> link type to enable user agents to autodiscover search
+  the <{link/search}> link type to enable user agents to autodiscover search
   interfaces. [[!OPENSEARCH]]
   </p>
 
-<h5 id="link-type-stylesheet">Link type "<dfn attr-value for="link/type"><code>stylesheet</code></dfn>"</h5>
+<h5 id="link-type-stylesheet">Link type "<dfn element-state for="link"><code>stylesheet</code></dfn>"</h5>
 
-  The <code>stylesheet</code> keyword may be used with <{link}> elements. This keyword creates an
+  The <{link/stylesheet}> keyword may be used with <{link}> elements. This keyword creates an
   <a>external resource link</a> that contributes to the styling processing model. This keyword is
   <a>body-ok</a>.
 
   The specified resource is a resource that describes how to present the document. Exactly how
   the resource is to be processed depends on the actual type of the resource.
 
-  If the <code>alternate</code> keyword is also specified on the
+  If the <{link/alternate}> keyword is also specified on the
   <{link}> element, then <dfn lt="an alternative stylesheet|the link is an alternative stylesheet">the link is an alternative stylesheet</dfn>; in this case,
   the <{link/title}> attribute must be specified on the <{link}>
   element, with a non-empty value.
 
-  The default type for resources given by the <code>stylesheet</code> keyword is
+  The default type for resources given by the <{link/stylesheet}> keyword is
   <code>text/css</code>.
 
     The appropriate times to <a>obtain</a> the resource are:
@@ -1542,12 +1610,12 @@
             succeeds, return the resulting encoding and abort these steps. [[!ENCODING]]
         2. Otherwise, return the <a>document's character encoding</a>. [[!DOM]]
 
-<h5 id="link-type-tag">Link type "<dfn attr-value for="link/type"><code>tag</code></dfn>"</h5>
+<h5 id="link-type-tag">Link type "<dfn element-state for="link"><code>tag</code></dfn>"</h5>
 
-  The <code>tag</code> keyword may be used with <{a}> and
+  The <{link/tag}> keyword may be used with <{a}> and
   <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  The <code>tag</code> keyword indicates that the <em>tag</em> that the
+  The <{link/tag}> keyword indicates that the <em>tag</em> that the
   referenced document represents applies to the current document.
 
   <p class="note">
@@ -1584,7 +1652,7 @@
   </div>
 
   <div class="example">
-    In <em>this</em> document, there are two articles. The "<code>tag</code>" link, however, applies
+    In <em>this</em> document, there are two articles. The "<{link/tag}>" link, however, applies
     to the whole page (and would do so wherever it was placed, including if it was within the
     <{article}> elements).
 
@@ -1624,26 +1692,26 @@
 
   A document may be part of multiple sequences.
 
-<h6 id="link-type-next">Link type "<dfn attr-value for="link/type"><code>next</code></dfn>"</h6>
+<h6 id="link-type-next">Link type "<dfn element-state for="link"><code>next</code></dfn>"</h6>
 
-  The <code>next</code> keyword may be used with <{link}>,
+  The <{link/next}> keyword may be used with <{link}>,
   <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  The <code>next</code> keyword indicates that the document is part of a
+  The <{link/next}> keyword indicates that the document is part of a
   sequence, and that the link is leading to the document that is the next logical document in the
   sequence.
 
-<h6 id="link-type-prev">Link type "<dfn attr-value for="link/type"><code>prev</code></dfn>"</h6>
+<h6 id="link-type-prev">Link type "<dfn element-state for="link"><code>prev</code></dfn>"</h6>
 
-  The <code>prev</code> keyword may be used with <{link}>,
+  The <{link/prev}> keyword may be used with <{link}>,
   <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  The <code>prev</code> keyword indicates that the document is part of a
+  The <{link/prev}> keyword indicates that the document is part of a
   sequence, and that the link is leading to the document that is the previous logical document in
   the sequence.
 
   <strong>Synonyms</strong>: For historical reasons, user agents must also treat the keyword
-  "<code>previous</code>" like the <code>prev</code> keyword.
+  "<code>previous</code>" like the <{link/prev}> keyword.
 
 <h5 id="sec-other-link-types"><dfn>Other link types</dfn></h5>
 

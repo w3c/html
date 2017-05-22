@@ -832,7 +832,7 @@
     bitmaps (APNGs, animated GIFs), animated vector graphics (XML files with an SVG <a>document element</a>
     that use declarative SMIL animation), and so forth. However, these definitions preclude SVG
     files with script, multipage PDF files, interactive MNG files, HTML documents, plain text
-    documents, and so forth. [[!PNG]] [[!GIF]] [[!JPEG]] [[!PDF]] [[!XML]] [[!APNG]] [[!SVG]] [[!MNG]]
+    documents, and so forth. [[!PNG]] [[!GIF]] [[!JPEG]] [[!PDF]] [[!XML]] [[!APNG]] [[!SVG11]] [[!MNG]]
   </p>
 
   If the <code>srcset</code> attribute is present,
@@ -8405,9 +8405,8 @@ zero or more <{track}> elements, then
     If the user agent can seek to anywhere in the <a>media resource</a>, e.g.,
   because it is a simple movie file and the user agent and the server support HTTP Range requests,
   then the attribute would return an object with one range, whose start is the time of the first
-  frame (the <a>earliest possible position</a>, typically zero), and whose end is the same as
-  the time of the first frame plus the <code>duration</code> attribute's
-  value (which would equal the time of the last frame, and might be positive Infinity).
+  frame (the <a>earliest possible position</a>, typically zero), and whose end is the
+  time of the last frame.
   </p>
 
   <p class="note">
@@ -8495,16 +8494,14 @@ zero or more <{track}> elements, then
     video.autoplay = true;
     video.controls = true;
     container.appendChild(video);
-    video.onloadedmetadata = function (event) {
-      for (var i = 0; i &lt; video.videoTracks.length; i += 1) {
-        if (video.videoTracks[i].kind == 'sign') {
-          var sign = document.createElement('video');
-          sign.src = url + '#track=' + video.videoTracks[i].id;
+    video.videoTracks.onaddtrack = function (event) {
+       if (event.track.kind == 'sign') {
+         var sign = document.createElement('video');
+         sign.src = url + '#track=' + event.track.id;
           sign.autoplay = true;
           container.appendChild(sign);
           return;
         }
-      }
     };
   }
 &lt;/script&gt;
@@ -11559,7 +11556,7 @@ red:89
 
   The <dfn element-attr for="area"><code>coords</code></dfn> attribute must, if specified,
   contain a <a>valid list of floating-point numbers</a>. This attribute gives the coordinates for the shape
-  described by the <code>shape</code> attribute. 
+  described by the <code>shape</code> attribute.
   The processing for this attribute is described as part of the <a>image map</a> processing model.
 
   In the <dfn state for="area" lt="Circle state|circle state">circle state</dfn>, <{area}> elements must
@@ -11980,19 +11977,19 @@ red:89
   XML fragment.
 
   When the SVG <{foreignObject}> element contains elements from the <a>HTML namespace</a>, such
-  elements must all be <a>flow content</a>. [[!SVG]]
+  elements must all be <a>flow content</a>. [[!SVG11]]
 
   The content model for SVG <a element for="svg"><code>title</code></a> elements inside <a>HTML documents</a> is
   <a>phrasing content</a>. (This further constrains the requirements given in the SVG specification.)
 
   The semantics of SVG elements are defined by the SVG specification and <a>other applicable
-  specifications</a>. [[!SVG]]
+  specifications</a>. [[!SVG11]]
 
 <h4 id="sec-dimension-attributes"><dfn>Dimension attributes</dfn></h4>
 
   <strong>Author requirements</strong>: The
   <dfn element-attr for="media,img,iframe,embed,object,video,input"><code>width</code></dfn> and
-  <dfn element-attr for="media,img,iframe,embed,object,video,input"><code>height</code></dfn> attributes 
+  <dfn element-attr for="media,img,iframe,embed,object,video,input"><code>height</code></dfn> attributes
   on <{img}>, <{iframe}>, <{embed}>, <{object}>, <{video}>, and, when their <code>type</code> attribute
   is in the <{input/Image|Image Button}> state, <{input}> elements may be
   specified to give the dimensions of the visual content of the element (the width and height
