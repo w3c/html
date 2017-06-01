@@ -862,7 +862,7 @@
   3. Return the result of applying the <a>URL parser</a> to <var>specifier</var> with
       <var>script</var>'s <a>base URL</a> as the base URL.
 
-<h6 id="hostresolveimportedmodule(referencingModule,-specifier)">HostResolveImportedModule(<var>referencingModule</var>, <var>specifier</var>)</h6>
+<h6 id="hostresolveimportedmodule">HostResolveImportedModule(<var>referencingModule</var>, <var>specifier</var>)</h6>
 
   JavaScript contains an implementation-defined <a>HostResolveImportedModule</a> abstract operation.
   User agents must use the following implementation: [[ECMA-262]]
@@ -1209,15 +1209,18 @@
           browsing context</a> is <var>B</var>.
 
           <p class="note">
-            Whether a <a>top-level browsing context</a> would benefit from having its rendering
-            updated depends on various factors, such as the update frequency. For example, if the
-            browser is attempting to achieve a 60 Hz refresh rate, then these steps are only
-            necessary every 60th of a second (about 16.7ms). If the browser finds that a
-            <a>top-level browsing context</a> is not able to sustain this rate, it might drop to a
-            more sustainable 30Hz for that set of {{Document}}s, rather than occasionally dropping
-            frames. (This specification does not mandate any particular model for when to update the
-            rendering.) Similarly, if a <a>top-level browsing context</a> is in the background, the
-            user agent might decide to drop that page to a much slower 4Hz, or even less.
+            There are many factors that affect the ideal update frequency for the <a>top-level
+            browsing context</a> including performance, power, background operation, quality of
+            user experience, refresh rate of display(s), etc. When in foreground and not
+            constrained by resources (i.e. performance, battery versus mains power, other resource
+            limits), the user agent normally prioritizes for maximum quality of user
+            experience for that set of {{Document}}s by matching update frequency and
+            <a lt='run the animation frame callbacks'>animation frame callback</a> rate to the
+            current refresh rate of the current display (usually 60Hz, but refresh rate may be
+            higher or lower). When accommodating constraints on resources, the update frequency
+            might automatically run at a lower rate. Also, if a <a>top-level browsing context</a>
+            is in the background, the user agent might decide to drop that page to a much slower
+            4Hz, or even less.
           </p>
 
           <p class="note">
@@ -1225,8 +1228,11 @@
             <a>tasks</a> are executed immediately after each other, with only
             <a>microtask checkpoints</a> interleaved (and without, e.g.,
             <a lt='run the animation frame callbacks'>animation frame callbacks</a> interleaved).
-            For example, a user agent might wish to coalesce timer callbacks together, with no
-            intermediate rendering updates.
+            For example, a user agent might wish to coalesce callbacks together, with no
+            intermediate rendering updates. However, when are no constraints on resources,
+            there must not be an arbitrary permanent user agent limit on the update rate and
+            <a lt='run the animation frame callbacks'>animation frame callback</a> rate
+            (i.e., high refresh rate displays and/or low latency applications).
           </p>
       4. If there are a <a>nested browsing contexts</a> <var>B</var> that the user agent believes
           would not benefit from having their rendering updated at this time, then remove from
@@ -2069,7 +2075,7 @@
     U+0000 to U+00FF, each representing a binary byte with values 0x00 to 0xFF respectively, and
     converts it to its base64 representation, which it returns.
 
-    Throws an <code>InvalidCharacterError</code> exception if the input string contains any
+    Throws an {{InvalidCharacterError}} exception if the input string contains any
     out-of-range characters.
 
     </dd>
@@ -2083,7 +2089,7 @@
     representing a binary byte with values 0x00 to 0xFF respectively, corresponding to that binary
     data.
 
-    Throws an <code>InvalidCharacterError</code> exception if the input string is not valid
+    Throws an {{InvalidCharacterError}} exception if the input string is not valid
     base64 data.
 
     </dd>
@@ -2091,7 +2097,7 @@
   </dl>
 
   The <dfn method for="WindowBase64"><code>btoa()</code></dfn> method must throw an
-  <code>InvalidCharacterError</code> exception if the method's first argument contains any character
+  {{InvalidCharacterError}} exception if the method's first argument contains any character
   whose code point is greater than U+00FF. Otherwise, the user agent must convert that argument to a
   sequence of octets whose <var>n</var>th octet is the eight-bit representation of the code
   point of the <var>n</var>th character of the argument, and then must apply the base64
@@ -2114,12 +2120,12 @@
     from <var>input</var>.</li>
 
     <li>If the length of <var>input</var> divides by 4 leaving a remainder of 1, throw an
-    <code>InvalidCharacterError</code> exception and abort these steps.
+    {{InvalidCharacterError}} exception and abort these steps.
 
     <li>
 
     If <var>input</var> contains a character that is not in the following list of
-    characters and character ranges, throw an <code>InvalidCharacterError</code> exception and abort
+    characters and character ranges, throw an {{InvalidCharacterError}} exception and abort
     these steps:
 
     <ul class="brief">
@@ -2469,7 +2475,7 @@
         method is strongly discouraged.</strong>
       </p>
 
-        This method throws an <code>InvalidStateError</code> exception when invoked on
+        This method throws an {{InvalidStateError}} exception when invoked on
         <a>XML documents</a>.
     </dd>
   </dl>
@@ -2488,7 +2494,7 @@
     <li>
 
     If the method was invoked on an <a>XML document</a>, throw an
-    <code>InvalidStateError</code> exception and abort these steps.
+    {{InvalidStateError}} exception and abort these steps.
 
     </li>
 
@@ -2563,7 +2569,7 @@
     character. If necessary, calls the <code>open()</code> method
     implicitly first.
 
-    This method throws an <code>InvalidStateError</code> exception when invoked on <a>XML
+    This method throws an {{InvalidStateError}} exception when invoked on <a>XML
     documents</a>.
 
     </dd>
@@ -4341,7 +4347,7 @@
     any pixels missing in the original replaced by transparent black. These coordinates are in the
     source image's pixel coordinate space, <em>not</em> in CSS pixels.
 
-    Rejects the promise with an <code>InvalidStateError</code> exception if the source image is not in a valid
+    Rejects the promise with an {{InvalidStateError}} exception if the source image is not in a valid
     state (e.g., an <{img}> element that hasn't finished loading, or a
     <code>CanvasRenderingContext2D</code> object whose bitmap data has zero length along one or both
     dimensions, or an <code>ImageData</code> object whose data is <code>data</code> attribute has been neutered). Rejects the promise with a "{{SyntaxError}}" {{DOMException}} if the script is not allowed to access the image data of the source image (e.g., a
@@ -4388,13 +4394,13 @@
     <ol>
 
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
-      but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
+      but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
-      <li>If the <{img}> element is not <a state for="img">completely available</a>, then return a promise rejected with an <code>InvalidStateError</code> exception and abort these
+      <li>If the <{img}> element is not <a state for="img">completely available</a>, then return a promise rejected with an {{InvalidStateError}} exception and abort these
       steps.</li>
 
       <li>If the <{img}> element's media data is not a bitmap (e.g., it's a vector
-      graphic), then return a promise rejected with an <code>InvalidStateError</code> exception and abort these
+      graphic), then return a promise rejected with an {{InvalidStateError}} exception and abort these
       steps.</li>
 
       <li>Create a new <code>ImageBitmap</code> object.</li>
@@ -4421,13 +4427,13 @@
     <dd>
     <ol>
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
-      but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
+      but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
       <li>If the <{video}> element's <code>networkState</code> attribute is <code>NETWORK_EMPTY</code>, then return a promise rejected with an
-      <code>InvalidStateError</code> exception and abort these steps.</li>
+      {{InvalidStateError}} exception and abort these steps.</li>
 
       <li>If the <{video}> element's <code>readyState</code> attribute is either <code>HAVE_NOTHING</code> or <code>HAVE_METADATA</code>, then return a promise rejected with an
-      <code>InvalidStateError</code> exception and abort these steps.</li>
+      {{InvalidStateError}} exception and abort these steps.</li>
 
       <li>Create a new <code>ImageBitmap</code> object.</li>
 
@@ -4451,10 +4457,10 @@
     <dd>
     <ol>
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
-      but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
+      but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
       <li>If the <{canvas}> element's bitmap has either a horizontal dimension or a
-      vertical dimension equal to zero, then return a promise rejected with an <code>InvalidStateError</code> exception and
+      vertical dimension equal to zero, then return a promise rejected with an {{InvalidStateError}} exception and
       abort these steps.</li>
 
       <li>Create a new <code>ImageBitmap</code> object.</li>
@@ -4476,9 +4482,9 @@
     <dd>
     <ol>
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
-      but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
+      but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
-      <li>If <var>image</var> is <a for="Blob">closed</a>, then return a promise rejected with an <code>InvalidStateError</code>
+      <li>If <var>image</var> is <a for="Blob">closed</a>, then return a promise rejected with an {{InvalidStateError}}
       exception and abort these steps.</li>
 
       <li>Return a new promise, but continue running these steps
@@ -4513,11 +4519,11 @@
     <dd>
     <ol>
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
-      but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
+      but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
       <li>If the <var>image</var> object's <code>data</code>
       attribute has been neutered, return a promise rejected with an
-      <code>InvalidStateError</code> exception and abort these steps.</li>
+      {{InvalidStateError}} exception and abort these steps.</li>
 
       <li>Create a new <code>ImageBitmap</code> object.</li>
 
@@ -4534,11 +4540,11 @@
     <dd>
     <ol>
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
-      but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
+      but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
       <li>If the <code>CanvasRenderingContext2D</code> object's scratch bitmap has
       either a horizontal dimension or a vertical dimension equal to zero, then return a promise rejected with an
-      <code>InvalidStateError</code> exception and abort these steps.</li>
+      {{InvalidStateError}} exception and abort these steps.</li>
 
       <li>Create a new <code>ImageBitmap</code> object.</li>
 
@@ -4560,7 +4566,7 @@
     <dd>
     <ol>
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
-      but zero, return a promise rejected with an <code>IndexSizeError</code> exception and abort these steps.</li>
+      but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
       <li>Create a new <code>ImageBitmap</code> object.</li>
 

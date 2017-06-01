@@ -86,7 +86,7 @@ Rebases the PR on top of `master`; force-pushes it to the appropriate branch, th
 
 ## Specification parity
 
-This iThis is the process for monitoring the WHATWG version of the HTML specification.
+This is the process for monitoring the WHATWG version of the HTML specification.
 
 1. Each HTML editor assigns themselves a section of the HTML specification. This is recorded in the sources.html file within the HTML repo.
 2. A [diff of the specifications](https://diffofhtmls.herokuapp.com/) is assessed.

@@ -4,7 +4,7 @@ This document contains information about contributing to the HTML specification.
 
 ## Making a contribution
 
-The HTML specification is governed by the [W3C Patent Policy]((http://www.w3.org/Consortium/Patent-Policy-20040205/), and [Software and Document License](http://www.w3.org/Consortium/Legal/copyright-software). This ensures that the HTML standard will remain royalty free for everyone to use.
+The HTML specification is governed by the [W3C Patent Policy](http://www.w3.org/Consortium/Patent-Policy-20040205/), and [Software and Document License](http://www.w3.org/Consortium/Legal/copyright-software). This ensures that the HTML standard will remain royalty free for everyone to use.
 
 To make a substantive contribution to the HTML specification, you must either be a member of the [Web Platform Working Group](https://www.w3.org/WebPlatform/WG/) or have made a non-member patent licensing commitment.
 
@@ -26,7 +26,7 @@ Use the standard fork, branch, and pull request workflow to propose changes to t
 
 ### Branches and versions
 
-The `master` branch is the "work in progress" version of the HTML specification. It is available at [https://www.w3.org/TR/html/](https://www.w3.org/TR/html/).
+The `master` branch is the "work in progress" version of the HTML specification. It is available at [https://w3c.github.io/html/](https://w3c.github.io/html/)
 
 Once a year, the HTML editors create a new `<version>` branch for the HTML specification. It only contains features that the Working Group believes can be shipped as part of the W3C Recommendation. That branch becomes associated with a specific version of the HTML specification. For a *limited period* of time, the Editor Team only accepts editorial changes or removal of features at risks in this branch. It becomes frozen once that version of HTML becomes a W3C Recommendation. Unless you're targetting a specific version of HTML (and really, you shouldn't), pull requests MUST always be made against the `master` branch.
 
@@ -71,57 +71,62 @@ When making a contribution, these editorial conventions should be followed.
 Use markdown for contributions, unless otherwise stated.
 * Use [bikeshed definition list syntax](https://tabatkins.github.io/bikeshed/#markdown) where possible. E.g., prefer:
 
-      ```bikeshed
-      : define term
-      :: term's definition
-      ```
-      vs.
+```
+: define term
+:: term's definition
+```
 
-      ```html
-      <dl>
-        <dt>define term</dt>
-        <dd>term's definition</dd>
-      </dl>
-      ```
-      (unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
+vs.
+
+```html
+<dl>
+      <dt>define term</dt>
+      <dd>term's definition</dd>
+</dl>
+```
+
+(unless the `<dl>` needs a class attribute for styling i.e., `<dl class="domintro">`)
+
 ```markdown
-      * unordered list item
-      ```  
-      vs.
+* unordered list item
+```
 
-      ```html
-      <ul>
-        <li>unordered list item</li>
-      </ul>
-      ```
-      ----
+vs.
 
-      ```markdown
-      1. ordered list item
-      ```
-      vs.
+```html
+<ul>
+      <li>unordered list item</li>
+</ul>
+```
 
-      ```html
-      <ol>
-        <li>ordered list item</li>
-      </ol>
-      ```
-      ----
+----
+
+```markdown
+1. ordered list item
+```
+vs.
+
+```html
+<ol>
+      <li>ordered list item</li>
+</ol>
+```
+
+----
+
+```markdown
+newline separator
+
+between paragraphs
+```
+
+vs.
       
-      ```markdown
-      newline separator
+```html
+<p>newline separator</p>
 
-      between paragraphs
-      ```
-      vs.
-      
-      ```html
-      <p>newline separator</p>
-
-      <p>between paragraphs</p>
-      ```
-
-
+<p>between paragraphs</p>
+```
 
 ### Linking conventions
 
@@ -133,20 +138,21 @@ Use markdown for contributions, unless otherwise stated.
 * For informative references use `[[shortname]]`
 * Avoid breaking `<a>` (or `<dfn>`) text content across line breaks (note this is an exception to the above 100 character line-wrap best-practice). E.g., prefer:
 
-   ```html
-   here is a
-   <a>link that is not broken across lines</a>
-   making it easy to search/replace :)
-   ```
-   vs.
+```html
+here is a
+<a>link that is not broken across lines</a>
+making it easy to search/replace :)
+```
 
-   ```html
-   here is a <a>link that is sadly broken across
-   lines</a> making it much harder to search/replace
-   ```
+vs.
+
+```html
+here is a <a>link that is sadly broken across
+lines</a> making it much harder to search/replace
+```
 
 ### Protected content
 
 Parts of the HTML specification are protected to prevent them being overwritten. Protected content is identified using comments, as follows:
-`<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`
-Please do not change these parts of the specification withought [filing an issue](https://github.com/w3c/tml/issues)
+`<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`.
+Please do not change these parts of the specification without [filing an issue](https://github.com/w3c/tml/issues).

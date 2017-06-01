@@ -131,7 +131,7 @@
   type <{button}>, meaning they have the local name "<{button}>" and (implicitly as
   defined above) the <a>HTML namespace</a>.
 
-  Attribute names are said to be <dfn for="xml-compatible">XML-compatible</dfn> if they match the
+  Attribute names are said to be <dfn>XML-compatible</dfn> if they match the
   <code>[=xml/Name=]</code> production defined in XML and they contain no U+003A COLON
   characters (:). [[!XML]]
 
@@ -753,19 +753,26 @@
       specification. The following exception names are defined by WebIDL and used by this
       specification:
 
-      * <a><code>IndexSizeError</code></a>
-      * <a><code>HierarchyRequestError</code></a>
-      * <a><code>InvalidCharacterError</code></a>
-      * <a><code>NotFoundError</code></a>
-      * <a><code>NotSupportedError</code></a>
-      * <a><code>InvalidStateError</code></a>
-      * <a><code>SyntaxError</code></a>
-      * <a><code>InvalidAccessError</code></a>
-      * <a><code>SecurityError</code></a>
-      * <a><code>NetworkError</code></a>
-      * <a><code>QuotaExceededError</code></a>
-      * <a><code>TimeoutError</code></a>
-      * <a><code>DataCloneError</code></a>
+      * {{IndexSizeError}}
+      * {{HierarchyRequestError}}
+      * {{WrongDocumentError}}
+      * {{InvalidCharacterError}}
+      * {{NoModificationAllowedError}}
+      * {{NotFoundError}}
+      * {{NotSupportedError}}
+      * {{InvalidStateError}}
+      * {{SyntaxError}}
+      * {{InvalidModificationError}}
+      * {{NamespaceError}}
+      * {{InvalidAccessError}}
+      * {{SecurityError}}
+      * {{NetworkError}}
+      * {{AbortError}}
+      * {{URLMismatchError}}
+      * {{QuotaExceededError}}
+      * {{TimeoutError}}
+      * {{InvalidNodeTypeError}}
+      * {{DataCloneError}}
 
       When this specification requires a user agent to <dfn lt="date object|a new date object">create a {{Date}} object</dfn>
       representing a particular time (which could be the special value Not-a-Number), the
@@ -958,34 +965,10 @@
       * {{MutationObserver}} interface and <dfn export>mutation observers</dfn> in
         general
 
-      The term <a>throw</a> in this specification is used as defined in the DOM specification.
-      The following <a>DOMException</a> types are defined in the DOM specification: [[!DOM]]
-
-      * {{IndexSizeError}}
-      * {{HierarchyRequestError}}
-      * {{WrongDocumentError}}
-      * {{InvalidCharacterError}}
-      * {{NoModificationAllowedError}}
-      * {{NotFoundError}}
-      * {{NotSupportedError}}
-      * {{InvalidStateError}}
-      * {{SyntaxError}}
-      * {{InvalidModificationError}}
-      * {{NamespaceError}}
-      * {{InvalidAccessError}}
-      * {{SecurityError}}
-      * {{NetworkError}}
-      * {{AbortError}}
-      * {{URLMismatchError}}
-      * {{QuotaExceededError}}
-      * {{TimeoutError}}
-      * {{InvalidNodeTypeError}}
-      * {{DataCloneError}}
-
       <p class="example">
         For example, to <i>throw a {{TimeoutError}} exception</i>, a user agent would
         construct a <a>DOMException</a> object whose type was the string
-        "<code>TimeoutError</code>" (and whose code was the number 23, for legacy reasons) and
+        "{{TimeoutError}}" (and whose code was the number 23, for legacy reasons) and
         actually throw that object as an exception.
       </p>
 
@@ -1027,7 +1010,7 @@
       <code>keypress</code>". The terms "name" and "type" for events are synonymous.
 
       The following features are defined in the DOM Parsing and Serialization specification:
-      [[!DOMPARSING]]
+      [[!DOM-PARSING]]
 
       * {{Element/innerHTML}}
       * {{Element/outerHTML}}
@@ -1205,7 +1188,7 @@
       including in particular <a interface><code>FontFace</code></a> objects and the
       <a spec="css-font-loading-3">font source</a> concept. [[!CSS-FONTS-3]] [[CSS-FONT-LOADING-3]]
 
-      The following interface is defined in the SVG specification: [[!SVG]]
+      The following interface is defined in the SVG specification: [[!SVG11]]
 
       * {{SVGMatrix}}
 
@@ -1868,6 +1851,11 @@
   If the attribute is present, its value must either be the empty string or a value that is an
   <a>ASCII case-insensitive</a> match for the attribute's canonical name, with no leading or
   trailing white space.
+
+  <p class="note">
+    A boolean attribute without a value assigned to it (e.g. checked) is implicitly equivalent to
+    one that has the empty string assigned to it (i.e. checked=""). As a consequence, it represents the true value.
+  </p>
 
   <p class="note">
     The values "true" and "false" are not allowed on <a>boolean attributes</a>. To represent a false value,
@@ -3846,7 +3834,7 @@
   must be returned. If, on the other hand, it fails or returns an out of range value, or if the
   attribute is absent, the default value must be returned instead, or -1 if there is no
   default value. On setting, if the value is negative, the user agent must throw an
-  <code>IndexSizeError</code> exception. Otherwise, the given value must be converted to the
+  {{IndexSizeError}} exception. Otherwise, the given value must be converted to the
   shortest possible string representing the number as a <a>valid non-negative integer</a> and then
   that string must be used as the new content attribute value.
 
@@ -3869,7 +3857,7 @@
   successful, and the value is in the range 1 to 2147483647 inclusive, the resulting value must be
   returned. If, on the other hand, it fails or returns an out of range value, or if the attribute
   is absent, the default value must be returned instead, or 1 if there is no default value. On
-  setting, if the value is zero, the user agent must throw an <code>IndexSizeError</code>
+  setting, if the value is zero, the user agent must throw an {{IndexSizeError}}
   exception. Otherwise, first, if the new value is in the range 1 to 2147483647, then let
   <var>n</var> be the new value, otherwise let <var>n</var> be the default value, or 1 if there is
   no default value; then, <var>n</var> must be converted to the shortest possible string
@@ -4215,7 +4203,7 @@
       If <var>before</var> is omitted, null, or a number out of range, then <var>element</var> will
       be added at the end of the list.
 
-      This method will throw a <code>HierarchyRequestError</code> exception if <var>element</var> is
+      This method will throw a {{HierarchyRequestError}} exception if <var>element</var> is
       an ancestor of the element into which it is to be inserted.
     </dd>
 
@@ -4282,11 +4270,11 @@
   to the following algorithm:
 
   1. If <var>element</var> is an ancestor of the <{select}> element on which the
-      <code>HTMLOptionsCollection</code> is rooted, then throw a <code>HierarchyRequestError</code>
+      <code>HTMLOptionsCollection</code> is rooted, then throw a {{HierarchyRequestError}}
       exception and abort these steps.
   2. If <var>before</var> is an element, but that element isn't a descendant of the
       <{select}> element on which the <code>HTMLOptionsCollection</code> is rooted, then
-      throw a <code>NotFoundError</code> exception and abort these steps.
+      throw a {{NotFoundError}} exception and abort these steps.
   3. If <var>element</var> and <var>before</var> are the same element, then return and abort these
       steps.
   4. If <var>before</var> is a node, then let <var>reference</var> be that node. Otherwise, if

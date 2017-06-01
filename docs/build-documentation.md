@@ -26,7 +26,7 @@ Full installation information is available in the [Bikeshed documentation](https
 
 Tested on Windows 10.
 
-1.  Install [Python2.7](https://www.python.org/downloads/release/python-2713/) (32bit version) in the default location.
+1. Install [Python 2.7](https://www.python.org/downloads/) (32bit version) in the default location.
 2. In an elevated command prompt, run: setx /m PATH "%PATH%;C:\Python27;C:\Python27\Scripts"
 3. Download [Pip.py](https://bootstrap.pypa.io/get-pip.py).
 4. Run `python get-pip.py` where you downloaded the file (??)
@@ -36,7 +36,7 @@ Tested on Windows 10.
 
 ## Installing the multi-page script (optional)
 
-1. Install [Node.JS]()
+1. Install [Node.JS](https://nodejs.org)
 2. Clone the [multi-page repo](https://github.com/adrianba/multipage)
 3. Open a command prompt from the multi-page repo folder and run: npm install
 
