@@ -20,33 +20,34 @@ SHA=`git rev-parse --verify HEAD`
 
 echo $SSH_REPO
 
-# Clone the existing gh-pages for this repo into out/
+# Clone the existing gh-pages for this repo into publish/
 # Create a new empty branch if gh-pages doesn't exist yet (should only happen on first deploy)
-git clone $REPO out
-cd out
+git clone $REPO publish
+cd publish
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
 cd ..
 
 # Clean out existing contents
-rm -rf out/**/* || exit 0
+rm -rf publish/**/* || exit 0
 
-cp single-page.html ./out/
-mkdir ./out/fonts
-mkdir ./out/images
-mkdir ./out/styles
-cp fonts/* ./out/fonts
-cp images/* ./out/images
-cp styles/* ./out/styles
-cp entities.dtd ./out/
-cp entities.json ./out/
+cp single-page.html ./publish/
+cp out/* ./publish/
+mkdir ./publish/fonts
+mkdir ./publish/images
+mkdir ./publish/styles
+cp fonts/* ./publish/fonts
+cp images/* ./publish/images
+cp styles/* ./publish/styles
+cp entities.dtd ./publish/
+cp entities.json ./publish/
 
 # Now let's go have some fun with the cloned repo
-cd out
+cd public
 git init
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
-# If there are no changes to the compiled out (e.g. this is a README update) then just bail.
+# If there are no changes to the compiled publish (e.g. this is a README update) then just bail.
 if [ -z `git diff --quiet` ]; then
     echo "No changes to the output on this push; exiting."
     exit 0
