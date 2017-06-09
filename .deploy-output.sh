@@ -31,6 +31,7 @@ cd ..
 rm -rf publish/**/* || exit 0
 
 cp single-page.html ./publish/
+cp out/* ./publish/
 mkdir -p ./publish/fonts
 mkdir -p ./publish/images
 mkdir -p ./publish/styles
@@ -40,11 +41,6 @@ cp styles/* ./publish/styles
 cp entities.dtd ./publish/
 cp entities.json ./publish/
 
-ls publish/
-
-cp out/* ./publish/
-
-ls publish/
 
 # Now let's go have some fun with the cloned repo
 cd public
