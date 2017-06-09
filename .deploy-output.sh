@@ -30,9 +30,11 @@ cd ..
 ls publish/
 
 # Clean out existing contents
-rm -rf publish/**/* || exit 0
+cd publish
 
-ls publish/
+rm -rf **/* || exit 0
+
+cd ..
 
 cp single-page.html ./publish/
 
