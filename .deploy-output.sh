@@ -20,51 +20,29 @@ SHA=`git rev-parse --verify HEAD`
 
 echo $SSH_REPO
 
-# Clone the existing gh-pages for this repo into publish/
+# Clone the existing gh-pages for this repo into out/
 # Create a new empty branch if gh-pages doesn't exist yet (should only happen on first deploy)
-git clone $REPO publish
-cd publish
-git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
-cd ..
 
-ls publish/
+cp single-page.html ./out/
 
-# Clean out existing contents
-cd publish
-
-rm -rf **/* || exit 0
-
-cd ..
-
-cp single-page.html ./publish/
-
-ls publish/
-
-cp out/* ./publish/
-mkdir ./publish/fonts
-mkdir ./publish/images
-mkdir ./publish/styles
-cp fonts/* ./publish/fonts
-cp images/* ./publish/images
-cp styles/* ./publish/styles
-cp entities.dtd ./publish/
-cp entities.json ./publish/
+mkdir ./out/fonts
+mkdir ./out/images
+mkdir ./out/styles
+cp fonts/* ./out/fonts
+cp images/* ./out/images
+cp styles/* ./out/styles
+cp entities.dtd ./out/
+cp entities.json ./out/
 
 # Now let's go have some fun with the cloned repo
-cd public
+cd out
 git init
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
-# If there are no changes to the compiled publish (e.g. this is a README update) then just bail.
-if [ -z `git diff --quiet` ]; then
-    echo "No changes to the output on this push; exiting."
-    exit 0
-fi
-
 # Commit the "changes", i.e. the new version.
 # The delta will show diffs between new and old versions.
-git add -A .
+git add .
 git commit -m "Built by Travis-CI: $STATUS"
 git status
 
@@ -80,4 +58,4 @@ eval `ssh-agent -s`
 ssh-add ../deploy_key
 
 # Now that we're all set up, we can push.
-git push $SSH_REPO $TARGET_BRANCH
+git push --force --quiet $SSH_REPO $TARGET_BRANCH
