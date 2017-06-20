@@ -702,6 +702,7 @@
     <dd><code>ismap</code> - Whether the image is a server-side image map</dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
+    <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dd><{img/longdesc}> - A url that provides a link to an expanded description of the image, defined in [[!html-longdesc]]</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a attr-value for="aria/role"><code>presentation</code></a> or <a attr-value for="aria/role"><code>none</code></a>
@@ -730,6 +731,7 @@
           readonly attribute unsigned long naturalHeight;
           readonly attribute boolean complete;
           readonly attribute DOMString currentSrc;
+          attribute DOMString referrerPolicy;
         };
       </pre>
     </dd>
@@ -865,6 +867,9 @@
   The <dfn element-attr for="img"><code>crossorigin</code></dfn> attribute is a <a>CORS
   settings attribute</a>. Its purpose is to allow images from third-party sites that allow
   cross-origin access to be used with <{canvas}>.
+
+  The <a>referrerpolicy</a> attribute is a <a>referrer policy attribute</a>. Its purpose is to
+  set the <a>referrer policy</a> used when <a>fetching</a> the image. [[!REFERRERPOLICY]]
 
   <hr />
 
@@ -2300,6 +2305,9 @@
   The <dfn attribute for="HTMLImageElement"><code>isMap</code></dfn> IDL attribute must <a>reflect</a>
   the <code>ismap</code> content attribute.
 
+  The <dfn attribute for="HTMLImageElement"><code>referrerPolicy</code></dfn> IDL attribute must
+  <a>reflect</a> the <{img/referrerpolicy}> content attribute, <a>limited to only known values</a>.
+
   The <dfn attribute for="HTMLImageElement"><code>longDesc</code></dfn> IDL attribute is defined in [[!html-longdesc]]. The IDL attribute must <a>reflect</a>
   the <{img/longdesc}> content attribute.
 
@@ -3577,6 +3585,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     to make payment requests</dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
+    <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a attr-value for="aria/role"><code>application</code></a>, <a attr-value for="aria/role"><code>document</code></a>, or <a attr-value for="aria/role"><code>img</code></a>.</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
@@ -3595,6 +3604,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
           attribute boolean allowPaymentRequest;
           attribute DOMString width;
           attribute DOMString height;
+          attribute DOMString referrerPolicy;
           readonly attribute Document? contentDocument;
           readonly attribute WindowProxy? contentWindow;
         };
@@ -4034,6 +4044,9 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
   create a nested <a>browsing context</a>, regardless of whether the specified initial
   contents are successfully used.
 
+  The <a>referrerpolicy</a> attribute is a <a>referrer policy attribute</a>. Its purpose is to set the referrer policy used when <a>processing the <code>iframe</code> attributes</a>.
+  [[!REFERRERPOLICY]]
+
   <hr />
 
   Descendants of <{iframe}> elements represent nothing. (In legacy user agents that do
@@ -4069,6 +4082,9 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   The <dfn attribute for="HTMLIFrameElement"><code>allowPaymentRequest</code></dfn> IDL
   attribute must <a>reflect</a> the <code>allowpaymentrequest</code> content attribute.
+
+  The <dfn attribute for="HTMLIFrameElement"><code>referrerPolicy</code></dfn> IDL attribute must
+  <a>reflect</a> the <code>referrerpolicy</code> content attribute, <a>limited to only known values</a>.
 
   The <dfn attribute for="HTMLIFrameElement"><code>contentDocument</code></dfn> IDL attribute must
   return the {{Document}} object of the <a>active document</a> of the <{iframe}> element's
@@ -11482,6 +11498,7 @@ red:89
     <dd><code>shape</code> - The kind of shape to be created in an <a>image map</a></dd>
     <dd><code>target</code> - <a>browsing context</a> for <a>hyperlink</a> <a>navigation</a></dd>
     <dd><code>type</code> - Hint for the type of the referenced resource</dd>
+    <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a attr-value for="aria/role"><code>link</code></a> role (default - <a><em>do not set</em></a>).</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
@@ -11501,6 +11518,7 @@ red:89
           [SameObject, PutForwards=value] readonly attribute DOMTokenList relList;
           attribute DOMString hreflang;
           attribute DOMString type;
+          attribute DOMString referrerPolicy;
         };
         HTMLAreaElement implements HTMLHyperlinkElementUtils;
       </pre>
@@ -11601,8 +11619,9 @@ red:89
   <code>hreflang</code>, and <code>type</code> attributes may be used to indicate to the user the
   likely nature of the target resource before the user follows the link.
 
-  The <code>target</code>, <code>download</code>, <{area/rel}>, <code>hreflang</code>, and
-  <code>type</code> attributes must be omitted if the <code>href</code> attribute is not present.
+  The <code>target</code>, <code>download</code>, <{area/rel}>, <code>hreflang</code>,
+  <code>type</code>, and <code>referrerpolicy</code> attributes must be omitted if the
+  <code>href</code> attribute is not present.
 
   The <a>activation behavior</a> of <{area}> elements is to run the following
   steps:
@@ -11648,6 +11667,9 @@ red:89
 
   The IDL attribute <dfn attribute for="HTMLAreaElement"><code>relList</code></dfn> must
   <a>reflect</a> the <{links/rel}> content attribute.
+
+  The IDL attribute <dfn attribute for="HTMLAreaElement"><code>referrerPolicy</code></dfn> must
+  <a>reflect</a> the <{links/referrerpolicy}> content attribute, <a>limited to only known values</a>.
 
   <hr />
 
