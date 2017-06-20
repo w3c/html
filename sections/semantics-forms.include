@@ -551,6 +551,8 @@
   <p class="note">See also the <a>implementation notes</a> regarding
   localization of form controls.</p>
 
+  <p class="warning">In locales where the clocks change from Standard Time to Daylight Saving Time, the same time can occur twice in the same day when the clocks are moved backwards. An <{input}> element with a the <{input/type}> of <code>datetime</code> or <code>time</code> cannot differentiate between two identical instances of time. If the accuracy of entered time is important, users should therefore be given the option to specify which occurance of the duplicated time they want to enter.</p>
+
 <h4 id="form-categories">Categories</h4>
 
   Mostly for historical reasons, elements in this section fall into several overlapping (but
@@ -957,6 +959,7 @@
 
   </dl>
 
+
   The <dfn attribute for="HTMLFormElement"><code>autocomplete</code></dfn> IDL attribute must
   <a>reflect</a> the content attribute of the same name, <a>limited to only known
   values</a>.
@@ -1129,6 +1132,7 @@
   result, and false if it returned a <i>negative</i> result.
 
 
+
   <div class="example">
     This example shows two search forms:
 
@@ -1294,6 +1298,7 @@ part of the form.</p>
     </dd>
 
   </dl>
+
 
   The <dfn attribute for="HTMLLabelElement"><code>htmlFor</code></dfn> IDL attribute must
   <a>reflect</a> the <{label/for}> content attribute.
@@ -3159,11 +3164,24 @@ part of the form.</p>
     </dl>
     </div>
 
+
   When an <{input}> element's <{input/type}> attribute is in
   the <{input/E-mail}> state, the rules in this section apply.
 
-  How the <{input/E-mail}> state operates depends on whether the
-  <code>multiple</code> attribute is specified or not.
+  User agents may transform the <a for="forms">values</a> for display and editing.
+  
+  User agents should convert punycode in the domain labels of
+  the <a for="forms">value</a> to Internationalized Domain Names in the display, and vice versa.
+
+  User agents should allow the user to set the <a for="forms">value</a> to a string that
+  is not a <a>valid e-mail address</a> or <a>valid e-mail address list</a>.
+  
+  User agents must not allow users to insert U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters
+  into the <a for="forms">value</a>.
+  
+  Some aspects of how the <{input/E-mail}> state operates depend on whether the
+  <code>multiple</code> attribute is present.
+
 
   <dl class="switch">
 
@@ -3176,13 +3194,12 @@ part of the form.</p>
     address given in the element's <a for="forms">value</a>.
 
     If the element is <a>mutable</a>, the user agent should allow the
-    user to change the e-mail address represented by its <a for="forms">value</a>. User agents may allow the user to set the <a for="forms">value</a> to a string that is not a <a>valid e-mail
-    address</a>. The user agent should act in a manner consistent with expecting the user to
-    provide a single e-mail address. User agents should allow the user to set the <a for="forms">value</a> to the empty string. User agents must not allow users to
-    insert U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters into the <a for="forms">value</a>. User agents may transform the <a for="forms">value</a> for display and editing; in particular, user agents should
-    convert punycode in the domain labels of the <a for="forms">value</a> to IDN in the display and
-    vice versa.
+    user to change the e-mail address represented by its <a for="forms">value</a>,
+    including setting the <a for="forms">value</a> to the empty string.
 
+    The user agent should act in a manner consistent with expecting the user to
+    provide a single e-mail address.
+    
     <strong>Constraint validation</strong>: While the user interface is representing input that
     the user agent cannot convert to punycode, the control is <a>suffering from bad
     input</a>.
@@ -3198,6 +3215,7 @@ part of the form.</p>
     of the element is neither the empty string nor a single <a>valid e-mail address</a>, the
     element is <a>suffering from a type mismatch</a>.
 
+
     </dd>
 
     <dt>When the <code>multiple</code> attribute <em>is</em> specified on
@@ -3206,24 +3224,23 @@ part of the form.</p>
     <dd>
 
     The <{input}> element <a>represents</a> a control for adding, removing, and
-    editing the e-mail addresses given in the element's <a for="forms">value<em>s</em></a>.
+    editing a list of e-mail addresses given in the element's <a for="forms">value<em>s</em></a>.
 
     If the element is <a>mutable</a>, the user agent should allow the
-    user to add, remove, and edit the e-mail addresses represented by its <a for="forms">values</a>. User agents may allow the user to set any
-    individual value in the list of <a for="forms">value<em>s</em></a> to a
-    string that is not a <a>valid e-mail address</a>, but must not allow users to set any
-    individual value to a string containing U+002C COMMA (,), U+000A LINE FEED (LF), or U+000D
-    CARRIAGE RETURN (CR) characters. User agents should allow the user to remove all the addresses
-    in the element's <a for="forms">values</a>. User agents may
-    transform the <a for="forms">values</a> for display and editing; in
-    particular, user agents should convert punycode in the domain labels of the <a for="forms">value</a> to IDN in the display and vice versa.
-
+    user to add, remove, and edit the e-mail addresses represented by its <a for="forms">values</a>,
+    including removing all addresses and setting the <a for="forms">value</a> to the empty string.
+    
+    User agents may allow the user to set any individual value in the
+    list of <a for="forms">value<em>s</em></a> to a string that is not a <a>valid e-mail address</a>,
+    but must not allow users to set any individual value to a string containing U+002C COMMA (,)
+    as well as the U+000A LINE FEED (LF), or U+000D CARRIAGE RETURN (CR) characters.
+    
     <strong>Constraint validation</strong>: While the user interface describes a situation where
     an individual value contains a U+002C COMMA (,) or is representing input that the user agent
     cannot convert to punycode, the control is <a>suffering from bad input</a>.
 
-    Whenever the user changes the element's <a for="forms">value<em>s</em></a>, the user agent must run the following
-    steps:
+    Whenever the user changes the element's <a for="forms">value<em>s</em></a>,
+    the user agent must run the following steps:
 
     <ol>
 
@@ -3244,8 +3261,9 @@ part of the form.</p>
 
     <ol>
 
-      <li><a lt="split a string on commas">Split on commas</a> the element's <a for="forms">value</a>, <a>strip leading and trailing white space</a> from
-      each resulting token, if any, and let the element's <a for="forms">values</a> be the (possibly empty) resulting list of
+      <li><a lt="split a string on commas">Split on commas</a> the element's <a for="forms">value</a>,
+      <a>strip leading and trailing white space</a> from each resulting token, if any,
+      and let the element's <a for="forms">values</a> be the (possibly empty) resulting list of
       (possibly empty) tokens, maintaining the original order.</li>
 
       <li>Let the element's <a for="forms">value</a> be the result of
@@ -3272,18 +3290,33 @@ part of the form.</p>
 
   <pre data-highlight="abnf">
 email         = 1*( atext / "." ) "@" label *( "." label )
-label         = let-dig [ [ ldh-str ] let-dig ]  ; limited to a length of 63 characters by <a>RFC 1034 section 3.5</a>
-atext         = &lt; as defined in <a>RFC 5322 section 3.2.3</a> &gt;
-let-dig       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
-ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
+
+label         = let-dig [ [ ldh-str ] let-dig ]
+                        ; limited to a length of 63 characters by <a>RFC 1034 section 3.5</a>
+			
+atext         = ALPHA / DIGIT /    ; Printable US-ASCII characters not including "specials".
+                "!" / "#" /        ;  
+                "$" / "%" /        ; This is as defined in <a>RFC 5322 section 3.2.3</a>
+                "&" / "'" /
+                "*" / "+" / "-" / "/" / "=" / "?" /
+                "^" / "_" / "`" / "{" / "|" / "}" / "~"
+
+let-dig       = ALPHA / DIGIT ; defined in <a>RFC 1034 section 3.5</a>
+ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
     </pre>
 
-  <p class="note">
-    This requirement is a <a>willful violation</a> of RFC 5322, which defines a
-  syntax for e-mail addresses that is simultaneously too strict (before the "@" character), too
-  vague (after the "@" character), and too lax (allowing comments, white space characters, and quoted
-  strings in manners unfamiliar to most users) to be of practical use here.
-  </p>
+  <div class="note">
+  
+    This requirement is a <a>willful violation</a> of RFC 5322.
+    
+    This syntax allows e-mail addresses with Internationalised Domain Names using punycode, such as
+    <code>example@xn--d1acpjx3f.xn--p1ai</code>. A user agent should represent that in the user interface
+    as <samp>example@яндекс.рф</samp>
+    
+    This syntax does not allow valid internationalised email addresses, such as <samp>我買@屋企.香港</samp>.
+    See also <a href="https://github.com/w3c/html/issues/845">Issue 845</a>.
+  
+  </div>
 
   <div class="note">
 
@@ -3483,7 +3516,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   <p class="note">
     See [[#date-time-and-number-formats]] for a discussion of
   the difference between the input format and submission format for date, time, and number form
-  controls, and the <a>implementation notes</a> regarding localization of form controls.
+  controls, and the <a>implementation notes</a>
+  regarding localization of form controls.
   </p>
 
   The <code>value</code> attribute, if specified and not empty, must
@@ -3658,10 +3692,12 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   the date itself. [[TIMEZONE]]</p>
 
   If the element is <a>mutable</a>, the user agent should allow the
-  user to change the <a for="dates">date</a> represented by its <a for="forms">value</a>, as obtained by <a>parsing a
-  date</a> from it. User agents must not allow the user to set the <a for="forms">value</a> to a non-empty string that is not a <a>valid date
-  string</a>. If the user agent provides a user interface for selecting a <a for="dates">date</a>, then the <a for="forms">value</a> must be set
-  to a <a>valid date string</a> representing the user's selection. User agents should allow
+  user to change the <a for="dates">date</a> represented by its <a for="forms">value</a>,
+  as obtained by <a>parsing a date</a> from it. User agents must not allow the user to set the
+  <a for="forms">value</a> to a non-empty string that is not a <a>valid date string</a>.
+  If the user agent provides a user interface for selecting a <a for="dates">date</a>,
+  then the <a for="forms">value</a> must be set to a <a>valid date string</a>
+  representing the user's selection. User agents should allow
   the user to set the <a for="forms">value</a> to the empty string.
 
   <strong>Constraint validation</strong>: While the user interface describes input that the user
@@ -3677,7 +3713,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   The <code>value</code> attribute, if specified and not empty, must
   have a value that is a <a>valid date string</a>.
 
-  <strong>The <a>value sanitization algorithm</a> is as follows</strong>: If the <a for="forms">value</a> of the element is not a <a>valid date string</a>, then
+  <strong>The <a>value sanitization algorithm</a> is as follows</strong>:
+  If the <a for="forms">value</a> of the element is not a <a>valid date string</a>, then
   set it to the empty string instead.
 
   The <{input/min}> attribute, if specified, must have a value that is
@@ -3805,7 +3842,8 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   <p class="note">
     See [[#date-time-and-number-formats]] for a discussion of
   the difference between the input format and submission format for date, time, and number form
-  controls, and the <a>implementation notes</a> regarding localization of form controls.
+  controls, and the <a>implementation notes</a>
+  regarding localization of form controls.
   </p>
 
   The <{input/value}> attribute, if specified and not empty, must
@@ -3842,8 +3880,9 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   new <code>Date</code> object</a> representing midnight UTC on the morning of the first day of
   the parsed <a>month</a>.
 
-  <strong>The <a>algorithm to convert a
-  <code>Date</code> object to a string</a>, given a {{Date}} object <var>input</var>, is as follows</strong>: Return a <a>valid month string</a> that
+  <strong>The <a>algorithm to convert a <code>Date</code> object to a string</a>,
+  given a {{Date}} object <var>input</var>, is as follows</strong>:
+  Return a <a>valid month string</a> that
   represents the <a>month</a> current at the time represented by <var>input</var> in the UTC time zone.
 
   <div class="bookkeeping">
@@ -4172,14 +4211,17 @@ ldh-str       = &lt; as defined in <a>RFC 1034 section 3.5</a> &gt;
   this section apply.
 
   The <{input}> element <a>represents</a> a control for setting the element's
-  <a for="forms">value</a> to a string representing a <{input/LocalDateTime|Local Date and Time}>, with no time-zone offset
-  information.
+  <a for="forms">value</a> to a string representing a <{input/LocalDateTime|Local Date and Time}>,
+  with no time-zone offset information.
 
   If the element is <a>mutable</a>, the user agent should allow the
   user to change the <{input/DateTime|Date and Time}> represented by its
-  <a for="forms">value</a>, as obtained by <a>parsing a date and time</a> from it. User agents must not allow the user to set
-  the <a for="forms">value</a> to a non-empty string that is not a <a>valid normalized global date and time string</a>. If the user agent provides a user interface for
-  selecting a <{input/LocalDateTime|Local Date and Time}>, then the <a for="forms">value</a> must be set to a <a>valid normalized global date and time string</a> representing the user's selection. User agents should allow the user to set the
+  <a for="forms">value</a>, as obtained by <a>parsing a date and time</a> from it.
+  User agents must not allow the user to set the <a for="forms">value</a> to a non-empty string
+  that is not a <a>valid normalized global date and time string</a>.
+  If the user agent provides a user interface for selecting a <{input/LocalDateTime|Local Date and Time}>,
+  then the <a for="forms">value</a> must be set to a <a>valid normalized global date and time string</a>
+  representing the user's selection. User agents should allow the user to set the
   <a for="forms">value</a> to the empty string.
 
   <strong>Constraint validation</strong>: While the user interface describes input that the user
@@ -5300,10 +5342,10 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   apply.
 
   The <{input}> element <a>represents</a> a button that, when activated, submits
-  the form. If the element has a <{input/value}> attribute, the button's label must be
-  the value of that attribute; otherwise, it must be an implementation-defined string
-  that means "Submit" or some such.</span> The element is a <a>button</a>,
-  specifically a <a>submit button</a>.
+  the form. If the element has a <{input/value}> attribute,
+  the button's label must be the value of that attribute;
+  otherwise, it must be an implementation-defined string that means "Submit" or some such.
+  The element is a <a>button</a>, specifically a <a>submit button</a>.
   <a class="fingerprint" href="#fingerprinting-vector"><img height="21" src="images/fingerprint.png" width="15" alt="(This is a fingerprinting vector.)" /></a>
 
   <p class="note">
@@ -5854,12 +5896,12 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
 <h6 id="the-maxlength-and-minlength-attributes">The <code>maxlength</code> and <code>minlength</code> attributes</h6>
 
   The <dfn element-attr for="input"><code>maxlength</code></dfn> attribute, when it <a>applies</a>,
-  is a <a>form control <code>maxlength</code> attribute</a> controlled by the <{input}> element's
-  <a for="input">dirty value flag</a>.
+  is a <a>form control <code>maxlength</code> attribute</a>
+  controlled by the <{input}> element's <a for="input">dirty value flag</a>.
 
   The <dfn element-attr for="input"><code>minlength</code></dfn> attribute, when it <a>applies</a>,
-  is a <a>form control <code>minlength</code> attribute</a> controlled by the <{input}> element's
-  <a for="input">dirty value flag</a>.
+  is a <a>form control <code>minlength</code> attribute</a>
+  controlled by the <{input}> element's <a for="input">dirty value flag</a>.
 
   If the <{input}> element has a <a>maximum allowed value length</a>, then the
   <a>code-unit length</a> of the value of the element's <code>value</code> attribute must be
@@ -5908,14 +5950,14 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   attribute</a> that controls whether or not the user can edit the form control.
   When specified, the element is not <a>mutable</a>.
 
-  <strong>Constraint validation</strong>: If the <code>readonly</code> attribute is specified on an <{input}>
-  element, the element is <a>barred from constraint validation</a>.
+  <strong>Constraint validation</strong>: If the <code>readonly</code> attribute is specified
+  on an <{input}> element, the element is <a>barred from constraint validation</a>.
 
   <p class="note">
-    The difference between <code>disabled</code> and <code>readonly</code> is that read-only controls are still focusable, so the
-  user can still select the text and interact with it, whereas disabled controls are entirely
-  non-interactive. (For this reason, only text controls can be made read-only: it wouldn't make
-  sense for checkboxes or buttons, for instances.)
+    The difference between <code>disabled</code> and <code>readonly</code> is that
+    read-only controls are still focusable, so the user can still select the text and interact with it,
+    whereas disabled controls are entirely non-interactive.
+    Only text controls can be made read-only.
   </p>
 
   <div class="example">
@@ -5956,8 +5998,9 @@ input { height: 75px; width: 49px; background: #D5CCBB; color: black; }
   <a>boolean attribute</a>. When specified, the element is <dfn>required</dfn>.
 
   <strong>Constraint validation</strong>: If the element is <a>required</a>, and its <code>value</code>
-  IDL attribute <a>applies</a> and is in the mode <a for="forms">value</a>, and the element is <a>mutable</a>, and the element's <a for="forms">value</a> is the empty string, then the element is <a>suffering
-  from being missing</a>.
+  IDL attribute <a>applies</a> and is in the mode <a for="forms">value</a>,
+  and the element is <a>mutable</a>, and the element's <a for="forms">value</a> is the empty string,
+  then the element is <a>suffering from being missing</a>.
 
   <div class="example">
     The following form has two required fields, one for an e-mail address and one for a password.
@@ -6274,8 +6317,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   The <dfn element-attr for="input"><code>step</code></dfn> attribute indicates the granularity
   that is expected (and required) of the <a for="forms">value</a> or <a for="forms">values</a>,
   by limiting the allowed values. The section that defines the <{input/type}> attribute's current state
-  alsodefines the <dfn>default step</dfn>, the <dfn>step scale factor</dfn>, and in some cases
-  the <dfn>default step base</dfn>, which are used in processing the attribute as described below.
+  also defines the <dfn>default step</dfn>, the <dfn>step scale factor</dfn>,
+  and in some cases the <dfn>default step base</dfn>,
+  which are used in processing the attribute as described below.
 
   The <{input/step}> attribute, if specified, must either have a
   value that is a <a>valid floating-point number</a> that <a lt="parse it as an integer">parses</a>
@@ -6541,8 +6585,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     reduces the size of the hit region available for setting focus on the control.</p>
 
   User agents should present this hint to the user, after having <a>stripped line breaks</a> from it,
-  when the element's <a for="forms">value</a> is the empty string, especially if the control is not
-  <a>focused</a>.
+  when the element's <a for="forms">value</a> is the empty string,
+  especially if the control is not <a>focused</a>.
 
   If a user agent normally doesn't show this hint to the user when the control is
   <a>focused</a>, then the user agent should nonetheless show the hint for the control if it
@@ -6551,7 +6595,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   it.
 
   <div class="example">
-    Here is an example of a mail configuration user interface that uses the <code>placeholder</code> attribute:
+    Here is an example of a mail configuration user interface that uses the
+    <code>placeholder</code> attribute:
 
     <pre highlight="html">
 &lt;fieldset&gt;
@@ -7282,7 +7327,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   The <dfn>display size</dfn> of a <{select}> element is the
   result of applying the <a>rules for parsing non-negative integers</a> to the value of
   element's <code>size</code> attribute, if it has one and parsing it is
-  successful. If applying those rules to the attribute's value is not successful, or if the <code>size</code> attribute is absent, then the element's <a>display size</a> is 4 if the element's <code>multiple</code> content attribute is present, and 1 otherwise.
+  successful. If applying those rules to the attribute's value is not successful,
+  or if the <code>size</code> attribute is absent,
+  then the element's <a>display size</a> is 4 if the element's <code>multiple</code> content attribute is present, and 1 otherwise.
 
   The <dfn>list of options</dfn> for a <{select}>
   element consists of all the <{option}> element children of the <{select}>
@@ -7314,10 +7361,9 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   <strong>Constraint validation</strong>: If the element has its <code>required</code> attribute specified, and either none of the
   <{option}> elements in the <{select}> element's <a>list of options</a> have their <a state for="option">selectedness</a> set to true, or the only
-  <{option}> element in the <{select}> element's <a>list of options</a> with its <a state for="option">selectedness</a> set to true is the <a>placeholder label
-  option</a>, then the element is <a>suffering from being missing</a>.
-
-  <!-- stray? /div -->
+  <{option}> element in the <{select}> element's <a>list of options</a> with its
+  <a state for="option">selectedness</a> set to true is the <a>placeholder label option</a>,
+  then the element is <a>suffering from being missing</a>.
 
   If the <code>multiple</code> attribute is absent, and the element
   is not disabled, then the user agent should allow the
@@ -7372,14 +7418,17 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   If the <code>multiple</code> attribute is present, and the
   element is not disabled, then the user agent should
   allow the user to <dfn>toggle</dfn> the <a state for="option">selectedness</a> of the <{option}> elements in
-  its <a>list of options</a> that are themselves not disabled. Upon such an element being <a>toggled</a> (either through a click, or through a <a>menu command</a>, or any other mechanism), and before the relevant user
-  interaction event  is queued (e.g., before a related <code>click</code> event), the <a state for="option">selectedness</a> of the <{option}> element must
-  be changed (from true to false or false to true), the <a state for="option">dirtiness</a> of the element must be set to true, and the
+  its <a>list of options</a> that are themselves not disabled. Upon such an element being <a>toggled</a>
+  (either through a click, or through a <a>menu command</a>, or any other mechanism), and before the
+  relevant user interaction event  is queued (e.g., before a related <code>click</code> event),
+  the <a state for="option">selectedness</a> of the <{option}> element must
+  be changed (from true to false or false to true), the <a state for="option">dirtiness</a>
+  of the element must be set to true, and the
   user agent must <a>send <code>select</code> update notifications</a>.
 
-  When the user agent is to <dfn>send <code>select</code> update notifications</dfn>, <a>queue
-  a task</a> to first <a>fire a simple event</a> that bubbles named <code>input</code> at the <{select}> element, and then <a>fire a simple
-  event</a> that bubbles named <code>change</code> at the
+  When the user agent is to <dfn>send <code>select</code> update notifications</dfn>,
+  <a>queuea task</a> to first <a>fire a simple event</a> that bubbles named <code>input</code> at the
+  <{select}> element, and then <a>fire a simple event</a> that bubbles named <code>change</code> at the
   <{select}> element, using the <a>user interaction task source</a> as the task
   source. If the <a>JavaScript execution context stack</a> was not empty when the user agent was
   to <a>send <code>select</code> update notifications</a>, then the resulting <code>input</code> and <code>change</code> events must not be
@@ -7831,8 +7880,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
   together.
 
   The <dfn element-attr for="optgroup"><code>label</code></dfn> content attribute must be specified. Its
-  value gives the name of the group, for the purposes of the user interface. User agents should
-  use this attribute's value when labeling the group of <{option}> elements
+  value gives the name of the group, for the purposes of the user interface.
+  User agents should use this attribute's value when labeling the group of <{option}> elements
   in a <{select}> element.
 
   The <dfn attribute for="HTMLOptGroupElement"><code>disabled</code></dfn> and <dfn attribute for="HTMLOptGroupElement"><code>label</code></dfn> IDL attributes must <a>reflect</a> the
@@ -8250,9 +8299,10 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   The <dfn element-attr for="textarea"><code>rows</code></dfn> attribute specifies the number of
   lines to show. If the <code>rows</code> attribute is specified, its
-  value must be a <a>valid non-negative integer</a> greater than zero. If applying the
-  <a>rules for parsing non-negative integers</a> to the attribute's value results in a number greater than zero,
-  then the element's <dfn>character height</dfn> is that value; otherwise, it is 2.
+  value must be a <a>valid non-negative integer</a> greater than zero.
+  If applying the <a>rules for parsing non-negative integers</a> to the attribute's value
+  results in a number greater than zero, then the element's <dfn>character
+  height</dfn> is that value; otherwise, it is 2.
 
   Visual user agents should set the height of the control to the number of lines given by
   <a>character height</a>.
@@ -8591,8 +8641,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   The <a>reset algorithm</a> for <{output}>
   elements is to set the element's <a>value mode flag</a> to <i>default</i> and then to set the element's
-  {{Node/textContent}} IDL attribute to the value of the element's <a for="output">default value</a> (thus replacing the element's child
-  nodes).
+  {{Node/textContent}} IDL attribute to the value of the element's <a for="output">default value</a>
+  (thus replacing the element's child nodes).
 
   <dl class="domintro">
 
@@ -9001,7 +9051,8 @@ and a height of &lt;meter value=2&gt;2cm&lt;/meter&gt;.&lt;/p&gt; &lt;!-- BAD! -
 
   </div>
 
-  <strong>User agent requirements</strong>: User agents must parse the <{meter/min}>, <{meter/max}>, <{meter/value}>, <{meter/low}>, <{meter/high}>, and <{meter/optimum}>
+  <strong>User agent requirements</strong>: User agents must parse the
+  <{meter/min}>, <{meter/max}>, <{meter/value}>, <{meter/low}>, <{meter/high}>, and <{meter/optimum}>
   attributes using the <a>rules for parsing floating-point number values</a>.
 
   User agents must then use all these numbers to obtain values for six points on the gauge, as
@@ -9015,8 +9066,8 @@ and a height of &lt;meter value=2&gt;2cm&lt;/meter&gt;.&lt;/p&gt; &lt;!-- BAD! -
     <dd>
 
     If the <{meter/min}> attribute is specified and a value could be
-    parsed out of it, then the <a for="meter">minimum value</a> is that value. Otherwise, the <a for="meter">minimum value</a> is
-    zero.
+    parsed out of it, then the <a for="meter">minimum value</a> is that value. Otherwise,
+    the <a for="meter">minimum value</a> is zero.
 
     </dd>
 
@@ -10227,10 +10278,10 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
   and are <dfn>rarely necessary</dfn>, as dedicated input controls exist for their usual use cases (as
   described in the table above).
 
-  User agents must all support the <dfn state for="inputmode">Default</dfn> input mode state, which corresponds to the
-  user agent's default input modality. This specification does not define how the
-  user agent's default modality is to operate. The <i>missing value default</i>
-  is the <a state for="inputmode">Default</a> input mode state.
+  User agents must all support the <dfn state for="inputmode">Default</dfn> input mode state,
+  which corresponds to the user agent's default input modality. 
+  This specification does not define how the user agent's default modality is to operate.
+  The <i>missing value default</i> is the <a state for="inputmode">Default</a> input mode state.
 
   User agents should use the input modality corresponding to the state of the <code>inputmode</code> attribute when exposing a user interface for editing
   the value of a form control to which the attribute <a>applies</a>. An input modality corresponding to a state is one
@@ -11245,8 +11296,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
     </li>
 
-    <li>If <var>category</var> is Off or Automatic but the element's <{autocompleteelements/autocomplete}> attribute is wearing the <a>autofill anchor
-    mantle</a>, then jump to the step labeled <i>default</i>.</li>
+    <li>If <var>category</var> is Off or Automatic but the element's <{autocompleteelements/autocomplete}>
+    attribute is wearing the <a>autofill anchor mantle</a>, then jump to the step labeled <i>default</i>.</li>
 
     <li>If <var>category</var> is Off, let the element's <a>autofill field name</a>
     be the string "<code>off</code>", let its <a>autofill hint set</a> be empty, and
@@ -11255,7 +11306,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
     </li><li>If <var>category</var> is Automatic, let the element's <a>autofill field
     name</a> be the string "<code>on</code>", let its <a>autofill hint set</a> be
-    empty, and let its <a>IDL-exposed autofill value</a> be the string "<code>on</code>". Then, abort these steps.
+    empty, and let its <a>IDL-exposed autofill value</a> be the string "<code>on</code>".
+    Then, abort these steps.
 
     </li><li>Let <var>scope tokens</var> be an empty list.</li>
 
@@ -11270,8 +11322,8 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
     <li>
 
-    If <var>category</var> is Contact and the <var>index</var>th token in <var>tokens</var> is an <a>ASCII case-insensitive</a> match for one of the strings in
-    the following list, then run the substeps that follow:
+    If <var>category</var> is Contact and the <var>index</var>th token in <var>tokens</var> is an
+    <a>ASCII case-insensitive</a> match for one of the strings in the following list, then run the substeps that follow:
 
     <ul class="brief">
       <li>"<code>home</code>"
