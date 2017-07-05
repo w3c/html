@@ -702,6 +702,7 @@
     <dd><code>ismap</code> - Whether the image is a server-side image map</dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
+    <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dd><{img/longdesc}> - A url that provides a link to an expanded description of the image, defined in [[!html-longdesc]]</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a attr-value for="aria/role"><code>presentation</code></a> or <a attr-value for="aria/role"><code>none</code></a>
@@ -730,6 +731,7 @@
           readonly attribute unsigned long naturalHeight;
           readonly attribute boolean complete;
           readonly attribute DOMString currentSrc;
+          attribute DOMString referrerPolicy;
         };
       </pre>
     </dd>
@@ -865,6 +867,9 @@
   The <dfn element-attr for="img"><code>crossorigin</code></dfn> attribute is a <a>CORS
   settings attribute</a>. Its purpose is to allow images from third-party sites that allow
   cross-origin access to be used with <{canvas}>.
+
+  The <dfn element-attr for="img"><code>referrerpolicy</code></dfn> attribute is a <a>referrer policy attribute</a>. Its purpose is to
+  set the <a>referrer policy</a> used when <a>fetching</a> the image. [[!REFERRERPOLICY]]
 
   <hr />
 
@@ -1217,7 +1222,8 @@
     &#x231B; If the element uses <code>srcset</code> or <code>picture</code>, set
     <var>request</var>'s <a>initiator</a> to "<code>imageset</code>".
 
-    &#x231B; Set <var>request</var>'s <a>same-origin data-URL flag</a>.
+    &#x231B; Set <var>request</var>'s <a for="request">referrer policy</a> to the current state of the
+    element's <code>referrerpolicy</code> attribute.
 
     &#x231B; <a>Fetch</a> <var>request</var>. Let this
     instance of the <a>fetching</a> algorithm be associated with
@@ -2091,6 +2097,9 @@
       <li>Set <var>request</var>'s <a>client</a> to
       <var>client</var>, <a for="request">type</a> to "<code>image</code>", and set <var>request</var>'s <a>synchronous flag</a>.</li>
 
+      <li>Set <var>request</var>'s <a for="request">referrer policy</a> to the current state of the
+      element's <code>referrerpolicy</code> attribute.</li>
+
       <li>Let <var>response</var> be the result of <a>fetching</a> <var>request</var>.</li>
 
       <li>If <var>response</var>'s unsafe response is a network error or
@@ -2295,6 +2304,9 @@
 
   The <dfn attribute for="HTMLImageElement"><code>isMap</code></dfn> IDL attribute must <a>reflect</a>
   the <code>ismap</code> content attribute.
+
+  The <dfn attribute for="HTMLImageElement"><code>referrerPolicy</code></dfn> IDL attribute must
+  <a>reflect</a> the <{img/referrerpolicy}> content attribute, <a>limited to only known values</a>.
 
   The <dfn attribute for="HTMLImageElement"><code>longDesc</code></dfn> IDL attribute is defined in [[!html-longdesc]]. The IDL attribute must <a>reflect</a>
   the <{img/longdesc}> content attribute.
@@ -3573,6 +3585,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     to make payment requests</dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
+    <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a attr-value for="aria/role"><code>application</code></a>, <a attr-value for="aria/role"><code>document</code></a>, or <a attr-value for="aria/role"><code>img</code></a>.</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
@@ -3591,6 +3604,7 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
           attribute boolean allowPaymentRequest;
           attribute DOMString width;
           attribute DOMString height;
+          attribute DOMString referrerPolicy;
           readonly attribute Document? contentDocument;
           readonly attribute WindowProxy? contentWindow;
         };
@@ -3766,7 +3780,10 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
       "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting URL record</a>.
   2. If there exists an <a>ancestor browsing context</a> whose <a>active document</a>'s
       [=Document/URL=], ignoring <a for="url">fragments</a>, is equal to <var>url</var>, then abort these steps.
-  3. <a>Navigate</a> the element's <a>child browsing context</a> to <var>url</var>.
+  3. <p>Let <var>resource</var> be a new [=request=] whose <a for="concept-request-url">url</a> is <var>URL</var> and whose
+      [=referrer policy=] is the current state of the
+      element's <code>referrerpolicy</code> content attribute.</p>
+  4. <a>Navigate</a> the element's <a>child browsing context</a> to <var>resource</var>.
 
   Furthermore, if the <a>active document</a> of the element's <a>child browsing context</a> before
   such a <a>navigation</a> was not <a>completely loaded</a> at the time of the new
@@ -4027,6 +4044,10 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
   create a nested <a>browsing context</a>, regardless of whether the specified initial
   contents are successfully used.
 
+  The <dfn element-attr for="iframe"><code>referrerpolicy</code></dfn> attribute is a <a>referrer policy attribute</a>.
+  Its purpose is to set the referrer policy used when <dfn>processing the <code>iframe</code> attributes</dfn>.
+  [[!REFERRERPOLICY]]
+
   <hr />
 
   Descendants of <{iframe}> elements represent nothing. (In legacy user agents that do
@@ -4062,6 +4083,9 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
 
   The <dfn attribute for="HTMLIFrameElement"><code>allowPaymentRequest</code></dfn> IDL
   attribute must <a>reflect</a> the <code>allowpaymentrequest</code> content attribute.
+
+  The <dfn attribute for="HTMLIFrameElement"><code>referrerPolicy</code></dfn> IDL attribute must
+  <a>reflect</a> the <code>referrerpolicy</code> content attribute, <a>limited to only known values</a>.
 
   The <dfn attribute for="HTMLIFrameElement"><code>contentDocument</code></dfn> IDL attribute must
   return the {{Document}} object of the <a>active document</a> of the <{iframe}> element's
@@ -11474,6 +11498,8 @@ red:89
     <dd><{area/rel}> - Relationship of this document (or subsection/topic) to the destination resource</dd>
     <dd><code>shape</code> - The kind of shape to be created in an <a>image map</a></dd>
     <dd><code>target</code> - <a>browsing context</a> for <a>hyperlink</a> <a>navigation</a></dd>
+    <dd><code>type</code> - Hint for the type of the referenced resource</dd>
+    <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd><a attr-value for="aria/role"><code>link</code></a> role (default - <a><em>do not set</em></a>).</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
@@ -11492,6 +11518,8 @@ red:89
           attribute DOMString rel;
           [SameObject, PutForwards=value] readonly attribute DOMTokenList relList;
           attribute DOMString hreflang;
+          attribute DOMString type;
+          attribute DOMString referrerPolicy;
         };
         HTMLAreaElement implements HTMLHyperlinkElementUtils;
       </pre>
@@ -11590,7 +11618,9 @@ red:89
   <{area}> element, as described in the next section, the <code>href</code>, <code>target</code>,
   and <code>download</code> attributes decide how the link is followed. The <{area/rel}>, and <code>hreflang</code> attributes may be used to indicate to the user the likely nature of the target resource before the user follows the link.
 
-  The <code>target</code>, <code>download</code>, <{area/rel}>, and <code>hreflang</code> attributes must be omitted if the <code>href</code> attribute is not present.
+  The <code>target</code>, <code>download</code>, <{area/rel}>, <code>hreflang</code>,
+  <code>type</code>, and <code>referrerpolicy</code> attributes must be omitted if the
+  <code>href</code> attribute is not present.
 
   The <a>activation behavior</a> of <{area}> elements is to run the following
   steps:
@@ -11635,6 +11665,9 @@ red:89
 
   The IDL attribute <dfn attribute for="HTMLAreaElement"><code>relList</code></dfn> must
   <a>reflect</a> the <{links/rel}> content attribute.
+
+  The IDL attribute <dfn attribute for="HTMLAreaElement"><code>referrerPolicy</code></dfn> must
+  <a>reflect</a> the <{link/referrerpolicy}> content attribute, <a>limited to only known values</a>.
 
   <hr />
 

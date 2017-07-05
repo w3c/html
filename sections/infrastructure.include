@@ -166,7 +166,7 @@
   A <dfn for="document" lt="inserted into|inserted into the document|inserted into a document">node
   is inserted into a document</dfn> when the <a>insertion steps</a> are invoked with it as the
   argument and it is now <a>in a document tree</a>. Analogously, a
-  <dfn for="document" lt="remove an element from a document|removed from a document|removed from">node
+  <dfn for="document" lt="remove an element from a document|removed from a document|removed from the document|removed from">node
   is removed from a document</dfn> when the <a>removing steps</a> are invoked with it as the argument
   and it is now no longer in a <a>document tree</a>.
 
@@ -712,7 +712,17 @@
         * <a for="request">cache mode</a>
         * <a for="request">redirect mode</a>
         * <a>cryptographic nonce metadata</a>
+        * <a for="request">referrer policy</a>
         * <a>parser metadata</a>
+
+  :: The following terms are defined in <cite>Referrer Policy</cite> [[!REFERRERPOLICY]]
+
+     * <a for="request">referrer policy</a>
+     * The <dfn>`Referrer-Policy`</dfn> HTTP header
+     * The <dfn>parse a referrer policy from a <code>`Referrer-Policy`</code> header</dfn> algorithm
+     * The "<dfn><code>no-referrer</code></dfn>",
+             "<dfn><code>no-referrer-when-downgrade</code></dfn>", and
+             "<dfn><code>unsafe-url</code></dfn>" referrer policies
 
   : Web IDL
   :: The IDL fragments in this specification must be interpreted as required for conforming IDL
@@ -3769,6 +3779,33 @@
   the canonical case for the <a state for="cors">Anonymous</a> state is the <a value for="cors"><code>anonymous</code></a> keyword. The
   <i>missing value default</i>, used when the attribute is omitted, is the
   <dfn state for="cors">No CORS</dfn> state.
+
+ <h4 id="referrer-policy-attributes">Referrer policy attributes</h4>
+
+  A <dfn export="">referrer policy attribute</dfn> is an <a>enumerated attribute</a>.
+  Each <a>referrer policy</a>, including the empty string, is a keyword for this attribute,
+  mapping to a state of the same name.
+
+  The attribute's <a>invalid value default</a> and <a>missing value default</a>
+  are both the empty string state.
+
+  The impact of these states on the processing model of various <a>fetches</a> is defined
+  in more detail throughout this specification, in the WHATWG Fetch standard, and in <cite>Referrer Policy</cite>.
+  [[!FETCH]] [[!REFERRERPOLICY]]
+
+  <div class="note">
+   Several signals can contribute to which processing model is used for a given <a>fetch</a>;
+   a <a>referrer policy attribute</a> is only one of them. In general, the order in which these signals are processed are:
+   <ol>
+    <li>First, the presence of a <{link/}noreferrer}> link
+    type;</li>
+    <li>Then, the value of a <a>referrer policy attribute</a>;</li>
+    <li>Then, the presence of any <{meta}> element with <a><code
+    for="attr-meta-name">name</code></a> attribute set to <a><code>referrer</code></a>.</li>
+    <li>Finally, the <code>`Referrer-Policy`</code> HTTP
+    header.</li>
+   </ol>
+  </div>
 
 <h3 id="common-dom-interfaces">Common DOM interfaces</h3>
 
