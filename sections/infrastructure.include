@@ -738,6 +738,7 @@
       * <a>Determine the value of a named property</a>
       * <a>perform a security check</a>
       * <a>Platform object</a>
+      * <a>Primary interface</a>
       * <a>Global environment associated with</a> a platform object
       * <a>Read only</a> (when applied to arrays)
       * <a>Callback this value</a>
@@ -844,8 +845,9 @@
           and <a>ModuleDeclarationInstantiation</a> methods
        * The <a>ArrayCreate</a> abstract operation
        * The <a>Call</a> abstract operation
-       * The <a>CloneArrayBuffer</a> abstract operation
        * The <a>Construct</a> abstract operation
+       * The <a>CopyDataBlockBytes</a> abstract operation
+       * The <a>CreateByteDataBlock</a> abstract operation
        * The <a>CreateDataProperty</a> abstract operation
        * The <a>DetachArrayBuffer</a> abstract operation
        * The <a>EnqueueJob</a> abstract operation
@@ -1049,12 +1051,12 @@
   :: This specification uses the following features defined in the File API specification:
       [[!FILEAPI]]
 
-      * {{Blob}} interface
-      * {{File}} interface
+      * {{Blob}} interface and its <a>type</a> attribute
+      * {{File}} interface and its <a>name</a> and <dfn>lastModified</dfn> attributes
       * {{FileList}} interface
-      * The concept of a <a for="Blob">closed</a> {{Blob}}
-      * <a attribute for="Blob" lt="type"><code>Blob.type</code></a>
+      * The concept of a {{Blob}}'s <a>snapshot state</a>
       * The concept of <dfn lt="error occurs during reading of the object|read errors">read errors</dfn>
+      * <a href="https://w3c.github.io/FileAPI/#BlobURLStore">Blob URL Store</a>
 
   : Indexed Database API
   :: This specification uses
@@ -4432,28 +4434,100 @@
   This section uses the terminology and typographic conventions from the JavaScript specification.
   [[ECMA-262]]
 
-<h4 id="section-cloneable-objects"><dfn export>Cloneable objects</dfn></h4>
+<h4 id="section-serializable-objects"><dfn export>Serializable objects</dfn></h4>
 
-  <a>Cloneable objects</a> support being cloned across <a>event loops</a>. That is, they support
-  being cloned across {{Document}} and {{Worker}} boundaries, including across {{Document}}s of
-  different <a for="concept">origins</a>. Not all objects are <a>cloneable objects</a> and not all
-  aspects of objects that are <a>cloneable objects</a> are necessarily preserved when cloned.
+  <a>Serializable objects</a> support being serialized, and later deserialized, in a way
+  that is independent of any given <a>JavaScript Realm</a>. This allows them to be stored on
+  disk and later restored, or cloned across {{Document}} and {{Worker}} boundaries (including across
+  documents of different <a for="concept">origins</a> or in different <a>event loops</a>).
 
-  <a>Platform objects</a> have the following internal method:
+  Not all objects are <a>serializable objects</a>, and not all aspects of objects that are
+  <a>serializable objects</a> are necessarily preserved when they are serialized.
 
-  [[<dfn for="structured">Clone</dfn>]] ( <var>targetRealm</var>, <var>memory</var> )
+  <a>Platform objects</a> can be <a>serializable objects</a>
+  if they implement only interfaces decorated with the
+  <dfn export dfn-type="extended-attribute" lt="Serializable"><code>[Serializable]</code></dfn>
+  IDL <a>extended attribute</a>. Such interfaces must also define the following algorithms:
+  
+  : <dfn export>serialization steps</dfn>, taking a <a>platform object</a>
+    <var>value</var>, a <a>Record</a> <var>serialized</var>, and a boolean
+    <var>forStorage</var>
+  :: A set of steps that serializes the data in <var>value</var> into fields of
+     <var>serialized</var>. The resulting data serialized into <var>serialized</var> must be
+     independent of any <a>JavaScript Realm</a>.
 
-  Unless specified otherwise, invoking the [[<a for="structured">Clone</a>]] internal method must
-  throw a "{{DataCloneError}}" {{DOMException}}. (By default, <a>platform objects</a> are not
-  <a>cloneable objects</a>.)
+     These steps may throw an exception if serialization is not possible.
 
-  <a>Platform objects</a> that are <a>cloneable objects</a> have a [[<a for="structured">Clone</a>]]
-  internal method which is specified to run a series of steps. The result of running those steps
-  must be a thrown exception or a clone of <em>this</em>, created in <var>targetRealm</var>. It is
-  up such objects to define what cloning means for them.
+     These steps may perform a <a>sub-serialization</a> to serialize nested data
+     structures. They should not call <a>StructuredSerialize</a> directly, as doing so will
+     omit the important <var>memory</var> argument.
 
-  Objects defined in the JavaScript specification are handled by the <a>StructuredClone</a> abstract
-  operation directly.
+     The introduction of these steps should omit mention of the <var>forStorage</var> argument if
+     it is not relevant to the algorithm.
+
+  : <dfn export>deserialization steps</dfn>, taking a <a>Record</a>
+    <var>serialized</var> and a <a>platform object</a> <var>value</var>
+  :: A set of steps that deserializes the data in <var>serialized</var>, using it to set up
+     <var>value</var> as appropriate. <var>value</var> will be a newly-created instance of the
+     <a>platform object</a> type in question, with none of its internal data set up; setting
+     that up is the job of these steps.
+
+     These steps may throw an exception if deserialization is not possible.
+
+     These steps may perform a <a>sub-deserialization</a> to deserialize nested data
+     structures. They should not call <a>StructuredDeserialize</a> directly, as doing so will
+     omit the important <var>targetRealm</var> and <var>memory</var> arguments.
+
+  It is up to the definition of individual platform objects to determine what data is serialized
+  and deserialized by these steps. Typically the steps are very symmetric.
+
+  The <code>[Serializable]</code> extended attribute must take no
+  arguments, and must not appear on anything other than an interface. It must appear only once on an
+  interface. It must not be used on a callback interface. If it appears on a partial interface or an
+  interface that is really a mixin, then it must also appear on the original or mixed-in-to
+  interface, and any supplied <a>serialization steps</a> and <a>deserialization steps</a>
+  for the partial interface or mixin should be understood as being appended to those of
+  the original or mixed-in-to interface.
+
+  <div class="example">
+   Let's say we were defining a platform object <code>Person</code>, which had
+   associated with it two pieces of associated data:
+
+   <ul class="brief">
+    * a name value, which is a string;
+    * and a best friend value, which is either another <code>Person</code> instance or null
+   </ul>
+
+   We could then define <code>Person</code> instances to be <a>serializable objects</a> by
+   annotating the <code>Person</code> interface with the <code>[Serializable]</code>
+   <a>extended attribute</a>, and defining the following accompanying algorithms:
+
+    : <a>serialization steps</a>
+    ::
+         1. Set <var>serialized</var>.[[<a>Name</a>]] to <var>value</var>'s associated name value.
+
+         2. Let <var>serializedBestFriend</var> be the <a>sub-serialization</a> of
+            <var>value</var>'s associated best friend value.
+
+         3. Set <var>serialized</var>.[[<a>BestFriend</a>]] to <var>serializedBestFriend</var>.
+
+    : <a>deserialization steps</a>
+    ::
+         1. Set <var>value</var>'s associated name value to <var>serialized</var>.[[<a>Name</a>]].</li>
+
+         2. Let <var>deserializedBestFriend</var> be the <a>sub-deserialization</a>
+            of <var>serialized</var>.[[<a>BestFriend</a>]].
+
+         3. Set <var>value</var>'s associated best friend value to <var>deserializedBestFriend</var>.
+  </div>
+
+  Objects defined in the JavaScript specification are handled by the
+  <a>StructuredSerialize</a> abstract operation directly.
+
+  <p class="note" id="cloneable-objects">Originally, this specification defined the concept of
+  "cloneable objects", which could be cloned from one <a>JavaScript Realm</a> to another.
+  However, to better specify the behavior of certain more complex situations, the model was updated
+  to make the serialization and deserialization explicit.</p>
 
 <h4 id="section-transferable-objects"><dfn export>Transferable objects</dfn></h4>
 
@@ -4466,24 +4540,876 @@
   <p class="note">Transferring is an irreversible and non-idempotent operation. Once an object has
   been transferred, it cannot be transferred, or indeed used, again.</p>
 
-  <a>Platform objects</a> that are <a>transferable objects</a> have a [[<dfn>Detached</dfn>]]
-  internal slot and the following internal method:
+  <a>Platform objects</a> can be <a>transferable objects</a>
+  if they implement only interfaces decorated with the
+  <dfn export dfn-type="extended-attribute" lt="Transferable"><code>[Transferable]</code></dfn>
+  IDL <a>extended attribute</a>. Such interfaces must also define the following algorithms:
 
-  [[<dfn>Transfer</dfn>]] ( <var>targetRealm</var> )
+  : <dfn export>transfer steps</dfn>, taking a <a>platform object</a>
+    <var>value</var> and a <a>Record</a> <var>dataHolder</var>
+  :: A set of steps that transfers the data in <var>value</var> into fields of
+     <var>dataHolder</var>. The resulting data held in <var>dataHolder</var> must be
+     independent of any <a>JavaScript Realm</a>.
 
-  <p class="note">Whereas all <a>platform objects</a> have a [[<a for="structured">Clone</a>]]
-  internal method, not all have a [[<a>Detached</a>]] internal slot and a [[<a>Transfer</a>]]
-  internal method.</p>
+     These steps may throw an exception if transferral is not possible.
 
-  <a>Platform objects</a> that are <a>transferable objects</a> must define the [[<a>Transfer</a>]]
-  internal method such that it either throws an exception or returns a clone of <em>this</em>,
-  created in <var>targetRealm</var>, with <em>this</em>'s underlying data shared with the return
-  value, and <em>this</em>'s [[<a>Detached</a>]] internal slot value set to true. It is up to such
-  objects to define what transferring means for them.
+  : <dfn export>transfer-receiving steps</dfn>, taking a <a>Record</a>
+    <var>dataHolder</var> and a <a>platform object</a> <var>value</var>
+  :: A set of steps that receives the data in <var>dataHolder</var>, using it to set up
+     <var>value</var> as appropriate. <var>value</var> will be a newly-created instance of the
+     <a>platform object</a> type in question, with none of its internal data set up; setting
+     that up is the job of these steps.
+
+     These steps may throw an exception if it is not possible to receive the transfer.
+
+  It is up to the definition of individual platform objects to determine what data is transferred
+  by these steps. Typically the steps are very symmetric.
+
+  The <code>[Transferable]</code> extended attribute must take no
+  arguments, and must not appear on anything other than an interface. It must appear only once on an
+  interface. It must not be used on a callback interface. If it appears on a partial interface or an
+  interface that is really a mixin, then it must also appear on the original or mixed-in-to
+  interface, and any supplied <a>serialization steps</a> and <a>deserialization steps</a>
+  for the partial interface or mixin should be understood as being appended to those of
+  the original or mixed-in-to interface.
+
+  <a>Platform objects</a> that are <a>transferable objects</a> have a
+  <dfn export dfn-for="platform object" dfn-type="attribute">Detached</dfn> internal slot.
+  This is used to ensure that once a platform object has been transferred, it cannot be transferred again.
 
   Objects defined in the JavaScript specification are handled by the
-  <a>StructuredCloneWithTransfer</a> abstract operation directly. (Technically, by
-  <a>IsTransferable</a> and <a>TransferHelper</a>.)
+  <a>StructuredSerializeWithTransfer</a> abstract operation directly.
+
+  NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+
+
+  <h4 id="section-structuredserializeinternal"><dfn>StructuredSerializeInternal</dfn>
+  ( <var>value</var>, <var>forStorage</var> [ , <var>memory</var> ] )</h4>
+
+  The <a>StructuredSerializeInternal</a> abstract operation takes as input a JavaScript
+  value <var>value</var> and serializes it to a <a>Realm</a>-independent form, represented
+  here as a <a>Record</a>. This serialized form has all the information necessary to later
+  deserialize into a new JavaScript value in a different Realm.
+
+  This process can throw an exception, for example when trying to serialize un-serializable
+  objects.
+
+  1. If <var>memory</var> was not supplied, let <var>memory</var> be an empty <a>map</a>.
+
+     <p class="note">The purpose of the <var>memory</var> map is to avoid serializing objects twice.
+     This ends up preserving cycles and the identity of duplicate objects in graphs.</p>
+
+  2. If <var>memory</var>[<var>value</var>] <a>exists</a>, then
+     return <var>memory</var>[<var>value</var>].
+
+  3. Let <var>deep</var> be false.
+
+  4. If <a>Type</a>(<var>value</var>) is Undefined, Null, Boolean,
+     String, or Number, then return { [[Type]]: "primitive", [[Value]]: <var>value</var> }.
+
+  5. If <a>Type</a>(<var>value</var>) is Symbol, then throw a
+     <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+  6. Let <var>serialized</var> be an uninitialized value.
+
+  7. If <var>value</var> has a [[BooleanData]] internal slot, then set <var>serialized</var> to
+     { [[Type]]: "Boolean", [[BooleanData]]: <var>value</var>.[[BooleanData]] }.
+
+  8. Otherwise, if <var>value</var> has a [[NumberData]] internal slot, then set
+     <var>serialized</var> to { [[Type]]: "Number", [[NumberData]]: <var>value</var>.[[NumberData]] }.
+
+  9. Otherwise, if <var>value</var> has a [[StringData]] internal slot, then set
+     <var>serialized</var> to { [[Type]]: "String", [[StringData]]: <var>value</var>.[[StringData]] }.
+
+  10. Otherwise, if <var>value</var> has a [[DateValue]] internal slot, then set
+      <var>serialized</var> to { [[Type]]: "Date", [[DateValue]]: <var>value</var>.[[DateValue]] }.
+
+  11. Otherwise, if <var>value</var> has a [[RegExpMatcher]] internal slot, then set
+      <var>serialized</var> to { [[Type]]: "RegExp", [[RegExpMatcher]]:
+      <var>value</var>.[[RegExpMatcher]], [[OriginalSource]]: <var>value</var>.[[OriginalSource]],
+      [[OriginalFlags]]: <var>value</var>.[[OriginalFlags]] }.
+
+  12. Otherwise, if <var>value</var> has an [[ArrayBufferData]] internal slot, then:
+
+    1. Let <var>size</var> be <var>value</var>.[[ArrayBufferByteLength]].
+
+    2. If ! <a>IsSharedArrayBuffer</a>(<var>value</var>) is true, then:
+
+      1. If <var>forStorage</var> is true, then throw a
+         <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+      2. Set <var>serialized</var> to { [[Type]]: "SharedArrayBuffer", [[ArrayBufferData]]:
+         <var>value</var>.[[ArrayBufferData]], [[ArrayBufferByteLength]]: <var>size</var>,
+         [[AgentCluster]]: the <a>current Realm Record</a>'s corresponding <a>agent cluster</a> }.
+
+    3. Otherwise:
+
+      1. If ! <a>IsDetachedBuffer</a>(<var>value</var>) is true, then throw a
+         <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+      2. Let <var>dataCopy</var> be ? <a>CreateByteDataBlock</a>(<var>size</var>).
+
+         <p class="note">This can throw a <code>RangeError</code> exception
+         upon allocation failure.</p>
+
+      3. Perform ! <a>CopyDataBlockBytes</a>(<var>dataCopy</var>, 0,
+         <var>value</var>.[[ArrayBufferData]], 0, <var>size</var>).
+
+      4. Set <var>serialized</var> to { [[Type]]: "ArrayBuffer", [[ArrayBufferData]]:
+         <var>dataCopy</var>, [[ArrayBufferByteLength]]: <var>size</var> }.
+
+  13. Otherwise, if <var>value</var> has a [[ViewedArrayBuffer]] internal slot, then:
+
+    1. Let <var>buffer</var> be the value of <var>value</var>'s [[ViewedArrayBuffer]] internal
+       slot.
+
+    2. Let <var>bufferSerialized</var> be ?
+       <a>StructuredSerializeInternal</a>(<var>buffer</var>, <var>forStorage</var>,
+       <var>memory</var>).
+
+    3. Assert: <var>bufferSerialized</var>.[[Type]] is "ArrayBuffer".
+
+    4. If <var>value</var> has a [[DataView]] internal slot, then set <var>serialized</var> to
+       { [[Type]]: "ArrayBufferView", [[Constructor]]: "DataView", [[ArrayBufferSerialized]]:
+       <var>bufferSerialized</var>, [[ByteLength]]: <var>value</var>.[[ByteLength]], [[ByteOffset]]:
+       <var>value</var>.[[ByteOffset]] }.
+
+    5. Otherwise:
+
+      1. Assert: <var>value</var> has a [[TypedArrayName]] internal slot.
+
+      2. Set <var>serialized</var> to { [[Type]]: "ArrayBufferView", [[Constructor]]:
+         <var>value</var>.[[TypedArrayName]], [[ArrayBufferSerialized]]: <var>bufferSerialized</var>,
+         [[ByteLength]]: <var>value</var>.[[ByteLength]], [[ByteOffset]]:
+         <var>value</var>.[[ByteOffset]], [[ArrayLength]]: <var>value</var>.[[ArrayLength]] }.
+
+  14. Otherwise, if <var>value</var> has [[MapData]] internal slot, then:
+
+    1. Set <var>serialized</var> to { [[Type]]: "Map", [[MapData]]: a new empty <a>List</a> }.
+
+    2. Set <var>deep</var> to true.
+
+  15. Otherwise, if <var>value</var> has [[SetData]] internal slot, then:
+
+    1. Set <var>serialized</var> to { [[Type]]: "Set", [[SetData]]: a new empty <a>List</a> }.
+
+    2. Set <var>deep</var> to true.
+
+  16. Otherwise, if <var>value</var> is an Array exotic object, then:
+
+    1. Let <var>valueLenDescriptor</var> be ?
+       <a>OrdinaryGetOwnProperty</a>(<var>value</var>, "<code data-x="">length</code>").
+
+    2. Let <var>valueLen</var> be <var>valueLenDescriptor</var>.[[Value]].
+
+    3. Set <var>serialized</var> to { [[Type]]: "Array", [[Length]]: <var>valueLen</var>,
+       [[Properties]]: a new empty <a>List</a> }.
+
+    4. Set <var>deep</var> to true.
+
+  17. Otherwise, if <var>value</var> is a <a>platform object</a> that is a <a>serializable object</a>:
+
+    1. If <var>value</var> has a <a>[[Detached]]</a> internal slot whose value is true,
+       then throw a <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+    2. Let <var>typeString</var> be the identifier of the <a>primary interface</a> of
+       <var>value</var>.
+
+    3. Set <var>serialized</var> to { [[Type]]: <var>typeString</var> }.
+
+    4. Set <var>deep</var> to true.
+
+  18. Otherwise, if <var>value</var> is a <a>platform object</a>, then throw a
+      <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+  19. Otherwise, if <a>IsCallable</a>(<var>value</var>) is true, then throw a
+      <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+  20. Otherwise, if <var>value</var> has any internal slot other than [[Prototype]] or
+      [[Extensible]], then throw a <a>"<code>DataCloneError</code>"</a>
+      <code>DOMException</code>.
+
+      <p class="example">For instance, a [[PromiseState]] or [[WeakMapData]] internal slot.</p>
+
+  21. Otherwise, if <var>value</var> is an exotic object, then throw a
+      <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+      <p class="example">For instance, a proxy object.</p>
+
+  22. Otherwise:
+
+    1. Set <var>serialized</var> to { [[Type]]: "Object", [[Properties]]: a new empty <a>List</a> }.
+
+    2. Set <var>deep</var> to true.
+
+  23. <a>Set</a> <var>memory</var>[<var>value</var>] to <var>serialized</var>.
+
+  24. If <var>deep</var> is true, then:
+
+    1. If <var>value</var> has a [[MapData]] internal slot, then:
+
+      1. Let <var>copiedList</var> be a new empty <a>List</a>.
+
+      2. <a>For each</a> <a>Record</a> { [[Key]], [[Value]] }
+         <var>entry</var> of <var>value</var>.[[MapData]]:
+
+         1. Let <var>copiedEntry</var> be a new <a>Record</a> { [[Key]]:
+            <var>entry</var>.[[Key]], [[Value]]: <var>entry</var>.[[Value]] }.
+
+         2. If <var>copiedEntry</var>.[[Key]] is not the special value <i>empty</i>, <a>append</a>
+            <var>copiedEntry</var> to <var>copiedList</var>.
+
+      3. <a>For each</a> <a>Record</a> { [[Key]], [[Value]] }
+         <var>entry</var> of <var>copiedList</var>:
+
+         1. Let <var>serializedKey</var> be ?
+            <a>StructuredSerializeInternal</a>(<var>entry</var>.[[Key]], <var>forStorage</var>,
+            <var>memory</var>).
+
+         2. Let <var>serializedValue</var> be ?
+            <a>StructuredSerializeInternal</a>(<var>entry</var>.[[Value]], <var>forStorage</var>,
+            <var>memory</var>).
+
+         3. <a>Append</a> { [[Key]]: <var>serializedKey</var>,
+            [[Value]]: <var>serializedValue</var> } to <var>serialized</var>.[[MapData]].
+
+    2. Otherwise, if <var>value</var> has a [[SetData]] internal slot, then:
+
+      1. Let <var>copiedList</var> be a new empty <a>List</a>.
+
+      2. <a>For each</a> <var>entry</var> of <var>value</var>.[[SetData]]:
+
+        1. If <var>entry</var> is not the special value <i>empty</i>, <a>append</a>
+           <var>entry</var> to <var>copiedList</var>.
+
+      3. <a>For each</a> <var>entry</var> of <var>copiedList</var>:
+
+        1. Let <var>serializedEntry</var> be ?
+           <a>StructuredSerializeInternal</a>(<var>entry</var>, <var>forStorage</var>,
+           <var>memory</var>).
+
+        2. <a>Append</a> <var>serializedEntry</var> to
+           <var>serialized</var>.[[SetData]].
+
+    3. Otherwise, if <var>value</var> is a <a>platform object</a> that is a <a>serializable object</a>,
+       then perform the appropriate <a>serialization steps</a> given <var>value</var>,
+       <var>serialized</var>, and <var>forStorage</var>.
+
+       The <a>serialization steps</a> may need to perform a <dfn export>sub-serialization</dfn>.
+       This is an operation which takes as input a value
+       <var>subValue</var>, and returns <a>StructuredSerializeInternal</a>(<var>subValue</var>,
+       <var>forStorage</var>, <var>memory</var>). (In other words, a <a>sub-serialization</a>
+       is a specialization of <a>StructuredSerializeInternal</a> to be consistent within this
+       invocation.)
+
+    4. Otherwise:
+
+      1. Let <var>enumerableKeys</var> be a new empty <a>List</a>.
+
+      2. For each <var>key</var> in ! <var>value</var>.[[OwnPropertyKeys]]():
+
+        1. If <a>Type</a>(<var>key</var>) is String, then:
+
+          1. Let <var>valueDesc</var> be !
+             <var>value</var>.[[GetOwnProperty]](<var>key</var>).
+
+          2. If <var>valueDesc</var>.[[Enumerable]] is true, then <a>append</a>
+             <var>key</var> to <var>enumerableKeys</var>.
+
+      3. For each <var>key</var> in <var>enumerableKeys</var>:
+
+        1. If ! <a>HasOwnProperty</a>(<var>value</var>, <var>key</var>) is true, then:
+
+          1. Let <var>inputValue</var> be ? <var>value</var>.[[Get]](<var>key</var>,
+             <var>value</var>).
+
+          2. Let <var>outputValue</var> be ?
+             <a>StructuredSerializeInternal</a>(<var>inputValue</var>, <var>forStorage</var>,
+             <var>memory</var>).
+
+          3. <a>Append</a> { [[Key]]: <var>key</var>, [[Value]]:
+             <var>outputValue</var> } to <var>serialized</var>.[[Properties]].
+
+      <p class="note">The key collection performed above is very similar to the JavaScript
+      specification's <a>EnumerableOwnProperties</a> operation, but crucially it uses the
+      deterministic ordering provided by the [[OwnPropertyKeys]] internal method, instead of
+      reordering the keys in an unspecified manner as <a>EnumerableOwnProperties</a> does.
+      <ref spec=JAVASCRIPT>
+
+  25. Return <var>serialized</var>.
+
+
+  <div class="example">
+   It's important to realize that the <a>Records</a>
+   produced by <a>StructuredSerializeInternal</a> might contain "pointers" to other records
+   that create circular references. For example, when we pass the following JavaScript object into
+   <a>StructuredSerializeInternal</a>:
+
+  <pre>const o = {};
+o.myself = o;</pre>
+
+  <p>it produces the following result:</p>
+
+  <pre><samp>{
+  [[Type]]: "Object",
+  [[Properties]]: «
+    {
+      [[Key]]: "myself",
+      [[Value]]: <i>&lt;a pointer to this whole structure></i>
+    }
+  »
+}</samp></pre>
+  </div>
+
+  <h4 id="section-structuredserialize"><dfn export>StructuredSerialize</dfn> ( <var>value</var> )</h4>
+
+  1. Return ? <a>StructuredSerializeInternal</a>(<var>value</var>, false).
+
+  <h4 id="section-structuredserializeforstorage"><dfn export>StructuredSerializeForStorage</dfn> ( <var>value</var> )</h4>
+
+  1. Return ? <a>StructuredSerializeInternal</a>(<var>value</var>, true).
+
+  <h4 id="section-structureddeserialize"><dfn export>StructuredDeserialize</dfn> ( <var>serialized</var>,
+  <var>targetRealm</var> [ , <var>memory</var> ] )</h4>
+
+  The <a>StructuredDeserialize</a> abstract operation takes as input a <a>Record</a>
+  <var>serialized</var>, which was previously produced by <a>StructuredSerialize</a> or
+  <a>StructuredSerializeForStorage</a>, and deserializes it into a new JavaScript value,
+  created in <var>targetRealm</var>.
+
+  This process can throw an exception, for example when trying to allocate memory for the new
+  objects (especially <code>ArrayBuffer</code> objects).
+
+  1. If <var>memory</var> was not supplied, let <var>memory</var> be an empty <a>map</a>.
+
+     <p class="note">The purpose of the <var>memory</var> map is to avoid deserializing objects
+     twice. This ends up preserving cycles and the identity of duplicate objects in graphs.</p>
+
+  2. If <var>memory</var>[<var>serialized</var>] <a>exists</a>, then
+     return <var>memory</var>[<var>serialized</var>].
+
+  3. Let <var>deep</var> be false.
+
+  4. Let <var>value</var> be an uninitialized value.
+
+  5. If <var>serialized</var> contains a [[TransferConsumed]] field, then:
+
+    1. Assert: <var>serialized</var>.[[TransferConsumed]] is false. (It must be impossible to
+       get in a situation where <a>StructuredDeserialize</a> is being called multiple times on
+       the same serialization, if that serialization contains transfer data holders.)
+
+    2. Set <var>serialized</var>.[[TransferConsumed]] to true.
+
+    3. If <var>serialized</var>.[[Type]] is "ArrayBuffer", then set <var>value</var> to a new
+       ArrayBuffer object in <var>targetRealm</var> whose [[ArrayBufferData]] internal slot value is
+       <var>serialized</var>.[[ArrayBufferData]], and whose [[ArrayBufferByteLength]] internal slot
+       value is <var>serialized</var>.[[ArrayBufferByteLength]].
+
+       <p class="note">In cases where the original memory occupied by [[ArrayBufferData]] is
+       accessible during the deserialization, this step is unlikely to throw an exception, as no new
+       memory needs to be allocated: the memory occupied by [[ArrayBufferData]] is instead just
+       getting transferred into the new ArrayBuffer. This could be true, for example, when both the
+       source and target Realms are in the same process.</p>
+
+    4. Otherwise:
+
+      1. Let <var>interfaceName</var> be <var>serialized</var>.[[Type]].
+
+      2. If the interface identified by <var>interfaceName</var> is not exposed in
+         <var>targetRealm</var>, then throw a <a>"<code>DataCloneError</code>"</a>
+         <code>DOMException</code>.
+
+      3. Set <var>value</var> to a new instance of the interface identified by
+         <var>interfaceName</var>, created in <var>targetRealm</var>.
+
+      4. Perform the appropriate <a>transfer-receiving steps</a> for the interface
+         identified by <var>interfaceName</var> given <var>serialized</var> and
+         <var>value</var>.
+
+  6. Otherwise, if <var>serialized</var>.[[Type]] is "primitive", then set <var>value</var> to
+     <var>serialized</var>.[[Value]].
+
+  7. Otherwise, if <var>serialized</var>.[[Type]] is "Boolean", then set <var>value</var> to a new Boolean object in
+     <var>targetRealm</var> whose [[BooleanData]] internal slot value is
+     <var>serialized</var>.[[BooleanData]].
+
+  8. Otherwise, if <var>serialized</var>.[[Type]] is "Number", then set <var>value</var> to a new Number object in
+     <var>targetRealm</var> whose [[NumberData]] internal slot value is
+     <var>serialized</var>.[[NumberData]].
+
+  9. Otherwise, if <var>serialized</var>.[[Type]] is "String", then set <var>value</var> to a new String object in
+     <var>targetRealm</var> whose [[StringData]] internal slot value is
+     <var>serialized</var>.[[StringData]].
+
+  10. Otherwise, if <var>serialized</var>.[[Type]] is "Date", then set <var>value</var> to a new Date object in
+      <var>targetRealm</var> whose [[DateValue]] internal slot value is
+      <var>serialized</var>.[[DateValue]].
+
+  11. Otherwise, if <var>serialized</var>.[[Type]] is "RegExp", then set <var>value</var> to a new RegExp object in
+      <var>targetRealm</var> whose [[RegExpMatcher]] internal slot value is
+      <var>serialized</var>.[[RegExpMatcher]], whose [[OriginalSource]] internal slot value is
+      <var>serialized</var>.[[OriginalSource]], and whose [[OriginalFlags]] internal slot value is
+      <var>serialized</var>.[[OriginalFlags]].
+
+  12. Otherwise, if <var>serialized</var>.[[Type]] is "SharedArrayBuffer", then:
+
+    1. If <var>targetRealm</var>'s corresponding <span>agent cluster</span> is not
+       <var>serialized</var>.[[AgentCluster]], then then throw a
+       <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+
+    2. Otherwise, set <var>value</var> to a new SharedArrayBuffer object in
+       <var>targetRealm</var> whose [[ArrayBufferData]] internal slot value is
+       <var>serialized</var>.[[ArrayBufferData]] and whose [[ArrayBufferByteLength]] internal slot
+       value is <var>serialized</var>.[[ArrayBufferByteLength]].
+
+  13. Otherwise, if <var>serialized</var>.[[Type]] is "ArrayBuffer", then set <var>value</var> to a
+      new ArrayBuffer object in <var>targetRealm</var> whose [[ArrayBufferData]] internal slot value
+      is <var>serialized</var>.[[ArrayBufferData]], and whose [[ArrayBufferByteLength]] internal slot
+      value is <var>serialized</var>.[[ArrayBufferByteLength]].
+
+      If this throws an exception, then throw a <a>"<code>DataCloneError</code>"</a>
+      <code>DOMException</code>.
+
+      <p class="note">This step might throw an exception if there is not enough memory available to
+      create such an ArrayBuffer object.</p>
+
+  14. Otherwise, if <var>serialized</var>.[[Type]] is "ArrayBufferView", then:
+
+    1. Let <var>deserializedArrayBuffer</var> be ?
+       <a>StructuredDeserialize</a>(<var>serialized</var>.[[ArrayBufferSerialized]],
+       <var>targetRealm</var>, <var>memory</var>).
+
+    2. If <var>serialized</var>.[[Constructor]] is "DataView", then set <var>value</var> to a
+       new DataView object in <var>targetRealm</var> whose [[ViewedArrayBuffer]] internal slot value
+       is <var>deserializedArrayBuffer</var>, whose [[ByteLength]] internal slot value is
+       <var>serialized</var>.[[ByteLength]], and whose [[ByteOffset]] internal slot value is
+       <var>serialized</var>.[[ByteOffset]].
+
+    3. Otherwise, set <var>value</var> to a new typed array object in <var>targetRealm</var>,
+       using the constructor given by <var>serialized</var>.[[Constructor]], whose
+       [[ViewedArrayBuffer]] internal slot value is <var>deserializedArrayBuffer</var>, whose
+       [[TypedArrayName]] internal slot value is <var>serialized</var>.[[Constructor]], whose
+       [[ByteLength]] internal slot value is <var>serialized</var>.[[ByteLength]], whose
+       [[ByteOffset]] internal slot value is <var>serialized</var>.[[ByteOffset]], and whose
+       [[ArrayLength]] internal slot value is <var>serialized</var>.[[ArrayLength]].
+
+  15. Otherwise, if <var>serialized</var>.[[Type]] is "Map", then:
+
+    1. Set <var>value</var> to a new Map object in <var>targetRealm</var> whose [[MapData]]
+       internal slot value is a new empty <a>List</a>.
+
+    2. Set <var>deep</var> to true.
+
+  16. Otherwise, if <var>serialized</var>.[[Type]] is "Set", then:
+
+    1. Set <var>value</var> to a new Set object in <var>targetRealm</var> whose [[SetData]]
+       internal slot value is a new empty <a>List</a>.
+
+    2. Set <var>deep</var> to true.
+
+  17. Otherwise, if <var>serialized</var>.[[Type]] is "Array", then:
+
+    1. Let <var>outputProto</var> be the <a>%ArrayPrototype%</a> intrinsic object in
+       <var>targetRealm</var>.
+
+    2. Set <var>value</var> to ! <a>ArrayCreate</a>(<var>serialized</var>.[[Length]],
+       <var>outputProto</var>).
+
+    3. Set <var>deep</var> to true.
+
+  18. Otherwise, if <var>serialized</var>.[[Type]] is "Object", then:
+
+    1. Set <var>value</var> to a new Object in <var>targetRealm</var>.
+
+    2. Set <var>deep</var> to true.
+
+  19. Otherwise:
+
+    1. Let <var>interfaceName</var> be <var>serialized</var>.[[Type]].
+
+    2. If the interface identified by <var>interfaceName</var> is not exposed in
+       <var>targetRealm</var>, then throw a <a>"<code>DataCloneError</code>"</a>
+       <code>DOMException</code>.
+
+    3. Set <var>value</var> to a new instance of the interface identified by
+       <var>interfaceName</var>, created in <var>targetRealm</var>.
+
+    4. Set <var>deep</var> to true.
+
+  20. <a>Set</a> <var>memory</var>[<var>serialized</var>] to <var>value</var>.
+
+  21. If <var>deep</var> is true, then:
+
+    1. If <var>serialized</var>.[[Type]] is "Map", then:
+
+      1. <a>For each</a> <a>Record</a> { [[Key]], [[Value]] }
+         <var>entry</var> of <var>serialized</var>.[[MapData]]:
+
+        1. Let <var>deserializedKey</var> be ?
+           <a>StructuredDeserialize</a>(<var>entry</var>.[[Key]], <var>targetRealm</var>,
+           <var>memory</var>).
+
+        2. Let <var>deserializedValue</var> be ?
+           <a>StructuredDeserialize</a>(<var>entry</var>.[[Value]], <var>targetRealm</var>,
+           <var>memory</var>).
+
+        3. <a>Append</a> { [[Key]]: <var>deserializedKey</var>,
+           [[Value]]: <var>deserializedValue</var> } to <var>value</var>.[[MapData]].
+
+    2. Otherwise, if <var>serialized</var>.[[Type]] is "Set", then:
+
+      1. <a>For each</a> <var>entry</var> of
+         <var>serialized</var>.[[SetData]]:
+
+        1. Let <var>deserializedEntry</var> be ?
+           <a>StructuredDeserialize</a>(<var>entry</var>, <var>targetRealm</var>,
+           <var>memory</var>).
+
+        2. <a>Append</a> <var>deserializedEntry</var> to <var>value</var>.[[SetData]].
+
+    3. Otherwise, if <var>serialized</var>.[[Type]] is "Array" or "Object", then:
+
+      1. <a>For each</a> <a>Record</a> { [[Key]], [[Value]] }
+         <var>entry</var> of <var>serialized</var>.[[Properties]]:
+
+        1. Let <var>deserializedValue</var> be ?
+           <a>StructuredDeserialize</a>(<var>entry</var>.[[Value]], <var>targetRealm</var>,
+           <var>memory</var>).
+
+        2. Let <var>result</var> be ! <a>CreateDataProperty</a>(<var>value</var>,
+           <var>entry</var>.[[Key]], <var>deserializedValue</var>).
+
+        3. Assert: <var>result</var> is true.
+
+    4. Otherwise:
+
+      1. Perform the appropriate <a>deserialization steps</a> for the interface identified
+         by <var>serialized</var>.[[Type]], given <var>serialized</var> and <var>value</var>.
+
+         The <a>deserialization steps</a> may need to perform a <dfn export>sub-deserialization</dfn>.
+         This is an operation which takes as input a
+         previously-serialized <a>Record</a> <var>subSerialized</var>, and returns
+         <a>StructuredDeserialize</a>(<var>subSerialized</var>, <var>targetRealm</var>,
+         <var>memory</var>). (In other words, a <a>sub-deserialization</a> is a specialization
+         of <a>StructuredDeserialize</a> to be consistent within this invocation.)
+
+  22. Return <var>value</var>.
+
+  <h4 id="structuredserializewithtransfer" data-export="" data-lt="StructuredSerializeWithTransfer"
+  data-dfn-type="abstract-op"><dfn>StructuredSerializeWithTransfer</dfn> ( <var>value</var>,
+  <var>transferList</var> )</h4>
+
+  <ol>
+   <li>
+    <p>Let <var>memory</var> be an empty <span data-x="ordered map">map</span>.</p>
+
+    <p class="note">In addition to how it is used normally by
+    <span>StructuredSerializeInternal</span>, in this algorithm <var>memory</var> is also used to
+    ensure that <span>StructuredSerializeInternal</span> ignores items in <var>transferList</var>,
+    and let us do our own handling instead.</p>
+   </li>
+
+   <li>
+    <p><span data-x="list iterate">For each</span> <var>transferable</var> of
+    <var>transferList</var>:</p>
+
+    <ol>
+     <li><p>If <var>transferable</var> has neither an [[ArrayBufferData]] internal slot nor a
+     <span>[[Detached]]</span> internal slot, then throw a
+     <span>"<code>DataCloneError</code>"</span> <code>DOMException</code>.</p></li>
+
+     <li><p>If <var>transferable</var> has an [[ArrayBufferData]] internal slot and either !
+     <span>IsSharedArrayBuffer</span>(<var>transferable</var>) is true or !
+     <span>IsDetachedBuffer</span>(<var>transferable</var>) is true, then throw a
+     <span>"<code>DataCloneError</code>"</span> <code>DOMException</code>.</p></li>
+
+     <li><p>If <var>transferable</var> has a <span>[[Detached]]</span> internal slot and
+     <var>transferable</var>.<span>[[Detached]]</span> is true, then throw a
+     <span>"<code>DataCloneError</code>"</span> <code>DOMException</code>.</p></li>
+
+     <li><p>Let <var>placeholder</var> be a user-agent-defined placeholder object.</p></li>
+
+     <li><p><span data-x="map set">Set</span> <var>memory</var>[<var>transferable</var>] to
+     <var>placeholder</var>.</p></li>
+    </ol>
+   </li>
+
+   <li><p>Let <var>serialized</var> be ? <span>StructuredSerializeInternal</span>(<var>value</var>,
+   false, <var>memory</var>).</p></li>
+
+   <li><p>Let <var>transferDataHolders</var> be a new empty <span
+   data-x="js-List">List</span>.</p></li>
+
+   <li>
+    <p><span data-x="list iterate">For each</span> <var>transferable</var> of
+    <var>transferList</var>:</p>
+
+    <ol>
+     <li><p>Let <var>placeholder</var> be <var>memory</var>[<var>transferable</var>].</p></li>
+
+     <li><p>Let <var>dataHolder</var> be an uninitialized value.</p></li>
+
+     <li>
+      <p>If <var>transferable</var> has an [[ArrayBufferData]] internal slot, then:</p>
+
+      <ol>
+       <li><p>Set <var>dataHolder</var> to { [[TransferConsumed]]: false, [[Type]]: "ArrayBuffer",
+       [[ArrayBufferData]]: <var>transferable</var>.[[ArrayBufferData]], [[ArrayBufferByteLength]]:
+       <var>transferable</var>.[[ArrayBufferByteLength]] }.</p></li>
+
+       <li><p>Perform ! <span>DetachArrayBuffer</span>(<var>transferable</var>).</p></li>
+      </ol>
+     </li>
+
+     <li>
+      <p>Otherwise:</p>
+
+      <ol>
+       <li><p>Assert: <var>transferable</var> is a <span>platform object</span> that is a <span
+       data-x="transferable objects">transferable object</span>.</p></li>
+
+       <li><p>Let <var>interfaceName</var> be the identifier of the <span>primary interface</span>
+       of <var>transferable</var>.</p></li>
+
+       <li><p>Set <var>dataHolder</var> to { [[TransferConsumed]]: false, [[Type]]:
+       <var>interfaceName</var> }.</p></li>
+
+       <li><p>Perform the appropriate <span>transfer steps</span> for the interface identified by
+       <var>interfaceName</var>, given <var>transferable</var> and <var>dataHolder</var>.</p></li>
+
+       <li><p>Set <var>transferable</var>.<span>[[Detached]]</span> to true.</p></li>
+      </ol>
+     </li>
+
+     <li><p>Within <var>serialized</var>, replace all instances of <var>placeholder</var> with
+     <var>dataHolder</var>.</p></li>
+
+     <li><p><span data-x="list append">Append</span> <var>dataHolder</var> to
+     <var>transferDataHolders</var>.</p></li>
+    </ol>
+   </li>
+
+   <li><p>Return { [[Serialized]]: <var>serialized</var>, [[TransferDataHolders]]:
+   <var>transferDataHolders</var> }.</p></li>
+  </ol>
+
+  <h4 id="structureddeserializewithtransfer" data-export=""
+  data-lt="StructuredDeserializeWithTransfer"
+  data-dfn-type="abstract-op"><dfn>StructuredDeserializeWithTransfer</dfn> (
+  <var>serializeWithTransferResult</var>, <var>targetRealm</var> )</h4>
+
+  <ol>
+   <li>
+    <p>Let <var>memory</var> be an empty <span data-x="ordered map">map</span>.</p>
+
+    <p class="note">In addition to how it is used normally by <span>StructuredDeserialize</span>, in
+    this algorithm <var>memory</var> is also used to help us determine the list of transferred
+    values.</p>
+   </li>
+
+   <li><p>Let <var>deserialized</var> be ?
+   <span>StructuredDeserialize</span>(<var>serializeWithTransferResult</var>.[[Serialized]],
+   <var>targetRealm</var>, <var>memory</var>).</p></li>
+
+   <li><p>Let <var>transferredValues</var> be a new empty <span
+   data-x="js-List">List</span>.</p></li>
+
+   <li>
+    <p><span data-x="list iterate">For each</span> <var>transferDataHolder</var> of
+    <var>serializeWithTransferResult</var>.[[TransferDataHolders]]:</p>
+
+    <ol>
+     <li><p><span data-x="list append">Append</span>
+     <var>memory</var>[<var>transferDataHolder</var>] to <var>transferredValues</var>.</p></li>
+    </ol>
+   </li>
+
+   <li><p>Return { [[Deserialized]]: <var>deserialized</var>, [[TransferredValues]]:
+   <var>transferredValues</var> }.</p></li>
+  </ol>
+
+
+  <h4 id="performing-structured-clones-from-other-specifications">Performing serialization and
+  transferring from other specifications</h4>
+
+  <p>Other specifications may use the abstract operations defined here. The following provides
+  some guidance on when each abstract operation is typically useful, with examples.</p>
+
+  <dl>
+   <dt><span>StructuredSerializeWithTransfer</span></dt>
+   <dt><span>StructuredDeserializeWithTransfer</span></dt>
+   <dd>
+    <p>Cloning a value to another <span>JavaScript Realm</span>, with a transfer list, but where the
+    target Realm is not known ahead of time. In this case the serialization step can be performed
+    immediately, with the deserialization step delayed until the target Realm becomes known.</p>
+
+    <p class="example"><code data-x="dom-MessagePort-postMessage">messagePort.postMessage()</code>
+    uses this pair of abstract operations, as the destination Realm is not known until the
+    <code>MessagePort</code> <span>has been shipped</span>.</p>
+   </dd>
+
+   <dt><span>StructuredSerialize</span></dt>
+   <dt><span>StructuredSerializeForStorage</span></dt>
+   <dt><span>StructuredDeserialize</span></dt>
+   <dd>
+    <p>Creating a <span>JavaScript Realm</span>-independent snapshot of a given value which can be
+    saved for an indefinite amount of time, and then reified back into a JavaScript value later,
+    possibly multiple times.</p>
+
+    <p><span>StructuredSerializeForStorage</span> can be used for situations where the serialization
+    is anticipated to be stored in a persistent manner, instead of passed between Realms. It throws
+    when attempting to serialize <code>SharedArrayBuffer</code> objects, since storing shared memory
+    does not make sense. Similarly, it can throw or possibly have different behavior when given a
+    <span>platform object</span> with custom <span>serialization steps</span> when the
+    <var>forStorage</var> argument is true.</p>
+
+    <p class="example"><code data-x="dom-history-pushState">history.pushState()</code> and <code
+    data-x="dom-history-replaceState">history.replaceState()</code> use
+    <span>StructuredSerializeForStorage</span> on author-supplied state objects, storing them as
+    <span>serialized state</span> in the appropriate <span>session history entry</span>. Then,
+    <span>StructuredDeserialize</span> is used so that the <code
+    data-x="dom-history-state">history.state</code> property can return a clone of the
+    originally-supplied state object.</p>
+
+    <p class="example"><code
+    data-x="dom-BroadcastChannel-postMessage">broadcastChannel.postMessage()</code> uses
+    <span>StructuredSerialize</span> on its input, then uses <span>StructuredDeserialize</span>
+    multiple times on the result to produce a fresh clone for each destination being broadcast
+    to. Note that transferring does not make sense in multi-destination situations.</p>
+
+    <p class="example">Any API for persisting JavaScript values to the filesystem would also use
+    <span>StructuredSerializeForStorage</span> on its input and <span>StructuredDeserialize</span>
+    on its output.</p>
+   </dd>
+  </dl>
+
+  <p>In general, call sites may pass in Web IDL values instead of JavaScript values; this is to be
+  understood to perform an implicit <span data-x="concept-idl-convert">conversion</span> to the
+  JavaScript value before invoking these algorithms.</p>
+
+  <p class="note" id="structuredclone"><span id="structured-clone"></span>This specification used
+  to define a "structured clone" algorithm, and more recently a StructuredClone abstract operation.
+  However, in practice all known uses of it were better served by separate serialization and
+  deserialization steps, so it was removed.</p>
+
+  <hr>
+
+  <p>Call sites that are not invoked as a result of author code synchronously calling into a user
+  agent method must take care to properly <span>prepare to run script</span> and <span>prepare to
+  run a callback</span> before invoking <span>StructuredSerialize</span>,
+  <span>StructuredSerializeForStorage</span>, or <span>StructuredSerializeWithTransfer</span>
+  abstract operations, if they are being performed on arbitrary objects. This is necessary because
+  the serialization process can invoke author-defined accessors as part of its final
+  deep-serialization steps, and these accessors could call into operations that rely on the <span
+  data-x="concept-entry-everything">entry</span> and <span
+  data-x="concept-incumbent-everything">incumbent</span> concepts being properly set up.</p>
+
+  <p class="example"><code data-x="dom-window-postMessage">window.postMessage()</code> performs
+  <span>StructuredSerializeWithTransfer</span> on its arguments, but is careful to do so
+  immediately, inside the synchronous portion of its algorithm. Thus it is able to use the
+  algorithms without needing to <span>prepare to run script</span> and <span>prepare to run a
+  callback</span>.</p>
+
+  <p class="example">In contrast, a hypothetical API that used <span>StructuredSerialize</span> to
+  serialize some author-supplied object periodically, directly from a <span
+  data-x="concept-task">task</span> on the <span>event loop</span>, would need to ensure it performs
+  the appropriate preparations beforehand. As of this time, we know of no such APIs on the platform;
+  usually it is simpler to perform the serialization ahead of time, as a synchronous consequence of
+  author code.</p>
+
+  <h4>Monkey patch for <code>Blob</code> and <code>FileList</code> objects</h4>
+
+  <p class="&#x0058;&#x0058;&#x0058;">This monkey patch will be moved in due course. See <a
+  href="https://github.com/w3c/FileAPI/issues/32">w3c/FileAPI issue 32</a>.</p>
+
+  <p><code>Blob</code> objects are <span>serializable objects</span>. The <code>Blob</code>
+  interface must be annotated with the <code data-x="Serializable">[Serializable]</code>
+  <span>extended attribute</span>. Their <span>serialization steps</span>, given <var>value</var>
+  and <var>serialized</var>, are:</p>
+
+  <ol>
+   <li><p>Set <var>serialized</var>.[[SnapshotState]] to <var>value</var>'s <span>snapshot
+   state</span>.</p></li>
+
+   <li><p>Set <var>serialized</var>.[[ByteSequence]] to <var>value</var>'s underlying byte
+   sequence.</p></li>
+  </ol>
+
+  <p>Their <span>deserialization steps</span>, given <var>serialized</var> and <var>value</var>,
+  are:</p>
+
+  <ol>
+   <li><p>Set <var>value</var>'s <span>snapshot state</span> to
+   <var>serialized</var>.[[SnapshotState]].</p></li>
+
+   <li><p>Set <var>value</var>'s underlying byte sequence to
+   <var>serialized</var>.[[ByteSequence]].</p></li>
+  </ol>
+
+  <hr>
+
+  <p><code>File</code> objects are <span>serializable objects</span>. The <code>File</code>
+  interface must be annotated with the <code data-x="Serializable">[Serializable]</code>
+  <span>extended attribute</span>. Their <span>serialization steps</span>, given <var>value</var>
+  and <var>serialized</var>, are:</p>
+
+  <ol>
+   <li><p>Set <var>serialized</var>.[[SnapshotState]] to <var>value</var>'s <span>snapshot
+   state</span>.</p></li>
+
+   <li><p>Set <var>serialized</var>.[[ByteSequence]] to <var>value</var>'s underlying byte
+   sequence.</p></li>
+
+   <li><p>Set <var>serialized</var>.[[Name]] to the value of <var>value</var>'s <code
+   data-x="dom-File-name">name</code> attribute.</p></li>
+
+   <li><p>Set <var>serialized</var>.[[LastModified]] to the value of <var>value</var>'s <code
+   data-x="dom-File-lastModified">lastModified</code> attribute.</p></li>
+  </ol>
+
+  <p>Their <span>deserialization steps</span>, given <var>serialized</var> and <var>value</var>,
+  are:</p>
+
+  <ol>
+   <li><p>Set <var>value</var>'s <span>snapshot state</span> to
+   <var>serialized</var>.[[SnapshotState]].</p></li>
+
+   <li><p>Set <var>value</var>'s underlying byte sequence to
+   <var>serialized</var>.[[ByteSequence]].</p></li>
+
+   <li><p>Initialize the value of <var>value</var>'s <code data-x="dom-File-name">name</code>
+   attribute to <var>serialized</var>.[[Name]].</p></li>
+
+   <li><p>Initialize the value of <var>value</var>'s <code
+   data-x="dom-File-lastModified">lastModified</code> attribute to
+   <var>serialized</var>.[[LastModified]].</p></li>
+  </ol>
+
+  <hr>
+
+  <p><code>FileList</code> objects are <span>serializable objects</span>. The <code>FileList</code>
+  interface must be annotated with the <code data-x="Serializable">[Serializable]</code>
+  <span>extended attribute</span>. Their <span>serialization steps</span>, given <var>value</var>
+  and <var>serialized</var>, are:</p>
+
+  <ol>
+   <li><p>Set <var>serialized</var>.[[Files]] to an empty <span>list</span>.</p></li>
+
+   <li><p>For each <var>file</var> in <var>value</var>, <span data-x="list append">append</span>
+   the <span>sub-serialization</span> of <var>file</var> to
+   <var>serialized</var>.[[Files]].</p></li>
+  </ol>
+
+  <p>Their <span>deserialization steps</span>, given <var>serialized</var> and <var>value</var>,
+  are:</p>
+
+  <ol>
+   <li><p><span data-x="list iterate">For each</span> <var>file</var> of
+   <var>serialized</var>.[[Files]], add the <span>sub-deserialization</span> of <var>file</var> to
+   <var>value</var>.</p></li>
+  </ol>
+
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
 <h4 id="section-structuredclonewithtransfer"><dfn export>StructuredCloneWithTransfer</dfn> ( <var>input</var>, <var>transferList</var>, <var>targetRealm</var> )</h4>
 
@@ -4686,4 +5612,5 @@
       3. Return <var>output</var>.
   2. Return ? <var>input</var>.[[<a>Transfer</a>]](<var>targetRealm</var>).
 
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 </section>
