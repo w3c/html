@@ -2361,7 +2361,7 @@
   The sequence of {{Document}}s in a <a>browsing context</a> is its <dfn>session
   history</dfn>. Each <a>browsing context</a>, including <a>nested browsing contexts</a>, has a distinct session history. A <a>browsing
   context</a>'s session history consists of a flat list of <a>session history entries</a>. Each <dfn>session history entry</dfn> consists, at a
-  minimum, of a [=url/URL=], and each entry may in addition have a <a>state object</a>, a
+  minimum, of a [=url/URL=], and each entry may in addition have a <a>serialized state</a>, a
   title, a {{Document}} object, form data, a <a>scroll restoration mode</a>, a scroll
   position, and other information associated with it.
 
@@ -2381,7 +2381,7 @@
   the state of the document at that point, so that the user can navigate the document's history.
   </p>
 
-  URLs without associated <a>state objects</a> are added to the
+  URLs without associated <a>serialized state</a> are added to the
   session history as the user (or script) navigates from page to page.
 
   <hr />
@@ -2396,15 +2396,20 @@
 
   <hr />
 
-  A <dfn>state object</dfn> is an object representing a user interface state.
+  <p id="state-object"><dfn>Serialized state</dfn> is a serialization (via
+  <a>StructuredSerializeForStorage</a>) of an object representing a user interface state. We
+  sometimes informally refer to "state objects", which are the objects representing user interface
+  state supplied by the author, or alternately the objects created by deserializing (via
+  <a>StructuredDeserialize</a>) serialized state.</p>
 
-  Pages can <a method for="History" lt="pushState()">add</a> <a>state
-  objects</a> to the session history. These are then <a attribute for="WindowEventHandlers" lt="onpopstate">returned to the
-  script</a> when the user (or script) goes back in the history, thus enabling authors to use the
+  Pages can <a method for="History" lt="pushState()">add</a> <a>serialized state</a> to the
+  session history. These are then <a>deserialized</a> and 
+  <a attribute for="WindowEventHandlers" lt="onpopstate">returned to the script</a> when the
+  user (or script) goes back in the history, thus enabling authors to use the
   "navigation" metaphor even in one-page applications.
 
   <div class="note">
-    <a>State objects</a> are intended to be used for two main purposes:
+    <a>Serialized state</a> is intended to be used for two main purposes:
     first, storing a preparsed description of the state in the [=url/URL=] so that in the simple
     case an author doesn't have to do the parsing (though one would still need the parsing for
     handling <a for="url">URLs</a> passed around by users, so it's only a minor
@@ -2429,7 +2434,7 @@
 
   <p class="note">
     The <a>current entry</a> is usually an entry for the [=Document/URL=] of the
-    {{Document}}. However, it can also be one of the entries for <a>state objects</a> added
+    {{Document}}. However, it can also be one of the entries for <a>serialized state</a> added
     to the history by that document.
   </p>
 
@@ -2463,7 +2468,7 @@
   <p>If unspecified, the <a>scroll restoration mode</a> of a new entry must be set to
   "<code>auto</code>".</p>
 
-  Entries that consist of <a>state objects</a> share the same
+  Entries that consist of <a>serialized state</a> share the same
   {{Document}} as the entry for the page that was active when they were added.
 
   Contiguous entries that differ just by <a for="url">fragment</a> also share the same
@@ -2532,7 +2537,7 @@
 
     <dd>
 
-    Returns the current <a>state object</a>.
+    Returns the current <a>serialized state</a>, deserialized into an object.
 
     </dd>
 
@@ -2762,7 +2767,7 @@
       response to a clear user action, or that are invoked in rapid succession.)
   3. Let <var>targetRealm</var> be this {{History}} object's <a>relevant settings object</a>'s
       <a>Realm</a>.
-  4. Let <var>cloned data</var> be a <a>StructuredClone</a>(<var>data</var>,
+  4. Let <var>serializedData</var> be a <a>StructuredSerialize</a>(<var>data</var>),
       <var>targetRealm</var>). Rethrow any exceptions.
   5. If the third argument is not null, run these substeps:
       1. <a>Parse</a> the value of the third argument, relative to the <a>entry settings object</a>.
@@ -2792,8 +2797,8 @@
           <a>document family</a>.
       3. If appropriate, update the <a>current entry</a> to reflect any state that the user agent
           wishes to persist. The entry is then said to be <a>an entry with persisted user state</a>.
-      4. Add a <a>state object</a> entry to the session history, after the <a>current entry</a>,
-          with <var>cloned data</var> as the <a>state object</a>, the given <var>title</var> as the
+      4. Add a <a>session history entry</a> entry to the session history, after the <a>current entry</a>,
+          with <var>serializedData</var> as the <a>serialized state</a>, the given <var>title</var> as the
           title, <var>new URL</var> as the [=url/URL=] of the entry, and the
           <a>scroll restoration mode</a> of the current entry in the <a>session history</a> as the
           scroll restoration mode.
@@ -2801,8 +2806,8 @@
 
       Otherwise, if the method invoked was the {{History/replaceState()}} method:
 
-      1. Update the <a>current entry</a> in the session history so that <var>cloned data</var> is
-          the entry's new state object, the given <var>title</var> is the new title, and
+      1. Update the <a>current entry</a> in the session history so that <var>serializedData</var> is
+          the entry's new <a>serialized state</a>, the given <var>title</var> is the new title, and
           <var>new URL</var> is the entry's new [=url/URL=].
   8. If the <a>current entry</a> in the session history represents a non-GET request (e.g., it was
       the result of a POST submission) then update it to instead represent a GET request.
@@ -2812,9 +2817,11 @@
       <a>history traversal</a>, it does not cause a <code>hashchange</code> event to be fired.</p>
   10. Let <var>targetRealm</var> be this {{History}} object's <a>relevant settings object</a>'s
        <a>Realm</a>.
-  11. Set {{History/state|history.state}} to <a>StructuredClone</a>(<var>cloned data</var>,
-       <var>targetRealm</var>).
-  12. Let the <a>latest entry</a> of the {{Document}} of the <a>current entry</a> be the
+  11. Let <a>state</a> be <a>StructuredDeserialize</a>(<var>serializedData</var>,
+      <var>targetRealm</var>). If this throws an exception, ignore the exception and set
+      <var>state</var> to null.
+  12. Set {{History/state|history.state}} to <a>state</a>.
+  13. Let the <a>latest entry</a> of the {{Document}} of the <a>current entry</a> be the
        <a>current entry</a>.
 
   <p class="note">The <var>title</var> is purely advisory. User agents might use the title in the
@@ -4588,8 +4595,9 @@
 
     <li>Let <var>targetRealm</var> be the <a>current Realm Record</a>.</li>
 
-    <li>If the entry is a <a>state object</a> entry, let <var>state</var> be
-    <a>StructuredClone</a>(that state object, <var>targetRealm</var>) of that state object. Otherwise, let <var>state</var> be
+    <li>If the entry is a <a>serialized state</a> entry, let <var>state</var> be
+    <a>StructuredDeserialize</a>(<var>entry</var>'s <span>serialized state</span>, <var>targetRealm</var>).
+    If this throws an exception, ignore the exception and  let <var>state</var> be
     null.</li>
 
     <li>Set <code>history.state</code> to <var>state</var>.</li>
