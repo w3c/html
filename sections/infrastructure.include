@@ -4580,9 +4580,6 @@
   Objects defined in the JavaScript specification are handled by the
   <a>StructuredSerializeWithTransfer</a> abstract operation directly.
 
-  NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-
-
   <h4 id="section-structuredserializeinternal"><dfn>StructuredSerializeInternal</dfn>
   ( <var>value</var>, <var>forStorage</var> [ , <var>memory</var> ] )</h4>
 
@@ -4631,93 +4628,93 @@
 
   12. Otherwise, if <var>value</var> has an \[[ArrayBufferData]] internal slot, then:
 
-    1. Let <var>size</var> be <var>value</var>.\[[ArrayBufferByteLength]].
+      1. Let <var>size</var> be <var>value</var>.\[[ArrayBufferByteLength]].
 
-    2. If ! <a>IsSharedArrayBuffer</a>(<var>value</var>) is true, then:
+      2. If ! <a>IsSharedArrayBuffer</a>(<var>value</var>) is true, then:
 
-      1. If <var>forStorage</var> is true, then throw a
-         <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+         1. If <var>forStorage</var> is true, then throw a
+            <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
 
-      2. Set <var>serialized</var> to { \[[Type]]: "SharedArrayBuffer", \[[ArrayBufferData]]:
-         <var>value</var>.\[[ArrayBufferData]], \[[ArrayBufferByteLength]]: <var>size</var>,
-         \[[AgentCluster]]: the <a>current Realm Record</a>'s corresponding <a>agent cluster</a> }.
+         2. Set <var>serialized</var> to { \[[Type]]: "SharedArrayBuffer", \[[ArrayBufferData]]:
+            <var>value</var>.\[[ArrayBufferData]], \[[ArrayBufferByteLength]]: <var>size</var>,
+            \[[AgentCluster]]: the <a>current Realm Record</a>'s corresponding <a>agent cluster</a> }.
 
-    3. Otherwise:
+      3. Otherwise:
 
-      1. If ! <a>IsDetachedBuffer</a>(<var>value</var>) is true, then throw a
-         <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+         1. If ! <a>IsDetachedBuffer</a>(<var>value</var>) is true, then throw a
+            <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
 
-      2. Let <var>dataCopy</var> be ? <a>CreateByteDataBlock</a>(<var>size</var>).
+         2. Let <var>dataCopy</var> be ? <a>CreateByteDataBlock</a>(<var>size</var>).
 
-         <p class="note">This can throw a <code>RangeError</code> exception
-         upon allocation failure.</p>
+            <p class="note">This can throw a <code>RangeError</code> exception
+            upon allocation failure.</p>
 
-      3. Perform ! <a>CopyDataBlockBytes</a>(<var>dataCopy</var>, 0,
-         <var>value</var>.\[[ArrayBufferData]], 0, <var>size</var>).
+         3. Perform ! <a>CopyDataBlockBytes</a>(<var>dataCopy</var>, 0,
+            <var>value</var>.\[[ArrayBufferData]], 0, <var>size</var>).
 
-      4. Set <var>serialized</var> to { \[[Type]]: "ArrayBuffer", \[[ArrayBufferData]]:
-         <var>dataCopy</var>, \[[ArrayBufferByteLength]]: <var>size</var> }.
+         4. Set <var>serialized</var> to { \[[Type]]: "ArrayBuffer", \[[ArrayBufferData]]:
+            <var>dataCopy</var>, \[[ArrayBufferByteLength]]: <var>size</var> }.
 
   13. Otherwise, if <var>value</var> has a \[[ViewedArrayBuffer]] internal slot, then:
 
-     1. Let <var>buffer</var> be the value of <var>value</var>'s \[[ViewedArrayBuffer]] internal
-        slot.
+      1. Let <var>buffer</var> be the value of <var>value</var>'s \[[ViewedArrayBuffer]] internal
+         slot.
 
-     2. Let <var>bufferSerialized</var> be ?
-        <a>StructuredSerializeInternal</a>(<var>buffer</var>, <var>forStorage</var>,
-        <var>memory</var>).
+      2. Let <var>bufferSerialized</var> be ?
+         <a>StructuredSerializeInternal</a>(<var>buffer</var>, <var>forStorage</var>,
+         <var>memory</var>).
 
-     3. Assert: <var>bufferSerialized</var>.\[[Type]] is "ArrayBuffer".
+      3. Assert&#x200b;: <var>bufferSerialized</var>.\[[Type]] is "ArrayBuffer".
 
-     4. If <var>value</var> has a \[[DataView]] internal slot, then set <var>serialized</var> to
-        { \[[Type]]: "ArrayBufferView", \[[Constructor]]: "DataView", \[[ArrayBufferSerialized]]:
-        <var>bufferSerialized</var>, \[[ByteLength]]: <var>value</var>.\[[ByteLength]], \[[ByteOffset]]:
-        <var>value</var>.\[[ByteOffset]] }.
+      4. If <var>value</var> has a \[[DataView]] internal slot, then set <var>serialized</var> to
+         { \[[Type]]: "ArrayBufferView", \[[Constructor]]: "DataView", \[[ArrayBufferSerialized]]:
+         <var>bufferSerialized</var>, \[[ByteLength]]: <var>value</var>.\[[ByteLength]], \[[ByteOffset]]:
+         <var>value</var>.\[[ByteOffset]] }.
 
-     5. Otherwise:
+      5. Otherwise:
 
-       1. Assert: <var>value</var> has a \[[TypedArrayName]] internal slot.
+         1. Assert&#x200b;: <var>value</var> has a \[[TypedArrayName]] internal slot.
 
-       2. Set <var>serialized</var> to { \[[Type]]: "ArrayBufferView", \[[Constructor]]:
-          <var>value</var>.\[[TypedArrayName]], \[[ArrayBufferSerialized]]: <var>bufferSerialized</var>,
-          \[[ByteLength]]: <var>value</var>.\[[ByteLength]], \[[ByteOffset]]:
-          <var>value</var>.\[[ByteOffset]], \[[ArrayLength]]: <var>value</var>.\[[ArrayLength]] }.
+         2. Set <var>serialized</var> to { \[[Type]]: "ArrayBufferView", \[[Constructor]]:
+            <var>value</var>.\[[TypedArrayName]], \[[ArrayBufferSerialized]]: <var>bufferSerialized</var>,
+            \[[ByteLength]]: <var>value</var>.\[[ByteLength]], \[[ByteOffset]]:
+            <var>value</var>.\[[ByteOffset]], \[[ArrayLength]]: <var>value</var>.\[[ArrayLength]] }.
 
   14. Otherwise, if <var>value</var> has \[[MapData]] internal slot, then:
 
-     1. Set <var>serialized</var> to { \[[Type]]: "Map", \[[MapData]]: a new empty <a>List</a> }.
+      1. Set <var>serialized</var> to { \[[Type]]: "Map", \[[MapData]]: a new empty <a>List</a> }.
 
-     2. Set <var>deep</var> to true.
+      2. Set <var>deep</var> to true.
 
   15. Otherwise, if <var>value</var> has \[[SetData]] internal slot, then:
 
-     1. Set <var>serialized</var> to { \[[Type]]: "Set", \[[SetData]]: a new empty <a>List</a> }.
+      1. Set <var>serialized</var> to { \[[Type]]: "Set", \[[SetData]]: a new empty <a>List</a> }.
 
-     2. Set <var>deep</var> to true.
+      2. Set <var>deep</var> to true.
 
   16. Otherwise, if <var>value</var> is an Array exotic object, then:
 
-     1. Let <var>valueLenDescriptor</var> be ?
-        <a>OrdinaryGetOwnProperty</a>(<var>value</var>, "<code data-x="">length</code>").
+      1. Let <var>valueLenDescriptor</var> be ?
+         <a>OrdinaryGetOwnProperty</a>(<var>value</var>, "<code data-x="">length</code>").
 
-     2. Let <var>valueLen</var> be <var>valueLenDescriptor</var>.\[[Value]].
+      2. Let <var>valueLen</var> be <var>valueLenDescriptor</var>.\[[Value]].
 
-     3. Set <var>serialized</var> to { \[[Type]]: "Array", \[[Length]]: <var>valueLen</var>,
-        \[[Properties]]: a new empty <a>List</a> }.
+      3. Set <var>serialized</var> to { \[[Type]]: "Array", \[[Length]]: <var>valueLen</var>,
+         \[[Properties]]: a new empty <a>List</a> }.
 
-     4. Set <var>deep</var> to true.
+      4. Set <var>deep</var> to true.
 
   17. Otherwise, if <var>value</var> is a <a>platform object</a> that is a <a>serializable object</a>:
 
-     1. If <var>value</var> has a <a>\[[Detached]]</a> internal slot whose value is true,
-        then throw a <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+      1. If <var>value</var> has a <a>\[[Detached]]</a> internal slot whose value is true,
+         then throw a <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
 
-     2. Let <var>typeString</var> be the identifier of the <a>primary interface</a> of
-        <var>value</var>.
+      2. Let <var>typeString</var> be the identifier of the <a>primary interface</a> of
+         <var>value</var>.
 
-     3. Set <var>serialized</var> to { \[[Type]]: <var>typeString</var> }.
+      3. Set <var>serialized</var> to { \[[Type]]: <var>typeString</var> }.
 
-     4. Set <var>deep</var> to true.
+      4. Set <var>deep</var> to true.
 
   18. Otherwise, if <var>value</var> is a <a>platform object</a>, then throw a
       <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
@@ -4738,58 +4735,58 @@
 
   22. Otherwise:
 
-     1. Set <var>serialized</var> to { \[[Type]]: "Object", \[[Properties]]: a new empty <a>List</a> }.
+      1. Set <var>serialized</var> to { \[[Type]]: "Object", \[[Properties]]: a new empty <a>List</a> }.
 
-     2. Set <var>deep</var> to true.
+      2. Set <var>deep</var> to true.
 
   23. <a>Set</a> <var>memory</var>[<var>value</var>] to <var>serialized</var>.
 
   24. If <var>deep</var> is true, then:
 
-     1. If <var>value</var> has a \[[MapData]] internal slot, then:
+      1. If <var>value</var> has a \[[MapData]] internal slot, then:
 
-       1. Let <var>copiedList</var> be a new empty <a>List</a>.
+         1. Let <var>copiedList</var> be a new empty <a>List</a>.
 
-       2. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
-          <var>entry</var> of <var>value</var>.\[[MapData]]:
+         2. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
+            <var>entry</var> of <var>value</var>.\[[MapData]]:
 
-         1. Let <var>copiedEntry</var> be a new <a>Record</a> { \[[Key]]:
-            <var>entry</var>.\[[Key]], \[[Value]]: <var>entry</var>.\[[Value]] }.
+            1. Let <var>copiedEntry</var> be a new <a>Record</a> { \[[Key]]:
+                <var>entry</var>.\[[Key]], \[[Value]]: <var>entry</var>.\[[Value]] }.
 
-         2. If <var>copiedEntry</var>.\[[Key]] is not the special value <i>empty</i>, <a>append</a>
-            <var>copiedEntry</var> to <var>copiedList</var>.
+            2. If <var>copiedEntry</var>.\[[Key]] is not the special value <i>empty</i>, <a>append</a>
+                <var>copiedEntry</var> to <var>copiedList</var>.
 
-       3. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
-          <var>entry</var> of <var>copiedList</var>:
+         3. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
+            <var>entry</var> of <var>copiedList</var>:
 
-         1. Let <var>serializedKey</var> be ?
-            <a>StructuredSerializeInternal</a>(<var>entry</var>.\[[Key]], <var>forStorage</var>,
-            <var>memory</var>).
+            1. Let <var>serializedKey</var> be ?
+                <a>StructuredSerializeInternal</a>(<var>entry</var>.\[[Key]], <var>forStorage</var>,
+                <var>memory</var>).
 
-         2. Let <var>serializedValue</var> be ?
-            <a>StructuredSerializeInternal</a>(<var>entry</var>.\[[Value]], <var>forStorage</var>,
-            <var>memory</var>).
+            2. Let <var>serializedValue</var> be ?
+                <a>StructuredSerializeInternal</a>(<var>entry</var>.\[[Value]], <var>forStorage</var>,
+                <var>memory</var>).
 
-         3. <a>Append</a> { \[[Key]]: <var>serializedKey</var>,
-            \[[Value]]: <var>serializedValue</var> } to <var>serialized</var>.\[[MapData]].
+            3. <a>Append</a> { \[[Key]]: <var>serializedKey</var>,
+                \[[Value]]: <var>serializedValue</var> } to <var>serialized</var>.\[[MapData]].
 
      2. Otherwise, if <var>value</var> has a \[[SetData]] internal slot, then:
 
-       1. Let <var>copiedList</var> be a new empty <a>List</a>.
+        1. Let <var>copiedList</var> be a new empty <a>List</a>.
 
-       2. <a>For each</a> <var>entry</var> of <var>value</var>.\[[SetData]]:
+        2. <a>For each</a> <var>entry</var> of <var>value</var>.\[[SetData]]:
 
-         1. If <var>entry</var> is not the special value <i>empty</i>, <a>append</a>
-            <var>entry</var> to <var>copiedList</var>.
+            1. If <var>entry</var> is not the special value <i>empty</i>, <a>append</a>
+                <var>entry</var> to <var>copiedList</var>.
 
-       3. <a>For each</a> <var>entry</var> of <var>copiedList</var>:
+        3. <a>For each</a> <var>entry</var> of <var>copiedList</var>:
 
-         1. Let <var>serializedEntry</var> be ?
-            <a>StructuredSerializeInternal</a>(<var>entry</var>, <var>forStorage</var>,
-            <var>memory</var>).
+            1. Let <var>serializedEntry</var> be ?
+                <a>StructuredSerializeInternal</a>(<var>entry</var>, <var>forStorage</var>,
+                <var>memory</var>).
 
-         2. <a>Append</a> <var>serializedEntry</var> to
-            <var>serialized</var>.\[[SetData]].
+            2. <a>Append</a> <var>serializedEntry</var> to
+                <var>serialized</var>.\[[SetData]].
 
      3. Otherwise, if <var>value</var> is a <a>platform object</a> that is a <a>serializable object</a>,
         then perform the appropriate <a>serialization steps</a> given <var>value</var>,
@@ -4804,37 +4801,37 @@
 
      4. Otherwise:
 
-       1. Let <var>enumerableKeys</var> be a new empty <a>List</a>.
+        1. Let <var>enumerableKeys</var> be a new empty <a>List</a>.
 
-       2. For each <var>key</var> in ! <var>value</var>.\[[OwnPropertyKeys]]():
+        2. For each <var>key</var> in ! <var>value</var>.\[[OwnPropertyKeys]]():
 
-         1. If <a for="ecma">Type</a>(<var>key</var>) is String, then:
+            1. If <a for="ecma">Type</a>(<var>key</var>) is String, then:
 
-           1. Let <var>valueDesc</var> be !
-              <var>value</var>.\[[GetOwnProperty]](<var>key</var>).
+                1. Let <var>valueDesc</var> be !
+                    <var>value</var>.\[[GetOwnProperty]](<var>key</var>).
 
-           2. If <var>valueDesc</var>.\[[Enumerable]] is true, then <a>append</a>
-              <var>key</var> to <var>enumerableKeys</var>.
+                2. If <var>valueDesc</var>.\[[Enumerable]] is true, then <a>append</a>
+                    <var>key</var> to <var>enumerableKeys</var>.
 
-       3. For each <var>key</var> in <var>enumerableKeys</var>:
+        3. For each <var>key</var> in <var>enumerableKeys</var>:
 
-         1. If ! <a>HasOwnProperty</a>(<var>value</var>, <var>key</var>) is true, then:
+            1. If ! <a>HasOwnProperty</a>(<var>value</var>, <var>key</var>) is true, then:
 
-           1. Let <var>inputValue</var> be ? <var>value</var>.\[[Get]](<var>key</var>,
-              <var>value</var>).
+                1. Let <var>inputValue</var> be ? <var>value</var>.\[[Get]](<var>key</var>,
+                    <var>value</var>).
 
-           2. Let <var>outputValue</var> be ?
-              <a>StructuredSerializeInternal</a>(<var>inputValue</var>, <var>forStorage</var>,
-              <var>memory</var>).
+                2. Let <var>outputValue</var> be ?
+                    <a>StructuredSerializeInternal</a>(<var>inputValue</var>, <var>forStorage</var>,
+                    <var>memory</var>).
 
-           3. <a>Append</a> { \[[Key]]: <var>key</var>, \[[Value]]:
-              <var>outputValue</var> } to <var>serialized</var>.\[[Properties]].
+                3. <a>Append</a> { \[[Key]]: <var>key</var>, \[[Value]]:
+                    <var>outputValue</var> } to <var>serialized</var>.\[[Properties]].
 
        <p class="note">The key collection performed above is very similar to the JavaScript
        specification's <a>EnumerableOwnProperties</a> operation, but crucially it uses the
        deterministic ordering provided by the \[[OwnPropertyKeys]] internal method, instead of
        reordering the keys in an unspecified manner as <a>EnumerableOwnProperties</a> does.
-       [[!JAVASCRIPT]]
+       [[!ECMA-262]]
 
   25. Return <var>serialized</var>.
 
@@ -4893,7 +4890,8 @@ o.myself = o;</pre>
   4. Let <var>value</var> be an uninitialized value.
 
   5. If <var>serialized</var> contains a \[[TransferConsumed]] field, then:
-     1. Assert: <var>serialized</var>.\[[TransferConsumed]] is false. (It must be impossible to
+
+     1. Assert&#x200b;: <var>serialized</var>.\[[TransferConsumed]] is false. (It must be impossible to
         get in a situation where <a>StructuredDeserialize</a> is being called multiple times on
         the same serialization, if that serialization contains transfer data holders.)
 
@@ -5054,42 +5052,42 @@ o.myself = o;</pre>
             3. <a>Append</a> { \[[Key]]: <var>deserializedKey</var>,
                 [Value]]: <var>deserializedValue</var> } to <var>value</var>.\[[MapData]].
 
-    2. Otherwise, if <var>serialized</var>.\[[Type]] is "Set", then:
+      2. Otherwise, if <var>serialized</var>.\[[Type]] is "Set", then:
 
-       1. <a>For each</a> <var>entry</var> of
-          <var>serialized</var>.\[[SetData]]:
+         1. <a>For each</a> <var>entry</var> of
+            <var>serialized</var>.\[[SetData]]:
 
-          1. Let <var>deserializedEntry</var> be ?
-             <a>StructuredDeserialize</a>(<var>entry</var>, <var>targetRealm</var>,
-             <var>memory</var>).
+            1. Let <var>deserializedEntry</var> be ?
+                <a>StructuredDeserialize</a>(<var>entry</var>, <var>targetRealm</var>,
+                <var>memory</var>).
 
-          2. <a>Append</a> <var>deserializedEntry</var> to <var>value</var>.\[[SetData]].
+            2. <a>Append</a> <var>deserializedEntry</var> to <var>value</var>.\[[SetData]].
 
-    3. Otherwise, if <var>serialized</var>.\[[Type]] is "Array" or "Object", then:
+      3. Otherwise, if <var>serialized</var>.\[[Type]] is "Array" or "Object", then:
 
-       1. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
-          <var>entry</var> of <var>serialized</var>.\[[Properties]]:
+         1. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
+            <var>entry</var> of <var>serialized</var>.\[[Properties]]:
 
-          1. Let <var>deserializedValue</var> be ?
-             <a>StructuredDeserialize</a>(<var>entry</var>.\[[Value]], <var>targetRealm</var>,
-             <var>memory</var>).
+            1. Let <var>deserializedValue</var> be ?
+                <a>StructuredDeserialize</a>(<var>entry</var>.\[[Value]], <var>targetRealm</var>,
+                <var>memory</var>).
 
-          2. Let <var>result</var> be ! <a>CreateDataProperty</a>(<var>value</var>,
-             <var>entry</var>.\[[Key]], <var>deserializedValue</var>).
+            2. Let <var>result</var> be ! <a>CreateDataProperty</a>(<var>value</var>,
+                <var>entry</var>.\[[Key]], <var>deserializedValue</var>).
 
-          3. Assert: <var>result</var> is true.
+            3. Assert&#x200b;: <var>result</var> is true.
 
-    4. Otherwise:
+      4. Otherwise:
 
-      1. Perform the appropriate <a>deserialization steps</a> for the interface identified
-         by <var>serialized</var>.\[[Type]], given <var>serialized</var> and <var>value</var>.
+         1. Perform the appropriate <a>deserialization steps</a> for the interface identified
+            by <var>serialized</var>.\[[Type]], given <var>serialized</var> and <var>value</var>.
 
-         The <a>deserialization steps</a> may need to perform a <dfn export>sub-deserialization</dfn>.
-         This is an operation which takes as input a
-         previously-serialized <a>Record</a> <var>subSerialized</var>, and returns
-         <a>StructuredDeserialize</a>(<var>subSerialized</var>, <var>targetRealm</var>,
-         <var>memory</var>). (In other words, a <a>sub-deserialization</a> is a specialization
-         of <a>StructuredDeserialize</a> to be consistent within this invocation.)
+            The <a>deserialization steps</a> may need to perform a <dfn export>sub-deserialization</dfn>.
+            This is an operation which takes as input a
+            previously-serialized <a>Record</a> <var>subSerialized</var>, and returns
+            <a>StructuredDeserialize</a>(<var>subSerialized</var>, <var>targetRealm</var>,
+            <var>memory</var>). (In other words, a <a>sub-deserialization</a> is a specialization
+            of <a>StructuredDeserialize</a> to be consistent within this invocation.)
 
   22. Return <var>value</var>.
 
@@ -5143,7 +5141,7 @@ o.myself = o;</pre>
 
      4. Otherwise:
 
-        1. Assert: <var>transferable</var> is a <a>platform object</a> that is
+        1. Assert&#x200b;: <var>transferable</var> is a <a>platform object</a> that is
             a <a>transferable object</a>.
 
         2. Let <var>interfaceName</var> be the identifier of the <a>primary interface</a>
