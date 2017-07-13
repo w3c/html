@@ -1317,7 +1317,8 @@
   8. <var>Done</var>: For each <a>environment settings object</a> whose <a>responsible event
       loop</a> is this <a>event loop</a>, <a>notify about rejected promises</a> on that
       <a>environment settings object</a>.
-  9. Let the <a>performing a microtask checkpoint flag</a> be false.
+  9. <a>Cleanup Indexed Database transactions</a>.
+  10. Let the <a>performing a microtask checkpoint flag</a> be false.
 
   If, while a <a>compound microtask</a> is running, the user agent is required to
   <dfn lt="wrap callbacks|execute a compound microtask subtask">execute a compound microtask subtask</dfn>
@@ -4307,7 +4308,7 @@
 <h3 id="webappapis-images">Images</h3>
 
   <pre class="idl" data-highlight="webidl">
-    [Exposed=(Window, Worker)]
+    [Exposed=(Window, Worker), <span>Serializable</span>, <span>Transferable</span>]
     interface ImageBitmap {
       readonly attribute unsigned long width;
       readonly attribute unsigned long height;
@@ -4386,6 +4387,40 @@
     An <code>ImageBitmap</code> object's bitmap has an <a>origin-clean</a> flag, which indicates whether the
     bitmap is tainted by content from a different [=concept/origin=]. The flag is initially set to
     true and may be changed to false by the steps of <code>createImageBitmap()</code>.
+
+  <hr>
+
+  <code>ImageBitmap</code> objects are <a>serializable objects</a> and <a>transferable objects</a>.
+
+  Their <a>serialization steps</a>, given <var>value</var> and <var>serialized</var>, are:
+
+  1. Set <var>serialized</var>.\[[BitmapData]] to a copy of <var>value</var>'s <a>bitmap data</a>.
+
+  2. Set <var>serialized</var>.\[[OriginClean]] to true if <var>value</var>'s <a>origin-clean</a> flag is set,
+     and false otherwise.
+
+  Their <a>deserialization steps</a>, given <var>serialized</var> and <var>value</var>, are:
+
+  1. Set <var>value</var>'s <a>bitmap data</a> to <var>serialized</var>.\[[BitmapData]].
+
+  2. If <var>serialized</var>.\[[OriginClean]] is true, set <var>value</var>'s <a>origin-clean</a> flag.
+
+  Their <a>transfer steps</a>, given <var>value</var> and <var>dataHolder</var>, are:
+
+  1. Set <var>dataHolder</var>.\[[BitmapData]] to <var>value</var>'s <a>bitmap data</a>.
+
+  2. Set <var>dataHolder</var>.\[[OriginClean]] to true if <var>value</var>'s <a>origin-clean</a> flag is set,
+     and false otherwise.
+
+  3. Unset <var>value</var>'s <a>bitmap data</a>.
+
+  Their <a>transfer-receiving steps</a>, given <var>dataHolder</var> and <var>value</var>, are:
+
+  1. Set <var>value</var>'s <a>bitmap data</a> to <var>dataHolder</var>.\[[BitmapData]].
+
+  2. If <var>dataHolder</var>.\[[OriginClean]] is true, set <var>value</var>'s <a>origin-clean</a> flag.
+
+  <hr>
 
     An <code>ImageBitmap</code> object can be obtained from a variety of different objects, using
     the
@@ -4488,15 +4523,10 @@
       <li>If either the <var>sw</var> or <var>sh</var> arguments are specified
       but zero, return a promise rejected with an {{IndexSizeError}} exception and abort these steps.</li>
 
-      <li>If <var>image</var> is <a for="Blob">closed</a>, then return a promise rejected with an {{InvalidStateError}}
-      exception and abort these steps.</li>
+      <li>Return a new promise, but continue running these steps <a>in parallel</a>.</li>
 
-      <li>Return a new promise, but continue running these steps
-      <a>in parallel</a>.</li>
-
-      <li>Read the <code>Blob</code> object's data. If an <a>error
-      occurs during reading of the object</a>, then reject the promise with null, and abort these
-      steps.</li>
+      <li>Read the <code>Blob</code> object's data. If an <a>error occurs during reading of the object</a>,
+      then reject the promise with an {{InvalidStateError}} exception, and abort these steps.</li>
 
       <li>Apply the <a>image sniffing rules</a> to
       determine the file format of the image data, with MIME type of the <code>Blob</code> (as given
