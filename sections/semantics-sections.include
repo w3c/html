@@ -1264,24 +1264,16 @@
   alternative titles and taglines unless intended to be the heading for a new section or subsection.
   Instead use the markup patterns in the [[#common-idioms-without-dedicated-elements]] section of
   the specification.
-
-  Certain elements are said to be <dfn>sectioning roots</dfn>, including <code>blockquote</code> and
-  <{td}> elements. These elements can have their own outlines, but the sections and
-  headings inside these elements do not contribute to the outlines of their ancestors.
-
-  <ul class="brief category-list">
-    <li><{blockquote}></li>
-    <li><{body}></li>
-    <li><{details}></li>
-    <li><{dialog}></li>
-    <li><{fieldset}></li>
-    <li><{figure}></li>
-    <li><{td}></li>
-  </ul>
-
-  <a>Sectioning content</a> elements are always considered subsections of their nearest ancestor
-  <a>sectioning root</a> or their nearest ancestor element of <a>sectioning content</a>, whichever
-  is nearest, regardless of what implied sections other headings may have created.
+  
+  In this chapter, certain elements are said to be <dfn>sectioning elements</dfn>. A sectioning
+  element can either be a <a>sectioning root</a> element, or an element of <a>sectioning content</a>.
+  Each of these elements has its own <a>outline</a>.
+  
+  The sections and headings inside a <a>sectioning root</a> element do not contribute to the outlines
+  of its ancestors. In contrary to that, <a>sectioning content</a> elements are always considered
+  subsections of their nearest ancestor sectioning element, whichever is nearest, regardless of what
+  implied sections other headings may have created. As such, the headings inside an element of sectioning
+  content do contribute to the outlines of its ancestors.
 
   <div class="example">
     For the following fragment:
@@ -1366,40 +1358,41 @@
 <h5 id="creating-an-outline">Creating an outline</h5>
 
   <p class="warning">
-    There are currently no known native implementations of the outline algorithm in graphical browsers or
-    assistive technology user agents, although the algorithm is implemented in other software such
-    as conformance checkers and browser extensions. Therefore the <a>outline</a> algorithm
-  cannot be relied upon to convey document structure to users. Authors should use heading <a>rank</a>
-    (<code>h1</code>-<code>h6</code>) to convey document structure.
+    There are currently no known native implementations of the outline algorithm in graphical
+    browsers or assistive technology user agents, although the algorithm is implemented in other
+    software such as conformance checkers and browser extensions. Therefore the <a>outline</a>
+    algorithm cannot be relied upon to convey document structure to users. Authors should use
+    heading <a>rank</a> (<code>h1</code>-<code>h6</code>) to convey document structure.
   </p>
-<p><em>This section is non-normative</em></p>
-    This section defines an algorithm for creating an outline for a <a>sectioning content</a>
-    element or a <a>sectioning root</a> element. It is defined in terms of a walk over the nodes
-    of a DOM tree, in <a>tree order</a>, with each node being visited when it is <i>entered</i> and
-    when it is <i>exited</i> during the walk. Each time a node is visited, it can be seen as
-    triggering an <i>enter</i> or <i>exit</i> event.
 
-    <div class="example">
-      The following pseudocode fragment:
+  <p><em>This section is non-normative</em></p>
 
-      <pre>
-        visitNode(node)
-          onEnter(node)
-          child = node.firstChild
-          while(child != null)
-            visitNode(child)
-            child = child.nextSibling
-          onExit(node)
-      </pre>
+  This section defines an algorithm for creating an outline for a <a>sectioning element</a>.
+  It is defined in terms of a walk over the nodes of a DOM tree, in <a>tree order</a>, with each
+  node being visited when it is <i>entered</i> and when it is <i>exited</i> during the walk. Each
+  time a node is visited, it can be seen as triggering an <i>enter</i> or <i>exit</i> event.
 
-      ...exemplifies how to recursively traverse the node tree and when to trigger the <i>enter</i>
-      and <i>exit</i> events. See the <a href="#javascript-tree-walk-example">JavaScript example</a>
-      for a possible, non-recursive JavaScript implementation.
-    </div>
+  <div class="example">
+    The following pseudocode fragment:
 
-  The <dfn>outline</dfn> for a <a>sectioning content</a> element or a <a>sectioning root</a> element
-  consists of a list of one or more potentially nested <a>sections</a>. The element for which an
-  <a>outline</a> is created is said to be <dfn>the outline's owner</dfn>.
+    <pre>
+      visitNode(node)
+        onEnter(node)
+        child = node.firstChild
+        while(child != null)
+          visitNode(child)
+          child = child.nextSibling
+        onExit(node)
+    </pre>
+
+    ...exemplifies how to recursively traverse the node tree and when to trigger the <i>enter</i>
+    and <i>exit</i> events. See the <a href="#javascript-tree-walk-example">JavaScript example</a>
+    for a possible, non-recursive JavaScript implementation.
+  </div>
+
+  The <dfn>outline</dfn> of a <a>sectioning element</a> consists of a list of one or more potentially
+  nested <a>sections</a>. The element for which an <a>outline</a> is created is said to be
+  <dfn>the outline's owner</dfn>.
 
   A <dfn>section</dfn> is a container that corresponds to some nodes in the original DOM tree. Each
   section can have one heading associated with it, and can contain any number of further nested
@@ -1434,8 +1427,7 @@
   </div>
 
     The algorithm that must be followed during a walk of a DOM subtree rooted at a
-    <a>sectioning content</a> element or a <a>sectioning root</a> element to determine that
-    element's <a>outline</a> is as follows:
+    <a>sectioning element</a> to determine that element's <a>outline</a> is as follows:
 
     1. Let <var>current outline owner</var> be null. (It holds the element whose <a>outline</a> is
         being created.)
@@ -1443,10 +1435,9 @@
         elements in the DOM can all be associated with a section.)
     3. Create a stack to hold elements, which is used to handle nesting. Initialize this stack to
         empty.
-    4. Walk over the DOM in <a>tree order</a>, starting with the <a>sectioning content</a> element
-        or <a>sectioning root</a> element at the root of the subtree for which an outline is to be
-        created, and trigger the first relevant step below for each element as the walk enters and
-        exits it.
+    4. Walk over the DOM in <a>tree order</a>, starting with the <a>sectioning element</a> at the
+        root of the subtree for which an outline is to be created, and trigger the first relevant
+        step below for each element as the walk enters and exits it.
 
         <dl class="switch">
           <dt>When exiting an element, if that element is the element at the top of the stack</dt>
@@ -1525,13 +1516,12 @@
                 that element.
           </dd>
 
-          <dt>When exiting a <a>sectioning content</a> element or a <a>sectioning root</a> element
-            (when the stack is empty)</dt>
+          <dt>When exiting a <a>sectioning element</a>, if the stack is empty</dt>
           <dd>
             <p class="note">
               The <var>current outline owner</var> is the element being exited, and it is the
-              <a>sectioning content</a> element or a <a>sectioning root</a> element at the root of
-              the subtree for which an outline is being generated.
+              <a>sectioning element</a> at the root of the subtree for which an outline is
+              being generated.
             </p>
 
             If the <var>current section</var> has no heading, create an implied heading and
@@ -1549,19 +1539,20 @@
             <var>current outline owner</var> is an implied heading, or if the heading being
             entered has a <a>rank</a> equal to or higher than the heading of the last section
             of the <a>outline</a> of the <var>current outline owner</var>, then
-            create a new <a>section</a> and append it to the <a>outline</a> of the
-            <var>current outline owner</var> element, so that this new section is the new last
-            section of that outline. Let <var>current section</var> be that new section. Let the
-            element being entered be the new heading for the <var>current section</var>.
+            create a new <a>section</a> for the heading content element being entered and append
+            it to the <a>outline</a> of the <var>current outline owner</var> element, so that this
+            new section is the new last section of that outline. Let <var>current section</var> be
+            that new section. Let the element being entered be the new heading for the
+            <var>current section</var>.
 
             Otherwise, run these substeps:
             1. Let <var>candidate section</var> be <var>current section</var>.
             2. <i>Heading loop</i>: If the element being entered has a <a>rank</a> lower than the
                 <a>rank</a> of the heading of the <var>candidate section</var>, then create a new
-                <a>section</a>, and append it to <var>candidate section</var>. (This does not change
-                which section is the last section in the outline.) Let <var>current section</var> be
-                this new section. Let the element being entered be the new heading for the
-                <var>current section</var>. Abort these substeps.
+                <a>section</a> for the heading content element being entered and append it to
+                <var>candidate section</var>. (This does not change which section is the last section
+                in the outline.) Let <var>current section</var> be this new section. Let the element
+                being entered be the new heading for the <var>current section</var>. Abort these substeps.
             3. Let <var>new candidate section</var> be the <a>section</a> that contains
                 <var>candidate section</var> in the <a>outline</a> of
                 <var>current outline owner</var>.
@@ -1595,11 +1586,10 @@
 
     The outline created for <a href="#the-body-element">the <code>body</code> element</a> of a {{Document}} is the <a>outline</a>
       of the entire document.
-
-    When creating an interactive table of contents, entries should jump the user to the relevant
-    <a>sectioning content</a> element, if the <a>section</a> was created for a real element in the
-    original document, or to the relevant <a>heading content</a> element, if the <a>section</a> in
-    the tree was generated for a heading in the above process.
+    
+    When creating an interactive table of contents, entries should jump the user to the element
+    that triggered the creation of the relevant <a>section</a>. This element will either be a
+    <a>sectioning element</a>, or an element of <a>heading content</a>.
 
     <p class="note">
       Selecting the first <a>section</a> of the document therefore always takes the user to the top
