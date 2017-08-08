@@ -1633,4 +1633,318 @@
   The <dfn method for="External"><code>AddSearchProvider()</code></dfn> and
   <dfn method for="External"><code>IsSearchProviderInstalled()</code></dfn> methods must do nothing.
 
+  <hr />
+
+<h5 id="plugins-2">Plugins</h5>
+
+  <p class="warning">This feature is in the process of being removed from the Web platform. (This is
+  a long process that takes many years.) Using the plugins API at this time is highly discouraged.
+  </p>
+
+  <pre class="idl" data-highlight="webidl">
+    Navigator implements NavigatorPlugins;
+
+    [NoInterfaceObject]
+      interface NavigatorPlugins {
+      [SameObject] readonly attribute PluginArray plugins;
+      [SameObject] readonly attribute MimeTypeArray mimeTypes;
+      boolean javaEnabled();
+    };
+  </pre>
+
+  <pre class="idl" data-highlight="webidl">
+    interface PluginArray {
+      void refresh(optional boolean reload = false);
+      readonly attribute unsigned long length;
+      getter Plugin? item(unsigned long index);
+      getter Plugin? namedItem(DOMString name);
+    };
+  </pre>
+
+  <pre class="idl" data-highlight="webidl">
+    interface MimeTypeArray {
+      readonly attribute unsigned long length;
+      getter MimeType? item(unsigned long index);
+      getter MimeType? namedItem(DOMString name);
+    };
+  </pre>
+
+  <pre class="idl" data-highlight="webidl">
+    interface Plugin {
+      readonly attribute DOMString name;
+      readonly attribute DOMString description;
+      readonly attribute DOMString filename;
+      readonly attribute unsigned long length;
+      getter MimeType? item(unsigned long index);
+      getter MimeType? namedItem(DOMString name);
+    };
+  </pre>
+
+  <pre class="idl" data-highlight="webidl">
+    interface MimeType {
+      readonly attribute DOMString type;
+      readonly attribute DOMString description;
+      readonly attribute DOMString suffixes; // comma-separated
+      readonly attribute Plugin enabledPlugin;
+    };
+  </pre>
+
+  The <dfn attribute for="NavigatorPlugins"><code>plugins</code></dfn> attribute must
+  return a <code>PluginArray</code> object.
+
+  The <dfn attribute for="NavigatorPlugins"><code>mimeTypes</code></dfn> attribute must
+  return a <code>MimeTypeArray</code> object.
+
+  <hr />
+
+  A <code>PluginArray</code> object represents none, some, or all of the <a>plugins</a> supported by the user agent, each of which is represented by a <code>Plugin</code> object. Each of these <code>Plugin</code>
+  objects may be <dfn>hidden plugins</dfn>. A <a>hidden plugin</a> can't
+  be enumerated, but can still be inspected by using its name.
+
+  <p class="note">
+  The fewer <a>plugins</a> are represented by the
+  <code>PluginArray</code> object, and of those, the more that are <a lt="hidden plugins">hidden</a>, the more the user's privacy will be protected. Each exposed plugin
+  increases the number of bits that can be derived for fingerprinting. Hiding a plugin helps, but
+  unless it is an extremely rare plugin, it is likely that a site attempting to derive the list of
+  plugins can still determine whether the plugin is supported or not by probing for it by name (the
+  names of popular plugins are widely known). Therefore not exposing a plugin at all is preferred.
+  Unfortunately, many legacy sites use this feature to determine, for example, which plugin to use
+  to play video. Not exposing any plugins at all might therefore not be entirely plausible.
+  </p>
+
+  The <code>PluginArray</code> objects created by a user agent must not be <a>live</a>. The
+  set of plugins represented by the objects must not change once an object is created, except when
+  it is updated by the <code>refresh()</code> method.
+
+  Each <a>plugin</a> represented by a <code>PluginArray</code> can support a number of
+  <a>MIME types</a>. For each such <a>plugin</a>, the user agent must
+  pick one or more of these <a>MIME types</a> to be those that are
+  <dfn lt="explicitly supports|explicitly supported">explicitly supported</dfn>.
+
+  <p class="note">
+  The <a>explicitly supported</a> <a>MIME types</a> of
+  a <a>plugin</a> are those that are exposed through the <code>Plugin</code> and <code>MimeTypeArray</code> interfaces. As with <a>plugins</a> themselves, any variation between users regarding what is exposed
+  allows sites to fingerprint users. User agents are therefore encouraged to expose the same <a>MIME types</a> for all users of a <a>plugin</a>, regardless of the
+  actual types supported... at least, within the constraints imposed by compatibility with legacy
+  content.
+  </p>
+
+  The <a>supported property indices</a> of a <code>PluginArray</code> object are the
+  numbers from zero to the number of non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the object, if any.
+
+  The <dfn attribute for="PluginArray"><code>length</code></dfn> attribute must return the
+  number of non-<a lt="hidden plugins">hidden</a> <a>plugins</a>
+  represented by the object.
+
+  The <dfn method for="PluginArray"><code>item()</code></dfn> method of a
+  <code>PluginArray</code> object must return null if the argument is not one of the object's
+  <a>supported property indices</a>, and otherwise must return the result of running the
+  following steps, using the method's argument as <var>index</var>:
+
+  <ol>
+
+    <li>Let <var>list</var> be the <code>Plugin</code> objects
+    representing the non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the <code>PluginArray</code> object.</li>
+
+    <li>Sort <var>list</var> alphabetically by the <code>name</code> of each <code>Plugin</code>.</li>
+
+    <li>Return the <var>index</var>th entry in <var>list</var>.</li>
+
+  </ol>
+
+  <p class="note">
+  It is important for
+  privacy that the order of plugins not leak additional information, e.g., the order in which
+  plugins were installed.
+  </p>
+
+  The <a spec="webidl">supported property names</a> of a <code>PluginArray</code> object are the values
+  of the <code>name</code> attributes of all the <code>Plugin</code> objects represented by the <code>PluginArray</code> object. The
+  properties exposed in this way must be <a>unenumerable</a>.
+
+  The <dfn method for="PluginArray"><code>namedItem()</code></dfn> method of a
+  <code>PluginArray</code> object must return null if the argument is not one of the object's
+  <a spec="webidl">supported property names</a>, and otherwise must return the <code>Plugin</code> object, of those represented by the <code>PluginArray</code>
+  object, that has a <code>name</code> equal to the method's argument.
+
+  The <dfn method for="PluginArray"><code>refresh()</code></dfn> method of the
+  <code>PluginArray</code> object of a <code>Navigator</code> object, when invoked, must check to
+  see if any <a>plugins</a> have been installed or reconfigured since the user
+  agent created the <code>PluginArray</code> object. If so, and the method's argument is true, then
+  the user agent must act as if the <code>location.reload()</code>
+  method was called instead. Otherwise, the user agent must update the <code>PluginArray</code>
+  object and <code>MimeTypeArray</code> object created for attributes of that <code>Navigator</code>
+  object, and the <code>Plugin</code> and <code>MimeType</code> objects created
+  for those <code>PluginArray</code> and <code>MimeTypeArray</code> objects, using the same <code>Plugin</code> objects for cases where the <code>name</code> is the same, and the same <code>MimeType</code> objects for
+  cases where the <code>type</code> is the same, and creating new objects
+  for cases where there were no matching objects immediately prior to the <code>refresh()</code> call. Old <code>Plugin</code>
+  and <code>MimeType</code> objects must continue to return the same values that they had prior to
+  the update, though naturally now the data is stale and may appear inconsistent (for example, an
+  old <code>MimeType</code> entry might list as its <code>enabledPlugin</code> a <code>Plugin</code>
+  object that no longer lists that <code>MimeType</code> as a supported <code>MimeType</code>).
+
+  <hr />
+
+  A <code>MimeTypeArray</code> object represents the <a>MIME types</a>
+  <a>explicitly supported</a> by <a>plugins</a> supported by the user
+  agent, each of which is represented by a <code>MimeType</code> object.
+
+  The <code>MimeTypeArray</code> objects created by a user agent must not be <a>live</a>.
+  The set of MIME types represented by the objects must not change once an object is created, except
+  when it is updated by the <code>PluginArray</code> object's <code>refresh()</code> method.
+
+  The <a>supported property indices</a> of a <code>MimeTypeArray</code> object are the
+  numbers from zero to the number of <a>MIME types</a> <a>explicitly
+  supported</a> by non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the corresponding <code>PluginArray</code> object, if
+  any.
+
+  The <dfn attribute for="MimeTypeArray"><code>length</code></dfn> attribute must return the
+  number of <a>MIME types</a> <a>explicitly supported</a> by non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the
+  corresponding <code>PluginArray</code> object, if any.
+
+  The <dfn method for="MimeTypeArray"><code>item()</code></dfn> method of a
+  <code>MimeTypeArray</code> object must return null if the argument is not one of the object's
+  <a>supported property indices</a>, and otherwise must return the result of running the
+  following steps, using the method's argument as <var>index</var>:
+
+  <ol>
+
+    <li>Let <var>list</var> be the <code>MimeType</code> objects representing the <a>MIME types</a> <a>explicitly supported</a> by non-<a lt="hidden plugins">hidden</a> <a>plugins</a> represented by the corresponding
+    <code>PluginArray</code> object, if any.</li>
+
+    <li>Sort <var>list</var> alphabetically by the <code>type</code> of each <code>MimeType</code>.</li>
+
+    <li>Return the <var>index</var>th entry in <var>list</var>.</li>
+
+  </ol>
+
+  <p class="note">
+  It is important <a>for
+  privacy</a> that the order of MIME types not leak additional information, e.g., the order in
+  which plugins were installed.
+  </p>
+
+  The <a spec="webidl">supported property names</a> of a <code>MimeTypeArray</code> object are the values
+  of the <code>type</code> attributes of all the <code>MimeType</code>
+  objects represented by the <code>MimeTypeArray</code> object. The properties exposed in this way
+  must be <a>unenumerable</a>.
+
+  The <dfn method for="MimeTypeArray"><code>namedItem()</code></dfn> method of a
+  <code>MimeTypeArray</code> object must return null if the argument is not one of the object's
+  <a spec="webidl">supported property names</a>, and otherwise must return the <code>MimeType</code> object
+  that has a <code>type</code> equal to the method's argument.
+
+  <hr />
+
+  A <code>Plugin</code> object represents a <a>plugin</a>. It has
+  several attributes to provide details about the plugin, and can be enumerated to obtain the list
+  of <a>MIME types</a> that it <a>explicitly
+  supports</a>.
+
+  The <code>Plugin</code> objects created by a user agent must not be
+  <a>live</a>. The set of MIME types represented by the objects, and the values of the
+  objects' attributes, must not change once an object is created, except when updated by the
+  <code>PluginArray</code> object's <code>refresh()</code>
+  method.
+
+  The <dfn>reported MIME types</dfn> for a <code>Plugin</code> object are the
+  <a>MIME types</a> <a>explicitly supported</a> by the corresponding
+  <a>plugin</a> when this object was last created or updated by <code>PluginArray.refresh()</code>, whichever happened most
+  recently.
+
+  The <a>supported property indices</a> of a <code>Plugin</code> object
+  are the numbers from zero to the number of <a>reported MIME types</a>.
+
+  The <dfn attribute for="Plugin"><code>length</code></dfn> attribute must return the number
+  of <a>reported MIME types</a>.
+
+  The <dfn method for="Plugin"><code>item()</code></dfn> method of a <code>Plugin</code> object must return null if the argument is not one of the
+  object's <a>supported property indices</a>, and otherwise must return the result of running
+  the following steps, using the method's argument as <var>index</var>:
+
+  <ol>
+
+    <li>Let <var>list</var> be the <code>MimeType</code> objects representing the
+    <a>reported MIME types</a>.</li>
+
+    <li>Sort <var>list</var> alphabetically by the <code>type</code> of each <code>MimeType</code>.</li>
+
+    <li>Return the <var>index</var>th entry in <var>list</var>.</li>
+
+  </ol>
+
+  <p class="note">
+  It is important <a>for
+  privacy</a> that the order of MIME types not leak additional information, e.g., the order in
+  which plugins were installed.
+  </p>
+
+  The <a spec="webidl">supported property names</a> of a <code>Plugin</code> object
+  are the values of the <code>type</code> attributes of the
+  <code>MimeType</code> objects representing the <a>reported MIME types</a>. The properties
+  exposed in this way must be <a>unenumerable</a>.
+
+  The <dfn method for="Plugin"><code>namedItem()</code></dfn> method of a <code>Plugin</code> object must return null if the argument is not one of the
+  object's <a spec="webidl">supported property names</a>, and otherwise must return the
+  <code>MimeType</code> object that has a <code>type</code> equal to the
+  method's argument.
+
+  The <dfn attribute for="Plugin"><code>name</code></dfn> attribute must return the
+  <a>plugin</a>'s name.
+
+  The <dfn attribute for="Plugin"><code>description</code></dfn> and <dfn attribute for="Plugin"><code>filename</code></dfn> attributes must return user-agent-defined
+  (or, in all likelihood, <a>plugin</a>-defined) strings. In each case, the same string must
+  be returned each time, except that the strings returned may change when the <code>PluginArray.refresh()</code> method updates the object.
+
+  <p class="warning">If the values returned by the <code>description</code> or <code>filename</code> attributes vary between versions of a
+  <a>plugin</a>, they can be used both as a fingerprinting vector and, even more importantly,
+  as a trivial way to determine what security vulnerabilities a <a>plugin</a> (and thus a
+  browser) may have. It is thus highly recommended that the <code>description</code> attribute just return the same value as the
+  <code>name</code> attribute, and that the <code>filename</code> attribute return the empty string.
+  </p>
+
+
+  <hr />
+
+  A <code>MimeType</code> object represents a <a>MIME type</a> that is, or was,
+  <a>explicitly supported</a> by a <a>plugin</a>.
+
+  The <code>MimeType</code> objects created by a user agent must not be <a>live</a>. The
+  values of the objects' attributes must not change once an object is created, except when updated
+  by the <code>PluginArray</code> object's <code>refresh()</code>
+  method.
+
+  The <dfn attribute for="MimeType"><code>type</code></dfn> attribute must return the
+  <a>valid MIME type with no parameters</a> describing the <a>MIME type</a>.
+
+  The <dfn attribute for="MimeType"><code>description</code></dfn> and
+  <dfn attribute for="MimeType"><code>suffixes</code></dfn> attributes must return
+  user-agent-defined (or, in all likelihood, <a>plugin</a>-defined) strings. In each case, the
+  same string must be returned each time, except that the strings returned may change when the <code>PluginArray.refresh()</code> method updates the object.
+
+  <p class="warning">If the values returned by the <code>description</code> or <code>suffixes</code> attributes vary between versions of a
+  <a>plugin</a>, they can be used both as a fingerprinting vector and, even more importantly,
+  as a trivial way to determine what security vulnerabilities a <a>plugin</a> (and thus a
+  browser) may have. It is thus highly recommended that the <code>description</code> attribute just return the same value as the
+  <code>type</code> attribute, and that the <code>suffixes</code> attribute return the empty string.
+  </p>
+
+
+  <p class="note">
+  Commas in the <code>suffixes</code> attribute are
+  interpreted as separating subsequent filename extensions, as in "<code>htm,html</code>".
+  </p>
+
+  The <dfn attribute for="MimeType"><code>enabledPlugin</code></dfn> attribute must
+  return the <code>Plugin</code> object that represents the <a>plugin</a>
+  that <a>explicitly supported</a> the <a>MIME type</a> that this <code>MimeType</code>
+  object represents when this object was last created or updated by <code>PluginArray.refresh()</code>, whichever happened most
+  recently.
+
+  <hr />
+
+  The <dfn method for="NavigatorPlugins"><code>javaEnabled()</code></dfn> attribute
+  must return true if the user agent supports a <a>plugin</a> that supports the <a>MIME
+  type</a> "<code>application/x-java-vm</code>"; otherwise it must return false.
+
 </section>
