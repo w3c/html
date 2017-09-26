@@ -1512,11 +1512,6 @@ part of the form.</p>
       </td><td> Text with no line breaks (sensitive information)
       </td><td> A text field that obscures data entry
     </td></tr><tr>
-      <td> <dfn attr-value for="input/type"><code>datetime</code></dfn>
-      </td><td> <{input/DateTime|Date and Time}>
-      </td><td> A date and time (year, month, day, hour, minute, second, fraction of a second) with the time zone set to UTC
-      </td><td> A date and time control
-    </td></tr><tr>
       <td> <dfn attr-value for="input/type"><code>date</code></dfn>
       </td><td> <{input/Date}>
       </td><td> A date (year, month, day) with no time zone
@@ -1660,7 +1655,7 @@ part of the form.</p>
           <{input/Telephone}>
       </th><th> <{input/E-mail}>
       </th><th> <{input/Password}>
-      </th><th> <{input/DateTime|Date and Time}>,
+      </th><th> <{input/LocalDateTime|Local Date and Time}>,
           <{input/Date}>,
           <{input/Month}>,
           <{input/Week}>,
@@ -3484,193 +3479,6 @@ ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
 
   </div>
 
-<h6 id="date-and-time-state-typedatetime"><dfn element-state for="input" lt="DateTime">Date and Time</dfn> state (<code>type=datetime</code>)</h6>
-
-    <div class="note">
-    <dl>
-    <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd>None</dd>
-    <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    </dl>
-    </div>
-
-  When an <{input}> element's <{input/type}> attribute is in
-  the <{input/DateTime|Date and Time}> state, the rules in this section
-  apply.
-
-  The <{input}> element <a>represents</a> a control for setting the element's
-  <a for="forms">value</a> to a string representing a specific <a>global date and time</a>.
-  User agents may display the date and time in whatever time zone is appropriate for the user.
-
-  If the element is <a>mutable</a>, the user agent should allow the
-  user to change the <a>global date and time</a> represented by its
-  <a for="forms">value</a>, as obtained by <a>parsing a floating date and time</a> from it. User agents must not allow the user to
-  set the <a for="forms">value</a> to a non-empty string that is not a
-  <a>valid normalized global date and time string</a>, though user agents may allow
-  the user to set and view the time in another time zone and silently translate the time to and from
-  the UTC time zone in the <a for="forms">value</a>. If the user agent provides a
-  user interface for selecting a <a>global date and time</a>, then
-  the <a for="forms">value</a> must be set to a <a>valid normalized global date and time string</a> representing the user's selection. User agents should allow the
-  user to set the <a for="forms">value</a> to the empty string.
-
-  <strong>Constraint validation</strong>: While the user interface describes input that the user
-  agent cannot convert to a <a>valid normalized global date and time string</a>,
-  the control is <a>suffering from bad input</a>.
-
-  <p class="note">
-    See [[#date-time-and-number-formats]] for a discussion of
-  the difference between the input format and submission format for date, time, and number form
-  controls, and the <a>implementation notes</a>
-  regarding localization of form controls.
-  </p>
-
-  The <code>value</code> attribute, if specified and not empty, must
-  have a value that is a <a>valid global date and time string</a>.
-
-  <strong>The <a>value sanitization algorithm</a> is as follows</strong>: If the <a for="forms">value</a> of the element is a <a>valid global date and time
-  string</a>, then adjust the time so that the <a for="forms">value</a>
-  represents the same point in time but expressed in the UTC time zone as a <a>valid normalized global date and time string</a>, otherwise, set it to the empty string instead.
-
-  The <{input/min}> attribute, if specified, must have a value that is
-  a <a>valid global date and time string</a>. The <{input/max}>
-  attribute, if specified, must have a value that is a <a>valid global date and time
-  string</a>.
-
-  The <{input/step}> attribute is expressed in seconds. The <a>step scale factor</a> is 1000 (which
-  converts the seconds to milliseconds, which is the base unit of comparison for the conversion
-  algorithms below). The <a>default step</a> is 60 seconds.
-
-  When the element is <a>suffering from a step mismatch</a>, the user agent may round the
-  element's <a for="forms">value</a> to the nearest <a>global date and time</a> for which the element would not <a>suffer from a step mismatch</a>.
-
-  <strong>The <a>algorithm to convert a string to a
-  number</a>, given a string <var>input</var>, is as follows</strong>: If <a>parsing a floating date and time</a> from <var>input</var> results in an error, then return an error; otherwise, return the number of
-  milliseconds elapsed from midnight UTC on the morning of 1970-01-01 (the time represented by the
-  value "<code>1970-01-01T00:00:00.0Z</code>") to the parsed <a>global date and time</a>, ignoring leap seconds.
-
-  <strong>The <a>algorithm to convert a number to a
-  string</a>, given a number <var>input</var>, is as follows</strong>: Return a
-  <a>valid normalized global date and time string</a> that represents the <a>global date and time</a> that is <var>input</var>
-  milliseconds after midnight UTC on the morning of 1970-01-01 (the time represented by the value
-  "<code>1970-01-01T00:00:00.0Z</code>").
-
-  <strong>The <a>algorithm to convert a string to a
-  <code>Date</code> object</a>, given a string <var>input</var>, is as follows</strong>:
-  If <a>parsing a floating date and time</a> from
-  <var>input</var> results in an error, then return an error; otherwise, return <a>a new <code>Date</code> object</a> representing the parsed <a>global date and time</a>, expressed in UTC.
-
-  <strong>The <a>algorithm to convert a
-  <code>Date</code> object to a string</a>, given a {{Date}} object <var>input</var>, is as follows</strong>: Return a <a>valid normalized global date and time string</a> that represents the <a>global date and
-  time</a> that is represented by <var>input</var>.
-
-  <div class="note" id="only-contemporary-times">
-
-    The <{input/DateTime|Date and Time}> state (and other date-related states are not
-    useful for vague values, and are only useful for dates ranging from recent history through a
-    few thousand years. For example, "one millisecond after the big bang", "the Ides of March, 44BC",
-    "the early part of the Jurassic period", or "a winter around 250 BCE", and many other expressions
-    of time cannot be sensibly expressed in HTML <{form}> states.
-
-    For the input of dates before the introduction of the Gregorian calendar, authors are
-    encouraged to not use the <{input/DateTime|Date and Time}> state (and
-    the other date- and time-related states described in subsequent sections), as user agents are not
-    required to support converting dates and times from earlier periods to the Gregorian calendar,
-    and asking users to do so manually puts an undue burden on users. (This is complicated by the
-    manner in which the Gregorian calendar was phased in, which occurred at different times in
-    different countries, ranging from partway through the 16th century all the way to early in the
-    20th.) Instead, authors are encouraged to provide fine-grained input controls using the
-    <{select}> element and <{input}> elements with the <{input/Number}> state.
-
-  </div>
-
-  <div class="bookkeeping">
-
-    The following common <{input}> element content
-    attributes, IDL attributes, and methods <a>apply</a> to the element:
-    <{input/autocomplete}>,
-    <{input/list}>,
-    <{input/max}>,
-    <{input/min}>,
-    <{input/readonly}>,
-    <{input/required}>, and
-    <{input/step}> content attributes;
-    {{HTMLInputElement/list}},
-    {{HTMLInputElement/value}},
-    {{HTMLInputElement/valueAsDate}}, and
-    {{HTMLInputElement/valueAsNumber}} IDL attributes;
-    {{HTMLInputElement/select()}},
-    {{HTMLInputElement/stepDown()}}, and
-    {{HTMLInputElement/stepUp()}} methods.
-
-    The {{HTMLInputElement/value}} IDL attribute is
-    in mode <a for="forms">value</a>.
-
-    The <code>input</code> and <code>change</code> events <a>apply</a>.
-
-    The following content attributes must not be specified and <a>do not
-    apply</a> to the element:
-    <{input/accept}>,
-    <{input/alt}>,
-    <{input/checked}>,
-    <{input/dirname}>,
-    <{input/formaction}>,
-    <{input/formenctype}>,
-    <{input/formmethod}>,
-    <{input/formnovalidate}>,
-    <{input/formtarget}>,
-    <{input/height}>,
-    <{input/inputmode}>,
-    <{input/maxlength}>,
-    <{input/minlength}>,
-    <{input/multiple}>,
-    <{input/pattern}>,
-    <{input/placeholder}>,
-    <{input/size}>,
-    <{input/src}>, and
-    <{input/width}>.
-
-    The following IDL attributes and methods <a>do not apply</a> to the
-    element:
-    {{HTMLInputElement/checked}},
-    {{HTMLInputElement/files}},
-    {{HTMLInputElement/selectionStart}},
-    {{HTMLInputElement/selectionEnd}}, and
-    {{HTMLInputElement/selectionDirection}} IDL attributes;
-    {{HTMLInputElement/setRangeText()}}, and
-    {{HTMLInputElement/setSelectionRange()}} methods.
-
-  </div>
-
-  <div class="example">
-    The following fragment shows part of a calendar application. A user can specify a date and
-    time for a meeting (in the local time zone, probably, though the user agent can allow the user to
-    change that), and since the submitted data includes the time-zone offset, the application can
-    ensure that the meeting is shown at the correct time regardless of the time zones used by all the
-    participants.
-
-    <pre highlight="html">
-&lt;fieldset&gt;
-  &lt;legend&gt;Add Meeting&lt;/legend&gt;
-  &lt;p&gt;&lt;label&gt;Meeting name: &lt;input type=text name="meeting.label"&gt;&lt;/label&gt;
-  &lt;p&gt;&lt;label&gt;Meeting time: &lt;input type=datetime name="meeting.start"&gt;&lt;/label&gt;
-&lt;/fieldset&gt;
-    </pre>
-
-    Had the application used the <code>date</code> and/or
-    <code>time</code> types instead, the calendar application would
-    have also had to explicitly determine which time zone the user intended.
-
-    For events where the precise time is to vary as the user travels (e.g., "celebrate the new
-    year!"), and for recurring events that are to stay at the same time for a specific geographic
-    location even though that location may go in and out of daylight savings time (e.g., "bring the
-    kid to school"), the <code>date</code> and/or
-    <code>time</code> types combined with a <{select}> element
-    (or other similar control) to pick the specific geographic location to which to anchor the time
-    would be more appropriate.
-
-  </div>
-
 <h6 id="date-state-typedate"><dfn element-state for="input">Date</dfn> state (<code>type=date</code>)</h6>
 
     <div class="note">
@@ -3756,7 +3564,7 @@ ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
 
   <p class="note">
     See <a href="#only-contemporary-times">the note on historical dates</a> in the
-  <{input/DateTime|Date and Time}> state section.
+  <{input/LocalDateTime|Local Date and Time}> state section.
   </p>
 
   <div class="bookkeeping">
@@ -4220,7 +4028,7 @@ ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
   with no time-zone offset information.
 
   If the element is <a>mutable</a>, the user agent should allow the
-  user to change the <{input/DateTime|Date and Time}> represented by its
+  user to change the date and time represented by its
   <a for="forms">value</a>, as obtained by <a>parsing a date and time</a> from it.
   User agents must not allow the user to set the <a for="forms">value</a> to a non-empty string
   that is not a <a>valid normalized global date and time string</a>.
@@ -4233,11 +4041,37 @@ ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
   agent cannot convert to a <a>valid normalized global date and time string</a>, the control is
   <a>suffering from bad input</a>.
 
+ <div class="note" id="only-contemporary-times">
+
+    The <{input/LocalDateTime|Local Date and Time}> state and other date-related states are not
+    useful for vague values, and are only useful for dates ranging from recent history through a
+    few thousand years. For example, "one millisecond after the big bang", "the Ides of March, 44BC",
+    "the early part of the Jurassic period", or "a winter around 250 BCE", and many other expressions
+    of time cannot be sensibly expressed in HTML <{form}> states.
+
+    For the input of dates before the introduction of the Gregorian calendar, authors are
+    encouraged to not use the <{input/LocalDateTime|Local Date and Time}> state (and
+    the other date- and time-related states described in subsequent sections), as user agents are not
+    required to support converting dates and times from earlier periods to the Gregorian calendar,
+    and asking users to do so manually puts an undue burden on users. (This is complicated by the
+    manner in which the Gregorian calendar was phased in, which occurred at different times in
+    different countries, ranging from partway through the 16th century all the way to early in the
+    20th.) Instead, authors are encouraged to provide fine-grained input controls using the
+    <{select}> element and <{input}> elements with the <{input/Number}> state.
+
+  </div>
+  
   <p class="note">
     See [[#date-time-and-number-formats]] for a discussion of
   the difference between the input format and submission format for date, time, and number form
   controls, and the <a>implementation notes</a> regarding localization of form controls.
   </p>
+
+  <p class="warning">Applications need to use care when working with <code>datetime-local</code> values,
+  since most date time objects (in languages such as JavaScript or server-side languages such as Java) use
+  incremental time values tied to the UTC time zone. Implicit conversion of a floating time value to an incremental
+  time can cause the actual value used to be different from user expectations.
+  For more information, refer to: [[timezone#floating]]</p>
 
   The <{input/value}> attribute, if specified and not empty, must
   have a value that is a <a>valid floating date and time string</a>.
@@ -4266,17 +4100,6 @@ ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
   <a>valid normalized floating date and time string</a> that represents the date and time that is
   <var>input</var> milliseconds after midnight on the morning of 1970-01-01 (the time
   represented by the value "<code>1970-01-01T00:00:00.0</code>").
-
-  <p class="note">
-    See <a href="#only-contemporary-times">the note on historical dates</a> in the
-  <{input/DateTime|Date and Time}> state section.
-  </p>
-
-  <p class="warning">Applications need to use care when working with <code>datetime-local</code> values,
-  since most date time objects (in languages such as JavaScript or server-side languages such as Java) use
-  incremental time values tied to the UTC time zone. Implicit conversion of a floating time value to an incremental
-  time can cause the actual value used to be different from user expectations.
-  For more information, refer to: [[timezone#floating]]</p>
 
   <div class="bookkeeping">
 
@@ -4356,10 +4179,6 @@ ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
   &lt;option value=FRA label="Frankfurt"&gt;
 &lt;/datalist&gt;
     </pre>
-
-    If the application instead used the <code>datetime</code>
-    type, then the user would have to work out the time-zone conversions themself, which is clearly
-    not a good user experience!
 
   </div>
 
@@ -6345,7 +6164,7 @@ You cannot submit this form when the field is incorrect.</samp></pre>
       zero, then the <a>allowed value step</a> is the <a>default step</a> multiplied by the
       <a>step scale factor</a>.
   5. If the element's <{input/type}> attribute is in the
-      <{input/DateTime|Date and Time}>,
+      <{input/LocalDateTime|Local Date and Time}>,
       <{input/Date}>,
       <{input/Month}>,
       <{input/Week}>, or
@@ -12663,7 +12482,7 @@ fur
   <{input/Telephone}>,
   <{input/E-mail}>,
   <{input/Password}>,
-  <{input/DateTime|Date and Time}>,
+  <{input/LocalDateTime|Local Date and Time}>,
   <{input/Date}>,
   <{input/Month}>,
   <{input/Week}>,
