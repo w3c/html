@@ -1426,7 +1426,7 @@ pre.idl.highlight { color: #708090; }
    <header>
     <p data-fill-with="logo"><a href="https://www.w3.org/"><img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"></a> </p>
     <h1 class="p-name no-ref allcaps" id="title">HTML 5.2</h1>
-    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2017-09-26">26 September 2017</time></span></h2>
+    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2017-09-28">28 September 2017</time></span></h2>
    </header>
    
    
@@ -3142,14 +3142,13 @@ specific to your site </span><span class="c">--&gt;</span>
   using a particular <a data-link-type="dfn" href="editing.html#drag-data-store" id="ref-for-drag-data-store-35">drag data store</a>, and optionally with a specific <var>related
   target</var>, the user agent must run the following steps:</p>
     <ol>
-     <li>If no specific <var>related target</var> was provided, set <var>related target</var> to
+     <li>Let <var>dataDragStoreWasChanged</var> be false.
+     </li><li>If no specific <var>related target</var> was provided, set <var>related target</var> to
     null.
      </li><li>Let <var>window</var> be the <code>Window</code> object of the <code>Document</code> object of the specified target element.
      </li><li>
-      <p>If <var>e</var> is <code>dragstart</code>, set the <a data-link-type="dfn" href="editing.html#drag-data-store-mode" id="ref-for-drag-data-store-mode-4">drag
-    data store mode</a> to the <a data-link-type="dfn" href="editing.html#read-write-mode" id="ref-for-read-write-mode-5">read/write mode</a>.</p>
-      <p>If <var>e</var> is <code>drop</code>, set the <a data-link-type="dfn" href="editing.html#drag-data-store-mode" id="ref-for-drag-data-store-mode-5">drag data store
-    mode</a> to the <a data-link-type="dfn" href="editing.html#read-only-mode" id="ref-for-read-only-mode-1">read-only mode</a>.</p>
+       If <var>e</var> is <code>dragstart</code>, then set the <a data-link-type="dfn">data store mode</a> to the <a data-link-type="dfn" href="editing.html#read-write-mode" id="ref-for-read-write-mode-5">read/write mode</a> and set <var>dataDragStoreWasChanged</var> to true. 
+      <p>If <var>e</var> is <code>drop</code>, set the <a data-link-type="dfn" href="editing.html#drag-data-store-mode" id="ref-for-drag-data-store-mode-4">drag data store mode</a> to the <a data-link-type="dfn" href="editing.html#read-only-mode" id="ref-for-read-only-mode-1">read-only mode</a>.</p>
      </li><li>Let <var>dataTransfer</var> be a newly created <code class="idl"><a data-link-type="idl" href="editing.html#datatransfer" id="ref-for-datatransfer-28">DataTransfer</a></code> object
     associated with the given <a data-link-type="dfn" href="editing.html#drag-data-store" id="ref-for-drag-data-store-36">drag data store</a>.
      </li><li>Set the <code class="idl"><a data-link-type="idl" href="editing.html#dom-datatransfer-effectallowed" id="ref-for-dom-datatransfer-effectallowed-5">effectAllowed</a></code> attribute to the <a data-link-type="dfn" href="editing.html#drag-data-store" id="ref-for-drag-data-store-37">drag data
@@ -3216,7 +3215,7 @@ specific to your site </span><span class="c">--&gt;</span>
       <p>If there is no relevant pointing device, the object must have its <code>screenX</code>, <code>screenY</code>, <code>clientX</code>, <code>clientY</code>, and <code>button</code> attributes set to 0.</p>
      </li><li><a data-link-type="dfn" href="infrastructure.html#dispatch" id="ref-for-dispatch-4">Dispatch</a> the newly created <code class="idl"><a data-link-type="idl" href="editing.html#dragevent" id="ref-for-dragevent-5">DragEvent</a></code> object at the specified target element.
      </li><li>Set the <a data-link-type="dfn" href="editing.html#drag-data-store-allowed-effects-state" id="ref-for-drag-data-store-allowed-effects-state-3">drag data store allowed effects state</a> to the current value of <var>dataTransfer</var>’s <code class="idl"><a data-link-type="idl" href="editing.html#dom-datatransfer-effectallowed" id="ref-for-dom-datatransfer-effectallowed-8">effectAllowed</a></code> attribute. (It can only have changed value if <var>e</var> is <code>dragstart</code>.)
-     </li><li>Set the <a data-link-type="dfn" href="editing.html#drag-data-store-mode" id="ref-for-drag-data-store-mode-6">drag data store mode</a> back to the <a data-link-type="dfn" href="editing.html#protected-mode" id="ref-for-protected-mode-4">protected mode</a> if it was changed in the first step.
+     </li><li>If <var>dataDragStoreWasChanged</var> is true, then set the <a data-link-type="dfn" href="editing.html#drag-data-store-mode" id="ref-for-drag-data-store-mode-5">drag data store mode</a> back to the <a data-link-type="dfn" href="editing.html#protected-mode" id="ref-for-protected-mode-4">protected mode</a>.
      </li><li>Break the association between <var>dataTransfer</var> and the <a data-link-type="dfn" href="editing.html#drag-data-store" id="ref-for-drag-data-store-38">drag data
     store</a>.
     </li></ol>
@@ -3577,7 +3576,7 @@ specific to your site </span><span class="c">--&gt;</span>
        <th>Event Name
        </th><th>Target
        </th><th>Cancelable?
-       </th><th><a data-link-type="dfn" href="editing.html#drag-data-store-mode" id="ref-for-drag-data-store-mode-7">Drag data store mode</a>
+       </th><th><a data-link-type="dfn" href="editing.html#drag-data-store-mode" id="ref-for-drag-data-store-mode-6">Drag data store mode</a>
        </th><th><code class="idl"><a data-link-type="idl" href="editing.html#dom-datatransfer-dropeffect" id="ref-for-dom-datatransfer-dropeffect-11">dropEffect</a></code>
        </th><th>Default Action
      </th></tr></thead><tbody>
@@ -23285,8 +23284,8 @@ specific to your site </span><span class="c">--&gt;</span>
     <li><a href="editing.html#ref-for-drag-data-store-mode-1">5.7.2. The drag data store</a>
     </li><li><a href="editing.html#ref-for-drag-data-store-mode-2">5.7.3.1. The DataTransferItemList interface</a>
     </li><li><a href="editing.html#ref-for-drag-data-store-mode-3">5.7.3.2. The DataTransferItem interface</a>
-    </li><li><a href="editing.html#ref-for-drag-data-store-mode-4">5.7.4. The DragEvent interface</a> <a href="editing.html#ref-for-drag-data-store-mode-5">(2)</a> <a href="editing.html#ref-for-drag-data-store-mode-6">(3)</a>
-    </li><li><a href="editing.html#ref-for-drag-data-store-mode-7">5.7.6. Events summary</a>
+    </li><li><a href="editing.html#ref-for-drag-data-store-mode-4">5.7.4. The DragEvent interface</a> <a href="editing.html#ref-for-drag-data-store-mode-5">(2)</a>
+    </li><li><a href="editing.html#ref-for-drag-data-store-mode-6">5.7.6. Events summary</a>
    </li></ul>
   </aside>
   <aside class="dfn-panel" data-for="read-write-mode">
