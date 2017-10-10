@@ -205,504 +205,26 @@
   </li>
   </ol>
 
-<h4 id="the-menu-element">The <dfn element><code>menu</code></dfn> element</h4>
-
-  <dl class="element">
-    <dt><a>Categories</a>:</dt>
-    <dd><a>Flow content</a>.</dd>
-    <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>Where <a>flow content</a> is expected.</dd>
-    <dd>As the child of a <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">context menu</a> state.</dd>
-    <dt><a>Content model</a>:</dt>
-    <dd>If the element's <code>type</code> attribute is in the <a state for="menu">context menu</a> state: in any order, zero or more <{menuitem}> elements, zero or more <{hr}> elements, zero or more <{menu}> elements whose <code>type</code> attributes are in the <a state for="menu">context menu</a> state, and zero or more <a>script-supporting elements</a>.</dd>
-    <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>Neither tag is omissible</dd>
-    <dt><a>Content attributes</a>:</dt>
-    <dd><a>Global attributes</a></dd>
-    <dd><code>type</code> - Type of menu</dd>
-    <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>menu</code></a>
-    (default - <a><em>do not set</em></a>).</dd>
-    <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default role</a>.</dd>
-    <dt><a>DOM interface</a>:</dt>
-    <dd>
-      <pre class="idl" data-highlight="webidl">
-        interface HTMLMenuElement : HTMLElement {
-          attribute DOMString type;
-          attribute DOMString label;
-        };
-      </pre>
-    </dd>
-  </dl>
-
-  The <{menu}> element represents a group of commands.
-
-  The <dfn element-attr for="menu"><code>type</code></dfn> attribute is an <a>enumerated
-  attribute</a> indicating the kind of menu being declared. The attribute has one state. The
-  "<dfn attr-value for="menu/type"><code>context</code></dfn>" keyword maps to the
-  <dfn state for="menu">context menu</dfn> state, in which the element is declaring a context menu.
-  The <i>missing value default</i> is the <code>null</code>.
-
-  If a <{menu}> element's <code>type</code> attribute is in the
-  <a state for="menu">context menu</a> state, then the element <a>represents</a>
-  commands for a context menu. The user can only examine and interact with the commands if that
-  context menu is activated.
-
-  The <dfn element-attr for="menu"><code>label</code></dfn> attribute gives the label of the
-  menu, to display nested menus in the UI: a context menu containing
-  another menu would use the nested menu's <code>label</code> attribute for
-  the submenu's menu label. The <code>label</code> attribute must only be
-  specified on <{menu}> elements whose parent element is a <{menu}> element.
-
-
-  <hr />
-
-  A <code>menu</code> is a <dfn>currently relevant <{menu}> element</dfn> if it is the
-  child of a <span>currently relevant <{menu}> element</span>, or if it is the
-  <a>designated pop-up menu</a> of a <{button}> element that is not
-  <a>inert</a>, does not have a <{global/hidden}> attribute, and is not
-  the descendant of an element with a <{global/hidden}> attribute.
-
-  <hr />
-
-  A <dfn>menu construct</dfn> consists of an ordered list of zero or more <dfn>menu item constructs</dfn>, which can be any of:
-
-  <ul class="brief">
-    <li><a>Commands</a>, which can be marked as <dfn>default commands</dfn> (<code>menuitem</code>)</li>
-    <li><dfn>Separators</dfn> (<code>hr</code>)</li>
-    <li>Other <a>menu constructs</a>, each with an associated <dfn>submenu label</dfn>, which allows the list to be nested (<code>menu</code>)</li>
-  </ul>
-
-  To <dfn lt="build and show|build and show a menu">build and show a menu</dfn> for a particular <{menu}> element
-  <var>source</var> and with a particular element <var>subject</var> as a subject, the user agent
-  must run the following steps:
-
-  <ol>
-
-    <li>Let <var>pop-up menu</var> be the <a>menu construct</a> created by the <a>build a
-    menu construct</a> algorithm when passed the <var>source</var> element.
-
-    </li><li>
-
-    Display <var>pop-up menu</var> to the user, and let the algorithm that invoked this one continue.
-
-    If the user selects a <a>menu item construct</a> that corresponds to an element
-    that still represents a <a>command</a> when the user selects it, then the user agent must invoke that
-    command's <a>Action</a>. If the command's <a>Action</a> is defined as <a>firing
-    a <code>click</code> event</a>, either directly or via the <a>run
-    synthetic click activation steps</a> algorithm, then the <code>relatedTarget</code> attribute
-    of that <code>click</code> event must be initialized to <var>subject</var>.
-
-    Pop-up menus must not, while being shown, reflect changes in the DOM. The menu is constructed
-    from the DOM before being shown, and is then immutable.
-
-    </li>
-
-  </ol>
-
-  To <dfn>build a menu construct</dfn> for an element <var>source</var>, the user agent must run
-  the following steps, which return a <a>menu construct</a>:
-
-  <ol>
-
-    <li>Let <var>generated menu</var> be an empty <a>menu construct</a>.</li>
-
-    <li>
-
-    Run the <a>menu item generator</a> steps for the <{menu}> element using <var>generated menu</var>
-    as the output.
-
-    The <dfn>menu item generator</dfn> steps for a <{menu}> element using a specific <a>menu construct</a> <var>output</var> as
-    output are as follows: For each child node of the <code>menu</code> in <a>tree order</a>,
-    run the appropriate steps from the following list:
-
-    <dl class="switch">
-
-      <dt>If the child is a <{menuitem}> element that <a for="menuitem">defines a command</a></dt>
-
-      <dd>Append the <a>command</a> to <var>output</var>, respecting the command's <a>facets</a>. If the <{menuitem}> element has a <code>default</code> attribute, mark the <a>command</a> as being a <a>default
-      command</a>.</dd>
-
-      <dt>If the child is an <{hr}> element</dt>
-
-      <dd>Append a <a>separator</a> to <var>output</var>.</dd>
-
-      <dt>If the child is a <{menu}> element with no <code>label</code> attribute</dt>
-
-      <dd>Append a <a>separator</a> to <var>output</var>, then run
-      the <a>menu item generator</a> steps for this child <{menu}> element, using
-      <var>output</var> as the output, then append another <a>separator</a> to <var>output</var>.</dd>
-
-      <dt>If the child is a <{menu}> element with a <code>label</code> attribute</dt>
-
-      <dd>Let <var>submenu</var> be the result of running the <a>build a menu construct</a> steps for the child <{menu}> element. Then, append <var>submenu</var> to <var>output</var>, using the value of the child
-      <{menu}> element's <code>label</code> attribute as the <a>submenu label</a>.</dd>
-
-      <dt>Otherwise</dt>
-
-      <dd><a>Ignore</a> the child node.</dd>
-
-    </dl>
-
-    </li>
-
-    <li>Remove from <var>output</var> any <a>menu construct</a> whose <a>submenu
-    label</a> is the empty string.</li>
-
-    <li>Remove from <var>output</var> any <a>menu item construct</a> representing a <a>command</a> whose <a>Label</a> is
-    the empty string.</li>
-
-    <li>Collapse all sequences of two or more adjacent <a>separators</a> in <var>output</var>
-    to a single <a>separator</a>.</li>
-
-    <li>If the first <a>menu item construct</a> in <var>output</var> is a <a>separator</a>, then remove it.</li>
-
-    <li>If the last <a>menu item construct</a> in <var>output</var> is a <a>separator</a>, then remove it.</li>
-
-    <li>Return <var>output</var>.</li>
-
-  </ol>
-
-  <hr />
-
-  The <dfn attribute for="HTMLMenuElement"><code>type</code></dfn> IDL attribute must <a>reflect</a>
-  the content attribute of the same name, <a>limited to only known values</a>.
-
-  The <dfn attribute for="HTMLMenuElement"><code>label</code></dfn> IDL attribute must
-  <a>reflect</a> the content attribute of the same name.
-
-
-
-<h4 id="the-menuitem-element">The <dfn element><code>menuitem</code></dfn> element</h4>
-
-  <dl class="element">
-    <dt><a>Categories</a>:</dt>
-    <dd>None.</dd>
-    <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <{menu}> element whose <code>type</code> attribute is in the <a state for="menu">context menu</a> state.</dd>
-    <dt><a>Content model</a>:</dt>
-    <dd><a>Text content</a>.</dd>
-    <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>Neither tag is omissible</dd>
-    <dt><a>Content attributes</a>:</dt>
-    <dd><a>Global attributes</a></dd>
-    <dd><code>type</code> - Type of command</dd>
-    <dd><code>label</code> - User-visible label</dd>
-    <dd><code>icon</code> - Icon for the command</dd>
-    <dd><code>disabled</code> Whether the command or control is disabled</dd>
-    <dd><code>default</code> - Mark the command as being a default command</dd>
-    <dd>Also, the <{menuitem/title}> attribute has special semantics on this element.</dd>
-    <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>menuitem</code></a>
-    (default - <a><em>do not set</em></a>).</dd>
-    <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default role</a>.</dd>
-    <dt><a>DOM interface</a>:</dt>
-    <dd>
-      <pre class="idl" data-highlight="webidl">
-        interface HTMLMenuItemElement : HTMLElement {
-          attribute DOMString type;
-          attribute DOMString label;
-          attribute DOMString icon;
-          attribute boolean disabled;
-          attribute boolean default;
-        };
-      </pre>
-    </dd>
-  </dl>
-
-  The <{menuitem}> element represents a command that the user can invoke from a popup
-  menu (either a <a>context menu</a> or the menu of a <a element-state for="button/type">menu button</a>).
-
-  A <{menuitem}> element with a <code>label</code> attribute, or with
-  <a>text content</a> defines a new command.
-
-  <hr />
-
-  The <dfn element-attr for="menuitem"><code>type</code></dfn> attribute is an
-  <a>enumerated attribute</a> with one keyword and state. The
-  "<dfn attr-value for="menuitem/type"><code>command</code></dfn>" keyword maps to the
-  <a state for="menuitem">Command</a> state.
-  The <i>missing value default</i> is the <a state for="menuitem">Command</a> state.
-
-  <dl>
-
-    <dt>The <dfn state for="menuitem">Command</dfn> state</dt>
-
-    <dd>The element <a>represents</a> a normal command with an associated action.</dd>
-
-  </dl>
-
-  The <dfn element-attr for="menuitem"><code>label</code></dfn> attribute can be used to give
-  the name of the command, as shown to the user. If the attribute is
-  specified, it must have a value that is not the empty string.
-
-  If the <{menuitem/label}> attribute is not present, and there is text content in the element,
-  that provides the name of the content as shown to the user.
-
-  The <dfn element-attr for="menuitem"><code>icon</code></dfn> attribute gives a picture that
-  represents the command. If the attribute is specified, the attribute's value must contain a
-  <a>valid non-empty URL potentially surrounded by spaces</a>. To obtain the <a>absolute URL</a> of
-  the icon when the attribute's value is not the empty string, the attribute's value must be
-  <a>parsed</a> relative to the element's <a>node document</a>. When the attribute is absent, or its
-  value is the empty string, or <a>parsing</a> its value fails, there is no icon.
-
-  The <dfn element-attr for="menuitem"><code>disabled</code></dfn> attribute is a
-  <a>boolean attribute</a> that, if present, indicates that the command is not available in
-  the current state.
-
-  <p class="note">
-    The distinction between <code>disabled</code> and
-  <{global/hidden}> is subtle. A command would be disabled if, in the same
-  context, it could be enabled if only certain aspects of the situation were changed. A command
-  would be marked as hidden if, in that situation, the command will never be enabled. For example,
-  in the context menu for a water faucet, the command "open" might be disabled if the faucet is
-  already open, but the command "eat" would be marked hidden since the faucet could never be
-  eaten.
-  </p>
-
-  <hr />
-
-  The <dfn element-attr for="menuitem"><code>title</code></dfn> attribute gives a hint describing
-  the command, which might be shown to the user to help him.
-
-  The <dfn element-attr for="menuitem"><code>default</code></dfn> attribute indicates, if
-  present, that the command is the one that would have been invoked if the user had directly
-  activated the menu's subject instead of using the menu. The <code>default</code> attribute is a <a>boolean attribute</a>.
-
-  <hr />
-
-  The <dfn attribute for="HTMLMenuItemElement"><code>type</code></dfn> IDL attribute must
-  <a>reflect</a> the content attribute of the same name, <a>limited to only known
-  values</a>.
-
-  The <dfn attribute for="HTMLMenuItemElement"><code>label</code></dfn>,
-  <dfn attribute for="HTMLMenuItemElement"><code>icon</code></dfn>,
-  <dfn attribute for="HTMLMenuItemElement"><code>disabled</code></dfn>, and
-  <dfn attribute for="HTMLMenuItemElement"><code>default</code></dfn> IDL attributes must <a>reflect</a>
-  the respective content attributes of the same name.
-
-  <hr />
-
-  If the element's <a facet for="menuitem">Disabled State</a> is false
-  (enabled) then the element's <a>activation behavior</a> is to do nothing.
-
-  <p class="note">
-    Firing a synthetic <code>click</code> event at the element
-  does not cause any of the actions described above to happen.
-  </p>
-
-  If the element's <a facet for="menuitem">Disabled State</a> is true
-  (disabled) then the element has no <a>activation behavior</a>.
-
-  <p class="note">
-    The <{menuitem}> element is not rendered except as <a element lt="menu">part of a context menu</a>.
-  </p>
-
-  <div class="example">
-    Here is an example of a pop-up menu button with three options that let the user toggle between
-    left, center, and right alignment. One could imagine such a toolbar as part of a text editor. The
-    menu also has a separator followed by another menu item labeled "Publish", though that menu item
-    is disabled.
-
-    <pre highlight="html">
-&lt;button contextmenu="editmenu"&gt;Commands...&lt;/button&gt;
-&lt;menu type="context" id="editmenu"&gt;
-  &lt;menuitem label="Left" icon="icons/alL.png" onclick="setAlign('left')"&gt;
-  &lt;/menuitem&gt;
-  &lt;menuitem label="Center" icon="icons/alC.png" onclick="setAlign('center')"&gt;
-  &lt;/menuitem&gt;
-  &lt;menuitem label="Right" icon="icons/alR.png" onclick="setAlign('right')"&gt;
-  &lt;/menuitem&gt;
-  &lt;hr&gt;
-  &lt;menuitem disabled label="Publish" icon="icons/pub.png" onclick="publish()"&gt;
-  &lt;/menuitem&gt;
-&lt;/menu&gt;
-    </pre>
-
-  </div>
-
-<h4 id="context-menus"><dfn lt="context menu">Context menus</dfn></h4>
-
-<h5 id="declaring-a-context-menu">Declaring a context menu</h5>
-
-  The <dfn element-attr for="global"><code>contextmenu</code></dfn> attribute gives the element's
-  context menu. The value must be the <a>ID</a> of a <{menu}>
-  element in the same <a>tree</a> whose <code>type</code>
-  attribute is in the <a state for="menu">context menu</a> state.
-
-  <p class="note">
-    When a user right-clicks on an element with a <{global/contextmenu}> attribute, the user agent will first fire a <code>contextmenu</code> event at the element, and then, if that event is not
-  canceled, a <code>show</code> event at the <{menu}> element.
-  </p>
-
-  <div class="example">
-    Here is an example of a context menu for an input control:
-
-    <pre highlight="html">
-&lt;form name="npc"&gt;
-  &lt;label&gt;Character name: &lt;input name=char type=text contextmenu=namemenu required&gt;&lt;/label&gt;
-  &lt;menu type=context id=namemenu&gt;
-  &lt;menuitem label="Pick random name" onclick="document.forms.npc.elements.char.value = getRandomName()"&gt;
-    &lt;/menuitem&gt;
-  &lt;menuitem label="Prefill other fields based on name" onclick="prefillFields(document.forms.npc.elements.char.value)"&gt;
-    &lt;/menuitem&gt;
-  &lt;/menu&gt;
-&lt;/form&gt;
-    </pre>
-
-    This adds two items to the control's context menu, one called "Pick random name", and one
-    called "Prefill other fields based on name". They invoke scripts that are not shown in the
-    example above.
-
-  </div>
-
-
-<h5 id="context-menu-processing-model">Processing model</h5>
-
-  Each element has an <dfn>assigned context menu</dfn>, which can be null.
-  If an element <var>A</var> has a <{global/contextmenu}> attribute, and there is
-  an element with the ID given by <var>A</var>'s <{global/contextmenu}> attribute's value in <var>A</var>'s
-  <a>tree</a>, and the first such element in <a>tree order</a> is a
-  <{menu}> element, then <var>A</var>'s <a>assigned context menu</a> is that element.
-  Otherwise, if <var>A</var> has a parent element,
-  then <var>A</var>'s <a>assigned context menu</a> is the <a>assigned context menu</a> of its parent element.
-  Otherwise, <var>A</var>'s <a>assigned context menu</a> is null.
-
-  When an element's context menu is requested (e.g., by the user right-clicking the element, or
-  pressing a context menu key), the user agent must apply the appropriate rules from the following
-  list:
-
-  <dl class="switch">
-
-    <dt>If the user requested a context menu using a pointing device</dt>
-
-    <dd>The user agent must <a>fire</a> a <a>trusted</a> event with the name <code>contextmenu</code>, that bubbles and is cancelable, and that uses the
-    <code>MouseEvent</code> interface, at the element for which the menu was requested. The context
-    information of the event must be initialized to the same values as the last
-    <code>MouseEvent</code> user interaction event that was fired as part of the gesture that was
-    interpreted as a request for the context menu.</dd>
-
-    <dt>Otherwise</dt>
-
-    <dd>The user agent must <a>fire a synthetic mouse
-    event named <code>contextmenu</code></a> that bubbles and is
-    cancelable at the element for which the menu was requested.</dd>
-
-  </dl>
-
-  <p class="note">
-    Typically, therefore, the firing of the <code>contextmenu</code> event will be the
-  default action of a <code>mouseup</code> or <code>keyup</code> event. The exact
-  sequence of events is user agent-dependent, as it will vary based on platform conventions.
-  </p>
-
-  The default action of the <code>contextmenu</code> event depends on
-  whether or not the element for which the menu was requested has a non-null <a>assigned context
-  menu</a> when the event dispatch has completed, as follows.
-
-  If the <a>assigned context menu</a> of the element for which the menu was requested is
-  null, the default action must be for the user agent to show its default context menu, if it has
-  one.
-
-  Otherwise, let <var>subject</var> be the element for which the menu was requested, and let
-  <var>menu</var> be the <a>assigned context menu</a> of <var>target</var> immediately after
-  the <code>contextmenu</code> event's dispatch has completed. The user
-  agent must <a>fire</a> a <a>trusted</a> event with the name <code>show</code> at <var>menu</var>,
-  using the <code>RelatedEvent</code> interface,
-  with the <code>relatedTarget</code> attribute initialized
-  to <var>subject</var>. The event must be cancelable.
-
-  If <em>this</em> event (the <code>show</code> event) is not canceled, then
-  the user agent must <a>build and show</a> the menu for
-  <var>menu</var> with <var>subject</var> as the subject.
-
-  When it presents a context menu, the user agent should also provide access to its default context menu.
-  For example, it could merge the menu items from the two menus together,
-  provide the page's context menu as a submenu of the default menu, or
-  handle right-clicks that have the Shift key depressed by showing the default context menu
-  instead of firing the <code>contextmenu</code> event.
-
-  <hr />
-
-  <div class="example">
-    In this example, an image of cats is given a context menu with four possible commands:
-
-    <pre highlight="html">
-&lt;img src="cats.jpeg" alt="Cats" contextmenu=catsmenu&gt;
-&lt;menu type="context" id="catsmenu"&gt;
-  &lt;menuitem label="Pet the kittens" onclick="kittens.pet()"&gt;
-  &lt;menuitem label="Cuddle with the kittens" onclick="kittens.cuddle()"&gt;
-  &lt;menu label="Feed the kittens"&gt;
-    &lt;menuitem label="Fish" onclick="kittens.feed(fish)"&gt;
-    &lt;menuitem label="Chicken" onclick="kittens.feed(chicken)"&gt;
-  &lt;/menu&gt;
-&lt;/menu&gt;
-    </pre>
-
-    When a user of a mouse-operated visual Web browser right-clicks on the image, the browser
-    might pop up a context menu like this:
-
-    <img src="images/contextmenu-collapsed.png" alt="A context menu, shown over a picture of cats, with four lines: the first two offering the menu items described in the markup above ('Pet the kittens' and 'Cuddle with the kittens'), the third giving a submenu labeled 'Feed the kittens', and the fourth, after a horizontal splitter, consisting of only a downwards-pointing disclosure triangle." />
-
-    When the user clicks the disclosure triangle, such a user agent would expand the context menu
-    in place, to show the browser's own commands:
-
-    <img src="images/contextmenu-expanded.png" alt="This would result in the same basic interface, but with a longer menu; the disclosure triangle having been replaced by items such as 'View Image', 'Copy Image', 'Copy Image Location', and so forth." />
-
-  </div>
-
-<h5 id="the-relatedevent-interfaces">The <code>RelatedEvent</code> interfaces</h5>
-
-  <pre class="idl" data-highlight="webidl">
-    [Constructor(DOMString type, optional RelatedEventInit eventInitDict)]
-    interface RelatedEvent : Event {
-      readonly attribute EventTarget? relatedTarget;
-    };
-
-    dictionary RelatedEventInit : EventInit {
-      EventTarget? relatedTarget = null;
-    };
-  </pre>
-
-  <dl class="domintro">
-    <dt><var>event</var> . <code>relatedTarget</code></dt>
-    <dd>
-      Returns the other event target involved in this event. For example, when a <code>show</code>
-      event fires on a <{menu}> element, the other event target involved in the event would be the
-      element for which the menu is being shown.
-    </dd>
-  </dl>
-
-  The <dfn attribute for="RelatedEvent"><code>relatedTarget</code></dfn> attribute must return the
-  value it was initialized to. It represents the other event target that is related to the event.
-
 <h4 id="commands">Commands</h4>
 
 <h5 id="facets">Facets</h5>
 
-  A <dfn for="menuitem" lt="defines a command|command">command</dfn> is the abstraction behind menu
-  items, buttons, and links. Once a command is defined, other parts of the interface can refer to
+  A <dfn lt="defines a command|command">command</dfn> is the abstraction behind buttons, and links. Once a command is defined, other parts of the interface can refer to
   the same command, allowing many access points to a single feature to share facets such as the
-  <a facet for="menuitem">Disabled State</a>.
+  <a facet>Disabled State</a>.
 
-  Commands are defined to have the following <dfn for="menuitem">facets</dfn>:
+  Commands are defined to have the following <dfn>facets</dfn>:
 
-  : <dfn facet for="menuitem">Label</dfn>
+  : <dfn for="facet">Label</dfn>
   :: The name of the command as seen by the user.
-  : <dfn facet for="menuitem">Access Key</dfn>
+  : <dfn for="facet">Access Key</dfn>
   :: A key combination selected by the user agent that triggers the command. A command might not
       have an Access Key.
-  : <dfn facet for="menuitem">Hidden State</dfn>
-  :: Whether the command is hidden or not (basically, whether it should be shown in menus).
-  : <dfn facet for="menuitem">Disabled State</dfn>
+  : <dfn for="facet">Hidden State</dfn>
+  :: Whether the command is hidden or not.
+  : <dfn for="facet">Disabled State</dfn>
   :: Whether the command is relevant and can be triggered or not.
-  : <dfn facet for="menuitem">Action</dfn>
+  : <dfn for="facet">Action</dfn>
   :: The actual effect that triggering the command will have. This could be a scripted event
       handler, a [=url/URL=] to which to <a>navigate</a>, or a form submission.
 
@@ -710,60 +232,55 @@
 
   <ul class="brief">
 
-    <li>The <a facet for="menuitem">Hidden State</a> facet is false (visible)</li>
+    <li>The <a for="facet">Hidden State</a> facet is false (visible)</li>
 
     <li>The element is <a>in a <code>Document</code></a> that has an associated <a>browsing context</a>.</li>
 
     <li>Neither the element nor any of its ancestors has a <{global/hidden}>
     attribute specified.</li>
 
-    <li>The element is not a <{menuitem}> element, or it is a child of a <a>currently
-    relevant <code>menu</code> element</a>, or it has an <a facet for="menuitem">Access Key</a>.</li>
-
   </ul>
 
-  User agents are encouraged to do this especially for commands that have <a facet for="menuitem" lt="Access Key">Access Keys</a>, as a way to advertise those keys to the
+  User agents are encouraged to do this especially for commands that have <a for="facet" lt="Access Key">Access Keys</a>, as a way to advertise those keys to the
   user.
-
-  <p class="example">For example, such commands could be listed in the user agent's menu bar.</p>
 
 
 <h5 id="using-the-a-element-to-define-a-command">Using the <{a}> element to define a command</h5>
 
   An <{a}> element with an <{a/href}> attribute defines a command.
 
-  The <a facet for="menuitem">Label</a> of the command is the string given by the
+  The <a for="facet">Label</a> of the command is the string given by the
   element's {{Node/textContent}} IDL attribute.
 
-  The <a facet for="menuitem">Access Key</a> of the command is the element's
+  The <a for="facet">Access Key</a> of the command is the element's
   <a>assigned access key</a>, if any.
 
-  The <a facet for="menuitem">Hidden State</a> of the command is true (hidden)
+  The <a for="facet">Hidden State</a> of the command is true (hidden)
   if the element has a <{global/hidden}> attribute, and false otherwise.
 
-  The <a facet for="menuitem">Disabled State</a> facet of the command is
+  The <a for="facet">Disabled State</a> facet of the command is
   true if the element or one of its ancestors is <a>inert</a>, and false otherwise.
 
-  The <a facet for="menuitem">Action</a> of the command, if the element has a
+  The <a for="facet">Action</a> of the command, if the element has a
   defined <a>activation behavior</a>, is to <a>run synthetic click activation steps</a>
   on the element. Otherwise, it is just to <a>fire a <code>click</code>
   event</a> at the element.
 
 <h5 id="using-the-button-element-to-define-a-command">Using the <{button}> element to define a command</h5>
 
-  A <{button}> element always <a for="menuitem">defines a command</a>.
+  A <{button}> element always <a for="facet">defines a command</a>.
 
-  The <a facet for="menuitem">Label</a>, <a facet for="menuitem">Access Key</a>, <a facet for="menuitem">Hidden State</a>, and <a facet for="menuitem">Action</a> facets of the command are determined <span>as for <{a}> elements</span> (see the previous section).
+  The <a for="facet">Label</a>, <a for="facet">Access Key</a>, <a for="facet">Hidden State</a>, and <a for="facet">Action</a> facets of the command are determined <span>as for <{a}> elements</span> (see the previous section).
 
-  The <a facet for="menuitem">Disabled State</a> of the command is true if
+  The <a for="facet">Disabled State</a> of the command is true if
   the element or one of its ancestors is <a>inert</a>, or if the element's disabled state is set, and false otherwise.
 
 <h5 id="using-the-input-element-to-define-a-command">Using the <{input}> element to define a command</h5>
 
   An <{input}> element whose <code>type</code> attribute is in
-  one of the <{input/Submit|Submit Button}>, <{input/Reset|Reset Button}>, <{input/Image|Image Button}>, <{input/Button}>, <{input/Radio|Radio Button}>, or <{input/Checkbox}> states <a for="menuitem">defines a command</a>.
+  one of the <{input/Submit|Submit Button}>, <{input/Reset|Reset Button}>, <{input/Image|Image Button}>, <{input/Button}>, <{input/Radio|Radio Button}>, or <{input/Checkbox}> states <a for="facet">defines a command</a>.
 
-  The <a facet for="menuitem">Label</a> of the command is determined as
+  The <a for="facet">Label</a> of the command is determined as
   follows:
 
   <ul>
@@ -776,7 +293,7 @@
     absent.</li>
 
     <li>Otherwise, if the element is a <a>labeled control</a>, then the
-    <a facet for="menuitem">Label</a> is the string given by the
+    <a for="facet">Label</a> is the string given by the
     {{Node/textContent}} of the first <{label}> element in <a>tree order</a>
     whose <a>labeled control</a> is the element in question. (In DOM terms, this is the
     string given by <code><var>element</var>.labels[0].textContent</code>.)</li>
@@ -788,81 +305,58 @@
 
   </ul>
 
-  The <a facet for="menuitem">Access Key</a> of the command is the element's
+  The <a for="facet">Access Key</a> of the command is the element's
   <a>assigned access key</a>, if any.
 
-  The <a facet for="menuitem">Hidden State</a> of the command is true (hidden)
+  The <a for="facet">Hidden State</a> of the command is true (hidden)
   if the element has a <{global/hidden}> attribute, and false otherwise.
 
-  The <a facet for="menuitem">Disabled State</a> of the command is true if
+  The <a for="facet">Disabled State</a> of the command is true if
   the element or one of its ancestors is <a>inert</a>, or if the element's disabled state is set, and false otherwise.
 
-  The <a facet for="menuitem">Action</a> of the command, if the element has a
+  The <a for="facet">Action</a> of the command, if the element has a
   defined <a>activation behavior</a>, is to <a>run synthetic click activation steps</a>
   on the element. Otherwise, it is just to <a>fire a <code>click</code>
   event</a> at the element.
 
-<h5 id="using-the-option-element-to-define-a-command"><dfn lt="menu command">Using the <{option}> element to define a command</dfn></h5>
+<h5 id="using-the-option-element-to-define-a-command"><dfn lt="facet command">Using the <{option}> element to define a command</dfn></h5>
 
   An <{option}> element with an ancestor <{select}> element and either no <code>value</code> attribute or a <code>value</code>
   attribute that is not the empty string defines a command.
 
-  The <a facet for="menuitem">Label</a> of the command is the value of the
+  The <a for="facet">Label</a> of the command is the value of the
   <{option}> element's <code>label</code> attribute, if there is
   one, or else the value of <{option}> element's {{Node/textContent}} IDL attribute,
   with <a>leading and trailing white space
   stripped</a>, and with any sequences of two or more <a>space
   characters</a> replaced by a single U+0020 SPACE character.
 
-  The <a facet for="menuitem">Access Key</a> of the command is the element's
+  The <a for="facet">Access Key</a> of the command is the element's
   <a>assigned access key</a>, if any.
 
-  The <a facet for="menuitem">Hidden State</a> of the command is true (hidden)
+  The <a for="facet">Hidden State</a> of the command is true (hidden)
   if the element has a <{global/hidden}> attribute, and false otherwise.
 
-  The <a facet for="menuitem">Disabled State</a> of the command is true if
+  The <a for="facet">Disabled State</a> of the command is true if
   the element is disabled, or if its nearest ancestor
   <{select}> element is disabled, or if it or one
   of its ancestors is <a>inert</a>, and false otherwise.
 
-  If the <code>option</code>'s nearest ancestor <{select}> element has a <code>multiple</code> attribute, the <a facet for="menuitem">Action</a> of the command is to <a>pick</a> the <{option}> element. Otherwise, the <a>Action</a> is to <a>toggle</a> the <{option}> element.
-
-<h5 id="using-the-menuitem-element-to-define-a-command">Using the <{menuitem}> element to define a
-  command</h5>
-
-  A <{menuitem}> element always <a for="menuitem">defines a command</a>.
-
-  The <a facet for="menuitem">Label</a> of the command is the value of the element's
-  <code>label</code> attribute, if there is one, or the empty string if
-  it doesn't.
-
-  The <a facet for="menuitem">Access Key</a> of the command is the element's
-  <a>assigned access key</a>, if any.
-
-  The <a facet for="menuitem">Hidden State</a> of the command is true (hidden)
-  if the element has a <{global/hidden}> attribute, and false otherwise.
-
-  The <a facet for="menuitem">Disabled State</a> of the command is true if
-  the element or one of its ancestors is <a>inert</a>, or if the element has a <code>disabled</code> attribute, and false otherwise.
-
-  The <a facet for="menuitem">Action</a> of the command, if the element has a
-  defined <a>activation behavior</a>, is to
-  <a>run synthetic click activation steps</a> on the element. Otherwise, it is just to
-  <a>fire a <code>click</code> event</a> at the element.
+  If the <code>option</code>'s nearest ancestor <{select}> element has a <code>multiple</code> attribute, the <a for="facet">Action</a> of the command is to <a>pick</a> the <{option}> element. Otherwise, the <a>Action</a> is to <a>toggle</a> the <{option}> element.
 
 <h5 id="using-the-accesskey-attribute-on-a-label-element-to-define-a-command">Using the <code>accesskey</code> attribute
   on a <{label}> element to define a command</h5>
 
   A <{label}> element that has an <a>assigned access key</a> and a <a>labeled
-  control</a> and whose <a>labeled control</a> <a for="menuitem">defines a command</a>, itself defines a command.
+  control</a> and whose <a>labeled control</a> <a for="facet">defines a command</a>, itself defines a command.
 
-  The <a facet for="menuitem">Label</a> of the command is the string given by the
+  The <a for="facet">Label</a> of the command is the string given by the
   element's {{Node/textContent}} IDL attribute.
 
-  The <a facet for="menuitem">Access Key</a> of the command is the element's
+  The <a for="facet">Access Key</a> of the command is the element's
   <a>assigned access key</a>.
 
-  The <a facet for="menuitem">Hidden State</a>, <a facet for="menuitem">Disabled State</a>, and <a facet for="menuitem">Action</a> facets of the command are the same as the respective
+  The <a for="facet">Hidden State</a>, <a for="facet">Disabled State</a>, and <a for="facet">Action</a> facets of the command are the same as the respective
   facets of the element's <a>labeled control</a>.
 
 <h5 id="using-the-accesskey-attribute-on-a-legend-element-to-define-a-command">Using the <code>accesskey</code> attribute
@@ -873,13 +367,13 @@
   <{legend}> element and is neither a <{label}> element nor a <code>legend</code>
   element but that defines a command, itself defines a command.
 
-  The <a facet for="menuitem">Label</a> of the command is the string given by the
+  The <a for="facet">Label</a> of the command is the string given by the
   element's {{Node/textContent}} IDL attribute.
 
-  The <a facet for="menuitem">Access Key</a> of the command is the element's
+  The <a for="facet">Access Key</a> of the command is the element's
   <a>assigned access key</a>.
 
-  The <a facet for="menuitem">Hidden State</a>, <a facet for="menuitem">Disabled State</a>, and <a facet for="menuitem">Action</a> facets of the command are the same as the respective
+  The <a for="facet">Hidden State</a>, <a for="facet">Disabled State</a>, and <a for="facet">Action</a> facets of the command are the same as the respective
   facets of the first element in <a>tree order</a> that is a descendant of the parent of the
   <{legend}> element that defines a command but is not
   a descendant of the <{legend}> element and is neither a <code>label</code> nor a
@@ -888,30 +382,30 @@
 <h5 id="using-the-accesskey-attribute-to-define-a-command-on-other-elements">Using the <code>accesskey</code>
   attribute to define a command on other elements</h5>
 
-  An element that has an <a>assigned access key</a> <a for="menuitem">defines a command</a>.
+  An element that has an <a>assigned access key</a> <a for="facet">defines a command</a>.
 
-  If one of the earlier sections that define elements that <a for="menuitem" lt="command">define commands</a> define that this element defines a command,
+  If one of the earlier sections that define elements that <a for="facet" lt="command">define commands</a> define that this element defines a command,
   then that section applies to this element, and this section does not. Otherwise, this section
   applies to that element.
 
-  The <a facet for="menuitem">Label</a> of the command depends on the element. If
+  The <a for="facet">Label</a> of the command depends on the element. If
   the element is a <a>labeled control</a>, the {{Node/textContent}} of the first
   <{label}> element in <a>tree order</a> whose <a>labeled control</a> is the
-  element in question is the <a facet for="menuitem">Label</a> (in DOM terms, this is
+  element in question is the <a for="facet">Label</a> (in DOM terms, this is
   the string given by <code><var>element</var>.labels[0].textContent</code>). Otherwise,
   the <a>Label</a> is the {{Node/textContent}} of the element
   itself.
 
-  The <a facet for="menuitem">Access Key</a> of the command is the element's
+  The <a for="facet">Access Key</a> of the command is the element's
   <a>assigned access key</a>.
 
-  The <a facet for="menuitem">Hidden State</a> of the command is true (hidden)
+  The <a for="facet">Hidden State</a> of the command is true (hidden)
   if the element has a <{global/hidden}> attribute, and false otherwise.
 
-  The <a facet for="menuitem">Disabled State</a> of the command is true if
+  The <a for="facet">Disabled State</a> of the command is true if
   the element or one of its ancestors is <a>inert</a>, and false otherwise.
 
-  The <a facet for="menuitem">Action</a> of the command is to run the following
+  The <a for="facet">Action</a> of the command is to run the following
   steps:
 
   <ol>
