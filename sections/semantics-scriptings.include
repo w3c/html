@@ -1236,23 +1236,9 @@ o............A....e
     <dd>Where <a>script-supporting elements</a> are expected.</dd>
     <dd>As a child of a <{colgroup}> element that doesn't have a <code>span</code> attribute.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd>Either: <a>Metadata content</a>.</dd>
-    <dd>Or: <a>Flow content</a>.</dd>
-    <dd>Or: The content model of <code>ol</code> and <{ul}> elements.</dd>
-    <dd>Or: The content model of <{dl}> elements.</dd>
-    <dd>Or: The content model of <{figure}> elements.</dd>
-    <dd>Or: The content model of <{ruby}> elements.</dd>
-    <dd>Or: The content model of <{object}> elements.</dd>
-    <dd>Or: The content model of <code>video</code> and <{audio}> elements.</dd>
-    <dd>Or: The content model of <{table}> elements.</dd>
-    <dd>Or: The content model of <{colgroup}> elements.</dd>
-    <dd>Or: The content model of <{thead}>, <{tbody}>, and <{tfoot}> elements.</dd>
-    <dd>Or: The content model of <{tr}> elements.</dd>
-    <dd>Or: The content model of <{fieldset}> elements.</dd>
-    <dd>Or: The content model of <{select}> elements.</dd>
-    <dd>Or: The content model of <{details}> elements.</dd>
+    <dd><dfn for="template">Nothing</dfn> (for clarification, <a href="#template-example">see example</a>).</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>Neither tag is omissible</dd>
+    <dd>Neither tag is omissible.</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -1262,6 +1248,8 @@ o............A....e
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
+        [Exposed=Window,
+         HTMLConstructor]
         interface HTMLTemplateElement : HTMLElement {
           readonly attribute DocumentFragment content;
         };
@@ -1272,25 +1260,46 @@ o............A....e
   The <{template}> element is used to declare fragments of HTML that can be cloned and
   inserted in the document by script.
 
-  <p class="note">
-    Templates provide a method for declaring inert DOM subtrees and manipulating them to
-  instantiate document fragments with identical contents.
-  </p>
-
-  <p class="note">
-    When web pages dynamically alter the contents of their documents (e.g., in response to user
-  interaction or new data arriving from the server), it is common that they require fragments of
-  HTML which may require further modification before use, such as the insertion of values
-  appropriate for the usage context.
-  </p>
-
-  <p class="note">
-    The <{template}> element allows for the declaration of document fragments which are
-  unused by the document when loaded, but are parsed as HTML and are available at runtime for use by
-  the web page.
-  </p>
-
   In a rendering, the <{template}> element <a>represents</a> nothing.
+
+  <p>The <a>template contents</a> of a <{template}> element <a
+  href="#template-syntax">are not children of the element itself</a>.</p>
+
+  <p class="note">It is also possible, as a result of DOM manipulation, for a <{template}> element to contain {{Text}} nodes and element nodes; however, having any is a violation of the <{template}> element's content model, since its content model is defined as <a for="template">nothing</a>.</p>
+
+  <div class="example" id="template-example">
+
+   <p>For example, consider the following document:</p>
+
+   <!-- https://www.quora.com/Homework-Question-How-do-I-write-a-program-that-produces-the-following-output-1 -->
+
+   <pre highlight="html">
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+&lt;title>Homework&lt;/title>
+&lt;body>
+  &lt;template id="template">&lt;p>Smile!&lt;/p>&lt;/template>
+  &lt;script>
+   let num = 3;
+   const fragment = document.getElementById('template').content.cloneNode(true);
+   while (num-- > 1) {
+     fragment.firstChild.before(fragment.firstChild.cloneNode(true));
+     fragment.firstChild.textContent += fragment.lastChild.textContent;
+   }
+   document.body.appendChild(fragment);
+  &lt;/script>
+&lt;/html>
+</pre>
+
+   <p>The <{p}> element in the <{template}> is <em>not</em> a child of the
+   <{template}> in the DOM; it is a child of the {{DocumentFragment}} returned by the <{template}> element's <code>content</code> IDL
+   attribute.</p>
+
+   <p>If the script were to call <code>appendChild()</code> on the <{template}> element, that would add a child to the <{template}> element (as for any other element); however, doing so is a violation of the <{template}> element's content model.</p>
+
+  </div>
+
 
   <dl class="domintro">
 
@@ -1298,53 +1307,45 @@ o............A....e
 
     <dd>
 
-    Returns the contents of the <{template}>, which are stored in a
-    <code>DocumentFragment</code> associated with a different {{Document}} so as to avoid
-    the <{template}> contents interfering with the main {{Document}}. (For
-    example, this avoids form controls from being submitted, scripts from executing, and so
-    forth.)
+    <p>Returns the <a>template contents</a> (a {{DocumentFragment}}).</p>
 
-    </dd>
+   </dd>
 
   </dl>
 
-  Each <{template}> element has an associated <code>DocumentFragment</code> object that
-  is its <dfn>template contents</dfn>. When a <{template}> element is created, the user
-  agent must run the following steps to establish the <a>template contents</a>:
+  <p>Each <{template}> element has an associated {{DocumentFragment}} object that is its <dfn>template contents</dfn>. The <a>template contents</a> have <a href="#no-browsing-context">no conformance requirements</a>. When a <{template}> element is created, the user agent must run the following steps to establish the <a>template contents</a>:</p>
 
   <ol>
 
-    <li>Let <var>doc</var> be the <{template}> element's <a>node document</a>'s <a>appropriate template contents owner
-    document</a>.</li>
+   <li><p>Let <var>doc</var> be the <{template}> element's <a>node document</a>'s <a>appropriate template contents owner document</a>.</p></li>
 
-    <li>Create a <code>DocumentFragment</code> object whose <a>node document</a> is <var>doc</var>.</li>
+   <li><p>Create a {{DocumentFragment}} object whose <a>node document</a> is
+   <var>doc</var> and [=host-concept/host=] is the
+   <{template}> element.</p></li>
 
-    <li>Set the <{template}> element's <a>template contents</a> to the newly
-    created <code>DocumentFragment</code> object.</li>
+   <li><p>Set the <{template}> element's <a>template contents</a> to the newly
+   created {{DocumentFragment}} object.</p></li>
 
   </ol>
 
-  A <code>Document</code> <var>doc</var>'s <dfn>appropriate template contents owner
-  document</dfn> is the <code>Document</code> returned by the following algorithm:
+  <p>A {{Document}} <var>doc</var>'s <dfn>appropriate template contents owner document</dfn> is the {{Document}} returned by the following algorithm:</p>
 
   <ol>
 
     <li>
 
-    If <var>doc</var> is not a <code>Document</code> created by this algorithm, run
-    these substeps:
+    If <var>doc</var> is not a {{Document}} created by this algorithm, then:
 
     <ol>
 
       <li>
 
-      If <var>doc</var> does not yet have an <dfn>associated inert template document</dfn> then run
-      these substeps:
+      If <var>doc</var> does not yet have an <dfn>associated inert template document</dfn>, then:
 
       <ol>
 
-        <li>Let <var>new doc</var> be a new <code>Document</code> (that does not have a
-        <a>browsing context</a>). This is "a <code>Document</code> created by this algorithm"
+        <li>Let <var>new doc</var> be a new {{Document}} (that does not have a
+        <a>browsing context</a>). This is "a {{Document}} created by this algorithm"
         for the purposes of the step above.</li>
 
         <li>If <var>doc</var> is an <a>HTML document</a>, mark
@@ -1425,7 +1426,8 @@ o............A....e
     structure from markup.
 
     <pre highlight="html">
-      &lt;!DOCTYPE html&gt;
+      &lt;!DOCTYPE html>
+      &lt;html lang="en">
       &lt;title&gt;Cat data&lt;/title&gt;
       &lt;script&gt;
         // Data is hard-coded here, but could come from the server
