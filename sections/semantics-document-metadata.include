@@ -334,6 +334,7 @@
     <dd><code>type</code> — Hint for the type of the referenced resource</dd>
     <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dd><code>sizes</code> — Sizes of the icons (for <{link/rel}>="<code>icon</code>")</dd>
+    <dd><code>as</code> — Destination for a preload request (for <{link/rel}>="<code>preload</code>")</dd>
     <dd>
       Also, the <{link/title}> attribute has special semantics on this element:  Title of the
       link; alternative style sheet set name.
@@ -350,6 +351,7 @@
           [CEReactions] attribute DOMString? crossOrigin;
           [CEReactions] attribute DOMString rel;
           [CEReactions] attribute DOMString rev;
+          [CEReactions] attribute DOMString as;  // (default "")
           [CEReactions, SameObject, PutForwards=value] readonly attribute DOMTokenList relList;
           [CEReactions] attribute DOMString media;
           [CEReactions] attribute DOMString nonce;
@@ -501,6 +503,13 @@
 
   <!-- def <{link/as}> -->
 
+  The <dfn element-attr for="link"><code>as</code></dfn> attribute specifies the <a>potential destination</a> for a preload request for the resource given by the <code>href</code> attribute. It is an [=enumerated attribute=]. Each <a>potential destination</a> is a keyword for this attribute, mapping to a state of the same name. The attribute must be specified on <{link}> elements that have a <{link/rel}> attribute that contains the <{link/preload}> keyword, but must not be specified on <{link}> elements which do not. The processing model for how the <{link/as}> attribute is used is given in the steps to <a>obtain the resource</a>.
+
+  <p class="note">The attribute does not have a [=missing value default=] or [=invalid value default=], meaning that invalid or missing values for the attribute map to no state. This is accounted for in the processing
+  model.</p>
+
+  <hr>
+
   <!-- def <{link/scope}> -->
 
   <!-- def <{link/usecache}> -->
@@ -510,7 +519,6 @@
   <!-- def <{link/color}> -->
 
   The IDL attributes
-  <!-- <dfn attribute for="HTMLLinkElement"><code>as</code></dfn>, -->
   <dfn attribute for="HTMLLinkElement"><code>href</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>hreflang</code></dfn>,
   <!-- <dfn attribute for="HTMLLinkElement"><code>integrity</code></dfn>, -->
@@ -534,6 +542,10 @@
 
   The IDL attribute <dfn attribute for="HTMLLinkElement"><code>relList</code></dfn> must
   <a>reflect</a> the <{link/rel}> content attribute.
+
+  <!-- def {{HTMLLinkElement/as}} -->
+
+  <p>The <dfn attribute for="HTMLLinkElement"><code>as</code></dfn> IDL attribute must <a>reflect</a> the <{link/as}> content attribute, <a>limited to only known values</a>.
 
   <!-- def {{HTMLLinkElement/useCache}} -->
 
@@ -639,7 +651,11 @@
       <{link}> element's <{link/nonce}> content attribute.
   7. Set <var>request</var>'s <a>referrer policy</a> to the current state of the
       <{link}> element's <{link/referrerpolicy}> content attribute.
-  8. <a>Fetch</a> <var>request</var>.
+  8. If the <{link/rel}> attribute contains the <{link/preload}> keyword, then:
+    1. Let <var>as</var> be the current state of the <{link/as}> attribute.
+    2. If <var>as</var> is no state, then return.
+    3. Set <var>request</var>'s <a>destination</a> to the result of <a>translating<a> <var>as</var>.
+  9. <a>Fetch</a> <var>request</var>.
 
   User agents may opt to only try to obtain such resources when they are needed, instead of
   pro-actively fetching all the external resources that are not applied.
