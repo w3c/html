@@ -169,6 +169,8 @@
   associated with the resource to determine its language, not metadata included in the link to the
   resource.
 
+  The <dfn element-attr for="a,links"><code>as</code></dfn> attribute specifies the <a>destination</a> for a preload request for the resource given by the <code>href</code> attribute. If the attribute is present, the value must [=case-sensitively=] match one of the <a>destination keywords</a>. The default value is the empty string. The attribute may be omitted. The attribute must not be specified on <{link}> elements that do not have a <{links/rel}> attribute that contains the <{link/preload}> keyword. User agents must implement the processing model of the <{link/as}> attribute described in the Preload specification. [[!Preload]]
+
   The <dfn element-attr for="a,links"><code>type</code></dfn> attribute, if present, gives the
   <a>MIME type</a> of the linked resource. It is purely advisory. The value must be a
   <a>valid mime type</a>. User agents must not consider the <code>type</code> attribute authoritative — upon fetching the
@@ -1046,12 +1048,20 @@
       <td>Requires that the user agent not send an HTTP <a http-header><code>Referer</code></a> (sic) header if the user follows the hyperlink.</td>
     </tr>
 
-<tr>
+    <tr>
       <td><code>prefetch</code></td>
       <td><a>External Resource</a></td>
-      <td><a>External Resource</a></td>
+      <td><em>not allowed</em></td>
       <td class="yes"> Yes </td>
-      <td>Specifies that the target resource should be preemptively cached.</td>
+      <td>Specifies that the target resource should be preemptively cached and cache the target resource as it is likely to be required for a followup <a>navigation</a>.</td>
+    </tr>
+
+    <tr>
+      <td><code>preload</code></td>
+      <td><a>External Resource</a></td>
+      <td><em>not allowed</em></td>
+      <td class="yes"> Yes </td>
+      <td>Specifies that the user agent must preemptively <a>fetch</a> and cache the target resource for current <a>navigation</a> according to the <a>potential destination</a> given by the <{link/as}> attribute (and the <a>priority</a> associated with the <a>corresponding</a> <a>destination</a>).</td>
     </tr>
 
     <tr>
@@ -1500,6 +1510,14 @@
   <code highlight="html">&lt;a href="..." rel="noreferrer" target="_blank"></code> has the same
   behavior as
   <code highlight="html">&lt;a href="..." rel="noreferrer noopener" target="_blank"></code>.</p>
+
+<h5 id="link-type-preload">Link type "<dfn element-state for="link"><code>preload</code></dfn>"</h5>
+
+  The <{link/preload}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>. This keyword is <a>body-ok</a>.
+
+  The <{link/preload}> keyword indicates that the user agent must preemptively fetch and cache the specified resource according to the <a>potential destination</a> given by the <{link/as}> attribute (and the <a>priority</a> associated with the <a>corresponding</a> <a>destination</a>), as it is highly likely that the user will require this resource for current navigation. User agents must implement the processing model of the <{link/preload}> keyword described in the Preload specification. [[!Preload]]
+  
+  There is no default type for resources given by the <{link/preload}> keyword.
 
 <h5 id="link-type-search">Link type "<dfn element-state for="link"><code>search</code></dfn>"</h5>
 
