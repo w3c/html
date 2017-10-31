@@ -10,7 +10,7 @@ This is the repository for the [Working Draft of the HTML specification](https:/
 
 Contributions to the HTML specification are welcome. The documentation linked above will help you get started.
 
-If you have questions you can [file an issue](https://github.com/w3c/html/issues/), contact the <a href="mailto:team-html-editors@w3.org">HTML editors</a>, or join the [W3C IRC server](irc.w3.org) and join the #html channel.
+If you have any questions you can [file an issue](https://github.com/w3c/html/issues/), contact the <a href="mailto:team-html-editors@w3.org">HTML editors</a>, or join the [W3C IRC server](irc.w3.org) and join the #html channel.
 
 ## Old HTML repository
 
