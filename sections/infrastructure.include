@@ -3829,20 +3829,22 @@ INFRASTRUCTURE
   then, on getting, the IDL attribute must return the conforming value associated with the state
   the attribute is in (in its canonical case), if any, or the empty string if the attribute is in
   a state that has no associated keyword value or if the attribute is not in a defined state (e.g.,
-  the attribute is missing and there is no <i>missing value default</i>); and on setting, the
+  the attribute is missing and there is no <i>missing value default</i>). On setting, the
   content attribute must be set to the specified new value.
 
   If a reflecting IDL attribute is a nullable <code>DOMString</code> attribute whose content
   attribute is an <a>enumerated attribute</a>, then, on getting, if the corresponding content
   attribute is in its <i>missing value default</i> then the IDL attribute must return null,
   otherwise, the IDL attribute must return the conforming value associated with the state the
-  attribute is in (in its canonical case); and on setting, if the new value is null, the content
+  attribute is in (in its canonical case). On setting, if the new value is null, the content
   attribute must be removed, and otherwise, the content attribute must be set to the specified new
   value.
 
   If a reflecting IDL attribute is a <code>DOMString</code> or <a type><code>USVString</code></a>
   attribute but doesn't fall into any of the above categories, then the getting and setting must be
   done in a transparent, case-preserving manner.
+
+  If a reflecting IDL attribute is an <a>IDL enumeration</a> attribute, then, on getting, if the corresponding content attribute's value [=case-sensitively=] matches one of the enumerated values, then the IDL attribute must return the content attribute's value; otherwise it must return the content attribute's default value. On setting, the content attribute must be set to the specified new value.
 
   If a reflecting IDL attribute is a <code>boolean</code> attribute, then on getting the IDL
   attribute must return true if the content attribute is set, and false if it is absent. On
