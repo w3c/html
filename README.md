@@ -4,6 +4,7 @@
 
 This is the repository for the [Working Draft of the HTML specification](https://w3c.github.io/html/). This repository is managed by the [W3C Web Platform Working Group](https://www.w3.org/WebPlatform/WG/).
 
+* [Code of conduct](docs/conduct.md)
 * [Build documentation](docs/build-documentation.md)
 * [Editing documentation](docs/editing-documentation.md)
 * [Contributing documentation](docs/contributing-documentation.md)
