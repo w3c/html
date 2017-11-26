@@ -36,7 +36,8 @@ Tested on Windows 10.
     * Right click/open the context menu on the search box, and choose `Run as administrator`
     * Select `Yes` if a User Account Control (UAC) dialog opens
 3. Clone Bikeshed: `git clone https://github.com/tabatkins/bikeshed.git` or use a desktop client
-`Note:` if the path to the Bikeshed folder contains spaces, enclose the path in quotation marks.
+
+    `Note:` if the path to the Bikeshed folder contains spaces, enclose the path in quotation marks.
 
 ## Installing the multi-page script (optional)
 
