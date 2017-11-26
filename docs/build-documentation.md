@@ -26,10 +26,10 @@ Full installation information is available in the [Bikeshed documentation](https
 
 Tested on Windows 10.
 
-1. Install [Python 2.7](https://www.python.org/downloads/) (32bit version) in the default location.
-`Note:` Make sure you select the option to install the `system path environment variable` (it isn't selected by default).
+1. Install [Python 2.7.x](https://www.python.org/downloads/) (32bit version) in the default location.
+  `Note:` Make sure you select the option to install the `system path environment variable` (it isn't selected by default).
 2. In an elevated command prompt, run: setx /m PATH "%PATH%;C:\Python27;C:\Python27\Scripts"
-`Note:` to open an elevated command prompt:
+  `Note:` to open an elevated command prompt:
   * Type `Command prompt` into the Windows search
   * Right click/open the context menu on the search box, and choose `Run as administrator`
   * Select `Yes` if a User Account Control (UAC) dialog opens
