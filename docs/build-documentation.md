@@ -36,6 +36,7 @@ Tested on Windows 10.
     * Right click/open the context menu on the search box, and choose `Run as administrator`
     * Select `Yes` if a User Account Control (UAC) dialog opens
 3. Clone Bikeshed: `git clone https://github.com/tabatkins/bikeshed.git` or use a desktop client
+4 Run: $ python -m pip install --editable /path/to/cloned/bikeshed
 
     `Note:` if the path to the Bikeshed folder contains spaces, enclose the path in quotation marks.
 
@@ -44,7 +45,6 @@ Tested on Windows 10.
 1. Install [Node.JS](https://nodejs.org)
 2. Clone the [multi-page repo](https://github.com/adrianba/multipage)
 3. Open a command prompt from the multi-page repo folder and run: npm install
-
 
 ## Automatic builds
 
