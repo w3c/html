@@ -923,38 +923,35 @@
   If a <a>hyperlink</a> created by an <{a}> or <{area}> element has a <{links/ping}> attribute,
   and the user follows the hyperlink, and the value of the element's <{links/href}> attribute can be <a>parsed</a>
   relative to the element's <a>node document</a> without failure, then the user agent must take the <{links/ping}>
-  attribute's value, split that string on ASCII whitespace,
-  parse each resulting token relative to the element's node document,
-  then run these steps for each resulting URL record ping URL (ignoring tokens that fail to parse):
+  attribute's value, <a>split that string on ASCII whitespace</a>, parse each resulting token relative to the element's node document,
+  then run these steps for each <a>resulting URL record</a> ping URL (ignoring tokens that fail to parse):
 
-  * If ping URL's scheme is not an HTTP(S) scheme, then return.
+  * If <var>ping URL</var>'s <a>scheme</a> is not an <a>HTTP(S) scheme</a>, then return.
   * Optionally, return 
     (for example the user agent may ignore any or all ping URLs in accordance with the user's express preferences).
-  * Let <var>request</var> be a new request, whose URL is ping URL, method is post, body is ping,
-    client is the <a>environment settings object</a> of the document containing the <a>hyperlink</a> destination,
-    destination is the empty string, credentials mode is include, referrer is "no-referrer",
-    and whose use-URL-credentials flag is set.
-  * Let target URL be the <a>resulting URL string</a> obtained from <a>parsing</a> the value of the element's
+  * Let <var>request</var> be a new <a>request</a>, whose <a>URL</a> is <var>ping URL</var>, <a>method</a> is post, <a>body</a> is ping,
+    <a>client</a> is the <a>environment settings object</a> of the <a>document</a> containing the <a>hyperlink</a>, <a>destination</a> is the empty string, <a>credentials mode</a> is include, <a>referrer</a> is "no-referrer",
+    and whose <a>use-URL-credentials</a> flag is set.
+  * Let <var><target URL</var> be the <a>resulting URL string</a> obtained from <a>parsing</a> the value of the element's
     <{links/href}> attribute, and then:
 
     <dl class="switch">
-    <dt>If the URL of the document object containing the hyperlink being audited and the ping URL have the <a>same origin</a>
-    @@ this seems to be missing something</dt>
-    <dt>If the origins are different but the <a>HTTPS state</a> of the document containing the hyperlink being audited is 
+    <dt>If the <a>URL</a> of the <a>document</a> object containing the hyperlink being audited and the <var>ping URL</var> have the <a>same origin</a></dt>
+    <dt>Or if the origins are different but the <a>HTTPS state</a> of the <a>document</a> containing the hyperlink being audited is 
     "none"</dt>
-    <dd>request must include a ping-from header with the URL of the document containing the hyperlink as its value,
-     and a ping-to HTTP header with the target URL as its value.</dd>
+    <dd><var>request</var> must include a <a>ping-from</a> header with the <a>URL</a> of the document containing the hyperlink as its value,
+     and a <a>ping-to</a> HTTP header with the <var>target URL</var> as its value.</dd>
     <dt>Otherwise</dt> 
-    <dd><var>request</var> must must include a ping-to HTTP header with the target URL as its value. 
-    Note: <var>request</var> does not include a ping-from header.</dd>
+    <dd><var>request</var> must must include a <a>ping-to</a> HTTP header with <var>target URL</var> as its value. 
+    Note: <var>request</var> does not include a <a>ping-from</a> header.</dd>
     </dl>
     
-  * Fetch <var>request</var>.
+  * <a>Fetch</a> <var>request</var>.
 
   This may be done <a>in parallel</a> with the primary fetch, and is independent of the result of that fetch.
 
   User agents should allow the user to alter this behavior. 
-  For example, in conjunction with a setting that disables the sending of HTTP referer (sic) headers.
+  For example, in conjunction with a setting that disables the sending of HTTP <a>referer</a> (sic) headers.
   Based on the user's preferences, user agents may <a>ignore</a> the <{links/ping}> attribute completely,
   or selectively ignore URLs (for example third party URLs); this is explicitly accounted for in the steps above.
 
