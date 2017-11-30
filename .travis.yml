@@ -1,6 +1,6 @@
 language: python
 python:
-- '2.7'
+- '2.7.6'
 sudo: false
 branches:
   only:
@@ -15,12 +15,13 @@ install:
 - git clone --depth=500 --branch=master https://github.com/tabatkins/bikeshed.git ./bikeshed
 # Use stable copy of bikeshed
 - pushd ./bikeshed
-- git checkout 9260eac3642631ba07cbb9e9b2936efe928153e3
+- git checkout fbf1456a756299b3ff6d248d0857ec87f2e68cd7
 - popd
 - pip install --editable ./bikeshed
+# Use latest update for the build.
+- bikeshed update
 # Use cached copy of bikeshed data files to give consistent builds
-#- bikeshed update
-- cp -R .spec-data/* ./bikeshed/bikeshed/spec-data
+#- cp -R .spec-data/* ./bikeshed/bikeshed/spec-data
 script: 'bikeshed spec && ./.multipage-split.sh && ./.deploy-output.sh'
 env:
   global:
