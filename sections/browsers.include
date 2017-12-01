@@ -1,12 +1,8 @@
 <section>
 <!--
-████████  ████████   ███████  ██      ██  ██████  ████████ ████████   ██████
-██     ██ ██     ██ ██     ██ ██  ██  ██ ██    ██ ██       ██     ██ ██    ██
-██     ██ ██     ██ ██     ██ ██  ██  ██ ██       ██       ██     ██ ██
-████████  ████████  ██     ██ ██  ██  ██  ██████  ██████   ████████   ██████
-██     ██ ██   ██   ██     ██ ██  ██  ██       ██ ██       ██   ██         ██
-██     ██ ██    ██  ██     ██ ██  ██  ██ ██    ██ ██       ██    ██  ██    ██
-████████  ██     ██  ███████   ███  ███   ██████  ████████ ██     ██  ██████
+
+             BROWSERS
+
 -->
 
 <h2 id="browsers">Loading Web pages</h2>
@@ -1806,7 +1802,7 @@
   The <dfn>effective domain</dfn> of an [=concept/origin=] <var>origin</var> is computed as
   follows:
 
-  1. If <var>origin</var> is an <a>opaque origin</a>, then return <var>origin</var>.
+  1. If <var>origin</var> is an <a>opaque origin</a>, then return "<code>null</code>".
   2. If <var>origin</var>'s <a lt="origin domain">domain</a> is non-null, then return
       <var>origin</var>'s <a lt="origin domain">domain</a>.
   3. Return <var>origin</var>'s <a lt="origin host">host</a>.
@@ -1819,8 +1815,7 @@
       <dl class="switch">
         <dt><dfn lt="forces content into a unique origin"></dfn>If the {{Document}}'s
         <a>active sandboxing flag set</a> has its <a>sandboxed origin browsing context flag</a>
-        set</dt>
-        <dt>If the {{Document}} was generated from a <a scheme lt="data:"><code>data:</code> URL</a></dt>
+        set or the {{Document}} was generated from a <a scheme lt="data:"><code>data:</code> URL</a></dt>
         <dd>A unique <a>opaque origin</a> is assigned when the {{Document}} is created.</dd>
 
         <dt>If the {{Document}}'s [=url/URL=]'s [=url/scheme=] is a
@@ -2003,6 +1998,27 @@
     do the same thing) to access each other. (Can't be set in sandboxed <{iframe}>s.)
     </dd>
   </dl>
+  
+  A string <var>hostSuffixString</var> 
+  <dfn data-lt="is a registrable domain suffix of or is equal to|
+  is not a registrable domain suffix of and is not equal to">is a registrable domain suffix of, or is equal to</dfn> a 
+  <a data-lt="concept-host">host</a> <var>originalHost</var> if the following algorithm returns <code>true</code>:
+  
+  1. If <var>hostSuffixString</var> is the empty string, then return <code>false</code>.
+  1. Let <var>host</var> be the result of <span data-x="host parser">parsing</span> <var>hostSuffixString</var>.
+  1. If <var>host</var> is failure, then return <code>false</code>.
+  1. If <var>host</var> is <em>not</em> <span data-x="host equals">equal</span> to <var>originalHost</var>,
+      run these substeps:
+    1. If <var>host</var> or <var>originalHost</var> is not a <a data-lt="concept-domain">domain</a>, return <code>false</code>.
+         <p class="note">I.e exclude IPv4 and IPv6 addresses as <a data-lt="concept-host">hosts</a>.</p>
+    1. If <var>host</var>, prefixed by a U+002E FULL STOP (.), does not exactly match the end of <var>originalHost</var>,
+        return <code>false</code>.
+    1. If <var>host</var> matches a suffix in the Public Suffix List, or, if <var>host</var>,
+        prefixed by a U+002E FULL STOP (.), matches the end of a suffix in the Public Suffix List [[!PSL]],
+        return <code>false</code>.
+         <p>Suffixes must be compared after applying the <span>host parser</span> algorithm.</p>
+  1. Return <code>true</code>.
+
 
   The <dfn attribute for="Document"><code>domain</code></dfn> attribute's getter must run these
   steps:
@@ -2010,37 +2026,25 @@
   1. If this {{Document}} object does not have a <a>browsing context</a>, then return the empty
       string.
   2. Let <var>effectiveDomain</var> be this {{Document}}'s [=concept/origin=]'s
-     <a>effective domain</a>.
-  3. If <var>effectiveDomain</var> is an <a>opaque origin</a>, then return the empty string.
+      <a>effective domain</a>.
+  3. If <var>effectiveDomain</var> is <code>null</code> return the empty string.
   4. Return <var>effectiveDomain</var>, <a lt="host serializer">serialised</a>.
 
   The {{Document/domain}} attribute on setting must run these steps:
 
   1. If this {{Document}} object has no <a>browsing context</a>, throw a
       "{{SecurityError}}" {{DOMException}}.
-  2. If this {{Document}} object's <a>active sandboxing flag set</a> has its
+  1. If this {{Document}} object's <a>active sandboxing flag set</a> has its
       <a>sandboxed <code>document.domain</code> browsing context flag</a> set, then throw a
       "{{SecurityError}}" {{DOMException}}.
-  3. If the given value is the empty string, then throw a "{{SecurityError}}" {{DOMException}}.
-  4. Let <var>host</var> be the result of <a lt="host parser">parsing</a> the given value.
-  5. If <var>host</var> is failure, then throw a "{{SecurityError}}" {{DOMException}}.
-  6. Let <var>effectiveDomain</var> be this {{Document}} object's [=concept/origin=]'s
-      <a>effective domain</a>.
-  7. If <var>host</var> is not <a lt="host equals">equal</a> to <var>effectiveDomain</var>, then run
-      these substeps:
-      1. If <var>host</var> or <var>effectiveDomain</var> is not a <a for="url">domain</a>, then throw
-          a "{{SecurityError}}" {{DOMException}}.
-
-          <p class="note">This is meant to exclude <a lt="origin hosts">hosts</a> that are an
-          <a lt="ipv4">IPv4 address</a> or an <a lt="ipv6">IPv6 address</a>.
-      2. If <var>host</var>, prefixed by a U+002E FULL STOP (.), does not exactly match
-          the end of <var>effectiveDomain</var>, then throw a "{{SecurityError}}" {{DOMException}}.
-      3. If <var>host</var> matches a suffix in the Public Suffix List, or, if <var>host</var>,
-          prefixed by a U+002E FULL STOP (.), matches the end of a suffix in the Public Suffix List,
-          then throw a "{{SecurityError}}" {{DOMException}}. [[!PSL]]
-
-          Suffixes must be compared after applying the <a>host parser</a> algorithm. [[!URL]]
-  8. Set <var>origin</var>'s <a lt="origin domain">domain</a> to <var>host</var>.
+  1. Let <var>effectiveDomain</var> be this <code>Document</code>'s <a>origin</a>'s 
+      <a data-lt="concept-origin-effective-domain">effective domain</span>.
+  1. If <var>effectiveDomain</var> is null, then throw a "{{SecurityError}}" {{DOMException}}.
+  1. If the given value <span data-x="is a registrable domain suffix of or is equal to">is not
+      a registrable domain suffix of and is not equal to</span> <var>effectiveDomain</var>
+      throw a "{{SecurityError}}" {{DOMException}}.
+  1. Set <var>origin</var>'s <a lt="origin domain">domain</a> to to the result of <a data-lt="host parser">parsing</span>
+      the given value.</p>.
 
   <p class="note">The {{Document/domain|document.domain}} attribute is used to enable pages on
   different hosts of a domain to access each others' DOMs.</p>
