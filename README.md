@@ -4,6 +4,8 @@
 
 This is the repository for the [Working Draft of the HTML specification](https://w3c.github.io/html/). This repository is managed by the [W3C Web Platform Working Group](https://www.w3.org/WebPlatform/WG/).
 
+The proposed timeline for HTML5.3 is noted in issue #1076
+
 * [Code of conduct](docs/conduct.md)
 * [Build documentation](docs/build-documentation.md)
 * [Editing documentation](docs/editing-documentation.md)
