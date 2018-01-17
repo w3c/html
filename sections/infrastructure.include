@@ -1047,7 +1047,7 @@ INFRASTRUCTURE
   :: This specification uses the following features defined in the File API specification:
       [[!FILEAPI]]
 
-      * {{Blob}} interface and its <a>type</a> attribute
+      * {{Blob}} interface and its {{Blob/type}} attribute
       * {{File}} interface and its <a>name</a> and <dfn>lastModified</dfn> attributes
       * {{FileList}} interface
       * The concept of a {{Blob}}'s <a>snapshot state</a>
@@ -1727,10 +1727,6 @@ INFRASTRUCTURE
   code point for code point, except that the characters in the range U+0041 to U+005A (i.e., LATIN
   CAPITAL LETTER A to LATIN CAPITAL LETTER Z) and the corresponding characters in the range U+0061
   to U+007A (i.e., LATIN SMALL LETTER A to LATIN SMALL LETTER Z) are considered to also match.
-
-  Comparing two strings in a <dfn export>compatibility caseless</dfn> manner means using the Unicode
-  <i>compatibility caseless match</i> operation to compare the two strings, with no
-  language-specific tailorings. [[!UNICODE]]
 
   Except where otherwise stated, string comparisons must be performed in a <a>case-sensitive</A>
   manner.
@@ -2727,7 +2723,7 @@ INFRASTRUCTURE
         For example, the Roman Emperor Nero was born on the 15th of December 37
         in the Julian Calendar, which is the 13th of December 37 in the <a>proleptic Gregorian calendar</a>.
     * The time and time-zone offset components are not optional.
-    * Dates before the year one or after the year 9999 in teh Gregorian calendar
+    * Dates before the year one or after the year 9999 in the Gregorian calendar
         cannot be represented as a datetime in this version of HTML.
     * Time-zone offsets for a place may vary, for example due to daylight savings time.
   </div>
@@ -3301,10 +3297,8 @@ INFRASTRUCTURE
       these steps.
   2. Let <var>s</var> be the string from the character immediately after the first U+0023 NUMBER
       SIGN character in the string being parsed up to the end of that string.
-  3. Return the first element of type <var>type</var> in <a>tree order</a> in the subtree rooted
-      at <var>scope</var> that has an <{global/id}> attribute whose value is a
-      <a>case-sensitive</a> match for <var>s</var> or a <code>name</code> attribute whose value is
-      a <a>compatibility caseless</a> match for <var>s</var>.
+  3. Return the first element of type <var>type</var> in <a>tree order</a> that has an
+      <{global/id}> attribute or a <code>name</code> attribute whose value is <var>s</var>.
 
 <h4 id="mq">Media queries</h4>
 
@@ -3319,8 +3313,33 @@ INFRASTRUCTURE
 
 <h4 id="urls-terminology">Terminology</h4>
 
-  A [=url/URL=] is a <dfn export>valid URL</dfn> if it conforms to the authoring conformance
-  requirements in the WHATWG URL specification. [[!URL]]
+  A <dfn export>valid URL</dfn> is a string that conforms to the
+  <a data-lt="valid url string">authoring requirements for a valid url string</a>. [[!URL]]
+
+  <div class="note">
+  Typically, this means an absolute URL of the form
+  <code><var>scheme</var>://<var>host(port)</var>/<var>path</var></code>
+  or a relative URL which is a <var>path</var> with optional fragment and query sections,
+  but this depends on the <var>scheme</var> used.
+
+  A <var>host(port)</var> is typically a domain or IP address, otionally followed by ":" and a number.
+  Not all URL schemes require or even allow a host
+
+  A <var>path</var> is typically a series of one or more unicode strings separated by "/" characters.
+
+  The following are all valid URLs:
+
+  <ul class="example">
+  <li><samp>this</samp> (relative URL)</li>
+  <li><samp>that/over#there</samp> (relative URL with fragment)</li>
+  <li><samp>https://example.com:8899/some/thing.there?perhaps</samp> (absollute https: URL)</li>
+  <li><samp>irc://irc.w3.org/#html</samp> (absolute irc: url)</li>
+  <li><samp>data:text/html;charset=utf-8;base64,PCFET0NUWVBFIGh0bWw+DQo8dGl0bGU+aGVsbG88L3RpdGxlPg==</samp>
+  (a data: URL)</li>
+  <li><samp>mailto:user@</samp> (a mailto: URL)</li>
+  <li>The empty string</li>
+  </ul>
+  </div>
 
   A string is a <dfn export>valid non-empty URL</dfn> if it is a <a>valid URL</a> but it is not
   the empty string.
@@ -3844,7 +3863,11 @@ INFRASTRUCTURE
   attribute but doesn't fall into any of the above categories, then the getting and setting must be
   done in a transparent, case-preserving manner.
 
-  If a reflecting IDL attribute is an <a>IDL enumeration</a> attribute, then, on getting, if the corresponding content attribute's value [=case-sensitively=] matches one of the enumerated values, then the IDL attribute must return the content attribute's value; otherwise it must return the content attribute's default value. On setting, the content attribute must be set to the specified new value.
+  If a reflecting IDL attribute is an <a>enumeration</a> attribute, then, on getting, if the
+  corresponding content attribute's value [=case-sensitively=] matches one of the enumerated values,
+  then the IDL attribute must return the content attribute's value; otherwise it must return the
+  content attribute's default value. On setting, the content attribute must be set to the
+  specified new value.
 
   If a reflecting IDL attribute is a <code>boolean</code> attribute, then on getting the IDL
   attribute must return true if the content attribute is set, and false if it is absent. On
@@ -4028,14 +4051,10 @@ INFRASTRUCTURE
   from this {{HTMLAllCollection}} given <var>name</var>.
 
   The <dfn method for="HTMLAllCollection"><code>item(<var>nameOrIndex</var>)</code></dfn> method
-  (and the <code>legacycaller</code> behavior) must act according to the following algorithm:
+   must perform the following steps:
 
   1. If <var>nameOrIndex</var> was not provided, return null.
-  2. If <var>nameOrIndex</var>, <a>converted</a> to a JavaScript string value, is an
-      <a>array index property name</a>, return the result of
-      <a lt="get all-indexed">getting the "all"-indexed element</a> from this {{HTMLAllCollection}}
-      given the number represented by <var>nameOrIndex</var>.
-  3. Return the result of <a lt="get all-named">getting the "all"-named element or elements</a> from
+  2. Return the result of <a lt="get all-named">getting the "all"-named element or elements</a> from
       this {{HTMLAllCollection}} given <var>nameOrIndex</var>.
 
   The following elements are considered <dfn>"all"-named elements</dfn>: <{a}>, <{applet}>,
@@ -4439,9 +4458,9 @@ INFRASTRUCTURE
   if they implement only interfaces decorated with the
   <dfn export dfn-type="extended-attribute" lt="Serializable"><code>[Serializable]</code></dfn>
   IDL <a>extended attribute</a>. Such interfaces must also define the following algorithms:
-  
+
   : <dfn export>serialization steps</dfn>, taking a <a>platform object</a>
-    <var>value</var>, a <a>Record</a> <var>serialized</var>, and a boolean
+    <var>value</var>, a <a for="ecma">Record</a> <var>serialized</var>, and a boolean
     <var>forStorage</var>
   :: A set of steps that serializes the data in <var>value</var> into fields of
      <var>serialized</var>. The resulting data serialized into <var>serialized</var> must be
@@ -4456,7 +4475,7 @@ INFRASTRUCTURE
      The introduction of these steps should omit mention of the <var>forStorage</var> argument if
      it is not relevant to the algorithm.
 
-  : <dfn export>deserialization steps</dfn>, taking a <a>Record</a>
+  : <dfn export>deserialization steps</dfn>, taking a <a for="ecma">Record</a>
     <var>serialized</var> and a <a>platform object</a> <var>value</var>
   :: A set of steps that deserializes the data in <var>serialized</var>, using it to set up
      <var>value</var> as appropriate. <var>value</var> will be a newly-created instance of the
@@ -4495,19 +4514,19 @@ INFRASTRUCTURE
 
     : <a>serialization steps</a>
     ::
-         1. Set <var>serialized</var>.[[<a>Name</a>]] to <var>value</var>'s associated name value.
+         1. Set <var>serialized</var>.[[<span>Name</span>]] to <var>value</var>'s associated name value.
 
          2. Let <var>serializedBestFriend</var> be the <a>sub-serialization</a> of
             <var>value</var>'s associated best friend value.
 
-         3. Set <var>serialized</var>.[[<a>BestFriend</a>]] to <var>serializedBestFriend</var>.
+         3. Set <var>serialized</var>.[[<span>BestFriend</span>]] to <var>serializedBestFriend</var>.
 
     : <a>deserialization steps</a>
     ::
-         1. Set <var>value</var>'s associated name value to <var>serialized</var>.[[<a>Name</a>]].</li>
+         1. Set <var>value</var>'s associated name value to <var>serialized</var>.[[<span>Name</span>]].</li>
 
          2. Let <var>deserializedBestFriend</var> be the <a>sub-deserialization</a>
-            of <var>serialized</var>.[[<a>BestFriend</a>]].
+            of <var>serialized</var>.[[<span>BestFriend</span>]].
 
          3. Set <var>value</var>'s associated best friend value to <var>deserializedBestFriend</var>.
   </div>
@@ -4537,14 +4556,14 @@ INFRASTRUCTURE
   IDL <a>extended attribute</a>. Such interfaces must also define the following algorithms:
 
   : <dfn export>transfer steps</dfn>, taking a <a>platform object</a>
-    <var>value</var> and a <a>Record</a> <var>dataHolder</var>
+    <var>value</var> and a <a for="ecma">Record</a> <var>dataHolder</var>
   :: A set of steps that transfers the data in <var>value</var> into fields of
      <var>dataHolder</var>. The resulting data held in <var>dataHolder</var> must be
      independent of any <a>JavaScript Realm</a>.
 
      These steps may throw an exception if transferral is not possible.
 
-  : <dfn export>transfer-receiving steps</dfn>, taking a <a>Record</a>
+  : <dfn export>transfer-receiving steps</dfn>, taking a <a for="ecma">Record</a>
     <var>dataHolder</var> and a <a>platform object</a> <var>value</var>
   :: A set of steps that receives the data in <var>dataHolder</var>, using it to set up
      <var>value</var> as appropriate. <var>value</var> will be a newly-created instance of the
@@ -4565,18 +4584,18 @@ INFRASTRUCTURE
   the original or mixed-in-to interface.
 
   <a>Platform objects</a> that are <a>transferable objects</a> have a
-  <dfn export dfn-for="platform object" dfn-type="attribute">Detached</dfn> internal slot.
+  <dfn export dfn-for="platform object" dfn-type="attribute" id='detached'>[[<span>Detached</span>]]</dfn> internal slot.
   This is used to ensure that once a platform object has been transferred, it cannot be transferred again.
 
   Objects defined in the JavaScript specification are handled by the
-  <a>StructuredSerializeWithTransfer</a> abstract operation directly.
+  [$StructuredSerializeWithTransfer$] abstract operation directly.
 
   <h4 id="section-structuredserializeinternal"><dfn>StructuredSerializeInternal</dfn>
   ( <var>value</var>, <var>forStorage</var> [ , <var>memory</var> ] )</h4>
 
   The <a>StructuredSerializeInternal</a> abstract operation takes as input a JavaScript
   value <var>value</var> and serializes it to a <a>Realm</a>-independent form, represented
-  here as a <a>Record</a>. This serialized form has all the information necessary to later
+  here as a <a for="ecma">Record</a>. This serialized form has all the information necessary to later
   deserialize into a new JavaScript value in a different Realm.
 
   This process can throw an exception, for example when trying to serialize un-serializable
@@ -4596,7 +4615,7 @@ INFRASTRUCTURE
      String, or Number, then return { \[[Type]]: "primitive", \[[Value]]: <var>value</var> }.
 
   5. If <a for="ecma">Type</a>(<var>value</var>) is Symbol, then throw a
-     <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+     "{{DataCloneError}}" <code>DOMException</code>.
 
   6. Let <var>serialized</var> be an uninitialized value.
 
@@ -4624,7 +4643,7 @@ INFRASTRUCTURE
       2. If ! <a>IsSharedArrayBuffer</a>(<var>value</var>) is true, then:
 
          1. If <var>forStorage</var> is true, then throw a
-            <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+            "{{DataCloneError}}" <code>DOMException</code>.
 
          2. Set <var>serialized</var> to { \[[Type]]: "SharedArrayBuffer", \[[ArrayBufferData]]:
             <var>value</var>.\[[ArrayBufferData]], \[[ArrayBufferByteLength]]: <var>size</var>,
@@ -4633,7 +4652,7 @@ INFRASTRUCTURE
       3. Otherwise:
 
          1. If ! <a>IsDetachedBuffer</a>(<var>value</var>) is true, then throw a
-            <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+            "{{DataCloneError}}" <code>DOMException</code>.
 
          2. Let <var>dataCopy</var> be ? <a>CreateByteDataBlock</a>(<var>size</var>).
 
@@ -4673,13 +4692,13 @@ INFRASTRUCTURE
 
   14. Otherwise, if <var>value</var> has \[[MapData]] internal slot, then:
 
-      1. Set <var>serialized</var> to { \[[Type]]: "Map", \[[MapData]]: a new empty <a>List</a> }.
+      1. Set <var>serialized</var> to { \[[Type]]: "Map", \[[MapData]]: a new empty <a for="ecma">List</a> }.
 
       2. Set <var>deep</var> to true.
 
   15. Otherwise, if <var>value</var> has \[[SetData]] internal slot, then:
 
-      1. Set <var>serialized</var> to { \[[Type]]: "Set", \[[SetData]]: a new empty <a>List</a> }.
+      1. Set <var>serialized</var> to { \[[Type]]: "Set", \[[SetData]]: a new empty <a for="ecma">List</a> }.
 
       2. Set <var>deep</var> to true.
 
@@ -4691,14 +4710,14 @@ INFRASTRUCTURE
       2. Let <var>valueLen</var> be <var>valueLenDescriptor</var>.\[[Value]].
 
       3. Set <var>serialized</var> to { \[[Type]]: "Array", \[[Length]]: <var>valueLen</var>,
-         \[[Properties]]: a new empty <a>List</a> }.
+         \[[Properties]]: a new empty <a for="ecma">List</a> }.
 
       4. Set <var>deep</var> to true.
 
   17. Otherwise, if <var>value</var> is a <a>platform object</a> that is a <a>serializable object</a>:
 
-      1. If <var>value</var> has a <a>\[[Detached]]</a> internal slot whose value is true,
-         then throw a <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+      1. If <var>value</var> has a <a href="#detached">[[<span>Detached</span>]]</a> internal slot whose value is true,
+         then throw a "{{DataCloneError}}" <code>DOMException</code>.
 
       2. Let <var>typeString</var> be the identifier of the <a>primary interface</a> of
          <var>value</var>.
@@ -4708,46 +4727,46 @@ INFRASTRUCTURE
       4. Set <var>deep</var> to true.
 
   18. Otherwise, if <var>value</var> is a <a>platform object</a>, then throw a
-      <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+      "{{DataCloneError}}" <code>DOMException</code>.
 
   19. Otherwise, if <a>IsCallable</a>(<var>value</var>) is true, then throw a
-      <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+      "{{DataCloneError}}" <code>DOMException</code>.
 
   20. Otherwise, if <var>value</var> has any internal slot other than \[[Prototype]] or
-      [[Extensible]], then throw a <a>"<code>DataCloneError</code>"</a>
+      [[Extensible]], then throw a "{{DataCloneError}}"
       <code>DOMException</code>.
 
       <p class="example">For instance, a \[[PromiseState]] or \[[WeakMapData]] internal slot.</p>
 
   21. Otherwise, if <var>value</var> is an exotic object, then throw a
-      <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+      "{{DataCloneError}}" <code>DOMException</code>.
 
       <p class="example">For instance, a proxy object.</p>
 
   22. Otherwise:
 
-      1. Set <var>serialized</var> to { \[[Type]]: "Object", \[[Properties]]: a new empty <a>List</a> }.
+      1. Set <var>serialized</var> to { \[[Type]]: "Object", \[[Properties]]: a new empty <a for="ecma">List</a> }.
 
       2. Set <var>deep</var> to true.
 
-  23. <a>Set</a> <var>memory</var>[<var>value</var>] to <var>serialized</var>.
+  23. <a for="/">Set</a> <var>memory</var>[<var>value</var>] to <var>serialized</var>.
 
   24. If <var>deep</var> is true, then:
 
       1. If <var>value</var> has a \[[MapData]] internal slot, then:
 
-         1. Let <var>copiedList</var> be a new empty <a>List</a>.
+         1. Let <var>copiedList</var> be a new empty <a for="ecma">List</a>.
 
-         2. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
+         2. <a>For each</a> <a for="ecma">Record</a> { \[[Key]], \[[Value]] }
             <var>entry</var> of <var>value</var>.\[[MapData]]:
 
-            1. Let <var>copiedEntry</var> be a new <a>Record</a> { \[[Key]]:
+            1. Let <var>copiedEntry</var> be a new <a for="ecma">Record</a> { \[[Key]]:
                 <var>entry</var>.\[[Key]], \[[Value]]: <var>entry</var>.\[[Value]] }.
 
             2. If <var>copiedEntry</var>.\[[Key]] is not the special value <i>empty</i>, <a>append</a>
                 <var>copiedEntry</var> to <var>copiedList</var>.
 
-         3. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
+         3. <a>For each</a> <a for="ecma">Record</a> { \[[Key]], \[[Value]] }
             <var>entry</var> of <var>copiedList</var>:
 
             1. Let <var>serializedKey</var> be ?
@@ -4763,7 +4782,7 @@ INFRASTRUCTURE
 
      2. Otherwise, if <var>value</var> has a \[[SetData]] internal slot, then:
 
-        1. Let <var>copiedList</var> be a new empty <a>List</a>.
+        1. Let <var>copiedList</var> be a new empty <a for="ecma">List</a>.
 
         2. <a>For each</a> <var>entry</var> of <var>value</var>.\[[SetData]]:
 
@@ -4792,7 +4811,7 @@ INFRASTRUCTURE
 
      4. Otherwise:
 
-        1. Let <var>enumerableKeys</var> be a new empty <a>List</a>.
+        1. Let <var>enumerableKeys</var> be a new empty <a for="ecma">List</a>.
 
         2. For each <var>key</var> in ! <var>value</var>.\[[OwnPropertyKeys]]():
 
@@ -4857,10 +4876,10 @@ o.myself = o;</pre>
 
   1. Return ? <a>StructuredSerializeInternal</a>(<var>value</var>, true).
 
-  <h4 id="section-structureddeserialize"><dfn export>StructuredDeserialize</dfn> ( <var>serialized</var>,
+  <h4 id="section-structureddeserialize"><dfn lt="StructuredDeserialize|deserialized" export>StructuredDeserialize</dfn> ( <var>serialized</var>,
   <var>targetRealm</var> [ , <var>memory</var> ] )</h4>
 
-  The <a>StructuredDeserialize</a> abstract operation takes as input a <a>Record</a>
+  The <a>StructuredDeserialize</a> abstract operation takes as input a <a for="ecma">Record</a>
   <var>serialized</var>, which was previously produced by <a>StructuredSerialize</a> or
   <a>StructuredSerializeForStorage</a>, and deserializes it into a new JavaScript value,
   created in <var>targetRealm</var>.
@@ -4903,7 +4922,7 @@ o.myself = o;</pre>
         1. Let <var>interfaceName</var> be <var>serialized</var>.\[[Type]].
 
         2. If the interface identified by <var>interfaceName</var> is not exposed in
-            <var>targetRealm</var>, then throw a <a>"<code>DataCloneError</code>"</a>
+            <var>targetRealm</var>, then throw a "{{DataCloneError}}"
             <code>DOMException</code>.
 
         3. Set <var>value</var> to a new instance of the interface identified by
@@ -4942,7 +4961,7 @@ o.myself = o;</pre>
 
       1. If <var>targetRealm</var>'s corresponding <span>agent cluster</span> is not
          <var>serialized</var>.\[[AgentCluster]], then then throw a
-         <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+         "{{DataCloneError}}" <code>DOMException</code>.
 
       2. Otherwise, set <var>value</var> to a new SharedArrayBuffer object in
          <var>targetRealm</var> whose \[[ArrayBufferData]] internal slot value is
@@ -4954,7 +4973,7 @@ o.myself = o;</pre>
       is <var>serialized</var>.\[[ArrayBufferData]], and whose \[[ArrayBufferByteLength]] internal slot
       value is <var>serialized</var>.\[[ArrayBufferByteLength]].
 
-      If this throws an exception, then throw a <a>"<code>DataCloneError</code>"</a>
+      If this throws an exception, then throw a "{{DataCloneError}}"
       <code>DOMException</code>.
 
       <p class="note">This step might throw an exception if there is not enough memory available to
@@ -4983,14 +5002,14 @@ o.myself = o;</pre>
   15. Otherwise, if <var>serialized</var>.\[[Type]] is "Map", then:
 
       1. Set <var>value</var> to a new Map object in <var>targetRealm</var> whose \[[MapData]]
-         internal slot value is a new empty <a>List</a>.
+         internal slot value is a new empty <a for="ecma">List</a>.
 
       2. Set <var>deep</var> to true.
 
   16. Otherwise, if <var>serialized</var>.\[[Type]] is "Set", then:
 
       1. Set <var>value</var> to a new Set object in <var>targetRealm</var> whose \[[SetData]]
-         internal slot value is a new empty <a>List</a>.
+         internal slot value is a new empty <a for="ecma">List</a>.
 
       2. Set <var>deep</var> to true.
 
@@ -5015,7 +5034,7 @@ o.myself = o;</pre>
       1. Let <var>interfaceName</var> be <var>serialized</var>.\[[Type]].
 
       2. If the interface identified by <var>interfaceName</var> is not exposed in
-         <var>targetRealm</var>, then throw a <a>"<code>DataCloneError</code>"</a>
+         <var>targetRealm</var>, then throw a "{{DataCloneError}}"
          <code>DOMException</code>.
 
       3. Set <var>value</var> to a new instance of the interface identified by
@@ -5023,13 +5042,13 @@ o.myself = o;</pre>
 
       4. Set <var>deep</var> to true.
 
-  20. <a>Set</a> <var>memory</var>[<var>serialized</var>] to <var>value</var>.
+  20. <a for="/">Set</a> <var>memory</var>[<var>serialized</var>] to <var>value</var>.
 
   21. If <var>deep</var> is true, then:
 
       1. If <var>serialized</var>.\[[Type]] is "Map", then:
 
-         1. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
+         1. <a>For each</a> <a for="ecma">Record</a> { \[[Key]], \[[Value]] }
             <var>entry</var> of <var>serialized</var>.\[[MapData]]:
 
             1. Let <var>deserializedKey</var> be ?
@@ -5056,7 +5075,7 @@ o.myself = o;</pre>
 
       3. Otherwise, if <var>serialized</var>.\[[Type]] is "Array" or "Object", then:
 
-         1. <a>For each</a> <a>Record</a> { \[[Key]], \[[Value]] }
+         1. <a>For each</a> <a for="ecma">Record</a> { \[[Key]], \[[Value]] }
             <var>entry</var> of <var>serialized</var>.\[[Properties]]:
 
             1. Let <var>deserializedValue</var> be ?
@@ -5075,7 +5094,7 @@ o.myself = o;</pre>
 
             The <a>deserialization steps</a> may need to perform a <dfn export>sub-deserialization</dfn>.
             This is an operation which takes as input a
-            previously-serialized <a>Record</a> <var>subSerialized</var>, and returns
+            previously-serialized <a for="ecma">Record</a> <var>subSerialized</var>, and returns
             <a>StructuredDeserialize</a>(<var>subSerialized</var>, <var>targetRealm</var>,
             <var>memory</var>). (In other words, a <a>sub-deserialization</a> is a specialization
             of <a>StructuredDeserialize</a> to be consistent within this invocation.)
@@ -5095,26 +5114,26 @@ o.myself = o;</pre>
   2. <a>For each</a> <var>transferable</var> of <var>transferList</var>:
 
      1. If <var>transferable</var> has neither an \[[ArrayBufferData]] internal slot nor a
-        <a>\[[Detached]]</a> internal slot, then throw a
-        <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+        <a href="#detached">[[<span>Detached</span>]]</a> internal slot, then throw a
+        "{{DataCloneError}}" <code>DOMException</code>.
 
      2. If <var>transferable</var> has an \[[ArrayBufferData]] internal slot and either !
         <a>IsSharedArrayBuffer</a>(<var>transferable</var>) is true or !
         <a>IsDetachedBuffer</a>(<var>transferable</var>) is true, then throw a
-        <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+        "{{DataCloneError}}" <code>DOMException</code>.
 
-     3. If <var>transferable</var> has a <a>\[[Detached]]</a> internal slot and
-        <var>transferable</var>.<a>\[[Detached]]</a> is true, then throw a
-        <a>"<code>DataCloneError</code>"</a> <code>DOMException</code>.
+     3. If <var>transferable</var> has a <a href="#detached">[[<span>Detached</span>]]</a> internal slot and
+        <var>transferable</var>.<a href="#detached">[[<span>Detached</span>]]</a> is true, then throw a
+        "{{DataCloneError}}" <code>DOMException</code>.
 
      4. Let <var>placeholder</var> be a user-agent-defined placeholder object.
 
-     5. <a>Set</a> <var>memory</var>[<var>transferable</var>] to <var>placeholder</var>.
+     5. <a for="/">Set</a> <var>memory</var>[<var>transferable</var>] to <var>placeholder</var>.
 
   3. Let <var>serialized</var> be ? <a>StructuredSerializeInternal</a>(<var>value</var>,
      false, <var>memory</var>).
 
-  4. Let <var>transferDataHolders</var> be a new empty <a>List</a>.
+  4. Let <var>transferDataHolders</var> be a new empty <a for="ecma">List</a>.
 
   5. <a>For each</a> <var>transferable</var> of <var>transferList</var>:
 
@@ -5144,7 +5163,7 @@ o.myself = o;</pre>
         4. Perform the appropriate <a>transfer steps</a> for the interface identified by
             <var>interfaceName</var>, given <var>transferable</var> and <var>dataHolder</var>.
 
-        5. Set <var>transferable</var>.<a>\[[Detached]]</a> to true.
+        5. Set <var>transferable</var>.<a href="#detached">[[<span>Detached</span>]]</a> to true.
 
      5. Within <var>serialized</var>, replace all instances of <var>placeholder</var> with
         <var>dataHolder</var>.
@@ -5154,8 +5173,7 @@ o.myself = o;</pre>
   6. Return { \[[Serialized]]: <var>serialized</var>, \[[TransferDataHolders]]:
      <var>transferDataHolders</var> }.
 
-  <h4 id="section-structureddeserializewithtransfer">
-  <dfn export dfn-type="abstract-op">StructuredDeserializeWithTransfer</dfn> (
+  <h4 id="section-structureddeserializewithtransfer"><dfn export dfn-type="abstract-op">StructuredDeserializeWithTransfer</dfn> (
   <var>serializeWithTransferResult</var>, <var>targetRealm</var> )</h4>
 
   1. Let <var>memory</var> be an empty <a>map</a>.</p>
@@ -5168,7 +5186,7 @@ o.myself = o;</pre>
      <a>StructuredDeserialize</a>(<var>serializeWithTransferResult</var>.\[[Serialized]],
      <var>targetRealm</var>, <var>memory</var>).
 
-  3. Let <var>transferredValues</var> be a new empty <a>List</a>.
+  3. Let <var>transferredValues</var> be a new empty <a for="ecma">List</a>.
 
   4. <a>For each</a> <var>transferDataHolder</var> of
      <var>serializeWithTransferResult</var>.\[[TransferDataHolders]]:
@@ -5184,8 +5202,8 @@ o.myself = o;</pre>
   Other specifications may use the abstract operations defined here. The following provides
   some guidance on when each abstract operation is typically useful, with examples.
 
-  : <a>StructuredSerializeWithTransfer</a>
-  : <a>StructuredDeserializeWithTransfer</a>
+  : [$StructuredSerializeWithTransfer$]
+  : [$StructuredDeserializeWithTransfer$]
   :: Cloning a value to another <a>JavaScript Realm</a>, with a transfer list, but where the
      target Realm is not known ahead of time. In this case the serialization step can be performed
      immediately, with the deserialization step delayed until the target Realm becomes known.
@@ -5237,14 +5255,14 @@ o.myself = o;</pre>
   Call sites that are not invoked as a result of author code synchronously calling into a user
   agent method must take care to properly <a>prepare to run script</a> and
   <a>prepare to run a callback</a> before invoking <a>StructuredSerialize</a>,
-  <a>StructuredSerializeForStorage</a>, or <a>StructuredSerializeWithTransfer</a>
+  <a>StructuredSerializeForStorage</a>, or [$StructuredSerializeWithTransfer$]
   abstract operations, if they are being performed on arbitrary objects. This is necessary because
   the serialization process can invoke author-defined accessors as part of its final
   deep-serialization steps, and these accessors could call into operations that rely on
   the <a>entry</a> and <a>incumbent</a> concepts being properly set up.
 
   <p class="example"><code>window.postMessage()</code> performs
-  <a>StructuredSerializeWithTransfer</a> on its arguments, but is careful to do so
+  [$StructuredSerializeWithTransfer$] on its arguments, but is careful to do so
   immediately, inside the synchronous portion of its algorithm. Thus it is able to use the
   algorithms without needing to <a>prepare to run script</a> and
   <a>prepare to run a callback</a>.</p>
@@ -5256,7 +5274,7 @@ o.myself = o;</pre>
   usually it is simpler to perform the serialization ahead of time, as a synchronous consequence of
   author code.</p>
 
-  <h4>Monkey patch for <code>Blob</code> and <code>FileList</code> objects</h4>
+  <h4 id="monkey-patch-for-blob-and-filelist-objects">Monkey patch for <code>Blob</code> and <code>FileList</code> objects</h4>
 
   <p class="&#x0058;&#x0058;&#x0058;">This monkey patch will be moved in due course. See
   <a href="https://github.com/w3c/FileAPI/issues/32">w3c/FileAPI issue 32</a>.</p>
@@ -5316,7 +5334,7 @@ o.myself = o;</pre>
   <a>extended attribute</a>. Their <a>serialization steps</a>, given <var>value</var>
   and <var>serialized</var>, are:
 
-  1. Set <var>serialized</var>.\[[Files]] to an empty <a>list</a>.
+  1. Set <var>serialized</var>.\[[Files]] to an empty <a for="ecma">List</a>.
 
   2. For each <var>file</var> in <var>value</var>, <a>append</a>
      the <a>sub-serialization</a> of <var>file</var> to
