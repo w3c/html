@@ -130,30 +130,33 @@
 
   The <dfn element-attr for="script"><code>async</code></dfn> and
   <dfn element-attr for="script"><code>defer</code></dfn> attributes are <a>boolean attributes</a>
-  that indicate how the script should be executed. <a>Classic scripts</a> may specify
-  <{script/defer}> or <{script/async}>; <a>module scripts</a> may specify <{script/async}>.
+  that indicate how a script should be loaded and executed. 
+  They have no effect, and must not be used, on <{script}> elements that do not have a <{script/src}> attribute specified.
+  <a>Classic scripts</a> may specify either or both of <{script/defer}> and <{script/async}>; 
+  <a>module scripts</a> may specify <{script/async}>.
 
   There are several possible modes that can be selected using these attributes, and depending on the
   script's <{script/type}>.
 
-  For <a>classic scripts</a>, if the <{script/async}> attribute is present, then the classic script
-  will be fetched <a>in parallel</a> to parsing and evaluated as soon as it is available
-  (potentially before parsing completes). If the <{script/async}> attribute is not present but the
-  <{script/defer}> attribute is present, then the <a>classic script</a> will be fetched
-  <a>in parallel</a> and evaluated when the page has finished parsing. If neither attribute is
-  present, then the script is fetched and evaluated immediately, blocking parsing until these are
+  If a <{script/defer}> attribute is present, then a classic script will be fetched <a>in parallel</a>
+  to parsing, and only evaluated when parsing is complete. The attribute has no effect on module scripts
+  or data blocks.
+
+  If the <{script/async}> attribute is present, then a classic or module script will be fetched
+  <a>in parallel</a> to parsing. A module script will be evaluated as soon as it is available, 
+  (potentially before parsing completes), as will a classic script unless a <{script/defer}> attribute is present. 
+
+  If neither attribute is present, the script is fetched and evaluated immediately, blocking parsing until these are
   both complete.
 
-  For <a>module scripts</a>, if the <{script/async}> attribute is present, then the module script
-  and all its dependencies will be fetched <a>in parallel</a> to parsing, and the module script will
-  be evaluated as soon as it is available (potentially before parsing completes). Otherwise, the
-  module script and its dependencies will be fetched <a>in parallel</a> to parsing and evaluated
-  when the page has finished parsing. (The <{script/defer}> attribute has no effect on module
-  scripts.)
+  <!--This is summarized in the following schematic diagram:
 
-  This is all summarized in the following schematic diagram:
-
-  <img src="images/asyncdefer.svg" style="width: 80%; min-width: 690px;" alt="With &lt;script>, parsing is interrupted by fetching and execution. With &lt;script defer>, fetching is parallel to parsing and execution takes place after all parsing has finished. And with &lt;script async>, fetching is parallel to parsing but once it finishes parsing is interrupted to execute the script. The story for &lt;script type=&quot;module&quot;> is similar to &lt;script defer>, but the dependencies will be fetched as well, and the story for &lt;script type=&quot;module&quot; async> is similar to &lt;script async> with the extra dependency fetching." />
+  <img src="images/asyncdefer.svg" style="width: 80%; min-width: 690px;"
+  alt="With &lt;script>, parsing is interrupted by fetching and execution.
+  With &lt;script defer>, fetching is parallel to parsing and execution takes place after all parsing has finished.
+  And with &lt;script async>, fetching is parallel to parsing but once it finishes parsing is interrupted to execute the script.
+  The story for &lt;script type=&quot;module&quot;> is similar to &lt;script defer>, but the dependencies will be fetched as well,
+  and the story for &lt;script type=&quot;module&quot; async> is similar to &lt;script async> with the extra dependency fetching." /-->
 
   <p class="note">
     The exact processing details for these attributes are, for mostly historical
@@ -1094,7 +1097,7 @@ o............A....e
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>Uses {{HTMLElement}}.</dd>
   </dl>
