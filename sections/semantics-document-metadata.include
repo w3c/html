@@ -639,13 +639,16 @@
       <var>url</var> and <var>corsAttributeState</var>.
   5. Set <var>request</var>'s <a>client</a> to the <{link}> element's <a>node document</a>'s
       {{Window}} object's <a>environment settings object</a>.
-  6. Set <var>request</var>'s <a>referrer policy</a> to the current state of the
+  6. Set <var>request</var>'s <a>cryptographic nonce metadata</a> to the 
+    current value of the <{link}> element's 
+    <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a> internal slot.
+  7. Set <var>request</var>'s <a>referrer policy</a> to the current state of the
       <{link}> element's <{link/referrerpolicy}> content attribute.
-  7. If the <{link/rel}> attribute contains the <{link/preload}> keyword, then:
+  8. If the <{link/rel}> attribute contains the <{link/preload}> keyword, then:
     1. Let <var>as</var> be the current state of the <{link/as}> attribute.
     2. If <var>as</var> is no state, then return.
     3. Set <var>request</var>'s <a>destination</a> to the result of <a>translating</a> <var>as</var>.
-  8. <a>Fetch</a> <var>request</var>.
+  9. <a>Fetch</a> <var>request</var>.
 
   User agents may opt to only try to obtain such resources when they are needed, instead of
   pro-actively fetching all the external resources that are not applied.
@@ -1363,7 +1366,8 @@
             is the empty string, then abort these steps.
         3. Let <var>policy</var> be the result of executing Content Security Policy's
             <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's
-            <{meta/content}> attribute's value.
+            <{meta/content}> attribute's value, with a source of "meta",
+            and a disposition of "enforce".
         4. Remove all occurrences of the <a><code>report-uri</code></a>,
             <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a>
             from <var>policy</var>.

@@ -116,7 +116,7 @@
   When used to include <a>data blocks</a>, the data must be embedded inline, the format of the data
   must be given using the <{script/type}> attribute, and the contents of the <{script}> element must
   conform to the requirements defined for the format used. The <{script/src}>, <{script/charset}>,
-  <{script/async}>, <{script/defer}>, <{script/crossorigin}>, and <{script/nonce}> attributes must
+  <{script/async}>, <{script/defer}>, <{script/crossorigin}>, and <{script/integrity}> attributes must
   not be specified.
 
   The <dfn element-attr for="script"><code>charset</code></dfn> attribute gives the character
@@ -178,13 +178,8 @@
   <p class="note">Unlike <a>classic scripts</a>, <a>module scripts</a> require the use of the
   <a>CORS protocol</a> for cross-origin fetching.</p>
 
-  The <dfn element-attr for="script"><code>nonce</code></dfn> attribute represents a
-  cryptographic nonce ("number used once") which can be used by <em>Content Security Policy </em> to
-  determine whether or not the script specified by an element will be executed. The value is text.
-  [[CSP3]]
-
   Changing the <{script/src}>, <{script/type}>, <{script/charset}>, <{script/async}>,
-  <{script/defer}>, <{script/crossorigin}>, and <{script/nonce}> attributes dynamically has no
+  <{script/defer}>, <{script/crossorigin}>, and <{script/integrity}> attributes dynamically has no
   direct effect; these attributes are only used at specific times described below.
 
   The IDL attributes
@@ -192,7 +187,7 @@
   <dfn attribute for="HTMLScriptElement"><code>type</code></dfn>,
   <dfn attribute for="HTMLScriptElement"><code>charset</code></dfn>,
   <dfn attribute for="HTMLScriptElement"><code>defer</code></dfn>, and
-  <dfn attribute for="HTMLScriptElement"><code>nonce</code></dfn>, must each <a>reflect</a> the
+  <dfn attribute for="HTMLScriptElement"><code>integrity</code></dfn>, must each <a>reflect</a> the
   respective content attributes of the same name.
 
   The <dfn attribute for="HTMLScriptElement"><code>crossOrigin</code></dfn> IDL attribute must
@@ -492,10 +487,8 @@ o............A....e
        ignored.</p>
   14. Let <var>CORS setting</var> be the current state of the element's <{script/crossorigin}>
        content attribute.
-  15. If the <{script}> element has a <{script/nonce}> attribute, then let
-       <var>cryptographic nonce</var> be that attribute's value.
-
-       Otherwise, let <var>cryptographic nonce</var> be the empty string.
+  15. <p>Let <var>cryptographic nonce</var> be the element's <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a>
+       internal slot's value.
   16. Let <var>parser state</var> be "<code>parser-inserted</code>" if the <{script}> element has been flagged
        as "[=parser-inserted=]", and "`not parser-inserted`" otherwise.
   17. Let <var>settings</var> be the element's <a>node document</a>'s {{Window}} object's
