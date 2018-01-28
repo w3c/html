@@ -130,9 +130,9 @@
 
   The <dfn element-attr for="script"><code>async</code></dfn> and
   <dfn element-attr for="script"><code>defer</code></dfn> attributes are <a>boolean attributes</a>
-  that indicate how a script should be loaded and executed. 
+  that indicate how a script should be loaded and executed.
   They have no effect, and must not be used, on <{script}> elements that do not have a <{script/src}> attribute specified.
-  <a>Classic scripts</a> may specify either or both of <{script/defer}> and <{script/async}>; 
+  <a>Classic scripts</a> may specify either or both of <{script/defer}> and <{script/async}>;
   <a>module scripts</a> may specify <{script/async}>.
 
   There are several possible modes that can be selected using these attributes, and depending on the
@@ -143,8 +143,8 @@
   or data blocks.
 
   If the <{script/async}> attribute is present, then a classic or module script will be fetched
-  <a>in parallel</a> to parsing. A module script will be evaluated as soon as it is available, 
-  (potentially before parsing completes), as will a classic script unless a <{script/defer}> attribute is present. 
+  <a>in parallel</a> to parsing. A module script will be evaluated as soon as it is available,
+  (potentially before parsing completes), as will a classic script unless a <{script/defer}> attribute is present.
 
   If neither attribute is present, the script is fetched and evaluated immediately, blocking parsing until these are
   both complete.
@@ -1268,7 +1268,10 @@ o............A....e
   <p>The <a>template contents</a> of a <{template}> element <a
   href="#template-syntax">are not children of the element itself</a>.</p>
 
-  <p class="note">It is also possible, as a result of DOM manipulation, for a <{template}> element to contain {{Text}} nodes and element nodes; however, having any is a violation of the <{template}> element's content model, since its content model is defined as <a>Nothing</a>.</p>
+  <p class="note">It is also possible, as a result of DOM manipulation,
+  for a <{template}> element to contain {{Text}} nodes and element nodes;
+  however, having any is a violation of the <{template}> element's content model,
+  since its content model is defined as <a>Nothing</a>.</p>
 
   <div class="example" id="template-example">
 
@@ -1524,7 +1527,7 @@ o............A....e
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
-        typedef (CanvasRenderingContext2D or WebGLRenderingContext) RenderingContext;
+        typedef (CanvasRenderingContext2D or WebGLRenderingContext or WebGL2RenderingContext) RenderingContext;
 
         interface HTMLCanvasElement : HTMLElement {
           attribute unsigned long width;
@@ -1629,8 +1632,8 @@ o............A....e
   what kind of rendering context it is, a <code>canvas</code> also has a
   <dfn mode for="canvas" lt="context mode|canvas context mode">canvas context mode</dfn>,
   which is initially <dfn context for="canvas">none</dfn> but can be changed to either
-  <dfn context for="canvas">2d</dfn>, <dfn context for="canvas">webgl</dfn> by algorithms
-  defined in this specification.
+  <dfn context for="canvas">2d</dfn>, <dfn context for="canvas">webgl</dfn>, <dfn context
+  for="canvas">webgl2</dfn> by algorithms defined in this specification.
 
   When its <a mode for="canvas">canvas context mode</a> is <a context for="canvas">none</a>, a <{canvas}> element has no rendering context,
   and its bitmap must be fully transparent black with an <a for="css">intrinsic width</a> equal to the numeric value
@@ -1648,7 +1651,8 @@ o............A....e
   is <a context for="canvas">2d</a>, the user agent must set bitmap dimensions to the numeric values of
   the <code>width</code> and <code>height</code> content attributes.
 
-  The <dfn attribute for="HTMLCanvasElement"><code>width</code></dfn> and <dfn attribute for="HTMLCanvasElement"><code>height</code></dfn> IDL attributes must <a>reflect</a> the
+  The <dfn attribute for="HTMLCanvasElement"><code>width</code></dfn> and
+  <dfn attribute for="HTMLCanvasElement"><code>height</code></dfn> IDL attributes must <a>reflect</a> the
   respective content attributes of the same name, with the same defaults.
 
   <hr />
@@ -1660,11 +1664,9 @@ o............A....e
     <dd>
 
     Returns an object that exposes an API for drawing on the canvas. The first argument specifies
-    the desired API, either "<code>2d</code>" or "<code>webgl</code>". Subsequent arguments are handled by that API.
+    the desired API. Subsequent arguments are handled by that API.
 
-    The list of defined contexts is given on the <a>WHATWG Wiki CanvasContexts page</a>. [[!WHATWGWIKI]]
-
-    Example contexts are the "<code>2d</code>" [[!CANVAS-2D]] and the "<code>webgl</code>" context [[!WEBGL]].
+    Valid contexts are: "<code>2d</code>" [[!CANVAS-2D]] or "<code>webgl</code>" [[!WEBGL-1]] or "<code>webgl2</code>" [[!webgl-2]].
 
     Returns null if the given context ID is not supported or if the canvas has already been
     initialized with some other (incompatible) context type (e.g., trying to get a "<code>2d</code>" context after getting a "<code>webgl</code>" context).
@@ -1690,65 +1692,113 @@ o............A....e
   <{canvas}> element's <a mode for="canvas">canvas context mode</a>
   and whose row header describes the method's first argument.
 
-  <table class='data'>
-    <caption>getContext() invocation steps</caption>
-    <thead>
-    <tr>
-      <td>
-      </td><th><a context for="canvas">none</a>
-      </th><th><a context for="canvas">2d</a>
-      </th><th><a context for="canvas">webgl</a>
-    </th></tr></thead><tbody>
-    <tr>
-      <th>"<dfn><code>2d</code></dfn>"
-      </th><td>
-
-      Set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">2d</a>, obtain a
-      <code>CanvasRenderingContext2D</code> object as defined in the HTML Canvas 2D Context
-      specification [[!CANVAS-2D]], set the obtained
-      <code>CanvasRenderingContext2D</code> object's
-      <a mode for="canvas">context mode</a> to
-      <a context for="canvas">2d</a>, and return the
-      <code>CanvasRenderingContext2D</code> object
-      </td><td>
-      Return the same object as was return the last time the method was invoked with this same
-      first argument.
-      </td><td>
-      Return null.
-      </td>
-      </tr><tr>
-      <th>"<dfn><code>webgl</code></dfn>", if the user agent supports the WebGL feature in its current configuration
-      </th><td>
-      Follow the instructions given in the WebGL specification's <i>Context Creation</i> section to
-      obtain either a <code>WebGLRenderingContext</code> or null; if the returned value is null,
-      then return null and abort these steps, otherwise, set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl</a>, set the new
-      <code>WebGLRenderingContext</code> object's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl</a>, and return the <code>WebGLRenderingContext</code>
-      object‡ [[!WEBGL]]
-      </td><td>
-      Return null.
-      </td><td>
-      Return the same object as was return the last time the method was invoked with this same
-      first argument.
-      </td>
-      </tr><tr>
-      <th>A vendor-specific extension*
-      </th><td>
-      Behave as defined for the extension.
-      </td><td>
-      Behave as defined for the extension.
-      </td><td>
-      Behave as defined for the extension.
-      </td>
-      </tr><tr>
-      <th>An unsupported value†
-      </th><td>
-      Return null.
-      </td><td>
-      Return null.
-      </td><td>
-      Return null.
-      </td>
-      </tr></tbody></table>
+<table class='data'>
+   <caption>getContext() invocation steps</caption>
+   <thead>
+      <tr>
+         <td></td>
+         <th><a context for="canvas">none</a></th>
+         <th><a context for="canvas">2d</a></th>
+         <th><a context for="canvas">webgl</a></th>
+         <th><a context for="canvas">webgl2</a></th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <th>"<dfn><code>2d</code></dfn>"</th>
+         <td>
+            Set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">2d</a>, obtain a
+            <code>CanvasRenderingContext2D</code> object as
+            defined in the HTML Canvas 2D Context
+            specification [[!CANVAS-2D]], set the obtained
+            <code>CanvasRenderingContext2D</code> object's
+            <a mode for="canvas">context mode</a> to
+            <a context for="canvas">2d</a>, and return the
+            <code>CanvasRenderingContext2D</code> object
+         </td>
+         <td>
+            Return the same object as was return the last time the method was invoked with this same
+            first argument.
+         </td>
+         <td>
+            Return null.
+         </td>
+         <td>
+            Return null.
+         </td>
+      </tr>
+      <tr>
+         <th>"<dfn><code>webgl</code></dfn>", if the user agent supports the WebGL feature in its current configuration</th>
+         <td>
+            Follow the instructions given in the WebGL specification's <i>Context Creation</i> section to
+            obtain either a <code>WebGLRenderingContext</code> or null; if the returned value is null,
+            then return null and abort these steps, otherwise, set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl</a>, set the new
+            <code>WebGLRenderingContext</code> object's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl</a>, and return the <code>WebGLRenderingContext</code>
+            object‡ [[!WEBGL-1]]
+         </td>
+         <td>
+            Return null.
+         </td>
+         <td>
+            Return the same object as was return the last time the method was invoked with this same
+            first argument.
+         </td>
+         <td>
+            Return null
+         </td>
+      </tr>
+      <tr>
+         <th>"<dfn><code>webgl2</code></dfn>", if the user agent supports the WebGL2 feature in its current configuration</th>
+         <td>
+            Follow the instructions given in the WebGL2 specification's <i>Context Creation</i> section to
+            obtain either a <code>WebGL2RenderingContext</code> or null; if the returned value is null,
+            then return null and abort these steps, otherwise, set the <{canvas}> element's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl2</a>, set the new
+            <code>WebGL2RenderingContext</code> object's <a mode for="canvas">context mode</a> to <a context for="canvas">webgl2</a>, and return the <code>WebGL2RenderingContext</code>
+            object [[!webgl-2]]
+         </td>
+         <td>
+            Return null.
+         </td>
+         <td>
+            Return null.
+         </td>
+         <td>
+            Return the same object as was return the last time the method was invoked with this same
+            first argument.
+         </td>
+      </tr>
+      <tr>
+         <th>A vendor-specific extension*</th>
+         <td>
+            Behave as defined for the extension.
+         </td>
+         <td>
+            Behave as defined for the extension.
+         </td>
+         <td>
+            Behave as defined for the extension.
+         </td>
+         <td>
+            Behave as defined for the extension.
+         </td>
+      </tr>
+      <tr>
+         <th>An unsupported value†</th>
+         <td>
+            Return null.
+         </td>
+         <td>
+            Return null.
+         </td>
+         <td>
+            Return null.
+         </td>
+         <td>
+            Return null.
+         </td>
+      </tr>
+   </tbody>
+</table>
 
   <small>* Vendors may define experimental contexts using the syntax <code><var>vendorname</var>-<var>context</var></code>, for example, <code>moz-3d</code>.</small>
 
