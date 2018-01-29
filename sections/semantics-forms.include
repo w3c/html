@@ -1547,7 +1547,7 @@ part of the form.</p>
       </td><td> A button
   </td></tr></tbody></table>
 
-  The <i>missing value default</i> is the <a>Text</a>
+  The <i>missing value default</i> is the <{input/Text}>
   state.
 
   Which of the
@@ -2616,7 +2616,7 @@ part of the form.</p>
   The <{input/disabled}> attribute is used to make the control non-interactive and to prevent its value from being submitted.
   The <{input/form}> attribute is used to explicitly associate the <{input}> element with its <a>form owner</a>.
   The <{input/autofocus}> attribute controls focus.
-  The <{input/autocapitalize}> attribute hints how the user agent should automatically capitalize text that the user enters.
+  The <{input/autocapitalize}> attribute provides a hint for the user agent to help the user automatically capitalize text they enter.
   The <{input/autocomplete}> attribute controls how the user agent provides autofill behavior.
 
 
@@ -2647,7 +2647,7 @@ part of the form.</p>
   <a>reflect</a> the <{input/value}> content attribute.
 
   The <dfn attribute for="HTMLInputElement"><code>type</code></dfn> and
-  <dfn attribute for="HTMLInputElement"><code>auticapitalize</code></dfn> IDL attributes must
+  <dfn attribute for="HTMLInputElement"><code>autocapitalize</code></dfn> IDL attributes must
   <a>reflect</a> the respective content attributes of the same name,
   <a>limited to only known values</a>.
   The <dfn attribute for="HTMLInputElement"><code>maxLength</code></dfn> IDL attribute must
@@ -6474,13 +6474,18 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     The <dfn element-attr for="input, textarea"><code>autocapitalize</code></dfn>
     content attribute is an <a>enumerated attribute</a>.
-    It provides a suggestion to the user agent to automatically capitalize text entered by the user in
-    <{input}> and <{textarea}> elements, to simplify entering text with appropriate capitalization.
-    The user must be able to alter the capitalization of the text they enter.
+    It provides a suggestion to the user agent, to help automatically capitalize text entered by the user in
+    <{input}> and <{textarea}> elements. For example when an onscreen keyboard is provided, 
+    default word suggestions may be capitalized as described.
+
+    If the user agent sets capitalization automatically,
+    the user must be able to alter the capitalization of the text they enter.
 
     The value must be one of the following:
     <code>sentences</code>, <code>words</code>, <code>characters</code> or <code>none</code>.
-    The attribute may be ommitted. The <i>missing value default</i> is <code>none</code>.
+    The attribute may be ommitted. The <i>missing value default</i>
+    is <code>sentences</code> for <{input}> elements in the <{input/Text}> and <{input/Search}> states and <{textarea}> elements, 
+    and <code>none</code> for <{input}> elements in the <{input/URL}>, <{input/E-mail}>, and <{input/Password}> states.
 
     When an <{input}> or a <{textarea}> element has an <{input/autocapitalize}> attribute,
     text entered by the user should be capitalized as described in the following table:
@@ -6518,8 +6523,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
        question mark ('?'), or exclamation point ('!'). Other words may begin with an upper-case letter,
        although this varies by language.</td>
       <td class="example">
-       <p>Simple Example. Four Words.</p>
-       <p lang="de">Die Deutsche Sprache Hat Regeln.</p>
+       <p>Simple example. Four words.</p>
+       <p lang="de">Die Deutsche Sprache hat Regeln.</p>
        <p lang="ru">Вот текст по-русский. Как работает?</p>
       </td>
      </tr>
@@ -6529,21 +6534,6 @@ You cannot submit this form when the field is incorrect.</samp></pre>
       <td>All text should be as entered by the user, preserving case.</td>
      </tr>
     </table>
-
-    A <dfn>valid autocapitalize hint</dfn> is a string that matches the <code>autocapitalize</code>
-    production of the following ABNF, the character set for which is Unicode.
-
-    <pre data-highlight="abnf">
-  autocapitalize = sentences / words / characters / none
-
-  sentences      = "sentences"
-
-  words          = "words"
-
-  characters     = "characters"
-
-  none           = "none"
-      </pre>
 
 <h5 id="common-input-element-apis">Common <{input}> element <dfn>APIs</dfn></h5>
 
