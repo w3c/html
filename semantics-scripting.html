@@ -1180,7 +1180,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version fbf1456a756299b3ff6d248d0857ec87f2e68cd7" name="generator">
   <link href="https://www.w3.org/TR/html53/" rel="canonical">
-  <meta content="5e8c8698b389884e429c3ece07ecf41d98cca338" name="document-revision">
+  <meta content="27a5c8f0b65496ac46f13862a9031d59860255c2" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -2885,9 +2885,13 @@ not-slash     = %x0000-002E / %x0030-10FFFF
     blob serialization task source<a class="self-link" href="semantics-scripting.html#canvas-blob-serialization-task-source"></a></dfn>.
      </li></ol>
      <h5 class="heading settled" data-level="4.12.4.1" id="color-spaces-and-color-correction"><span class="secno">4.12.4.1. </span><span class="content">Color spaces and color correction</span><a class="self-link" href="semantics-scripting.html#color-spaces-and-color-correction"></a></h5>
-     <p>The <code>canvas</code> APIs must perform color correction at only two points: when rendering
-  images with their own gamma correction and color space information onto a bitmap, to convert the
-  image to the color space used by the bitmaps (e.g., using the 2D Context’s <code>drawImage()</code> method with an <code>HTMLImageElement</code> object), and when rendering the actual canvas bitmap to the output device.</p>
+     <p>The <code>canvas</code> APIs must only perform color correction in two circumstances:</p>
+     <ul>
+      <li>When rendering the actual canvas bitmap to the output device.
+      </li><li>When images which contain their own gamma correction and color space information are
+    rendered onto a bitmap which has an existing color space. The image must be converted to
+    to the the bitmap’s color space. (e.g., using the 2D Context’s <code>drawImage()</code> method with a <code>HTMLImageElement</code> object).
+     </li></ul>
      <p class="note" role="note"> Thus, in the 2D context, colors used to draw shapes onto the canvas will exactly
   match colors obtained through the <code>getImageData()</code> method. </p>
      <p>The <code>toDataURL()</code> method must not include color space
