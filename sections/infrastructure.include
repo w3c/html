@@ -3819,7 +3819,7 @@ INFRASTRUCTURE
    Several signals can contribute to which processing model is used for a given <a>fetch</a>;
    a <a>referrer policy attribute</a> is only one of them. In general, the order in which these signals are processed are:
    <ol>
-    <li>First, the presence of a <{link/}noreferrer}> link
+    <li>First, the presence of a <{link/noreferrer}> link
     type;</li>
     <li>Then, the value of a <a>referrer policy attribute</a>;</li>
     <li>Then, the presence of any <{meta}> element with <a><code
@@ -3828,6 +3828,69 @@ INFRASTRUCTURE
     header.</li>
    </ol>
   </div>
+
+<h4 id="nonce-attributes">Nonce attributes</h4>
+
+<p>A <dfn export="">nonce</dfn> content attribute represents a
+  cryptographic nonce ("number used once") which can be used by <a>Content Security Policy</a>
+  to determine whether or not a given fetch will be allowed to proceed. The value is text. [[!CSP3]]
+
+  <p>Elements that have a <a>nonce</a> content attribute ensure that the
+  crytographic nonce is only exposed to script (and not to side-channels like CSS attribute
+  selectors) by extracting the value from the content attribute, moving it into an internal slot
+  named <dfn export="" for="NoncedElement" attribute id="cryptographicnonce">[[<span>CryptographicNonce</span>]]</dfn>, and exposing it to script via the
+  {{NoncedElement}} interface defined below. Unless otherwise specified, the slot's value
+  is the empty string.</p>
+
+  <pre class="idl">[NoInterfaceObject]
+interface NoncedElement {
+  attribute DOMString nonce;
+};</pre>
+
+  <!-- The `NoncedElement` mixin exists separate from `HTMLElement` in order to easily share the
+       functionality described here between both `HTMLElement` and `SVGElement`. -->
+
+  <dl class="domintro">
+   <dt><var>element</var> . <a>nonce</a></dt>
+   <dd>
+    <p>Returns the value of the element's <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a> internal slot.</p>
+    <p>Can be set, to update that slot's value.</p>
+   </dd>
+  </dl>
+
+  <p>The <dfn export="" element-attr for="NoncedElement">nonce</dfn> IDL attribute must, on
+  getting, return the value of this element's <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a>; and on setting,
+  set this element's <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a> to the given value.</p>
+
+  <p>Whenever a {{NoncedElement}}'s <a>nonce</a> attribute is
+  set or changed, set this element's <a href="#cryptographicnonce">[[<span>CryptographicNonce<span>]]</a> to the given value.</p>
+
+  <p>Whenever a {{NoncedElement}} <a>becomes browsing-context connected</a>, the
+  user agent must executing the following steps on the <var>element</var>:</p>
+
+  <ol>
+   <li><p>Let [=response/CSP list=] be <var>element</var>'s <a>shadow-including root</a>'s [=response/CSP list=].</p></li>
+
+   <li>
+    <p>If [=response/CSP list=] <a>contains a header-delivered Content Security Policy</a>, and
+    <var>element</var> has a <a>nonce</a> content attribute
+    <var>attr</var> whose value is not the empty string, then:</p>
+
+    <ol>
+     <li><p><a>Set an attribute value</a> for
+     <var>element</var> using "<a>nonce</a>" and the empty
+     string.</p></li>
+    </ol>
+   </li>
+  </ol>
+
+  <p class="note">As each {{Document}}'s [=response/CSP list=] is append-only, user agents can optimize away the <a>contains a header-delivered
+  Content Security Policy</a> check by, for example, holding a flag on the {{Document}},
+  set during <a>Document initialization</a>.</p>
+
+  <p>The <a>cloning steps</a> for elements that implement
+  {{NoncedElement}} must set the <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a> slot on the copy
+  to the value of the slot on the element being cloned.</p>
 
 <h3 id="common-dom-interfaces">Common DOM interfaces</h3>
 
