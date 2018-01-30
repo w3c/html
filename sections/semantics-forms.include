@@ -3182,7 +3182,7 @@ part of the form.</p>
     provide a single e-mail address.
 
     <strong>Constraint validation</strong>: While the user interface is representing input that
-    the user agent cannot convert to punycode, the control is <a>suffering from bad
+    the user agent cannot convert to a valid email address, the control is <a>suffering from bad
     input</a>.
 
     The <code>value</code> attribute, if specified and not empty, must
@@ -3218,7 +3218,7 @@ part of the form.</p>
 
     <strong>Constraint validation</strong>: While the user interface describes a situation where
     an individual value contains a U+002C COMMA (,) or is representing input that the user agent
-    cannot convert to punycode, the control is <a>suffering from bad input</a>.
+    cannot convert to a valid email address, the control is <a>suffering from bad input</a>.
 
     Whenever the user changes the element's <a for="forms">value<em>s</em></a>,
     the user agent must run the following steps:
@@ -3265,49 +3265,17 @@ part of the form.</p>
   When the <code>multiple</code> attribute is set or removed, the
   user agent must run the <a>value sanitization algorithm</a>.
 
-  A <dfn>valid e-mail address</dfn> is a string that matches the <code>email</code>
-  production of the following ABNF, the character set for which is Unicode. This ABNF implements the
-  extensions described in RFC 1123. [[!ABNF]] [[!RFC5322]] [[!RFC1034]] [[!RFC1123]]
-
-  <pre data-highlight="abnf">
-email         = 1*( atext / "." ) "@" label *( "." label )
-
-label         = let-dig [ [ ldh-str ] let-dig ]
-                        ; limited to a length of 63 characters by <a>RFC 1034 section 3.5</a>
-
-atext         = ALPHA / DIGIT /    ; Printable US-ASCII characters not including "specials".
-                "!" / "#" /        ;
-                "$" / "%" /        ; This is as defined in <a>RFC 5322 section 3.2.3</a>
-                "&" / "'" /
-                "*" / "+" / "-" / "/" / "=" / "?" /
-                "^" / "_" / "`" / "{" / "|" / "}" / "~"
-
-let-dig       = ALPHA / DIGIT ; defined in <a>RFC 1034 section 3.5</a>
-ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
-    </pre>
+  A <dfn>valid e-mail address</dfn> is defined in [[!RFC6531]].
+  
+  A user agent should present and consume unicode text in the user interface, and expose it to other applications,
+  except when sending to a Mail Transfer Agent that does not support SMPTUTF8 [[RFC6531]].
 
   <div class="note">
 
-    This requirement is a <a>willful violation</a> of RFC 5322.
-
-    This syntax allows e-mail addresses with Internationalised Domain Names using punycode, such as
-    <code>example@xn--d1acpjx3f.xn--p1ai</code>. A user agent should represent that in the user interface
-    as <samp>example@яндекс.рф</samp>
-
-    This syntax does not allow valid internationalised email addresses, such as <samp>我買@屋企.香港</samp>.
-    See also <a href="https://github.com/w3c/html/issues/845">Issue 845</a>.
-
-  </div>
-
-  <div class="note">
-
-    The following JavaScript- and Perl-compatible regular expression is an implementation of the
-    above definition.
-
-    <pre highlight="javascript">
-/^[a-zA-Z0-9.!#$%&amp;'*+\/=?^_&#x60;{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-    </pre>
-
+    This allows fully internationalised email addresses such as <samp>我買@屋企.香港</samp>,
+    and e-mail addresses with Internationalised Domain Names as defined by [[RFC5890]], such as
+    <samp>example@яндекс.рф</samp>.
+    
   </div>
 
   A <dfn>valid e-mail address list</dfn> is a <a>set of comma-separated tokens</a>, where
