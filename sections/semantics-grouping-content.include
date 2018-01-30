@@ -38,13 +38,19 @@
     </dd>
   </dl>
 
-  The <{p}> element <a>represents</a> a <a>paragraph</a>.
+  The <{p}> element <a>represents</a> a block of content, a <a>paragraph</a> <em>as defined in this specification</em>.
+  The <{p}> element should not be used when a more specific element, such as a list, is more appropriate.
+
+  <div class="note">
+    Many elements whose typical <a>rendering</a> is a block cannot be children of <{p}> elements,
+    because when the parser finds them it automatically closes the <{p}> element - effectively inserting a <code>&lt;/p&gt;</code> tag.
+    This includes lists, tables, <a>heading content</a>, most <a>sectioning roots</a> and <a>sectioning content</a>, 
+    and <{form}>, <{fieldset}> and <{legend}> elements.
+  </div>
 
   <p class="note">
-    While paragraphs are usually represented in visual media by blocks of text that are physically
-    separated from adjacent blocks through blank lines, a style sheet or user agent would be equally
-    justified in presenting paragraph breaks in a different manner, for instance using inline
-    pilcrows (¶).
+    Paragraphs are usually represented visually as blocks of text, separated from adjacent blocks by blank lines.
+    However a style sheet or user agent may present paragraph breaks in a different manner, for instance using inline pilcrows (¶).
   </p>
 
   <div class="example">
@@ -65,10 +71,8 @@
     </pre>
   </div>
 
-  The <{p}> element should not be used when a more specific element is more appropriate.
-
   <div class="example">
-    The following example is technically correct:
+    The following example is technically conforming HTML:
 
     <pre highlight="html">
       &lt;section&gt;
@@ -100,11 +104,10 @@
       &lt;/section&gt;
     </pre>
   </div>
-
+  
   <div class="note">
-    List elements (in particular, <code>ol</code> and <{ul}> elements) cannot be children
-    of <{p}> elements. When a sentence contains a bulleted list, therefore, one might
-    wonder how it should be marked up.
+    Among others, list elements (e.g. <{li}>, <{ol}>, and <{ul}>) cannot be children of <{p}> elements. 
+    So to mark up a sentence that contains a list, like the following:
 
     <div class="example">
       For instance, this fantastic sentence has bullets relating to
@@ -116,10 +119,9 @@
       and is further discussed below.
     </div>
 
-    The solution is to realize that a <i>paragraph</i>, in HTML terms, is not a logical concept, but
-    a structural one. In the fantastic example above, there are actually <em>five</em>
-    <a>paragraphs</a> as defined by this specification: one before the list, one for each bullet,
-    and one after the list.
+    it is important to remember that a <a>paragraph</a> in HTML does not have the semantic meaning of "a single idea"
+    that is a usual part of how English grammar describes "paragraphs". Instead it is merely a default type of block-level structure for content.
+    In the example above, there are five block-level structures: one before the list, one for each bullet, and one after the list.
 
     <div class="example">
       The markup for the above example could therefore be:
@@ -136,8 +138,7 @@
     </div>
 
     Authors wishing to conveniently style such "logical" paragraphs consisting of multiple
-    "structural" paragraphs can use the <{div}> element instead of the <code>p</code>
-    element.
+    "structural" paragraphs can use the <{div}> element instead of, or as well as the <{p}> element.
 
     <div class="example">
       Thus for instance the above example could become the following:
@@ -151,13 +152,24 @@
           &lt;/ul&gt;
         and is further discussed below.&lt;/div&gt;
       </pre>
+      
+      or
 
-      This example still has five structural paragraphs, but now the author can style just the
+      <pre highlight="html">
+        &lt;div&gt;
+          &lt;p&gt;For instance, this fantastic sentence has bullets relating to&lt;/p&gt;
+          &lt;ul&gt;
+            &lt;li&gt;wizards,
+            &lt;li&gt;faster-than-light travel, and
+            &lt;li&gt;telepathy,
+          &lt;/ul&gt;
+          &lt;p&gt;and is further discussed below.&lt;/p&gt;
+        &lt;/div&gt;
+      </pre>
+
+      These examples still have five structural blocks, but now the author can style just the
       <code>div</code> instead of having to consider each part of the example separately.
     </div>
-
-    In general, elements that cannot be children of <{p}> elements include any elements that
-    are inline blocks, inline tables, as well as floated and positioned block-level elements.
 
   </div>
 
