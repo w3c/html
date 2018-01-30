@@ -5932,8 +5932,10 @@ zero or more <{track}> elements, then
       readonly attribute TimeRanges played;
       readonly attribute TimeRanges seekable;
       readonly attribute boolean ended;
-      attribute boolean autoplay;
-      attribute boolean loop;
+      [SameObject] readonly attribute <a>RemotePlayback</a> remote;
+      [CEReactions] attribute boolean autoplay;
+      [CEReactions] attribute boolean disableRemotePlayback;
+      [CEReactions] attribute boolean loop;
       void play();
       void pause();
 
@@ -5952,7 +5954,7 @@ zero or more <{track}> elements, then
   </pre>
 
   The <dfn>media element attributes</dfn>, <code>src</code>, <code>crossorigin</code>, <code>preload</code>, <code>autoplay</code>,
-  <code>loop</code>,
+  <{media/disableRemotePlayback}>, <code>loop</code>,
   <code>muted</code>, and <{mediaelements/controls}>, apply to all <a>media elements</a>. They are defined in this section.
 
   <a>Media elements</a> are used to present audio data, or video and
@@ -7783,6 +7785,14 @@ zero or more <{track}> elements, then
 
     </dd>
 
+    <dt><var>media</var> . <{media/disableRemotePlayback}></dt>
+
+    <dd>
+
+    Whether the remote playback of a <a lt="media elements">media element</a> is disabled.
+
+    </dd>
+
     <dt><var>media</var> . <code>defaultPlaybackRate</code> [ = <var>value</var> ]</dt>
 
     <dd>
@@ -7960,6 +7970,17 @@ zero or more <{track}> elements, then
     The word "reaches" here does not imply that the <a>current playback
   position</a> needs to have changed during normal playback; it could be via <a>seeking</a>, for instance.
   </p>
+
+  <hr />
+
+  The <dfn element-attr for="media"><code>remote</code></dfn> attribute MUST return the <a>RemotePlayback</a> instance associated with the <a lt="media elements">media element</a>.
+
+  The <dfn element-attr for="media"><code>disableRemotePlayback</code></dfn> attribute is a <a>boolean
+  attribute</a>. When present, the user agent MUST NOT play the <a lt="media elements">media element</a> remotely or present any UI to do so.
+
+  When the <{media/disableRemotePlayback}> attribute is added to the <a lt="media elements">media element</a>, the user agent MUST run the steps to <a>disable remote playback</a>.
+
+  A corresponding <dfn attribute for="HTMLMediaElement"><code>disableRemotePlayback</code></dfn> IDL attribute which reflects the value of each element’s <{media/disableRemotePlayback}> content attribute is added to the {{HTMLMediaElement}} interface. The {{HTMLMediaElement/disableRemotePlayback}} IDL attribute MUST <a>reflect</a> the content attribute of the same name.
 
   <hr />
 
