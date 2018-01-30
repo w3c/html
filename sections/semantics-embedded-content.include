@@ -477,7 +477,7 @@
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -705,13 +705,28 @@
     <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dd><{img/longdesc}> - A url that provides a link to an expanded description of the image, defined in [[!html-longdesc]]</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>presentation</code></a> or <a attr-value for="aria/role"><code>none</code></a>
-	role only, for an <{img}> element whose <code>alt</code> attribute's value is empty (<code>alt=""</code>), otherwise
-    <a href="#allowed-aria-roles-states-and-properties">Any role value</a>.</dd>
+    <dd>
+      If <{img}> has an empty <code>alt</code> attribute value:
+      <a attr-value for="aria/role"><code>presentation</code></a>
+      or
+      <a attr-value for="aria/role"><code>none</code></a>
+      role only.
+    </dd>
+    <dd>
+      If <{img}> has a non-empty <code>alt</code> attribute value:
+      <a attr-value for="aria/role"><code>img</code></a> (default - <a><em>do not set</em></a>)
+      or
+      <a href="#allowed-aria-roles-states-and-properties">any other role value</a> <strong>except <code>presentation</code> or <code>none</code></strong> roles.
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dd>
+      If <{img}> has an empty <code>alt</code> attribute value: <strong>No <code>aria-*</code> attributes</strong> except <code>aria-hidden</code>.
+    </dd>
+    <dd>
+      If <{img}> has a non-empty <code>alt</code> attribute value:
+      <a>Global aria-* attributes</a> and any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -2591,7 +2606,7 @@
       &lt;p id="graph7"&gt;According to a recent study Firefox has a 40% browser share,
         Internet Explorer has 25%, Chrome has 25%, Safari has 6% and Opera has 4%.&lt;/p&gt;
       &lt;p&gt;&lt;img src="piechart.gif" alt="The browser shares as a pie chart."
-        longdesc="graph7"&gt;&lt;/p&gt;
+        longdesc="#graph7"&gt;&lt;/p&gt;
     </pre>
 
     It can be seen that when the image is not available, for example because the <code>src</code>
@@ -2659,7 +2674,7 @@
   &lt;figure&gt;
   &lt;figcaption&gt;Rainfall Data&lt;/figcaption&gt;
   &lt;img src="rainchart.gif" alt="Bar chart: average rainfall by Country and Season.
-  Full description in Table below." longdesc="table-4"&gt;
+  Full description in Table below." longdesc="#table-4"&gt;
   &lt;table id="table-4"&gt;
   &lt;caption&gt;Rainfall in millimetres by Country and Season.&lt;/caption&gt;
   &lt;tr&gt;&lt;td&gt;&lt;th scope="col"&gt;UK &lt;th scope="col"&gt;Japan&lt;th scope="col"&gt;Australia&lt;/tr&gt;
@@ -3601,11 +3616,20 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <dd><code>height</code> - Vertical dimension</dd>
     <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>application</code></a>, <a attr-value for="aria/role"><code>document</code></a>, or <a attr-value for="aria/role"><code>img</code></a>.</dd>
+    <dd>
+      <a attr-value for="aria/role"><code>application</code></a>,
+      <a attr-value for="aria/role"><code>document</code></a>
+      or
+      <a attr-value for="aria/role"><code>img</code></a>.
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dd>
+      <a>Global aria-* attributes</a>
+    </dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -3654,9 +3678,6 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <li>Any number of [=comments=] and [=space characters=].</li>
 
   </ol>
-
-  For <{iframe}> elements in <a>XML documents</a>, the <code>srcdoc</code> attribute, if present, must have a value that matches the
-  production labeled <code>document</code> in the XML specification. [[!XML]]
 
   <div class="example">
     Here a blog uses the <code>srcdoc</code> attribute in conjunction
@@ -4154,14 +4175,22 @@ My &lt;img src="heart.png" alt="heart"&gt; breaks.
     <dd><code>height</code>- Vertical dimension</dd>
     <dd>Any other attribute that has no namespace (see prose).</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>application</code></a>,
-    <a attr-value for="aria/role"><code>document</code></a> or
-    <a attr-value for="aria/role"><code>img</code></a> or
-    <a attr-value for="aria/role"><code>presentation</code></a>.</dd>
+    <dd>
+      <a attr-value for="aria/role"><code>application</code></a>,
+      <a attr-value for="aria/role"><code>document</code></a>,
+      <a attr-value for="aria/role"><code>img</code></a>,
+      <a attr-value for="aria/role"><code>none</code></a>
+      or
+      <a attr-value for="aria/role"><code>presentation</code></a>.
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dd>
+      <a>Global aria-* attributes</a>
+    </dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -4495,12 +4524,20 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>application</code></a>, <a attr-value for="aria/role"><code>document</code></a> or <a attr-value for="aria/role"><code>img</code></a> or
-    <a attr-value for="aria/role"><code>presentation</code></a>.</dd>
+    <dd>
+      <a attr-value for="aria/role"><code>application</code></a>,
+      <a attr-value for="aria/role"><code>document</code></a>
+      or
+      <a attr-value for="aria/role"><code>img</code></a>.
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dd>
+      <a>Global aria-* attributes</a>
+    </dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -5113,7 +5150,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -5216,11 +5253,13 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>application</code></a>.</dd>
+    <dd>
+      <a attr-value for="aria/role"><code>application</code></a>
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the <code>application</code> role</a>.</dd>
 
     <dt><a>DOM interface</a>:</dt>
     <dd>
@@ -5534,11 +5573,13 @@ zero or more <{track}> elements, then
     <dd><code>muted</code> - Whether to mute the <a>media resource</a> by default</dd>
     <dd><{audio/controls}> - Show user agent controls</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>application</code></a>.</dd>
+    <dd>
+      <a attr-value for="aria/role"><code>application</code></a>
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
     <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the <code>application</code> role</a>.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
     <pre class="idl" data-highlight="webidl">
@@ -5629,7 +5670,7 @@ zero or more <{track}> elements, then
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -11407,7 +11448,7 @@ red:89
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -11522,11 +11563,17 @@ red:89
     <dd><code>type</code> - Hint for the type of the referenced resource</dd>
     <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd><a attr-value for="aria/role"><code>link</code></a> role (default - <a><em>do not set</em></a>).</dd>
+    <dd>
+      <a attr-value for="aria/role"><code>link</code></a> role (default - <a><em>do not set</em></a>).
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.</dd>
+    <dd>
+      <a>Global aria-* attributes</a>
+    </dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the <code>link</code> role</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">

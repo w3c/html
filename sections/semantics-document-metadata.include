@@ -34,7 +34,7 @@
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -108,7 +108,7 @@
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -197,7 +197,7 @@
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a>.</dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -329,7 +329,6 @@
     <dd><{link/rel}> — Relationship of this document (or subsection/topic) to the destination resource</dd>
     <dd><{link/rev}> — <a>Reverse link</a> relationship of the destination resource to this document (or subsection/topic)</dd>
     <dd><code>media</code> — Applicable media</dd>
-    <dd><code>nonce</code> — Cryptographic nonce used in Content Security Policy checks [[CSP3]]</dd>
     <dd><code>hreflang</code> — Language of the linked resource</dd>
     <dd><code>type</code> — Hint for the type of the referenced resource</dd>
     <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
@@ -340,7 +339,9 @@
       link; alternative style sheet set name.
     </dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd>None</dd>
+    <dd>
+      <a attr-value for="aria/role"><code>link</code></a> (default - <a><em>do not set</em></a>)
+    </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
@@ -354,7 +355,6 @@
           [CEReactions] attribute DOMString as;  // (default "")
           [CEReactions, SameObject, PutForwards=value] readonly attribute DOMTokenList relList;
           [CEReactions] attribute DOMString media;
-          [CEReactions] attribute DOMString nonce;
           [CEReactions] attribute DOMString hreflang;
           [CEReactions] attribute DOMString type;
           [CEReactions, SameObject, PutForwards=value] readonly attribute DOMTokenList sizes;
@@ -449,11 +449,6 @@
   The <dfn element-attr for="link"><code>media</code></dfn> attribute says which media the resource
   applies to. The value must be a <a>valid media query list</a>.
 
-  The <dfn element-attr for="link"><code>nonce</code></dfn> attribute represents a cryptographic
-  nonce ("number used once") which can be used by <cite>Content Security Policy</cite>
-  to determine whether or not an [=external resource links|external resource specified by the link=]
-  will be loaded and applied to the document. The value is text. [[CSP3]]
-
   <!-- def <{link/integrity}> -->
 
   The <dfn element-attr for="link"><code>hreflang</code></dfn> attribute on the <{link}> element has
@@ -523,7 +518,6 @@
   <dfn attribute for="HTMLLinkElement"><code>hreflang</code></dfn>,
   <!-- <dfn attribute for="HTMLLinkElement"><code>integrity</code></dfn>, -->
   <dfn attribute for="HTMLLinkElement"><code>media</code></dfn>,
-  <dfn attribute for="HTMLLinkElement"><code>nonce</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>rel</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>rev</code></dfn>,
   <!-- <dfn attribute for="HTMLLinkElement"><code>scope</code></dfn>, -->
@@ -647,8 +641,9 @@
       <var>url</var> and <var>corsAttributeState</var>.
   5. Set <var>request</var>'s <a>client</a> to the <{link}> element's <a>node document</a>'s
       {{Window}} object's <a>environment settings object</a>.
-  6. Set <var>request</var>'s <a>cryptographic nonce metadata</a> to the current state of the
-      <{link}> element's <{link/nonce}> content attribute.
+  6. Set <var>request</var>'s <a>cryptographic nonce metadata</a> to the 
+    current value of the <{link}> element's 
+    <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a> internal slot.
   7. Set <var>request</var>'s <a>referrer policy</a> to the current state of the
       <{link}> element's <{link/referrerpolicy}> content attribute.
   8. If the <{link/rel}> attribute contains the <{link/preload}> keyword, then:
@@ -780,7 +775,7 @@
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -922,9 +917,7 @@
 
   : <dfn><code>description</code></dfn>
   :: The value must be a free-form string that describes the page. The value must be appropriate for
-      use in a directory of pages, e.g., in a search engine. There must not be more than one
-      <{meta}> element with its <code>name</code> attribute set to the value
-      <code>description</code> per document.
+      use in a directory of pages, e.g., in a search engine or list of bookmarks.
 
   : <dfn><code>generator</code></dfn>
   :: The value must be a free-form string that identifies one of the software packages used to
@@ -1373,7 +1366,8 @@
             is the empty string, then abort these steps.
         3. Let <var>policy</var> be the result of executing Content Security Policy's
             <a>parse a serialized Content Security Policy</a> algorithm on the <{meta}> element's
-            <{meta/content}> attribute's value.
+            <{meta/content}> attribute's value, with a source of "meta",
+            and a disposition of "enforce".
         4. Remove all occurrences of the <a><code>report-uri</code></a>,
             <a><code>frame-ancestors</code></a>, and <a><code>sandbox</code></a> <a>directives</a>
             from <var>policy</var>.
@@ -1530,7 +1524,6 @@
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>media</code> — Applicable media</dd>
-    <dd><{style/nonce}> - Cryptographic nonce used in <em>Content Security Policy</em> checks [[CSP3]]</dd>
     <dd><code>type</code> — Type of embedded resource</dd>
     <dd>
       Also, the <{style/title}> attribute has special semantics on this element: Alternative
@@ -1539,13 +1532,12 @@
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd><a>Global aria-* attributes</a></dd>
+    <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
         interface HTMLStyleElement : HTMLElement {
           attribute DOMString media;
-          attribute DOMString nonce;
           attribute DOMString type;
         };
         HTMLStyleElement implements LinkStyle;
@@ -1585,11 +1577,6 @@
     The use of <{style}> in the <{body}> of the document may cause restyling, trigger layout
     and/or cause repainting, and hence, should be used with care.
   </p>
-
-  The <dfn element-attr for="style"><code>nonce</code></dfn> attribute represents a cryptographic
-  nonce ("number used once") which can be used by <a>Content Security Policy</a> to determine
-  whether or not the style specified by an element will be applied to the document. The value is
-  text. [[CSP3]]
 
   The <dfn element-attr for="style"><code>title</code></dfn> attribute on <{style}> elements defines
   <a>alternative style sheet sets</a>. If the <{style}> element has no <{style/title}>
@@ -1698,8 +1685,7 @@
     Web browsers. [[!CSS-2015]]
   </p>
 
-    The <dfn attribute for="HTMLStyleElement"><code>media</code></dfn>,
-    <dfn attribute for="HTMLStyleElement"><code>nonce</code></dfn>, and
+    The <dfn attribute for="HTMLStyleElement"><code>media</code></dfn>, and
     <dfn attribute for="HTMLStyleElement"><code>type</code></dfn>
     IDL attributes must <a>reflect</a> the respective content
     attributes of the same name.
