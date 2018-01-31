@@ -8656,85 +8656,41 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     </dd>
   </dl>
 
-  The <{progress}> element <a>represents</a> the completion progress of a task.
-  The progress is either indeterminate, indicating that progress is being made but that it is not
-  clear how much more work remains to be done before the task is complete (e.g., because the task is
-  waiting for a remote host to respond), or the progress is a number in the range zero to a maximum,
-  giving the fraction of work that has so far been completed.
+  The <{progress}> element <a>represents</a> progress of a task, either as a fraction of the total that has been completed, 
+  or merely that progress is occurring.
+  
+  <p class="note">
+  The <{progress}> element is the wrong element to for a simple gauge, as opposed to task progress. 
+  The <{meter}> element is more appropriate for such use cases. It allows arbitrary minimum as well as maximum values.
+  </p>
 
-  There are two attributes that determine the current task completion represented by the element.
   The <dfn element-attr for="progress"><code>value</code></dfn> content attribute specifies how much of the
-  task has been completed, and the <dfn element-attr for="progress"><code>max</code></dfn> content attribute
-  specifies how much work the task requires in total. The units are arbitrary and not specified.
+  task has been completed. When the attribute is present the value must be a <a>valid floating-point number</a>
+  in the range [0,<a for="progress">maximum value</a>]. 
+  If the attribute is missing, the element is an <dfn>indeterminate progress bar</dfn>, and should show something is happening
+  but that it is not clear how much more work remains to be done before the task is complete, for example
+  waiting for a response to a network request. If the attribute is present, the element is a <dfn>determinate progress bar</dfn>.
+  
+  The <dfn element-attr for="progress"><code>max</code></dfn> content attribute specifies how much work the task requires.
+  When the attribuite is present, the value must be a <a>valid floating-point number</a> greater than zero. 
+  The <a>missing value default</a> is 1.0.
 
-  <p class="note">
-    To make a determinate progress bar, add a <{progress/value}> attribute with the current progress (either a number from
-  0.0 to 1.0, or, if the <{progress/max}> attribute is specified, a number
-  from 0 to the value of the <{progress/max}> attribute). To make an
-  indeterminate progress bar, remove the <{progress/value}>
-  attribute.
-  </p>
+  The units are arbitrary and not specified.
 
-  Authors are encouraged to also include the current value and the <a for="progress">maximum value</a> inline as text
-  inside the element, so that the progress is made available to users of legacy user agents.
+  The <dfn attribute for="HTMLProgressElement"><code>max</code></dfn> IDL attribute must
+  <a>reflect</a> the content attribute of the same name, <a>limited to numbers greater than
+  zero</a>. The default value for <{progress/max}> is 1.0.
 
-  <div class="example">
-    Here is a snippet of a Web application that shows the progress of some automated task:
+  The <dfn attribute for="HTMLProgressElement"><code>value</code></dfn> IDL attribute provides the amount of the task complete
+  for a <a>determinate progress bar</a> or 0 for an <a>indeterminate progress bar</a>. 
+  On setting, the given value must be converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{progress/value}> content attribute must be set to that string.
 
-    <pre highlight="html">
-&lt;section&gt;
-  &lt;h2&gt;Task Progress&lt;/h2&gt;
-  &lt;p&gt;Progress: &lt;progress id="p" max=100&gt;&lt;span&gt;0&lt;/span&gt;%&lt;/progress&gt;&lt;/p&gt;
-  &lt;script&gt;
-  var progressBar = document.getElementById('p');
-  function updateProgress(newValue) {
-    progressBar.value = newValue;
-    progressBar.getElementsByTagName('span')[0].textContent = newValue;
-  }
-  &lt;/script&gt;
-&lt;/section&gt;
-    </pre>
-
-    (The <code>updateProgress()</code> method in this example would be called by some
-    other code on the page to update the actual progress bar as the task progressed.)
-
-  </div>
-
-  The <{progress/value}> and <{progress/max}> attributes, when present, must have values that are <a>valid floating-point numbers</a>. The <{progress/value}> attribute, if present, must have a value equal to or
-  greater than zero, and less than or equal to the value of the <{progress/max}> attribute, if present, or 1.0, otherwise. The <{progress/max}> attribute, if present, must have a value greater than
-  zero.
-
-  <p class="note">
-    The <{progress}> element is the wrong element to use for something that
-  is just a gauge, as opposed to task progress. For instance, indicating disk space usage using
-  <{progress}> would be inappropriate. Instead, the <{meter}> element is available
-  for such use cases.
-  </p>
-
-  <strong>User agent requirements</strong>: If the <{progress/value}>
-  attribute is omitted, then the progress bar is an indeterminate progress bar. Otherwise, it is a
-  determinate progress bar.
-
-  If the progress bar is a determinate progress bar and the element has a <{progress/max}> attribute, the user agent must parse the <{progress/max}> attribute's value according to the <a>rules for parsing
-  floating-point number values</a>. If this does not result in an error, and if the parsed value
-  is greater than zero, then the <dfn for="progress">maximum value</dfn> of the
-  progress bar is that value. Otherwise, if the element has no <{progress/max}> attribute, or if it has one but parsing it resulted in an
-  error, or if the parsed value was less than or equal to zero, then the <a for="progress">maximum value</a> of the progress bar is 1.0.
-
-  If the progress bar is a determinate progress bar, user agents must parse the <{progress/value}> attribute's value according to the <a>rules for
-  parsing floating-point number values</a>. If this does not result in an error, and if the
-  parsed value is less than the <a for="progress">maximum value</a> and
-  greater than zero, then the <dfn for="progress">current value</dfn> of the
-  progress bar is that parsed value. Otherwise, if the parsed value was greater than or equal to the
-  <a for="progress">maximum value</a>, then the <a for="progress">current value</a> of the progress bar is the <a for="progress">maximum value</a> of the progress bar. Otherwise, if parsing
-  the <{progress/value}> attribute's value resulted in an error, or a
-  number less than or equal to zero, then the <a for="progress">current
-  value</a> of the progress bar is zero.
-
-  <strong>user agent requirements for showing the progress bar</strong>: When representing a
-  <{progress}> element to the user, the user agent should indicate whether it is a determinate or
-  indeterminate progress bar, and in the former case, should indicate the relative position of the
-  <a for="progress">current value</a> relative to the <a for="progress">maximum value</a>.
+  The {{HTMLProgressElement/labels}} IDL attribute provides a list of the element's <{label}>s.
+  
+  The <dfn attribute for="HTMLProgressElement"><code>position</code></dfn> IDL attribute 
+  gives the fraction of the task completed for a <a>determinate progress bar</a> or -1 for an <a>indeterminate progress bar</a>.
 
   <dl class="domintro">
 
@@ -8751,27 +8707,94 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   </dl>
 
-  If the progress bar is an indeterminate progress bar, then the <dfn attribute for="HTMLProgressElement"><code>position</code></dfn> IDL attribute must return -1.
-  Otherwise, it must return the result of dividing the <a for="progress">current
-  value</a> by the <a for="progress">maximum value</a>.
+  <strong>user agent requirements for showing the progress bar</strong>: When representing a
+  <{progress}> element to the user, the user agent should indicate whether it is a determinate or
+  indeterminate progress bar. For a <a>determinate progress bar</a> the user agent should indicate the
+  <a for="progress">current value</a> relative to the <a for="progress">maximum value</a>, 
+  e.g. by filling an appropriate fraction of the widget in a contrasting color.
 
-  If the progress bar is an indeterminate progress bar, then the <dfn attribute for="HTMLProgressElement"><code>value</code></dfn> IDL attribute, on getting, must return 0.
-  Otherwise, it must return the <a for="progress">current value</a>. On
-  setting, the given value must be converted to the
-  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
-  and then the <{progress/value}> content attribute must be set to that string.
+<h5 id="determinate-progress-bar">Determinate progress bars</h5>
+
+  Authors are encouraged to include the current value and the <a for="progress">maximum value</a> inline as text
+  inside the element, so that the progress is made available to users of legacy user agents.
+
+  <div class="example">
+    Here is a snippet of a Web application that shows the progress of some automated task:
+
+    <pre highlight="html">
+&lt;section&gt;
+  &lt;h2&gt;Task Progress&lt;/h2&gt;
+  &lt;p&gt;Progress: &lt;progress id="p" max="100" value="0"&gt;&lt;span id="pVal"&gt;0&lt;/span&gt;%&lt;/progress&gt;&lt;/p&gt;
+  &lt;script&gt;
+  var progressBar = document.getElementById('p');
+  function updateProgress(newValue) {
+    progressBar.value = newValue;
+    progressBar.querySelector('#pVal')[0].textContent = newValue;
+  }
+  &lt;/script&gt;
+&lt;/section&gt;
+    </pre>
+
+    (The <code>updateProgress()</code> method in this example would be called by some
+    other code on the page to update the actual progress bar as the task progressed.)
+
+  </div>
+
+  If the element has a <{progress/max}> attribute, the user agent must parse the attribute's value according to the
+  <a>rules for parsing floating-point number values</a>.
+  
+  If this does not result in an error, and if the parsed value is greater than zero, then the 
+  <dfn for="progress">maximum value</dfn> of the progress bar is that value. 
+  
+  Otherwise the <a for="progress">maximum value</a> of the progress bar is 1.0.
+
+  User agents must parse the <{progress/value}> attribute's value according to the <a>rules for
+  parsing floating-point number values</a>. If this results in an error, or if the
+  parsed value is less than zero, then the <dfn for="progress">current value</dfn> of the progress bar is zero.
+  
+  Otherwise, the <a for="progress">current value</a> of the progress bar is the lesser of the parsed value and the
+  <a for="progress">maximum value</a> of the progress bar.
+
+  The {{HTMLProgressElement/position}} IDL attribute must return the
+  result of dividing the <a for="progress">current value</a> by the <a for="progress">maximum value</a>.
+
+<h5 id="indeterminate-progress-bar">Indeterminate progress bars</h5>
+
+  <div class="example">
+    Here is a snippet of a Web application that shows whether a task is complete:
+
+    <pre highlight="html">
+&lt;section&gt;
+  &lt;h2&gt;Task Progress&lt;/h2&gt;
+  &lt;p&gt;Progress: &lt;progress id="p"&gt;Working...&lt;/progress&gt;&lt;/p&gt;
+  &lt;script&gt;
+  var progressBar = document.getElementById('p');
+  function finishedWorking() {
+    progressBar.value = 1;
+    progressBar.textContent = "Done";
+  }
+  &lt;/script&gt;
+&lt;/section&gt;
+    </pre>
+
+    The <code>finishedWorking()</code> method in this example would be called by some
+    other code on the page to update the actual progress bar when the task is complete.
+    
+    Setting the {{HTMLProgressElement/value}} there changes the element to a <a>determinate progress bar</a>.
+
+  </div>
+
+  The {{HTMLProgressElement/position}} IDL attribute must return -1.
+
+  The {{HTMLProgressElement/value}} IDL attribute, on getting, must return 0.
+  Otherwise, it must return the <a for="progress">current value</a>. 
 
   <p class="note">
-    Setting the {{HTMLProgressElement/value}} IDL attribute to itself
-  when the corresponding content attribute is absent would change the progress bar from an
+  Setting the {{HTMLProgressElement/value}} IDL attribute to itself
+  when the corresponding content attribute is absent changes the progress bar from an
   indeterminate progress bar to a determinate progress bar with no progress.
   </p>
 
-  The <dfn attribute for="HTMLProgressElement"><code>max</code></dfn> IDL attribute must
-  <a>reflect</a> the content attribute of the same name, <a>limited to numbers greater than
-  zero</a>. The default value for <{progress/max}> is 1.0.
-
-  The {{HTMLProgressElement/labels}} IDL attribute provides a list of the element's <{label}>s.
 
 <h4 id="the-meter-element">The <dfn element><code>meter</code></dfn> element</h4>
 
