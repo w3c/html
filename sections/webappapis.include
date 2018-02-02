@@ -59,34 +59,62 @@
   :: An <a>environment settings object</a>, containing various settings that are shared with other
       <a for="concept">scripts</a> in the same context.
 
-  A <dfn>classic script</dfn> additionally has:
-
   : A <dfn>Source text</dfn>
   :: A string containing a block of executable code to be evaluated as a JavaScript
       <a for="ecma">Script</a>.
 
-  : Optionally, a <dfn>muted errors</dfn> flag
-  :: A flag which, if set, means that error information will not be provided for errors in this
-    script (used to mute errors for cross-origin scripts, since that can leak private information).
+  : A <dfn>record</dfn>
+  :: Either a <a>Script Record</a>, for <a>classic
+     scripts</a>; a <a>Source Text Module Record</a>, for <a>module scripts</a>; or null. 
+     In the former two cases, it represents a parsed script;
+     null represents a failure parsing.
 
-  A <dfn>module script</dfn> additionally has:
+  : A <dfn>parse error</dfn>
+  :: A JavaScript value, which has meaning only if the <a>record</a> is
+     null, indicating that the corresponding script source text could not be parsed.
 
-  : A <dfn>module record</dfn>
-  :: A <a>Source Text Module Record</a> representing the parsed module, ready to be evaluated.
+  : An <dfn>error to rethrow</dfn>
+  :: A JavaScript value representing an error that will prevent evaluation from succeeding. It
+     will be re-thrown by any attempts to <a>run</a> the script.
+     <p class="note">Since this exception value is provided by the JavaScript specification, we know
+     that it is never null, so we use null to signal that no error has occurred.</p>
+
+  : <dfn>Fetch options</dfn>
+  :: A <a>script fetch options</a>, containing various options related to fetching this
+     script or <a>module scripts</a> that it imports.
 
   : A <dfn>base URL</dfn>
   :: A base URL used for resolving module specifiers when <a>resolving a module specifier</a>. This
       will either be the URL from which the script was obtained, for external module scripts, or the
       <a>document base URL</a> of the containing document, for inline module scripts.
 
-  : A <a>credentials mode</a>
-  :: A <a>credentials mode</a> used to fetch imported modules.
+  A <dfn>classic script</dfn> additionally has:
 
-  : A <dfn>cryptographic nonce</dfn>
-  :: A <a>cryptographic nonce</a> used to fetch imported modules.
+  : A <dfn>muted errors</dfn> boolean
+  :: A boolean which, if true, means that error information will not be provided for errors in this
+      script (used to mute errors for cross-origin scripts, since that can leak private information).
 
-  : A <dfn>parser state</dfn>
-  :: The <a>parser metadata</a> used to fetch imported modules.
+  A <dfn>module script</dfn> is another type of <a>script</a>. It has no additional <a>items</a>.
+
+  An <dfn>environment</dfn> is an object that identifies the settings of a
+  current or potential execution environment. An <a>environment</a> has the following fields:
+
+  : A <dfn>id</dfn>
+  :: An opaque string that uniquely identifies the <a>environment</a>.
+
+  : A <dfn>creation URL</dfn>
+  :: A <a>URL record</a> that represents the location of the resource with which the
+      <a>environment</a> is associated.
+      <p class="note">In the case of an <a>environment settings object</a>, this URL might be
+      distinct from the <a>environment settings object</a>'s <a>responsible
+      document</a>'s <a>URL</a>, due to mechanisms such as
+      <code>history.pushState()</code>.</p>
+
+  : A <a>target browsing context</a>
+  :: Null or a <a>service worker</a> that <a>controls</a> the <a>environment</a>.
+
+  : A <dfn>execution ready flag</dfn>
+  :: A flag that indicates whether the environment setup is done. It is initially unset.
 
   <hr />
 
@@ -136,12 +164,6 @@
   : An <dfn for="security">origin</dfn>
   :: An [=concept/origin=] used in security checks.
 
-  : A <dfn>creation URL</dfn>
-  :: An <a>absolute URL</a> representing the location of the resource with which the <a>environment
-      settings object</a> is associated. Note that this URL might be distinct from the
-      <a>responsible document</a>'s [=Document/URL=], due to mechanisms such as
-      <code>history.pushState()</code>.
-
   : An <dfn for="settings">HTTPS state</a>
   :: An <a>HTTPS state value</a> representing the security properties of the network channel used to
      deliver the resource with which the <a>environment settings object</a> is associated.
@@ -159,33 +181,116 @@
 
 <h5 id="sec-fetching-scripts"><dfn>Fetching scripts</dfn></h5>
 
-  The various script-fetching algorithms below have two hooks that may be customized by their
-  callers:
+  <p>This section introduces a number of algorithms for fetching scripts, taking various necessary
+  inputs and resulting in <a>classic scripts</a> or <a>module scripts</a>.</p>
 
-  * <dfn>Set up the request</dfn>, which takes a <a>request</a> which it may modify before the
-     algorithm continues
-  * <dfn>Process the response</dfn>, which takes a <a>response</a> and must either return
-     <code>true</code> or <code>false</code> to indicate success or failure, respectively
+  <hr />
+
+  <p><dfn>Script fetch options</dfn> is a <a>struct</a> with the following <a>items</a>:</p>
+
+  <dl>
+   <dt><dfn for="script">cryptographic nonce</dfn></dt>
+
+   <dd><p>The <a>cryptographic nonce metadata</a> used
+   for the initial fetch and for fetching any imported modules</p></dd>
+
+   <dt><dfn for="script">integrity metadata</dfn></dt>
+
+   <dd><p>The <a>integrity metadata</a> used for
+   the initial fetch</dd>
+
+   <dt><dfn for="script">parser metadata</dfn></dt>
+
+   <dd><p>The <a>parser metadata</a> used for the
+   initial fetch and for fetching any imported modules</p></dd>
+
+   <dt><dfn for="script">credentials mode</dfn></dt>
+
+   <dd><p>The <a>credentials mode</a> used for the
+   initial fetch (for <a>module scripts</a>) and for fetching any
+   imported modules (for both <a>module scripts</a> and <a>classic scripts</a>)</p></dd>
+
+   <dt><dfnfor="script">referrer policy</dfn></dt>
+
+   <dd><p>The <a>referrer policy</a> used for the
+   initial fetch and for fetching any imported modules</p></dd>
+  </dl>
+
+  <p class="note">Recall that via the <code>import()</code> feature, <a>classic scripts</a> can import <a>module scripts</a>.</p>
+
+  
+  <p>The <dfn>default classic script fetch options</dfn> are a <a>script fetch options</a>
+  whose <a>cryptographic nonce</a> is the empty
+  string, <a>integrity metadata</a> is the
+  empty string, <a>parser metadata</span> is "<code>not-parser-inserted</code>", <a>credentials mode</a> is "<code>omit</code>", and <a>referrer
+  policy</a> is the empty string.</p>
+
+  <p>Given a <a>request</a> <var>request</var> and a <a>script
+  fetch options</a> <var>options</var>, we define:</p>
+
+  <dl>
+   <dt><dfn>set up the classic script request</dfn></dt>
+   <dd><p>Set <var>request</var>'s <a>cryptographic nonce
+   metadata</a> to <var>options</var>'s <a>cryptographic nonce</a>, its <a>integrity metadata</a> to <var>options</var>'s
+   <a>integrity metadata</a>, its <a>parser metadata</a> to <var>options</var>'s 
+   <a>parser metadata</a>, and its <a>referrer policy</a> to <var>options</var>'s <a>referrer policy</a>.</p></dd>
+
+   <dt><dfn>set up the module script request</dfn></dt>
+   <dd><p>Set <var>request</var>'s <a>cryptographic nonce
+   metadata</a> to <var>options</var>'s <a>cryptographic nonce</a>, its <a>integrity metadata</a> to <var>options</var>'s
+   <a>integrity metadata</a>, its <a>parser metadata</a> to <var>options</var>'s 
+   <a>parser metadata</a>, its <a>credentials mode</a> to <var>options</var>'s <a>credentials mode</a>, 
+   and its <a>referrer policy</a> to <var>options</var>'s <a>referrer policy</a>.</p></dd>
+  </dl>
+
+  <p>For any given <a>script fetch options</a> <var>options</var>, the <dfn>descendant script
+  fetch options</dfn> are a new <a>script fetch options</a> whose <a>items</a> all have the same values,
+   except for the <a>integrity metadata</a>, which is instead the
+  empty string.</p>
+
+  <hr>
+
+  <p>The algorithms below can be customized by optionally supplying a custom <dfn for="fetching scripts">perform the
+  fetch</dfn> hook, which takes a <a>request</a> and an <dfn for="fetching scripts"><var>is top-level</var></dfn> flag. The algorithm must complete with a <a>response</a> (which may be a <a>network error</a>), either
+  synchronously (when using <a>fetch a classic worker-imported script</a>) or asynchronously
+  (otherwise). The <var>is top-level</var> flag will be set
+  for all <a>classic script</a> fetches, and for the initial fetch when <a>fetching a module script tree</a> or <a>fetching a module worker script tree</a>, but not for the fetches resulting from
+  <code>import</code> statements encountered throughout the graph.</p>
+
+  <div class="note">
+   <p>By default, not supplying the <a>perform the
+   fetch</a> will cause the below algorithms to simply <a>fetch</a>
+   the given <a>request</a>, with algorithm-specific customizations
+   to the <a>request</a> and validations of the resulting <a>response</a>.</p>
+
+   <p>To layer your own customizations on top of these algorithm-specific ones, supply a <a>perform the fetch</a> hook that modifies the given
+   <a>request</a>, <a>fetches</a> it,
+   and then performs specific validations of the resulting <a>response</a> (completing with a <a>network error</a> if the
+   validations fail).</p>
+
+   <p>The hook can also be used to perform more subtle customizations, such as keeping a cache of
+   <a>responses</a> and avoiding performing a <a>fetch</a> at all.</p>
+  </div>
 
   <p class="note">Service Workers is an example of a specification that runs these algorithms with
   its own options for the hooks. [[SERVICE-WORKERS]]</p>
 
   To <dfn lt="fetching a classic script|fetch a classic script">fetch a classic script</dfn>
   for a <{script}> element <var>element</var>, given a
-  <var>url</var>, a <var>CORS setting</var>, a <var>cryptographic nonce</var>, a
-  <var>parser state</var>, a <var>settings object</var>, and a <var>character encoding</var>, run
+  <var>url</var>, a <var>CORS setting</var>, a <var>settings object</var>, and some <var>options</var>, run
   these steps. The algorithm will asynchronously complete with either null (on failure) or a new
   <a>classic script</a> (on success).
 
   1. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
-      <var>url</var> and <var>CORS setting</var>.
-  2. Set <var>request</var>'s <a>client</a> to <var>settings object</var>, its
-      <a for="request">type</a> to "<code>script</code>", its <a>destination</a> to
-      "<code>script</code>", its <a>cryptographic nonce metadata</a> to
-      <var>cryptographic nonce</var>, and its <a>parser metadata</a> to <var>parser state</var>.
-  3. If the caller specified custom steps to <a>set up the request</a>, perform them on
-      <var>request</var>.
-  4. <a>Fetch</a> <var>request</var>.
+      <var>url</var>, "<var>script</var>", and <var>CORS setting</var>.
+  2. Set <var>request</var>'s <a>client</a> to <var>object</var>.
+  3. <a>Set up the classic script request</a> given <var>request</var> and <var>options</var>.
+  4. If the caller specified custom steps to <a>perform
+      the fetch</a>, perform them on <var>request</var>, with the <var>is top-level</var> flag set. Return from this algorithm,
+      and when the custom <a>perform the fetch</a> steps
+      complete with <a>response</a> <var>response</var>, run the
+      remaining steps.
+      <p>Otherwise, <a>fetch</a> <var>request</var>.</p>
   5. Return from this algorithm, and run the remaining steps as part of the fetch's <a>process
       response</a> for the <a>response</a> <var>response</var>.
 
@@ -217,20 +322,22 @@
        flag to the <a>create a classic script</a> algorithm as well.
   11. Asynchronously complete this algorithm with <var>script</var>.
 
-  To <dfn>fetch a classic worker script</dfn> given a <var>url</var>, a <var>referrer</var>, a
-  <var>settings object</var>, and a <var>destination</var>, run these steps. The algorithm will
+  To <dfn>fetch a classic worker script</dfn> given a <var>url</var>, a <var>fetch
+  client settings object</var>, a <var>destination</var>, and a <var>script settings object</var>, run these steps. The algorithm will
   asynchronously complete with either null (on failure) or a new <a>classic script</a>
   (on success).
 
-  1. Let <var>request</var> be a new <a>request</a> whose URL is <var>url</var>,
-      <a>client</a> is <var>settings object</var>, <a for="request">type</a> is
-      "<code>script</code>", <a>destination</a> is <var>destination</var>, <a>referrer</a> is
-      <var>referrer</var>, <a for="request">mode</a> is "<code>same-origin</code>",
-      <a>credentials mode</a> is "<code>same-origin</code>", <a>parser metadata</a> is
-      "<code>not parser-inserted</code>", and whose <a>use-URL-credentials flag</a> is set.
-  2. If the caller specified custom steps to <a>set up the request</a>, perform them on
-      <var>request</var>.
-  3. <a>Fetch</a> <var>request</var>.
+  1. Let <var>request</var> be a new <a>request</a> whose <a>url</a> is <var>url</var>, 
+      <a>client</a> is <var>fetch client settings object</var>, <a>destination</a> is <var>destination</var>,
+       <a>mode</a> is "<code>same-origin</code>", <a>credentials mode</a> is "<code>same-origin</code>", <a>parser
+       metadata</a> is "<code>not parser-inserted</code>", and whose
+       <a>use-URL-credentials flag</a> is set.
+  2. If the caller specified custom steps to <a>perform
+      the fetch</a>, perform them on <var>request</var>, with the <a>is top-level</a> flag set. Return from this algorithm,
+      and when the custom <a>perform the fetch</span> steps
+      complete with <a>response</a> <var>response</var>, run the
+      remaining steps.
+      <p>Otherwise, <a>fetch</a> <var>request</var>.</p>
   4. Return from this algorithm, and run the remaining steps as part of the fetch's <a>process
       response</a> for the <a>response</a> <var>response</var>.
   5. If <var>response</var>'s <a for="response">type</a> is "<code>error</code>", or
@@ -246,9 +353,8 @@
   9. Asynchronously complete this algorithm with <var>script</var>.
 
   To <dfn lt="fetching a module script tree|fetch a module script tree">fetch a module script tree</dfn>
-  given a <var>url</var>, a <var>credentials mode</var>, a
-  <var>cryptographic nonce</var>, a <var>parser state</var>, a <var>destination</var>, a
-  <var>fetch client settings object</var>, and an optional <var>ancestor list</var>, run these
+  given a <var>url</var>, a <var>settings object</var>, a <var>destination</var>, and some
+  <var>options</var>, run these
   steps. The algorithm will asynchronously complete with either null (on failure) or a new
   <a>module script</a> (on success).
 
@@ -313,9 +419,9 @@
       <a>module script</a>, asynchronously complete this algorithm with <var>module script</var>.
 
   To <dfn lt="fetching a single module script|fetch a single module script">fetch a single module script</dfn>,
-  given a <var>url</var>, a
-  <var>credentials mode</var>, a <var>cryptographic nonce</var>, a <var>parser state</var>,
-  a <var>destination</var>, and a <var>settings object</var>, run these steps. The algorithm will
+  given a <var>url</var>, a <var>fetch client
+  settings object</var>, a <var>destination</var>, some <var>options</var>, a <var>module map
+  settings object</var>, a <var>referrer</var>, and a <var>top-level module fetch</var> flag, run these steps. The algorithm will
   asynchronously complete with either null (on failure) or a <a>module script</a> (on success).
 
   1. Let <var>module map</var> be <var>settings object</var>'s <a>module map</a>.
@@ -326,12 +432,11 @@
       this algorithm with that entry's value, and abort these steps.
   4. Create an entry in <var>module map</var> with key <var>url</var> and value
       "<code>fetching</code>".
-  5. Let <var>request</var> be a new <a>request</a> whose <a for="request">url</a> is
-      <var>url</var>, <a>destination</a> is <var>destination</var>, <a for="request">type</a> is
-      "<code>script</code>", <a for="request">mode</a> is "<code>cors</code>",
-      <a>credentials mode</a> is <var>credentials mode</var>, <a>cryptographic nonce metadata</a>
-      is <var>cryptographic nonce</var>, <a>parser metadata</a> is <var>parser state</var> and
-      <a>client</a> is <var>settings object</var>.
+  5. Let <var>request</var> be a new <a>request</a> whose
+      <a>url</a> is <var>url</var>, <a>destination</a> is <var>destination</var>, <a>mode</a> is "<code>cors</code>", 
+      <a>referrer</a> is <var>referrer</var>, and <a>client</a> is <var>fetch client settings
+      object</var>. <a>Set up the module script request</a> given <var>request</var> and
+      <var>options</var>.
   6. If the caller specified custom steps to <a>set up the request</a>, perform them on
       <var>request</var>.
   7. <a>Fetch</a> <var>request</var>.
@@ -2741,20 +2846,31 @@
 
         <ol>
           <li>Perform <a>HostEnsureCanCompileStrings</a>(<var>callerRealm</var>,
-          <var>calleeRealm</var>). If this throws an exception, <a>report the exception</a>.</li>
+          <var>calleeRealm</var>). If this throws an exception, <a>report the exception</a>, and abort these steps.</li>
 
           <li>Let <var>script source</var> be the first method argument.</li>
-
-          <li>Let <var>script language</var> be JavaScript.</li>
 
           <li>Let <var>settings object</var> be <var>method context</var>'s <a>environment settings
           object</a>.</li>
 
-          <li><a>Create a script</a> using <var>script source</var> as the script source,
-          the [=url/URL=] where <var>script source</var> can be found, <var>scripting
-          language</var> as the scripting language, and <var>settings object</var> as the
-          <a>environment settings object</a>.</li>
+          <li>Let <var>base URL</var> be <var>initiating script</var>'s <a>base URL</a>.</li>
 
+          <li>
+          <p>Let <var>fetch options</var> be a <a>script fetch options</a> whose <a>cryptographic nonce</a> is <var>initiating script</var>'s <a>fetch options</a>'s
+          <a>cryptographic nonce</a>, <a>integrity metadata</a> is the empty string, 
+          <a>parser metadata</a> is "<code>not-parser-inserted</code>", 
+          <a>credentials mode</a> is <var>initiating script</var>'s 
+          <a>fetch options</a>'s <a>credentials mode</a>, and <a>referrer policy</a> 
+          is <var>initiating script</var>'s <a>fetch options</a>'s <a>referrer policy</a>.</p>
+          <p class="note">The effect of these options ensures that the string compilation done by
+          <code>setTimeout()</code> and <code>setInterval()</code> behaves equivalently to that done by
+          <code>eval()</code>. That is, <a>module script</a> fetches via <code>import()</code>
+          will behave the same in both contexts.</p></li>
+
+          <li>Let script be the result of <a>creating a classic script</a> given 
+          <var>script source</var>, <var>settings object</var>, <var>base URL</var>, and <var>fetch options</var>.</li>
+
+          <li><a>Run the classic script</a> <var>script</var>.</li>
         </ol>
 
         </dd>

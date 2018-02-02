@@ -53,7 +53,7 @@
     <dd><{script/async}> - Execute script <a>in parallel</a></dd>
     <dd><{script/defer}> - Defer script execution</dd>
     <dd><{script/crossorigin}> - How the element handles crossorigin requests</dd>
-    <dd><{script/nonce}> - Cryptographic nonce used in <em>Content Security Policy</em> checks [[CSP3]]</dd>
+    <dd><{script/integrity}> -  Integrity metadata used in <em>Subresource Integrity</em> checks [[!SRI]]</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
@@ -431,11 +431,11 @@ o............A....e
 
       Otherwise, if the <{script}> element has a <{script/type}> attribute, let
       <var>the script block's type string</var> for this <{script}> element be the value of that
-      attribute with any leading or trailing sequences of [=space characters=] removed.
+      attribute with <a>strip leading and trailing ASCII whitespace</a>.
 
       Otherwise, the element has a non-empty <{script/language}> attribute; let
       <var>the script block's type string</var> for this <{script}> element be the
-      <a>child text content</a> of the <{script/language}> attribute.
+      concatenation of the string "<var>text/</var>" followed by the value of the <{script/language}> attribute.
 
       <p class="note">The <{script/language}> attribute is never conforming, and is always ignored
       if there is a <{script/type}> attribute present.</p>
@@ -492,11 +492,17 @@ o............A....e
        content attribute.
   15. <p>Let <var>cryptographic nonce</var> be the element's <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a>
        internal slot's value.
-  16. Let <var>parser state</var> be "<code>parser-inserted</code>" if the <{script}> element has been flagged
+  16. If the <{script}> element has an <{script/integrity}> attribute, then let <var>integrity metadata</var> be that attribute's value.
+      Otherwise, let <var>integrity metadata</var> be the empty string.
+  17. Let <var>parser metadata</var> be "<code>parser-inserted</code>" if the <{script}> element has been flagged
        as "[=parser-inserted=]", and "`not parser-inserted`" otherwise.
-  17. Let <var>settings</var> be the element's <a>node document</a>'s {{Window}} object's
+  18. Let options be a <a>script fetch options</a> whose <a>cryptographic nonce metadata</a> is 
+       cryptographic nonce, <a>integrity metadata</a> is integrity metadata, 
+       <a>parser metadata</a> is parser metadata, <a>credentials mode</a> is module 
+       script credentials mode, and <a>referrer policy</a> is the empty string.
+  19. Let <var>settings</var> be the element's <a>node document</a>'s {{Window}} object's
        <a>environment settings object</a>.
-  18. If the element has a <{script/src}> content attribute, run these substeps:
+  20. If the element has a <{script/src}> content attribute, run these substeps:
 
        1. Let <var>src</var> be the value of the element's <{script/src}> attribute.
        2. If <var>src</var> is the empty string, <a>queue a task</a> to <a>fire a simple event</a>
@@ -510,34 +516,20 @@ o............A....e
        6. Switch on <a>the script's type</a>:
            <dl class="switch">
              <dt>`"classic"`</dt>
-             <dd><a>Fetch a classic script</a> given <var>url</var>, <var>CORS setting</var>,
-             <var>cryptographic nonce</var>, <var>parser state</var>, <var>settings</var>, and
+             <dd><a>Fetch a classic script</a> given <var>url</var>, <var>settings object</var>,
+             <var>options</var>, <var>classic script CORS setting</var>, and
              <var>encoding</var>.
 
              <dt><code>"module"</code></dt>
-             <dd>
-                   1. Let <var>credentials mode</var> be determined by switching on
-                       <var>CORS setting</var>:
-                       <dl class="switch">
-                         <dt><a state for="cors">No CORS</a></dt>
-                         <dd><code>"omit"</code></dd>
-
-                         <dt><a state for="cors">Anonymous</a></dt>
-                         <dd><code>"same-origin"</code></dd>
-
-                         <dt><a state for="cors">Use Credentials</a></dt>
-                         <dd><code>"include"</code></dd>
-                       </dl>
-                   2. <a>Fetch a module script tree</a> given <var>url</var>,
-                       <var>credentials mode</var>, <var>cryptographic nonce</var>,
-                       <var>parser state</var>, "<code>script</code>", and <var>settings</var>.
+             <dd><a>Fetch a module script tree</a> given <var>url</var>,
+                       <var>settings object</var>, "<code>script</code>", and <var>options</var>.
              </dd>
            </dl>
            When the chosen algorithm asynchronously completes, set <a>the script's script</a> to the
            result. At that time, <a>the script is ready</a>.
 
            For performance reasons, user agents may start fetching the classic script or module tree
-           (as defined above) as the <{script/src}> attribute is set, instead, in the hope that the
+           (as defined above) as soon as the <{script/src}> attribute is set, instead, in the hope that the
            element will be <a for="document">inserted into the document</a> (and that the
            <{script/crossorigin}> attribute won't change value in the meantime). Either way, once
            the element is <a for="document">inserted into the document</a>, the load must have
@@ -546,34 +538,33 @@ o............A....e
            changed, or the <{script/crossorigin}> attribute is dynamically changed, then the user
            agent will not execute the script so obtained, and the fetching process will have been
            effectively wasted.
-  19. If the element does not have a <{script/src}> content attribute, run these substeps:
+  21. If the element does not have a <{script/src}> content attribute, run these substeps:
 
-       1. Let <var>source text</var> be the value of the {{HTMLScriptElement/text}} IDL attribute.
-       2. Switch on <a>the script's type</a>:
+       1. Let <var>source text</var> be the <{script}> element's <a>child text content</a>.
+       2. Let <var>base URL</var> be the <{script}> element's <a>node document</a>'s <a>document base URL</a>.
+       3. Switch on <a>the script's type</a>:
            <dl class="switch">
              <dt>`"classic"`</dt>
              <dd>
                   1. Let <var>script</var> be the result of <a>creating a classic script</a> using
-                      <var>source text</var> and <var>settings</var>.
+                      <var>source text</var>, <var>settings object</var>, <var>base URL</var> and <var>options</var>.
                   2. Set <a>the script's script</a> to <var>script</var>.
                   3. <a>The script is ready</a>.
              </dd>
 
              <dt><code>"module"</code></dt>
              <dd>
-                  1. Let <var>base URL</var> be the <{script}> element's <a>node document</a>'s
-                      <a>document base URL</a>.
-                  2. Let <var>script</var> be the result of <a>creating a module script</a> using
-                      <var>source text</var>, <var>settings</var>, <var>base URL</var>, and
-                      <var>CORS setting</var>.
-                  3. If this returns null, set <a>the script's script</a> to null and abort these
+                  1. Let <var>script</var> be the result of <a>creating a module script</a> using
+                      <var>source text</var>, <var>settings object</var>, <var>base URL</var>, and
+                      <var>options</var>.
+                  2. If this returns null, set <a>the script's script</a> to null and abort these
                       substeps; <a>the script is ready</a>.
-                  4. <a>Fetch the descendants</a> of <var>script</var>. When this asynchronously
+                  3. <a>Fetch the descendants</a> of and instantiate script, given the destination "<var>script</var>". When this asynchronously
                       completes, set <a>the script's script</a> to the result. At that time,
                       <a>the script is ready</a>.
              </dd>
            </dl>
-  20. Then, follow the first of the following options that describes the situation:
+  22. Then, follow the first of the following options that describes the situation:
        <dl class="switch">
          <dt></dt>
          <dd>
