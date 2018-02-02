@@ -59,7 +59,7 @@ For pull requests coming from branches within this repository, use the same step
 `git push` will _automatically_ close the pull request and mark it as merged, since the commits contained there were updated.
 
 ### Bash Functions
-The following is based on https://github.com/whatwg/html/blob/master/TEAM.md.
+The following is based on https://github.com/whatwg/meta/blob/master/MAINTAINERS.md.
 
 ```
 pr () {
