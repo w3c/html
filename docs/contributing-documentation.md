@@ -44,7 +44,7 @@ Note: For substantive changes it may be necessary to ask the Web Platform WG for
 5. Edit the [Acknowledgements section](https://github.com/w3c/html/blob/master/sections/acknowledgements.include) to add your name.
 
 6. For substantive changes, run Bikeshed to make sure there are no errors.
-Note: The [Build documentation](docs/build-documentation.md) page has information about setting up and using Bikeshed.
+Note: The [Build documentation](build-documentation.md) page has information about setting up and using Bikeshed.
 
 7. Create a PR, but do not include single-page.html.
 
