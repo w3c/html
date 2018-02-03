@@ -1008,8 +1008,9 @@
   <p class="example">So <code>rel="next"</code> is the same as <code>rel="NEXT"</code>.</p>
 
   Keywords that are <dfn>body-ok</dfn> affect whether <{link}> elements are
-  <a>allowed in the body</a>. The <a>body-ok</a> keywords defined by this specification are
-  <code>prefetch</code>, <code>preload</code>, and <{link/stylesheet}>. Other specifications
+  <a>allowed in the body</a>. The <a>body-ok</a> keywords defined by this specification are  <code>dns-prefetch</code>, 
+  <code>external</code>, <code>preconnect</code>,  
+  <code>prefetch</code>, <code>preload</code>, <code>prerender</code> and <{link/stylesheet}>. Other specifications
   can also define <span>body-ok</span> keywords.
 
   <table>
@@ -1052,7 +1053,15 @@
     </tr>
 
     <tr>
-      <td><code>external</code></td>
+      <td><{link/dns-prefetch}></td>
+      <td><em>not allowed</em></td>
+      <td><a>hyperlink</a></td>
+      <td class="yes"> &middot; </td>
+      <td>Gives the origin for resources so the User Agent can resolve it as early as possible.</td>
+    </tr>
+
+    <tr>
+      <td<{link/external}></td>
       <td><em>not allowed</em></td>
       <td>Annotation</td>
       <td class="no"> &middot; </td>
@@ -1116,7 +1125,7 @@
     </tr>
 
     <tr>
-      <td><code>prefetch</code></td>
+      <td><{link/preconnect}></td>
       <td><a>External Resource</a></td>
       <td><em>not allowed</em></td>
       <td class="yes"> Yes </td>
@@ -1124,11 +1133,27 @@
     </tr>
 
     <tr>
-      <td><code>preload</code></td>
+      <td><{link/prefetch}></td>
+      <td><a>External Resource</a></td>
+      <td><em>not allowed</em></td>
+      <td class="yes"> Yes </td>
+      <td>Specifies that the target resource should be preemptively cached and cache the target resource as it is likely to be required for a followup <a>navigation</a>.</td>
+    </tr>
+
+    <tr>
+      <td><{link/prerender}></td>
       <td><a>External Resource</a></td>
       <td><em>not allowed</em></td>
       <td class="yes"> Yes </td>
       <td>Specifies that the user agent must preemptively <a>fetch</a> and cache the target resource for current <a>navigation</a> according to the <a>potential destination</a> given by the <{link/as}> attribute (and the <a>priority</a> associated with the <a>corresponding</a> <a>destination</a>).</td>
+    </tr>
+
+    <tr>
+      <td><{link/prerender}></td>
+      <td><a>External Resource</a></td>
+      <td><em>not allowed</em></td>
+      <td class="yes"> Yes </td>
+      <td>Specifies that the target resource should be preemptively cached and cache the target resource as it is likely to be required for a followup <a>navigation</a>.</td>
     </tr>
 
     <tr>
@@ -1328,7 +1353,22 @@
   &lt;/body&gt;
   ...
     </pre>
-  </div>
+  </div
+
+<h5 id="link-type-dns-prefetch">Link type "<dfn element-state for="link"><code>dns-prefetch</code></dfn>"</h5>
+
+The <{link/dns-prefetch}> keyword may be used with <{link}>.This keyword is <a>body-ok</a>.
+
+The <{link/dns-prefetch}> keyword is used to indicate an origin that will be used to fetch 
+required resources, and that the user agent SHOULD resolve as early as possible.
+
+See [[resource-hints]] for full definition.
+
+
+<h5 id="link-type-external">Link type "<dfn element-state for="link"><code>external</code></dfn>"</h5>
+
+  The <{link/external}> keyword may be used with <{a}>, and <{area}> elements.
+   This keyword creates a <a>hyperlink</a>. The <{link/external}> keyword indicates that the referenced document is not part of the same site as the current document. It is informational, and requires no specific browser behaviour.
 
 <h5 id="link-type-help">Link type "<dfn element-state for="link"><code>help</code></dfn>"</h5>
 
@@ -1578,6 +1618,29 @@
   behavior as
   <code highlight="html">&lt;a href="..." rel="noreferrer noopener" target="_blank"></code>.</p>
 
+<h5 id="link-type-preconnect">Link type "<dfn element-state for="link"><code>preconnect</code></dfn>"</h5>
+
+The <{link/preconnect}> keyword may be used with <{link}>.This keyword is <a>body-ok</a>.
+  
+The <{link/preconnect}> keyword is used to initiate an early connection, which includes the DNS lookup, TCP handshake, 
+  and optional TLS negotiation, allows the user agent to mask the 
+  high latency costs of establishing a connection. 
+
+See [[resource-hints]] for full definition.
+
+<h5 id="link-type-prefetch">Link type "<dfn element-state for="link"><code>prefetch</code></dfn>"</h5>
+
+The <{link/prefetch}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>. 
+This keyword is <a>body-ok</a>.
+
+The <{link/prefetch}> keyword is used to identify a resource that might be required
+ by the next navigation, and that the user agent SHOULD fetch, 
+ such that the user agent can deliver a faster response once the 
+ resource is requested in the future.
+
+See [[resource-hints]] for full definition.
+ 
+
 <h5 id="link-type-preload">Link type "<dfn element-state for="link"><code>preload</code></dfn>"</h5>
 
   The <{link/preload}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>. This keyword is <a>body-ok</a>.
@@ -1585,6 +1648,19 @@
   The <{link/preload}> keyword indicates that the user agent must preemptively fetch and cache the specified resource according to the <a>potential destination</a> given by the <{link/as}> attribute (and the <a>priority</a> associated with the <a>corresponding</a> <a>destination</a>), as it is highly likely that the user will require this resource for current navigation. User agents must implement the processing model of the <{link/preload}> keyword described in the Preload specification. [[!Preload]]
   
   There is no default type for resources given by the <{link/preload}> keyword.
+
+<h5 id="link-type-prerender">Link type "<dfn element-state for="link"><code>prerender</code></dfn>"</h5>
+
+The <{link/prerender}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>. 
+This keyword is <a>body-ok</a>.
+
+The <{link/prerender}> keyword identifies a resource that might be required 
+by the next navigation from the link context, and that the user agent ought
+ to fetch and execute, such that the user agent can deliver a faster 
+ response once the resource is requested in the future.
+
+See [[resource-hints]] for full definition.
+ 
 
 <h5 id="link-type-search">Link type "<dfn element-state for="link"><code>search</code></dfn>"</h5>
 
