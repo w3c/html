@@ -463,8 +463,11 @@
   Tags have to be nested such that elements are all completely within each other, without
   overlapping:
 
-  <pre class="bad" highlight="html">&lt;p>This is &lt;em>very &lt;strong>wrong&lt;/em>!&lt;/strong>&lt;/p></pre>
-  <pre highlight="html">&lt;p>This &lt;em>is &lt;strong>correct&lt;/strong>.&lt;/em>&lt;/p></pre>
+  <pre class="bad" highlight="html">&lt;!-- incorrect tag nesting -->
+    &lt;p>This is &lt;em>very &lt;strong>wrong&lt;/em>!&lt;/strong>&lt;/p>
+
+    &lt;!-- appropriate tag nesting -->
+    &lt;p>This &lt;em>is &lt;strong>correct&lt;/strong>.&lt;/em>&lt;/p></pre>
 
   This specification defines a set of elements that can be used in HTML, along with rules about the
   ways in which the elements can be nested.
@@ -499,8 +502,8 @@
   DOM trees contain several kinds of nodes, in particular a {{DocumentType}} node, {{Element}}
   nodes, {{Text}} nodes, {{Comment}} nodes, and in some cases {{ProcessingInstruction}} nodes.
 
-  The <a href="#intro-early-example">markup snippet at the top of this section</a> would be turned
-  into the following DOM tree:
+  The <a href="#intro-early-example">basic HTML document example, at the top of this section</a>
+  would be turned into the following DOM tree:
 
   <ul class="domTree">
     <li class="t10">DOCTYPE: <code>html</code></li>
@@ -650,11 +653,11 @@
   :: When accepting untrusted input, e.g., user-generated content such as text comments, values
       in URL parameters, messages from third-party sites, etc, it is imperative that the data
       be validated before use, and properly escaped when displayed. Failing to do this can
-      allow a hostile user to perform a variety of attacks, ranging from the potentially
-      benign, such as providing bogus user information like a negative age, to the serious,
-      such as running scripts every time a user looks at a page that includes the information,
-      potentially propagating the attack in the process, to the catastrophic, such as deleting
-      all data in the server.
+      allow a hostile user to perform a variety of attacks. These attacks may range from the
+      potentially benign, such as providing bogus user information like a negative age, to the
+      serious, such as running scripts every time a user looks at a page that includes the
+      information, potentially propagating the attack in the process, to the catastrophic, such
+      as deleting all data in the server.
 
       When writing filters to validate user input, it is imperative that filters always be
       safelist-based, allowing known-safe constructs and disallowing all other input.
@@ -664,7 +667,7 @@
 
       <div class="example">
         For example, suppose a page looked at its URL's query string to determine what to display,
-        and the site then redirected the user to that page to display a message, as in:
+        and the site then redirected the user to that page to display a message, such as:
 
         <pre highlight="html">
           &lt;ul>
@@ -760,11 +763,13 @@
 
     <pre highlight="html">
       &lt;script>
-      var img = new Image();
-      img.src = 'games.png';
-      img.alt = 'Games';
-      img.onload = gamesLogoHasLoaded;
-      // img.addEventListener('load', gamesLogoHasLoaded, false); // would work also
+        var img = new Image();
+        img.src = 'games.png';
+        img.alt = 'Games';
+        img.onload = gamesLogoHasLoaded;
+
+        // The following would also work
+        // img.addEventListener('load', gamesLogoHasLoaded, false);
       &lt;/script>
     </pre>
 
@@ -775,11 +780,13 @@
     <pre class="bad" highlight="html">
       &lt;!-- Do not use this style, it has a race condition! -->
       &lt;img id="games" src="games.png" alt="Games">
-      &lt;!-- the 'load' event might fire here while the parser is taking a
-          break, in which case you will not see it! -->
+      &lt;!--
+        The 'load' event might fire here while the parser is taking
+        a break, in which case you will not see it!
+      -->
       &lt;script>
-      var img = document.getElementById('games');
-      img.onload = gamesLogoHasLoaded; // might never fire!
+        var img = document.getElementById('games');
+        img.onload = gamesLogoHasLoaded; // might never fire!
       &lt;/script>
     </pre>
   </div>
