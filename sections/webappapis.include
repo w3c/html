@@ -574,32 +574,34 @@
   <code>b.html</code> being loaded in an <{iframe}> as shown, and <code>c.html</code> and
   <code>d.html</code> omitted (they can simply be empty documents):
 
-    <pre highlight="html">
-  &lt;!-- a/a.html -->
-  &lt;!DOCTYPE HTML>
-  &lt;html lang="en">
-  &lt;title>Entry page&lt;/title>
+  <xmp highlight="html">
+   <!-- a/a.html -->
+   <!DOCTYPE HTML>
+   <html lang="en">
+   <title>Entry page</title>
 
-  &lt;iframe src="b.html">&lt;/iframe>
-  &lt;button onclick="frames[0].hello()">Hello&lt;/button>
+   <iframe src="b.html"></iframe>
+   <button onclick="frames[0].hello()">Hello</button>
+  </xmp>
 
-  &lt;!-- b.html -->
-  &lt;!DOCTYPE HTML>
-  &lt;html lang="en">
-  &lt;title>Incumbent page&lt;/title>
+  <xmp highlight="html">
+   <!-- b.html -->
+   <!DOCTYPE HTML>
+   <html lang="en">
+   <title>Incumbent page</title>
 
-  &lt;iframe src="c.html" id="c">&lt;/iframe>
-  &lt;iframe src="d.html" id="d">&lt;/iframe>
+   <iframe src="c.html" id="c"></iframe>
+   <iframe src="d.html" id="d"></iframe>
 
-  &lt;script>
-  const c = document.querySelector("#c").contentWindow;
-  const d = document.querySelector("#d").contentWindow;
+   <script>
+   const c = document.querySelector("#c").contentWindow;
+   const d = document.querySelector("#d").contentWindow;
 
-  window.hello = () => {
-    c.print.call(d);
-  };
-  &lt;/script>
-  </pre>
+   window.hello = () => {
+     c.print.call(d);
+   };
+   </script>
+  </xmp>
 
   Each page has its own <a>browsing context</a>, and thus its own <a>JavaScript realm</a>,
   <a>global object</a>, and <a>environment settings object</a>.
@@ -635,12 +637,12 @@
   The <code>navigator.getBattery()</code> method creates promises in the <a>relevant Realm</a> for
   the {{Navigator}} object on which it is invoked. This has the following impact: [[BATTERY-STATUS]]
 
-  <pre highlight="html">
-  &lt;!-- outer.html -->
-  &lt;!DOCTYPE html>
-  &lt;html lang="en">
-  &lt;title>Relevant Realm demo: outer page&lt;/title>
-  &lt;script>
+  <xmp highlight="html">
+  <!-- outer.html -->
+  <!DOCTYPE html>
+  <html lang="en">
+  <title>Relevant Realm demo: outer page</title>
+  <script>
     function doTest() {
       const promise = navigator.getBattery.call(frames[0].navigator);
 
@@ -649,22 +651,24 @@
 
       frames[0].hello();
     }
-  &lt;/script>
-  &lt;iframe src="inner.html" onload="doTest()">&lt;/iframe>
+  </script>
+  <iframe src="inner.html" onload="doTest()"></iframe>
+  </xmp>
 
-  &lt;!-- inner.html -->
-  &lt;!DOCTYPE html>
-  &lt;html lang="en">
-  &lt;title>Relevant Realm demo: inner page&lt;/title>
-  &lt;script>
+  <xmp highlight="html">
+  <!-- inner.html -->
+  <!DOCTYPE html>
+  <html lang="en">
+  <title>Relevant Realm demo: inner page</title>
+  <script>
     function hello() {
       const promise = navigator.getBattery();
 
       console.log(promise instanceof Promise);        // logs true
       console.log(promise instanceof parent.Promise); // logs false
     }
-  &lt;/script>
-  </pre>
+  </script>
+  </xmp>
 
   If the algorithm for the <code>getBattery()</code> method had instead used the <a>current
   Realm</a>, all the results would be reversed. That is, after the first call to
@@ -769,11 +773,11 @@
     For example, the following script never terminates. A user agent could, after waiting for a
     few seconds, prompt the user to either terminate the script or let it continue.
 
-    <pre highlight="html">
-      &lt;script>
+    <xmp highlight="html">
+      <script>
         while (true) { /* loop */ }
-      &lt;/script>
-    </pre>
+      </script>
+    </xmp>
   </div>
 
   User agents are encouraged to allow users to disable scripting whenever the user is prompted
@@ -1505,17 +1509,17 @@
     this example is clicked by the user, the page will show four alerts, with the text "ONE", "TWO",
     "THREE", and "FOUR" respectively.
 
-    <pre highlight="html">
-  &lt;button>Start Demo&lt;/button>
-  &lt;script>
-  var button = document.getElementById('test');
-  button.addEventListener('click', function () { alert('ONE') }, false);
-  button.setAttribute('onclick', "alert('NOT CALLED')"); // event handler listener is registered here
-  button.addEventListener('click', function () { alert('THREE') }, false);
-  button.onclick = function () { alert('TWO'); };
-  button.addEventListener('click', function () { alert('FOUR') }, false);
-  &lt;/script>
-  </pre>
+    <xmp highlight="html">
+    <button>Start Demo</button>
+    <script>
+    var button = document.getElementById('test');
+    button.addEventListener('click', function () { alert('ONE') }, false);
+    button.setAttribute('onclick', "alert('NOT CALLED')"); // event handler listener is registered here
+    button.addEventListener('click', function () { alert('THREE') }, false);
+    button.onclick = function () { alert('TWO'); };
+    button.addEventListener('click', function () { alert('FOUR') }, false);
+    </script>
+    </xmp>
   </div>
 
   <p class="note">The interfaces implemented by the event object do not influence whether an
@@ -1597,7 +1601,7 @@
   <div class="example">
     For example, the following document fragment:
 
-    <pre highlight="html">&lt;body onload="alert(this)" onclick="alert(this)"></pre>
+    <xmp highlight="html"><body onload="alert(this)" onclick="alert(this)"></xmp>
 
     ...leads to an alert saying "<code>[object&nbsp;Window]</code>" when the document is
     loaded, and an alert saying "<code>[object&nbsp;HTMLBodyElement]</code>" whenever the
@@ -3552,17 +3556,17 @@
       ...and then, much later, while visiting <code>https://www.example.net/</code>,
       clicked on a link such as:
 
-      <pre highlight="html">
-  &lt;a href="chickenk&#xEF;wi.soup">Download our Chicken K&#xEF;wi soup!&lt;/a>
-  </pre>
+      <xmp highlight="html">
+        <a href="chickenkïwi.soup">Download our Chicken Kïwi soup!</a>
+      </xmp>
 
-      ...then, assuming this <code>chickenk&#xEF;wi.soup</code> file was served with the
+      ...then, assuming this <code>chickenkïwi.soup</code> file was served with the
       <a>MIME type</a> <code>application/x-soup</code>, the user agent might navigate to the
       following URL:
 
       <pre>https://example.com/soup?url=https://www.example.net/chickenk%C3%AFwi.soup</pre>
 
-      This site could then fetch the <code>chickenk&#xEF;wi.soup</code> file and do
+      This site could then fetch the <code>chickenkïwi.soup</code> file and do
       whatever it is that it does with soup (synthesize it and ship it to the user, or whatever).
     </div>
 
