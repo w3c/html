@@ -1547,7 +1547,7 @@ part of the form.</p>
       </td><td> A button
   </td></tr></tbody></table>
 
-  The <i>missing value default</i> is the <a>Text</a>
+  The <i>missing value default</i> is the <{input/Text}>
   state.
 
   Which of the
@@ -2616,7 +2616,7 @@ part of the form.</p>
   The <{input/disabled}> attribute is used to make the control non-interactive and to prevent its value from being submitted.
   The <{input/form}> attribute is used to explicitly associate the <{input}> element with its <a>form owner</a>.
   The <{input/autofocus}> attribute controls focus.
-  The <{input/autocapitalize}> attribute hints how the user agent should automatically capitalize text that the user enters.
+  The <{input/autocapitalize}> attribute provides a hint for the user agent to help the user automatically capitalize text they enter.
   The <{input/autocomplete}> attribute controls how the user agent provides autofill behavior.
 
 
@@ -2647,7 +2647,7 @@ part of the form.</p>
   <a>reflect</a> the <{input/value}> content attribute.
 
   The <dfn attribute for="HTMLInputElement"><code>type</code></dfn> and
-  <dfn attribute for="HTMLInputElement"><code>auticapitalize</code></dfn> IDL attributes must
+  <dfn attribute for="HTMLInputElement"><code>autocapitalize</code></dfn> IDL attributes must
   <a>reflect</a> the respective content attributes of the same name,
   <a>limited to only known values</a>.
   The <dfn attribute for="HTMLInputElement"><code>maxLength</code></dfn> IDL attribute must
@@ -3182,7 +3182,7 @@ part of the form.</p>
     provide a single e-mail address.
 
     <strong>Constraint validation</strong>: While the user interface is representing input that
-    the user agent cannot convert to punycode, the control is <a>suffering from bad
+    the user agent cannot convert to a valid email address, the control is <a>suffering from bad
     input</a>.
 
     The <code>value</code> attribute, if specified and not empty, must
@@ -3218,7 +3218,7 @@ part of the form.</p>
 
     <strong>Constraint validation</strong>: While the user interface describes a situation where
     an individual value contains a U+002C COMMA (,) or is representing input that the user agent
-    cannot convert to punycode, the control is <a>suffering from bad input</a>.
+    cannot convert to a valid email address, the control is <a>suffering from bad input</a>.
 
     Whenever the user changes the element's <a for="forms">value<em>s</em></a>,
     the user agent must run the following steps:
@@ -3265,49 +3265,17 @@ part of the form.</p>
   When the <code>multiple</code> attribute is set or removed, the
   user agent must run the <a>value sanitization algorithm</a>.
 
-  A <dfn>valid e-mail address</dfn> is a string that matches the <code>email</code>
-  production of the following ABNF, the character set for which is Unicode. This ABNF implements the
-  extensions described in RFC 1123. [[!ABNF]] [[!RFC5322]] [[!RFC1034]] [[!RFC1123]]
-
-  <pre data-highlight="abnf">
-email         = 1*( atext / "." ) "@" label *( "." label )
-
-label         = let-dig [ [ ldh-str ] let-dig ]
-                        ; limited to a length of 63 characters by <a>RFC 1034 section 3.5</a>
-
-atext         = ALPHA / DIGIT /    ; Printable US-ASCII characters not including "specials".
-                "!" / "#" /        ;
-                "$" / "%" /        ; This is as defined in <a>RFC 5322 section 3.2.3</a>
-                "&" / "'" /
-                "*" / "+" / "-" / "/" / "=" / "?" /
-                "^" / "_" / "`" / "{" / "|" / "}" / "~"
-
-let-dig       = ALPHA / DIGIT ; defined in <a>RFC 1034 section 3.5</a>
-ldh-str       = let-dig / "-" ; defined in <a>RFC 1034 section 3.5</a>
-    </pre>
+  A <dfn>valid e-mail address</dfn> is defined in [[!RFC6531]].
+  
+  A user agent should present and consume unicode text in the user interface, and expose it to other applications,
+  except when sending to a Mail Transfer Agent that does not support SMTPUTF8 [[RFC6531]].
 
   <div class="note">
 
-    This requirement is a <a>willful violation</a> of RFC 5322.
-
-    This syntax allows e-mail addresses with Internationalised Domain Names using punycode, such as
-    <code>example@xn--d1acpjx3f.xn--p1ai</code>. A user agent should represent that in the user interface
-    as <samp>example@яндекс.рф</samp>
-
-    This syntax does not allow valid internationalised email addresses, such as <samp>我買@屋企.香港</samp>.
-    See also <a href="https://github.com/w3c/html/issues/845">Issue 845</a>.
-
-  </div>
-
-  <div class="note">
-
-    The following JavaScript- and Perl-compatible regular expression is an implementation of the
-    above definition.
-
-    <pre highlight="javascript">
-/^[a-zA-Z0-9.!#$%&amp;'*+\/=?^_&#x60;{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-    </pre>
-
+    This allows fully internationalised email addresses such as <samp>我買@屋企.香港</samp>,
+    and e-mail addresses with Internationalised Domain Names as defined by [[RFC5890]], such as
+    <samp>example@яндекс.рф</samp>.
+    
   </div>
 
   A <dfn>valid e-mail address list</dfn> is a <a>set of comma-separated tokens</a>, where
@@ -6474,13 +6442,18 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
     The <dfn element-attr for="input, textarea"><code>autocapitalize</code></dfn>
     content attribute is an <a>enumerated attribute</a>.
-    It provides a suggestion to the user agent to automatically capitalize text entered by the user in
-    <{input}> and <{textarea}> elements, to simplify entering text with appropriate capitalization.
-    The user must be able to alter the capitalization of the text they enter.
+    It provides a suggestion to the user agent, to help automatically capitalize text entered by the user in
+    <{input}> and <{textarea}> elements. For example when an onscreen keyboard is provided, 
+    default word suggestions may be capitalized as described.
+
+    If the user agent sets capitalization automatically,
+    the user must be able to alter the capitalization of the text they enter.
 
     The value must be one of the following:
     <code>sentences</code>, <code>words</code>, <code>characters</code> or <code>none</code>.
-    The attribute may be ommitted. The <i>missing value default</i> is <code>none</code>.
+    The attribute may be omitted. The <i>missing value default</i>
+    is <code>sentences</code> for <{input}> elements in the <{input/Text}> and <{input/Search}> states and <{textarea}> elements, 
+    and <code>none</code> for <{input}> elements in the <{input/URL}>, <{input/E-mail}>, and <{input/Password}> states.
 
     When an <{input}> or a <{textarea}> element has an <{input/autocapitalize}> attribute,
     text entered by the user should be capitalized as described in the following table:
@@ -6518,8 +6491,8 @@ You cannot submit this form when the field is incorrect.</samp></pre>
        question mark ('?'), or exclamation point ('!'). Other words may begin with an upper-case letter,
        although this varies by language.</td>
       <td class="example">
-       <p>Simple Example. Four Words.</p>
-       <p lang="de">Die Deutsche Sprache Hat Regeln.</p>
+       <p>Simple example. Four words.</p>
+       <p lang="de">Die Deutsche Sprache hat Regeln.</p>
        <p lang="ru">Вот текст по-русский. Как работает?</p>
       </td>
      </tr>
@@ -6529,21 +6502,6 @@ You cannot submit this form when the field is incorrect.</samp></pre>
       <td>All text should be as entered by the user, preserving case.</td>
      </tr>
     </table>
-
-    A <dfn>valid autocapitalize hint</dfn> is a string that matches the <code>autocapitalize</code>
-    production of the following ABNF, the character set for which is Unicode.
-
-    <pre data-highlight="abnf">
-  autocapitalize = sentences / words / characters / none
-
-  sentences      = "sentences"
-
-  words          = "words"
-
-  characters     = "characters"
-
-  none           = "none"
-      </pre>
 
 <h5 id="common-input-element-apis">Common <{input}> element <dfn>APIs</dfn></h5>
 
@@ -8698,85 +8656,41 @@ You cannot submit this form when the field is incorrect.</samp></pre>
     </dd>
   </dl>
 
-  The <{progress}> element <a>represents</a> the completion progress of a task.
-  The progress is either indeterminate, indicating that progress is being made but that it is not
-  clear how much more work remains to be done before the task is complete (e.g., because the task is
-  waiting for a remote host to respond), or the progress is a number in the range zero to a maximum,
-  giving the fraction of work that has so far been completed.
+  The <{progress}> element <a>represents</a> progress of a task, either as a fraction of the total that has been completed, 
+  or merely that progress is occurring.
+  
+  <p class="note">
+  The <{progress}> element is the wrong element to for a simple gauge, as opposed to task progress. 
+  The <{meter}> element is more appropriate for such use cases. It allows arbitrary minimum as well as maximum values.
+  </p>
 
-  There are two attributes that determine the current task completion represented by the element.
   The <dfn element-attr for="progress"><code>value</code></dfn> content attribute specifies how much of the
-  task has been completed, and the <dfn element-attr for="progress"><code>max</code></dfn> content attribute
-  specifies how much work the task requires in total. The units are arbitrary and not specified.
+  task has been completed. When the attribute is present the value must be a <a>valid floating-point number</a>
+  in the range [0,<a for="progress">maximum value</a>]. 
+  If the attribute is missing, the element is an <dfn>indeterminate progress bar</dfn>, and should show something is happening
+  but that it is not clear how much more work remains to be done before the task is complete, for example
+  waiting for a response to a network request. If the attribute is present, the element is a <dfn>determinate progress bar</dfn>.
+  
+  The <dfn element-attr for="progress"><code>max</code></dfn> content attribute specifies how much work the task requires.
+  When the attribuite is present, the value must be a <a>valid floating-point number</a> greater than zero. 
+  The <a>missing value default</a> is 1.0.
 
-  <p class="note">
-    To make a determinate progress bar, add a <{progress/value}> attribute with the current progress (either a number from
-  0.0 to 1.0, or, if the <{progress/max}> attribute is specified, a number
-  from 0 to the value of the <{progress/max}> attribute). To make an
-  indeterminate progress bar, remove the <{progress/value}>
-  attribute.
-  </p>
+  The units are arbitrary and not specified.
 
-  Authors are encouraged to also include the current value and the <a for="progress">maximum value</a> inline as text
-  inside the element, so that the progress is made available to users of legacy user agents.
+  The <dfn attribute for="HTMLProgressElement"><code>max</code></dfn> IDL attribute must
+  <a>reflect</a> the content attribute of the same name, <a>limited to numbers greater than
+  zero</a>. The default value for <{progress/max}> is 1.0.
 
-  <div class="example">
-    Here is a snippet of a Web application that shows the progress of some automated task:
+  The <dfn attribute for="HTMLProgressElement"><code>value</code></dfn> IDL attribute provides the amount of the task complete
+  for a <a>determinate progress bar</a> or 0 for an <a>indeterminate progress bar</a>. 
+  On setting, the given value must be converted to the
+  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
+  and then the <{progress/value}> content attribute must be set to that string.
 
-    <pre highlight="html">
-&lt;section&gt;
-  &lt;h2&gt;Task Progress&lt;/h2&gt;
-  &lt;p&gt;Progress: &lt;progress id="p" max=100&gt;&lt;span&gt;0&lt;/span&gt;%&lt;/progress&gt;&lt;/p&gt;
-  &lt;script&gt;
-  var progressBar = document.getElementById('p');
-  function updateProgress(newValue) {
-    progressBar.value = newValue;
-    progressBar.getElementsByTagName('span')[0].textContent = newValue;
-  }
-  &lt;/script&gt;
-&lt;/section&gt;
-    </pre>
-
-    (The <code>updateProgress()</code> method in this example would be called by some
-    other code on the page to update the actual progress bar as the task progressed.)
-
-  </div>
-
-  The <{progress/value}> and <{progress/max}> attributes, when present, must have values that are <a>valid floating-point numbers</a>. The <{progress/value}> attribute, if present, must have a value equal to or
-  greater than zero, and less than or equal to the value of the <{progress/max}> attribute, if present, or 1.0, otherwise. The <{progress/max}> attribute, if present, must have a value greater than
-  zero.
-
-  <p class="note">
-    The <{progress}> element is the wrong element to use for something that
-  is just a gauge, as opposed to task progress. For instance, indicating disk space usage using
-  <{progress}> would be inappropriate. Instead, the <{meter}> element is available
-  for such use cases.
-  </p>
-
-  <strong>User agent requirements</strong>: If the <{progress/value}>
-  attribute is omitted, then the progress bar is an indeterminate progress bar. Otherwise, it is a
-  determinate progress bar.
-
-  If the progress bar is a determinate progress bar and the element has a <{progress/max}> attribute, the user agent must parse the <{progress/max}> attribute's value according to the <a>rules for parsing
-  floating-point number values</a>. If this does not result in an error, and if the parsed value
-  is greater than zero, then the <dfn for="progress">maximum value</dfn> of the
-  progress bar is that value. Otherwise, if the element has no <{progress/max}> attribute, or if it has one but parsing it resulted in an
-  error, or if the parsed value was less than or equal to zero, then the <a for="progress">maximum value</a> of the progress bar is 1.0.
-
-  If the progress bar is a determinate progress bar, user agents must parse the <{progress/value}> attribute's value according to the <a>rules for
-  parsing floating-point number values</a>. If this does not result in an error, and if the
-  parsed value is less than the <a for="progress">maximum value</a> and
-  greater than zero, then the <dfn for="progress">current value</dfn> of the
-  progress bar is that parsed value. Otherwise, if the parsed value was greater than or equal to the
-  <a for="progress">maximum value</a>, then the <a for="progress">current value</a> of the progress bar is the <a for="progress">maximum value</a> of the progress bar. Otherwise, if parsing
-  the <{progress/value}> attribute's value resulted in an error, or a
-  number less than or equal to zero, then the <a for="progress">current
-  value</a> of the progress bar is zero.
-
-  <strong>user agent requirements for showing the progress bar</strong>: When representing a
-  <{progress}> element to the user, the user agent should indicate whether it is a determinate or
-  indeterminate progress bar, and in the former case, should indicate the relative position of the
-  <a for="progress">current value</a> relative to the <a for="progress">maximum value</a>.
+  The {{HTMLProgressElement/labels}} IDL attribute provides a list of the element's <{label}>s.
+  
+  The <dfn attribute for="HTMLProgressElement"><code>position</code></dfn> IDL attribute 
+  gives the fraction of the task completed for a <a>determinate progress bar</a> or -1 for an <a>indeterminate progress bar</a>.
 
   <dl class="domintro">
 
@@ -8793,27 +8707,94 @@ You cannot submit this form when the field is incorrect.</samp></pre>
 
   </dl>
 
-  If the progress bar is an indeterminate progress bar, then the <dfn attribute for="HTMLProgressElement"><code>position</code></dfn> IDL attribute must return -1.
-  Otherwise, it must return the result of dividing the <a for="progress">current
-  value</a> by the <a for="progress">maximum value</a>.
+  <strong>user agent requirements for showing the progress bar</strong>: When representing a
+  <{progress}> element to the user, the user agent should indicate whether it is a determinate or
+  indeterminate progress bar. For a <a>determinate progress bar</a> the user agent should indicate the
+  <a for="progress">current value</a> relative to the <a for="progress">maximum value</a>, 
+  e.g. by filling an appropriate fraction of the widget in a contrasting color.
 
-  If the progress bar is an indeterminate progress bar, then the <dfn attribute for="HTMLProgressElement"><code>value</code></dfn> IDL attribute, on getting, must return 0.
-  Otherwise, it must return the <a for="progress">current value</a>. On
-  setting, the given value must be converted to the
-  <a lt="best floating-point number">best representation of the number as a floating-point number</a>
-  and then the <{progress/value}> content attribute must be set to that string.
+<h5 id="determinate-progress-bar">Determinate progress bars</h5>
+
+  Authors are encouraged to include the current value and the <a for="progress">maximum value</a> inline as text
+  inside the element, so that the progress is made available to users of legacy user agents.
+
+  <div class="example">
+    Here is a snippet of a Web application that shows the progress of some automated task:
+
+    <pre highlight="html">
+&lt;section&gt;
+  &lt;h2&gt;Task Progress&lt;/h2&gt;
+  &lt;p&gt;Progress: &lt;progress id="p" max="100" value="0"&gt;&lt;span id="pVal"&gt;0&lt;/span&gt;%&lt;/progress&gt;&lt;/p&gt;
+  &lt;script&gt;
+  var progressBar = document.getElementById('p');
+  function updateProgress(newValue) {
+    progressBar.value = newValue;
+    progressBar.querySelector('#pVal')[0].textContent = newValue;
+  }
+  &lt;/script&gt;
+&lt;/section&gt;
+    </pre>
+
+    (The <code>updateProgress()</code> method in this example would be called by some
+    other code on the page to update the actual progress bar as the task progressed.)
+
+  </div>
+
+  If the element has a <{progress/max}> attribute, the user agent must parse the attribute's value according to the
+  <a>rules for parsing floating-point number values</a>.
+  
+  If this does not result in an error, and if the parsed value is greater than zero, then the 
+  <dfn for="progress">maximum value</dfn> of the progress bar is that value. 
+  
+  Otherwise the <a for="progress">maximum value</a> of the progress bar is 1.0.
+
+  User agents must parse the <{progress/value}> attribute's value according to the <a>rules for
+  parsing floating-point number values</a>. If this results in an error, or if the
+  parsed value is less than zero, then the <dfn for="progress">current value</dfn> of the progress bar is zero.
+  
+  Otherwise, the <a for="progress">current value</a> of the progress bar is the lesser of the parsed value and the
+  <a for="progress">maximum value</a> of the progress bar.
+
+  The {{HTMLProgressElement/position}} IDL attribute must return the
+  result of dividing the <a for="progress">current value</a> by the <a for="progress">maximum value</a>.
+
+<h5 id="indeterminate-progress-bar">Indeterminate progress bars</h5>
+
+  <div class="example">
+    Here is a snippet of a Web application that shows whether a task is complete:
+
+    <pre highlight="html">
+&lt;section&gt;
+  &lt;h2&gt;Task Progress&lt;/h2&gt;
+  &lt;p&gt;Progress: &lt;progress id="p"&gt;Working...&lt;/progress&gt;&lt;/p&gt;
+  &lt;script&gt;
+  var progressBar = document.getElementById('p');
+  function finishedWorking() {
+    progressBar.value = 1;
+    progressBar.textContent = "Done";
+  }
+  &lt;/script&gt;
+&lt;/section&gt;
+    </pre>
+
+    The <code>finishedWorking()</code> method in this example would be called by some
+    other code on the page to update the actual progress bar when the task is complete.
+    
+    Setting the {{HTMLProgressElement/value}} there changes the element to a <a>determinate progress bar</a>.
+
+  </div>
+
+  The {{HTMLProgressElement/position}} IDL attribute must return -1.
+
+  The {{HTMLProgressElement/value}} IDL attribute, on getting, must return 0.
+  Otherwise, it must return the <a for="progress">current value</a>. 
 
   <p class="note">
-    Setting the {{HTMLProgressElement/value}} IDL attribute to itself
-  when the corresponding content attribute is absent would change the progress bar from an
+  Setting the {{HTMLProgressElement/value}} IDL attribute to itself
+  when the corresponding content attribute is absent changes the progress bar from an
   indeterminate progress bar to a determinate progress bar with no progress.
   </p>
 
-  The <dfn attribute for="HTMLProgressElement"><code>max</code></dfn> IDL attribute must
-  <a>reflect</a> the content attribute of the same name, <a>limited to numbers greater than
-  zero</a>. The default value for <{progress/max}> is 1.0.
-
-  The {{HTMLProgressElement/labels}} IDL attribute provides a list of the element's <{label}>s.
 
 <h4 id="the-meter-element">The <dfn element><code>meter</code></dfn> element</h4>
 
@@ -9760,9 +9741,15 @@ out of 233 257 824 bytes available&lt;/meter&gt;&lt;/p&gt;
 
   <ol>
 
-    <li>The element is a <{button}>, <{input}>, <{select}>, or
+    <li>The element is a <{button}>, <{input}>, <{option}>, <{select}>, or
     <{textarea}> element, and the <code>disabled</code> attribute
     is specified on this element (regardless of its value).</li>
+    
+    <!-- Note. option/disabled and optgroup/disabled are defined in the relevant element descriptions.
+    That is repeated here for clarity -->
+    
+    <li>The element is an <{option}> element that is a child of an 
+    <{optgroup}> element that has the <{optgroup/disabled}> attribute specified.</li>
 
     <li>The element is a descendant of a <{fieldset}> element whose <code>disabled</code> attribute is specified, and is <em>not</em> a
     descendant of that <{fieldset}> element's first <{legend}> element child, if
@@ -13037,6 +13024,22 @@ fur
     approximated if necessary (e.g., newlines could be removed from file names, quotes could be
     changed to "%22", and characters not expressible in the selected character encoding could be
     replaced by other characters).
+
+    For each character in the entry's file name that cannot be expressed using the selected
+    character encoding, replace the character by a string consisting of a U+0026 AMPERSAND
+    character (&amp;), a U+0023 NUMBER SIGN character (#), one or more <span>ASCII digits</span>
+    representing the code point of the character in base ten, and finally a U+003B SEMICOLON
+    character (;).
+
+    Field names and file names included in the generated <code>multipart/form-data</code>
+    resource must undergo multipart parameter-value character replacement for syntactically
+    significant characters: for each character in the parameter value that is U+0022 QUOTATION MARK
+    ("), U+007F DELETE (␡) or any other control in the range U+0000-U+001F except U+001B
+    ESCAPE (␛), replace the character by a string consisting of a U+0025 PERCENT SIGN character (%)
+    and two <a>ASCII hex digits</a> representing the code point of the character in base sixteen,
+    and replace each U+005C REVERSE SOLIDUS character (\) with two consecutive U+005C REVERSE
+    SOLIDUS characters (\\). U+001B ESCAPE (␛) is preserved (passed through unquoted) for
+    Web-compatible ISO-2022-JP.
 
     The boundary used by the user agent in generating the return value of this algorithm is the
     <dfn><code>multipart/form-data</code> boundary string</dfn>. (This value is used to generate the

@@ -1,6 +1,6 @@
 # Build documentation
 
-The [HTML specification](https://www.w3.org/TR/html52/) is built using [Bikeshed](https://github.com/tabatkins/bikeshed) - instructions for installing it are below.
+The [HTML specification](https://www.w3.org/TR/html53/) is built using [Bikeshed](https://github.com/tabatkins/bikeshed) - instructions for installing it are below.
 Before you create a Pull Request (PR) that is more complex than a simple typo or formatting fix,
 please update and run bikeshed locally to check that the spec builds correctly.
 
