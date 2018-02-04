@@ -2849,49 +2849,49 @@
 
     A static page implementing the x=5 position in such a game could look like the following:
 
-    <pre highlight="html">
-  &lt;!DOCTYPE HTML>
-  &lt;!-- this is https://example.com/line?x=5 -->
-  &lt;title>Line Game - 5&lt;/title>
-  &lt;p>You are at coordinate 5 on the line.&lt;/p>
-  &lt;p>
-  &lt;a href="?x=6">Advance to 6&lt;/a> or
-  &lt;a href="?x=4">retreat to 4&lt;/a>?
-  &lt;/p>
-  </pre>
+    <xmp highlight="html">
+      <!DOCTYPE html>
+      <!-- this is https://example.com/line?x=5 -->
+      <title>Line Game - 5</title>
+      <p>You are at coordinate 5 on the line.</p>
+      <p>
+        <a href="?x=6">Advance to 6</a> or
+        <a href="?x=4">retreat to 4</a>?
+      </p>
+    </xmp>
 
     The problem with such a system is that each time the user clicks, the whole page has to be
     reloaded. Here instead is another way of doing it, using script:
 
-    <pre highlight="html">
-  &lt;!DOCTYPE HTML>
-  &lt;!-- this starts off as https://example.com/line?x=5 -->
-  &lt;title>Line Game - 5&lt;/title>
-  &lt;p>You are at coordinate &lt;span>5&lt;/span> on the line.&lt;/p>
-  &lt;p>
-  &lt;a href="?x=6" onclick="go(1); return false;">Advance to 6&lt;/a> or
-  &lt;a href="?x=4" onclick="go(-1); return false;">retreat to 4&lt;/a>?
-  &lt;/p>
-  &lt;script>
-  var currentPage = 5; // prefilled by server
-  function go(d) {
-    setupPage(currentPage + d);
-    history.pushState(currentPage, document.title, '?x=' + currentPage);
-  }
-  onpopstate = function(event) {
-    setupPage(event.state);
-  }
-  function setupPage(page) {
-    currentPage = page;
-    document.title = 'Line Game - ' + currentPage;
-    document.getElementById('coord').textContent = currentPage;
-    document.links[0].href = '?x=' + (currentPage+1);
-    document.links[0].textContent = 'Advance to ' + (currentPage+1);
-    document.links[1].href = '?x=' + (currentPage-1);
-    document.links[1].textContent = 'retreat to ' + (currentPage-1);
-  }
-  &lt;/script>
-  </pre>
+    <xmp highlight="html">
+      <!DOCTYPE html>
+      <!-- this starts off as https://example.com/line?x=5 -->
+      <title>Line Game - 5</title>
+      <p>You are at coordinate <span>5</span> on the line.</p>
+      <p>
+        <a href="?x=6" onclick="go(1); return false;">Advance to 6</a> or
+        <a href="?x=4" onclick="go(-1); return false;">retreat to 4</a>?
+      </p>
+      <script>
+        var currentPage = 5; // prefilled by server
+        function go(d) {
+          setupPage(currentPage + d);
+          history.pushState(currentPage, document.title, '?x=' + currentPage);
+        }
+        onpopstate = function(event) {
+          setupPage(event.state);
+        }
+        function setupPage(page) {
+          currentPage = page;
+          document.title = 'Line Game - ' + currentPage;
+          document.getElementById('coord').textContent = currentPage;
+          document.links[0].href = '?x=' + (currentPage + 1);
+          document.links[0].textContent = 'Advance to ' + (currentPage + 1);
+          document.links[1].href = '?x=' + (currentPage - 1);
+          document.links[1].textContent = 'retreat to ' + (currentPage - 1);
+        }
+      </script>
+    </xmp>
 
     In systems without script, this still works like the previous example. However, users that
     <em>do</em> have script support can now navigate much faster, since there is no network access
@@ -2910,26 +2910,34 @@
     a previous state the user does not go back in time, and therefore it would be inappropriate to
     put the time in the session history title.
 
-    <pre highlight="html">
-  &lt;!DOCTYPE HTML>
-  &lt;TITLE>Line&lt;/TITLE>
-  &lt;SCRIPT>
-  setInterval(function () { document.title = 'Line - ' + new Date(); }, 1000);
-  var i = 1;
-  function inc() {
-    set(i+1);
-    history.pushState(i, 'Line - ' + i);
-  }
-  function set(newI) {
-    i = newI;
-    document.forms.F.I.value = newI;
-  }
-  &lt;/SCRIPT>
-  &lt;BODY ONPOPSTATE="set(event.state)">
-  &lt;FORM NAME=F>
-  State: &lt;OUTPUT NAME=I>1&lt;/OUTPUT> &lt;INPUT VALUE="Increment" TYPE=BUTTON ONCLICK="inc()">
-  &lt;/FORM>
-  </pre>
+    <xmp highlight="html">
+      <!DOCTYPE html>
+      <title>Line</title>
+      <script>
+        setInterval(function() {
+          document.title = 'Line - ' + new Date();
+        }, 1000);
+        var i = 1;
+
+        function inc() {
+          set(i + 1);
+          history.pushState(i, 'Line - ' + i);
+        }
+
+        function set(newI) {
+          i = newI;
+          document.forms.F.I.value = newI;
+        }
+      </script>
+
+      <body onpopstate="set(event.state)">
+        <form name=F>
+          State:
+          <output name=I>1</output>
+          <input value="increment" type=button onclick="inc()">
+        </form>
+      </body>
+    </xmp>
   </div>
 
   <div class="example">
@@ -2938,14 +2946,14 @@
     (e.g., in the first <code>script</code> element in the document's <{head}> element) to
     ensure that any entry added to the history session gets the desired scroll restoration mode.
 
-    <pre highlight="html">
-      &lt;head&gt;
-        &lt;script&gt;
+    <xmp highlight="html">
+      <head>
+        <script>
           if ('scrollRestoration' in history)
             history.scrollRestoration = 'manual';
-        &lt;/script&gt;
-      &lt;/head&gt;
-    </pre>
+        </script>
+      </head>
+    </xmp>
   </div>
 
 <h4 id="sec-implementation-notes-for-session-history"><dfn lt="doesn't necessarily have to affect|Implementation notes for session history">Implementation notes for session history</dfn></h4>
@@ -5082,22 +5090,23 @@
   <div class="example">
     In this example, an indicator is updated as the browser goes online and offline.
 
-    <pre highlight="html">
-      &lt;!DOCTYPE HTML>
-      &lt;html>
-        &lt;head>
-          &lt;title>Online status&lt;/title>
-          &lt;script>
+    <xmp highlight="html">
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Online status</title>
+          <script>
             function updateIndicator() {
               document.getElementById('indicator').textContent = navigator.onLine ? 'online' : 'offline';
             }
-          &lt;/script>
-        &lt;/head>
-        &lt;body onload="updateIndicator()" ononline="updateIndicator()" onoffline="updateIndicator()">
-          &lt;p>The network is: &lt;span>(state unknown)&lt;/span>
-        &lt;/body>
-      &lt;/html>
-    </pre>
+          </script>
+        </head>
+
+        <body onload="updateIndicator()" ononline="updateIndicator()" onoffline="updateIndicator()">
+          <p>The network is: <span>(state unknown)</span>
+        </body>
+      </html>
+    </xmp>
   </div>
 
 </section>
