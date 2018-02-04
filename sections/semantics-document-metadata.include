@@ -449,7 +449,9 @@
   The <dfn element-attr for="link"><code>media</code></dfn> attribute says which media the resource
   applies to. The value must be a <a>valid media query list</a>.
 
-  <!-- def <{link/integrity}> -->
+  The <dfn element-attr for="link"><code>integrity</code></dfn> attribute represents the <a>integrity metadata</a>
+  for requests which this element is responsible for. The value is text. The attribute must not be specified on 
+  <{link}> elements that do not have a <{link/rel}> attribute that contains the <{link/stylesheet}> keyword. [[!SRI]]
 
   The <dfn element-attr for="link"><code>hreflang</code></dfn> attribute on the <{link}> element has
   the same semantics as the {{HTMLLinkElement/hreflang}} attribute on the <{a}> element.
@@ -516,7 +518,7 @@
   The IDL attributes
   <dfn attribute for="HTMLLinkElement"><code>href</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>hreflang</code></dfn>,
-  <!-- <dfn attribute for="HTMLLinkElement"><code>integrity</code></dfn>, -->
+  <dfn attribute for="HTMLLinkElement"><code>integrity</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>media</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>rel</code></dfn>,
   <dfn attribute for="HTMLLinkElement"><code>rev</code></dfn>,
@@ -631,26 +633,28 @@
   must run the following steps:
 
 
-  1. If the <{link/href}> attribute's value is the empty string, then abort these steps.
+  1. If the <{link/href}> attribute's value is the empty string, then return.
   2. <a>Parse</a> the [=url/URL=] given by the <{link/href}> attribute, relative to the
-      element's <a>node document</a>. If that fails, then abort these steps. Otherwise, let
+      element's <a>node document</a>. If that fails, then return. Otherwise, let
       <var>url</var> be the <a>resulting URL record</a>.
   3. Let <var>corsAttributeState</var> be the current state of the element's <{link/crossorigin}>
       content attribute.
   4. Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
-      <var>url</var> and <var>corsAttributeState</var>.
+      <var>url</var>, the empty string, and <var>corsAttributeState</var>.
   5. Set <var>request</var>'s <a>client</a> to the <{link}> element's <a>node document</a>'s
       {{Window}} object's <a>environment settings object</a>.
   6. Set <var>request</var>'s <a>cryptographic nonce metadata</a> to the 
     current value of the <{link}> element's 
     <a href="#cryptographicnonce">[[<span>CryptographicNonce</span>]]</a> internal slot.
-  7. Set <var>request</var>'s <a>referrer policy</a> to the current state of the
-      <{link}> element's <{link/referrerpolicy}> content attribute.
-  8. If the <{link/rel}> attribute contains the <{link/preload}> keyword, then:
+  7. Set <var>request</var>'s <a>integrity metadata</a> to the current value of
+     the <{link}> element's <{link/integrity}> content attribute.
+  8. Set <var>request</var>'s <a>referrer policy</a> to the current state of the
+      <{link}> element's <{link/referrerpolicy}> attribute.
+  9. If the <{link/rel}> attribute contains the <{link/preload}> keyword, then:
     1. Let <var>as</var> be the current state of the <{link/as}> attribute.
     2. If <var>as</var> is no state, then return.
     3. Set <var>request</var>'s <a>destination</a> to the result of <a>translating</a> <var>as</var>.
-  9. <a>Fetch</a> <var>request</var>.
+  10. <a>Fetch</a> <var>request</var>.
 
   User agents may opt to only try to obtain such resources when they are needed, instead of
   pro-actively fetching all the external resources that are not applied.
@@ -660,17 +664,18 @@
   resource to not be applied.)
 
   Once the attempts to obtain the resource and its <a>critical subresources</a> are complete, the
-  user agent must, if the loads were successful, <a>queue a task</a> to <a>fire a simple event</a>
+  user agent must, if the loads were successful, <a>queue a task</a> to <a>fire an event</a>
   named <code>load</code> at the <{link}> element, or, if the resource or one of its
   <a>critical subresources</a> failed to completely load for any reason (e.g., DNS error, HTTP 404
   response, a connection being prematurely closed, unsupported Content-Type), <a>queue a task</a>
-  to <a>fire a simple event</a> named <code>error</code> at the <{link}> element.
+  to <a>fire an event</a> named <code>error</code> at the <{link}> element.
   Non-network errors in processing the resource or its subresources (e.g., CSS parse errors, PNG
   decoding errors) are not failures for the purposes of this paragraph.
 
   The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
 
-  The element must <a>delay the load event</a> of the element's <a>node document</a> until all the
+  Unless otherwise specified for a given <{link/rel}> keyword, the element must 
+  <a>delay the load event</a> of the element's <a>node document</a> until all the
   attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
   that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
   to be needed, do not <a>delay the load event</a>.)
