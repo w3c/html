@@ -1665,9 +1665,9 @@ Editing:
     <xmp highlight="html">
       <input type="button" value="Ялонский" onclick="collect()" accesskey="я" id="я">
     </xmp>
-    
+
     That key is available on a Cyrillic keyboard, as used for e.g. Russian and Ukranian,
-    and unlikely to be confused with a similar-looking latin letter, while some Cyrillic letters such as 
+    and unlikely to be confused with a similar-looking latin letter, while some Cyrillic letters such as
     "с" (U+0441 "CYRILLIC SMALL LETTER ES") visually resemble latin letters so are easily confused.
   </div>
 
@@ -1689,18 +1689,18 @@ Editing:
     Athors should not use decomposed characters in
     <a href="https://www.w3.org/International/questions/qa-html-css-normalization">Normalization Form D</a>,
     such as <code>accesskey="&amp;#x006E;&amp;#x0303;"</code>
-    to assign <samp>ñ</samp>, because in many browsers no shortcut will be assigned. 
-    
+    to assign <samp>ñ</samp>, because in many browsers no shortcut will be assigned.
+
     Characters in
     <a href="https://www.w3.org/International/questions/qa-html-css-normalization">Normalization Form C</a>
     such as <code>accesskey="ñ"</code> are valid values and generally recognised, but whether users can generate the shortcut
-    generally depends on their local keyboard settings among other factors. 
-    
+    generally depends on their local keyboard settings among other factors.
+
     Printable characters that may represent more than one Unicode code point, such as
     <code>accesskey="श्र"</code>, are valid values.
 
     Authors should not use <a>space characters</a> such as <samp>" "</samp>.
-    
+
     Authors should not use an <{global/accesskey}> attribute with the same value, nor with a value
     that differs only by case or the use of a modifier key, for more than one element in the same document,
     because in some browsers doing so causes the attribute to be ignored.
@@ -2116,21 +2116,21 @@ Editing:
   </div>
 
   <p class="note">
-  This specification does not define the user interface for spelling and grammar
-  checkers. A user agent could offer on-demand checking, could perform continuous checking while the
-  checking is enabled, or could use other interfaces.
+    This specification does not define the user interface for spelling and grammar checkers.
+    A user agent could offer on-demand checking, could perform continuous checking while the
+    checking is enabled, or could use other interfaces.
   </p>
 
 <h3 id="drag-and-drop">Drag and drop</h3>
 
   This section defines an event-based drag-and-drop mechanism.
 
-  This specification does not define exactly what a <em>drag-and-drop operation</em> actually
-  is.
+  However, this specification does not define exactly what a <em>drag-and-drop operation</em>
+  actually is.
 
   On a visual medium with a pointing device, a drag operation could be the default action of a
-  <code>mousedown</code> event that is followed by a series of <code>mousemove</code> events, and the drop could be triggered by the mouse
-  being released.
+  <code>mousedown</code> event that is followed by a series of <code>mousemove</code> events, and
+  the drop could be triggered by the mouse being released.
 
   When using an input modality other than a pointing device, users would probably have to
   explicitly indicate their intention to perform a drag-and-drop operation, stating what they wish
@@ -2139,11 +2139,11 @@ Editing:
   However it is implemented, drag-and-drop operations must have a starting point (e.g., where the
   mouse was clicked, or the start of the selection or element that was selected for the drag), may
   have any number of intermediate steps (elements that the mouse moves over during a drag, or
-  elements that the user picks as possible drop points as he cycles through possibilities), and must
-  either have an end point (the element above which the mouse button was released, or the element
-  that was finally selected), or be canceled. The end point must be the last element selected as a
-  possible drop point before the drop occurs (so if the operation is not canceled, there must be at
-  least one element in the middle step).
+  elements that the user picks as possible drop points as he cycles through possibilities), and
+  must either have an end point (the element above which the mouse button was released, or the
+  element that was finally selected), or be canceled. The end point must be the last element
+  selected as a possible drop point before the drop occurs (so if the operation is not canceled,
+  there must be at least one element in the middle step).
 
 <h4 id="drag-and-drop-introduction">Introduction</h4>
 
@@ -2151,9 +2151,9 @@ Editing:
 
   To make an element draggable is simple: give the element a <{global/draggable}> attribute, and set an event listener for <code>dragstart</code> that stores the data being dragged.
 
-  The event handler typically needs to check that it's not a text selection that is being
-  dragged, and then needs to store data into the {{DataTransfer}} object and set the
-  allowed effects (copy, move, link, or some combination).
+  The event handler typically needs to check that it's not a text selection that is being dragged,
+  and then needs to store data into the {{DataTransfer}} object and set the allowed effects
+  (copy, move, link, or some combination).
 
   For example:
 
@@ -2165,14 +2165,18 @@ Editing:
       <li draggable="true">Pears</li>
     </ol>
     <script>
-      var internalDNDType = 'text/x-example'; // set this to something specific to your site
+      // set this to something specific to your site
+      var internalDNDType = 'text/x-example';
+
       function dragStartHandler(event) {
         if (event.target instanceof HTMLLIElement) {
           // use the element's data-value="" attribute as the value to be moving:
           event.dataTransfer.setData(internalDNDType, event.target.dataset.value);
-          event.dataTransfer.effectAllowed = 'move'; // only allow moves
+          // only allow moves
+          event.dataTransfer.effectAllowed = 'move';
         } else {
-          event.preventDefault(); // don't allow selection to be dragged
+          // don't allow selection to be dragged
+          event.preventDefault();
         }
       }
     </script>
@@ -2183,14 +2187,13 @@ Editing:
   To accept a drop, the drop target has to listen to the <code>drop</code> event.
 
   <p class="note">
-  A drop
-  target can handle the <code>dragenter</code> event (to report whether or
-  not the drop target is to accept the drop) and the <code>dragover</code>
-  event (to specify what feedback is to be shown to the user).
+    A drop target can handle the <code>dragenter</code> event (to report whether or not the drop
+    target is to accept the drop) and the <code>dragover</code> event (to specify what feedback
+    is to be shown to the user).
   </p>
 
-  The <code>drop</code> event allows the actual drop to be performed. This
-  event needs to be canceled, so that the {{DataTransfer/dropEffect}} attribute's value can be used by the source
+  The <code>drop</code> event allows the actual drop to be performed. This event needs to be
+  canceled, so that the {{DataTransfer/dropEffect}} attribute's value can be used by the source
   (otherwise it's reset).
 
   For example:
@@ -2221,7 +2224,8 @@ Editing:
 
   <hr />
 
-  To remove the original element (the one that was dragged) from the display, the <code>dragend</code> event can be used.
+  To remove the original element (the one that was dragged) from the display, the
+  <code>dragend</code> event can be used.
 
   For our example here, that means updating the original markup to handle that event:
 
@@ -2251,112 +2255,98 @@ Editing:
 
   <ul>
 
-    <li>A <dfn>drag data store item list</dfn>, which is a list of items representing the dragged
-    data, each consisting of the following information:
-
-    <dl>
-
-      <dt><dfn lt="a drag data item kind|The drag data item kind|drag data item kind">The drag data item kind</dfn></dt>
-
-      <dd>
-
-      The kind of data:
+    <li>
+      A <dfn>drag data store item list</dfn>, which is a list of items representing the dragged
+      data, each consisting of the following information:
 
       <dl>
 
-        <dt><i>Plain Unicode string</i></dt>
+        <dt><dfn lt="a drag data item kind|The drag data item kind|drag data item kind">The drag data item kind</dfn></dt>
+
         <dd>
-        Text. Values must not be escaped.
+          The kind of data:
+
+          <dl>
+            <dt><i>Plain Unicode string</i></dt>
+            <dd>Text. Values must not be escaped.</dd>
+
+            <dt><i>File</i></dt>
+            <dd>Binary data with a file name.</dd>
+          </dl>
         </dd>
 
-        <dt><i>File</i></dt>
+        <dt><dfn lt="item type string|The drag data item type string|type string|a drag data item type string|drag data item type strings|drag data item type string">The drag data item type string</dfn></dt>
+
         <dd>
-        Binary data with a file name.
+          A Unicode string giving the type or format of the data, generally given by a
+          <a>MIME type</a>. Some values that are not <a>MIME types</a> are special-cased for
+          legacy reasons. The API does not enforce the use of <a>MIME types</a>; other values
+          can be used as well. In all cases, however, the values are all converted to
+          <a>ASCII lowercase</a> by the API.
+
+          There is a limit of one <i>Plain Unicode string</i> item per <a>item type string</a>.
+        </dd>
+
+        <dt>The actual data</dt>
+
+        <dd>A Unicode or binary string, in some cases with a file name (itself a Unicode string),
+        as per <a>the drag data item kind</a>.</dd>
+
+      </dl>
+
+      The <a>drag data store item list</a> is ordered in the order that the items were added
+      to the list; most recently added last.
+
+    </li>
+
+    <li>
+      The following information, used to generate the UI feedback during the drag:
+
+      <ul>
+
+        <li>User-agent-defined default feedback information, known as the
+        <dfn>drag data store default feedback</dfn>.</li>
+
+        <li>Optionally, a bitmap image and the coordinate of a point within that image, known
+        as the <dfn>drag data store bitmap</dfn> and
+        <dfn>drag data store hot spot coordinate</dfn>.</li>
+
+      </ul>
+
+    </li>
+
+    <li>
+
+      A <dfn>drag data store mode</dfn>, which is one of the following:
+
+      <dl>
+
+        <dt><dfn>Read/write mode</dfn></dt>
+        <dd>
+          For the <code>dragstart</code> event. New data can be added to the
+          <a>drag data store</a>.
+        </dd>
+
+        <dt><dfn>Read-only mode</dfn></dt>
+        <dd>
+          For the <code>drop</code> event. The list of items representing dragged data can be
+          read, including the data. No new data can be added.
+        </dd>
+
+        <dt><dfn>Protected mode</dfn></dt>
+        <dd>
+          For all other events. The formats and kinds in the <a>drag data store</a> list of items
+          representing dragged data can be enumerated, but the data itself is unavailable and no
+          new data can be added.
         </dd>
 
       </dl>
 
-      </dd>
-
-      <dt><dfn lt="item type string|The drag data item type string|type string|a drag data item type string|drag data item type strings|drag data item type string">The drag data item type string</dfn></dt>
-
-      <dd>
-
-      A Unicode string giving the type or format of the data, generally given by a <a>MIME
-      type</a>. Some values that are not <a>MIME types</a> are
-      special-cased for legacy reasons. The API does not enforce the use of <a>MIME types</a>; other values can be used as well. In all cases, however, the values
-      are all converted to <a>ASCII lowercase</a> by the API.
-
-      There is a limit of one <i>Plain Unicode string</i> item per <a>item type string</a>.
-
-      </dd>
-
-      <dt>The actual data</dt>
-
-      <dd>A Unicode or binary string, in some cases with a file name (itself a Unicode string),
-      as per <a>the drag data item kind</a>.</dd>
-
-    </dl>
-
-    The <a>drag data store item list</a> is ordered in the order that the items were added
-    to the list; most recently added last.
-
     </li>
 
     <li>
 
-    The following information, used to generate the UI feedback during the drag:
-
-    <ul>
-
-      <li>User-agent-defined default feedback information, known as the <dfn>drag data store default
-      feedback</dfn>.</li>
-
-      <li>Optionally, a bitmap image and the coordinate of a point within that image, known as the
-      <dfn>drag data store bitmap</dfn> and <dfn>drag data store hot spot coordinate</dfn>.</li>
-
-    </ul>
-
-    </li>
-
-    <li>
-
-    A <dfn>drag data store mode</dfn>, which is one of the following:
-
-    <dl>
-
-      <dt><dfn>Read/write mode</dfn></dt>
-      <dd>
-
-      For the <code>dragstart</code> event. New data can be added to the
-      <a>drag data store</a>.
-
-      </dd>
-
-      <dt><dfn>Read-only mode</dfn></dt>
-      <dd>
-
-      For the <code>drop</code> event. The list of items representing dragged
-      data can be read, including the data. No new data can be added.
-
-      </dd>
-
-      <dt><dfn>Protected mode</dfn></dt>
-      <dd>
-
-      For all other events. The formats and kinds in the <a>drag data store</a> list of
-      items representing dragged data can be enumerated, but the data itself is unavailable and no
-      new data can be added.
-
-      </dd>
-
-    </dl>
-
-    </li>
-
-    <li>
-
-    A <dfn>drag data store allowed effects state</dfn>, which is a string.
+      A <dfn>drag data store allowed effects state</dfn>, which is a string.
 
     </li>
 
