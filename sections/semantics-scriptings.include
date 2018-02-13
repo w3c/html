@@ -226,15 +226,15 @@
     In this example, two <{script}> elements are used. One embeds an external <a>classic script</a>,
     and the other includes some data as a <a>data block</a>.
 
-    <pre highlight="html">
-&lt;script src="game-engine.js"&gt;&lt;/script&gt;
-&lt;script type="text/x-game-map"&gt;
-........U.........e
-o............A....e
-.....A.....AAA....e
-.A..AAA...AAAAA...e
-&lt;/script&gt;
-    </pre>
+    <xmp highlight="html">
+      <script src="game-engine.js"></script>
+      <script type="text/x-game-map">
+      ........U.........e
+      o............A....e
+      .....A.....AAA....e
+      .A..AAA...AAAAA...e
+      </script>
+    </xmp>
 
     The data in this case might be used by the script to generate the map of a video game. The
     data doesn't have to be used that way, though; maybe the map data is actually embedded in other
@@ -248,8 +248,8 @@ o............A....e
     a <{script}> element can be used to invoke script while the document is being parsed, in this
     case to initialize the form's output.
 
-    <pre highlight="html">
-      &lt;script&gt;
+    <xmp highlight="html">
+      <script>
         function calculate(form) {
           var price = 52000;
           if (form.elements.brakes.checked)
@@ -262,34 +262,34 @@ o............A....e
             price += 250;
           form.elements.result.value = price;
         }
-      &lt;/script&gt;
-      &lt;form name="pricecalc" onsubmit="return false" onchange="calculate(this)"&gt;
-        &lt;fieldset&gt;
-        &lt;legend&gt;Work out the price of your car&lt;/legend&gt;
-        &lt;p&gt;Base cost: £52000.&lt;/p&gt;
-        &lt;p&gt;Select additional options:&lt;/p&gt;
-        &lt;ul&gt;
-          &lt;li&gt;&lt;label&gt;&lt;input type=checkbox name=brakes&gt; Ceramic brakes (£1000)&lt;/label&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;label&gt;&lt;input type=checkbox name=radio&gt; Satellite radio (£2500)&lt;/label&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;label&gt;&lt;input type=checkbox name=turbo&gt; Turbo charger (£5000)&lt;/label&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;label&gt;&lt;input type=checkbox name=sticker&gt; "XZ" sticker (£250)&lt;/label&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;p&gt;Total: £&lt;output name=result&gt;&lt;/output&gt;&lt;/p&gt;
-        &lt;/fieldset&gt;
-        &lt;script&gt;
-        calculate(document.forms.pricecalc);
-        &lt;/script&gt;
-      &lt;/form&gt;
-    </pre>
+      </script>
+      <form name="pricecalc" onsubmit="return false" onchange="calculate(this)">
+        <fieldset>
+          <legend>Work out the price of your car</legend>
+          <p>Base cost: £52000.</p>
+          <p>Select additional options:</p>
+          <ul>
+            <li><label><input type="checkbox" name="brakes"> Ceramic brakes (£1000)</label></li>
+            <li><label><input type="checkbox" name="radio"> Satellite radio (£2500)</label></li>
+            <li><label><input type="checkbox" name="turbo"> Turbo charger (£5000)</label></li>
+            <li><label><input type="checkbox" name="sticker"> "XZ" sticker (£250)</label></li>
+          </ul>
+          <p>Total: £<output name="result"></output></p>
+        </fieldset>
+        <script>
+          calculate(document.forms.pricecalc);
+        </script>
+      </form>
+    </xmp>
   </div>
 
   <div class="example">
     The following sample shows how a <{script}> element can be used to include an external
     <a>module script</a>.
 
-    <pre highlight="html">
-      &lt;script type="module" src="app.js">&lt;/script>
-    </pre>
+    <xmp highlight="html">
+      <script type="module" src="app.js"></script>
+    </xmp>
 
     This module, and all its dependencies (expressed through JavaScript `import` statements in the
     source file), will be fetched. Once the entire resulting module tree has been imported, and the
@@ -301,8 +301,8 @@ o............A....e
     <a>module script</a> that performs a number of substitutions on the document's text, in order to
     make for a more interesting reading experience (e.g. on a news site): [[XKCD-1288]]
 
-    <pre highlight="html">
-      &lt;script type="module">
+    <xmp highlight="html">
+      <script type="module">
        import { walkAllTextNodeDescendants } from "./dom-utils.js";
 
        const substitutions = new Map([
@@ -324,13 +324,13 @@ o............A....e
 
        function substitute(textNode) {
          for (const [before, after] of substitutions.entries()) {
-           textNode.data = textNode.data.replace(new RegExp(`\\b${before}\\b`, "ig"), after);
+           textNode.data = textNode.data.replace(new RegExp('\\b${before}\\b', "ig"), after);
          }
        }
 
        walkAllTextNodeDescendants(document.body, substitute);
-      &lt;/script>
-    </pre>
+      </script>
+    </xmp>
 
     Some notable features gained by using a <a>module script</a> include the ability to import
     functions from other JavaScript modules, strict mode by default, and how top-level declarations
@@ -910,20 +910,20 @@ o............A....e
     The following script illustrates this issue. Suppose you have a script that contains a string,
     as in:
 
-    <pre highlight="javascript">
-      var example = 'Consider this string: &lt;!-- &lt;script&gt;';
+    <xmp highlight="javascript">
+      var example = 'Consider this string: <!-- <script>';
       console.log(example);
-    </pre>
+    </xmp>
 
     If one were to put this string directly in a <{script}> block, it would violate the
     restrictions above:
 
-    <pre highlight="html">
-      &lt;script&gt;
-        var example = 'Consider this string: &lt;!-- &lt;script&gt;';
+    <xmp highlight="html">
+      <script>
+        var example = 'Consider this string: <!-- <script>';
         console.log(example);
-      &lt;/script&gt;
-    </pre>
+      </script>;
+    </xmp>
 
     The bigger problem, though, and the reason why it would violate those restrictions, is that
     actually the script would get parsed weirdly: <em>the script block above is not terminated</em>.
@@ -932,16 +932,16 @@ o............A....e
     to execute, as it might if the markup looked as follows, it would fail because the script is not
     valid JavaScript:
 
-    <pre highlight="html">
-      &lt;script&gt;
-        var example = 'Consider this string: &lt;!-- &lt;script&gt;';
+    <xmp highlight="html">
+      <script>
+        var example = 'Consider this string: <!-- <script>';
         console.log(example);
-      &lt;/script&gt;
-      &lt;!-- despite appearances, this is actually part of the script still! --&gt;
-      &lt;script&gt;
+      </script>
+      <!-- despite appearances, this is actually part of the script still! -->
+      <script>
         ... // this is the same script block still...
-      &lt;/script&gt;
-    </pre>
+      </script>
+    </xmp>
 
     What is going on here is that for legacy reasons, "`&lt;!--`" and "`&lt;script`" strings in
     <{script}> elements in HTML need to be balanced in order for the parser to consider closing the
@@ -950,35 +950,35 @@ o............A....e
     By escaping the problematic strings as mentioned at the top of this section, the problem is
     avoided entirely:
 
-    <pre highlight="html">
-      &lt;script&gt;
-        var example = 'Consider this string: &lt;\!-- &lt;\script&gt;';
+    <xmp highlight="html">
+      <script>
+        var example = 'Consider this string: <\!-- <\script>';
         console.log(example);
-      &lt;/script&gt;
-      &lt;!-- this is just a comment between script blocks --&gt;
-      &lt;script&gt;
+      </script>
+      <!-- this is just a comment between script blocks -->
+      <script>
         ... // this is a new script block
-      &lt;/script&gt;
-    </pre>
+      </script>
+    </xmp>
 
     It is possible for these sequences to naturally occur in script expressions, as in the
     following examples:
 
-    <pre highlight="javascript">
-      if (x&lt;!--y) { ... }
-      if ( player&lt;script ) { ... }
-    </pre>
+    <xmp highlight="javascript">
+      if (x<!--y) { ... }
+      if ( player<script ) { ... }
+    </xmp>
 
     In such cases the characters cannot be escaped, but the expressions can be rewritten so that
     the sequences don't occur, as in:
 
-    <pre highlight="javascript">
-      if (x &lt; !--y) { ... }
-      if (!--y &gt; x) { ... }
-      if (!(--y) &gt; x) { ... }
-      if (player &lt; script) { ... }
-      if (script &gt; player) { ... }
-    </pre>
+    <xmp highlight="javascript">
+      if (x < !--y) { ... }
+      if (!--y > x) { ... }
+      if (!(--y) > x) { ... }
+      if (player < script) { ... }
+      if (script > player) { ... }
+    </xmp>
 
     Doing this also avoids a different pitfall as well: for related historical reasons, the string
     "`&lt;!--`" in <a>classic scripts</a> is actually treated as a line comment start, just like
@@ -1017,7 +1017,7 @@ o............A....e
 
   <p class="note">
     This requirement is in addition to the earlier restrictions on the syntax of
-  contents of <{script}> elements.
+    contents of <{script}> elements.
   </p>
 
   <div class="example">
@@ -1026,15 +1026,15 @@ o............A....e
     so that authors don't accidentally include what looks like valid script while also providing a
     <{script/src}> attribute.
 
-    <pre highlight="html">
-      &lt;script src="cool-effects.js"&gt;
+    <xmp highlight="html">
+      <script src="cool-effects.js">
         // create new instances using:
         //    var e = new Effect();
         // start the effect using .play, stop using .stop:
         //    e.play();
         //    e.stop();
-      &lt;/script&gt;
-    </pre>
+      </script>
+    </xmp>
   </div>
 
 <h5 id="interaction-of-script-elements-and-xslt">Interaction of <{script}> elements and XSLT</h5>
@@ -1150,28 +1150,30 @@ o............A....e
   <div class="example">
     In the following example, a <{noscript}> element is used to provide fallback for a script.
 
-    <pre highlight="html">
-&lt;form action="calcSquare.php"&gt;
-  &lt;p&gt;
-  &lt;label for=x&gt;Number&lt;/label&gt;:
-  &lt;input id="x" name="x" type="number"&gt;
-  &lt;/p&gt;
-  &lt;script&gt;
-  var x = document.getElementById('x');
-  var output = document.createElement('p');
-  output.textContent = 'Type a number; it will be squared right then!';
-  x.form.appendChild(output);
-  x.form.onsubmit = function () { return false; }
-  x.oninput = function () {
-    var v = x.valueAsNumber;
-    output.textContent = v + ' squared is ' + v * v;
-  };
-  &lt;/script&gt;
-  &lt;noscript&gt;
-  &lt;input type=submit value="Calculate Square"&gt;
-  &lt;/noscript&gt;
-&lt;/form&gt;
-    </pre>
+    <xmp highlight="html">
+      <form action="calcSquare.php">
+        <p>
+          <label for="x">Number</label>:
+          <input id="x" name="x" type="number">
+        </p>
+        <script>
+          var x = document.getElementById('x');
+          var output = document.createElement('p');
+          output.textContent = 'Type a number; it will be squared right then!';
+          x.form.appendChild(output);
+          x.form.onsubmit = function() {
+            return false;
+          }
+          x.oninput = function() {
+            var v = x.valueAsNumber;
+            output.textContent = v + ' squared is ' + v * v;
+          };
+        </script>
+        <noscript>
+          <input type="submit" value="Calculate Square">
+        </noscript>
+      </form>
+    </xmp>
 
     When script is disabled, a button appears to do the calculation on the server side. When
     script is enabled, the value is computed on-the-fly instead.
@@ -1181,28 +1183,30 @@ o............A....e
     using <{noscript}>, and to instead design the script to change the page from being a
     scriptless page to a scripted page on the fly, as in the next example:
 
-    <pre highlight="html">
-&lt;form action="calcSquare.php"&gt;
-  &lt;p&gt;
-  &lt;label for=x&gt;Number&lt;/label&gt;:
-  &lt;input id="x" name="x" type="number"&gt;
-  &lt;/p&gt;
-  &lt;input id="submit" type=submit value="Calculate Square"&gt;
-  &lt;script&gt;
-  var x = document.getElementById('x');
-  var output = document.createElement('p');
-  output.textContent = 'Type a number; it will be squared right then!';
-  x.form.appendChild(output);
-  x.form.onsubmit = function () { return false; }
-  x.oninput = function () {
-    var v = x.valueAsNumber;
-    output.textContent = v + ' squared is ' + v * v;
-  };
-  var submit = document.getElementById('submit');
-  submit.parentNode.removeChild(submit);
-  &lt;/script&gt;
-&lt;/form&gt;
-    </pre>
+    <xmp highlight="html">
+      <form action="calcSquare.php">
+        <p>
+          <label for="x">Number</label>:
+          <input id="x" name="x" type="number">
+        </p>
+        <input id="submit" type=submit value="Calculate Square">
+        <script>
+          var x = document.getElementById('x');
+          var output = document.createElement('p');
+          output.textContent = 'Type a number; it will be squared right then!';
+          x.form.appendChild(output);
+          x.form.onsubmit = function() {
+            return false;
+          }
+          x.oninput = function() {
+            var v = x.valueAsNumber;
+            output.textContent = v + ' squared is ' + v * v;
+          };
+          var submit = document.getElementById('submit');
+          submit.parentNode.removeChild(submit);
+        </script>
+      </form>
+    </xmp>
 
     The above technique is also useful in XHTML, since <{noscript}> is not supported in
     <a href="#xhtml">the XHTML syntax</a>.
@@ -1259,28 +1263,30 @@ o............A....e
 
   <div class="example" id="template-example">
 
-   <p>For example, consider the following document:</p>
+    <p>For example, consider the following document:</p>
 
-   <!-- https://www.quora.com/Homework-Question-How-do-I-write-a-program-that-produces-the-following-output-1 -->
-
-   <pre highlight="html">
-&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-&lt;title>Homework&lt;/title>
-&lt;body>
-  &lt;template id="template">&lt;p>Smile!&lt;/p>&lt;/template>
-  &lt;script>
-   let num = 3;
-   const fragment = document.getElementById('template').content.cloneNode(true);
-   while (num-- > 1) {
-     fragment.firstChild.before(fragment.firstChild.cloneNode(true));
-     fragment.firstChild.textContent += fragment.lastChild.textContent;
-   }
-   document.body.appendChild(fragment);
-  &lt;/script>
-&lt;/html>
-</pre>
+    <xmp highlight="html">
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <title>Homework</title>
+        </head>
+        <body>
+          <template id="template">
+            <p>Smile!</p>
+          </template>
+          <script>
+            let num = 3;
+            const fragment = document.getElementById('template').content.cloneNode(true);
+            while (num-- > 1) {
+              fragment.firstChild.before(fragment.firstChild.cloneNode(true));
+              fragment.firstChild.textContent += fragment.lastChild.textContent;
+            }
+            document.body.appendChild(fragment);
+          </script>
+        </body>
+      </html>
+    </xmp>
 
    <p>The <{p}> element in the <{template}> is <em>not</em> a child of the
    <{template}> in the DOM; it is a child of the {{DocumentFragment}} returned by the <{template}> element's <code>content</code> IDL
@@ -1415,29 +1421,34 @@ o............A....e
     a <code>template</code> to provide the element structure instead of manually generating the
     structure from markup.
 
-    <pre highlight="html">
-      &lt;!DOCTYPE html>
-      &lt;html lang="en">
-      &lt;title&gt;Cat data&lt;/title&gt;
-      &lt;script&gt;
+    <xmp highlight="html">
+      <!DOCTYPE html>
+      <html lang="en">
+      <title>Cat data</title>
+      <script>
         // Data is hard-coded here, but could come from the server
         var data = [
-          { name: 'Pillar', color: 'Ticked Tabby', sex: 'Female (neutered)', legs: 3 },
-          { name: 'Hedral', color: 'Tuxedo', sex: 'Male (neutered)', legs: 4 },
+          { name: 'Pillar', color: 'Tabby',  sex: 'Female', legs: 3 },
+          { name: 'Hedral', color: 'Tuxedo', sex: 'Male',   legs: 4 },
         ];
-      &lt;/script&gt;
-      &lt;table&gt;
-        &lt;thead&gt;
-        &lt;tr&gt;
-          &lt;th&gt;Name &lt;th&gt;Color &lt;th&gt;Sex &lt;th&gt;Legs
-        &lt;tbody&gt;
-        &lt;template id="row"&gt;
-          &lt;tr&gt;&lt;td&gt;&lt;td&gt;&lt;td&gt;&lt;td&gt;
-        &lt;/template&gt;
-      &lt;/table&gt;
-      &lt;script&gt;
+      </script>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th> <th>Color</th> <th>Sex</th> <th>Legs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template id="row">
+            <tr>
+              <td></td> <td></td> <td></td> <td></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <script>
         var template = document.querySelector('#row');
-        for (var i = 0; i &lt; data.length; i += 1) {
+        for (var i = 0; i < data.length; i += 1) {
           var cat = data[i];
           var clone = template.content.cloneNode(true);
           var cells = clone.querySelectorAll('td');
@@ -1447,8 +1458,8 @@ o............A....e
           cells[3].textContent = cat.legs;
           template.parentNode.appendChild(clone);
         }
-      &lt;/script&gt;
-    </pre>
+      </script>
+    </xmp>
 
     This example uses <code>cloneNode()</code> on the <code>template</code>'s contents; it could
     equivalently have used <code>document.importNode()</code>, which does the same thing. The only

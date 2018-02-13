@@ -107,36 +107,51 @@
   <div class="example">
     The following example shows the <{details}> element being used to hide technical
     details in a progress report.
+    
+    <section class="progress window">
+      <strong>Copying "Really Achieving Your Childhood Dreams"</strong>
+      <details>
+        <summary>Copying... <progress max="375505392" value="97543282"></progress> 25%</summary>
+        <dl>
+          <dt>Transfer rate:</dt> <dd>452KB/s</dd>
+          <dt>Local filename:</dt> <dd>/home/rpausch/raycd.m4v</dd>
+          <dt>Remote filename:</dt> <dd>/var/www/lectures/raycd.m4v</dd>
+          <dt>Duration:</dt> <dd>01:16:27</dd>
+          <dt>Color profile:</dt> <dd>SD (6-1-6)</dd>
+          <dt>Dimensions:</dt> <dd>320×240</dd>
+        </dl>
+      </details>
+    </section>
 
-    <pre highlight="html">
-      &lt;section class="progress window"&gt;
-        &lt;h1&gt;Copying "Really Achieving Your Childhood Dreams"&lt;/h1&gt;
-        &lt;details&gt;
-        &lt;summary&gt;Copying... &lt;progress max="375505392" value="97543282"&gt;&lt;/progress&gt; 25%&lt;/summary&gt;
-        &lt;dl&gt;
-          &lt;dt&gt;Transfer rate:&lt;/dt&gt; &lt;dd&gt;452KB/s&lt;/dd&gt;
-          &lt;dt&gt;Local filename:&lt;/dt&gt; &lt;dd&gt;/home/rpausch/raycd.m4v&lt;/dd&gt;
-          &lt;dt&gt;Remote filename:&lt;/dt&gt; &lt;dd&gt;/var/www/lectures/raycd.m4v&lt;/dd&gt;
-          &lt;dt&gt;Duration:&lt;/dt&gt; &lt;dd&gt;01:16:27&lt;/dd&gt;
-          &lt;dt&gt;Color profile:&lt;/dt&gt; &lt;dd&gt;SD (6-1-6)&lt;/dd&gt;
-          &lt;dt&gt;Dimensions:&lt;/dt&gt; &lt;dd&gt;320&times;240&lt;/dd&gt;
-        &lt;/dl&gt;
-        &lt;/details&gt;
-      &lt;/section&gt;
-    </pre>
+    <xmp highlight="html">
+      <section class="progress window">
+        <h1>Copying "Really Achieving Your Childhood Dreams"</h1>
+        <details>
+          <summary>Copying... <progress max="375505392" value="97543282"></progress> 25%</summary>
+          <dl>
+            <dt>Transfer rate:</dt> <dd>452KB/s</dd>
+            <dt>Local filename:</dt> <dd>/home/rpausch/raycd.m4v</dd>
+            <dt>Remote filename:</dt> <dd>/var/www/lectures/raycd.m4v</dd>
+            <dt>Duration:</dt> <dd>01:16:27</dd>
+            <dt>Color profile:</dt> <dd>SD (6-1-6)</dd>
+            <dt>Dimensions:</dt> <dd>320×240</dd>
+          </dl>
+        </details>
+      </section>
+    </xmp>
 
   </div>
 
   <div class="example">
     The following shows how a <{details}> element can be used to hide some controls by default:
 
-    <pre highlight="html">
-      &lt;details&gt;
-        &lt;summary&gt;&lt;label for=fn&gt;Name &amp; Extension:&lt;/label&gt;&lt;/summary&gt;
-        &lt;p&gt;&lt;input type=text id=fn name=fn value="Pillar Magazine.pdf"&gt;
-        &lt;p&gt;&lt;label&gt;&lt;input type=checkbox name=ext checked&gt; Hide extension&lt;/label&gt;
-      &lt;/details&gt;
-    </pre>
+    <xmp highlight="html">
+      <details>
+        <summary><label for="fn">Name & Extension:</label></summary>
+        <p><input type="text" id="fn" name="fn" value="Pillar Magazine.pdf">
+        <p><label><input type="checkbox" name="ext" checked> Hide extension</label>
+      </details>
+    </xmp>
 
     One could use this in conjunction with other <{details}> in a list to allow the user
     to collapse a set of fields down to a small set of headings, with the ability to open each
@@ -152,19 +167,28 @@
     Because the <{details/open}> attribute is added and removed
     automatically as the user interacts with the control, it can be used in CSS to style the element
     differently based on its state. Here, a stylesheet is used to animate the color of the summary
-    when the element is opened or closed:
+    when the element is opened or closed.
 
-    <pre highlight="html">
-      &lt;style&gt;
-        details &gt; summary { transition: color 1s; color: black; }
-        details[open] &gt; summary { color: red; }
-      &lt;/style&gt;
-      &lt;details&gt;
-        &lt;summary&gt;Automated Status: Operational&lt;/summary&gt;
-        &lt;p&gt;Velocity: 12m/s&lt;/p&gt;
-        &lt;p&gt;Direction: North&lt;/p&gt;
-      &lt;/details&gt;
-    </pre>
+    CSS:
+    <xmp highlight="css">
+      details > summary {
+        transition: color 1s;
+        color: black;
+      }
+
+      details[open] > summary {
+        color: red;
+      }
+    </xmp>
+
+    HTML:
+    <xmp highlight="html">
+      <details>
+        <summary>Automated Status: Operational</summary>
+        <p>Velocity: 12m/s</p>
+        <p>Direction: North</p>
+      </details>
+    </xmp>
 
   </div>
 
@@ -201,15 +225,14 @@
   parent <{details}> element, if any.
 
   <p>The activation behavior of <code>summary</code> elements is to run the following steps:</p>
-  <ol>
-  <li>If this <code>summary</code> element has no parent node, then abort these steps.</li>
-  <li>Let parent be this <code>summary</code> element's parent node.</li>
-  <li>If parent is not a <code>details</code> element, then abort these steps.</li>
-  <li>If the <code>open</code> attribute is present on parent, then remove it. Otherwise, set parent's
-  <code>open</code> attribute to the empty string.
-  <p class="note">This will then run the <a>details notification task steps</a>.</p>
-  </li>
-  </ol>
+    <ol>
+      <li>If this <code>summary</code> element has no parent node, then abort these steps.</li>
+      <li>Let parent be this <code>summary</code> element's parent node.</li>
+      <li>If parent is not a <code>details</code> element, then abort these steps.</li>
+      <li>If the <code>open</code> attribute is present on parent, then remove it. Otherwise, set parent's
+      <code>open</code> attribute to the empty string.
+      <p class="note">This will then run the <a>details notification task steps</a>.</p></li>
+    </ol>
 
 <h4 id="commands">Commands</h4>
 
@@ -479,21 +502,19 @@
    <p>The following is an example of a modal <{dialog}> which provides a form for a user to add
    coins to their wallet, as part of an online game.</p>
 
-    <pre highlight="html">
-      ...
-      &lt;body>
-      &lt;div> &lt;!-- body content --> &lt;/div>
-      &lt;dialog&gt;
-        &lt;h1&gt;Add to Wallet&lt;/h1&gt;
-        &lt;label for="num"&gt;How many gold coins do you want to add to your wallet?&lt;/label&gt;
-        &lt;div&gt;&lt;input name=amt id="num" type=number min=0 step=0.01 value=100&gt;&lt;/div&gt;
-        &lt;p&gt;&lt;strong&gt;You add coins at your own risk.&lt;/strong&gt;&lt;/p&gt;
-        &lt;div&gt;&lt;label&gt;&lt;input name=round type=checkbox&gt; Only add perfectly round coins &lt;/label&gt;&lt;/div&gt;
-        &lt;div&gt;&lt;input type=button onclick="submit()" value="Add Coins"&gt;&lt;/div&gt;
-      &lt;/dialog&gt;
-      &lt;/body>
-      ...
-    </pre>
+    <xmp highlight="html">
+      <div>
+        <!-- body content -->
+      </div>
+      <dialog>
+        <h1>Add to Wallet</h1>
+        <label for="num">How many gold coins do you want to add to your wallet?</label>
+        <div><input name="amt" id="num" type="number" min="0" step="0.01" value="100"></div>
+        <p><strong>You add coins at your own risk.</strong></p>
+        <div><label><input name="round" type="checkbox">Only add perfectly round coins</label></div>
+        <div><input type="button" onclick="submit()" value="Add Coins"></div>
+      </dialog>
+    </xmp>
 
     <img src="images/dialog.png" alt="Add to Wallet Dialog">
   </div>
