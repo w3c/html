@@ -1,6 +1,26 @@
 
 <section>
 
+<!--
+
+      LINKS
+
+  This source produces section 4.8:
+  https://w3c.github.io/html/links.html
+
+  It covers:
+  - An introduction to links created by <a> and <area> elements.
+  - The API for <a> and <area>s
+  - Steps user agents should take to allow users to follow hyperlinks
+  - The download attribute, and the steps a user agent should follow when downloading a hyperlink
+  - The different predefined types of links:
+      alternate, author, bookmark, external, help, icon, license, nofollow, noopener,
+      noreferrer, preconnect, prefetch, preload, prerender, search, stylesheet, tag
+  - Sequential link types: 'next' and 'prev'
+  - Other link types, covering extensions to the predefined set of link types
+
+-->
+
 <h3 id="links">Links</h3>
 
 <h4 id="links-introduction">Introduction</h4>
@@ -10,7 +30,6 @@
   There are two kinds of links in HTML:
 
   <dl>
-
     <dt><dfn lt="external resource link|links to external resources|external resource|external resources">Links to external resources</dfn></dt>
 
     <dd>These are links to resources that are to be used to augment the current document,
@@ -28,7 +47,7 @@
   <{link/rel}> attribute, as defined for those keywords in the <a>link types</a> section.
 
   Similarly, for <{a}> and <{area}> elements with an <{links/href}> attribute and a <{links/rel}> attribute,
-  links must be created for the keywords of the <{links/rel}> attribute as defined for those keywords in the 
+  links must be created for the keywords of the <{links/rel}> attribute as defined for those keywords in the
   <a>link types</a> section. Unlike <{link}> elements, however,  <{a}> and <{area}> elements with an <{links/href}>
   attribute that either do not have a <{links/rel}> attribute, or whose <{links/rel}> attribute has no keywords
   that are defined as specifying <a>hyperlinks</a>, must also create a <a>hyperlink</a>.
@@ -81,7 +100,7 @@
   The <dfn element-attr for="a,area,links"><code>ping</code></dfn> attribute, if present,
   gives the URLs of the resources that are interested in being notified if the user follows the <a>hyperlink</a>.
   The value must be a <a>set of space-separated tokens</a>, each of which must be a <a>valid non-empty URL</a>
-  whose scheme is an HTTP(S) scheme. The value is used by the user agent for <a>hyperlink auditing</a>.   
+  whose scheme is an HTTP(S) scheme. The value is used by the user agent for <a>hyperlink auditing</a>.
 
   The <dfn element-attr for="a,area,links"><code>rel</code></dfn> attribute on <{a}> and
   <{area}> elements controls what kinds of links the elements create. The attribute's value
@@ -654,9 +673,10 @@
 
 <h4 id="sec-following-hyperlinks">Following hyperlinks</h4>
 
-  When a user <dfn lt="follow hyperlinks|following hyperlinks|follows a hyperlink|follow the hyperlinks|follow the hyperlink|following a hyperlink">follows a hyperlink</dfn> created by an element
-  <var>subject</var>, optionally with a <var>hyperlink suffix</var>, the user agent must run the
-  following steps:
+  When a user
+  <dfn lt="follow hyperlinks|following hyperlinks|follows a hyperlink|follow the hyperlinks|follow the hyperlink|following a hyperlink">follows a hyperlink</dfn>
+  created by an element <var>subject</var>, optionally with a <var>hyperlink suffix</var>, the
+  user agent must run the following steps:
 
   <ol>
 
@@ -930,7 +950,7 @@
   then run these steps for each <a>resulting URL record</a> ping URL (ignoring tokens that fail to parse):
 
   * If <var>ping URL</var>'s <a>scheme</a> is not an <a>HTTP(S) scheme</a>, then return.
-  * Optionally, return 
+  * Optionally, return
     (for example the user agent may ignore any or all ping URLs in accordance with the user's express preferences).
   * Let <var>request</var> be a new <a>request</a>, whose <a for="/">URL</a> is <var>ping URL</var>, <a for="/">method</a> is post, <a for="request">body</a> is ping,
     <a>client</a> is the <a>environment settings object</a> of the <a>document</a> containing the <a>hyperlink</a>, <a>destination</a> is the empty string, <a>credentials mode</a> is include, <a for>referrer</a> is "no-referrer",
@@ -940,20 +960,20 @@
 
     <dl class="switch">
     <dt>If the <a for="/">URL</a> of the <a>document</a> object containing the hyperlink being audited and the <var>ping URL</var> have the <a>same origin</a></dt>
-    <dt>Or if the origins are different but the <a for="document">HTTPS state</a> of the <a>document</a> containing the hyperlink being audited is 
+    <dt>Or if the origins are different but the <a for="document">HTTPS state</a> of the <a>document</a> containing the hyperlink being audited is
     "none"</dt>
     <dd><var>request</var> must include a <a>ping-from</a> header with the <a for="/">URL</a> of the document containing the hyperlink as its value,
      and a <a>ping-to</a> HTTP header with the <var>target URL</var> as its value.</dd>
-    <dt>Otherwise</dt> 
-    <dd><var>request</var> must must include a <a>ping-to</a> HTTP header with <var>target URL</var> as its value. 
+    <dt>Otherwise</dt>
+    <dd><var>request</var> must must include a <a>ping-to</a> HTTP header with <var>target URL</var> as its value.
     Note: <var>request</var> does not include a <a>ping-from</a> header.</dd>
     </dl>
-    
+
   * <a>Fetch</a> <var>request</var>.
 
   This may be done <a>in parallel</a> with the primary fetch, and is independent of the result of that fetch.
 
-  User agents should allow the user to alter this behavior. 
+  User agents should allow the user to alter this behavior.
   For example, in conjunction with a setting that disables the sending of HTTP <a>referrer</a> (sic) headers.
   Based on the user's preferences, user agents may <a>ignore</a> the <{links/ping}> attribute completely,
   or selectively ignore URLs (for example third party URLs); this is explicitly accounted for in the steps above.
@@ -964,7 +984,7 @@
   When the <{links/ping}> attribute is present, user agents should make it clear to the user
   that following the hyperlink will also cause secondary requests to be sent in the background.
 
-  <div class="example"> 
+  <div class="example">
   For example, a user agent could visually display the host names of the target ping URLs, and the hyperlink's actual URL,
   in a tooltip.
   </div>
@@ -1010,8 +1030,8 @@
   <p class="example">So <code>rel="next"</code> is the same as <code>rel="NEXT"</code>.</p>
 
   Keywords that are <dfn>body-ok</dfn> affect whether <{link}> elements are
-  <a>allowed in the body</a>. The <a>body-ok</a> keywords defined by this specification are  <code>dns-prefetch</code>, 
-  <code>external</code>, <code>preconnect</code>,  
+  <a>allowed in the body</a>. The <a>body-ok</a> keywords defined by this specification are  <code>dns-prefetch</code>,
+  <code>external</code>, <code>preconnect</code>,
   <code>prefetch</code>, <code>preload</code>, <code>prerender</code> and <{link/stylesheet}>. Other specifications
   can also define <span>body-ok</span> keywords.
 
@@ -1242,13 +1262,13 @@
 
     <div class="example">
       The following <{link}> element gives the syndication feed for the current page:
-      
+
       <xmp highlight="html">
         <link rel="alternate" type="application/atom+xml" href="data.xml">
       </xmp>
-      
+
       The following extract offers various different syndication feeds:
-      
+
       <xmp highlight="html">
         <p>You can access the planets database using Atom feeds:</p>
         <ul>
@@ -1359,7 +1379,7 @@
 
 The <{link/dns-prefetch}> keyword may be used with <{link}>.This keyword is <a>body-ok</a>.
 
-The <{link/dns-prefetch}> keyword is used to indicate an origin that will be used to fetch 
+The <{link/dns-prefetch}> keyword is used to indicate an origin that will be used to fetch
 required resources, and that the user agent SHOULD resolve as early as possible.
 
 See [[resource-hints]] for full definition.
@@ -1608,46 +1628,46 @@ See [[resource-hints]] for full definition.
 <h5 id="link-type-preconnect">Link type "<dfn element-state for="link"><code>preconnect</code></dfn>"</h5>
 
 The <{link/preconnect}> keyword may be used with <{link}>.This keyword is <a>body-ok</a>.
-  
-The <{link/preconnect}> keyword is used to initiate an early connection, which includes the DNS lookup, TCP handshake, 
-  and optional TLS negotiation, allows the user agent to mask the 
-  high latency costs of establishing a connection. 
+
+The <{link/preconnect}> keyword is used to initiate an early connection, which includes the DNS lookup, TCP handshake,
+  and optional TLS negotiation, allows the user agent to mask the
+  high latency costs of establishing a connection.
 
 See [[resource-hints]] for full definition.
 
 <h5 id="link-type-prefetch">Link type "<dfn element-state for="link"><code>prefetch</code></dfn>"</h5>
 
-The <{link/prefetch}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>. 
+The <{link/prefetch}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>.
 This keyword is <a>body-ok</a>.
 
 The <{link/prefetch}> keyword is used to identify a resource that might be required
- by the next navigation, and that the user agent SHOULD fetch, 
- such that the user agent can deliver a faster response once the 
+ by the next navigation, and that the user agent SHOULD fetch,
+ such that the user agent can deliver a faster response once the
  resource is requested in the future.
 
 See [[resource-hints]] for full definition.
- 
+
 
 <h5 id="link-type-preload">Link type "<dfn element-state for="link"><code>preload</code></dfn>"</h5>
 
   The <{link/preload}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>. This keyword is <a>body-ok</a>.
 
   The <{link/preload}> keyword indicates that the user agent must preemptively fetch and cache the specified resource according to the <a>potential destination</a> given by the <{link/as}> attribute (and the <a>priority</a> associated with the <a>corresponding</a> <a>destination</a>), as it is highly likely that the user will require this resource for current navigation. User agents must implement the processing model of the <{link/preload}> keyword described in the Preload specification. [[!Preload]]
-  
+
   There is no default type for resources given by the <{link/preload}> keyword.
 
 <h5 id="link-type-prerender">Link type "<dfn element-state for="link"><code>prerender</code></dfn>"</h5>
 
-The <{link/prerender}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>. 
+The <{link/prerender}> keyword may be used with <{link}>. This keyword creates an <a>external resource link</a>.
 This keyword is <a>body-ok</a>.
 
-The <{link/prerender}> keyword identifies a resource that might be required 
+The <{link/prerender}> keyword identifies a resource that might be required
 by the next navigation from the link context, and that the user agent ought
- to fetch and execute, such that the user agent can deliver a faster 
+ to fetch and execute, such that the user agent can deliver a faster
  response once the resource is requested in the future.
 
 See [[resource-hints]] for full definition.
- 
+
 
 <h5 id="link-type-search">Link type "<dfn element-state for="link"><code>search</code></dfn>"</h5>
 
