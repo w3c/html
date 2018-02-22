@@ -1,19 +1,25 @@
 <section>
+
 <!--
-██     ██  ██     ██ ██              ██████  ██    ██ ██    ██ ████████    ███    ██     ██
- ██   ██   ███   ███ ██             ██    ██  ██  ██  ███   ██    ██      ██ ██    ██   ██
-  ██ ██    ████ ████ ██             ██         ████   ████  ██    ██     ██   ██    ██ ██
-   ███     ██ ███ ██ ██              ██████     ██    ██ ██ ██    ██    ██     ██    ███
-  ██ ██    ██     ██ ██                   ██    ██    ██  ████    ██    █████████   ██ ██
- ██   ██   ██     ██ ██             ██    ██    ██    ██   ███    ██    ██     ██  ██   ██
-██     ██  ██     ██ ████████        ██████     ██    ██    ██    ██    ██     ██ ██     ██
+
+    XML
+
+  This source produces Chapter 9: The XML
+  https://w3c.github.io/html/xhtml.html
+
+  It covers:
+  - Writing documents in the XML syntax
+  - Parsing XML documents
+  - Serializing and parsing XML
+
 -->
 
 <h2 id="xhtml"><dfn>The XML syntax</dfn></h2>
 
   <p class="note">
-  This section only describes the rules for XML resources. Rules for
-  <code>[[#text-html|text/html]]</code> resources are discussed in the section above entitled "<a>The HTML syntax</a>".
+    This section only describes the rules for XML resources. Rules for
+    <code>[[#text-html|text/html]]</code> resources are discussed in the section above
+    entitled "<a>The HTML syntax</a>".
   </p>
 
 <h3 id="writing-xhtml-documents">Writing documents in the XML syntax</h3>
@@ -130,14 +136,12 @@
   </ol>
 
   <p class="note">
-  Since the {{Document/write()|document.write()}} API is not
-  available for <a>XML documents</a>, much of the complexity in the <a>HTML parser</a>
-  is not needed in the <a>XML parser</a>.
+    Since the {{Document/write()|document.write()}} API is not available for <a>XML documents</a>,
+    much of the complexity in the <a>HTML parser</a> is not needed in the <a>XML parser</a>.
   </p>
 
   <p class="note">
-  When the <a>XML parser</a> has <a>XML scripting support disabled</a>,
-  none of this happens.
+    When the <a>XML parser</a> has <a>XML scripting support disabled</a>, none of this happens.
   </p>
 
   When an <a>XML parser</a> would append a node to a
@@ -145,9 +149,9 @@
   <a>template contents</a> (a <code>DocumentFragment</code> node).
 
   <p class="note">
-  This is a <a>willful violation</a> of the XML specification; unfortunately,
-  XML is not formally extensible in the manner that is needed for <code>template</code> processing.
-  [[!XML]]
+    This is a <a>willful violation</a> of the XML specification; unfortunately, XML is not
+    formally extensible in the manner that is needed for <code>template</code> processing.
+    [[!XML]]
   </p>
 
   When an <a>XML parser</a> creates a <code>Node</code> object, its <a>node document</a>
@@ -248,9 +252,9 @@
   </ul>
 
   <p class="note">
-  These are the only ways to make a DOM unserialisable. The DOM enforces all the
-  other XML constraints; for example, trying to append two elements to a <code>Document</code> node
-  will throw a {{HierarchyRequestError}} exception.
+    These are the only ways to make a DOM unserialisable. The DOM enforces all the other XML
+    constraints; for example, trying to append two elements to a <code>Document</code> node
+    will throw a {{HierarchyRequestError}} exception.
   </p>
 
 <h3 id="parsing-xhtml-fragments">Parsing XML fragments</h3>
@@ -262,62 +266,46 @@
 
   <ol>
 
+    <li>Create a new <a>XML parser</a>.</li>
+
     <li>
+      <a>Feed the parser</a> just created the string corresponding to the start tag of the
+      <var>context</var> element, declaring all the namespace prefixes that are in scope on that
+      element in the DOM, as well as declaring the default namespace (if any) that is in scope on
+      that element in the DOM.
 
-    Create a new <a>XML parser</a>.
+      A namespace prefix is in scope if the DOM <code>lookupNamespaceURI()</code> method
+      on the element would return a non-null value for that prefix.
 
+      The default namespace is the namespace for which the DOM <code>isDefaultNamespace()</code>
+      method on the element would return true.
+
+      <p class="note">
+        No <code>DOCTYPE</code> is passed to the parser, and therefore no external subset is
+        referenced, and therefore no entities will be recognized.
+      </p>
+    </li>
+
+    <li><a>Feed the parser</a> just created the string <var>input</var>.</li>
+
+    <li>
+      <a>Feed the parser</a> just created the string corresponding to the end tag of
+      the <var>context</var> element.
     </li>
 
     <li>
-
-    <a>Feed the
-    parser</a> just created the string corresponding to the start tag of the <var>context</var> element, declaring
-    all the namespace prefixes that are in scope on that element in the DOM, as well as declaring
-    the default namespace (if any) that is in scope on that element in the DOM.
-
-    A namespace prefix is in scope if the DOM <code>lookupNamespaceURI()</code> method
-    on the element would return a non-null value for that prefix.
-
-    The default namespace is the namespace for which the DOM <code>isDefaultNamespace()</code> method on the element would return true.
-
-    <p class="note">
-      No <code>DOCTYPE</code> is passed to the parser, and therefore no external subset is
-      referenced, and therefore no entities will be recognized.
-    </p>
-
+      If there is an XML well-formedness or XML namespace well-formedness error, then throw
+      a "{{SyntaxError}}" {{DOMException}} and abort these steps.
     </li>
 
     <li>
-
-    <a>Feed the parser</a> just created the string <var>input</var>.
-
+      If the <a>document element</a> of the resulting {{Document}} has any sibling nodes,
+      then throw a "{{SyntaxError}}" {{DOMException}} and abort these steps.
     </li>
 
     <li>
-
-    <a>Feed the parser</a> just created the string corresponding to the end tag of the <var>context</var> element.
-
-    </li>
-
-    <li>
-
-    If there is an XML well-formedness or XML namespace well-formedness error, then throw a
-    "{{SyntaxError}}" {{DOMException}} and abort these steps.
-
-    </li>
-
-    <li>
-
-    If the <a>document element</a> of the resulting {{Document}} has any sibling nodes, then throw a
-    "{{SyntaxError}}" {{DOMException}} and abort these steps.
-
-    </li>
-
-    <li>
-
-    Return the child nodes of the <a>document element</a> of the resulting {{Document}}, in
-    <a>tree order</a>.
-
+      Return the child nodes of the <a>document element</a> of the resulting {{Document}},
+      in <a>tree order</a>.
     </li>
 
   </ol>
