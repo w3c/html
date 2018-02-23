@@ -221,14 +221,14 @@
 
    <dt><dfn for="script">referrer policy</dfn></dt>
 
-   <dd><p>The <a>referrer policy</a> used for the
+   <dd><p>The [[!REFERRER-POLICY#referrer policy]] used for the
    initial fetch and for fetching any imported modules</p></dd>
   </dl>
 
   <p class="note">Recall that via the <code>import()</code> feature, <a>classic scripts</a> can import <a>module scripts</a>.</p>
 
   
-  <p>The <dfn>default classic script fetch options</dfn> are a set of<a>script fetch options</a>
+  <p>The <dfn>default classic script fetch options</dfn> are a set of <a>script fetch options</a>
   whose <a>cryptographic nonce</a> is the empty string, <a>integrity metadata</a> is the empty string, 
   <a>parser metadata</a> is "<code>not-parser-inserted</code>", <a>credentials mode</a> is "<code>omit</code>",
   and <a>referrer policy</a> is the empty string.</p>
@@ -237,8 +237,7 @@
 
   <dl>
    <dt><dfn>set up the classic script request</dfn></dt>
-   <dd><p>Set <var>request</var>'s <a>cryptographic nonce
-   metadata</a> to <var>options</var>'s <a>cryptographic nonce</a>, its <a>integrity metadata</a> to <var>options</var>'
+   <dd><p>Set <var>request</var>'s <a>cryptographic nonce metadata</a> to <var>options</var>'s <a>cryptographic nonce</a>, its <a>integrity metadata</a> to <var>options</var>'
    <a>integrity metadata</a>, its <a>parser metadata</a> to <var>options</var>'
    <a>parser metadata</a>, and its <a>referrer policy</a> to <var>options</var>' <a>referrer policy</a>.</p></dd>
 
@@ -305,7 +304,7 @@
   6. If <var>response</var>'s <a for="response">type</a> is "<code>error</code>", or
       <var>response</var>'s <a>status</a> is not an <a>ok status</a>, asynchronously complete this
       algorithm with null, and abort these steps.
-  7. If the caller specified custom steps to <a>process the response</a>, perform them on
+  7. If the caller specified custom steps to <a data-lt="process response">process the response</a>, perform them on
       <var>response</var>. If they return false, complete this algorithm with null, and abort these
       steps.
   8. If <var>response</var>'s <a>Content-Type metadata</a>, if any, specifies a character encoding,
@@ -336,18 +335,16 @@
        <a>mode</a> is "<code>same-origin</code>", <a>credentials mode</a> is "<code>same-origin</code>",
        <a>parser metadata</a> is "<code>not parser-inserted</code>", and whose
        <a>use-URL-credentials flag</a> is set.
-  2. If the caller specified custom steps to <a>perform
-      the fetch</a>, perform them on <var>request</var>, with the <a>is top-level</a> flag set. Return from this algorithm,
-      and when the custom <a>perform the fetch</a> steps
-      complete with <a>response</a> <var>response</var>, run the
-      remaining steps.
+  2. If the caller specified custom steps to <a>perform the fetch</a>, perform them on <var>request</var>, with the <a>is top-level</a> flag set. 
+      Return from this algorithm, and when the custom <a>perform the fetch</a> steps complete with <a>response</a> <var>response</var>,
+      run the remaining steps.
       <p>Otherwise, <a>fetch</a> <var>request</var>.</p>
   4. Return from this algorithm, and run the remaining steps as part of the fetch's <a>process response</a>
       for the <a>response</a> <var>response</var>.
   5. If <var>response</var>'s <a for="response">type</a> is "<code>error</code>", or
       <var>response</var>'s <a>status</a> is not an <a>ok status</a>, asynchronously complete this
       algorithm with null, and abort these steps.
-  6. If the caller specified custom steps to <a>process the response</a>, perform them on
+  6. If the caller specified custom steps to <a data-lt="process response">process the response</a>, perform them on
       <var>response</var>. If they return false, complete this algorithm with null, and abort these
       steps.
   7. Let <var>source text</var> be the result of <a>UTF-8 decoding</a> <var>response</var>'s
@@ -368,7 +365,7 @@
   3. <a>Fetch a single module script</a> given <var>url</var>, <var>credentials mode</var>,
       <var>cryptographic nonce</var>, <var ignore=''>parser state</var>, <var>destination</var>, and
       <var>module map settings object</var>. If the caller of this algorithm specified custom
-      <a>set up the request</a> or <a>process the response</a> steps, pass those along while
+      <a>set up the module script request</a> or <a data-lt="process response">process the response</a> steps, pass those along while
       <a>fetching a single module script</a>.
   4. Return from this algorithm and run the following steps when <a>fetching a single module
       script</a> asynchronously completes with <var>result</var>:
@@ -411,8 +408,7 @@
       <a>parser state</a>, <var>destination</var>, <var>module script</var>'s
       <a>settings object</a>, and <var>ancestor list</var>.
 
-      <p class="note">It is intentional that no custom <a>set up the request</a> or <a>process the
-      response</a> steps are passed along here. Those hooks only apply to the top-level fetch at
+      <p class="note">It is intentional that no custom <a>set up the module script request</a> or <a data-lt="process response">process the response</a> steps are passed along here. Those hooks only apply to the top-level fetch at
       the root of the module script tree.</p>
 
       If any of the <a>fetch a module script tree</a> invocations asynchronously complete with
@@ -440,7 +436,7 @@
       <a>referrer</a> is <var>referrer</var>, and <a>client</a> is <var>fetch client settings
       object</var>. <a>Set up the module script request</a> given <var>request</var> and
       <var>options</var>.
-  6. If the caller specified custom steps to <a>set up the request</a>, perform them on
+  6. If the caller specified custom steps to <a>set up the module script request</a>, perform them on
       <var>request</var>.
   7. <a>Fetch</a> <var>request</var>.
   8. Return from this algorithm, and run the remaining steps as part of the fetch's
@@ -460,7 +456,7 @@
          <p class="note">For historical reasons, <a>fetching a classic script</a> does not include
          MIME type checking. In contrast, module scripts will fail to load if they are not of a
          correct MIME type.</p>
-      * The caller specified custom steps to <a>process the response</a>, which when performed on
+      * The caller specified custom steps to <a data-lt="process response">process the response</a>, which when performed on
          <var>response</var> return false.
   10. Let <var>source text</var> be the result of <a>UTF-8 decoding</a> <var>response</var>'s
        [=response/body=].
