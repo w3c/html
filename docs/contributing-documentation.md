@@ -155,4 +155,4 @@ lines</a> making it much harder to search/replace
 
 Parts of the HTML specification are protected to prevent them being overwritten. Protected content is identified using comments, as follows:
 `<!-- W3C START - DO NOT OVERWRITE--> protected text <!-- W3C END -->`.
-Please do not change these parts of the specification without [filing an issue](https://github.com/w3c/tml/issues).
+Please do not change these parts of the specification without [filing an issue](https://github.com/w3c/html/issues).
