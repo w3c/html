@@ -28,6 +28,10 @@
 
   Authors should not specify a <{img/border}> attribute on an <{img}> element. If the
   attribute is present, its value must be the string "<code>0</code>". CSS should be used instead.
+  
+  Authors should not specify a <code>charset</code> attribute on a <{script}> element. If the
+  attribute is present, its value must be an [=ASCII case-insensitive=] match for the string
+  "<code>utf-8</code>". [[!ENCODING]]
 
   Authors should not specify a <{script/language}> attribute on a <{script}> element. If
   the attribute is present, its value must be an [=ASCII case-insensitive=] match for the string
@@ -65,6 +69,9 @@
 
   * The presence of a <{img/border}> attribute on an <{img}> element if its value is the string
     "<code>0</code>".
+
+  * The presence of a <code>charset</code> attribute on a <{script}> element if its value is an
+    [=ASCII case-insensitive=] match for "<code>utf-8</code>".
 
   * The presence of a <{script/language}> attribute on a <{script}> element if its value is an
     [=ASCII case-insensitive=] match for the string "<code>JavaScript</code>" and if there is no
@@ -173,6 +180,11 @@
   : <dfn element-attr for="a"><code>charset</code></dfn> on <{a}> elements
   : <dfn element-attr for="link"><code>charset</code></dfn> on <{link}> elements
   :: Use an HTTP <code>Content-Type</code> header on the linked resource instead.
+
+  : <dfn element-attr for="script"><code>charset</code></dfn> on <{script}> elements 
+    (except as noted in the previous section)
+  :: Omit the attribute. Both documents and scripts are required to use <a>UTF-8</a>. It is
+     redundant to specify it on the <{script}> element since it inherits from the document.
 
   : <dfn element-attr for="a"><code>coords</code></dfn> on <{a}> elements
   : <dfn element-attr for="a"><code>shape</code></dfn> on <{a}> elements
@@ -1351,10 +1363,14 @@
 
   <pre class="idl" data-highlight="webidl">
     partial interface HTMLScriptElement {
+      [CEReactions] attribute DOMString charset;
       [CEReactions] attribute DOMString event;
       [CEReactions] attribute DOMString htmlFor;
     };
   </pre>
+
+  The <dfn attribute for="HTMLScriptElement"><code>charset</code></dfn> IDL attribute of the
+  <{script}> element must reflect the element's <code>charset</code> content attribute.
 
   The <dfn attribute for="HTMLScriptElement"><code>event</code></dfn> IDL attribute of the
   <{script}> element must reflect the element's <{script/event}> content attribute.
