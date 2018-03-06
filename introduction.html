@@ -1180,7 +1180,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version fbf1456a756299b3ff6d248d0857ec87f2e68cd7" name="generator">
   <link href="https://www.w3.org/TR/html53/" rel="canonical">
-  <meta content="c6ab931e92212372b2a04fd5907c42043038dac9" name="document-revision">
+  <meta content="e2227c57210ed41b4791f17e05da5e623e395d9d" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1428,7 +1428,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <header>
     <p data-fill-with="logo"><a href="https://www.w3.org/"><img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"></a> </p>
     <h1 class="p-name no-ref allcaps" id="title">HTML 5.3</h1>
-    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-03-03">3 March 2018</time></span></h2>
+    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2018-03-06">6 March 2018</time></span></h2>
    </header>
    
    
@@ -2269,28 +2269,30 @@ to a hostile site.</p>
       <p>There are syntax constructs that, for historical reasons, are relatively fragile. To help
   reduce the number of users who accidentally run into such problems, they are made
   non-conforming.</p>
-      <div class="example" id="example-b33ae4c6">
-       <a class="self-link" href="introduction.html#example-b33ae4c6"></a> For example, the parsing of certain named character references in attributes happens even
+      <div class="example" id="example-2b85d1c9">
+       <a class="self-link" href="introduction.html#example-2b85d1c9"></a> For example, the parsing of certain named character references in attributes happens even
     with the closing semicolon being omitted. It is safe to include an ampersand followed by
     letters that do not form a named character reference, but if the letters are changed to a
     string that <em>does</em> form a named character reference, they will be interpreted as that
     character instead. 
        <p>In this fragment, the attribute’s value is "<code>?bill&amp;ted</code>":</p>
 <pre class="bad highlight"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"?bill&amp;ted"</span><span class="p">&gt;</span>Bill and Ted<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span></pre>
-       <p>In the following fragment, however, the attribute’s value is actually
-    "<code>?art©</code>", <em>not</em> the intended "<code>?art&amp;copy</code>",
-    because even without the final semicolon, "<code>&amp;copy</code>" is handled the same
-    as "<code>&amp;copy;</code>" and thus gets interpreted as "<code>©</code>":</p>
+       <p>However, in the following fragment the attribute’s value is actually
+    "<code>?art©</code>", <em>not</em> the intended "<code>?art&amp;copy</code>".
+    This is because even without the final semicolon, "<code>&amp;copy</code>" is
+    handled the same as "<code>&amp;copy;</code>" and is interpreted as "<code>©</code>":</p>
 <pre class="bad highlight"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"?art&amp;copy"</span><span class="p">&gt;</span>Art and Copy<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span></pre>
        <p>To avoid this problem, all named character references are required to end with a
-    semicolon, and uses of named character references without a semicolon are flagged as
+    semicolon. Uses of named character references without a semicolon are flagged as
     errors.</p>
-       <p>Thus, the correct way to express the above cases is as follows:</p>
-<pre class="highlight"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"?bill&amp;ted"</span><span class="p">&gt;</span>Bill and Ted<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
-<span class="c">&lt;!-- &amp;ted is ok, since it’s not a named character reference --&gt;</span>
+       <p>The correct way to express the above cases are as follows:</p>
+<pre class="highlight"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"?bill&amp;amp;ted"</span><span class="p">&gt;</span>Bill and Ted<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="c">&lt;!--</span>
+<span class="c">  While &amp;ted is not a named character, providing consistency in escaping ampersands will remove ambiguity over best practice, and will ensure that if &amp;ted ever becomes a named character, it will not break such fragments.</span>
+<span class="c">--&gt;</span>
 </pre>
 <pre class="highlight"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"?art&amp;amp;copy"</span><span class="p">&gt;</span>Art and Copy<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
-<span class="c">&lt;!-- the &amp; has to be escaped, since &amp;copy is a named character reference --&gt;</span>
+<span class="c">&lt;!-- The &amp; has to be escaped, since &amp;copy is a named character reference --&gt;</span>
 </pre>
       </div>
      </dd><dt data-md="">Errors involving known interoperability problems in legacy user agents
