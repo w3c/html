@@ -1018,27 +1018,29 @@
 
         <xmp class="bad" highlight="html"><a href="?bill&ted">Bill and Ted</a></xmp>
 
-        In the following fragment, however, the attribute's value is actually
-        "<code>?art&copy;</code>", <em>not</em> the intended "<code>?art&amp;copy</code>",
-        because even without the final semicolon, "<code>&amp;copy</code>" is handled the same
-        as "<code>&amp;copy;</code>" and thus gets interpreted as "<code>&copy;</code>":
+        However, in the following fragment the attribute's value is actually
+        "<code>?art&copy;</code>", <em>not</em> the intended "<code>?art&amp;copy</code>".
+        This is because even without the final semicolon, "<code>&amp;copy</code>" is
+        handled the same as "<code>&amp;copy;</code>" and is interpreted as "<code>&copy;</code>":
 
         <xmp class="bad" highlight="html"><a href="?art&copy">Art and Copy</a></xmp>
 
         To avoid this problem, all named character references are required to end with a
-        semicolon, and uses of named character references without a semicolon are flagged as
+        semicolon. Uses of named character references without a semicolon are flagged as
         errors.
 
-        Thus, the correct way to express the above cases is as follows:
+        The correct way to express the above cases are as follows:
 
         <xmp highlight="html">
-          <a href="?bill&ted">Bill and Ted</a>
-          <!-- &ted is ok, since it's not a named character reference -->
+          <a href="?bill&amp;ted">Bill and Ted</a>
+          <!--
+            While &ted is not a named character, providing consistency in escaping ampersands will remove ambiguity over best practice, and will ensure that if &ted ever becomes a named character, it will not break such fragments.
+          -->
         </xmp>
 
         <xmp highlight="html">
           <a href="?art&amp;copy">Art and Copy</a>
-          <!-- the & has to be escaped, since &copy is a named character reference -->
+          <!-- The & has to be escaped, since &copy is a named character reference -->
         </xmp>
       </div>
   : Errors involving known interoperability problems in legacy user agents
