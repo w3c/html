@@ -743,21 +743,22 @@
       <pre class="idl" data-highlight="webidl">
         [NamedConstructor=Image(optional unsigned long width, optional unsigned long height)]
         interface HTMLImageElement : HTMLElement {
-          attribute DOMString alt;
-          attribute DOMString src;
-          attribute DOMString srcset;
-          attribute DOMString sizes;
-          attribute DOMString? crossOrigin;
-          attribute DOMString useMap;
+          [CEReactions] attribute DOMString alt;
+          [CEReactions] attribute DOMString src;
+          [CEReactions] attribute DOMString srcset;
+          [CEReactions] attribute DOMString sizes;
+          [CEReactions] attribute DOMString? crossOrigin;
+          [CEReactions] attribute DOMString useMap;
           attribute DOMString longDesc;
-          attribute boolean isMap;
-          attribute unsigned long width;
-          attribute unsigned long height;
+          [CEReactions] attribute boolean isMap;
+          [CEReactions] attribute unsigned long width;
+          [CEReactions] attribute unsigned long height;
           readonly attribute unsigned long naturalWidth;
           readonly attribute unsigned long naturalHeight;
           readonly attribute boolean complete;
           readonly attribute DOMString currentSrc;
-          attribute DOMString referrerPolicy;
+          [CEReactions] attribute DOMString referrerPolicy;
+          [CEReactions] attribute DOMString decoding;
         };
       </pre>
     </dd>
@@ -895,6 +896,11 @@
 
   The <dfn element-attr for="img"><code>referrerpolicy</code></dfn> attribute is a <a>referrer policy attribute</a>. Its purpose is to
   set the <a>referrer policy</a> used when <a>fetching</a> the image. [[!REFERRERPOLICY]]
+
+  The <dfn element-attr for="img"><code>decoding</code></dfn> attribute indicates
+  the preferred method to <a for="image">decode</a> this image. The attribute,
+  if present, must be an [=image decoding hint=]. This attribute's
+  [=missing value default=] and [=invalid value default=] are both the {{auto}} state.
 
   <hr />
 
@@ -1038,6 +1044,91 @@
   <p class="example">For example, if a resource has the HTTP response header <code>Cache-Control: must-revalidate</code>,
   the user agent would remove it from the <a>list of available images</a> but could keep the image data separately,
   and use that if the server responds with a <code>204 No Content</code> status.</p>
+
+  Image <dfn lt="decode" for="image">decoding</dfn> is the process which converts
+  an encoded image's data into a bitmap form for presentation. Implementations may
+  choose when and what to decode for the best user experience.
+
+  Image decoding is said to be synchronous if it prevents presentation of other
+  content until it is finished. Typically, this has an effect of atomically
+  presenting the image and any other content at the same time. However, this
+  presentation is delayed by the amount of time it takes to perform the decode.
+
+  Image decoding is said to be asynchronous if it does not prevent presentation of
+  other content. This has an effect of presenting non-image content faster. However,
+  the image content is missing on screen until the decode finishes. Once the decode
+  is finished, the screen is updated with the image.
+
+  In both synchronous and asynchronous decoding modes, the final content is
+  presented to screen after the same amount of time has elapsed. The main
+  difference is whether the user agent presents non-image content ahead of
+  presenting the final content.
+
+  In order to aid the user agent in deciding whether to perform synchronous or
+  asynchronous decode, the <a element-attr for="img">decoding</a> attribute can
+  be set on <{img}> elements. The possible values of of the
+  <a element-attr for="img">decoding</a> attribute are the following
+  <dfn>image decoding hint</dfn> keywords:
+
+  <table>
+    <thead>
+    <tr>
+      <th>
+        Keyword
+      </th>
+      <th>
+        State
+      </th>
+      <th>
+        Brief description
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr>
+      <td>
+        <dfn attr-value for="img"><code>sync</code></dfn>
+      </td>
+      <td>
+        <dfn state for="img">Sync</dfn>
+      </td>
+      <td>
+        Indicates a preference to <a for="image">decode</a> this image synchronously
+        for atomic presentation with other content.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <dfn attr-value for="img"><code>async</code></dfn>
+      </td>
+      <td>
+        <dfn state for="img">Async</dfn>
+      </td>
+      <td>
+        Indicates a preference to <a for="image">decode</a> this image asynchronously
+        to avoid delaying presentation of other content.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <dfn attr-value for="img"><code>auto</code></dfn>
+      </td>
+      <td>
+        <dfn state for="img">Auto</dfn>
+      </td>
+      <td>
+        Indicates no preference in decoding mode (the default).
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  When decoding an image, the user agent should respect the preference indicated
+  by the decoding attribute's state. If the state indicated is auto, then the
+  user agent is free to choose any decoding behavior.
 
   When the user agent is to <dfn>update the image data</dfn> of an <{img}> element,
   optionally with the <i>restart animations</i> flag set,
@@ -2374,6 +2465,26 @@
 
     </dd>
 
+    <dt><var>image</var> . <code>decoding</code></dt>
+
+    <dd>
+
+    Returns the [=image decoding hint=] set for this image.
+
+    </dd>
+
+    <dt><var>image</var> . <code>decode()</code></dt>
+
+    <dd>
+
+    This method causes the user agent to <a for="image">decode</a> the image
+    [=in parallel=], returning a promise that fulfills when decoding is complete.
+
+    The promise will be rejected with an "{{EncodingError}}" {{DOMException}}
+    if the image cannot be decoded.
+
+    </dd>
+
     <dt><var>image</var> = new <code>Image</code>( [ <var>width</var> [, <var>height</var> ] ] )</dt>
 
     <dd>
@@ -2429,6 +2540,75 @@
 
   The <dfn attribute for="HTMLImageElement"><code>currentSrc</code></dfn> IDL attribute
   must return the <{img}> element's <a>current request</a>'s <a>current URL</a>.
+
+  The <dfn method for="HTMLImageElement"><code>decode()</code></dfn> method, when invoked,
+  must perform the following steps:
+
+  <ol>
+    <li>
+      If any of the following conditions are true about this <{img}> element:
+
+      <ul>
+        <li>its [=node document=] is not an [=active document=];</li>
+        <li>its [=current request=]'s state is <a state for="img">broken</a>,</li>
+      </ul>
+
+      then reject promise with an "{{EncodingError}}" {{DOMException}}.
+    </li>
+
+    <li>
+      Otherwise, [=in parallel=], wait for one of the following cases to occur,
+      and perform the corresponding actions:
+
+      <dl class="switch">
+        <dt>This img element's [=node document=] stops being an [=active document=]</dt>
+        <dt>This img element's [=current request=] changes or is mutated</dt>
+        <dt>
+            This img element's [=current request=]'s <a for="image">state</a> becomes
+            <a state for="img">broken</a>
+        </dt>
+
+        <dd>Reject promise with an "{{EncodingError}}" {{DOMException}}.</dd>
+
+        <dt>
+          This <{img}> element's [=current request=]'s <a for="image">state</a>
+          becomes <a state for="img">completely available</a>
+        </dt>
+
+        <dd>
+          <a for="image">Decode</a> the image.
+
+          If decoding does not need to be performed for this image, resolve promise with
+          undefined. An example of this case would be for vector graphics.
+
+          If decoding fails, reject promise with an "{{EncodingError}}" {{DOMException}}.
+          An example of this would be corrupt image data or attempting to decode an
+          image encoded by an unsupported codec.
+
+          If the decoding process completes successfully, resolve promise with undefined.
+
+          User agents **should** ensure that the decoded media image is readily available
+          until at least the end of the next successful update the rendering step in the
+          event loop.
+
+          <p class="note">
+            Implementations may choose to discard the decoded image data in the event it
+            is difficult to keep the decoded copy ready. Low memory situations or large
+            images would be cases where implementations may choose to do this.
+          </p>
+
+          <p class="note">
+            Implementations are expected to treat animated images that have all frames
+            loaded as <a state for="img">completely available</a>.
+          </p>
+        </dd>
+
+      </dl>
+    </li>
+
+    <li>Return *promise*.</li>
+
+  </ol>
 
   <p id='image'>
   A constructor is provided for creating <code>HTMLImageElement</code> objects (in addition to
