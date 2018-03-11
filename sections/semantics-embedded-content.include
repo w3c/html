@@ -6010,7 +6010,7 @@ zero or more <{track}> elements, then
       [CEReactions] attribute boolean autoplay;
       [CEReactions] attribute boolean disableRemotePlayback;
       [CEReactions] attribute boolean loop;
-      void play();
+      Promise&lt;void&gt; play();
       void pause();
 
       // controls
@@ -6338,12 +6338,13 @@ zero or more <{track}> elements, then
 
     <li>
 
-    If there are any <a>tasks</a> from the <a>media element</a>'s <a>media element event task source</a> in one of the <a>task queues</a>, then remove those tasks.
+    If there are any <a>tasks</a> from the <a>media element</a>'s <a>media element event task source</a>
+    that would <a>resolve pending play promises</a> or <a>reject pending play promises</a> in one of the
+    <a>task queues</a>, then remove those tasks.
 
-    <p class="note">
-    Basically, pending events and callbacks for the media element are discarded when
-    the media element starts loading a new resource.
-  </p>
+    <p class="note">Basically, pending events and callbacks for the media element are discarded and
+    pending promises are rejected when the media element starts loading a new resource.
+    </p>
 
     </li>
 
@@ -6693,7 +6694,10 @@ zero or more <{track}> elements, then
       <li>Set the element's <a>show poster flag</a> to true.</li>
 
       <li><a>Fire a simple event</a> named <code>error</code> at
-      the <a>media element</a>.</li>
+      the [=media element=].</li>
+
+      <li><a>Reject pending play promises</a> with promises and a
+      "{{NotSupportedError}}" {{DOMException}}.</li>
 
       <li>Set the element's <a>delaying-the-load-event flag</a> to false. This stops <a>delaying the load event</a>.</li>
 
@@ -8033,7 +8037,8 @@ zero or more <{track}> elements, then
     <li><a>Queue a task</a> that, if the <a>media element</a> has still <a>ended playback</a>, and
     the <a>direction of playback</a> is still forwards, and {{HTMLMediaElement/paused}} is false,
     changes {{HTMLMediaElement/paused}} to true and <a>fires a simple event</a> named
-    <code>pause</code> at the <a>media element</a>.</li>
+    <code>pause</code> at the <a>media element</a>, [=take pending play promises=] and
+    [=reject pending play promises=] with the result and an {{AbortError}} {{DOMException}}.</li>
 
     <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>ended</code> at the <a>media element</a>.</li>
 
@@ -8100,10 +8105,68 @@ zero or more <{track}> elements, then
 
   <hr />
 
+  Each [=media element=] has a <dfn>list of pending play promises</dfn>, which must be initially empty.
+
+  To <dfn>take pending play promises</dfn> for a <a>media element</a>, the user agent must run the following steps:
+
+  <ol>
+    <li>Let promises be an empty list of promises.</li>
+
+    <li>Copy the [=media element=]'s [=list of pending play promises=] to promises.</li>
+
+    <li>Clear the [=media element=]'s [=list of pending play promises=].</li>
+
+    <li>Return *promise*s.</li>
+  </ol>
+
+  To <dfn>resolve pending play promises</dfn> for a [=media element=] with a list of
+  promises <i>promises</i>, the user agent must resolve each promise in
+  <i>promises</i> with undefined.
+
+  To <dfn>reject pending play promises</dfn> for a [=media element=] with a list of promise
+  promises and an exception name error, the user agent must reject each
+  promise in promises with error.
+
+  To <dfn>notify about playing</dfn> for a [=media element=], the user agent must run the
+  following steps:
+
+  <ol>
+    <li><a>Take pending play promises</a> and let <i>promises</i> be the result.</li>
+
+    <li><a>Queue a task</a> to run these steps:</li>
+
+    <ol>
+      <li><a>Fire an event</a> named playing at the element.</li>
+
+      <li><a>Resolve pending play promises</a> with promises.</li>
+  </ol>
+
+  <hr />
+
   When the <dfn method for="HTMLMediaElement"><code>play()</code></dfn> method on a
   <a>media element</a> is invoked, the user agent must run the following steps.
 
   <ol>
+
+    <li>If the [=media element=] is not allowed to play, return a promise rejected
+    with a "{{NotAllowedError}}" {{DOMException}}.
+
+    <p class="note">For example, a user agent could require user interaction in order to start
+    playback. This specification does not require any particular behavior.</p>
+    </li>
+
+    <li>If the [=media element=]'s {{HTMLMediaElement/error}} attribute is not null and its
+    {{MediaError/code}} is {{MEDIA_ERR_SRC_NOT_SUPPORTED}}, return a promise rejected
+    with a "{{NotSupportedError}}" DOMException.
+
+    <p class="note">
+    This means that the <a>dedicated media source failure steps</a> have run. Playback is not possible
+    until the media element load algorithm clears the error attribute.
+    </p>
+    </li>
+
+    <li>Let <i>promise</i> be a new promise and append <i>promise</i> to the
+    <a>list of pending play promises</a>.</li>
 
     <li>If the <a>media element</a>'s {{HTMLMediaElement/networkState}} attribute has the value
     <code>NETWORK_EMPTY</code>, invoke the <a>media element</a>'s
@@ -8130,8 +8193,7 @@ zero or more <{track}> elements, then
       <li>If the <a>show poster flag</a> is true, set the element's <a>show poster
       flag</a> to false and run the <i>time marches on</i> steps.</li>
 
-      <li><a>Queue a task</a> to <a>fire a simple event</a> named
-      <a event for="media"><code>play</code></a> at the element.</li>
+      <li><a>Queue a task</a> to <a>notify about playing</a> for the element.</li>
 
       <li>
 
@@ -8141,8 +8203,7 @@ zero or more <{track}> elements, then
       element.
 
       Otherwise, the <a>media element</a>'s {{HTMLMediaElement/readyState}} attribute has the value <code>HAVE_FUTURE_DATA</code> or <code>HAVE_ENOUGH_DATA</code>: <a>queue a task</a> to
-      <a>fire a simple event</a> named <code>playing</code> at the
-      element.
+      <a>notify about playing</a> at the element.
 
       </li>
 
@@ -8150,7 +8211,19 @@ zero or more <{track}> elements, then
 
     </li>
 
+    <li>Otherwise, if the [=media element=]'s {{HTMLMediaElement/readyState}} attribute has the value
+    {{HAVE_FUTURE_DATA}} or {{HAVE_ENOUGH_DATA}}, <a>take pending play promises</a> and <a>queue a task</a>
+    to <a>resolve pending play promises</a> with the result.
+
+    <p class="note">
+    The media element is already playing. However, it's possible that promise will be
+    rejected before the queued task is run.
+    </p>
+    </li>
+
     <li>Set the <a>media element</a>'s <a>autoplaying flag</a> to false.</li>
+
+    <li>Return <i>promise</i>.</li>
 
   </ol>
 
