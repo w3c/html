@@ -3612,9 +3612,9 @@
 
 <h6 id="guidance-for-markup-generators">Guidance for markup generators</h6>
 
-  Markup generators (such as WYSIWYG authoring tools) should, wherever possible, obtain
-  alternative text from their users. However, it is recognized that in many cases, this will not be
-  possible.
+  Wherever possible, markup generators (such as WYSIWYG authoring tools) should obtain
+  alternative text from their users. However, it is recognized that in many cases obtaining
+  alternative text from users may not be possible.
 
   For images that are the sole contents of links, markup generators should examine the link
   target to determine the title of the target, or the URL of the target, and use information
@@ -3623,12 +3623,63 @@
   For images that have captions, markup generators should use the
   <{figure}> and <{figcaption}> elements to provide the image's caption.
 
-  As a last resort, implementors should either set the <code>alt</code> attribute to the empty string, under
-  the assumption that the image is a purely decorative image that
-  doesn't add any information but is still specific to the surrounding
-  content, or omit the <code>alt</code> attribute
-  altogether, under the assumption that the image is a key part of the
-  content.
+  As a last resort, implementors should set the <code>alt</code> attribute to the empty
+  string, under the assumption that the image is a purely decorative image that doesn't add any
+  information but is still specific to the surrounding content, or omit the <code>alt</code>
+  attribute altogether, under the assumption that the image is a key part of the content.
+
+  <div class="note">
+    Setting an <{image}> element's <code>alt</code> attribute to the empty string will convey
+    to assistive technologies, such as screen readers, that the image in question has no relative
+    or informative value to the section of the document in which it is found. Being that it serves
+    no informative purpose, a screen reader may choose to completely ignore the presence of the
+    image, in favor of not announcing a graphic which has no alternative text to describe it.
+    In the context of a decorative image, this poses no detriment to the end user, as fully
+    understanding the document is not reliant on parsing the image.
+
+    However, in instances where an image is vital to understanding the contents of a document,
+    an image with an omitted <code>alt</code> attribute is preferable to an <code>alt</code>
+    attribute set to the empty string. In the former example, assistive technology would at
+    least indicate to a user that an image existed in the document.
+
+    For example, while the following image has no alternative text, it will be discoverable
+    by assistive technologies as an image, and its file name should be announced.
+
+    <xmp highlight="html">
+      <figure>
+        <img src="bar-graph.png">
+        <figcaption>
+          <p>
+            Figure 1: the bar graph indicates that in the last four years, profits have been on the rise.
+          </p>
+        </figcaption>
+      </figure>
+    </xmp>
+
+    In the above example, the <{figcaption}> provides context to all users about the image.
+    While the image has no alternative text to describe it, the presence of the image should
+    be announced, and users with low or no vision may understand what it could display,
+    based on the caption provided.
+
+    By contrast in the following example, the image has an <code>alt</code> attribute set to
+    the empty string:
+
+    <xmp highlight="html">
+      <figure>
+        <img src="star-chart.jpg" alt>
+        <figcaption>
+          <p>
+            Figure 2: The zodiac is an area of the sky that extends approximately 8° north or south of the ecliptic...
+          </p>
+        </figcaption>
+      </figure>
+    </xmp>
+
+    As the <code>alt</code> attribute is set to the empty string, in this example, assistive
+    technologies will likely not announced the existence of the image. Thus to users of such
+    software, the <{figcaption}> would be describing "nothing" as there would be no announcement
+    of a "figure" in this instance.
+  </div>
 
   Markup generators may specify a <dfn><code>generator-unable-to-provide-required-alt</code></dfn>
   attribute on <{img}> elements for which they have been
