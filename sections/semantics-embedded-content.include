@@ -74,7 +74,6 @@
         another mobile phone's screen, regardless of their physical screen size.
 
         <img alt="One phone has big pixels, the other has small pixels." src="images/magnify-pixels.svg" />
-
       </div>
 
       </li>
@@ -88,8 +87,8 @@
         A user might zoom in to a particular image to be able to get a more detailed look.
       </p>
 
-      The zoom level and the screen pixel density (the previous point) can both affect the number of
-      physical screen pixels per CSS pixel. This ratio is usually referred to as
+      The zoom level and the screen pixel density (the previous point) can both affect the
+      number of physical screen pixels per CSS pixel. This ratio is usually referred to as
       <dfn>device-pixel-ratio</dfn>.
 
       </li>
@@ -137,7 +136,6 @@
       (assuming a maximised browser window).
 
       <img alt="The upright-held phone shows a small wolf at the top, and the tablet shows the same image but it is bigger" src="images/viewport-based.svg" />
-
     </div>
 
     <div class="example">
@@ -174,11 +172,13 @@
     on which image formats the user agent supports. This is usually referred to as
     <dfn>image format-based selection</dfn>.
 
-    <p class="example">A Web page might have some images in the JPEG, WebP and JPEG XR image
-    formats, with the latter two having better compression abilities compared to JPEG. Since
-    different user agents can support different image formats, with some formats offering better
-    compression ratios, the author would like to serve the better formats to user agents that
-    support them, while providing JPEG fallback for user agents that don't.</p>
+    <p class="example">
+      A Web page might have some images in the JPEG, WebP and JPEG XR image formats, as the
+      latter two have better compression abilities compared to JPEG. Since different user agents
+      can support different image formats, with some formats offering better compression ratios,
+      the author would like to serve the better formats to user agents that support them, while
+      providing a JPEG fallback for user agents that don't.
+    </p>
 
     </li>
 
@@ -186,7 +186,7 @@
 
   The above situations are not mutually exclusive. For example, it is reasonable to combine
   different resources for different <a>device-pixel-ratio</a> with different resources for
-    <a for="image">art direction</a>.
+  <a for="image">art direction</a>.
 
   While it is possible to solve these problems using scripting, doing so introduces some other
   problems:
@@ -219,36 +219,36 @@
     image is a scaled-down version of the bigger image).
 
     <p class="note">
-    The <code>x</code> descriptor is not appropriate when the
-    rendered size of the image depends on the <a>viewport</a> width (<a>viewport-based selection</a>),
-    but can be used together with <a for="image">art direction</a>.
-  </p>
+      The <code>x</code> descriptor is not appropriate when the rendered size of the image depends
+      on the <a>viewport</a> width (<a>viewport-based selection</a>), but can be used together
+      with <a for="image">art direction</a>.
+    </p>
 
     <div class="example">
       <xmp highlight="html">
         <h2>From today's featured article</h2>
         <img src="/uploads/100-marie-lloyd.jpg"
-              srcset="/uploads/150-marie-lloyd.jpg 1.5x, /uploads/200-marie-lloyd.jpg 2x"
-              alt="A singer on the stage" width="100" height="150">
-        <p><a href="/wiki/Marie_Lloyd">Marie Lloyd</a> (1870–1922)
-        was an English <a href="/wiki/Music_hall">music hall</a> singer, ...
+            srcset="/uploads/150-marie-lloyd.jpg 1.5x, /uploads/200-marie-lloyd.jpg 2x"
+            alt="A singer on the stage" width="100" height="150">
+        <p>
+          <a href="/wiki/Marie_Lloyd">Marie Lloyd</a> (1870–1922)
+          was an English <a href="/wiki/Music_hall">music hall</a> singer, ...
       </xmp>
 
-      The user agent can choose any of the given resources depending on
-      the user's screen's pixel density, zoom level, and possibly other factors such as the user's network conditions.
+      The user agent can choose any of the given resources depending on the user's screen's pixel
+      density, zoom level, and possibly other factors such as the user's network conditions.
 
-      For backwards compatibility with older user agents that
-      don't yet understand the <{img/srcset}> attribute,
-      one of the URLs is specified in the <{img}> element's <code>src</code> attribute.
-      This will result in something useful (though perhaps lower-resolution than the user would like)
-      being displayed even in older user agents.
-      For new user agents, the <code>src</code> attribute participates in the resource selection,
-      as if it was specified in <{img/srcset}> with a <code>1x</code> descriptor.
+      To provide backwards compatibility with older user agents that don't understand the
+      <{img/srcset}> attribute, one of the URLs is specified in the <{img}> element's
+      <code>src</code> attribute. This will result in something useful (though perhaps at a
+      lower-resolution than the user might expect) being displayed even in older user agents.
+      For user agents that understand <{img/srcset}>, the <code>src</code> attribute participates
+      in the resource selection, as if it had been specified by <{img/srcset}> with a
+      <code>1x</code> descriptor.
 
-      The image's rendered size is given in the
-      <code>width</code> and <code>height</code> attributes,
-      which allows the user agent to allocate space for the image before it is downloaded.
-
+      The image's rendered size is given in the <code>width</code> and <code>height</code>
+      attributes, which allows the user agent to allocate space for the image before it is
+      downloaded.
     </div>
 
     </dd>
@@ -266,10 +266,12 @@
       In this example, a banner image takes up the entire <a>viewport</a> width
       (using appropriate CSS).
 
-    <xmp highlight="html">
-       <h1><img sizes="100vw" srcset="wolf-400.jpg 400w, wolf-800.jpg 800w, wolf-1600.jpg 1600w"
-       src="wolf-400.jpg" alt="The rad wolf"></h1>
-    </xmp>
+      <xmp highlight="html">
+        <h1>
+          <img srcset="wolf-400.jpg 400w, wolf-800.jpg 800w, wolf-1600.jpg 1600w"
+            src="wolf-400.jpg" sizes="100vw" alt="The rad wolf">
+        </h1>
+      </xmp>
 
       The user agent will calculate the effective pixel density of each image
       from the specified <code>w</code> descriptors and the specified rendered size in the <code>sizes</code> attribute.
@@ -372,14 +374,14 @@
       A banner that takes half the <a>viewport</a> is provided in two versions,
       one for wide screens and one for narrow screens.
 
-    <xmp highlight="html">
-      <h1>
-        <picture>
-        <source media="(max-width: 500px)" srcset="banner-phone.jpeg, banner-phone-HD.jpeg 2x">
-        <img src="banner.jpeg" srcset="banner-HD.jpeg 2x" alt="The Breakfast Combo">
-        </picture>
-      </h1>
-    </xmp>
+      <xmp highlight="html">
+        <h1>
+          <picture>
+            <source media="(max-width: 500px)" srcset="banner-phone.jpeg, banner-phone-HD.jpeg 2x">
+            <img src="banner.jpeg" srcset="banner-HD.jpeg 2x" alt="The Breakfast Combo">
+          </picture>
+        </h1>
+      </xmp>
 
     </div>
 
@@ -389,9 +391,8 @@
 
     <dd>
 
-    The <code>type</code> attribute
-    on the <{source}> element can be used,
-    to provide multiple images in different formats.
+    The <code>type</code> attribute on the <{source}> element can be used, to provide multiple
+    images in different formats.
 
     <div class="example">
       <xmp highlight="html">
@@ -401,8 +402,9 @@
           <source srcset="/uploads/100-marie-lloyd.jxr" type="image/vnd.ms-photo">
           <img src="/uploads/100-marie-lloyd.jpg" alt="A singer on the stage" width="100" height="150">
         </picture>
-        <p><a href="/wiki/Marie_Lloyd">Marie Lloyd</a> (1870–1922)
-        was an English <a href="/wiki/Music_hall">music hall</a> singer, ...
+        <p>
+          <a href="/wiki/Marie_Lloyd">Marie Lloyd</a> (1870–1922)
+          was an English <a href="/wiki/Music_hall">music hall</a> singer, ...
       </xmp>
 
       In this example, the user agent will choose the first <{source}> that has a <{source/type}>
@@ -439,13 +441,13 @@
     <dt><a>Content model</a>:</dt>
     <dd>Zero or more <{source}> elements, followed by one <{img}> element, optionally intermixed with <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>Neither tag is omissible</dd>
+    <dd>Neither tag is omissible.</dd>
     <dt><a>Content attributes</a>:</dt>
-    <dd><a>Global attributes</a></dd>
+    <dd><a>Global attributes</a>.</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
-    <dd>None</dd>
+    <dd>None.</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
-    <dd>None</dd>
+    <dd>None.</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -459,16 +461,34 @@
   which image resource to use, based on the screen pixel density, <a>viewport</a> size, image
   format, and other factors. It <a>represents</a> its children.
 
+  <div class="example">
+    The following example utilizes <a for="image">art direction</a> to provide the appropriate
+    image at a particular <a>viewport</a> for small and large screens.
+
+      <xmp highlight="html">
+        <h3>
+          <picture>
+            <source media="(max-width: 500px)" srcset="photo-small-screen.jpg">
+            <img src="photo-large-screen.jpg"" alt>
+          </picture>
+          Dogs & Cats, Living Together
+        </h3>
+      </xmp>
+
+    For other <{picture}> element examples, see the examples in
+    <a href="#embedded-content-introduction">Embedded content introduction</a>, or the
+    <a href="#an-image-in-a-picture-element">An image in a <code>picture</code> element</a> example.
+  </div>
+
   <p class="note">
-    The <{picture}> element is somewhat different
-    from the similar-looking <code>video</code> and <{audio}> elements.
-    While all of them contain <{source}> elements,
-    the <{source}> element's <{source/src}> attribute has no meaning
-    when the element is nested within a <{picture}> element,
-    and the resource selection algorithm is different.
-    As well, the <{picture}> element itself does not display anything;
-    it merely provides a context for its contained <{img}> element
-    that enables it to choose from multiple <a for="url">URLs</a>.
+    The <{picture}> element is somewhat different from the similar-looking
+    <code>video</code> and <{audio}> elements. While all of them contain <{source}> elements,
+    the <{source}> element's <{source/src}> attribute has no meaning when the element is
+    nested within a <{picture}> element, and the resource selection algorithm is different.
+
+    By itself the <{picture}> element itself does not display anything; it merely provides
+    a context for its contained <{img}> element that enables it to choose from multiple
+    <a for="url">URLs</a>.
   </p>
 
 <h4 id="the-source-element">The <dfn element><code>source</code></dfn> element</h4>
@@ -588,7 +608,7 @@
       : H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container
       :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'></xmp>
 
-      : H.264 &quot;High&quot; profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
+      : H.264 "High" profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
       :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'></xmp>
 
       : MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
@@ -985,7 +1005,7 @@
   after taking into account the <a>current pixel density</a>.
 
   <p class="example">For example, given a screen with 96 CSS pixels per CSS inch, if the
-  <a>current pixel density</a> is 3.125, that means that there are 96 &times; 3.125 = 300 device
+  <a>current pixel density</a> is 3.125, that means that there are 96 × 3.125 = 300 device
   pixels per CSS inch, and thus if the image data is 300x600, it has <a>intrinsic dimensions</a> of
   300 ÷ 3.125 = 96 CSS pixels by 600 ÷ 3.125 = 192 CSS pixels. With a <a>current pixel density</a>
   of 2.0 (192 device pixels per CSS inch) and the same image data (300x600), the <a>intrinsic
@@ -1119,11 +1139,11 @@
     <li><a>in parallel</a> <a>await a stable state</a>, allowing the <a>task</a> that invoked this algorithm to continue.
     The <a>synchronous
     section</a> consists of all the remaining steps of this algorithm until the algorithm says the
-    <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with &#x231B;.)</li>
+    <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with ⌛.)</li>
 
     <li>
 
-    &#x231B; If another instance of this algorithm for this <{img}> element was started
+    ⌛ If another instance of this algorithm for this <{img}> element was started
     after this instance (even if it aborted and is no longer running), then abort these steps.
 
     <p class="note">
@@ -1137,7 +1157,7 @@
 
     <li>
 
-    &#x231B; Let <var>selected source</var> and <var>selected pixel density</var> be the
+    ⌛ Let <var>selected source</var> and <var>selected pixel density</var> be the
     URL and pixel density that results from <a>selecting an image source</a>,
     respectively.
 
@@ -1145,21 +1165,21 @@
 
     <li>
 
-    &#x231B; If <var>selected source</var> is null, run these substeps:
+    ⌛ If <var>selected source</var> is null, run these substeps:
 
     <ol>
 
-      <li>&#x231B; Set the <a>current request</a> to the <a state for="img">broken</a> state,
+      <li>⌛ Set the <a>current request</a> to the <a state for="img">broken</a> state,
       <a>abort the image request</a> for the <a>current request</a> and the <a>pending request</a>,
       and let <a>pending request</a> be null.</li>
 
-      <li>&#x231B; <a>Queue a task</a> to change the <a>current request</a>'s <a>current URL</a> to
+      <li>⌛ <a>Queue a task</a> to change the <a>current request</a>'s <a>current URL</a> to
       the empty string, and then, if the element has a
       <code>src</code> attribute or it uses <code>srcset</code> or <code>picture</code>,
       <a>fire a simple event</a> named <code>error</code> at the <{img}>
       element.</li>
 
-      <li>&#x231B; Abort this algorithm.</li>
+      <li>⌛ Abort this algorithm.</li>
 
     </ol>
 
@@ -1167,70 +1187,70 @@
 
     <li>
 
-    &#x231B; <a>Queue a task</a> to <a>fire a progress event</a> named <code>loadstart</code> at
+    ⌛ <a>Queue a task</a> to <a>fire a progress event</a> named <code>loadstart</code> at
     the <{img}> element.
 
     </li>
 
-    &#x231B; <a>Parse</a> <var>selected source</var>, relative
+    ⌛ <a>Parse</a> <var>selected source</var>, relative
     to the element's <a>node document</a>, and let <var>urlString</var> be the
     <a>resulting URL string</a>. If
     that is not successful, run these substeps:
 
     <ol>
 
-      <li>&#x231B; <a>Abort the image request</a> for the <a>current request</a> and
+      <li>⌛ <a>Abort the image request</a> for the <a>current request</a> and
       the <a>pending request</a>.</li>
 
-      <li>&#x231B; Set the <a>current request</a> to the <a state for="img">broken</a> state.</li>
+      <li>⌛ Set the <a>current request</a> to the <a state for="img">broken</a> state.</li>
 
-      <li>&#x231B; Let <a>pending request</a> be null.</li>
+      <li>⌛ Let <a>pending request</a> be null.</li>
 
-      <li>&#x231B; <a>Queue a task</a> to change the <a>current request</a>'s <a>current URL</a> to <var>selected source</var>, <a>fire a simple event</a> named <code>error</code> at the <{img}> element and
+      <li>⌛ <a>Queue a task</a> to change the <a>current request</a>'s <a>current URL</a> to <var>selected source</var>, <a>fire a simple event</a> named <code>error</code> at the <{img}> element and
       then <a>fire a simple event</a> named <code>loadend</code> at the
       <{img}> element.</li>
 
-      <li>&#x231B; Abort the <span>update the image data</span> algorithm.</li>
+      <li>⌛ Abort the <span>update the image data</span> algorithm.</li>
 
      </ol>
 
     <li>
 
-    &#x231B; If the <a>pending request</a> is not null,
+    ⌛ If the <a>pending request</a> is not null,
     and <var>urlString</var> is the same as the <a>pending request</a>'s <a>current URL</a>,
     then abort these steps.
 
-    &#x231B; If <var>urlString</var> is the same as the <a>current request</a>'s <a>current URL</a>,
+    ⌛ If <var>urlString</var> is the same as the <a>current request</a>'s <a>current URL</a>,
     and <a>current request</a> is in the <a state for="img">partially available</a> state,
     then <a>abort the image request</a> for the <a>pending request</a>,
     <a>queue a task</a> to <a>restart the animation</a> if <i>restart animation</i> is set,
     and abort these steps.
 
-    &#x231B; If the <a>pending request</a> is not null,
+    ⌛ If the <a>pending request</a> is not null,
     <a>abort the image request</a> for the <a>pending request</a>.
 
-    &#x231B; Let <var>image request</var> be a new <a>image request</a>
+    ⌛ Let <var>image request</var> be a new <a>image request</a>
     whose <a>current URL</a> is <var>urlString</var>.
 
-    &#x231B; If <a>current request</a> is in the <a state for="img">unavailable</a> state
+    ⌛ If <a>current request</a> is in the <a state for="img">unavailable</a> state
     or the <a state for="img">broken</a> state,
     let the <a>current request</a> be <var>image request</var>.
     Otherwise, let the <a>pending request</a> be <var>image request</var>.
 
-    &#x231B; Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
+    ⌛ Let <var>request</var> be the result of <a>creating a potential-CORS request</a> given
     <var>urlString</var> and the current state of the element's <code>crossorigin</code> content attribute.
 
-    &#x231B; Set <var>request</var>'s <a>client</a> to the
+    ⌛ Set <var>request</var>'s <a>client</a> to the
     element's <a>node document</a>'s <code>Window</code> object's <a>environment settings
     object</a> and <a for="request">type</a> to "<code>image</code>".
 
-    &#x231B; If the element uses <code>srcset</code> or <code>picture</code>, set
+    ⌛ If the element uses <code>srcset</code> or <code>picture</code>, set
     <var>request</var>'s <a>initiator</a> to "<code>imageset</code>".
 
-    &#x231B; Set <var>request</var>'s <a for="request">referrer policy</a> to the current state of the
+    ⌛ Set <var>request</var>'s <a for="request">referrer policy</a> to the current state of the
     element's <code>referrerpolicy</code> attribute.
 
-    &#x231B; <a>Fetch</a> <var>request</var>. Let this
+    ⌛ <a>Fetch</a> <var>request</var>. Let this
     instance of the <a>fetching</a> algorithm be associated with
     <var>image request</var>.
 
@@ -2045,44 +2065,44 @@
 
     <li><a>in parallel</a> <a>await a stable state</a>. The <a>synchronous section</a>
     consists of all the remaining steps of this algorithm until the algorithm says the
-    <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with &#x231B;.)</li>
+    <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with ⌛.)</li>
 
-    <li>&#x231B; If the <{img}> element does not <a>use <code>srcset</code> or <code>picture</code></a>, its
+    <li>⌛ If the <{img}> element does not <a>use <code>srcset</code> or <code>picture</code></a>, its
     <a>node document</a> is not the <a>active document</a>, has image data whose resource type is
     <code>multipart/x-mixed-replace</code>, or the <a>pending request</a> is not null, then abort
     this algorithm.</li>
 
-    <li>&#x231B; Let <var>selected source</var> and <var>selected pixel
+    <li>⌛ Let <var>selected source</var> and <var>selected pixel
     density</var> be the URL and pixel density that results from <a>selecting an image source</a>, respectively.</li>
 
-    <li>&#x231B; If <var>selected source</var> is null, then abort these steps.</li>
+    <li>⌛ If <var>selected source</var> is null, then abort these steps.</li>
 
-    <li>&#x231B; If <var>selected source</var> and <var>selected pixel
+    <li>⌛ If <var>selected source</var> and <var>selected pixel
     density</var> are the same as the element's <a>last selected source</a> and <a>current
     pixel density</a>, then abort these steps.</li>
 
-    <li>&#x231B; <a>Parse</a> <var>selected source</var>,
+    <li>⌛ <a>Parse</a> <var>selected source</var>,
     relative to the element's <a>node document</a>, and let <var>urlString</var> be the
     <a>resulting URL string</a>.
     If that is not successful, abort these steps.</li>
 
-    <li>&#x231B; Let <var>corsAttributeState</var> be the state of the element's
+    <li>⌛ Let <var>corsAttributeState</var> be the state of the element's
     <code>crossorigin</code> content attribute.</li>
 
-    <li>&#x231B; Let <var>origin</var> be the [=concept/origin=] of the <{img}> element's
+    <li>⌛ Let <var>origin</var> be the [=concept/origin=] of the <{img}> element's
     <a>node document</a>.</li>
 
-    <li>&#x231B; Let <var>client</var> be the <{img}> element's <a>node
+    <li>⌛ Let <var>client</var> be the <{img}> element's <a>node
     document</a>'s <code>Window</code> object's <a>environment settings object</a>.</li>
 
-    <li>&#x231B; Let <var>key</var> be a tuple consisting of <var>urlString</var>,
+    <li>⌛ Let <var>key</var> be a tuple consisting of <var>urlString</var>,
     <var>corsAttributeState</var>, and, if <var>corsAttributeState</var> is not
     <a state for="cors">No CORS</a>, <var>origin</var>.</li>
 
-    <li>&#x231B; Let <var>image request</var> be a new <a>image request</a>
+    <li>⌛ Let <var>image request</var> be a new <a>image request</a>
     whose <a>current URL</a> is <var>urlString</var></li>
 
-    <li>&#x231B; Let the element's <a>pending request</a> be <var>image request</var>.</li>
+    <li>⌛ Let the element's <a>pending request</a> be <var>image request</var>.</li>
 
     <li>End the <a>synchronous section</a>, continuing the remaining steps
     <a>in parallel</a>.</li>
@@ -3149,7 +3169,7 @@
 
   An appropriate text alternative for a picture is a brief description, or name [[WCAG20]]. As in all text alternative authoring decisions, writing suitable text alternatives for pictures requires
   human judgment. The text value is subjective to the context where the image is used and the page author's writing style. Therefore,
-  there is no single &quot;right&quot; or &quot;correct&quot; piece of <code>alt</code> text for any particular image. In  addition to providing a short text
+  there is no single "right" or "correct" piece of <code>alt</code> text for any particular image. In  addition to providing a short text
   alternative that gives a brief description of the <a>non-text content</a>, also providing supplemental content through another means when
   appropriate may be useful.
 
@@ -3566,9 +3586,12 @@
   <a href="#alt-text">Requirements for providing text to act as an alternative for images</a> for more information on how to provide
   useful <code>alt</code> text for images.
 
-  <p class="note"><a for="image">Art directed</a> images that rely on <code>picture</code> need to depict
-  the same content (irrespective of size, pixel density, or any other discriminating factor). Therefore the appropriate
-  text alternative for an image will always be the same irrespective of which source file ends up being chosen by the browser.</p>
+  <p class="note">
+    <a for="image">Art directed</a> images that rely on <code>picture</code> need to depict
+    the same content (irrespective of size, pixel density, or any other discriminating
+    factor). Therefore the appropriate text alternative for an image will always be the
+    same irrespective of which source file ends up being chosen by the browser.
+  </p>
 
   <div class="example">
     <xmp highlight="html">
@@ -4717,7 +4740,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <a>browsing context</a>, or if the element's <a>node document</a> is not <a>fully
     active</a>, or if the element is still in the <a>stack of open elements</a> of an
     <a>HTML parser</a> or <a>XML parser</a>, or if the element is not <a>being rendered</a>, or if the
-    <a for="/">Should element be blocked <i lang="li">a priori</i> by Content Security Policy?</a> algorithm
+    <a for="/">Should element be blocked <i lang="la">a priori</i> by Content Security Policy?</a> algorithm
      returns "Blocked" when executed on the element, then jump to the step below labeled fallback. [[!CSP3]].
 
     </li>
@@ -6406,7 +6429,7 @@ zero or more <{track}> elements, then
   of the first steps in the algorithm is to return and continue running the remaining steps
   <a>in parallel</a>. In addition, this algorithm interacts
   closely with the <a>event loop</a> mechanism; in particular, it has <a>synchronous sections</a> (which are triggered as part of the <a>event loop</a>
-  algorithm). Steps in such sections are marked with &#x231B;.
+  algorithm). Steps in such sections are marked with ⌛.
 
   <ol>
 
@@ -6420,39 +6443,39 @@ zero or more <{track}> elements, then
 
     <li><a>in parallel</a> <a>await a stable state</a>, allowing the <a>task</a> that invoked this algorithm to continue. The <a>synchronous
     section</a> consists of all the remaining steps of this algorithm until the algorithm says the
-    <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with &#x231B;.)</li>
+    <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with ⌛.)</li>
 
     <li>
 
-    &#x231B; If the <a>media element</a>'s <a>blocked-on-parser</a> flag is false,
+    ⌛ If the <a>media element</a>'s <a>blocked-on-parser</a> flag is false,
     then <a>populate the list of pending text tracks</a>.
 
     </li>
 
     <li>
 
-    &#x231B; If the <a>media element</a> has an <a>assigned media provider
+    ⌛ If the <a>media element</a> has an <a>assigned media provider
     object</a>, then let <var>mode</var> be <i>object</i>.
 
-    &#x231B; Otherwise, if the <a>media element</a> has no <a>assigned media provider
+    ⌛ Otherwise, if the <a>media element</a> has no <a>assigned media provider
     object</a> but has a <code>src</code>
     attribute, then let <var>mode</var> be <i>attribute</i>.
 
-    &#x231B; Otherwise, if the <a>media element</a> does not have an <a>assigned media provider
+    ⌛ Otherwise, if the <a>media element</a> does not have an <a>assigned media provider
     object</a> and does not have a <code>src</code> attribute, but does have a <{source}> element child, then
     let <var>mode</var> be <i>children</i> and let <var>candidate</var>
     be the first such <{source}> element child in <a>tree order</a>.
 
-    &#x231B; Otherwise the <a>media element</a> has no <a>assigned media provider
+    ⌛ Otherwise the <a>media element</a> has no <a>assigned media provider
     object</a> and has neither a <code>src</code> attribute nor a <{source}> element child: set the
     <code>networkState</code> to <code>NETWORK_EMPTY</code>, and abort these steps; the
     <a>synchronous section</a> ends.
 
     </li>
 
-    <li>&#x231B; Set the <a>media element</a>'s <code>networkState</code> to <code>NETWORK_LOADING</code>.</li>
+    <li>⌛ Set the <a>media element</a>'s <code>networkState</code> to <code>NETWORK_LOADING</code>.</li>
 
-    <li>&#x231B; <a>Queue a task</a> to <a>fire a simple event</a> named <code>loadstart</code> at the <a>media element</a>.</li>
+    <li>⌛ <a>Queue a task</a> to <a>fire a simple event</a> named <code>loadstart</code> at the <a>media element</a>.</li>
 
     <li>
 
@@ -6466,7 +6489,7 @@ zero or more <{track}> elements, then
 
       <ol>
 
-        <li>&#x231B; Set the <code>currentSrc</code> attribute to
+        <li>⌛ Set the <code>currentSrc</code> attribute to
         the empty string.</li>
 
         <li>End the <a>synchronous section</a>, continuing the remaining steps
@@ -6496,17 +6519,17 @@ zero or more <{track}> elements, then
 
       <ol>
 
-        <li>&#x231B; If the <code>src</code>
+        <li>⌛ If the <code>src</code>
         attribute's value is the empty string, then end the <a>synchronous section</a>, and jump
         down to the <i>failed with attribute</i> step below.</li>
 
-        <li>&#x231B; Let |urlString| and |urlRecord| be the [=resulting URL string=] and the
+        <li>⌛ Let |urlString| and |urlRecord| be the [=resulting URL string=] and the
         [=resulting URL record=], respectively, that would have resulted from [=parsing=] the
         [=url/URL=] specified by the <{media/src}> attribute's value relative to the
         [=media element=]'s [=node document=] when the <{media/src}> attribute was last changed.
         <!-- i.e., changing <base> after src="" has no effect -->
 
-        </li><li>&#x231B; If <var>urlString</var> was obtained successfully, set the <code>currentSrc</code> attribute to <var>urlString</var>.</li>
+        </li><li>⌛ If <var>urlString</var> was obtained successfully, set the <code>currentSrc</code> attribute to <var>urlString</var>.</li>
 
         <li>End the <a>synchronous section</a>, continuing the remaining steps
         <a>in parallel</a>.</li>
@@ -6536,7 +6559,7 @@ zero or more <{track}> elements, then
 
         <li>
 
-        &#x231B; Let <var>pointer</var> be a position defined by two adjacent nodes in the
+        ⌛ Let <var>pointer</var> be a position defined by two adjacent nodes in the
         <a>media element</a>'s child list, treating the start of the list (before the first
         child in the list, if any) and end of the list (after the last child in the list, if any) as
         nodes in their own right. One node is the node before <var>pointer</var>, and the
@@ -6568,27 +6591,27 @@ zero or more <{track}> elements, then
 
         </li>
 
-        <li>&#x231B; <i>Process candidate</i>: If <var>candidate</var> does not have a
+        <li>⌛ <i>Process candidate</i>: If <var>candidate</var> does not have a
         <code>src</code> attribute, or if its <code>src</code> attribute's value is the empty string, then end the
         <a>synchronous section</a>, and jump down to the <i>failed with elements</i> step
         below.</li>
 
-        <li>&#x231B; Let |urlString| and |urlRecord| be the [=resulting URL string=] and the
+        <li>⌛ Let |urlString| and |urlRecord| be the [=resulting URL string=] and the
         [=resulting URL record=], respectively, that would have resulted from [=parsing=] the
         [=url/URL=] specified by |candidate|'s <{source/src}> attribute's value relative to the
         |candidate|'s [=node document=] when the <{source/src}> attribute was last changed.
         <!-- i.e. changing <base> after src="" has no effect -->
 
-        </li><li>&#x231B; If <var>urlString</var> was not obtained successfully, then end the
+        </li><li>⌛ If <var>urlString</var> was not obtained successfully, then end the
         <a>synchronous section</a>, and jump down to the <var>Failed with elements</var> step
         below.</li>
 
-        <li>&#x231B; If <var>candidate</var> has a <code>type</code> attribute whose value, when parsed as a <a>MIME
+        <li>⌛ If <var>candidate</var> has a <code>type</code> attribute whose value, when parsed as a <a>MIME
         type</a> (including any codecs described by the <code>codecs</code> parameter, for
         types that define that parameter), represents <a>a type that the user agent knows it cannot
         render</a>, then end the <a>synchronous section</a>, and jump down to the <i>failed with elements</i> step below.</li>
 
-        <li>&#x231B; Set the <code>currentSrc</code> attribute to <var>urlString</var>.</li>
+        <li>⌛ Set the <code>currentSrc</code> attribute to <var>urlString</var>.</li>
 
         <li>End the <a>synchronous section</a>, continuing the remaining steps
         <a>in parallel</a>.</li>
@@ -6602,31 +6625,31 @@ zero or more <{track}> elements, then
 
         <li><a>Await a stable state</a>. The <a>synchronous section</a>
         consists of all the remaining steps of this algorithm until the algorithm says the
-        <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with &#x231B;.)</li>
+        <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with ⌛.)</li>
 
-        <li>&#x231B; <a>Forget the media element's media-resource-specific
+        <li>⌛ <a>Forget the media element's media-resource-specific
         tracks</a>.</li>
 
-        <li>&#x231B; <i>Find next candidate</i>: Let <var>candidate</var> be
+        <li>⌛ <i>Find next candidate</i>: Let <var>candidate</var> be
         null.</li>
 
-        <li>&#x231B; <i>Search loop</i>: If the node after <var>pointer</var> is
+        <li>⌛ <i>Search loop</i>: If the node after <var>pointer</var> is
         the end of the list, then jump to the <i>waiting</i> step below.</li>
 
-        <li>&#x231B; If the node after <var>pointer</var> is a <{source}> element,
+        <li>⌛ If the node after <var>pointer</var> is a <{source}> element,
         let <var>candidate</var> be that element.</li>
 
-        <li>&#x231B; Advance <var>pointer</var> so that the node before <var>pointer</var> is now the node that was after <var>pointer</var>, and the node
+        <li>⌛ Advance <var>pointer</var> so that the node before <var>pointer</var> is now the node that was after <var>pointer</var>, and the node
         after <var>pointer</var> is the node after the node that used to be after <var>pointer</var>, if any.</li>
 
-        <li>&#x231B; If <var>candidate</var> is null, jump back to the <i>search
+        <li>⌛ If <var>candidate</var> is null, jump back to the <i>search
         loop</i> step. Otherwise, jump back to the <i>process candidate</i> step.</li>
 
-        <li>&#x231B; <i>Waiting</i>: Set the element's <code>networkState</code> attribute to the <code>NETWORK_NO_SOURCE</code> value.</li>
+        <li>⌛ <i>Waiting</i>: Set the element's <code>networkState</code> attribute to the <code>NETWORK_NO_SOURCE</code> value.</li>
 
-        <li>&#x231B; Set the element's <a>show poster flag</a> to true.</li>
+        <li>⌛ Set the element's <a>show poster flag</a> to true.</li>
 
-        <li>&#x231B; <a>Queue a task</a> to set the element's <a>delaying-the-load-event
+        <li>⌛ <a>Queue a task</a> to set the element's <a>delaying-the-load-event
         flag</a> to false. This stops <a>delaying the load
         event</a>.</li>
 
@@ -6638,15 +6661,15 @@ zero or more <{track}> elements, then
 
         <li><a>Await a stable state</a>. The <a>synchronous section</a>
         consists of all the remaining steps of this algorithm until the algorithm says the
-        <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with &#x231B;.)</li>
+        <a>synchronous section</a> has ended. (Steps in <a>synchronous sections</a> are marked with ⌛.)</li>
 
-        <li>&#x231B; Set the element's <a>delaying-the-load-event flag</a> back to true (this
+        <li>⌛ Set the element's <a>delaying-the-load-event flag</a> back to true (this
         [=delay the load event|delays the load event=] again, in case it hasn't been
         fired yet).
 
-        </li><li>&#x231B; Set the <code>networkState</code> back to <code>NETWORK_LOADING</code>.</li>
+        </li><li>⌛ Set the <code>networkState</code> back to <code>NETWORK_LOADING</code>.</li>
 
-        <li>&#x231B; Jump back to the <i>find next candidate</i> step above.</li>
+        <li>⌛ Jump back to the <i>find next candidate</i> step above.</li>
 
       </ol>
 
@@ -8413,12 +8436,12 @@ zero or more <{track}> elements, then
     <li><a>Await a stable state</a>, allowing the <a>task</a> that removed the <a>media element</a> from the
     {{Document}} to continue. The <a>synchronous section</a> consists of all the
     remaining steps of this algorithm. (Steps in the <a>synchronous section</a> are marked with
-    &#x231B;.)</li>
+    ⌛.)</li>
 
-    <li>&#x231B; If the <a>media element</a> is <a>in a <code>Document</code></a>,
+    <li>⌛ If the <a>media element</a> is <a>in a <code>Document</code></a>,
     abort these steps.</li>
 
-    <li>&#x231B; Run the <a>internal pause steps</a> for the <a>media element</a>.
+    <li>⌛ Run the <a>internal pause steps</a> for the <a>media element</a>.
 
   </li></ol>
 
@@ -8466,7 +8489,7 @@ zero or more <{track}> elements, then
   <i>approximate-for-speed</i> flag set, it means that the user agent must run the following steps.
   This algorithm interacts closely with the <a>event loop</a> mechanism; in particular, it has
   a <a>synchronous section</a> (which is triggered as part of the <a>event loop</a>
-  algorithm). Steps in that section are marked with &#x231B;.
+  algorithm). Steps in that section are marked with ⌛.
 
   <ol>
 
@@ -8483,7 +8506,7 @@ zero or more <{track}> elements, then
 
     <li>If the seek was in response to a DOM method call or setting of an IDL attribute, then
     continue the script. The remainder of these steps must be run <a>in parallel</a>. With the exception
-    of the steps marked with &#x231B;, they could be aborted at any time by another instance of this
+    of the steps marked with ⌛, they could be aborted at any time by another instance of this
     algorithm being invoked.</li>
 
     <li>If the <var>new playback position</var> is later than the end of the <a>media
@@ -8550,17 +8573,17 @@ zero or more <{track}> elements, then
 
     <li><a>Await a stable state</a>. The <a>synchronous section</a> consists of all
     the remaining steps of this algorithm. (Steps in the <a>synchronous section</a> are marked
-    with &#x231B;.)</li>
+    with ⌛.)</li>
 
-    <li>&#x231B; Set the <code>seeking</code> IDL attribute to
+    <li>⌛ Set the <code>seeking</code> IDL attribute to
     false.</li>
 
-    <li>&#x231B; Run the <a>time marches on</a> steps.</li>
+    <li>⌛ Run the <a>time marches on</a> steps.</li>
 
-    <li id="seekUpdate">&#x231B; <a>Queue a task</a> to <a>fire a simple event</a>
+    <li id="seekUpdate">⌛ <a>Queue a task</a> to <a>fire a simple event</a>
     named <code>timeupdate</code> at the element.</li>
 
-    <li>&#x231B; <a>Queue a task</a> to <a>fire a simple event</a> named <code>seeked</code> at the element.</li>
+    <li>⌛ <a>Queue a task</a> to <a>fire a simple event</a> named <code>seeked</code> at the element.</li>
 
   </ol>
 
@@ -9710,7 +9733,7 @@ zero or more <{track}> elements, then
 
     <p class="note">
     For example, the user could have set a browser preference to the effect of "I
-    want French captions whenever possible", or "If there is a subtitle track with &quot;Commentary&quot; in
+    want French captions whenever possible", or "If there is a subtitle track with "Commentary" in
     the title, enable it", or "If there are audio description tracks available, enable one, ideally
     in Swiss German, but failing that in Standard Swiss German or Standard German".
   </p>
@@ -9741,7 +9764,7 @@ zero or more <{track}> elements, then
   <a>text track</a> and its <{track}> element, it must run the following algorithm.
   This algorithm interacts closely with the <a>event loop</a> mechanism; in particular, it has
   a <a>synchronous section</a> (which is triggered as part of the <a>event loop</a>
-  algorithm). The steps in that section are marked with &#x231B;.
+  algorithm). The steps in that section are marked with ⌛.
 
   <ol>
 
@@ -9759,14 +9782,14 @@ zero or more <{track}> elements, then
 
     <li><i>Top</i>: <a>Await a stable state</a>. The <a>synchronous section</a>
     consists of the following steps. (The steps in the <a>synchronous section</a> are marked
-    with &#x231B;.)</li>
+    with ⌛.)</li>
 
-    <li>&#x231B; Set the <a>text track readiness state</a> to <a state for="track">loading</a>.</li>
+    <li>⌛ Set the <a>text track readiness state</a> to <a state for="track">loading</a>.</li>
 
-    <li>&#x231B; Let <var>URL</var> be the <a>track URL</a> of the
+    <li>⌛ Let <var>URL</var> be the <a>track URL</a> of the
     <{track}> element.</li>
 
-    <li>&#x231B; If the <{track}> element's parent is a <a>media element</a> then
+    <li>⌛ If the <{track}> element's parent is a <a>media element</a> then
     let <var>corsAttributeState</var> be the state of the parent <a>media element</a>'s <code>crossorigin</code> content attribute. Otherwise, let
     <var>corsAttributeState</var> be <a state for="cors">No CORS</a>.</li>
 
