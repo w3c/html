@@ -710,7 +710,7 @@
     <dd><code>sizes</code> - Image sizes between breakpoints</dd>
     <dd><code>crossorigin</code> - How the element handles crossorigin requests</dd>
     <dd><code>usemap</code> - Name of <a>image map</a> to use </dd>
-    <dd><code>ismap</code> - Whether the image is a server-side image map</dd>
+    <dd><{img/ismap}> - Whether the image is a server-side image map</dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
     <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
@@ -2301,27 +2301,32 @@
   map. This affects how events are handled on the corresponding
   <{a}> element.
 
+  <p class="warning">Users  who do not have a pointing device, or who cannnot see
+  the image referred to will generally not be able to use a server-side image map successfully.
+  Authors should use another mechanism, such as a "client-side" <a>image map</a> 
+  made using the <{img/usemap}> attribute, wherever possible.</p>
+
   The <code>ismap</code> attribute is a
   <a>boolean attribute</a>. The attribute must not be specified
   on an element that does not have an ancestor <{a}> element
   with an <{a/href}> attribute.
-  
+
   <div class="example">
     In this example the user is asked to identify a person in an image by
     clicking on it. The server could respond to a click by confirming the
     correct position or by asking the user to try again.
-  
+
     <xmp highlight="html">
       <figure>
         <a href="solve.html">
           <img src="zoo.jpg" ismap alt="Animals and people at the zoo, among them Wally with striped clothes">
         </a>
-        <figcaption>Where’s Wally? Click on him!</figcaption>
+        <figcaption>Where's Wally? Click on him!</figcaption>
       </figure>
     </xmp>
-  
-    The coordinates where the user clicks are send to the server with the
-    request for the resource referenced by the <{a}> element’s
+
+    The coordinates where the user clicks are sent to the server with the
+    request for the resource referenced by the <{a}> element's
     <code>href</code> attribute.
   </div>
 
@@ -2332,7 +2337,7 @@
   </p>
 
   <p class="note">
-    The <code>usemap</code> and <code>ismap</code> attributes can result in confusing behavior
+    The <code>usemap</code> and <{img/ismap}> attributes can result in confusing behavior
     when used together with <{source}> elements with the <code>media</code> attribute specified
     in a <{picture}> element.
   </p>
@@ -2349,7 +2354,7 @@
   <a>reflect</a> the <code>usemap</code> content attribute.
 
   The <dfn attribute for="HTMLImageElement"><code>isMap</code></dfn> IDL attribute must <a>reflect</a>
-  the <code>ismap</code> content attribute.
+  the <{img/ismap}> content attribute.
 
   The <dfn attribute for="HTMLImageElement"><code>referrerPolicy</code></dfn> IDL attribute must
   <a>reflect</a> the <{img/referrerpolicy}> content attribute, <a>limited to only known values</a>.
@@ -4718,7 +4723,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 <p><a href="new.svg" target="svgobject">Check out the new icon</a>!</p>
   </xmp>
 
-  <p class="warning">If a <a>nested browsing context</a> is not created, e.g. for security reasons or due to incorrect implementation of the <{object/name3}> attribute, 
+  <p class="warning">If a <a>nested browsing context</a> is not created, e.g. for security reasons or due to incorrect implementation of the <{object/name3}> attribute,
 the <code>target</code> attribute in this example will instead <a>create a new browsing context</a> - typically a new tab - whose <a>browsing context name</a> is the attribute's value, and the resource that the link references will be loaded there.</p>
 
   </div>
@@ -5710,11 +5715,11 @@ zero or more <{track}> elements, then
   should not show this content to the user; it is intended for older Web browsers which do
   not support <{audio}>, so that legacy audio plugins can be tried, or to show text to the
   users of these older browsers informing them of how to access the audio contents.
-  
+
   <div class="example">
     In this example, a browser which does not support inline audio can present a download link to
     the user.
-    
+
     <xmp highlight="html">
       <audio src="music.ogg" controls>
         Your browser does not support the audio element.
@@ -5775,14 +5780,14 @@ zero or more <{track}> elements, then
   constructor is found.
 
   </div>
-  
+
   <div class="example">
     This example shows how different audio files can be offered to the browser.  If the browser does
     not support a specific codec, it can play one of the alternative files offered.
-    
+
     This example also shows the boolean <code>controls</code>, <code>autoplay</code>, and
     <code>loop</code> attributes.
-    
+
     <xmp highlight="html">
       <audio controls autoplay loop>
         <source src="music.ogg" type="audio/ogg; codecs=vorbis"/>
