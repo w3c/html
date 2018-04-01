@@ -3623,29 +3623,33 @@
   For images that have captions, markup generators should use the
   <{figure}> and <{figcaption}> elements to provide the image's caption.
 
-  As a last resort, implementors should set the <code>alt</code> attribute to the empty
-  string, under the assumption that the image is a purely decorative image that doesn't add any
-  information but is still specific to the surrounding content, or omit the <code>alt</code>
-  attribute altogether, under the assumption that the image is a key part of the content.
+  As a last resort, implementors
+  <a href="https://www.w3.org/TR/ATAG20/#gl_b23">must omit the alt attribute altogether</a>. [[!ATAG20]]
 
   <div class="note">
-    Setting an <{image}> element's <code>alt</code> attribute to the empty string will convey
-    to assistive technologies, such as screen readers, that the image in question provides no
-    substantial informative value, and should be considered decorative to the section of the 
-    document in which it is found. Being that it serves no informative purpose, a screen reader 
-    may choose to completely ignore the presence of the image. In the context of a decorative 
-    image, not being announced poses no detriment to the end user's ability to fully 
-    grasp the information of the document.
+    Setting an <{image}> element's <{img/alt}>
+    attribute to the empty string means the image in question provides no
+    essential information. Assistive technology such as screen readers
+    may choose to completely ignore the presence of such images,
+    since it does not stop the user understanding the document and saves time.
 
-    However, in instances where an image is vital to understanding the contents of a document,
-    an image with an omitted <code>alt</code> attribute is preferable to an <code>alt</code>
-    attribute set to the empty string. In the former example, assistive technology would at
-    least indicate to a user that an image existed in the document.
+    Where an image is vital to understanding the contents of a document,
+    an image without an <{img/alt}> attribute is preferable to an <{img/alt}>
+    attribute set to the empty string.
 
-    For example, while the following image has no alternative text, it will be discoverable
-    by assistive technologies as an image, and its file name should be announced.
+    If an image has no alaternative text, screen readers will generally announce there is an image,
+    allowing the user to try to learn what the image conveys, e.g. from its filename,
+    asking a friend to look at it,
+    running Optical Character Recognition to see if it contains text,
+    submitting it to an image search to get more information, etc.
 
-    <xmp highlight="html">
+    (None of these approaches is as good as having a correct text alternative).
+
+    Similarly, if an image has an <{img/alt}> attribute that is the empty string,
+    content management software and accessibility checking software will generally assume this is because it does not need an alternative text,
+    and therefore not flag the image in question as a potential problem, meaning it is less likely to be repaired.
+
+    <xmp highlight="html" class="example">
       <figure>
         <img src="bar-graph.png">
         <figcaption>
@@ -3664,7 +3668,7 @@
     By contrast in the following example, the image has an <code>alt</code> attribute set to
     the empty string:
 
-    <xmp highlight="html">
+    <xmp highlight="html" class="example">
       <figure>
         <img src="star-chart.jpg" alt>
         <figcaption>
