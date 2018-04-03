@@ -3624,81 +3624,57 @@
   <{figure}> and <{figcaption}> elements to provide the image's caption.
 
   As a last resort, implementors
-  <a href="https://www.w3.org/TR/ATAG20/#gl_b23">must omit the alt attribute altogether</a>. [[!ATAG20]]
+  <a href="https://www.w3.org/TR/ATAG20/#gl_b23">must omit the alt attribute altogether</a>.
+  [[!ATAG20]]
 
   <div class="note">
-    Setting an <{image}> element's <{img/alt}>
-    attribute to the empty string means the image in question provides no
-    essential information. Assistive technology such as screen readers
-    may choose to completely ignore the presence of such images,
-    since it does not stop the user understanding the document and saves time.
+    Setting an <{image}> element's <{img/alt}> attribute to the empty string means the image in
+    question provides no essential information. Assistive technology, such as screen readers,
+    will completely ignore the presence of such an image, as ignoring it will not stop the user
+    from understanding the document, and saves the user time.
 
-    Where an image is vital to understanding the contents of a document,
-    an image without an <{img/alt}> attribute is preferable to an <{img/alt}>
-    attribute set to the empty string.
-
-    If an image has no alternative text, screen readers will generally announce there is an image,
-    allowing the user to try to learn what the image conveys, e.g. from its filename,
-    asking a friend to look at it,
-    running Optical Character Recognition to see if it contains text,
-    submitting it to an image search to get more information, etc.
-
-    (None of these approaches is as good as having a correct text alternative).
-
-    Similarly, if an image has an <{img/alt}> attribute that is the empty string,
-    content management software and accessibility checking software will generally assume this is because it does not need an alternative text,
-    and therefore not flag the image in question as a potential problem, meaning it is less likely to be repaired.
+    In the following example, the <{img/alt}> is set to the empty string, so it will be silently
+    ignored by screen readers.
 
     <xmp highlight="html" class="example">
-      <figure>
-        <img src="bar-graph.png">
-        <figcaption>
-          <p>
-            Figure 1: the bar graph indicates that in the last four years, profits have been on the rise.
-          </p>
-        </figcaption>
-      </figure>
+      <img src="bar-graph.png" alt="">
     </xmp>
 
-    In the above example, the <{figcaption}> provides context to all users about the image.
-    While the image has no alternative text to describe it, the presence of the image should
-    be announced, and users with low or no vision may understand what it could display,
-    based on the caption provided.
+    Unless the image is truly decorative, implementors setting an image's <code>alt</code>
+    attribute to the empty string is not recommended. An empty string will indicate to content
+    management software and accessibility checking software that the image does not need
+    alternative text, and therefore they will not flag the image in question as a potential
+    problem, meaning it is less likely to be repaired.
 
-    By contrast in the following example, the image has an <code>alt</code> attribute set to
-    the empty string:
+    In contrast, if an image is vital to understanding the contents of a document, implementors
+    should be aware that an image without an <{img/alt}> attribute is preferable to an
+    <{img/alt}> attribute set to the empty string.
+
+    Taking the previous example and omitting the <code>alt</code> attribute, as such:
 
     <xmp highlight="html" class="example">
-      <figure>
-        <img src="star-chart.jpg" alt>
-        <figcaption>
-          <p>
-            Figure 2: The zodiac is an area of the sky that extends approximately 8° north or south of the ecliptic...
-          </p>
-        </figcaption>
-      </figure>
+      <img src="bar-graph.png">
     </xmp>
 
-    As the <code>alt</code> attribute is set to the empty string, in this example, assistive
-    technologies will likely not announced the existence of the image. Thus to users of such
-    software, the <{figcaption}> would be describing "nothing" as there would be no announcement
-    of a "figure" in this instance.
+    will allow screen readers to announce the filename of the image (bar-graph.png). Doing so may
+    allow the user to try to learn what the image conveys, e.g. from its announced filename,
+    asking a friend to describe it, running Optical Character Recognition to see if the image
+    contains text, or submitting it to an image search to get more information, etc.
+
+    (None of these approaches are as good as giving the image correct alternative text).
   </div>
 
   Markup generators may specify a <dfn><code>generator-unable-to-provide-required-alt</code></dfn>
-  attribute on <{img}> elements for which they have been
-  unable to obtain a text alternative and for which they have therefore
-  omitted the <code>alt</code> attribute. The
-  value of this attribute must be the empty string. Documents
-  containing such attributes are not conforming, but conformance
-  checkers will silently ignore this error.
+  attribute on <{img}> elements for which they have been  unable to obtain a text alternative and
+  for which they have therefore omitted the <code>alt</code> attribute. The value of this
+  attribute must be the empty string. Documents containing such attributes are not conforming,
+  but conformance checkers will silently ignore this error.
 
   <p class="note">
-    This is intended to avoid markup generators from
-  being pressured into replacing the error of omitting the <code>alt</code> attribute with the even more
-  egregious error of providing phony text alternatives, because
-  state-of-the-art automated conformance checkers cannot distinguish
-  phony text alternatives from correct text alternatives.
+    This is intended to avoid markup generators from being pressured into replacing the error of
+    omitting the <code>alt</code> attribute with the even more egregious error of providing phony
+    text alternatives, because state-of-the-art automated conformance checkers cannot distinguish
+    phony text alternatives from correct text alternatives.
   </p>
 
   Markup generators should generally avoid using the image's own
