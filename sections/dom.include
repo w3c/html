@@ -1008,11 +1008,12 @@ fetch(articleURL)
  <section>
    <h4 id="upgrades">Upgrades</h4>
 
-   <p>To <dfn id="concept-upgrade-an-element">upgrade an element</dfn>, given as input a <a href="#custom-element-definition">custom element definition</a> <var>definition</var> and an element <var>element</var>, run the following steps:</p>
+   <p>To <dfn>upgrade an element</dfn>, given a <a>custom element definition</a> <var>definition</var>
+    and an element <var>element</var>, run the following steps:</p>
 
    <ol>
      <li>
-       <p>If <var>element</var> is <a href="#concept-element-custom">custom</a>, abort these steps.</p>
+       <p>If <var>element</var> is <a>custom</a>, abort these steps.</p>
 
        <div class="example">
          <p>This can occur due to reentrant invocation of this algorithm, as in the following example:</p>
@@ -1040,43 +1041,56 @@ constructor() {
 &lt;/script&gt;
 </pre>
 
-         <p>This step will thus bail out the algorithm early when <a href="#concept-upgrade-an-element">upgrade an element</a> is invoked with "<code>b</code>" a second time.</p>
+         <p>This step will thus bail out the algorithm early when <a>upgrade an element</a> is invoked with "<code>b</code>" a second time.</p>
        </div>
      </li>
 
      <li>
-       <p>If <var>element</var>'s <a href="#concept-element-custom-element-state">custom element state</a> is "<code>failed</code>", then abort these steps.</p>
+       <p>If <var>element</var>'s <a>custom element state</a> is "<code>failed</code>", then abort these steps.</p>
      </li>
 
      <li>
-       <p>For each <var>attribute</var> in <var>element</var>'s <a href="https://dom.spec.whatwg.org/#concept-element-attribute">attribute list</a>, in order, <a href="#enqueue-a-custom-element-callback-reaction">enqueue a custom element callback reaction</a> with <var>element</var>, callback name "<code>attributeChangedCallback</code>", and an argument list containing <var>attribute</var>'s local name, null, <var>attribute</var>'s value, and <var>attribute</var>'s namespace.</p>
+       <p>For each <var>attribute</var> in <var>element</var>'s <a>attribute list</a>, in order,
+        <a>enqueue a custom element callback reaction</a> with <var>element</var>,
+        callback name "<code>attributeChangedCallback</code>", and an argument list containing
+        <var>attribute</var>'s local name, null, <var>attribute</var>'s value, and <var>attribute</var>'s namespace.</p>
      </li>
 
      <li>
-       <p>If <var>element</var> is <a href="https://dom.spec.whatwg.org/#connected">connected</a>, then <a href="#enqueue-a-custom-element-callback-reaction">enqueue a custom element callback reaction</a> with <var>element</var>, callback name "<code>connectedCallback</code>", and an empty argument list.</p>
+       <p>If <var>element</var> is <a>connected</a>, then <a>enqueue a custom element callback reaction</a>
+        with <var>element</var>, callback name "<code>connectedCallback</code>", and an empty argument list.</p>
      </li>
 
      <li>
-       <p>Add <var>element</var> to the end of <var>definition</var>'s <a href="#concept-custom-element-definition-construction-stack">construction stack</a>.</p>
+       <p>Add <var>element</var> to the end of <var>definition</var>'s <a>construction stack</a>.</p>
      </li>
 
      <li>
-       <p>Let <var>C</var> be <var>definition</var>'s <a href="#concept-custom-element-definition-constructor">constructor</a>.</p>
+       <p>Let <var>C</var> be <var>definition</var>'s <a>constructor</a>.</p>
      </li>
 
      <li>
        <p>Let <var>constructResult</var> be <a href="https://tc39.github.io/ecma262/#sec-construct">Construct</a>(<var>C</var>).</p>
 
-       <p class="note">If <var>C</var> <a href="#custom-element-conformance">non-conformantly</a> uses an API decorated with the <code><a href="#cereactions">[CEReactions]</a></code> extended attribute, then the reactions enqueued at the beginning of this algorithm will execute during this step, before <var>C</var> finishes and control returns to this algorithm. Otherwise, they will execute after <var>C</var> and the rest of the upgrade process finishes.</p>
+       <p class="note">If <var>C</var> <a href="#custom-element-conformance">non-conformantly</a>
+        uses an API decorated with the {{[CEReactions]}} extended attribute,
+       then the reactions enqueued at the beginning of this algorithm will execute during this step,
+       before <var>C</var> finishes and control returns to this algorithm.
+        Otherwise, they will execute after <var>C</var> and the rest of the upgrade process finishes.</p>
      </li>
 
      <li>
-       <p>Remove the last entry from the end of <var>definition</var>'s <a href="#concept-custom-element-definition-construction-stack">construction stack</a>.</p>
+       <p>Remove the last entry from the end of <var>definition</var>'s <a>construction stack</a>.</p>
 
        <div class="note">
-         <p>Assuming <var>C</var> calls <code>super()</code> (as it will if it is <a href="#custom-element-conformance">conformant</a>), and that the call succeeds, this will be the <a href="#concept-already-constructed-marker"><i>already constructed</i> marker</a> that replaced the <var>element</var> we pushed at the beginning of this algorithm. (The <a href="#html-element-constructors">HTML element constructor</a> carries out this replacement.)</p>
+         <p>Assuming <var>C</var> calls <code>super()</code> (as it will if it is
+          <a for="customElements">conformant</a>),
+          and that the call succeeds, this will be the <a>already constructed marker</a>
+          that replaced the <var>element</var> pushed at the beginning of this algorithm.
+          (The <a>HTML element constructor</a> carries out this replacement.)</p>
 
-         <p>If <var>C</var> does not call <code>super()</code> (i.e. it is not <a href="#custom-element-conformance">conformant</a>), or if any step in the <a href="#html-element-constructors">HTML element constructor</a> throws, then this entry will still be <var>element</var>.</p>
+         <p>If <var>C</var> does not call <code>super()</code> (i.e. it is not <a>conformant</a>),
+          or if any step in the <a>HTML element constructor</a> throws, then this entry will still be <var>element</var>.</p>
        </div>
      </li>
 
@@ -1085,7 +1099,7 @@ constructor() {
 
        <ol>
          <li>
-           <p>Set <var>element</var>'s <a href="#concept-element-custom-element-state">custom element state</a> to "<code>failed</code>".</p>
+           <p>Set <var>element</var>'s <a>custom element state</a> to "<code>failed</code>".</p>
          </li>
 
          <li>
@@ -1095,17 +1109,18 @@ constructor() {
      </li>
 
      <li>
-       <p>If <a href="https://tc39.github.io/ecma262/#sec-samevalue">SameValue</a>(<var>constructResult</var>.[[\value]], <var>element</var>) is false, then throw an <a href="https://heycam.github.io/webidl/#invalidstateerror">"<code>InvalidStateError</code>"</a> <code><a href="https://heycam.github.io/webidl/#dfn-DOMException">DOMException</a></code> and terminate these steps.</p>
+       <p>If <a href="https://tc39.github.io/ecma262/#sec-samevalue">SameValue</a>(<var>constructResult</var>.[[\value]], <var>element</var>)
+        is false, then throw an "{{InvalidStateError}}" {{DOMException}} and terminate these steps.</p>
 
        <p class="note">This can occur if <var>C</var> constructs another instance of the same custom element before calling <code>super()</code>, or if <var>C</var> uses JavaScript's <code>return</code>-override feature to return an arbitrary object from the constructor.</p>
      </li>
 
      <li>
-       <p>Set <var>element</var>'s <a href="#concept-element-custom-element-state">custom element state</a> to "<code>custom</code>".</p>
+       <p>Set <var>element</var>'s <a>custom element state</a> to "<code>custom</code>".</p>
      </li>
 
      <li>
-       <p>Set <var>element</var>'s <a href="#concept-element-custom-element-definition">custom element definition</a> to <var>definition</var>.</p>
+       <p>Set <var>element</var>'s <a>custom element definition</a> to <var>definition</var>.</p>
      </li>
    </ol>
 
@@ -1113,11 +1128,14 @@ constructor() {
 
    <ol>
      <li>
-       <p>Let <var>definition</var> be the result of <a href="#look-up-a-custom-element-definition">looking up a custom element definition</a> given <var>element</var>'s <a href="https://dom.spec.whatwg.org/#concept-node-document">node document</a>, <var>element</var>'s namespace, <var>element</var>'s local name, and <var>element</var>'s <a href="#concept-element-is-value"><code>is</code> value</a>.</p>
+       <p>Let <var>definition</var> be the result of <a>looking up a custom element definition</a>
+        given <var>element</var>'s <a>node document</a>, <var>element</var>'s namespace,
+         <var>element</var>'s local name, and <var>element</var>'s <{is}> value</a>.</p>
      </li>
 
      <li>
-       <p>If <var>definition</var> is not null, then <a href="#enqueue-a-custom-element-upgrade-reaction">enqueue a custom element upgrade reaction</a> given <var>element</var> and <var>definition</var>.</p>
+       <p>If <var>definition</var> is not null, then <a>enqueue a custom element upgrade reaction</a>
+        given <var>element</var> and <var>definition</var>.</p>
      </li>
    </ol>
  </section>
@@ -1125,86 +1143,116 @@ constructor() {
  <section>
    <h4 id="custom-element-reactions">Custom element reactions</h4>
 
-   <p>A <a href="#custom-element">custom element</a> possesses the ability to respond to certain occurrences by running author code:</p>
+   A <a>custom element</a> can react to certain occurrences by running author code.
+   These reactions are called <dfn id="concept-custom-element-reaction">custom element reactions</dfn>.
 
    <ul>
      <li>
-       <p>When <a href="#upgrades">upgraded</a>, its <a href="#custom-element-constructor">constructor</a> is run.</p>
+       <p>When <a>upgraded</a>, its <a>constructor</a> is run.</p>
      </li>
 
      <li>
-       <p>When it <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#becomes-connected">becomes connected</a>, its <code>connectedCallback</code> is run.</p>
+       <p>When it <a>becomes connected</a>, its <code>connectedCallback</code> is run.</p>
      </li>
 
      <li>
-       <p>When it <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#becomes-disconnected">becomes disconnected</a>, its <code>disconnectedCallback</code> is run.</p>
+       <p>When it <a>becomes disconnected</a>, its <code>disconnectedCallback</code> is run.</p>
      </li>
 
      <li>
-       <p>When it is <a href="https://dom.spec.whatwg.org/#concept-node-adopt">adopted</a> into a new document, its <code>adoptedCallback</code> is run.</p>
+       <p>When it is <a>adopted</a> into a new document, its <code>adoptedCallback</code> is run.</p>
      </li>
 
      <li>
-       <p>When any of its attributes are <a href="#concept-element-attributes-change">changed</a>, <a href="#concept-element-attributes-append">appended</a>, <a href="#concept-element-attributes-remove">removed</a>, or <a href="#concept-element-attributes-replace">replaced</a>, its <code>attributeChangedCallback</code> is run.</p>
+       <p>When any of its attributes are <a>changed</a>, <a>appended</a>, <a>removed</a>, or <a>replaced</a>,
+        its <code>attributeChangedCallback</code> is run.</p>
      </li>
    </ul>
 
-   <p>We call these reactions collectively <dfn id="concept-custom-element-reaction">custom element reactions</dfn>.</p>
 
-   <p>The way in which <a href="#concept-custom-element-reaction">custom element reactions</a> are invoked is done with special care, to avoid running author code during the middle of delicate operations. Effectively, they are delayed until "just before returning to user script". This means that for most purposes they appear to execute synchronously, but in the case of complicated composite operations (like <a href="#concept-node-clone">cloning</a>, or <a href="https://dom.spec.whatwg.org/#concept-range">range</a> manipulation), they will instead be delayed until after all the relevant user agent processing steps have completed, and then run together as a batch.</p>
+   The way in which <a>custom element reactions</a> are invoked is done with special care,
+    to avoid running author code during the middle of delicate operations.
+     Effectively, they are delayed until "just before returning to user script".
+     This means that for most purposes they appear to execute synchronously,
+     but in the case of complicated composite operations (like <a>cloning</a>, or <>range</a> manipulation),
+      they will instead be delayed until after all the relevant user agent processing steps have completed,
+       and then run together as a batch.
 
-   <p>Additionally, the precise ordering of these reactions is managed via a somewhat-complicated stack-of-queues system, described below. The intention behind this system is to guarantee that <a href="#concept-custom-element-reaction">custom element reactions</a> always are invoked in the same order as their triggering actions, at least within the local context of a single <a href="#custom-element">custom element</a>. (Because <a href="#concept-custom-element-reaction">custom element reaction</a> code can perform its own mutations, it is not possible to give a global ordering guarantee across multiple elements.)</p>
+   Additionally, the precise ordering of these reactions is managed by a stack-of-queues system, described below.
+    The intention behind this system is to guarantee that <a>custom element reactions</a>
+     are always invoked in the same order as their triggering actions,
+     at least within the local context of a single <a>custom element</a>.
+     (Because <a>custom element reaction</a> code can perform its own mutations,
+      it is not possible to give a global ordering guarantee across multiple elements.)</p>
    <hr>
 
-   <p>Each <a href="https://html.spec.whatwg.org/multipage/browsers.html#unit-of-related-similar-origin-browsing-contexts">unit of related similar-origin browsing contexts</a> has a <dfn id="custom-element-reactions-stack">custom element reactions stack</dfn>, which is initially empty. The <dfn id="current-element-queue">current element queue</dfn> is the <a href="#element-queue">element queue</a> at the top of the <a href="#custom-element-reactions-stack">custom element reactions stack</a>. Each item in the stack is an <dfn id="element-queue">element queue</dfn>, which is initially empty as well. Each item in an <a href="#element-queue">element queue</a> is an element. (The elements are not necessarily <a href="#concept-element-custom">custom</a> yet, since this queue is used for <a href="#upgrades">upgrades</a> as well.)</p>
+   Each <a>unit of related similar-origin browsing contexts</a> has a
+   <dfn>custom element reactions stack</dfn>, which is initially empty.
+   The <dfn>current element queue</dfn> is the <a>element queue</a>
+    at the top of the <a>custom element reactions stack</a>. Each item in the stack is an
+    <dfn>element queue</dfn>, which is initially empty as well.
+    Each item in an <a>element queue</a> is an element.
+    (The elements are not necessarily <a>custom</a> yet, since this queue is used for <a>upgrades</a> as well.)
 
-   <p>Each <a href="#custom-element-reactions-stack">custom element reactions stack</a> has an associated <dfn id="backup-element-queue">backup element queue</dfn>, which an initially-empty <a href="#element-queue">element queue</a>. Elements are pushed onto the <a href="#backup-element-queue">backup element queue</a> during operations that affect the DOM without going through an API decorated with <code><a href="#cereactions">[CEReactions]</a></code>, or through the parser's <a href="#create-an-element-for-the-token">create an element for the token</a> algorithm. An example of this is a user-initiated editing operation which modifies the descendants or attributes of an <a href="https://w3c.github.io/editing/execCommand.html#editable">editable</a> element. To prevent reentrancy when processing the <a href="#backup-element-queue">backup element queue</a>, each <a href="#custom-element-reactions-stack">custom element reactions stack</a> also has a <dfn id="processing-the-backup-element-queue">processing the backup element queue</dfn> flag, initially unset.</p>
+   Each <a>custom element reactions stack</a> has an associated
+   <dfn>backup element queue</dfn>, which is an initially empty
+    <a>element queue</a>. Elements are pushed onto the <a>backup element queue</a>
+     during operations that affect the DOM without going through an API decorated with
+     {{[CEReactions]}}, or through the parser's <a>create an element for the token</a> algorithm.
+     An example of this is a user-initiated editing operation which modifies the descendants or attributes of an
+      <a>editable</a> element. To prevent reentrancy when processing the <a>backup element queue</a>,
+      each <a>custom element reactions stack</a> also has a
+      <dfn>processing the backup element queue</dfn> flag, initially unset.</p>
 
-   <p>All elements have an associated <dfn id="custom-element-reaction-queue">custom element reaction queue</dfn>, initially empty. Each item in the <a href="#custom-element-reaction-queue">custom element reaction queue</a> is of one of two types:</p>
+   <p>All elements have an associated <dfn>custom element reaction queue</dfn>, initially empty.
+    Each item in the <a>custom element reaction queue</a> is of one of two types:</p>
 
    <ul>
      <li>
-       <p>An <dfn id="upgrade-reaction">upgrade reaction</dfn>, which will <a href="#upgrades">upgrade</a> the custom element and contains a <a href="#custom-element-definition">custom element definition</a>; or</p>
+       <p>An <dfn>upgrade reaction</dfn>, which <a>upgrades</a> the custom element and contains a
+        <a>custom element definition</a>; or</p>
      </li>
 
      <li>
-       <p>A <dfn id="callback-reaction">callback reaction</dfn>, which will call a lifecycle callback, and contains a callback function as well as a list of arguments.</p>
+       <p>A <dfn>callback reaction</dfn>, which will call a lifecycle callback,
+        and contains a callback function as well as a list of arguments.</p>
      </li>
    </ul>
 
    <p>This is all summarised in the following schematic diagram:</p>
 
-   <p><img src="custom-element-reactions.svg" alt="A custom element reactions stack consists of a stack of element queues. Zooming in on a particular queue, we see that it contains a number of elements (in our example, &lt;x-a&gt;, then &lt;x-b&gt;, then &lt;x-c&gt;). Any particular element in the queue then has a custom element reaction queue. Zooming in on the custom element reaction queue, we see that it contains a variety of queued-up reactions (in our example, upgrade, then attribute changed, then another attribute changed, then connected)." style="width: 80%; max-width: 580px;"></p>
+   <p><img src="custom-element-reactions.svg" alt="@@A custom element reactions stack consists of a stack of element queues. Zooming in on a particular queue, we see that it contains a number of elements (in our example, &lt;x-a&gt;, then &lt;x-b&gt;, then &lt;x-c&gt;). Any particular element in the queue then has a custom element reaction queue. Zooming in on the custom element reaction queue, we see that it contains a variety of queued-up reactions (in our example, upgrade, then attribute changed, then another attribute changed, then connected)." style="width: 80%; max-width: 580px;"></p>
 
-   <p>To <dfn id="enqueue-an-element-on-the-appropriate-element-queue">enqueue an element on the appropriate element queue</dfn>, given an element <var>element</var>, run the following steps:</p>
+   <p>To <dfn>enqueue an element on the appropriate element queue</dfn>, given an element <var>element</var>,
+    run the following steps:</p>
 
    <ol>
      <li>
-       <p>If the <a href="#custom-element-reactions-stack">custom element reactions stack</a> is empty, then:</p>
+       <p>If the <a>custom element reactions stack</a> is empty, then:</p>
 
        <ol>
          <li>
-           <p>Add <var>element</var> to the <a href="#backup-element-queue">backup element queue</a>.</p>
+           <p>Add <var>element</var> to the <a>backup element queue</a>.</p>
          </li>
 
          <li>
-           <p>If the <a href="#processing-the-backup-element-queue">processing the backup element queue</a> flag is set, abort this algorithm.</p>
+           <p>If the <a>processing the backup element queue</a> flag is set, abort this algorithm.</p>
          </li>
 
          <li>
-           <p>Set the <a href="#processing-the-backup-element-queue">processing the backup element queue</a> flag.</p>
+           <p>Set the <a>processing the backup element queue</a> flag.</p>
          </li>
 
          <li>
-           <p><a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask">Queue a microtask</a> to perform the following steps:</p>
+           <p><a>Queue a microtask</a> to perform the following steps:</p>
 
            <ol>
              <li>
-               <p><a href="#invoke-custom-element-reactions">Invoke custom element reactions</a> in the <a href="#backup-element-queue">backup element queue</a>.</p>
+               <p><a>Invoke custom element reactions</a> in the <a>backup element queue</a>.</p>
              </li>
 
              <li>
-               <p>Unset the <a href="#processing-the-backup-element-queue">processing the backup element queue</a> flag.</p>
+               <p>Unset the <a>processing the backup element queue</a> flag.</p>
              </li>
            </ol>
          </li>
@@ -1212,19 +1260,21 @@ constructor() {
      </li>
 
      <li>
-       <p>Otherwise, add <var>element</var> to the <a href="#current-element-queue">current element queue</a>.</p>
+       <p>Otherwise, add <var>element</var> to the <a>current element queue</a>.</p>
      </li>
    </ol>
 
-   <p>To <dfn id="enqueue-a-custom-element-callback-reaction">enqueue a custom element callback reaction</dfn>, given a <a href="#custom-element">custom element</a> <var>element</var>, a callback name <var>callbackName</var>, and a list of arguments <var>args</var>, run the following steps:</p>
+   <p>To <dfn>enqueue a custom element callback reaction</dfn>, given a <a>custom element</a> <var>element</var>,
+    a callback name <var>callbackName</var>, and a list of arguments <var>args</var>, run the following steps:</p>
 
    <ol>
      <li>
-       <p>Let <var>definition</var> be <var>element</var>'s <a href="#concept-element-custom-element-definition">custom element definition</a>.</p>
+       <p>Let <var>definition</var> be <var>element</var>'s <a>custom element definition</a>.</p>
      </li>
 
      <li>
-       <p>Let <var>callback</var> be the value of the entry in <var>definition</var>'s <a href="#concept-custom-element-definition-lifecycle-callbacks">lifecycle callbacks</a> with key <var>callbackName</var>.</p>
+       <p>Let <var>callback</var> be the value of the entry in <var>definition</var>'s
+       <a>lifecycle callbacks</a> with key <var>callbackName</var>.</p>
      </li>
 
      <li>
@@ -1240,41 +1290,45 @@ constructor() {
          </li>
 
          <li>
-           <p>If <var>definition</var>'s <a href="#concept-custom-element-definition-observed-attributes">observed attributes</a> does not contain <var>attributeName</var>, then abort these steps.</p>
+           <p>If <var>definition</var>'s <a>observed attributes</a> does not contain <var>attributeName</var>,
+            then abort these steps.</p>
          </li>
        </ol>
      </li>
 
      <li>
-       <p>Add a new <a href="#callback-reaction">callback reaction</a> to <var>element</var>'s <a href="#custom-element-reaction-queue">custom element reaction queue</a>, with callback function <var>callback</var> and arguments <var>args</var>.</p>
+       <p>Add a new <a>callback reaction</a> to <var>element</var>'s <a>custom element reaction queue</a>,
+        with callback function <var>callback</var> and arguments <var>args</var>.</p>
      </li>
 
      <li>
-       <p><a href="#enqueue-an-element-on-the-appropriate-element-queue">Enqueue an element on the appropriate element queue</a> given <var>element</var>.</p>
-     </li>
-   </ol>
-
-   <p>To <dfn id="enqueue-a-custom-element-upgrade-reaction">enqueue a custom element upgrade reaction</dfn>, given an element <var>element</var> and <a href="#custom-element-definition">custom element definition</a> <var>definition</var>, run the following steps:</p>
-
-   <ol>
-     <li>
-       <p>Add a new <a href="#upgrade-reaction">upgrade reaction</a> to <var>element</var>'s <a href="#custom-element-reaction-queue">custom element reaction queue</a>, with <a href="#custom-element-definition">custom element definition</a> <var>definition</var>.</p>
-     </li>
-
-     <li>
-       <p><a href="#enqueue-an-element-on-the-appropriate-element-queue">Enqueue an element on the appropriate element queue</a> given <var>element</var>.</p>
+       <p><a>Enqueue an element on the appropriate element queue</a> given <var>element</var>.</p>
      </li>
    </ol>
 
-   <p>To <dfn id="invoke-custom-element-reactions">invoke custom element reactions</dfn> in an <a href="#element-queue">element queue</a> <var>queue</var>, run the following steps:</p>
+   <p>To <dfn>enqueue a custom element upgrade reaction</dfn>, given an element <var>element</var>
+   and <a>custom element definition</a> <var>definition</var>, run the following steps:</p>
 
    <ol>
      <li>
-       <p>For each <a href="#custom-element">custom element</a> <var>element</var> in <var>queue</var>:</p>
+       <p>Add a new <a>upgrade reaction</a> to <var>element</var>'s <a>custom element reaction queue</a>,
+       with <a>custom element definition</a> <var>definition</var>.</p>
+     </li>
+
+     <li>
+       <p><a>Enqueue an element on the appropriate element queue</a> given <var>element</var>.</p>
+     </li>
+   </ol>
+
+   <p>To <dfn>invoke custom element reactions</dfn> in an <a>element queue</a> <var>queue</var>, run the following steps:</p>
+
+   <ol>
+     <li>
+       <p>For each <a>custom element</a> <var>element</var> in <var>queue</var>:</p>
 
        <ol>
          <li>
-           <p>Let <var>reactions</var> be <var>element</var>'s <a href="#custom-element-reaction-queue">custom element reaction queue</a>.</p>
+           <p>Let <var>reactions</var> be <var>element</var>'s <a>custom element reaction queue</a>.</p>
          </li>
 
          <li>
@@ -1282,19 +1336,20 @@ constructor() {
 
            <ol>
              <li>
-               <p>Remove the first element of <var>reactions</var>, and let <var>reaction</var> be that element. Switch on <var>reaction</var>'s type:</p>
+               <p>Remove the first element of <var>reactions</var>, and let <var>reaction</var> be that element.
+                Switch on <var>reaction</var>'s type:</p>
 
                <dl class="switch">
                  <dt>
-                   <a href="#upgrade-reaction">upgrade reaction</a>
+                   <a>upgrade reaction</a>
                  </dt>
 
                  <dd>
-                   <a href="#concept-upgrade-an-element">Upgrade</a> <var>element</var> using <var>reaction</var>'s <a href="#custom-element-definition">custom element definition</a>.
+                   <a>Upgrade</a> <var>element</var> using <var>reaction</var>'s <a>custom element definition</a>.
                  </dd>
 
                  <dt>
-                   <a href="#callback-reaction">callback reaction</a>
+                   <a>callback reaction</a>
                  </dt>
 
                  <dd>
@@ -1302,7 +1357,7 @@ constructor() {
                  </dd>
                </dl>
 
-               <p>If this throws any exception, then <a href="https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception">report the exception</a>.</p>
+               <p>If this throws any exception, then <a>report the exception</a>.</p>
              </li>
            </ol>
          </li>
@@ -1311,52 +1366,68 @@ constructor() {
    </ol>
    <hr>
 
-   <p>To ensure <a href="#concept-custom-element-reaction">custom element reactions</a> are triggered appropriately, we introduce the <dfn id="cereactions"><code>[CEReactions]</code></dfn> IDL <a href="https://heycam.github.io/webidl/#dfn-extended-attribute">extended attribute</a>. It indicates that the relevant algorithm is to be supplemented with additional steps in order to appropriately track and invoke <a href="#concept-custom-element-reaction">custom element reactions</a>.</p>
+   The <dfn attribute>[CEReactions]</dfn> IDL <a>extended attribute</a> is to ensure
+   <a>custom element reactions</a> are triggered appropriately.
+   It indicates that the relevant algorithm is to be supplemented with additional steps
+   to appropriately track and invoke <a>custom element reactions</a>.
 
-   <p>The <code><a href="#cereactions">[CEReactions]</a></code> extended attribute must take no arguments, and must not appear on anything other than an operation, attribute, setter, or deleter. Additionally, it must not appear on readonly attributes, unless the readonly attribute is also annotated with <code>[PutForwards]</code>.</p>
+   The {{[CEReactions]}} extended attribute must take no arguments,
+   and must not appear on anything other than an operation, attribute, setter, or deleter.
+   Additionally, it must not appear on {{readonly}} attributes,
+   unless the readonly attribute is also annotated with [PutForwards].
 
-   <p>Operations, attributes, setters, or deleters annotated with the <code><a href="#cereactions">[CEReactions]</a></code> extended attribute must run the following steps surrounding the main algorithm specified for the operation, setter, deleter, or for the attribute's setter:</p>
+   Operations, attributes, setters, or deleters annotated with the {{[CEReactions]}}
+   extended attribute must run the following steps
+   surrounding the main algorithm specified for the operation, setter, deleter, or for the attribute's setter:
 
    <dl>
      <dt>Before executing the algorithm's steps</dt>
 
      <dd>
-       Push a new <a href="#element-queue">element queue</a> onto the <a href="#custom-element-reactions-stack">custom element reactions stack</a>.
+       Push a new <a>element queue</a> onto the <a>custom element reactions stack</a>.
      </dd>
 
      <dt>After executing the algorithm's steps</dt>
 
      <dd>
-       Pop the <a href="#element-queue">element queue</a> from the <a href="#custom-element-reactions-stack">custom element reactions stack</a>, and <a href="#invoke-custom-element-reactions">invoke custom element reactions</a> in that queue.
+       Pop the <a>element queue</a> from the <a>custom element reactions stack</a>, and
+       <a>invoke custom element reactions</a> in that queue.
      </dd>
    </dl>
 
    <div class="note">
-     <p>The intent behind this extended attribute is somewhat subtle. One way of accomplishing its goals would be to say that every operation, attribute, setter, and deleter on the platform should have these steps inserted, and to allow implementers to optimize away unnecessary cases (where no DOM mutation is possible that could cause <a href="#concept-custom-element-reaction">custom element reactions</a> to occur).</p>
+     The intent behind this extended attribute is somewhat subtle.
+     One way of accomplishing its goals would be to say that every operation, attribute, setter,
+     and deleter on the platform should have these steps inserted,
+     and to allow implementers to optimize away unnecessary cases
+     (where no DOM mutation is possible that could cause <a>custom element reactions</a> to occur).</p>
 
-     <p>However, in practice this imprecision could lead to non-interoperable implementations of <a href="#concept-custom-element-reaction">custom element reactions</a>, as some implementations might forget to invoke these steps in some cases. Instead, we settled on the approach of explicitly annotating all relevant IDL constructs, as a way of ensuring interoperable behavior and helping implementations easily pinpoint all cases where these steps are necessary.</p>
+     However, this could lead to non-interoperable implementations if implementations do not invoke these steps
+     in some cases. Explicitly annotating all relevant IDL constructs helps ensure interoperable behavior, by identifying all cases where these steps are necessary.
    </div>
 
-   <p>Any nonstandard APIs introduced by the user agent that could modify the DOM in such a way as to cause <a href="#enqueue-a-custom-element-callback-reaction">enqueuing a custom element callback reaction</a> or <a href="#enqueue-a-custom-element-upgrade-reaction">enqueuing a custom element upgrade reaction</a>, for example by modifying any attributes or child elements, must also be decorated with the <code><a href="#cereactions">[CEReactions]</a></code> attribute.</p>
+   Any nonstandard APIs introduced by the user agent that could modify the DOM in such a way as to
+   <a>enqueue a custom element callback reaction</a> or <a>enqueue a custom element upgrade reaction</a>,
+    for example by modifying any attributes or child elements, must also be decorated with the {{[CEReactions]}} attribute.</p>
 
    <div class="note">
      <p>As of the time of this writing, the following nonstandard or not-yet-standardized APIs are known to fall into this category:</p>
 
      <ul>
        <li>
-         <p><code><a href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement">HTMLElement</a></code>'s <code>outerText</code> IDL attribute</p>
+         <p>{{HTMLElement}}'s <code>outerText</code> IDL attribute</p>
        </li>
 
        <li>
-         <p><code><a href="https://html.spec.whatwg.org/multipage/forms.html#htmlinputelement">HTMLInputElement</a></code>'s <code>webkitdirectory</code> and <code>incremental</code> IDL attributes</p>
+         <p>{{HTMLInputElement}}'s <code>webkitdirectory</code> and <code>incremental</code> IDL attributes</p>
        </li>
 
        <li>
-         <p><code><a href="https://html.spec.whatwg.org/multipage/semantics.html#htmllinkelement">HTMLLinkElement</a></code>'s <code>disabled</code> and <code>scope</code> IDL attributes</p>
+         <p>{{HTMLLinkElement}}'s <code>disabled</code> and <code>scope</code> IDL attributes</p>
        </li>
 
        <li>
-         <p><code><a href="https://dom.spec.whatwg.org/#interface-shadowroot">ShadowRoot</a></code>'s <code>innerHTML</code> IDL attribute</p>
+         <p>{{ShadowRoot}}'s <code>innerHTML</code> IDL attribute</p>
        </li>
      </ul>
    </div>
@@ -1366,9 +1437,15 @@ constructor() {
 <section>
  <h4 id="html-element-constructors">HTML: HTML element constructors</h4>
 
- <p>To support the <a href="#custom-elements">custom elements</a> feature, all HTML elements have special constructor behavior. This is indicated via the <dfn id="htmlconstructor"><code>[HTMLConstructor]</code></dfn> IDL <a href="https://heycam.github.io/webidl/#dfn-extended-attribute">extended attribute</a>. It indicates that the interface object for the given interface will have a specific behavior when called, as defined in detail below.</p>
+  To support the <a>custom elements</a>, all HTML elements have special constructor behavior.
+  This is indicated via the <dfn attribute><code>[HTMLConstructor]</code></dfn> IDL <a>extended attribute</a>.
+  It indicates that the interface object for the given interface will have a specific behavior when called, as defined in detail below.</p>
 
- <p>The <code><a href="#htmlconstructor">[HTMLConstructor]</a></code> extended attribute must take no arguments, and must not appear on anything other than an interface. It must appear only once on an interface, and the interface must not be annotated with the <code>[Constructor]</code> or <code>[NoInterfaceObject]</code> extended attributes. (However, the interface may be annotated with <code>[NamedConstructor]</code>; there is no conflict there.) It must not be used on a callback interface.</p>
+  The {{[HTMLConstructor]}} extended attribute must take no arguments,
+  and must not appear on anything other than an interface. It must appear only once on an interface,
+  and the interface must not be annotated with the {{[Constructor]}} or {{[NoInterfaceObject]}}
+  extended attributes. (However, the interface may be annotated with {{[NamedConstructor]}};
+  there is no conflict there.) It must not be used on a callback interface.</p>
 
  <p><a href="https://heycam.github.io/webidl/#dfn-interface-object">Interface objects</a> for interfaces annotated with the <code><a href="#htmlconstructor">[HTMLConstructor]</a></code> extended attribute must run the following steps as the function body behavior for both [[\Call]] and [[\Construct]] invocations of the corresponding JavaScript function object. When invoked with [[\Call]], the NewTarget value is undefined, and so the algorithm below will immediately throw. When invoked with [[\Construct]], the [[\Construct]] <var>newTarget</var> parameter provides the NewTarget value.</p>
 
