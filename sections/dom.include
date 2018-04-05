@@ -1447,48 +1447,57 @@ constructor() {
   extended attributes. (However, the interface may be annotated with {{[NamedConstructor]}};
   there is no conflict there.) It must not be used on a callback interface.</p>
 
- <p><a href="https://heycam.github.io/webidl/#dfn-interface-object">Interface objects</a> for interfaces annotated with the <code><a href="#htmlconstructor">[HTMLConstructor]</a></code> extended attribute must run the following steps as the function body behavior for both [[\Call]] and [[\Construct]] invocations of the corresponding JavaScript function object. When invoked with [[\Call]], the NewTarget value is undefined, and so the algorithm below will immediately throw. When invoked with [[\Construct]], the [[\Construct]] <var>newTarget</var> parameter provides the NewTarget value.</p>
+  <a>Interface objects</a> for interfaces annotated with the {{[HTMLConstructor]}} extended attribute must run the following steps as the function body behavior for both [[\Call]] and [[\Construct]] invocations of the corresponding JavaScript function object. When invoked with [[\Call]], the NewTarget value is undefined, and so the algorithm below will immediately throw. When invoked with [[\Construct]], the [[\Construct]] <var>newTarget</var> parameter provides the NewTarget value.</p>
 
  <ol>
    <li>
-     <p>Let <var>registry</var> be the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object">current global object</a>'s <code><a href="#customelementregistry">CustomElementRegistry</a></code> object.</p>
+     <p>Let <var>registry</var> be the <a>current global object</a>'s {{CustomElementRegistry}} object.</p>
    </li>
 
    <li>
      <p>If NewTarget is equal to the <a href="https://tc39.github.io/ecma262/#active-function-object">active function object</a>, then throw a <code><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> and abort these steps.</p>
 
      <div class="example no-backref">
-       <p>This can occur when a custom element is defined using an <a href="https://dom.spec.whatwg.org/#concept-element-interface">element interface</a> as its constructor:</p>
+       <p>This can occur when a custom element is defined using an <a>element interface</a> as its constructor:</p>
        <pre>
 customElements.define("bad-1", HTMLButtonElement);
 new HTMLButtonElement();          // (1)
 document.createElement("bad-1");  // (2)
 </pre>
 
-       <p>In this case, during the execution of <code><a href="https://html.spec.whatwg.org/multipage/forms.html#htmlbuttonelement">HTMLButtonElement</a></code> (either explicitly, as in (1), or implicitly, as in (2)), both the <a href="https://tc39.github.io/ecma262/#active-function-object">active function object</a> and NewTarget are <code><a href="https://html.spec.whatwg.org/multipage/forms.html#htmlbuttonelement">HTMLButtonElement</a></code>. If this check was not present, it would be possible to create an instance of <code><a href="https://html.spec.whatwg.org/multipage/forms.html#htmlbuttonelement">HTMLButtonElement</a></code> whose local name was <code>bad-1</code>.</p>
+      In this case, during the execution of {{HTMLButtonElement}} (either explicitly, as in (1),
+      or implicitly, as in (2)), both the <a>active function object</a> and NewTarget are {{HTMLButtonElement}}.
+      If this check was not present, it would be possible to create an instance of {{HTMLButtonElement}}
+      whose local name was <code>bad-1</code>.</p>
      </div>
    </li>
 
    <li>
-     <p>Let <var>definition</var> be the entry in <var>registry</var> with <a href="#concept-custom-element-definition-constructor">constructor</a> equal to NewTarget. If there is no such definition, then throw a <code><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> and abort these steps.</p>
+     <p>Let <var>definition</var> be the entry in <var>registry</var> with <a>constructor</a> equal to NewTarget.
+      If there is no such definition, then throw a <code><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> and abort these steps.</p>
 
-     <p class="note">Since there can be no entry in <var>registry</var> with a <a href="#concept-custom-element-definition-constructor">constructor</a> of undefined, this step also prevents HTML element constructors from being called as functions (since in that case NewTarget will be undefined).</p>
+     <p class="note">Since there can be no entry in <var>registry</var> with a <a>constructor</a>
+     of undefined, this step also prevents HTML element constructors from being called as functions
+     (since in that case NewTarget will be undefined).</p>
    </li>
 
    <li>
-     <p>If <var>definition</var>'s <a href="#concept-custom-element-definition-local-name">local name</a> is equal to <var>definition</var>'s <a href="#concept-custom-element-definition-name">name</a> (i.e., <var>definition</var> is for an <a href="#autonomous-custom-element">autonomous custom element</a>), then:</p>
+     <p>If <var>definition</var>'s <a>local name</a> is equal to <var>definition</var>'s <a for="customElements">name</a>
+     (i.e., <var>definition</var> is for an <a >autonomous custom element</a>), then:</p>
 
      <ol>
        <li>
-         <p>If the <a href="https://tc39.github.io/ecma262/#active-function-object">active function object</a> is not <code><a href="https://html.spec.whatwg.org/multipage/#htmlelement">HTMLElement</a></code>, then throw a <code><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> and abort these steps.</p>
+         <p>If the <a>active function object</a> is not {{HTMLElement}}, then throw a {{TypeError}} and abort these steps.</p>
 
          <div class="example no-backref">
-           <p>This can occur when a custom element is defined to not extend any local names, but inherits from a non-<code><a href="https://html.spec.whatwg.org/multipage/#htmlelement">HTMLElement</a></code> class:</p>
+           <p>This can occur when a custom element is defined to not extend any local names, but inherits from a non-{{HTMLElement}} class:</p>
            <pre>
 customElements.define("bad-2", class Bad2 extends HTMLParagraphElement {});
 </pre>
 
-           <p>In this case, during the (implicit) <code>super()</code> call that occurs when constructing an instance of <code>Bad2</code>, the <a href="https://tc39.github.io/ecma262/#active-function-object">active function object</a> is <code><a href="https://html.spec.whatwg.org/multipage/semantics.html#htmlparagraphelement">HTMLParagraphElement</a></code>, not <code><a href="https://html.spec.whatwg.org/multipage/#htmlelement">HTMLElement</a></code>.</p>
+          In this case, during the (implicit) <code>super()</code> call that occurs
+          when constructing an instance of <code>Bad2</code>, the <a>active function object</a> is
+          {{HTMLParagraphElement}}, not {{HTMLElement}}.</p>
          </div>
        </li>
      </ol>
@@ -1499,11 +1508,14 @@ customElements.define("bad-2", class Bad2 extends HTMLParagraphElement {});
 
      <ol>
        <li>
-         <p>Let <var>valid local names</var> be the list of local names for elements defined in this specification or in <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#other-applicable-specifications">other applicable specifications</a> that use the <a href="https://tc39.github.io/ecma262/#active-function-object">active function object</a> as their <a href="https://dom.spec.whatwg.org/#concept-element-interface">element interface</a>.</p>
+         <p>Let <var>valid local names</var> be the list of local names for elements defined in this specification
+         or in <a>other applicable specifications</a> that use the <a>active function object</a>
+         as their <a>element interface</a>.</p>
        </li>
 
        <li>
-         <p>If <var>valid local names</var> does not contain <var>definition</var>'s <a href="#concept-custom-element-definition-local-name">local name</a>, then throw a <code><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> and abort these steps.</p>
+         <p>If <var>valid local names</var> does not contain <var>definition</var>'s <a>local name</a>,
+         then throw a {{TypeError}} and abort these steps.</p>
 
          <div class="example no-backref">
            <p>This can occur when a custom element is defined to extend a given local name but inherits from the wrong class:</p>
@@ -1511,22 +1523,28 @@ customElements.define("bad-2", class Bad2 extends HTMLParagraphElement {});
 customElements.define("bad-3", class Bad3 extends HTMLQuoteElement {}, { extends: "p" });
 </pre>
 
-           <p>In this case, during the (implicit) <code>super()</code> call that occurs when constructing an instance of <code>Bad3</code>, <var>valid local names</var> is the list containing <code><a href="https://html.spec.whatwg.org/multipage/semantics.html#the-q-element">q</a></code> and <code><a href="https://html.spec.whatwg.org/multipage/semantics.html#the-blockquote-element">blockquote</a></code>, but <var>definition</var>'s <a href="#concept-custom-element-definition-local-name">local name</a> is <code><a href="https://html.spec.whatwg.org/multipage/semantics.html#the-p-element">p</a></code>, which is not in that list.</p>
+           <p>In this case, during the (implicit) <code>super()</code>
+           call that occurs when constructing an instance of <code>Bad3</code>, <var>valid local names</var>
+           is the list containing <{q}> and <{blockquote}>, but <var>definition</var>'s <a>local name</a>
+           is <{p}>, which is not in that list.</p>
          </div>
        </li>
      </ol>
    </li>
 
    <li>
-     <p>Let <var>prototype</var> be <var>definition</var>'s <a href="#concept-custom-element-definition-prototype">prototype</a>.</p>
+     <p>Let <var>prototype</var> be <var>definition</var>'s <a>prototype</a>.</p>
    </li>
 
    <li>
-     <p>If <var>definition</var>'s <a href="#concept-custom-element-definition-construction-stack">construction stack</a> is empty, then:</p>
+     <p>If <var>definition</var>'s <a>construction stack</a> is empty, then:</p>
 
      <ol>
        <li>
-         <p>Let <var>element</var> be a new element that implements the interface to which the <a href="https://tc39.github.io/ecma262/#active-function-object">active function object</a> corresponds, with no attributes, namespace set to the <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#html-namespace-2">HTML namespace</a>, local name set to <var>definition</var>'s <a href="#concept-custom-element-definition-local-name">local name</a>, and <a href="https://dom.spec.whatwg.org/#concept-node-document">node document</a> set to the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object">current global object</a>'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-window">associated <code>Document</code></a>.</p>
+         <p>Let <var>element</var> be a new element that implements the interface to which the
+          <a>active function object</a> corresponds, with no attributes, namespace set to the
+          <a>HTML namespace</a>, local name set to <var>definition</var>'s <a>local name</a>, and
+          <a>node document</a> set to the <a>current global object</a>'s <a>associated <code>Document</code></a>.</p>
        </li>
 
        <li>
@@ -1534,11 +1552,11 @@ customElements.define("bad-3", class Bad3 extends HTMLQuoteElement {}, { extends
        </li>
 
        <li>
-         <p>Set <var>element</var>'s <a href="#concept-element-custom-element-state">custom element state</a> to "<code>custom</code>".</p>
+         <p>Set <var>element</var>'s <a>custom element state</a> to "<code>custom</code>".</p>
        </li>
 
        <li>
-         <p>Set <var>element</var>'s <a href="#concept-element-custom-element-definition">custom element definition</a> to <var>definition</var>.</p>
+         <p>Set <var>element</var>'s <a>custom element definition</a> to <var>definition</var>.</p>
        </li>
 
        <li>
@@ -1550,16 +1568,17 @@ customElements.define("bad-3", class Bad3 extends HTMLQuoteElement {}, { extends
    </li>
 
    <li>
-     <p>Let <var>element</var> be the last entry in <var>definition</var>'s <a href="#concept-custom-element-definition-construction-stack">construction stack</a>.</p>
+     <p>Let <var>element</var> be the last entry in <var>definition</var>'s <a>construction stack</a>.</p>
    </li>
 
    <li>
-     <p>If <var>element</var> is an <a href="#concept-already-constructed-marker"><i>already constructed</i> marker</a>, then throw an <a href="https://heycam.github.io/webidl/#invalidstateerror">"<code>InvalidStateError</code>"</a> <code><a href="https://heycam.github.io/webidl/#dfn-DOMException">DOMException</a></code> and abort these steps.</p>
+     <p>If <var>element</var> is an <a>already constructed marker</a>, then throw an
+      "{{InvalidStateError}}" {{DOMException}} and abort these steps.</p>
 
      <div class="example">
-       This can occur when the author code inside the
-       <a href="#custom-element-constructor">custom element constructor</a>
-       <a href="#custom-element-conformance">non-conformantly</a> creates another instance of the class being constructed, before calling <code>super()</code>:</p>
+       This can occur when the author code inside the <a>custom element constructor</a>
+       <a>non-conformantly</a> creates another instance of the class being constructed,
+       before calling <code>super()</code>:</p>
        <pre>
 let doSillyThing = false;
 
@@ -1579,11 +1598,10 @@ constructor() {
      </div>
 
      <div class="example">
-       This can also occur when author code inside the
-       <a href="#custom-element-constructor">custom element constructor</a>
-       <a href="#custom-element-conformance">non-conformantly</a> calls <code>super()</code> twice,
-       since per the JavaScript specification, this actually executes the superclass constructor
-       (i.e. this algorithm) twice, before throwing an error:</p>
+       This can also occur when author code inside the <a>custom element constructor</a>
+       <a>non-conformantly</a> calls <code>super()</code> twice, since per the JavaScript specification,
+       this actually executes the superclass constructor (i.e. this algorithm) twice,
+       before throwing an error:</p>
        <xmp class="bad">
 class DontDoThisEither extends HTMLElement {
 constructor() {
@@ -1602,23 +1620,27 @@ constructor() {
    </li>
 
    <li>
-     <p>Replace the last entry in <var>definition</var>'s <a href="#concept-custom-element-definition-construction-stack">construction stack</a> with an <a href="#concept-already-constructed-marker"><i>already constructed</i> marker</a>.</p>
+     <p>Replace the last entry in <var>definition</var>'s <a>construction stack</a> with an
+     <a>already constructed marker</a>.</p>
    </li>
 
    <li>
      <p>Return <var>element</var>.</p>
 
-     <p class="note">This step is normally reached when <a href="#upgrades">upgrading</a> a custom element; the existing element is returned, so that the <code>super()</code> call inside the <a href="#custom-element-constructor">custom element constructor</a> assigns that existing element to <b>this</b>.</p>
+     <p class="note">This step is normally reached when <a>upgrading</a> a custom element;
+      the existing element is returned, so that the <code>super()</code> call inside the
+      <a>custom element constructor</a> assigns that existing element to <b>this</b>.</p>
    </li>
  </ol>
  <hr>
 
-  In addition to the constructor behavior implied by <code><a href="#htmlconstructor">[HTMLConstructor]</a></code>,
-  some elements also have <a href="https://heycam.github.io/webidl/#dfn-named-constructor">named constructors</a>
+  In addition to the constructor behavior implied by {{[HTMLConstructor]}},
+  some elements also have <a>named constructors</a>
    (which are really factory functions with a modified <code>prototype</code> property).</p>
 
  <div class="example">
-   <p>Named constructors for HTML elements can also be used in an <code>extends</code> clause when defining a <a>custom element constructor</a>:</p>
+   <p>Named constructors for HTML elements can also be used in an <code>extends</code>
+    clause when defining a <a>custom element constructor</a>:</p>
    <xmp>
 class AutoEmbiggenedImage extends Image {
 constructor(width, height) {
