@@ -2039,199 +2039,253 @@
 
 
 <section>
-<h4 id="autonomous-custom-elements">Autonomous custom elements</h4>
+<h4 id="custom-elements-core-concepts">Custom Elements</h4>
 
-    <p>An <dfn id="autonomous-custom-element">autonomous custom element</dfn> is a <a>custom element</a>
+  A <dfn>custom element</dfn> is an element whose {{constructor}} and {{prototype}} are defined by the author.
+  The author-supplied constructor function is called the <dfn>custom element constructor</dfn>.
+  Custom elements have the <a>custom element state</a> "<code>custom</code>".
+
+  <p class="note">For the elements whose semantics are described in this specification, or in
+  <a>other applicable specifications</a>, {{constructor}} and {{prototype}} are defined by the user agent.</p>
+
+  There are two types of custom elements:
+  :<a>autonomous custom Elements
+  ::These are entirely author-defined, extending {{HTMLElement}}
+  :<a>customized built-in Elements
+  ::These extend elements that are already defined. <span class="note">This is typically to inherit some functionality.</span>
+
+<h5 id="autonomous-custom-elements">Autonomous custom elements</h4>
+
+    An <dfn>autonomous custom element</dfn> is a <a>custom element</a>
     completely defined by the author. It <a>extends</a> {{HTMLElement}},
-    and its local name is equal to its <a href="#concept-custom-element-definition-name">defined name</a>.</p>
+    and its <a>local name</a> is equal to its <a for="customElements">name</a>.</p>
 
-@@@
-<p><a href="#autonomous-custom-element">Autonomous custom elements</a> have the following element definition:</p>
+  <a>Autonomous custom elements</a> have the following element definition:
 
 <dl class="element">
   <dt>
     <a>Categories</a>:
   </dt>
 
-  <dd>
-    <a>Flow content</a>.
-  </dd>
-
-  <dd>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2">Phrasing content</a>.
-  </dd>
-
-  <dd>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2">Palpable content</a>.
-  </dd>
+  <dd><a>Flow content</a>.</dd>
+  <dd><a>Phrasing content</a>.</dd>
+  <dd><a>Palpable content</a>.</dd>
 
   <dt>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-contexts">Contexts in which this element can be used</a>:
+    <a>Contexts in which this element can be used</a>:
   </dt>
 
   <dd>
-    Where <a href="https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2">phrasing content</a> is expected.
+    Where <a>phrasing content</a> is expected.
   </dd>
 
   <dt>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-content-model">Content model</a>:
+    <a>Content model</a>:
   </dt>
 
   <dd>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#transparent">Transparent</a>.
+    <a>Transparent</a>.
   </dd>
 
   <dt>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-attributes">Content attributes</a>:
+    <a>Content attributes</a>:
   </dt>
 
   <dd>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#global-attributes">Global attributes</a>, except the <code><a href="#attr-is">is</a></code> attribute
+    <a>Global attributes</a>, except the <{global/is}> attribute
   </dd>
 
-  <dd>Any other attribute that has no namespace (see prose).</dd>
-
   <dt>
-    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-element-dom">DOM interface</a>:
+    <a>Allowed ARIA role attribute values</a>:
   </dt>
 
-  <dd>Supplied by the element's author (inherits from <code><a href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement">HTMLElement</a></code>)</dd>
+  <dd>
+    Any
+  </dd>
+
+  <dt>
+    <a>Allowed ARIA state and property attributes</a>:
+  </dt>
+
+  <dd>
+    Any
+  </dd>
+
+  <dt>
+    <a>DOM interface</a>:
+  </dt>
+
+  <dd>Supplied by the element's author (inherits from {{HTMLElement}})</dd>
 </dl>
 
-<p>An <a href="#autonomous-custom-element">autonomous custom element</a> does not have any special meaning: it <a href="https://html.spec.whatwg.org/multipage/dom.html#represents">represents</a> its children. A <a href="#customized-built-in-element">customized built-in element</a> inherits the semantics of the element that it extends.</p>
+  An <a>autonomous custom element</a>'s' meaning is defined by its author. It <a>represents</a> its children.
 
-<p>Any namespace-less attribute that is relevant to the element's functioning, as determined by the element's author, may be specified on an <a href="#autonomous-custom-element">autonomous custom element</a>, so long as the attribute name is <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#xml-compatible">XML-compatible</a> and contains no <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#uppercase-ascii-letters">uppercase ASCII letters</a>. The exception is the <code><a href="#attr-is">is</a></code> attribute, which must not be specified on an <a href="#autonomous-custom-element">autonomous custom element</a> (and which will have no effect if it is).</p>
+ <h5 id="customized-built-in-elements">Customized built-in elements</h5>
 
-<p><a href="#customized-built-in-element">Customized built-in elements</a> follow the normal requirements for attributes, based on the elements they extend. To add custom attribute-based behavior, use <code><a href="https://html.spec.whatwg.org/multipage/dom.html#attr-data-*">data-*</a></code> attributes.</p>
-<hr>
+  A <dfn>customized built-in element</dfn> is a <a>custom element</a> that <a>extends</a> an existing element.
+  A customized built-in element's <a>local name</a> is the name of the element it extends.
+  Its <a for="customElements">name</a> is used as the <a>is value</a>, provided in the <{global/is}>
+  attribute when it is used in markup.
 
-<p>A <dfn id="valid-custom-element-name">valid custom element name</dfn> is a sequence of characters <var>name</var> that meets all of the following requirements:</p>
+  <div class="example">For example a <{button}> has pre-defined interaction behaviour,
+      a <{tr}> already participates in the <a>table model</a>,
+      and a <{input/checkbox}> has defined behaviour and participates in form submission.
 
-<ul>
-  <li>
-    <p><var>name</var> must match the <code><a href="#prod-potentialcustomelementname">PotentialCustomElementName</a></code> production:</p>
+      Since only existing table elements takes part in the <a>table model</a>,
+      with other elements moved outside the <{table}>, creating a custom element that is part of a <{table}>
+      can only be done by customizing a built-in table element.
+  </div>
 
-    <dl>
-      <dt><code><dfn id="prod-potentialcustomelementname">PotentialCustomElementName</dfn> ::=</code></dt>
+  A <a href="#customized-built-in-element">customized built-in element</a> inherits the semantics of the element that it extends.</p>
 
-      <dd><code>[a-z] (<a href="#prod-pcenchar">PCENChar</a>)* '-' (<a href="#prod-pcenchar">PCENChar</a>)*</code></dd>
+  A <a>customized built-in element</a> has the same requirements for attributes as the element it extends.
+  To add custom attribute-based behavior, use [=custom data attributes|data-*=] attributes.</p>
 
-      <dt><code><dfn id="prod-pcenchar">PCENChar</dfn> ::=</code></dt>
+  A <a>customized built-in element</a>'s <a>is value</a> is saved on the element when it is
+   <a>created</a>. So changing the value of the <{{global/is}}> attribute does not change the element's behaviour.
 
-      <dd><code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></dd>
-    </dl>
+</section>
+<section>
+<h4 id="requirement-for-all-custom-elements">Requirements for all custom elements</h4>
 
-    <p>This uses the <a href="https://www.w3.org/TR/xml/#sec-notation">EBNF notation</a> from the <cite>XML</cite> specification. [[!XML]]</p>
-  </li>
-
-  <li>
-    <p><var>name</var> must not be any of the following:</p>
+  A <dfn id="valid-custom-element-name">valid custom element name</dfn> is a sequence of characters
+  <var>name</var> that matches the <code><a>PotentialCustomElementName</a></code> production,
+  and is not one of the following:</p>
 
     <ul class="brief">
       <li><code>annotation-xml</code></li>
-
       <li><code>color-profile</code></li>
-
       <li><code>font-face</code></li>
-
       <li><code>font-face-src</code></li>
-
       <li><code>font-face-uri</code></li>
-
       <li><code>font-face-format</code></li>
-
       <li><code>font-face-name</code></li>
-
       <li><code>missing-glyph</code></li>
     </ul>
 
-    <p class="note">The list of names above is the summary of all hyphen-containing element names from the <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#other-applicable-specifications">applicable specifications</a>, namely <cite>SVG</cite> and <cite>MathML</cite>. [[SVG]] [[MATHML]]</p>
+    <p class="note">These are all hyphen-containing element names from the <a>applicable specifications</a>: <cite>SVG</cite> and <cite>MathML</cite>. [[SVG]] [[MATHML]]</p>
   </li>
 </ul>
 
+  The <dfn><code>PotentialCustomElementName</code> production</dfn> is as follows:
+<dl>
+  <dt><a>PotentialCustomElementName</a> ::=</code></dt>
+
+  <dd><code>[a-z] (<a href="#prod-pcenchar">PCENChar</a>)* '-' (<a href="#prod-pcenchar">PCENChar</a>)*</code></dd>
+
+  <dt><code><dfn id="prod-pcenchar">PCENChar</dfn> ::=</code></dt>
+
+  <dd><code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></dd>
+</dl>
+
+<p>This uses the <a>EBNF notation</a> from the <cite>XML</cite> specification. [[!XML]]</p>
+
 <div class="note">
-  <p>These requirements ensure a number of goals for <a href="#valid-custom-element-name">valid custom element names</a>:</p>
+  <p>These requirements ensure a number of goals for <a>valid custom element names</a>:</p>
 
   <ul>
     <li>
-      <p>They start with a <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#lowercase-ascii-letters">lowercase ASCII letter</a>, ensuring that the HTML parser will treat them as tags instead of as text.</p>
+      <p>They start with a <a>lowercase ASCII letter</a>, ensuring that the HTML parser will treat them as tags instead of as text.</p>
     </li>
 
     <li>
-      <p>They do not contain any <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#uppercase-ascii-letters">uppercase ASCII letters</a>, ensuring that the user agent can always treat HTML elements ASCII-case-insensitively.</p>
+      <p>They do not contain any <a>uppercase ASCII letters</a>, so user agent can always treat HTML elements ASCII-case-insensitively.</p>
     </li>
 
     <li>
-      <p>They contain a hyphen, used for namespacing and to ensure forward compatibility (since no elements will be added to HTML, SVG, or MathML with hyphen-containing local names in the future).</p>
+      <p>They contain a hyphen, used for namespacing and to ensure forward compatibility.
+      No new elements will be added to HTML, SVG, or MathML with names containing a hypen.</p>
     </li>
 
     <li>
-      <p>They can always be created with <code><a href="https://dom.spec.whatwg.org/#dom-document-createelement">createElement()</a></code> and <code><a href="https://dom.spec.whatwg.org/#dom-document-createelementns">createElementNS()</a></code>, which have restrictions that go beyond the parser's.</p>
+      <p>They can always be created with {{createElement()}} and {{createElementNS()}},
+      which have more restrictions than the parser.</p>
+    </li>
+
+    <li>
+    <p>They allow a wide range of names to give maximum flexibility:
+    e.g. <code>&lt;x-小山&gt;</code> <code>&lt;math-α&gt;</code> or <code>&lt;emotion-😍&gt;</code>.</p>
     </li>
   </ul>
 
-  <p>Apart from these restrictions, a large variety of names is allowed, to give maximum flexibility for use cases like <code>&lt;math-α&gt;</code> or <code>&lt;emotion-😍&gt;</code>.</p>
 </div>
 
-<p>A <dfn id="custom-element-definition">custom element definition</dfn> describes a <a href="#custom-element">custom element</a> and consists of:</p>
+  A <dfn>custom element definition</dfn> describes a <a>custom element</a> and consists of:</p>
 
 <dl>
-  <dt>A <dfn id="concept-custom-element-definition-name">name</dfn></dt>
+  <dt>A <dfn for="customElements">name</dfn></dt>
 
   <dd>
-    A <a href="#valid-custom-element-name">valid custom element name</a>
+    A <a>valid custom element name</a>.
   </dd>
 
-  <dt>A <dfn id="concept-custom-element-definition-local-name">local name</dfn></dt>
+  <dt>A <dfn for="customElements">local name</dfn></dt>
 
-  <dd>A local name</dd>
+  <dd>
+    For <a>autonomous custom elements</a> this is the same as its <a for="customElements">name</a>.
+  </dd>
+  <dd>
+    For <a>customized built-in elements</a> this is the name of the element it extends.
+  </dd>
 
   <dt>A <dfn id="concept-custom-element-definition-constructor">constructor</dfn></dt>
 
   <dd>
-    A <a href="#custom-element-constructor">custom element constructor</a>
+    A <a>custom element constructor</a> function.
   </dd>
 
-  <dt>A <dfn id="concept-custom-element-definition-prototype">prototype</dfn></dt>
+  <dt>A <dfn>prototype</dfn></dt>
 
   <dd>A JavaScript object</dd>
 
-  <dt>A list of <dfn id="concept-custom-element-definition-observed-attributes">observed attributes</dfn></dt>
+  <dt>A list of <dfn>observed attributes</dfn></dt>
 
-  <dd>A <code>sequence&lt;DOMString&gt;</code></dd>
+  <dd>A <code>sequence&lt;DOMString&gt;</code> that is a list of attribute names. When any of the named attributes changes value, the <a>attributeChangedCallback</a> <a>custom reaction</a> is
+  [=enqueue a custom element callback reaction|enqueued=].</dd>
 
-  <dt>A collection of <dfn id="concept-custom-element-definition-lifecycle-callbacks">lifecycle callbacks</dfn></dt>
+  <dt>A collection of <dfn>lifecycle callbacks</dfn></dt>
 
-  <dd>A map, whose four keys are the strings "<code>connectedCallback</code>", "<code>disconnectedCallback</code>", "<code>adoptedCallback</code>", and "<code>attributeChangedCallback</code>". The corresponding values are either a Web IDL <code><a href="https://heycam.github.io/webidl/#common-Function">Function</a></code> callback function type value, or null. By default the value of each entry is null.</dd>
+  <dd>A map, whose four keys are the strings "<code>connectedCallback</code>",
+   "<code>disconnectedCallback</code>", "<code>adoptedCallback</code>", and
+   "<code>attributeChangedCallback</code>". The corresponding values are either a Web IDL {{Function}}
+  callback function type value, or null. By default the value of each entry is null.</dd>
 
-  <dt>A <dfn id="concept-custom-element-definition-construction-stack">construction stack</dfn></dt>
+  <dt>A <dfn>construction stack</dfn></dt>
 
   <dd>
-    A list, initially empty, that is manipulated by the <a href="#concept-upgrade-an-element">upgrade an element</a> algorithm and the <a href="#html-element-constructors">HTML element constructors</a>. Each entry in the list will be either an element or an <dfn id="concept-already-constructed-marker"><i>already constructed</i> marker</dfn>.
+    A list, initially empty, that is manipulated by the <a>upgrade an element</a> algorithm and the
+    <a>HTML element constructors</a>. Each entry in the list is either an element or an
+    <dfn><i>already constructed</i> marker</dfn>.
   </dd>
 </dl>
 
-<p>To <dfn id="look-up-a-custom-element-definition">look up a custom element definition</dfn>, given a <var>document</var>, <var>namespace</var>, <var>localName</var>, and <var>is</var>, perform the following steps. They will return either a <a href="#custom-element-definition">custom element definition</a> or null:</p>
+  To <dfn>look up a custom element definition</dfn>, given a <var>document</var>,
+  <var>namespace</var>, <var>localName</var>, and <var>is</var>, perform the following steps.
+  They will return either a <a>custom element definition</a> or null:</p>
 
 <ol>
   <li>
-    <p>If <var>namespace</var> is not the <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#html-namespace-2">HTML namespace</a>, return null.</p>
+    <p>If <var>namespace</var> is not the <a>HTML namespace</a>, return null.</p>
   </li>
 
   <li>
-    <p>If <var>document</var> does not have a <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc">browsing context</a>, return null.</p>
+    <p>If <var>document</var> does not have a <a>browsing context</a>, return null.</p>
   </li>
 
   <li>
-    <p>Let <var>registry</var> be <var>document</var>'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc">browsing context</a>'s <code><a href="https://html.spec.whatwg.org/multipage/browsers.html#window">Window</a></code>'s <code><a href="#customelementregistry">CustomElementRegistry</a></code> object.</p>
+    <p>Let <var>registry</var> be <var>document</var>'s <a>browsing context</a>'s {{Window}}'s
+    {{CustomElementRegistry}} object.</p>
   </li>
 
   <li>
-    <p>If there is <a href="#custom-element-definition">custom element definition</a> in <var>registry</var> with <a href="#concept-custom-element-definition-name">name</a> and <a href="#concept-custom-element-definition-local-name">local name</a> both equal to <var>localName</var>, return that <a href="#custom-element-definition">custom element definition</a>.</p>
+    <p>If there is <a>custom element definition</a> in <var>registry</var> with <a>name</a> and
+    <a>local name</a> both equal to <var>localName</var>, return that <a>custom element definition</a>.</p>
   </li>
 
   <li>
-    <p>If there is a <a href="#custom-element-definition">custom element definition</a> in <var>registry</var> with <a href="#concept-custom-element-definition-name">name</a> equal to <var>is</var> and <a href="#concept-custom-element-definition-local-name">local name</a> equal to <var>localName</var>, return that <a href="#custom-element-definition">custom element definition</a>.</p>
+    <p>If there is a <a>custom element definition</a> in <var>registry</var> with
+    <a>name</a> equal to <var>is</var> and <a>local name</a> equal to <var>localName</var>,
+    return that <a>custom element definition</a>.</p>
   </li>
 
   <li>
@@ -2240,49 +2294,53 @@
 </ol>
 </section>
 <section>
-<h4 id="custom-elements-core-concepts">Core concepts</h4>
-
-<p>A <dfn id="custom-element">custom element</dfn> is an element that is <a href="#concept-element-custom">custom</a>. Informally, this means that its constructor and prototype are defined by the author, instead of by the user agent. This author-supplied constructor function is called the <dfn id="custom-element-constructor">custom element constructor</dfn>.</p>
-
-
-
-<p>After a <a href="#custom-element">custom element</a> is <a href="#concept-create-element">created</a>, changing the value of the <code><a href="#attr-is">is</a></code> attribute does not change the element's behaviour, as it is saved on the element as its <a href="#concept-element-is-value"><code>is</code> value</a>.</p>
-@@@@
-
-<section>
 <h4 id="custom-element-conformance">Requirements for custom element constructors</h4>
 
-<p>When authoring <a href="#custom-element-constructor">custom element constructors</a>, authors are bound by the following conformance requirements:</p>
+<p>A <a>custom element constructor</a> must meet the following requirements:</p>
 
 <ul>
   <li>
-    <p>A parameter-less call to <code>super()</code> must be the first statement in the constructor body, to establish the correct prototype chain and <b>this</b> value before any further code is run.</p>
+    <p>A parameter-less call to <code>super()</code> must be the first statement in the constructor body.
+    This establishes the correct prototype chain and <code><b>this</b></code> value before any further code is run.</p>
   </li>
 
   <li>
-    <p>A <code>return</code> statement must not appear anywhere inside the constructor body, unless it is a simple early-return (<code>return</code> or <code>return this</code>).</p>
+    <p>A <code>return</code> statement must not appear anywhere inside the constructor body,
+    unless it is a simple early-return (<code>return</code> or <code>return this</code>).</p>
   </li>
 
   <li>
-    <p>The constructor must not use the <code><a href="https://html.spec.whatwg.org/multipage/webappapis.html#dom-document-write">document.write()</a></code> or <code><a href="https://html.spec.whatwg.org/multipage/webappapis.html#dom-document-open">document.open()</a></code> methods.</p>
+    <p>The constructor must not use the {{document.write()}} or {{document.open()}} methods.</p>
   </li>
 
   <li>
-    <p>The element's attributes and children must not be inspected, as in the non-<a href="#upgrades">upgrade</a> case none will be present, and relying on upgrades makes the element less usable.</p>
+    <p>The element's attributes and children must not be inspected.
+    In the non-<a>upgrade</a> case none will be present,
+    and relying on upgrades makes the element less usable.</p>
   </li>
 
   <li>
-    <p>The element must not gain any attributes or children, as this violates the expectations of consumers who use the <code><a href="https://dom.spec.whatwg.org/#dom-document-createelement">createElement</a></code> or <code><a href="https://dom.spec.whatwg.org/#dom-document-createelementns">createElementNS</a></code> methods.</p>
+    <p>The element must not gain any attributes or children.
+    Doing so violates the expectations of consumers who use the {{createElement()}} or
+    {{(reateElementNS()}}</a></code> methods.</p>
+  </li>
+  </ul>
+
+  In addition, <a>custom element constructors</a> should implement the following good practices:
+
+  <li>
+    <p>Work should be deferred to <code>connectedCallback</code>.
+    This especially applies to work involving fetching resources or rendering.
+    However, note that <code>connectedCallback</code> can be called more than once,
+    so initialization work may need a guard to prevent it from running twice.</p>
   </li>
 
   <li>
-    <p>In general, work should be deferred to <code>connectedCallback</code> as much as possible—especially work involving fetching resources or rendering. However, note that <code>connectedCallback</code> can be called more than once, so any initialization work that is truly one-time will need a guard to prevent it from running twice.</p>
-  </li>
-
-  <li>
-    <p>In general, the constructor should be used to set up initial state and default values, and to set up event listeners and possibly a <a href="https://dom.spec.whatwg.org/#concept-shadow-root">shadow root</a>.</p>
+    <p>The constructor should set up initial state and default values, event listeners,
+    and possibly a <a>shadow root</a>.</p>
   </li>
 </ul>
 
-<p>Several of these requirements are checked during <a href="#concept-create-element">element creation</a>, either directly or indirectly, and failing to follow them will result in a custom element that cannot be instantiated by the parser or DOM APIs.</p>
+  Some of these requirements are checked during [=create an element|element creation=],
+  and failing to follow them will result in a custom element that cannot be instantiated by the parser or DOM APIs.</p>
 </section>
