@@ -717,7 +717,7 @@ DOMString extends;
   </li>
 
   <li>a <dfn id="when-defined-promise-map">when-defined promise map</dfn>, mapping <a>valid custom element names</a>
-   to promises. It is used to implement the {{whenDefined}} method.</p>
+   to promises. It is used to implement the {{whenDefined()}} method.</p>
    </li>
    </ul>
 
@@ -852,7 +852,7 @@ DOMString extends;
              <li>
                <p>If <var>callbackValue</var> is not undefined, then set the value of the entry in
                 <var>lifecycleCallbacks</var> with key <var>callbackName</var> to the result of
-                converting <var>callbackValue</var> to the Web IDL {{Function}} callback type.
+                <a>converting</a> <var>callbackValue</var> to the Web IDL {{Function}} callback type.
                 Rethrow any exceptions from the conversion.</p>
              </li>
            </ol>
@@ -871,7 +871,10 @@ DOMString extends;
              </li>
 
              <li>
-               <p>If <var>observedAttributesIterable</var> is not undefined, then set <var>observedAttributes</var> to the result of <a href="https://heycam.github.io/webidl/#es-type-mapping">converting</a> <var>observedAttributesIterable</var> to a <code>sequence&lt;DOMString&gt;</code>. Rethrow any exceptions from the conversion.</p>
+               <p>If <var>observedAttributesIterable</var> is not undefined, then set
+               <var>observedAttributes</var> to the result of <a>converting</a>
+               <var>observedAttributesIterable</var> to a <code>sequence&lt;DOMString&gt;</code>.
+               Rethrow any exceptions from the conversion.</p>
              </li>
            </ol>
          </li>
@@ -982,27 +985,27 @@ DOMString extends;
    </ol>
 
    <div class="example">
-     <p>The {{whenDefined}} method can be used to avoid performing an action until all appropriate
+     <p>The {{whenDefined()}} method can be used to avoid performing an action until all appropriate
      <a href="#custom-element">custom elements</a> are <a>defined</a>. In this example,
       we combine it with the <a>:defined</a> pseudo-class to hide a dynamically-loaded article's contents
        until all the <a>autonomous custom elements</a> it uses are defined.</p>
-     <pre>
+     <xmp>
 articleContainer.hidden = true;
 
 fetch(articleURL)
-.then(response =&gt; response.text())
-.then(text =&gt; {
+.then(response => response.text())
+.then(text => {
  articleContainer.innerHTML = text;
 
  return Promise.all(
    [...articleContainer.querySelectorAll(":not(:defined)")]
-     .map(el =&gt; customElements.whenDefined(el.localName))
+     .map(el => customElements.whenDefined(el.localName))
  );
 })
-.then(() =&gt; {
+.then(() => {
  articleContainer.hidden = false;
 });
-</pre>
+</xmp>
    </div>
  </section>
 
@@ -1018,12 +1021,12 @@ fetch(articleURL)
 
        <div class="example">
          <p>This can occur due to reentrant invocation of this algorithm, as in the following example:</p>
-         <pre>
-&lt;!DOCTYPE html&gt;
-&lt;x-foo id="a"&gt;&lt;/x-foo&gt;
-&lt;x-foo id="b"&gt;&lt;/x-foo&gt;
+         <xmp>
+<!DOCTYPE html>
+<x-foo id="a"></x-foo>
+<x-foo id="b"></x-foo>
 
-&lt;script&gt;
+<script>
 // Defining enqueues upgrade reactions for both "a" and "b"
 customElements.define("x-foo", class extends HTMLElement {
 constructor() {
@@ -1039,8 +1042,8 @@ constructor() {
  document.body.appendChild(b);
 }
 })
-&lt;/script&gt;
-</pre>
+</script>
+</xmp>
 
          <p>This step will thus bail out the algorithm early when <a>upgrade an element</a> is invoked with "<code>b</code>" a second time.</p>
        </div>
@@ -1051,7 +1054,7 @@ constructor() {
      </li>
 
      <li>
-       <p>For each <var>attribute</var> in <var>element</var>'s <a for="Element">attribute list</a>, in order,
+       <p>For each <var>attribute</var> in <var>element</var>'s <!--a@@-->attribute list, in order,
         <a>enqueue a custom element callback reaction</a> with <var>element</var>,
         callback name "<code>attributeChangedCallback</code>", and an argument list containing
         <var>attribute</var>'s local name, null, <var>attribute</var>'s value, and <var>attribute</var>'s namespace.</p>
@@ -1130,7 +1133,7 @@ constructor() {
      <li>
        <p>Let <var>definition</var> be the result of <a>looking up a custom element definition</a>
         given <var>element</var>'s <a>node document</a>, <var>element</var>'s namespace,
-         <var>element</var>'s local name, and <var>element</var>'s <{is}> value</a>.</p>
+         <var>element</var>'s local name, and <var>element</var>'s <a>is value</a>.</p>
      </li>
 
      <li>
@@ -1617,7 +1620,7 @@ constructor() {
  super();
 }
 }
-</pre>
+</xmp>
      </div>
    </li>
 
@@ -1659,7 +1662,6 @@ customElements.define("auto-embiggened", AutoEmbiggenedImage, { extends: "img" }
 const image = new AutoEmbiggenedImage(15, 20);
 console.assert(image.width === 150);
 console.assert(image.height === 200);
-</pre>
  </xmp>
  <!-- end CEinsert @@ -->
 
