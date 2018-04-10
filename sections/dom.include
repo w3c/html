@@ -699,7 +699,7 @@ any get(DOMString name);
 Promise&lt;void&gt; whenDefined(DOMString name);
 };
 
-dictionary <dfn id="elementdefinitionoptions">ElementDefinitionOptions</dfn> {
+dictionary ElementDefinitionOptions {
 DOMString extends;
 };
 </pre>
@@ -712,24 +712,24 @@ DOMString extends;
   <a for="customElements">name</a>, <a>local name</a>, or {{constructor}}.
   </li>
 
-  <li>an <dfn id="element-definition-is-running">element definition is running</dfn>
+  <li>an <dfn export>element definition is running</dfn>
   flag, used to prevent reentrant invocations of <a>element definition</a>. It is initially unset.
   </li>
 
-  <li>a <dfn id="when-defined-promise-map">when-defined promise map</dfn>, mapping <a>valid custom element names</a>
+  <li>a <dfn export>when-defined promise map</dfn>, mapping <a>valid custom element names</a>
    to promises. It is used to implement the {{whenDefined()}} method.</p>
    </li>
    </ul>
 
 
    <dl class="domintro note">
-     <dt><var>window</var> . {{customElements}} . {{define}}(<var>name</var>, <var>constructor</var>)</dt>
+     <dt><var>window</var> . {{customElements}} . {{define()|define(<var>name</var>}}, <var>constructor</var>)</dt>
 
      <dd>
        Defines a new <a>autonomous custom element</a>, mapping the given name to the given constructor.
      </dd>
 
-     <dt><var>window</var> . {{customElements}} . {{define}}(<var>name</var>, <var>constructor</var>), { extends: <var>baseLocalName</var> })</dt>
+     <dt><var>window</var> . {{customElements}} . {{define()|define(<var>name</var>, <var>constructor</var>), { extends: <var>baseLocalName</var> })}}</dt>
 
      <dd>
        Defines a new <a>customized built-in element</a>, mapping the given name to the given constructor for the
@@ -745,7 +745,7 @@ DOMString extends;
        Returns undefined if there is no <a>custom element definition</a> with the given <a for="customElements">name</a>.
      </dd>
 
-     <dt><var>window</var> . {{customElements}} . {{whenDefined}}(<var>name</var>)</dt>
+     <dt><var>window</var> . {{customElements}} . {{whenDefined()|whenDefined(<var>name</var>)}}</dt>
 
      <dd>
        Returns a promise that will be fulfilled when a <a>custom element</a>
@@ -756,10 +756,10 @@ DOMString extends;
      </dd>
    </dl>
 
-   <dfn id="element-definition">Element definition</dfn> is the process of adding a
+   <dfn export>Element definition</dfn> is the process of adding a
    <a>custom element definition</a> to the {{CustomElementRegistry}}.
    This is accomplished by the {{define()}} method. When invoked, the
-   <dfn method for="CustomElementRegistry" lt="define()"><code>define(<var>name</var>, <var>constructor</var>, <var>options</var>)</code></dfn>
+   {{define()|define(<var>name</var>, <var>constructor</var>, <var>options</var>)}}
    method must run these steps:</p>
 
    <ol>
@@ -939,7 +939,7 @@ DOMString extends;
      </li>
    </ol>
 
-   <p>When invoked, the <dfn for="customElements" lt="get"><code>get(<var>name</var>)</code></dfn> method must run these steps:</p>
+   <p>When invoked, the <dfn method for="customElements" lt="get()"><code>get(<var>name</var>)</code></dfn> method must run these steps:</p>
 
    <ol>
      <li>
@@ -952,7 +952,7 @@ DOMString extends;
      </li>
    </ol>
 
-   When invoked, the <dfn method for="CustomElementRegistry" lt="whenDefined()"><code>whenDefined(<var>name</var>)</code></dfn>
+   When invoked, the {{whenDefined()|whenDefined(<var>name</var>)}}
    method must run these steps:</p>
 
    <ol>
@@ -1012,7 +1012,7 @@ fetch(articleURL)
  <section>
    <h4 id="upgrades">Upgrades</h4>
 
-   <p>To <dfn lt="upgrade">upgrade an element</dfn>, given a <a>custom element definition</a> <var>definition</var>
+   <p>To <dfn export lt="upgrade">upgrade an element</dfn>, given a <a>custom element definition</a> <var>definition</var>
     and an element <var>element</var>, run the following steps:</p>
 
    <ol>
@@ -1127,7 +1127,7 @@ constructor() {
      </li>
    </ol>
 
-   <p>To <dfn id="concept-try-upgrade">try to upgrade an element</dfn>, given as input an element <var>element</var>, run the following steps:</p>
+   <p>To <dfn export>try to upgrade an element</dfn>, given as input an element <var>element</var>, run the following steps:</p>
 
    <ol>
      <li>
@@ -1148,7 +1148,7 @@ constructor() {
    <h4 id="sec-custom-element-reactions">Custom element reactions</h4>
 
    A <a>custom element</a> can react to certain occurrences by running author code.
-   These reactions are called <dfn>custom element reactions</dfn>.
+   These reactions are called <dfn export>custom element reactions</dfn>.
 
    <ul>
      <li>
@@ -1191,34 +1191,34 @@ constructor() {
    <hr>
 
    Each <a>unit of related similar-origin browsing contexts</a> has a
-   <dfn>custom element reactions stack</dfn>, which is initially empty.
-   The <dfn>current element queue</dfn> is the <a>element queue</a>
+   <dfn export>custom element reactions stack</dfn>, which is initially empty.
+   The <dfn export>current element queue</dfn> is the <a>element queue</a>
     at the top of the <a>custom element reactions stack</a>. Each item in the stack is an
-    <dfn>element queue</dfn>, which is initially empty as well.
+    <dfn export>element queue</dfn>, which is initially empty as well.
     Each item in an <a>element queue</a> is an element.
     (The elements are not necessarily <a>custom</a> yet, since this queue is used for <a>upgrades</a> as well.)
 
    Each <a>custom element reactions stack</a> has an associated
-   <dfn>backup element queue</dfn>, which is an initially empty
+   <dfn export>backup element queue</dfn>, which is an initially empty
     <a>element queue</a>. Elements are pushed onto the <a>backup element queue</a>
      during operations that affect the DOM without going through an API decorated with
      [{{CEReactions}}], or through the parser's <a>create an element for the token</a> algorithm.
      An example of this is a user-initiated editing operation which modifies the descendants or attributes of an
       <a>editable</a> element. To prevent reentrancy when processing the <a>backup element queue</a>,
       each <a>custom element reactions stack</a> also has a
-      <dfn>processing the backup element queue</dfn> flag, initially unset.</p>
+      <dfn export>processing the backup element queue</dfn> flag, initially unset.</p>
 
-   <p>All elements have an associated <dfn>custom element reaction queue</dfn>, initially empty.
+   <p>All elements have an associated <dfn export>custom element reaction queue</dfn>, initially empty.
     Each item in the <a>custom element reaction queue</a> is of one of two types:</p>
 
    <ul>
      <li>
-       <p>An <dfn>upgrade reaction</dfn>, which <a>upgrades</a> the custom element and contains a
+       <p>An <dfn export>upgrade reaction</dfn>, which <a>upgrades</a> the custom element and contains a
         <a>custom element definition</a>; or</p>
      </li>
 
      <li>
-       <p>A <dfn>callback reaction</dfn>, which will call a <a>lifecycle callback</a>,
+       <p>A <dfn export>callback reaction</dfn>, which will call a <a>lifecycle callback</a>,
         and contains a {{Function!!callback}} as well as a list of arguments.</p>
      </li>
    </ul>
@@ -1227,7 +1227,7 @@ constructor() {
 
    <p><img src="custom-element-reactions.svg" alt="@@A custom element reactions stack consists of a stack of element queues. Zooming in on a particular queue, we see that it contains a number of elements (in our example, &lt;x-a&gt;, then &lt;x-b&gt;, then &lt;x-c&gt;). Any particular element in the queue then has a custom element reaction queue. Zooming in on the custom element reaction queue, we see that it contains a variety of queued-up reactions (in our example, upgrade, then attribute changed, then another attribute changed, then connected)." style="width: 80%; max-width: 580px;"></p>
 
-   <p>To <dfn>enqueue an element on the appropriate element queue</dfn>, given an element <var>element</var>,
+   <p>To <dfn export>enqueue an element on the appropriate element queue</dfn>, given an element <var>element</var>,
     run the following steps:</p>
 
    <ol>
@@ -1268,7 +1268,7 @@ constructor() {
      </li>
    </ol>
 
-   <p>To <dfn>enqueue a custom element callback reaction</dfn>, given a <a>custom element</a> <var>element</var>,
+   <p>To <dfn export>enqueue a custom element callback reaction</dfn>, given a <a>custom element</a> <var>element</var>,
     a callback name <var>callbackName</var>, and a list of arguments <var>args</var>, run the following steps:</p>
 
    <ol>
@@ -1310,7 +1310,7 @@ constructor() {
      </li>
    </ol>
 
-   <p>To <dfn>enqueue a custom element upgrade reaction</dfn>, given an element <var>element</var>
+   <p>To <dfn export>enqueue a custom element upgrade reaction</dfn>, given an element <var>element</var>
    and <a>custom element definition</a> <var>definition</var>, run the following steps:</p>
 
    <ol>
@@ -1324,7 +1324,7 @@ constructor() {
      </li>
    </ol>
 
-   <p>To <dfn>invoke custom element reactions</dfn> in an <a>element queue</a> <var>queue</var>, run the following steps:</p>
+   <p>To <dfn export>invoke custom element reactions</dfn> in an <a>element queue</a> <var>queue</var>, run the following steps:</p>
 
    <ol>
      <li>
@@ -1370,7 +1370,7 @@ constructor() {
    </ol>
    <hr>
 
-   The <dfn  export dfn-type="extended-attribute" lt="CEReactions"><code>[CEReactions]</code></dfn>
+   The <dfn export dfn-type="extended-attribute" lt="CEReactions"><code>[CEReactions]</code></dfn>
    IDL <a>extended attribute</a> is to ensure <a>custom element reactions</a> are triggered appropriately.
    It indicates that the relevant algorithm is to be supplemented with additional steps
    to appropriately track and invoke <a>custom element reactions</a>.

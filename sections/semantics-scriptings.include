@@ -13,6 +13,7 @@
   - noscript
   - template
   - canvas
+  - custom elements
 
 -->
 
@@ -2034,15 +2035,14 @@
   <code>CanvasRenderingContext2D</code> is bound to a new <{canvas}>, the bitmap is cleared
   and its flag reset.
 
-</section>
 <!-- start CEinsert @@ -->
 
 
 <section>
 <h4 id="custom-elements-core-concepts">Custom Elements</h4>
 
-  A <dfn>custom element</dfn> is an element whose {{constructor}} and <code>prototype</code> are defined by the author.
-  The author-supplied constructor function is called the <dfn>custom element constructor</dfn>.
+  A <dfn export>custom element</dfn> is an element whose {{constructor}} and <code>prototype</code> are defined by the author.
+  The author-supplied constructor function is called the <dfn export>custom element constructor</dfn>.
   Custom elements have the <a>custom element state</a> "<code>custom</code>".
 
   <p class="note">For the elements whose semantics are described in this specification, or in
@@ -2056,7 +2056,7 @@
 
 <h5 id="sec-autonomous-custom-elements">Autonomous custom elements</h4>
 
-    An <dfn>autonomous custom element</dfn> is a <a>custom element</a>
+    An <dfn export>autonomous custom element</dfn> is a <a>custom element</a>
     completely defined by the author. It extends {{HTMLElement}},
     and its <a>local name</a> is equal to its <a for="customElements">name</a>.</p>
 
@@ -2122,7 +2122,7 @@
 
  <h5 id="customized-built-in-elements">Customized built-in elements</h5>
 
-  A <dfn>customized built-in element</dfn> is a <a>custom element</a> that extends an existing element.
+  A <dfn export>customized built-in element</dfn> is a <a>custom element</a> that extends an existing element.
   A customized built-in element's <a>local name</a> is the name of the element it extends.
   Its <a for="customElements">name</a> is used as the <a>is value</a>, provided in the <{global/is}>
   attribute when it is used in markup.
@@ -2150,7 +2150,7 @@
 <section>
 <h4 id="requirement-for-all-custom-elements">Requirements for all custom elements</h4>
 
-  A <dfn id="valid-custom-element-name">valid custom element name</dfn> is a sequence of characters
+  A <dfn export>valid custom element name</dfn> is a sequence of characters
   <var>name</var> that matches the <a>PotentialCustomElementName</a> production,
   and is not one of the following:</p>
 
@@ -2169,13 +2169,13 @@
   </li>
 </ul>
 
-  The <dfn><code>PotentialCustomElementName</code></dfn> production is as follows:
+  The <dfn export><code>PotentialCustomElementName</code></dfn> production is as follows:
 <dl>
   <dt><a>PotentialCustomElementName</a> ::=</code></dt>
 
-  <dd><code>[a-z] (<a href="#prod-pcenchar">PCENChar</a>)* '-' (<a href="#prod-pcenchar">PCENChar</a>)*</code></dd>
+  <dd><code>[a-z] (<a>PCENChar</a>)* '-' (<a>PCENChar</a>)*</code></dd>
 
-  <dt><code><dfn id="prod-pcenchar">PCENChar</dfn> ::=</code></dt>
+  <dt><code><dfn>PCENChar</dfn> ::=</code></dt>
 
   <dd><code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></dd>
 </dl>
@@ -2212,16 +2212,16 @@
 
 </div>
 
-  A <dfn>custom element definition</dfn> describes a <a>custom element</a> and consists of:</p>
+  A <dfn export>custom element definition</dfn> describes a <a>custom element</a> and consists of:</p>
 
 <dl>
-  <dt>A <dfn for="customElements">name</dfn></dt>
+  <dt>A <dfn export for="customElements">name</dfn></dt>
 
   <dd>
     A <a>valid custom element name</a>.
   </dd>
 
-  <dt>A <dfn for="customElements">local name</dfn></dt>
+  <dt>A <dfn export for="customElements">local name</dfn></dt>
 
   <dd>
     For <a>autonomous custom elements</a> this is the same as its <a for="customElements">name</a>.
@@ -2230,7 +2230,7 @@
     For <a>customized built-in elements</a> this is the name of the element it extends.
   </dd>
 
-  <dt>A <dfn id="concept-custom-element-definition-constructor">constructor</dfn></dt>
+  <dt>A <dfn export for="customElements">constructor</dfn></dt>
 
   <dd>
     A <a>custom element constructor</a> function.
@@ -2240,13 +2240,13 @@
 
   <dd>A JavaScript object</dd>
 
-  <dt>A list of <dfn>observed attributes</dfn></dt>
+  <dt>A list of <dfn export>observed attributes</dfn></dt>
 
   <dd>A <code>sequence&lt;DOMString&gt;</code> that is a list of attribute names.
    When any attribute in that list changes value, the <code>attributeChangedCallback</code>
    <a>custom element reaction</a> is [=enqueue a custom element callback reaction|enqueued=].</dd>
 
-  <dt>A collection of <dfn>lifecycle callbacks</dfn></dt>
+  <dt>A collection of <dfn export>lifecycle callbacks</dfn></dt>
 
   <dd>These callbacks are used to <a>invoke custom element reactions</a></dd>
   <dd>The value must be a map, whose four keys are the strings "<code>connectedCallback</code>",
@@ -2254,16 +2254,16 @@
    "<code>attributeChangedCallback</code>". The values of each key are either a Web IDL
     {{Function!!callback}}, or null. The default value of each entry is null.</dd>
 
-  <dt>A <dfn>construction stack</dfn></dt>
+  <dt>A <dfn export for="customElements">construction stack</dfn></dt>
 
   <dd>
     A list, initially empty, that is manipulated by the <a>upgrade an element</a> algorithm and the
     HTML element constructors. Each entry in the list is either an element or an
-    <dfn><i>already constructed</i> marker</dfn>.
+    <dfn export><i>already constructed</i> marker</dfn>.
   </dd>
 </dl>
 
-  To <dfn lt="looking up a custom element definition">look up a custom element definition</dfn>,
+  To <dfn export lt="looking up a custom element definition">look up a custom element definition</dfn>,
   given a <var>document</var>, <var>namespace</var>, <var>localName</var>, and <var>is</var>,
   perform the following steps.
   They will return either a <a>custom element definition</a> or null:</p>
@@ -2349,4 +2349,5 @@
 
   Some of these requirements are checked during [=create an element|element creation=],
   and failing to follow them will result in a custom element that cannot be instantiated by the parser or DOM APIs.</p>
+</section>
 </section>
