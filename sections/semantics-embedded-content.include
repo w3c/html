@@ -743,21 +743,22 @@
       <pre class="idl" data-highlight="webidl">
         [NamedConstructor=Image(optional unsigned long width, optional unsigned long height)]
         interface HTMLImageElement : HTMLElement {
-          attribute DOMString alt;
-          attribute DOMString src;
-          attribute DOMString srcset;
-          attribute DOMString sizes;
-          attribute DOMString? crossOrigin;
-          attribute DOMString useMap;
+          [CEReactions] attribute DOMString alt;
+          [CEReactions] attribute DOMString src;
+          [CEReactions] attribute DOMString srcset;
+          [CEReactions] attribute DOMString sizes;
+          [CEReactions] attribute DOMString? crossOrigin;
+          [CEReactions] attribute DOMString useMap;
           attribute DOMString longDesc;
-          attribute boolean isMap;
-          attribute unsigned long width;
-          attribute unsigned long height;
+          [CEReactions] attribute boolean isMap;
+          [CEReactions] attribute unsigned long width;
+          [CEReactions] attribute unsigned long height;
           readonly attribute unsigned long naturalWidth;
           readonly attribute unsigned long naturalHeight;
           readonly attribute boolean complete;
           readonly attribute DOMString currentSrc;
-          attribute DOMString referrerPolicy;
+          [CEReactions] attribute DOMString referrerPolicy;
+          [CEReactions] attribute DOMString decoding;
         };
       </pre>
     </dd>
@@ -895,6 +896,11 @@
 
   The <dfn element-attr for="img"><code>referrerpolicy</code></dfn> attribute is a <a>referrer policy attribute</a>. Its purpose is to
   set the <a>referrer policy</a> used when <a>fetching</a> the image. [[!REFERRERPOLICY]]
+
+  The <dfn element-attr for="img"><code>decoding</code></dfn> attribute indicates
+  the preferred method to <a for="image">decode</a> this image. The attribute,
+  if present, must be an [=image decoding hint=]. This attribute's
+  [=missing value default=] and [=invalid value default=] are both the {{auto}} state.
 
   <hr />
 
@@ -1038,6 +1044,91 @@
   <p class="example">For example, if a resource has the HTTP response header <code>Cache-Control: must-revalidate</code>,
   the user agent would remove it from the <a>list of available images</a> but could keep the image data separately,
   and use that if the server responds with a <code>204 No Content</code> status.</p>
+
+  Image <dfn lt="decode" for="image">decoding</dfn> is the process which converts
+  an encoded image's data into a bitmap form for presentation. Implementations may
+  choose when and what to decode for the best user experience.
+
+  Image decoding is said to be synchronous if it prevents presentation of other
+  content until it is finished. Typically, this has an effect of atomically
+  presenting the image and any other content at the same time. However, this
+  presentation is delayed by the amount of time it takes to perform the decode.
+
+  Image decoding is said to be asynchronous if it does not prevent presentation of
+  other content. This has an effect of presenting non-image content faster. However,
+  the image content is missing on screen until the decode finishes. Once the decode
+  is finished, the screen is updated with the image.
+
+  In both synchronous and asynchronous decoding modes, the final content is
+  presented to screen after the same amount of time has elapsed. The main
+  difference is whether the user agent presents non-image content ahead of
+  presenting the final content.
+
+  In order to aid the user agent in deciding whether to perform synchronous or
+  asynchronous decode, the <a element-attr for="img">decoding</a> attribute can
+  be set on <{img}> elements. The possible values of of the
+  <a element-attr for="img">decoding</a> attribute are the following
+  <dfn>image decoding hint</dfn> keywords:
+
+  <table>
+    <thead>
+    <tr>
+      <th>
+        Keyword
+      </th>
+      <th>
+        State
+      </th>
+      <th>
+        Brief description
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr>
+      <td>
+        <dfn attr-value for="img"><code>sync</code></dfn>
+      </td>
+      <td>
+        <dfn state for="img">Sync</dfn>
+      </td>
+      <td>
+        Indicates a preference to <a for="image">decode</a> this image synchronously
+        for atomic presentation with other content.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <dfn attr-value for="img"><code>async</code></dfn>
+      </td>
+      <td>
+        <dfn state for="img">Async</dfn>
+      </td>
+      <td>
+        Indicates a preference to <a for="image">decode</a> this image asynchronously
+        to avoid delaying presentation of other content.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <dfn attr-value for="img"><code>auto</code></dfn>
+      </td>
+      <td>
+        <dfn state for="img">Auto</dfn>
+      </td>
+      <td>
+        Indicates no preference in decoding mode (the default).
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  When decoding an image, the user agent should respect the preference indicated
+  by the decoding attribute's state. If the state indicated is auto, then the
+  user agent is free to choose any decoding behavior.
 
   When the user agent is to <dfn>update the image data</dfn> of an <{img}> element,
   optionally with the <i>restart animations</i> flag set,
@@ -2404,6 +2495,26 @@
 
     </dd>
 
+    <dt><var>image</var> . <code>decoding</code></dt>
+
+    <dd>
+
+    Returns the [=image decoding hint=] set for this image.
+
+    </dd>
+
+    <dt><var>image</var> . <code>decode()</code></dt>
+
+    <dd>
+
+    This method causes the user agent to <a for="image">decode</a> the image
+    [=in parallel=], returning a promise that fulfills when decoding is complete.
+
+    The promise will be rejected with an "{{EncodingError}}" {{DOMException}}
+    if the image cannot be decoded.
+
+    </dd>
+
     <dt><var>image</var> = new <code>Image</code>( [ <var>width</var> [, <var>height</var> ] ] )</dt>
 
     <dd>
@@ -2459,6 +2570,75 @@
 
   The <dfn attribute for="HTMLImageElement"><code>currentSrc</code></dfn> IDL attribute
   must return the <{img}> element's <a>current request</a>'s <a>current URL</a>.
+
+  The <dfn method for="HTMLImageElement"><code>decode()</code></dfn> method, when invoked,
+  must perform the following steps:
+
+  <ol>
+    <li>
+      If any of the following conditions are true about this <{img}> element:
+
+      <ul>
+        <li>its [=node document=] is not an [=active document=];</li>
+        <li>its [=current request=]'s state is <a state for="img">broken</a>,</li>
+      </ul>
+
+      then reject promise with an "{{EncodingError}}" {{DOMException}}.
+    </li>
+
+    <li>
+      Otherwise, [=in parallel=], wait for one of the following cases to occur,
+      and perform the corresponding actions:
+
+      <dl class="switch">
+        <dt>This img element's [=node document=] stops being an [=active document=]</dt>
+        <dt>This img element's [=current request=] changes or is mutated</dt>
+        <dt>
+            This img element's [=current request=]'s <a for="image">state</a> becomes
+            <a state for="img">broken</a>
+        </dt>
+
+        <dd>Reject promise with an "{{EncodingError}}" {{DOMException}}.</dd>
+
+        <dt>
+          This <{img}> element's [=current request=]'s <a for="image">state</a>
+          becomes <a state for="img">completely available</a>
+        </dt>
+
+        <dd>
+          <a for="image">Decode</a> the image.
+
+          If decoding does not need to be performed for this image, resolve promise with
+          undefined. An example of this case would be for vector graphics.
+
+          If decoding fails, reject promise with an "{{EncodingError}}" {{DOMException}}.
+          An example of this would be corrupt image data or attempting to decode an
+          image encoded by an unsupported codec.
+
+          If the decoding process completes successfully, resolve promise with undefined.
+
+          User agents should ensure that the decoded media image is readily available
+          until at least the end of the next successful update the rendering step in the
+          event loop.
+
+          <p class="note">
+            Implementations may choose to discard the decoded image data in the event it
+            is difficult to keep the decoded copy ready. Low memory situations or large
+            images would be cases where implementations may choose to do this.
+          </p>
+
+          <p class="note">
+            Implementations are expected to treat animated images that have all frames
+            loaded as <a state for="img">completely available</a>.
+          </p>
+        </dd>
+
+      </dl>
+    </li>
+
+    <li>Return *promise*.</li>
+
+  </ol>
 
   <p id='image'>
   A constructor is provided for creating <code>HTMLImageElement</code> objects (in addition to
@@ -6115,7 +6295,7 @@ zero or more <{track}> elements, then
       [CEReactions] attribute boolean autoplay;
       [CEReactions] attribute boolean disableRemotePlayback;
       [CEReactions] attribute boolean loop;
-      void play();
+      Promise&lt;void&gt; play();
       void pause();
 
       // controls
@@ -6443,12 +6623,13 @@ zero or more <{track}> elements, then
 
     <li>
 
-    If there are any <a>tasks</a> from the <a>media element</a>'s <a>media element event task source</a> in one of the <a>task queues</a>, then remove those tasks.
+    If there are any <a>tasks</a> from the <a>media element</a>'s <a>media element event task source</a>
+    that would <a>resolve pending play promises</a> or <a>reject pending play promises</a> in one of the
+    <a>task queues</a>, then remove those tasks.
 
-    <p class="note">
-    Basically, pending events and callbacks for the media element are discarded when
-    the media element starts loading a new resource.
-  </p>
+    <p class="note">Basically, pending events and callbacks for the media element are discarded and
+    pending promises are rejected when the media element starts loading a new resource.
+    </p>
 
     </li>
 
@@ -6798,7 +6979,10 @@ zero or more <{track}> elements, then
       <li>Set the element's <a>show poster flag</a> to true.</li>
 
       <li><a>Fire a simple event</a> named <code>error</code> at
-      the <a>media element</a>.</li>
+      the [=media element=].</li>
+
+      <li><a>Reject pending play promises</a> with promises and a
+      "{{NotSupportedError}}" {{DOMException}}.</li>
 
       <li>Set the element's <a>delaying-the-load-event flag</a> to false. This stops <a>delaying the load event</a>.</li>
 
@@ -8138,7 +8322,8 @@ zero or more <{track}> elements, then
     <li><a>Queue a task</a> that, if the <a>media element</a> has still <a>ended playback</a>, and
     the <a>direction of playback</a> is still forwards, and {{HTMLMediaElement/paused}} is false,
     changes {{HTMLMediaElement/paused}} to true and <a>fires a simple event</a> named
-    <code>pause</code> at the <a>media element</a>.</li>
+    <code>pause</code> at the <a>media element</a>, [=take pending play promises=] and
+    [=reject pending play promises=] with the result and an {{AbortError}} {{DOMException}}.</li>
 
     <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>ended</code> at the <a>media element</a>.</li>
 
@@ -8205,10 +8390,68 @@ zero or more <{track}> elements, then
 
   <hr />
 
+  Each [=media element=] has a <dfn>list of pending play promises</dfn>, which must be initially empty.
+
+  To <dfn>take pending play promises</dfn> for a <a>media element</a>, the user agent must run the following steps:
+
+  <ol>
+    <li>Let <var>promise</var>s be an empty list of promises.</li>
+
+    <li>Copy the [=media element=]'s [=list of pending play promises=] to promises.</li>
+
+    <li>Clear the [=media element=]'s [=list of pending play promises=].</li>
+
+    <li>Return *promise*s.</li>
+  </ol>
+
+  To <dfn>resolve pending play promises</dfn> for a [=media element=] with a list of
+  promises <i>promises</i>, the user agent must resolve each promise in
+  <i>promises</i> with undefined.
+
+  To <dfn>reject pending play promises</dfn> for a [=media element=] with a list of promise
+  promises and an exception name error, the user agent must reject each
+  promise in promises with error.
+
+  To <dfn>notify about playing</dfn> for a [=media element=], the user agent must run the
+  following steps:
+
+  <ol>
+    <li><a>Take pending play promises</a> and let <i>promises</i> be the result.</li>
+
+    <li><a>Queue a task</a> to run these steps:</li>
+
+    <ol>
+      <li><a>Fire an event</a> named playing at the element.</li>
+
+      <li><a>Resolve pending play promises</a> with promises.</li>
+  </ol>
+
+  <hr />
+
   When the <dfn method for="HTMLMediaElement"><code>play()</code></dfn> method on a
   <a>media element</a> is invoked, the user agent must run the following steps.
 
   <ol>
+
+    <li>If the [=media element=] is not allowed to play, return a promise rejected
+    with a "{{NotAllowedError}}" {{DOMException}}.
+
+    <p class="note">For example, a user agent could require user interaction in order to start
+    playback. This specification does not require any particular behavior.</p>
+    </li>
+
+    <li>If the [=media element=]'s {{HTMLMediaElement/error}} attribute is not null and its
+    {{MediaError/code}} is {{MEDIA_ERR_SRC_NOT_SUPPORTED}}, return a promise rejected
+    with a "{{NotSupportedError}}" DOMException.
+
+    <p class="note">
+    This means that the <a>dedicated media source failure steps</a> have run. Playback is not possible
+    until the media element load algorithm clears the error attribute.
+    </p>
+    </li>
+
+    <li>Let <var>promise</var> be a new promise and append <var>promise</var> to the
+    <a>list of pending play promises</a>.</li>
 
     <li>If the <a>media element</a>'s {{HTMLMediaElement/networkState}} attribute has the value
     <code>NETWORK_EMPTY</code>, invoke the <a>media element</a>'s
@@ -8235,8 +8478,7 @@ zero or more <{track}> elements, then
       <li>If the <a>show poster flag</a> is true, set the element's <a>show poster
       flag</a> to false and run the <i>time marches on</i> steps.</li>
 
-      <li><a>Queue a task</a> to <a>fire a simple event</a> named
-      <a event for="media"><code>play</code></a> at the element.</li>
+      <li><a>Queue a task</a> to <a>notify about playing</a> for the element.</li>
 
       <li>
 
@@ -8246,8 +8488,7 @@ zero or more <{track}> elements, then
       element.
 
       Otherwise, the <a>media element</a>'s {{HTMLMediaElement/readyState}} attribute has the value <code>HAVE_FUTURE_DATA</code> or <code>HAVE_ENOUGH_DATA</code>: <a>queue a task</a> to
-      <a>fire a simple event</a> named <code>playing</code> at the
-      element.
+      <a>notify about playing</a> at the element.
 
       </li>
 
@@ -8255,7 +8496,19 @@ zero or more <{track}> elements, then
 
     </li>
 
+    <li>Otherwise, if the [=media element=]'s {{HTMLMediaElement/readyState}} attribute has the value
+    {{HAVE_FUTURE_DATA}} or {{HAVE_ENOUGH_DATA}}, <a>take pending play promises</a> and <a>queue a task</a>
+    to <a>resolve pending play promises</a> with the result.
+
+    <p class="note">
+    The media element is already playing. However, it's possible that promise will be
+    rejected before the queued task is run.
+    </p>
+    </li>
+
     <li>Set the <a>media element</a>'s <a>autoplaying flag</a> to false.</li>
+
+    <li>Return <var>promise</var>.</li>
 
   </ol>
 
