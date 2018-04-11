@@ -13,6 +13,7 @@
   - noscript
   - template
   - canvas
+  - custom elements
 
 -->
 
@@ -502,9 +503,9 @@
       Otherwise, let <var>integrity metadata</var> be the empty string.
   17. Let <var>parser metadata</var> be "<code>parser-inserted</code>" if the <{script}> element has been flagged
        as "[=parser-inserted=]", and "`not parser-inserted`" otherwise.
-  18. Let options be a set of <a>script fetch options</a> whose <a>cryptographic nonce metadata</a> is 
-       cryptographic nonce, <a>integrity metadata</a> is integrity metadata, 
-       <a>parser metadata</a> is <var>parser metadata</var>, <a>credentials mode</a> is module 
+  18. Let options be a set of <a>script fetch options</a> whose <a>cryptographic nonce metadata</a> is
+       cryptographic nonce, <a>integrity metadata</a> is integrity metadata,
+       <a>parser metadata</a> is <var>parser metadata</var>, <a>credentials mode</a> is module
        script credentials mode, and <a>referrer policy</a> is the empty string.
   19. Let <var>settings</var> be the element's <a>node document</a>'s {{Window}} object's
        <a>environment settings object</a>.
@@ -2034,4 +2035,310 @@
   <code>CanvasRenderingContext2D</code> is bound to a new <{canvas}>, the bitmap is cleared
   and its flag reset.
 
+<h4 id="custom-elements-core-concepts">Custom Elements</h4>
+
+  A <dfn export>custom element</dfn> is an element whose {{constructor}} and <code>prototype</code> are defined by the author.
+  The author-supplied constructor function is called the <dfn export>custom element constructor</dfn>.
+  Custom elements have the <a>custom element state</a> "<code>custom</code>".
+
+  <p class="note">For the elements whose semantics are described in this specification, or in
+  <a>other applicable specifications</a>, {{constructor}} and <a>prototype</a> are defined by the user agent.</p>
+
+  There are two types of custom elements:
+  : <a>autonomous custom Elements</a>
+  :: These are entirely author-defined, extending {{HTMLElement}}
+  : <a>customized built-in Elements</a>
+  :: These extend elements that are already defined. <span class="note">This is typically to inherit some functionality.</span>
+
+<h5 id="sec-autonomous-custom-elements">Autonomous custom elements</h4>
+
+    An <dfn export>autonomous custom element</dfn> is a <a>custom element</a>
+    completely defined by the author. It extends {{HTMLElement}},
+    and its <a>local name</a> is equal to its <a for="customElements">name</a>.</p>
+
+  <a>Autonomous custom elements</a> have the following element definition:
+
+<dl class="element">
+  <dt>
+    <a>Categories</a>:
+  </dt>
+
+  <dd><a>Flow content</a>.</dd>
+  <dd><a>Phrasing content</a>.</dd>
+  <dd><a>Palpable content</a>.</dd>
+
+  <dt>
+    <a>Contexts in which this element can be used</a>:
+  </dt>
+
+  <dd>
+    Where <a>phrasing content</a> is expected.
+  </dd>
+
+  <dt>
+    <a>Content model</a>:
+  </dt>
+
+  <dd>
+    <a>Transparent</a>.
+  </dd>
+
+  <dt>
+    <a>Content attributes</a>:
+  </dt>
+
+  <dd>
+    <a>Global attributes</a>, except the <{global/is}> attribute
+  </dd>
+
+  <dt>
+    <a>Allowed ARIA role attribute values</a>:
+  </dt>
+
+  <dd>
+    Any
+  </dd>
+
+  <dt>
+    <a>Allowed ARIA state and property attributes</a>:
+  </dt>
+
+  <dd>
+    Any
+  </dd>
+
+  <dt>
+    <a>DOM interface</a>:
+  </dt>
+
+  <dd>Supplied by the element's author (inherits from {{HTMLElement}})</dd>
+</dl>
+
+  An <a>autonomous custom element</a>'s meaning is defined by its author. It <a>represents</a> its children.
+
+ <h5 id="customized-built-in-elements">Customized built-in elements</h5>
+
+  A <dfn export>customized built-in element</dfn> is a <a>custom element</a> that extends an existing element.
+  A customized built-in element's <a>local name</a> is the name of the element it extends.
+  Its <a for="customElements">name</a> is called the <dfn export>is value</dfn>: the value of
+  the <{global/is}> attribute when it is used in HTML.
+
+  <div class="example">For example a <{button}> has pre-defined interaction behaviour,
+      a <{tr}> already participates in the <a>table model</a>,
+      and a <{input/checkbox}> has defined behaviour and participates in form submission.
+
+      Since only existing table elements take part in the <a>table model</a>,
+      with other elements moved outside the <{table}>, creating a custom element that is part of a <{table}>
+      can only be done by customizing a built-in table element.
+  </div>
+
+  A <a href="#customized-built-in-element">customized built-in element</a> inherits the semantics of the element that it extends.</p>
+
+  A <a>customized built-in element</a> has the same requirements for attributes as the element it extends.
+  To add custom attribute-based behavior, use [=custom data attributes|data-*=] attributes.</p>
+
+  <p class="note">A <a>customized built-in element</a>'s <a>is value</a>
+   is saved on the element when it is [=create an element|created=].
+  This means changing the value of the <{global/is}> attribute after the element is
+  [=create an element|created=] does not change the element's behaviour.</p>
+
+<h4 id="requirement-for-all-custom-elements">Requirements for all custom elements</h4>
+
+  A <dfn export>valid custom element name</dfn> is a sequence of characters
+  <var>name</var> that matches the <a>PotentialCustomElementName</a> production,
+  and is not one of the following:</p>
+
+    <ul class="brief">
+      <li><code>annotation-xml</code></li>
+      <li><code>color-profile</code></li>
+      <li><code>font-face</code></li>
+      <li><code>font-face-src</code></li>
+      <li><code>font-face-uri</code></li>
+      <li><code>font-face-format</code></li>
+      <li><code>font-face-name</code></li>
+      <li><code>missing-glyph</code></li>
+    </ul>
+
+    <p class="note">These are all hyphen-containing element names from the <a>applicable specifications</a>: <cite>SVG</cite> and <cite>MathML</cite>. [[SVG11]] [[MATHML]]</p>
+  </li>
+</ul>
+
+  The <dfn export><code>PotentialCustomElementName</code></dfn> production is as follows:
+<dl>
+  <dt><a>PotentialCustomElementName</a> ::=</code></dt>
+
+  <dd><code>[a-z] (<a>PCENChar</a>)* '-' (<a>PCENChar</a>)*</code></dd>
+
+  <dt><code><dfn>PCENChar</dfn> ::=</code></dt>
+
+  <dd><code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></dd>
+</dl>
+
+<p>This uses the <a>EBNF notation</a> from the <cite>XML</cite> specification. [[!XML]]</p>
+
+<div class="note">
+  <p>These requirements ensure a number of goals for <a>valid custom element names</a>:</p>
+
+  <ul>
+    <li>
+      <p>They start with a <a>lowercase ASCII letter</a>, ensuring that the HTML parser will treat them as tags instead of as text.</p>
+    </li>
+
+    <li>
+      <p>They do not contain any <a>uppercase ASCII letters</a>, so user agents can always treat HTML elements ASCII-case-insensitively.</p>
+    </li>
+
+    <li>
+      <p>They contain a hyphen, used for namespacing and to ensure forward compatibility.
+      No new elements will be added to HTML, SVG, or MathML with names containing a hypen.</p>
+    </li>
+
+    <li>
+      <p>They can always be created with {{Document/createElement()}} and {{Document/createElementNS()}},
+      which have more restrictions than the parser.</p>
+    </li>
+
+    <li>
+    <p>They allow a wide range of names to give maximum flexibility:
+    e.g. <code>&lt;x-小山&gt;</code> <code>&lt;math-α&gt;</code> or <code>&lt;emotion-😍&gt;</code>.</p>
+    </li>
+  </ul>
+
+</div>
+
+  A <dfn export>custom element definition</dfn> describes a <a>custom element</a> and consists of:</p>
+
+<dl>
+  <dt>A <dfn export for="customElements">name</dfn></dt>
+
+  <dd>
+    A <a>valid custom element name</a>.
+  </dd>
+
+  <dt>A <dfn export for="customElements">local name</dfn></dt>
+
+  <dd>
+    For <a>autonomous custom elements</a> this is the same as its <a for="customElements">name</a>.
+  </dd>
+  <dd>
+    For <a>customized built-in elements</a> this is the name of the element it extends.
+  </dd>
+
+  <dt>A <dfn export for="customElements">constructor</dfn></dt>
+
+  <dd>
+    A <a>custom element constructor</a> function.
+  </dd>
+
+  <dt>A <dfn>prototype</dfn></dt>
+
+  <dd>A JavaScript object</dd>
+
+  <dt>A list of <dfn export>observed attributes</dfn></dt>
+
+  <dd>A <code>sequence&lt;DOMString&gt;</code> that is a list of attribute names.
+   When any attribute in that list changes value, the <code>attributeChangedCallback</code>
+   <a>custom element reaction</a> is [=enqueue a custom element callback reaction|enqueued=].</dd>
+
+  <dt>A collection of <dfn export>lifecycle callbacks</dfn></dt>
+
+  <dd>These callbacks are used to <a>invoke custom element reactions</a></dd>
+  <dd>The value must be a map, whose four keys are the strings "<code>connectedCallback</code>",
+   "<code>disconnectedCallback</code>", "<code>adoptedCallback</code>", and
+   "<code>attributeChangedCallback</code>". The values of each key are either a Web IDL
+    {{Function!!callback}}, or null. The default value of each entry is null.</dd>
+
+  <dt>A <dfn export for="customElements">construction stack</dfn></dt>
+
+  <dd>
+    A list, initially empty, that is manipulated by the <a>upgrade an element</a> algorithm and the
+    HTML element constructors. Each entry in the list is either an element or an
+    <dfn export><i>already constructed</i> marker</dfn>.
+  </dd>
+</dl>
+
+  To <dfn export lt="looking up a custom element definition">look up a custom element definition</dfn>,
+  given a <var>document</var>, <var>namespace</var>, <var>localName</var>, and <var>is</var>,
+  perform the following steps.
+  They will return either a <a>custom element definition</a> or null:</p>
+
+<ol>
+  <li>
+    <p>If <var>namespace</var> is not the <a>HTML namespace</a>, return null.</p>
+  </li>
+
+  <li>
+    <p>If <var>document</var> does not have a <a>browsing context</a>, return null.</p>
+  </li>
+
+  <li>
+    <p>Let <var>registry</var> be <var>document</var>'s <a>browsing context</a>'s {{Window}}'s
+    {{CustomElementRegistry}} object.</p>
+  </li>
+
+  <li>
+    <p>If there is <a>custom element definition</a> in <var>registry</var> with <a>name</a> and
+    <a>local name</a> both equal to <var>localName</var>, return that <a>custom element definition</a>.</p>
+  </li>
+
+  <li>
+    <p>If there is a <a>custom element definition</a> in <var>registry</var> with
+    <a>name</a> equal to <var>is</var> and <a>local name</a> equal to <var>localName</var>,
+    return that <a>custom element definition</a>.</p>
+  </li>
+
+  <li>
+    <p>Return null.</p>
+  </li>
+</ol>
+<h4 id="custom-element-conformance">Requirements for custom element constructors</h4>
+
+<p>A <a>custom element constructor</a> must meet the following requirements:</p>
+
+<ul>
+  <li>
+    <p>A parameter-less call to <code>super()</code> must be the first statement in the constructor body.
+    This establishes the correct prototype chain and <code><b>this</b></code> value before any further code is run.</p>
+  </li>
+
+  <li>
+    <p>A <code>return</code> statement must not appear anywhere inside the constructor body,
+    unless it is a simple early-return (<code>return</code> or <code>return this</code>).</p>
+  </li>
+
+  <li>
+    <p>The constructor must not use the {{Document/write()|document.write()}} or {{Document/open()|document.open()}} methods.</p>
+  </li>
+
+  <li>
+    <p>The element's attributes and children must not be inspected.
+    In the non-<a>upgrade</a> case none will be present,
+    and relying on upgrades makes the element less usable.</p>
+  </li>
+
+  <li>
+    <p>The element must not gain any attributes or children.
+    Doing so violates the expectations of consumers who use the {{Document/createElement()}} or
+    {{Document/createElementNS()}}</a></code> methods.</p>
+  </li>
+  </ul>
+
+  In addition, <a>custom element constructors</a> should implement the following good practices:
+
+  <ul>
+  <li>
+    <p>Work should be deferred to <code>connectedCallback</code>.
+    This especially applies to work involving fetching resources or rendering.
+    However, note that <code>connectedCallback</code> can be called more than once,
+    so initialization work may need a guard to prevent it from running twice.</p>
+  </li>
+
+  <li>
+    <p>The constructor should set up initial state and default values, event listeners,
+    and possibly a <a>shadow root</a>.</p>
+  </li>
+</ul>
+
+  Some of these requirements are checked during [=create an element|element creation=],
+  and failing to follow them will result in a custom element that cannot be instantiated by the parser or DOM APIs.</p>
 </section>
