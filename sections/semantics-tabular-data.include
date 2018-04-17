@@ -95,9 +95,9 @@
   In particular, users of accessibility tools, like screen readers, are likely to find it very
   difficult to navigate pages with tables used for layout.
 
-  If a table is to be used for layout it must be marked with the  attribute
+  If a table is used for layout purposes, it must be marked with the attribute
   <code>role="presentation"</code> for a user agent to properly represent the table to an
-  assistive technology and to properly convey the intent of the author to tools that wish to
+  assistive technology, and to properly convey the intent of the author to tools that wish to
   extract tabular data from the document.
 
   <p class="note">
@@ -106,18 +106,22 @@
   </p>
 
   The <dfn element-attr for="HTMLTableElement"><code>border</code></dfn> content attribute may be
-  specified on a <{table}> element to explicitly indicate that the <{table}> element is not being
-  used for layout purposes. If specified, the attribute's value must either be the empty string
-  or the value "<code>1</code>".
-  The attribute is used by certain user agents as an indication that borders should be drawn
-  around cells of the table.
+  specified on a <{table}> element to explicitly indicate that the <{table}> element represents
+  tabular data and is not being used for layout purposes. If specified, the attribute's value
+  must either be the empty string or the value "<code>1</code>". If a value other than the empty
+  string, or "<code>1</code>" is set, such as a text string, user agents should interpret the
+  value as the empty string.
+
+  The <code>border</code> content attribute is used by certain user agents as an indication that
+  borders should be drawn around cells of the table. These user agents may treat values greater
+  than <code>1</code> as indicators to render wider borders for the table. Authors should instead
+  use CSS to provide styling for tables.
 
   <hr />
 
-  Tables can be complicated to understand and navigate. To help
-  users with this, user agents should clearly delineate cells in a
-  table from each other, unless the user agent has classified the
-  table as a layout table.
+  Tables can be complicated to understand and navigate. To help users with this, user agents
+  should clearly delineate cells in a table from each other, unless the user agent has classified
+  the table as a layout table.
 
   <p class="note">
     Authors and implementors are encouraged to consider using some of the
@@ -184,9 +188,9 @@
     detection heuristic.
   </p>
 
-  If a <{table}> element has a (non-conforming) <code>summary</code> attribute, and the
-  user agent has not classified the table as a layout table, the user agent may report the
-  contents of that attribute to the user.
+  If a <{table}> element has a (non-conforming) <code>summary</code> attribute, and the user agent
+  has not classified the table as a layout table, the user agent may report the contents of that
+  attribute to the user.
 
   <hr />
 
@@ -314,10 +318,10 @@
   </dl>
 
   The <dfn attribute for="HTMLTableElement"><code>caption</code></dfn> IDL attribute must return,
-  on getting, the first <{caption}> element child of the <{table}> element, if any,
-  or null otherwise. On setting, the first <{caption}> element child of the
-  <{table}> element, if any, must be removed, and the new value, if not null, must be
-  inserted as the first node of the <{table}> element.
+  on getting, the first <{caption}> element child of the <{table}> element, if any, or null
+  otherwise. On setting, the first <{caption}> element child of the <{table}> element, if any,
+  must be removed, and the new value, if not null, must be inserted as the first node of the
+  <{table}> element.
 
   The <dfn method for="HTMLTableElement"><code>createCaption()</code></dfn> method must return
   the first <{caption}> element child of the <{table}> element, if any; otherwise
@@ -328,21 +332,20 @@
   the first <{caption}> element child of the <{table}> element, if any.
 
   The <dfn attribute for="HTMLTableElement"><code>tHead</code></dfn> IDL attribute must return, on
-  getting, the first <{thead}> element child of the <{table}> element, if any, or
-  null otherwise. On setting, if the new value is null or a <{thead}> element, the first
-  <{thead}> element child of the <{table}> element, if any, must be removed, and
-  the new value, if not null, must be inserted immediately before the first element in the
-  <{table}> element that is neither a <{caption}> element nor a
-  <{colgroup}> element, if any, or at the end of the table if there are no such elements.
-  If the new value is neither null nor a <{thead}> element, then a
+  getting, the first <{thead}> element child of the <{table}> element, if any, or null otherwise.
+  On setting, if the new value is null or a <{thead}> element, the first <{thead}> element child
+  of the <{table}> element, if any, must be removed, and the new value, if not null, must be
+  inserted immediately before the first element in the <{table}> element that is neither a
+  <{caption}> element nor a <{colgroup}> element, if any, or at the end of the table if there
+  are no such elements. If the new value is neither null nor a <{thead}> element, then a
   {{HierarchyRequestError}} DOM exception must be thrown instead.
 
   The <dfn method for="HTMLTableElement"><code>createTHead()</code></dfn> method must return the
   first <{thead}> element child of the <{table}> element, if any; otherwise a new
   <{thead}> element must be created and inserted immediately before the first element in
-  the <{table}> element that is neither a <{caption}> element nor a
-  <{colgroup}> element, if any, or at the end of the table if there are no such elements,
-  and then that new element must be returned.
+  the <{table}> element that is neither a <{caption}> element nor a <{colgroup}> element,
+  if any, or at the end of the table if there are no such elements, and then that new element
+  must be returned.
 
   The <dfn method for="HTMLTableElement"><code>deleteTHead()</code></dfn> method must remove the
   first <{thead}> element child of the <{table}> element, if any.
@@ -368,10 +371,9 @@
   <{tbody}> elements that are children of the <{table}> element.
 
   The <dfn method for="HTMLTableElement"><code>createTBody()</code></dfn> method must create a
-  new <{tbody}> element, insert it immediately after the last <{tbody}> element
-  child in the <{table}> element, if any, or at the end of the <{table}> element
-  if the <{table}> element has no <{tbody}> element children, and then must return
-  the new <{tbody}> element.
+  new <{tbody}> element, insert it immediately after the last <{tbody}> element child in the
+  <{table}> element, if any, or at the end of the <{table}> element if the <{table}> element
+  has no <{tbody}> element children, and then must return the new <{tbody}> element.
 
   The <dfn attribute for="HTMLTableElement"><code>rows</code></dfn> attribute must return an
   <code>HTMLCollection</code> rooted at the <code>table</code> node, whose filter matches only
@@ -380,7 +382,7 @@
   The elements in the collection must be ordered such that those elements whose parent is a
   <code>thead</code> are included first, in <a>tree order</a>, followed by those elements whose
   parent is either a <code>table</code> or <code>tbody</code> element, again in <a>tree order</a>,
-  followed finally by those elements whose parent is a <{tfoot}> element, still in
+  followed finally by those elements whose parent is a <code>tfoot</code> element, still in
   <a>tree order</a>.
 
   The behavior of the
@@ -447,13 +449,13 @@
       <table>
         <tbody>
           <tr>
-             <td>X</td> <td>X</td> <td>0</td>
+            <td>X</td> <td>X</td> <td>0</td>
           </tr>
           <tr>
-             <td>0</td> <td>X</td> <td>0</td>
+            <td>0</td> <td>X</td> <td>0</td>
           </tr>
           <tr>
-             <td>X</td> <td>0</td> <td> </td>
+            <td>X</td> <td>0</td> <td> </td>
           </tr>
         </tbody>
       </table>
@@ -462,14 +464,15 @@
 
 <h5 id="sec-techniques-for-describing-tables"><dfn lt="provide such information|table design techniques">Techniques for describing tables</dfn></h5>
 
-  For tables that consist of more than just a grid of cells with headers
-  in the first row and headers in the first column, and for any table in general where the reader
-  might have difficulty understanding the content, authors should include explanatory information
-  introducing the table. This information is useful for all users, but is especially useful for
-  users who cannot see the table, e.g., users of screen readers.
+  For tables that consist of more than just a grid of cells with headers in the first row and
+  headers in the first column, and for any table in general where the reader might have difficulty
+  understanding the content, authors should include explanatory information introducing the table.
+  This information is useful for all users, but is especially useful for users who cannot see the
+  table, e.g., users of screen readers.
 
   Such explanatory information should introduce the purpose of the table, outline its basic cell
-  structure, highlight any trends or patterns, and generally teach the user how to use the table.
+  structure, highlight any trends or patterns, and generally teach the user how to understand the
+  contents of the table.
 
   For instance, the following table:
 
@@ -507,48 +510,13 @@
     <dt>In prose, surrounding the table</dt>
 
     <dd>
-    <div class="example">
-      <xmp highlight="html">
-        <p id="summary">In the following table, characteristics are given in the second column, with the negative side in the left column and the positive side in the right column.</p>
-        <table aria-describedby="summary">
-          <caption>Characteristics with positive and negative sides</caption>
-          <thead>
-            <tr>
-              <th id="n"> Negative </th>
-              <th> Characteristic </th>
-              <th> Positive </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td headers="n r1"> Sad </td>
-              <th id="r1"> Mood </th>
-              <td> Happy </td>
-            </tr>
-            <tr>
-              <td headers="n r2"> Failing </td>
-              <th id="r2"> Grade </th>
-              <td> Passing </td>
-            </tr>
-        </table>
-      </xmp>
-    </div>
-    <p class="note">
-    In the example above the
-    <{aria/aria-describedby}> attribute is used to explicitly associate the information
-    with the table for assistive technology users.
-  </p>
-    </dd>
-
-    <dt>Next to the table, in the same <code>figure</code></dt>
-
-    <dd>
-    <div class="example">
-      <xmp highlight="html">
-        <figure aria-labelledby="caption">
-          <p>Characteristics are given in the second column, with the negative side in the left column and the positive side in the right column.</p>
-          <table>
-            <caption id="caption">Characteristics with positive and negative sides</caption>
+      <div class="example">
+        <xmp highlight="html">
+          <p id="summary">
+            In the following table, characteristics are given in the second column, with the negative side in the left column and the positive side in the right column.
+          </p>
+          <table aria-describedby="summary">
+            <caption>Characteristics with positive and negative sides</caption>
             <thead>
               <tr>
                 <th id="n"> Negative </th>
@@ -568,11 +536,51 @@
                 <td> Passing </td>
               </tr>
           </table>
-        </figure>
-      </xmp>
-    </div>
-   <p class="note"> The <{figure}> in this example has been labeled by the <code>table</code> <{caption}>
-  using <{aria/aria-labelledby}>.</p></dd>
+        </xmp>
+      </div>
+      <p class="note">
+        In the example above the <{aria/aria-describedby}> attribute is used to explicitly
+        associate the information with the table for assistive technology users.
+      </p>
+    </dd>
+
+    <dt>Next to the table, in the same <code>figure</code></dt>
+
+    <dd>
+      <div class="example">
+        <xmp highlight="html">
+          <figure aria-labelledby="caption">
+            <p>
+              Characteristics are given in the second column, with the negative side in the left column and the positive side in the right column.
+            </p>
+            <table>
+              <caption id="caption">Characteristics with positive and negative sides</caption>
+              <thead>
+                <tr>
+                  <th id="n"> Negative </th>
+                  <th> Characteristic </th>
+                  <th> Positive </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td headers="n r1"> Sad </td>
+                  <th id="r1"> Mood </th>
+                  <td> Happy </td>
+                </tr>
+                <tr>
+                  <td headers="n r2"> Failing </td>
+                  <th id="r2"> Grade </th>
+                  <td> Passing </td>
+                </tr>
+            </table>
+          </figure>
+        </xmp>
+      </div>
+      <p class="note">
+        The <{figure}> in this example has been labeled by the <code>table</code> <{caption}> using <{aria/aria-labelledby}>.
+      </p>
+    </dd>
 
   </dl>
 
@@ -676,6 +684,10 @@
   When a <{table}> element is the only content in a <{figure}> element other than the
   <{figcaption}>, the <{caption}> element should be omitted in favor of the <{figcaption}>.
 
+  As noted in [[#sec-techniques-for-describing-tables|techniques for describing tables]], a
+  <code>caption</caption> is the most robust method for providing an accessible caption to
+  a <code>table</table>.
+
   A caption can introduce context for a table, making it significantly easier to understand.
 
   <div class="example">
@@ -695,13 +707,15 @@
     (for reference in the main prose) and explaining its use, it makes more sense:
 
     <xmp highlight="html">
-      <caption>
-        <p>Table 1.</p>
-        <p>This table shows the total score obtained from rolling two
-        six-sided dice. The first row represents the value of the first die,
-        the first column the value of the second die. The total is given in
-        the cell that corresponds to the values of the two dice.</p>
-      </caption>
+      <table>
+        <caption>
+          Table 1.
+          This table shows the total score obtained from rolling two six-sided dice. The first row represents the value of the first die, the first column the value of the second die. The total is given in the cell that corresponds to the values of the two dice.
+        </caption>
+        <tbody>
+          <!-- ... -->
+        </tbody>
+      </table>
     </xmp>
 
     This provides the user with more context:
@@ -731,18 +745,25 @@
     <dt><a>Categories</a>:</dt>
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <{table}> element, after any
-    <{caption}> elements and before any <{thead}>,
-    <{tbody}>, <{tfoot}>, and <code>tr</code>
-    elements.</dd>
+    <dd>
+      As a child of a <{table}> element, after any <{caption}> elements and before any <{thead}>,
+      <{tbody}>, <{tfoot}>, and <code>tr</code> elements.
+    </dd>
     <dt><a>Content model</a>:</dt>
     <dd>If the <code>span</code> attribute is present: <a>Nothing</a>.</dd>
-    <dd>If the <code>span</code> attribute is absent: Zero or more <code>col</code> and <{template}> elements.</dd>
+    <dd>
+      If the <code>span</code> attribute is absent: Zero or more <code>col</code>
+      and <{template}> elements.
+    </dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>A <{colgroup}> element's [=start tag=] may be omitted if the first thing inside the <{colgroup}>
-    element is a <{col}> element, and if the element is not immediately preceded by another
-    <{colgroup}> element whose [=end tag=] has been omitted. (It can't be omitted if the element is
-    empty). A <{colgroup}> element's <a>end tag</a> may be omitted if the <{colgroup}> element is not immediately followed by a <a>space character</a> or a <a>comment</a></dd>
+    <dd>
+      A <{colgroup}> element's [=start tag=] may be omitted if the first thing inside the
+      <{colgroup}> element is a <{col}> element, and if the element is not immediately preceded by
+      another <{colgroup}> element whose [=end tag=] has been omitted. (It can't be omitted if the
+      element is empty). A <{colgroup}> element's <a>end tag</a> may be omitted if the
+      <{colgroup}> element is not immediately followed by a <a>space character</a> or a
+      <a>comment</a>
+    </dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>span</code> - Number of columns spanned by the element</dd>
@@ -760,19 +781,18 @@
     </dd>
   </dl>
 
-  The <{colgroup}> element <a>represents</a> a <a>group</a> of one or more <a>columns</a> in the <code>table</code> that is its parent, if it has a
-  parent and that is a <{table}> element.
+  The <{colgroup}> element <a>represents</a> a <a>group</a> of one or more <a>columns</a> in the
+  <code>table</code> that is its parent, if it has a parent and that is a <{table}> element.
 
-  If the <{colgroup}> element contains no <{col}> elements, then the element
-  may have a <dfn element-attr for="colgroup"><code>span</code></dfn> content attribute specified,
+  If the <{colgroup}> element contains no <{col}> elements, then the element may have a
+  <dfn element-attr for="colgroup"><code>span</code></dfn> content attribute specified,
   whose value must be a <a>valid non-negative integer</a> greater than zero.
 
-  The <{colgroup}> element and its <code>span</code>
-  attribute take part in the <a>table model</a>.
+  The <{colgroup}> element and its <code>span</code> attribute take part in the <a>table model</a>.
 
   The <dfn attribute for="HTMLTableColElement"><code>span</code></dfn> IDL attribute must
-  <a>reflect</a> the content attribute of the same name. The value must be <a>limited to
-  only non-negative numbers greater than zero</a>.
+  <a>reflect</a> the content attribute of the same name. The value must be
+  <a>limited to only non-negative numbers greater than zero</a>.
 
 <h4 id="the-col-element">The <dfn element><code>col</code></dfn> element</h4>
 
@@ -828,14 +848,14 @@
     <dt><a>Content model</a>:</dt>
     <dd>Zero or more <code>tr</code> and <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>A <{tbody}> element's <a>start tag</a> may be omitted
-  if the first thing inside the <{tbody}> element is a <{tr}> element, and if the
-  element is not immediately preceded by a <{tbody}>, <{thead}>, or
-  <{tfoot}> element whose <a>end tag</a> has been omitted. (It
-  can't be omitted if the element is empty.). A <{tbody}> element's
-  <a>end tag</a> may be omitted if
-  the <{tbody}> element is immediately followed by a <code>tbody</code> or
-  <{tfoot}> element, or if there is no more content in the parent element.</dd>
+    <dd>
+      A <{tbody}> element's <a>start tag</a> may be omitted if the first thing inside the
+      <{tbody}> element is a <{tr}> element, and if the element is not immediately preceded by
+      a <{tbody}>, <{thead}>, or <{tfoot}> element whose <a>end tag</a> has been omitted.
+      (It can't be omitted if the element is empty.). A <{tbody}> element's <a>end tag</a> may
+      be omitted if the <{tbody}> element is immediately followed by a <code>tbody</code> or
+      <{tfoot}> element, or if there is no more content in the parent element.
+    </dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -846,8 +866,10 @@
     </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.</dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -858,14 +880,13 @@
         };
       </pre>
 
-      The {{HTMLTableSectionElement}} interface is also
-      used for <{thead}> and <{tfoot}> elements.
+      The {{HTMLTableSectionElement}} interface is also used for <{thead}> and <{tfoot}> elements.
     </dd>
   </dl>
 
-  The <{tbody}> element <a>represents</a> a <a>block</a> of <a>rows</a> that consist of a
-  body of data for the parent <{table}> element, if the <{tbody}> element has a
-  parent and it is a <{table}>.
+  The <{tbody}> element <a>represents</a> a <a>block</a> of <a>rows</a> that consist of a body
+  of data for the parent <{table}> element, if the <{tbody}> element has a parent and it is a
+  <{table}>.
 
   The <{tbody}> element takes part in the <a>table model</a>.
 
@@ -874,8 +895,7 @@
     <dt><var>tbody</var> . <code>rows</code></dt>
     <dd>
 
-    Returns an <code>HTMLCollection</code> of the <{tr}> elements of the table
-    section.
+    Returns an <code>HTMLCollection</code> of the <{tr}> elements of the table section.
 
     </dd>
 
@@ -917,27 +937,27 @@
   method must, when invoked on an element <var>table section</var>, act as follows:
 
   If <var>index</var> is less than -1 or greater than the number of elements in
-  the <code>rows</code> collection, the method must throw an
-  {{IndexSizeError}} exception.
+  the <code>rows</code> collection, the method must throw an {{IndexSizeError}} exception.
 
-  If <var>index</var> is -1 or equal to the number of items in the <code>rows</code> collection, the method must create a <{tr}> element,
-  append it to the element <var>table section</var>, and return the newly created
-  <{tr}> element.
+  If <var>index</var> is -1 or equal to the number of items in the <code>rows</code> collection,
+  the method must create a <{tr}> element, append it to the element <var>table section</var>,
+  and return the newly created <{tr}> element.
 
-  Otherwise, the method must create a <{tr}> element, insert it as a child of the <var>table section</var> element, immediately before the <var>index</var>th
-  <{tr}> element in the <code>rows</code> collection, and finally
-  must return the newly created <{tr}> element.
+  Otherwise, the method must create a <{tr}> element, insert it as a child of the
+  <var>table section</var> element, immediately before the <var>index</var>th <{tr}> element
+  in the <code>rows</code> collection, and finally must return the newly created <{tr}> element.
 
-  The <dfn method for="HTMLTableSectionElement"><code>deleteRow(<var>index</var>)</code></dfn> method
-  must, when invoked, act as follows:
+  The <dfn method for="HTMLTableSectionElement"><code>deleteRow(<var>index</var>)</code></dfn>
+  method must, when invoked, act as follows:
 
   If <var>index</var> is less than -1 or greater than the number of elements in
-  the <code>rows</code> collection, the method must throw an
-  {{IndexSizeError}} exception.
+  the <code>rows</code> collection, the method must throw an {{IndexSizeError}} exception.
 
-  If <var>index</var> is -1, remove the last element in the <code>rows</code> collection from its parent.
+  If <var>index</var> is -1, remove the last element in the <code>rows</code> collection from
+  its parent.
 
-  Otherwise, remove the <var>index</var>th element in the <code>rows</code> collection from its parent.
+  Otherwise, remove the <var>index</var>th element in the <code>rows</code> collection from
+  its parent.
 
 <h4 id="the-thead-element">The <dfn element><code>thead</code></dfn> element</h4>
 
@@ -980,7 +1000,8 @@
   The <{thead}> element takes part in the <a>table model</a>.
 
   <div class="example">
-    This example shows a <{thead}> element being used. Notice the use of the <code>th</code> element to provide headers in the <{thead}> element:
+    This example shows a <{thead}> element being used. Notice the use of the
+    <code>th</code> element to provide headers in the <{thead}> element:
 
     <xmp highlight="html">
       <table border="1">
@@ -997,14 +1018,14 @@
           <tr>
             <td>Ms Danus</td>
             <td>Doughnuts</td>
-            <td><img src="https://example.com/mydoughnuts.png" title="Delicious doughnuts"></td>
+            <td><img src="https://example.com/mydoughnuts.png" alt="a wide variety of donuts flavors organized into multiple boxes of a dozen donuts"></td>
             <td>$45</td>
           </tr>
           <tr>
-            <td><input id="e1" name="who" required="" form="f" type="text"></td>
-            <td><input id="e2" name="what" required="" form="f" type="text"></td>
+            <td><input id="e1" name="who" required form="f" type="text"></td>
+            <td><input id="e2" name="what" required form="f" type="text"></td>
             <td><input id="e3" name="pic" form="f" type="url"></td>
-            <td><input id="e4" step="0.01" min="0" value="0" required="" form="f" type="number"></td>
+            <td><input id="e4" step="0.01" min="0" value="0" required form="f" type="number"></td>
           </tr>
         </tbody>
       </table>
@@ -1026,9 +1047,10 @@
     <dt><a>Content model</a>:</dt>
     <dd>Zero or more <code>tr</code> and <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>A <{tfoot}> element's <a>end tag</a> may be omitted if
-  the <{tfoot}> element is immediately followed by a <{tbody}> element, or if
-  there is no more content in the parent element.</dd>
+    <dd>
+      A <{tfoot}> element's <a>end tag</a> may be omitted if the <{tfoot}> element is immediately
+      followed by a <{tbody}> element, or if there is no more content in the parent element.
+    </dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -1039,15 +1061,17 @@
     </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.</dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>{{HTMLTableSectionElement}}, as defined for <{tbody}> elements.</dd>
   </dl>
 
   The <{tfoot}> element <a>represents</a> the <a>block</a> of <a>rows</a> that consist of
-  the column summaries (footers) for the parent <{table}> element, if the
-  <{tfoot}> element has a parent and it is a <{table}>.
+  the column summaries (footers) for the parent <{table}> element, if the <{tfoot}> element has
+  a parent and it is a <{table}>.
 
   The <{tfoot}> element takes part in the <a>table model</a>.
 
@@ -1060,16 +1084,18 @@
     <dd>As a child of a <{thead}> element.</dd>
     <dd>As a child of a <{tbody}> element.</dd>
     <dd>As a child of a <{tfoot}> element.</dd>
-    <dd>As a child of a <{table}> element, after any
-    <{caption}>, <{colgroup}>, and <code>thead</code>
-    elements, but only if there are no <{tbody}> elements that
-    are children of the <{table}> element.</dd>
+    <dd>
+      As a child of a <{table}> element, after any <{caption}>, <{colgroup}>, and
+      <{thead}> elements, but only if there are no <{tbody}> elements that are
+      children of the <{table}> element.
+    </dd>
     <dt><a>Content model</a>:</dt>
     <dd>Zero or more <{td}>, <{th}>, and <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>A <{tr}> element's <a>end tag</a> may be omitted if the
-  <{tr}> element is immediately followed by another <{tr}> element, or if there is
-  no more content in the parent element.</dd>
+    <dd>
+      A <{tr}> element's <a>end tag</a> may be omitted if the <{tr}> element is immediately
+      followed by another <{tr}> element, or if there is no more content in the parent element.
+    </dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -1080,8 +1106,10 @@
     </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.</dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -1096,8 +1124,7 @@
     </dd>
   </dl>
 
-  The <{tr}> element <a>represents</a> a <a>row</a> of
-  <a>cells</a> in a <a>table</a>.
+  The <{tr}> element <a>represents</a> a <a>row</a> of <a>cells</a> in a <a>table</a>.
 
   The <{tr}> element takes part in the <a>table model</a>.
 
@@ -1107,8 +1134,7 @@
 
     <dd>
 
-    Returns the position of the row in the table's <code>rows</code>
-    list.
+    Returns the position of the row in the table's <code>rows</code> list.
 
     Returns -1 if the element isn't in a table.
 
@@ -1127,8 +1153,7 @@
     <dt><var>tr</var> . <code>cells</code></dt>
     <dd>
 
-    Returns an <code>HTMLCollection</code> of the <code>td</code> and <{th}> elements of
-    the row.
+    Returns an <code>HTMLCollection</code> of the <code>td</code> and <{th}> elements of the row.
 
     </dd>
 
@@ -1163,18 +1188,18 @@
 
   </dl>
 
-  The <dfn attribute for="HTMLTableRowElement"><code>rowIndex</code></dfn> attribute must, if the element has
-  a parent <{table}> element, or a parent <{tbody}>, <{thead}>, or
+  The <dfn attribute for="HTMLTableRowElement"><code>rowIndex</code></dfn> attribute must,
+  if the element has a parent <{table}> element, or a parent <{tbody}>, <{thead}>, or
   <{tfoot}> element and a <em>grandparent</em> <{table}> element, return the index
-  of the <{tr}> element in that <{table}> element's <code>rows</code> collection. If there is no such <{table}> element,
-  then the attribute must return -1.
+  of the <{tr}> element in that <{table}> element's <code>rows</code> collection.
+  If there is no such <{table}> element, then the attribute must return -1.
 
-  The <dfn attribute for="HTMLTableRowElement"><code>sectionRowIndex</code></dfn> attribute must, if
-  the element has a parent <{table}>, <{tbody}>, <{thead}>, or
-  <{tfoot}> element, return the index of the <{tr}> element in the parent
-  element's <code>rows</code> collection (for tables, that's the <code>HTMLTableElement.rows</code> collection; for table sections, that's the
-  <code>HTMLTableRowElement.rows</code> collection). If there is no such
-  parent element, then the attribute must return -1.
+  The <dfn attribute for="HTMLTableRowElement"><code>sectionRowIndex</code></dfn> attribute must,
+  if the element has a parent <{table}>, <{tbody}>, <{thead}>, or <{tfoot}> element, return the
+  index of the <{tr}> element in the parent element's <code>rows</code> collection (for tables,
+  that's the <code>HTMLTableElement.rows</code> collection; for table sections, that's the
+  <code>HTMLTableRowElement.rows</code> collection). If there is no such parent element, then
+  the attribute must return -1.
 
   The <dfn attribute for="HTMLTableRowElement"><code>cells</code></dfn> attribute must return an
   <code>HTMLCollection</code> rooted at the <{tr}> element, whose filter matches only
@@ -1184,28 +1209,33 @@
   method must act as follows:
 
   If <var>index</var> is less than -1 or greater than the number of elements in
-  the <code>cells</code> collection, the method must throw an
-  {{IndexSizeError}} exception.
+  the <code>cells</code> collection, the method must throw an {{IndexSizeError}} exception.
 
-  If <var>index</var> is equal to -1 or equal to the number of items in <code>cells</code> collection, the method must create a <{td}> element,
-  append it to the <{tr}> element, and return the newly created <code>td</code>
-  element.
+  If <var>index</var> is equal to -1 or equal to the number of items in <code>cells</code>
+  collection, the method must create a <{td}> element, append it to the <{tr}> element, and
+  return the newly created <code>td</code> element.
 
-  Otherwise, the method must create a <{td}> element, insert it as a child of the
-  <{tr}> element, immediately before the <var>index</var>th <code>td</code> or
-  <{th}> element in the <code>cells</code> collection, and finally
-  must return the newly created <{td}> element.
+  Otherwise, the method must create a <{td}> element, insert it as a child of the <{tr}> element,
+  immediately before the <var>index</var>th <code>td</code> or <{th}> element in the
+  <code>cells</code> collection, and finally must return the newly created <{td}> element.
 
   The <dfn method for="HTMLTableRowElement"><code>deleteCell(<var>index</var>)</code></dfn>
   method must act as follows:
 
   If <var>index</var> is less than -1 or greater than the number of elements in
-  the <code>cells</code> collection, the method must throw an
-  {{IndexSizeError}} exception.
+  the <code>cells</code> collection, the method must throw an {{IndexSizeError}} exception.
 
-  If <var>index</var> is -1, remove the last element in the <code>cells</code> collection from its parent.
+  If <var>index</var> is -1, remove the last element in the <code>cells</code> collection
+  from its parent.
 
-  Otherwise, remove the <var>index</var>th element in the <code>cells</code> collection from its parent.
+  Otherwise, remove the <var>index</var>th element in the <code>cells</code> collection
+  from its parent.
+
+  <p class="note">
+    For examples of the <{tr}> element, refer to the <{table}> examples within
+    [[#sec-techniques-for-describing-tables|techniques for describing tables]], and
+    the section for <a href="#examples">table examples</a>.
+  </p>
 
 <h4 id="the-td-element">The <dfn element><code>td</code></dfn> element</h4>
 
@@ -1217,9 +1247,11 @@
     <dt><a>Content model</a>:</dt>
     <dd><a>Flow content</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>A <{td}> element's <a>end tag</a> may be omitted if the
-  <{td}> element is immediately followed by a <code>td</code> or <{th}> element,
-  or if there is no more content in the parent element.</dd>
+    <dd>
+      A <{td}> element's <a>end tag</a> may be omitted if the <{td}> element is immediately
+      followed by a <code>td</code> or <{th}> element, or if there is no more content in the
+      parent element.
+    </dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>colspan</code> - Number of columns that the cell is to span</dd>
@@ -1233,9 +1265,10 @@
     </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.</dd>
-
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -1250,12 +1283,17 @@
   attributes take part in the <a>table model</a>.
 
   User agents, especially in non-visual environments or where displaying the table as a 2D grid
-  is impractical, may give the user context for the cell when rendering the contents of a cell; for
-  instance, giving its position in the <a>table model</a>, or listing the cell's header cells
+  is impractical, may give the user context for the cell when rendering the contents of a cell;
+  for instance, giving its position in the <a>table model</a>, or listing the cell's header cells
   (as determined by the <a>algorithm for assigning header cells</a>). When a cell's header
-  cells are being listed, user agents may use the value of <code>abbr</code>
-  attributes on those header cells, if any, instead of the contents of the header cells
-  themselves.
+  cells are being listed, user agents may use the value of <code>abbr</code> attributes on
+  those header cells, if any, instead of the contents of the header cells themselves.
+
+  <p class="note">
+    For examples of the <{td}> element, refer to the <{table}> examples within
+    [[#sec-techniques-for-describing-tables|techniques for describing tables]], and
+    the section for <a href="#examples">table examples</a>.
+  </p>
 
 <h4 id="the-th-element">The <dfn element><code>th</code></dfn> element</h4>
 
@@ -1265,20 +1303,23 @@
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>As a child of a <{tr}> element.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd><a>Flow content</a>, but with no <{header}>, <{footer}>, <a>sectioning content</a>, or <a>heading content</a> descendants</dd>
-
+    <dd>
+      <a>Flow content</a>, but with no <{header}>, <{footer}>, <a>sectioning content</a>, or
+      <a>heading content</a> descendants.
+    </dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>A <{th}> element's <a>end tag</a> may be omitted if the
-  <{th}> element is immediately followed by a <code>td</code> or <{th}> element,
-  or if there is no more content in the parent element.</dd>
+    <dd>
+      A <{th}> element's <a>end tag</a> may be omitted if the <{th}> element is immediately
+      followed by a <{td}> or <{th}> element, or if there is no more content in the parent element.
+    </dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><code>colspan</code> - Number of columns that the cell is to span</dd>
     <dd><code>rowspan</code> - Number of rows that the cell is to span</dd>
     <dd><code>headers</code> - The headers for this cell</dd>
     <dd><code>scope</code> - Specifies which cells the header cell applies to</dd>
-    <dd><code>abbr</code> - Alternative label to use for the header cell when
-    referencing the cell in other contexts</dd>
+    <dd><code>abbr</code> - Alternative label to use for the header cell when referencing the
+      cell in other contexts</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>
       <a attr-value for="aria/role"><code>columnheader</code></a>,
@@ -1287,8 +1328,10 @@
       <a href="#allowed-aria-roles-states-and-properties">Any other role value</a>.</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.</dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
       <pre class="idl" data-highlight="webidl">
@@ -1302,68 +1345,66 @@
 
   The <{th}> element <a>represents</a> a header <a>cell</a> in a table.
 
-  The <{th}> element may have a <dfn element-attr for="th"><code>scope</code></dfn>
-  content attribute specified. The <code>scope</code> attribute is an
-  <a>enumerated attribute</a> with five states, four of which have explicit keywords:
+  The <{th}> element may have a <dfn element-attr for="th"><code>scope</code></dfn> content
+  attribute specified. The <code>scope</code> attribute is an <a>enumerated attribute</a> with
+  five states, four of which have explicit keywords:
 
   <dl>
 
     <dt>The <dfn attr-value for="scope"><code>row</code></dfn> keyword, which maps to the
     <i>row</i> state</dt>
 
-    <dd>The <dfn state for="scope">row</dfn> state means the header cell applies to some of the subsequent cells in the
-    same row(s).</dd>
+    <dd>The <dfn state for="scope">row</dfn> state means the header cell applies to some of
+    the subsequent cells in the same row(s).</dd>
 
     <dt>The <dfn attr-value for="scope"><code>col</code></dfn> keyword, which maps to the
     <i>column</i> state</dt>
 
-    <dd>The <dfn state for="scope">column</dfn> state means the header cell applies to some of the subsequent cells in the
-    same column(s).</dd>
+    <dd>The <dfn state for="scope">column</dfn> state means the header cell applies to some of
+    the subsequent cells in the same column(s).</dd>
 
     <dt>The <dfn attr-value for="scope"><code>rowgroup</code></dfn> keyword, which maps to
     the <i>row group</i> state</dt>
 
-    <dd>The <dfn state for="scope">row group</dfn> state means the header cell applies to all the remaining cells in the
-    row group. A <{th}> element's <code>scope</code> attribute must
-    not be in the <a>row group</a> state if the element is not
-    anchored in a <a>row group</a>.</dd>
+    <dd>The <dfn state for="scope">row group</dfn> state means the header cell applies to all
+    the remaining cells in the row group. A <{th}> element's <code>scope</code> attribute must
+    not be in the <a>row group</a> state if the element is not anchored in a <a>row group</a>.</dd>
 
     <dt>The <dfn attr-value for="scope"><code>colgroup</code></dfn> keyword, which maps to
     the <i>column group</i> state</dt>
 
-    <dd>The <dfn state for="scope">colgroup group</dfn> state means the header cell applies to all the remaining cells in the
-    column group. A <{th}> element's <code>scope</code> attribute must
-    not be in the <a>column group</a> state if the element is
-    not anchored in a <a>column group</a>.</dd>
+    <dd>The <dfn state for="scope">colgroup group</dfn> state means the header cell applies to
+    all the remaining cells in the column group. A <{th}> element's <code>scope</code> attribute
+    must not be in the <a>column group</a> state if the element is not anchored in a
+    <a>column group</a>.</dd>
 
     <dt>The <i>auto</i> state</dt>
 
-    <dd>The <dfn state for="scope">auto</dfn> state makes the header cell apply to a set of cells selected based on
-    context.</dd>
+    <dd>The <dfn state for="scope">auto</dfn> state makes the header cell apply to a set of cells
+    selected based on context.</dd>
 
   </dl>
 
-  The <code>scope</code> attribute's <i>missing value default</i> is the
-  <i>auto</i> state.
+  The <code>scope</code> attribute's <i>missing value default</i> is the <i>auto</i> state.
 
   The <{th}> element may have an <dfn element-attr for="th"><code>abbr</code></dfn>
   content attribute specified. Its value must be an alternative label for the header cell, to be
-  used when referencing the cell in other contexts (e.g., when describing the header cells that apply
-  to a data cell). It is typically an abbreviated form of the full header cell, but can also be an
-  expansion, or merely a different phrasing.
+  used when referencing the cell in other contexts (e.g., when describing the header cells that
+  apply to a data cell). It is typically an abbreviated form of the full header cell, but can
+  also be an expansion, or merely a different phrasing.
 
   The <{th}> element and its <code>colspan</code>, <code>rowspan</code>, <code>headers</code>, and
   <code>scope</code> attributes take part in the <a>table model</a>.
 
-  The <dfn attribute for="HTMLTableHeaderCellElement"><code>scope</code></dfn> IDL attribute must <a>reflect</a>
-  the content attribute of the same name, <a>limited to only known values</a>.
+  The <dfn attribute for="HTMLTableHeaderCellElement"><code>scope</code></dfn> IDL attribute must
+  <a>reflect</a> the content attribute of the same name, <a>limited to only known values</a>.
 
-  The <dfn attribute for="HTMLTableHeaderCellElement"><code>abbr</code></dfn> IDL attribute must <a>reflect</a> the
-  content attribute of the same name.
+  The <dfn attribute for="HTMLTableHeaderCellElement"><code>abbr</code></dfn> IDL attribute must
+  <a>reflect</a> the content attribute of the same name.
 
   <div class="example">
-    The following example shows how the <code>scope</code> attribute's <code>rowgroup</code> value affects which data cells a header cell
-    applies to.
+    The following example shows how the <code>scope</code> attribute's <code>rowgroup</code>
+    value affects which data cells a header cell applies to.
 
     Here is a markup fragment showing a table:
     <p class="note">
@@ -1436,21 +1477,22 @@
       </tbody>
     </table>
 
-    The header cells in row 1 ("ID", "Measurement", "Average" and "Maximum") each apply only to the cells in their column.
+    The header cells in row 1 ("ID", "Measurement", "Average" and "Maximum") each apply only
+    to the cells in their column.
 
-    The header cells with a <code>scope="rowgroup"</code>
-    ("Cats" and 'English speakers') apply to all the cells in their row group other
-    than the cells (to their left) in column 1:
+    The header cells with a <code>scope="rowgroup"</code> ("Cats" and 'English speakers') apply to
+    all the cells in their row group other than the cells (to their left) in column 1:
 
-     The header "Cats" (row 2, column 2) applies to the headers "Legs" (row 3, column 2)
-    and "Tails" (row 4, column 2) and to the data cells
-    in rows 2, 3 and 4 of the "Average" and "Maximum" columns.
+    The header "Cats" (row 2, column 2) applies to the headers "Legs" (row 3, column 2)
+    and "Tails" (row 4, column 2) and to the data cells in rows 2, 3 and 4 of the "Average"
+    and "Maximum" columns.
 
-     The header 'English speakers' (row 5, column 2) applies to the headers "Legs" (row 6, column 2)
-    and "Tails" (row 7, column 2) and to the data cells in rows 5, 6 and 7 of the "Average" and "Maximum" columns.
+    The header 'English speakers' (row 5, column 2) applies to the headers "Legs"
+    (row 6, column 2) and "Tails" (row 7, column 2) and to the data cells in rows 5, 6
+    and 7 of the "Average" and "Maximum" columns.
 
-    Each of the "Legs" and "Tails" header cells has a <code>scope="row"</code> and therefore apply to the data cells (to the right)
-    in their row, from the "Average" and "Maximum" columns.
+    Each of the "Legs" and "Tails" header cells has a <code>scope="row"</code> and therefore
+    apply to the data cells (to the right) in their row, from the "Average" and "Maximum" columns.
 
     <img src="images/table-scope-diagram.png" width="459" height="256" alt="Representation of the example table overlayed with arrows indicating which cells each header applies to." />
 
@@ -1458,31 +1500,34 @@
 
 <h4 id="attributes-common-to-td-and-th-elements">Attributes common to <code>td</code> and <{th}> elements</h4>
 
-  <dfn lt="span multiple columns"></dfn>The <{td}> and <{th}> elements may have a <dfn element-attr for="tablecells"><code>colspan</code></dfn> content attribute specified, whose value must
-  be a <a>valid non-negative integer</a> greater than zero.
+  <dfn lt="span multiple columns"></dfn>The <{td}> and <{th}> elements may have a
+  <dfn element-attr for="tablecells"><code>colspan</code></dfn> content attribute specified,
+  whose value must be a <a>valid non-negative integer</a> greater than zero.
 
-  The <{td}> and <{th}> elements may also have a <dfn element-attr for="tablecells"><code>rowspan</code></dfn> content attribute specified, whose value must
-  be a <a>valid non-negative integer</a>. For this attribute, the value zero means that the
-  cell is to span all the remaining rows in the row group.
+  The <{td}> and <{th}> elements may also have a
+  <dfn element-attr for="tablecells"><code>rowspan</code></dfn> content attribute specified,
+  whose value must be a <a>valid non-negative integer</a>. For this attribute, the value zero
+  means that the cell is to span all the remaining rows in the row group.
 
   These attributes give the number of columns and rows respectively that the cell is to span.
   These attributes must not be used to overlap cells, as described in the <a>table model</a>.
 
   <hr />
 
-  The <{td}> and <{th}> element may have a <dfn element-attr for="tablecells"><code>headers</code></dfn>
-  content attribute specified. The <code>headers</code> attribute, if specified,
-  must contain a string consisting of an <a>unordered set of unique space-separated tokens</a> that are
-  <a>case-sensitive</a>, each of which must have the value of an <{global/id}> of a <{th}> element
-  taking part in the same <a>table</a> as the <{td}> or <{th}> element (as defined by the <a>table model</a>).
+  The <{td}> and <{th}> element may have a
+  <dfn element-attr for="tablecells"><code>headers</code></dfn> content attribute specified.
+  The <code>headers</code> attribute, if specified, must contain a string consisting of an
+  <a>unordered set of unique space-separated tokens</a> that are <a>case-sensitive</a>, each of
+  which must have the value of an <{global/id}> of a <{th}> element taking part in the same
+  <a>table</a> as the <{td}> or <{th}> element (as defined by the <a>table model</a>).
 
-  A <{th}> element with <{global/id}> <var>id</var> is
-  said to be <i>directly targeted</i> by all <code>td</code> and <{th}> elements in the
-  same <a>table</a> that have <code>headers</code> attributes whose values include as one of their tokens
-  the <a>ID</a> <var>id</var>. A <{th}> element <var>A</var> is said to be <i>targeted</i> by a <code>th</code> or <{td}> element
-  <var>B</var> if either <var>A</var> is <i>directly targeted</i> by <var>B</var> or if there exists an element <var>C</var> that is itself
-  <i>targeted</i> by the element <var>B</var> and <var>A</var> is <i>directly
-  targeted</i> by <var>C</var>.
+  A <{th}> element with <{global/id}> <var>id</var> is said to be <i>directly targeted</i> by all
+  <code>td</code> and <{th}> elements in the same <a>table</a> that have <code>headers</code>
+  attributes whose values include as one of their tokens the <a>ID</a> <var>id</var>. A <{th}>
+  element <var>A</var> is said to be <i>targeted</i> by a <code>th</code> or <{td}> element
+  <var>B</var> if either <var>A</var> is <i>directly targeted</i> by <var>B</var> or if there
+  exists an element <var>C</var> that is itself <i>targeted</i> by the element <var>B</var> and
+  <var>A</var> is <i>directly targeted</i> by <var>C</var>.
 
   A <{th}> element must not be <i>targeted</i> by itself.
 
@@ -1520,25 +1565,23 @@
   </dl>
 
   The <dfn attribute for="HTMLTableCellElement"><code>colSpan</code></dfn> IDL attribute must
-  <a>reflect</a> the <code>colspan</code> content attribute. Its
-  default value is 1.
+  <a>reflect</a> the <code>colspan</code> content attribute. Its default value is 1.
 
   The <dfn attribute for="HTMLTableCellElement"><code>rowSpan</code></dfn> IDL attribute must
-  <a>reflect</a> the <code>rowspan</code> content attribute. Its
-  default value is 1.
+  <a>reflect</a> the <code>rowspan</code> content attribute. Its default value is 1.
 
   The <dfn attribute for="HTMLTableCellElement"><code>headers</code></dfn> IDL attribute must
   <a>reflect</a> the content attribute of the same name.
 
-  The <dfn attribute for="HTMLTableCellElement"><code>cellIndex</code></dfn> IDL attribute must, if the
-  element has a parent <{tr}> element, return the index of the cell's element in the parent
+  The <dfn attribute for="HTMLTableCellElement"><code>cellIndex</code></dfn> IDL attribute must,
+  if the element has a parent <{tr}> element, return the index of the cell's element in the parent
   element's <code>cells</code> collection. If there is no such parent element,
   then the attribute must return -1.
 
 <h4 id="tabular-data-processing-model">Processing model</h4>
 
-  The various table elements and their content attributes together define the <dfn>table
-  model</dfn>.
+  The various table elements and their content attributes together define the
+  <dfn>table model</dfn>.
 
   A <dfn lt="table|tables">table</dfn> consists of cells aligned on a two-dimensional grid of
   <dfn>slots</dfn> with coordinates (<var>x</var>, <var>y</var>). The grid is finite, and
@@ -1562,33 +1605,36 @@
 
   It is possible, in certain error cases, for two cells to occupy the same slot.
 
-  A <dfn lt="row|rows">row</dfn> is a complete set of slots from <var>x</var>=0 to <var>x</var>=<var>x<sub>width</sub></var>-1, for a particular value of <var>y</var>. Rows usually
-  correspond to <{tr}> elements, though a <a>row group</a>
-  can have some implied <a>rows</a> at the end in some cases involving
-  <a>cells</a> spanning multiple rows.
+  A <dfn lt="row|rows">row</dfn> is a complete set of slots from
+  <var>x</var>=0 to <var>x</var>=<var>x<sub>width</sub></var>-1, for a particular value of
+  <var>y</var>. Rows usually correspond to <{tr}> elements, though a <a>row group</a> can have
+  some implied <a>rows</a> at the end in some cases involving <a>cells</a> spanning multiple rows.
 
-  A <dfn lt="column|columns">column</dfn> is a complete set of slots from <var>y</var>=0 to <var>y</var>=<var>y<sub>height</sub></var>-1, for a particular value of <var>x</var>. Columns can
-  correspond to <{col}> elements. In the absence of <{col}> elements, columns are
-  implied.
+  A <dfn lt="column|columns">column</dfn> is a complete set of slots from
+  <var>y</var>=0 to <var>y</var>=<var>y<sub>height</sub></var>-1, for a particular value of
+  <var>x</var>. Columns can correspond to <{col}> elements. In the absence of <{col}> elements,
+  columns are implied.
 
   A <dfn lt="row group|row groups">row group</dfn> is a set of <a>rows</a> anchored at a slot (0, <var>group<sub>y</sub></var>) with a particular <var>height</var> such that the row group
   covers all the slots with coordinates (<var>x</var>, <var>y</var>) where 0&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>x<sub>width</sub></var> and <var>group<sub>y</sub></var>&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>group<sub>y</sub></var>+<var>height</var>. Row groups correspond to
-  <{tbody}>, <{thead}>, and <{tfoot}> elements. Not every row is
-  necessarily in a row group.
+  <{tbody}>, <{thead}>, and <{tfoot}> elements. Not every row is necessarily in a row group.
 
-  A <dfn lt="column group|column groups|group">column group</dfn> is a set of <a>columns</a> anchored at a slot (<var>group<sub>x</sub></var>, 0) with a particular <var>width</var> such that the column group
-  covers all the slots with coordinates (<var>x</var>, <var>y</var>) where <var>group<sub>x</sub></var>&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>group<sub>x</sub></var>+<var>width</var> and 0&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>y<sub>height</sub></var>. Column
-  groups correspond to <{colgroup}> elements. Not every column is necessarily in a column
+  A <dfn lt="column group|column groups|group">column group</dfn> is a set of <a>columns</a>
+  anchored at a slot (<var>group<sub>x</sub></var>, 0) with a particular <var>width</var> such
+  that the column group covers all the slots with coordinates (<var>x</var>, <var>y</var>)
+  where <var>group<sub>x</sub></var>&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>group<sub>x</sub></var>+<var>width</var> and 0&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>y<sub>height</sub></var>.
+  Column groups correspond to <{colgroup}> elements. Not every column is necessarily in a column
   group.
 
   <a>Row groups</a> cannot overlap each other. Similarly, <a>column groups</a> cannot overlap each other.
 
-  A <a>cell</a> cannot cover slots that are from two or more <a>row groups</a>. It is, however, possible for a cell to be in multiple
-  <a>column groups</a>. All the slots that form part of one cell
-  are part of zero or one <a>row groups</a> and zero or more <a>column groups</a>.
+  A <a>cell</a> cannot cover slots that are from two or more <a>row groups</a>.
+  However, it is possible for a cell to be in multiple <a>column groups</a>. All the slots that
+  form part of one cell are part of zero or one <a>row groups</a> and zero or more
+  <a>column groups</a>.
 
-  In addition to <a>cells</a>, <a>columns</a>, <a>rows</a>, <a>row groups</a>, and <a>column
-  groups</a>, <a>tables</a> can have a <{caption}> element
+  In addition to <a>cells</a>, <a>columns</a>, <a>rows</a>, <a>row groups</a>, and
+  <a>column groups</a>, <a>tables</a> can have a <{caption}> element
   associated with them. This gives the table a heading, or legend.
 
   A <dfn>table model error</dfn> is an error with the data represented by <code>table</code>
@@ -1602,91 +1648,94 @@
     <li>the dimensions of the table (<var>x<sub>width</sub></var> and <var>y<sub>height</sub></var>), and</li>
     <li>if there are any <a>table model errors</a></li>.
 
-  <p class="note">The algorithm selects the first <{caption}> encountered and assigns it as
-  the <code>caption</code> for the table, and selects the first <{thead}> and processes it.
-  Until there is a <{thead}>, <{tfoot}>, <{tbody}> or <{tr}> element, it processes any
-  <{colgroup}> elements encountered, and any <{col}> children, to create column groups.
-  Finally, from the first <{thead}>, <{tfoot}>, <{tbody}> or <{tr}> element encountered
-  as a child of the <{table}> it processes those elements, moving the first <{tfoot}>
-  encountered to the end of the table respectively.</p>
+  <p class="note">
+    The algorithm selects the first <{caption}> encountered and assigns it as the
+    <code>caption</code> for the table, and selects the first <{thead}> and processes it.
+    Until there is a <{thead}>, <{tfoot}>, <{tbody}> or <{tr}> element, it processes any
+    <{colgroup}> elements encountered, and any <{col}> children, to create column groups.
+    Finally, from the first <{thead}>, <{tfoot}>, <{tbody}> or <{tr}> element encountered
+    as a child of the <{table}> it processes those elements, moving the first <{tfoot}>
+    encountered to the end of the table respectively.
+  </p>
 
   <ol>
 
     <li>
 
-    Let <var>x<sub>width</sub></var> be zero.
-    </li>
-
-    <li>
-
-    Let <var>y<sub>height</sub></var> be zero.
-    </li>
-
-    <li>
-
-    Let <var>table footer</var> be null.
-    </li>
-
-    <li>
-
-    Let <var>table header</var> be null.
-    </li>
-
-    <li>
-
-    Let <var>the table</var> be the <a>table</a> represented
-    by the <{table}> element. The <var>x<sub>width</sub></var> and
-    <var>y<sub>height</sub></var> variables give <var>the table</var>'s
-    dimensions. <var>The table</var> is initially empty.
+      Let <var>x<sub>width</sub></var> be zero.
 
     </li>
 
     <li>
 
-    If the <{table}> element has no children elements, then return <var>the
-    table</var> (which will be empty), and abort these steps.
+      Let <var>y<sub>height</sub></var> be zero.
 
     </li>
 
     <li>
 
-    Associate the first <{caption}> element child of the <{table}> element with
-    <var>the table</var>. If there are no such children, then it has no associated
-    <{caption}> element.
+      Let <var>table footer</var> be null.
 
     </li>
 
     <li>
 
-    Let the <var>current element</var> be the first element child of the
-    <{table}> element.
-
-    If a step in this algorithm ever requires the <var>current element</var> to be <dfn lt="advance|advanced to the next child of the table">advanced to the next child of the <code>table</code></dfn> when
-    there is no such next child, then the user agent must jump to the step labeled <i>end</i>, near
-    the end of this algorithm.
+      Let <var>table header</var> be null.
 
     </li>
 
     <li>
 
-    While the <var>current element</var> is not one of the following elements,
-    <a>advance</a> the <var>current element</var> to the next
-    child of the <code>table</code>:
-
-    <ul class="brief">
-      <li><{colgroup}></li>
-      <li><{thead}></li>
-      <li><{tbody}></li>
-      <li><{tfoot}></li>
-      <li><{tr}></li>
-    </ul>
+      Let <var>the table</var> be the <a>table</a> represented by the <{table}> element.
+      The <var>x<sub>width</sub></var> and <var>y<sub>height</sub></var> variables give
+      <var>the table</var>'s dimensions. <var>The table</var> is initially empty.
 
     </li>
 
     <li>
 
-    If the <var>current element</var> is a <{colgroup}>, follow these
-    substeps:
+      If the <{table}> element has no children elements, then return <var>the table</var>
+      (which will be empty), and abort these steps.
+
+    </li>
+
+    <li>
+
+      Associate the first <{caption}> element child of the <{table}> element with
+      <var>the table</var>. If there are no such children, then it has no associated
+      <{caption}> element.
+
+    </li>
+
+    <li>
+
+      Let the <var>current element</var> be the first element child of the <{table}> element.
+
+      If a step in this algorithm ever requires the <var>current element</var> to be
+      <dfn lt="advance|advanced to the next child of the table">advanced to the next child of
+      the <code>table</code></dfn> when there is no such next child, then the user agent must
+      jump to the step labeled <i>end</i>, near the end of this algorithm.
+
+    </li>
+
+    <li>
+
+      While the <var>current element</var> is not one of the following elements, <a>advance</a>
+      the <var>current element</var> to the next child of the <code>table</code>:
+
+      <ul class="brief">
+        <li><{colgroup}></li>
+        <li><{thead}></li>
+        <li><{tbody}></li>
+        <li><{tfoot}></li>
+        <li><{tr}></li>
+      </ul>
+
+    </li>
+
+    <li>
+
+      If the <var>current element</var> is a <{colgroup}>, follow these substeps:
 
     <ol>
 
@@ -2294,51 +2343,52 @@
 
     <li>
 
-    Remove all the <a>empty cells</a> from the <var>header list</var>.
+      Remove all the <a>empty cells</a> from the <var>header list</var>.
 
     </li>
 
     <li>
 
-    Remove any duplicates from the <var>header list</var>.
+      Remove any duplicates from the <var>header list</var>.
 
     </li>
 
     <li>
 
-    Remove <var>principal cell</var> from the <var>header list</var> if it is
-    there.
+      Remove <var>principal cell</var> from the <var>header list</var> if it is there.
 
     </li>
 
     <li>
 
-    Assign the headers in the <var>header list</var> to the <var>principal cell</var>.
+      Assign the headers in the <var>header list</var> to the <var>principal cell</var>.
 
     </li>
 
   </ol>
 
-  The <dfn>internal algorithm for scanning and assigning header cells</dfn>, given a <var>principal cell</var>, a <var>header list</var>, an initial coordinate (<var>initial<sub>x</sub></var>, <var>initial<sub>y</sub></var>),
+  The <dfn>internal algorithm for scanning and assigning header cells</dfn>, given a
+  <var>principal cell</var>, a <var>header list</var>, an initial coordinate
+  (<var>initial<sub>x</sub></var>, <var>initial<sub>y</sub></var>),
   and Δ<var>x</var> and Δ<var>y</var> increments, is as follows:
 
   <ol>
 
     <li>
 
-    Let <var>x</var> equal <var>initial<sub>x</sub></var>.
+      Let <var>x</var> equal <var>initial<sub>x</sub></var>.
 
     </li>
 
     <li>
 
-    Let <var>y</var> equal <var>initial<sub>y</sub></var>.
+      Let <var>y</var> equal <var>initial<sub>y</sub></var>.
 
     </li>
 
     <li>
 
-    Let <var>opaque headers</var> be an empty list of cells.
+      Let <var>opaque headers</var> be an empty list of cells.
 
     </li>
 
@@ -2348,16 +2398,20 @@
 
       <dt>If <var>principal cell</var> is a header cell</dt>
 
-      <dd>Let <var>in header block</var> be true, and let <var>headers from
-      current header block</var> be a list of cells containing just the <var>principal
-      cell</var>.</dd>
+        <dd>
+          Let <var>in header block</var> be true, and let
+          <var>headers from current header block</var> be a list of cells containing just the
+          <var>principal cell</var>.
+        </dd>
 
       <dt>Otherwise</dt>
 
-      <dd>Let <var>in header block</var> be false and let <var>headers from
-      current header block</var> be an empty list of cells.
+        <dd>
+          Let <var>in header block</var> be false and let
+          <var>headers from current header block</var> be an empty list of cells.
+        </dd>
 
-    </dd></dl>
+      </dl>
 
     </li>
 
@@ -2366,30 +2420,28 @@
     <i>Loop</i>: Increment <var>x</var> by Δ<var>x</var>; increment <var>y</var> by Δ<var>y</var>.
 
     <p class="note">
-    For each invocation of this algorithm, one of Δ<var>x</var> and
-    Δ<var>y</var> will be -1, and the other will be 0.
-  </p>
+      For each invocation of this algorithm, one of Δ<var>x</var> and Δ<var>y</var> will
+      be -1, and the other will be 0.
+    </p>
 
     </li>
 
     <li>
 
-    If either <var>x</var> or <var>y</var> is less than 0, then abort this
-    internal algorithm.
+      If either <var>x</var> or <var>y</var> is less than 0, then abort this internal algorithm.
 
     </li>
 
     <li>
 
-    If there is no cell covering slot (<var>x</var>, <var>y</var>), or if there
-    is more than one cell covering slot (<var>x</var>, <var>y</var>), return to
-    the substep labeled <i>loop</i>.
+      If there is no cell covering slot (<var>x</var>, <var>y</var>), or if there is more than one
+      cell covering slot (<var>x</var>, <var>y</var>), return to the substep labeled <i>loop</i>.
 
     </li>
 
     <li>
 
-    Let <var>current cell</var> be the cell covering slot (<var>x</var>, <var>y</var>).
+      Let <var>current cell</var> be the cell covering slot (<var>x</var>, <var>y</var>).
 
     </li>
 
@@ -2433,8 +2485,7 @@
 
           If there are any cells in the <var>opaque headers</var> list anchored with the
           same <var>y</var>-coordinate as the <var>current cell</var>, and with
-          the same height as <var>current cell</var>, then let <var>blocked</var>
-          be true.
+          the same height as <var>current cell</var>, then let <var>blocked</var> be true.
 
           If the <var>current cell</var> is not a <a>row header</a>, then let <var>blocked</var> be true.
 
@@ -2462,47 +2513,50 @@
 
     <li>
 
-    Return to the step labeled <i>loop</i>.
+      Return to the step labeled <i>loop</i>.
 
     </li>
 
   </ol>
 
   A header cell anchored at the slot with coordinate (<var>x</var>, <var>y</var>)
-  with width <var>width</var> and height <var>height</var> is
-  said to be a <dfn>column header</dfn> if any of the following conditions are true:
+  with width <var>width</var> and height <var>height</var> is said to be a
+  <dfn>column header</dfn> if any of the following conditions are true:
 
   <ul>
 
     <li>The cell's <{td/scope}> attribute is in the <a state for="scope">column</a> state, or</li>
 
-    <li>The cell's <{td/scope}> attribute is in the <a state for="scope">auto</a> state,
-    and there are no data cells in any of the cells covering slots with <var>x</var>-coordinates
-    <var>x</var> .. <var>x</var>+<var>width</var>-1.
+    <li>
+      The cell's <{td/scope}> attribute is in the <a state for="scope">auto</a> state,
+      and there are no data cells in any of the cells covering slots with <var>x</var>-coordinates
+      <var>x</var> .. <var>x</var>+<var>width</var>-1.
     </li>
 
   </ul>
 
-  A header cell anchored at the slot with coordinate (<var>x</var>, <var>y</var>)
-  with width <var>width</var> and height <var>height</var> is
-  said to be a <dfn>row header</dfn> if any of the following conditions are true:
+  A header cell anchored at the slot with coordinate (<var>x</var>, <var>y</var>) with
+  width <var>width</var> and height <var>height</var> is said to be a <dfn>row header</dfn>
+  if any of the following conditions are true:
 
   <ul>
 
     <li>The cell's <{td/scope}> attribute is in the <a state for="scope">row</a> state, or</li>
 
-    <li>The cell's <{td/scope}> attribute is in the <a state for="scope">auto</a> state,
-    the cell is not a <a>column header</a>, and
-    there are no data cells in any of the cells covering slots with <var>y</var>-coordinates
-    <var>y</var> .. <var>y</var>+<var>height</var>-1.</li>
+    <li>
+      The cell's <{td/scope}> attribute is in the <a state for="scope">auto</a> state,
+      the cell is not a <a>column header</a>, and there are no data cells in any of the cells
+      covering slots with <var>y</var>-coordinates <var>y</var> ..
+      <var>y</var>+<var>height</var>-1.
+    </li>
 
   </ul>
 
-  A header cell is said to be a <dfn>column group header</dfn> if its <{td/scope}> attribute is in the <a>column
-  group</a> state.
+  A header cell is said to be a <dfn>column group header</dfn> if its <{td/scope}> attribute is
+  in the <a>column group</a> state.
 
-  A header cell is said to be a <dfn>row group header</dfn> if its <{td/scope}> attribute is in the <a>row
-  group</a> state.
+  A header cell is said to be a <dfn>row group header</dfn> if its <{td/scope}> attribute is in
+  the <a>row group</a> state.
 
   A cell is said to be an <dfn>empty cell</dfn> if it contains no elements and its text content,
   if any, consists only of <a>White_Space</a> characters.
@@ -2511,12 +2565,14 @@
 
   <em>This section is non-normative.</em>
 
-  The following shows how might one mark up the bottom part of table 45 of the <cite>Smithsonian
-  physical tables, Volume 71</cite>:
+  The following shows how an one might mark up the bottom part of table 45 of the
+  <cite>Smithsonian physical tables, Volume 71</cite>:
 
   <xmp highlight="html">
     <table>
-      <caption>Specification values: <b>Steel</b>, <b>Castings</b>, Ann. A.S.T.M. A27-16, Class B;* P max. 0.06; S max. 0.05.</caption>
+      <caption>
+        Specification values: <b>Steel</b>, <b>Castings</b>, Ann. A.S.T.M. A27-16, Class B;* P max. 0.06; S max. 0.05.
+      </caption>
       <thead>
         <tr>
           <th rowspan="2">Grade.</th>
@@ -2562,7 +2618,9 @@
   This table could look like this:
 
   <table>
-    <caption>Specification values: <b>Steel</b>, <b>Castings</b>, Ann. A.S.T.M. A27-16, Class B;* P max. 0.06; S max. 0.05.</caption>
+    <caption>
+      Specification values: <b>Steel</b>, <b>Castings</b>, Ann. A.S.T.M. A27-16, Class B;* P max. 0.06; S max. 0.05.
+    </caption>
     <thead>
       <tr>
         <th rowspan="2">Grade.</th>

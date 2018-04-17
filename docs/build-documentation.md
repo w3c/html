@@ -43,7 +43,7 @@ Tested on Windows 10.
 ## Installing the multi-page script (optional)
 
 1. Install [Node.JS](https://nodejs.org)
-2. Clone the [multi-page repo](https://github.com/adrianba/multipage)
+2. Clone the [multi-page repo](https://github.com/w3c/html-tools)
 3. Open a command prompt from the multi-page repo folder and run: npm install
 
 ## Automatic builds

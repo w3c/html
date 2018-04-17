@@ -11,6 +11,7 @@
   - the "Document" object, significantly extending what is defined in the DOM specification
       including attributes of it like document.cookies, document.referrer, document.head, document.forms, etc.
   - The HTMLElement interface
+  - The CEReactions extended attribute
   - How elements and attributes are described in the spec
   - Content models - used in element descriptions
   - Global attributes
@@ -678,6 +679,984 @@
   a linear transition of the element's prototype chain, from {{HTMLElement}} to a subclass, instead
   of a lateral one, from {{HTMLUnknownElement}} to an unrelated subclass.</p>
 
+
+   <h4 id="custom-elements-api">The CustomElementRegistry interface</h4>
+
+   <p>Each {{Window}} object is associated with a unique instance of a {{CustomElementRegistry}}
+    object, allocated when the {{Window}} object is created.</p>
+
+   <p class="note">Custom element registries are associated with {{Window}} objects, instead of {{Document}} objects, since each <a>custom element constructor</a> inherits from the
+    {{HTMLElement}} interface, and there is exactly one {{HTMLElement}} interface per {{Window}} object.</p>
+
+   The {{Window/customElements}} attribute of the {{Window}} interface returns the {{CustomElementRegistry}}
+   object for that {{Window}} object.
+
+   <pre class="idl">
+interface CustomElementRegistry {
+[CEReactions] void define(DOMString name, Function constructor, optional ElementDefinitionOptions options);
+any get(DOMString name);
+Promise&lt;void&gt; whenDefined(DOMString name);
+};
+
+dictionary ElementDefinitionOptions {
+DOMString extends;
+};
+</pre>
+
+  Every {{CustomElementRegistry}} has:
+
+  <ul>
+  <li>a set of <a>custom element definitions</a>, initially empty.
+  In general, algorithms in this specification look up elements in the registry by any of
+  <a for="customElements">name</a>, <a>local name</a>, or {{constructor}}.
+  </li>
+
+  <li>an <dfn export>element definition is running</dfn>
+  flag, used to prevent reentrant invocations of <a>element definition</a>. It is initially unset.
+  </li>
+
+  <li>a <dfn export>when-defined promise map</dfn>, mapping <a>valid custom element names</a>
+   to promises. It is used to implement the {{whenDefined()}} method.</p>
+   </li>
+   </ul>
+
+
+   <dl class="domintro note">
+     <dt><var>window</var> . {{customElements}} . {{define()|define(<var>name</var>}}, <var>constructor</var>)</dt>
+
+     <dd>
+       Defines a new <a>autonomous custom element</a>, mapping the given name to the given constructor.
+     </dd>
+
+     <dt><var>window</var> . {{customElements}} . {{define()|define(<var>name</var>, <var>constructor</var>), { extends: <var>baseLocalName</var> })}}</dt>
+
+     <dd>
+       Defines a new <a>customized built-in element</a>, mapping the given name to the given constructor for the
+       <a>element type</a> identified by the supplied <var>baseLocalName</var>.
+       A "{{NotSupportedError}}" {{DOMException}} will be thrown upon trying to extend a
+       <a>custom element</a> or an unknown element.
+     </dd>
+
+     <dt><var>window</var> . {{customElements}} . {{get}}(<var>name</var>)</dt>
+
+     <dd>
+       Retrieves the <a>custom element constructor</a> defined for the given <a for="customElements">name</a>.
+       Returns undefined if there is no <a>custom element definition</a> with the given <a for="customElements">name</a>.
+     </dd>
+
+     <dt><var>window</var> . {{customElements}} . {{whenDefined()|whenDefined(<var>name</var>)}}</dt>
+
+     <dd>
+       Returns a promise that will be fulfilled when a <a>custom element</a>
+       becomes defined with the name |name|.
+       (If such a <a>custom element</a> is already defined, the returned promise will be immediately fulfilled.)
+       Returns a promise rejected with a "{{SyntaxError}}" {{DOMException}} if |name| is not a
+       <a>valid custom element name</a>.
+     </dd>
+   </dl>
+
+   <dfn export>Element definition</dfn> is the process of adding a
+   <a>custom element definition</a> to the {{CustomElementRegistry}}.
+   This is accomplished by the {{define()}} method. When invoked, the
+   {{define()|define(<var>name</var>, <var>constructor</var>, <var>options</var>)}}
+   method must run these steps:</p>
+
+   <ol>
+     <li>
+       <p>If <a>IsConstructor</a>(<var>constructor</var>) is false, then throw a {{TypeError}} and abort these steps.</p>
+     </li>
+
+     <li>
+       <p>If <var>name</var> is not a <a>valid custom element name</a>, then throw a
+       "{{SyntaxError}}" {{DOMException}} and abort these steps.</p>
+     </li>
+
+     <li>
+       <p>If this {{CustomElementRegistry}} contains an entry with <a for="customElements">name</a> <var>name</var>,
+        then throw a "{{NotSupportedError}} {{DOMException}} and abort these steps.</p>
+     </li>
+
+     <li>
+       <p>If this {{CustomElementRegistry}} contains an entry with
+       <a lt="custom element constructor">constructor</a> <var>constructor</var>, then throw a
+      "{{NotSupportedError}}" {{DOMException}} and abort these steps.</p>
+     </li>
+
+     <li>
+       <p>Let <var>localName</var> be <var>name</var>.</p>
+     </li>
+
+     <li>
+       <p>Let <var>extends</var> be the value of the <code>extends</code> member of <var>options</var>, or null if no such member exists.</p>
+     </li>
+
+     <li>
+       <p>If <var>extends</var> is not null, then:</p>
+
+       <ol>
+         <li>
+           <p>If <var>extends</var> is a <a>valid custom element name</a>, then throw a
+           "{{NotSupportedError}}" {{DOMException}}.</p>
+         </li>
+
+         <li>
+           <p>If the <a>element interface</a> for <var>extends</var> and the <a>HTML namespace</a>
+            is {{HTMLUnknownElement}}
+            (e.g., if <var>extends</var> does not indicate an element definition in this specification),
+            then throw a "{{NotSupportedError}}" {{DOMException}}.</p>
+         </li>
+
+         <li>
+           <p>Set <var>localName</var> to <var>extends</var>.</p>
+         </li>
+       </ol>
+     </li>
+
+     <li>
+       <p>If this {{CustomElementRegistry}}'s <a>element definition is running</a> flag is set,
+        then throw a "{{NotSupportedError}}" {{DOMException}} and abort these steps.</p>
+     </li>
+
+     <li>
+       <p>Set this {{CustomElementRegistry}}'s <a>element definition is running</a> flag.</p>
+     </li>
+
+     <li>
+       <p>Run the following substeps while catching any exceptions:</p>
+
+       <ol>
+         <li>
+           <p>Let <var>prototype</var> be <a href="https://tc39.github.io/ecma262/#sec-get-o-p">Get</a>(<var>constructor</var>, "prototype"). Rethrow any exceptions.</p>
+         </li>
+
+         <li>
+           <p>If <a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">Type</a>(<var>prototype</var>) is not Object, then throw a <code><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> exception.</p>
+         </li>
+
+         <li>
+           <p>Let <var>lifecycleCallbacks</var> be a map with the four keys "<code>connectedCallback</code>",
+            "<code>disconnectedCallback</code>", "<code>adoptedCallback</code>", and
+             "<code>attributeChangedCallback</code>", each of which belongs to an entry whose value is null.</p>
+         </li>
+
+         <li>
+           <p>For each of the four keys <var>callbackName</var> in <var>lifecycleCallbacks</var>,
+           in the order listed in the previous step:</p>
+
+           <ol>
+             <li>
+               <p>Let <var>callbackValue</var> be {{get}}(<var>prototype</var>, <var>callbackName</var>). Rethrow any exceptions.</p>
+             </li>
+
+             <li>
+               <p>If <var>callbackValue</var> is not undefined, then set the value of the entry in
+                <var>lifecycleCallbacks</var> with key <var>callbackName</var> to the result of
+                <a>converting</a> <var>callbackValue</var> to the Web IDL {{Function}} callback type.
+                Rethrow any exceptions from the conversion.</p>
+             </li>
+           </ol>
+         </li>
+
+         <li>
+           <p>Let <var>observedAttributes</var> be an empty <code>sequence&lt;DOMString&gt;</code>.</p>
+         </li>
+
+         <li>
+           <p>If the value of the entry in <var>lifecycleCallbacks</var> with key "<code>attributeChangedCallback</code>" is not null, then:</p>
+
+           <ol>
+             <li>
+               <p>Let <var>observedAttributesIterable</var> be <a href="https://tc39.github.io/ecma262/#sec-get-o-p">Get</a>(<var>constructor</var>, "observedAttributes"). Rethrow any exceptions.</p>
+             </li>
+
+             <li>
+               <p>If <var>observedAttributesIterable</var> is not undefined, then set
+               <var>observedAttributes</var> to the result of <a>converting</a>
+               <var>observedAttributesIterable</var> to a <code>sequence&lt;DOMString&gt;</code>.
+               Rethrow any exceptions from the conversion.</p>
+             </li>
+           </ol>
+         </li>
+       </ol>
+
+       <p>Then, perform the following substep, regardless of whether the above steps threw an exception or not:</p>
+
+       <ol>
+         <li>
+           <p>Unset this {{CustomElementRegistry}}'s <a>element definition is running</a> flag.</p>
+         </li>
+       </ol>
+
+       <p>Finally, if the first set of substeps threw an exception, then rethrow that exception, and terminate this algorithm. Otherwise, continue onward.</p>
+     </li>
+
+     <li>
+       <p>Let <var>definition</var> be a new <a>custom element definition</a> with
+       <a for="customElements">name</a> <var>name</var>, <a for="customElements">local name</a> <var>localName</var>,
+        <a>constructor</a> <var>constructor</var>, <a>prototype</a> <var>prototype</var>,
+        <a>observed attributes</a> <var>observedAttributes</var>, and
+        <a>lifecycle callbacks</a> <var>lifecycleCallbacks</var>.</p>
+     </li>
+
+     <li>
+       <p>Add <var>definition</var> to this {{CustomElementRegistry}}.</p>
+     </li>
+
+     <li>
+       <p>Let <var>document</var> be this {{CustomElementRegistry}}'s <a>relevant global object</a>'s <a lt="document associated with a window">associated <code>Document</code></a>.</p>
+     </li>
+
+     <li>
+       <p>Let <var>upgrade candidates</var> be all elements that are <a>shadow-including descendants</a>
+        of <var>document</var>, whose namespace is the <a>HTML namespace</a> and whose local name is
+         <var>localName</var>, in <a>shadow-including tree order</a>.
+         Additionally, if <var>extends</var> is non-null, only include elements whose <a>is value</a>
+         is equal to <var>name</var>.</p>
+     </li>
+
+     <li>
+       <p>For each element <var>element</var> in <var>upgrade candidates</var>,
+       <a>enqueue a custom element upgrade reaction</a> given <var>element</var> and <var>definition</var>.</p>
+     </li>
+
+     <li>
+       <p>If this {{CustomElementRegistry}}'s <a>when-defined promise map</a> contains an entry with key <var>name</var>:</p>
+
+       <ol>
+         <li>
+           <p>Let <var>promise</var> be the value of that entry.</p>
+         </li>
+
+         <li>
+           <p>Resolve <var>promise</var> with undefined.</p>
+         </li>
+
+         <li>
+           <p>Delete the entry with key <var>name</var> from this {{CustomElementRegistry}}'s <a>when-defined promise map</a>.</p>
+         </li>
+       </ol>
+     </li>
+   </ol>
+
+   <p>When invoked, the <dfn method for="customElements" lt="get()"><code>get(<var>name</var>)</code></dfn> method must run these steps:</p>
+
+   <ol>
+     <li>
+       <p>If this {{CustomElementRegistry}} contains an entry with <a for="customElements">name</a> <var>name</var>,
+        then return that entry's <a>constructor</a>.</p>
+     </li>
+
+     <li>
+       <p>Otherwise, return undefined.</p>
+     </li>
+   </ol>
+
+   When invoked, the {{whenDefined()|whenDefined(<var>name</var>)}}
+   method must run these steps:</p>
+
+   <ol>
+     <li>
+       <p>If <var>name</var> is not a <a>valid custom element name</a>,
+        then return a new promise rejected with a "{{SyntaxError}}" {{DOMException}} and abort these steps.</p>
+     </li>
+
+     <li>
+       <p>If this {{CustomElementRegistry}} contains an entry with <a for="customElements">name</a> <var>name</var>,
+       then return a new promise resolved with undefined and abort these steps.</p>
+     </li>
+
+     <li>
+       <p>Let <var>map</var> be this {{CustomElementRegistry}}'s <a>when-defined promise map</a>.</p>
+     </li>
+
+     <li>
+       <p>If <var>map</var> does not contain an entry with key <var>name</var>,
+        create an entry in <var>map</var> with key <var>name</var> and whose value is a new promise.</p>
+     </li>
+
+     <li>
+       <p>Let <var>promise</var> be the value of the entry in <var>map</var> with key <var>name</var>.</p>
+     </li>
+
+     <li>
+       <p>Return <var>promise</var>.</p>
+     </li>
+   </ol>
+
+   <div class="example">
+     <p>The {{whenDefined()}} method can be used to avoid performing an action until all appropriate
+     <a href="#custom-element">custom elements</a> are <a>defined</a>. In this example,
+      we combine it with the <a>:defined</a> pseudo-class to hide a dynamically-loaded article's contents
+       until all the <a>autonomous custom elements</a> it uses are defined.</p>
+     <xmp>
+articleContainer.hidden = true;
+
+fetch(articleURL)
+.then(response => response.text())
+.then(text => {
+ articleContainer.innerHTML = text;
+
+ return Promise.all(
+   [...articleContainer.querySelectorAll(":not(:defined)")]
+     .map(el => customElements.whenDefined(el.localName))
+ );
+})
+.then(() => {
+ articleContainer.hidden = false;
+});
+</xmp>
+   </div>
+   <h4 id="upgrades">Upgrades</h4>
+
+   <p>To <dfn export lt="upgrade|upgrade an element">upgrade an element</dfn>, given a <a>custom element definition</a> <var>definition</var>
+    and an element <var>element</var>, run the following steps:</p>
+
+   <ol>
+     <li>
+       <p>If <var>element</var> is <a>custom</a>, abort these steps.</p>
+
+       <div class="example">
+         <p>This can occur due to reentrant invocation of this algorithm, as in the following example:</p>
+         <xmp>
+<!DOCTYPE html>
+<x-foo id="a"></x-foo>
+<x-foo id="b"></x-foo>
+
+<script>
+// Defining enqueues upgrade reactions for both "a" and "b"
+customElements.define("x-foo", class extends HTMLElement {
+constructor() {
+ super();
+
+ const b = document.querySelector("#b");
+ b.remove();
+
+ // While this constructor is running for "a", "b" is still
+ // undefined, and so inserting it into the document will enqueue a
+ // second upgrade reaction for "b" in addition to the one enqueued
+ // by defining x-foo.
+ document.body.appendChild(b);
+}
+})
+</script>
+</xmp>
+
+         <p>This step will thus bail out the algorithm early when <a>upgrade an element</a> is invoked with "<code>b</code>" a second time.</p>
+       </div>
+     </li>
+
+     <li>
+       <p>If <var>element</var>'s <a>custom element state</a> is "<code>failed</code>", then abort these steps.</p>
+     </li>
+
+     <li>
+       <p>For each <var>attribute</var> in <var>element</var>'s <!--a@@-->attribute list, in order,
+        <a>enqueue a custom element callback reaction</a> with <var>element</var>,
+        callback name "<code>attributeChangedCallback</code>", and an argument list containing
+        <var>attribute</var>'s local name, null, <var>attribute</var>'s value, and <var>attribute</var>'s namespace.</p>
+     </li>
+
+     <li>
+       <p>If <var>element</var> is <a>connected</a>, then <a>enqueue a custom element callback reaction</a>
+        with <var>element</var>, callback name "<code>connectedCallback</code>", and an empty argument list.</p>
+     </li>
+
+     <li>
+       <p>Add <var>element</var> to the end of <var>definition</var>'s <a>construction stack</a>.</p>
+     </li>
+
+     <li>
+       <p>Let <var>C</var> be <var>definition</var>'s <a>constructor</a>.</p>
+     </li>
+
+     <li>
+       <p>Let <var>constructResult</var> be <a href="https://tc39.github.io/ecma262/#sec-construct">Construct</a>(<var>C</var>).</p>
+
+       <p class="note">If <var>C</var> non-conformantly
+        uses an API decorated with the [{{CEReactions}}] extended attribute,
+       then the reactions enqueued at the beginning of this algorithm will execute during this step,
+       before <var>C</var> finishes and control returns to this algorithm.
+        Otherwise, they will execute after <var>C</var> and the rest of the upgrade process finishes.</p>
+     </li>
+
+     <li>
+       <p>Remove the last entry from the end of <var>definition</var>'s <a>construction stack</a>.</p>
+
+       <div class="note">
+         <p>Assuming <var>C</var> calls <code>super()</code>
+          and that the call succeeds, this will be the <a>already constructed marker</a>
+          that replaced the <var>element</var> pushed at the beginning of this algorithm.
+          (The HTML element constructor carries out this replacement.)</p>
+
+         <p>If <var>C</var> does not call <code>super()</code> (i.e. it is not conformant),
+          or if any step in the HTML element constructor throws, then this entry will still be <var>element</var>.</p>
+       </div>
+     </li>
+
+     <li>
+       <p>If <var>constructResult</var> is an abrupt completion, then:</p>
+
+       <ol>
+         <li>
+           <p>Set <var>element</var>'s <a>custom element state</a> to "<code>failed</code>".</p>
+         </li>
+
+         <li>
+           <p>Return <var>constructResult</var> (i.e., rethrow the exception), and terminate these steps.</p>
+         </li>
+       </ol>
+     </li>
+
+     <li>
+       <p>If <a href="https://tc39.github.io/ecma262/#sec-samevalue">SameValue</a>(<var>constructResult</var>.[[\value]], <var>element</var>)
+        is false, then throw an "{{InvalidStateError}}" {{DOMException}} and terminate these steps.</p>
+
+       <p class="note">This can occur if <var>C</var> constructs another instance of the same custom element before calling <code>super()</code>, or if <var>C</var> uses JavaScript's <code>return</code>-override feature to return an arbitrary object from the constructor.</p>
+     </li>
+
+     <li>
+       <p>Set <var>element</var>'s <a>custom element state</a> to "<code>custom</code>".</p>
+     </li>
+
+     <li>
+       <p>Set <var>element</var>'s <a>custom element definition</a> to <var>definition</var>.</p>
+     </li>
+   </ol>
+
+   <p>To <dfn export>try to upgrade an element</dfn>, given as input an element <var>element</var>, run the following steps:</p>
+
+   <ol>
+     <li>
+       <p>Let <var>definition</var> be the result of
+       <a>looking up a custom element definition</a>
+        given <var>element</var>'s <a>node document</a>, <var>element</var>'s <a for="Element">namespace</a>,
+         <var>element</var>'s <a>local name</a>, and <var>element</var>'s <a>is value</a>.</p>
+     </li>
+
+     <li>
+       <p>If <var>definition</var> is not null, then <a>enqueue a custom element upgrade reaction</a>
+        given <var>element</var> and <var>definition</var>.</p>
+     </li>
+   </ol>
+
+   <h4 id="sec-custom-element-reactions">Custom element reactions</h4>
+
+   A <a>custom element</a> can react to certain occurrences by running author code.
+   These reactions are called <dfn export>custom element reactions</dfn>.
+
+   <ul>
+     <li>
+       <p>When <a lt="upgrade">upgraded</a>, its <a>constructor</a> is run.</p>
+     </li>
+
+     <li>
+       <p>When it <a>becomes connected</a>, its <code>connectedCallback</code> is run.</p>
+     </li>
+
+     <li>
+       <p>When it <a>becomes disconnected</a>, its <code>disconnectedCallback</code> is run.</p>
+     </li>
+
+     <li>
+       <p>When it is <a>adopted</a> into a new document, its <code>adoptedCallback</code> is run.</p>
+     </li>
+
+     <li>
+       <p>When any of its attributes are <a>changed</a>, <a>appended</a>, <a>removed</a>, or <a>replaced</a>,
+        its <code>attributeChangedCallback</code> is run.</p>
+     </li>
+   </ul>
+
+
+   The way in which <a>custom element reactions</a> are invoked is done with special care,
+    to avoid running author code during the middle of delicate operations.
+     Effectively, they are delayed until "just before returning to user script".
+     This means that for most purposes they appear to execute synchronously,
+     but in the case of complicated composite operations (like <a>cloning</a>, or <>range</a> manipulation),
+      they will instead be delayed until after all the relevant user agent processing steps have completed,
+       and then run together as a batch.
+
+   Additionally, the precise ordering of these reactions is managed by a stack-of-queues system, described below.
+    The intention behind this system is to guarantee that <a>custom element reactions</a>
+     are always invoked in the same order as their triggering actions,
+     at least within the local context of a single <a>custom element</a>.
+     (Because <a>custom element reaction</a> code can perform its own mutations,
+      it is not possible to give a global ordering guarantee across multiple elements.)</p>
+   <hr>
+
+   Each <a>unit of related similar-origin browsing contexts</a> has a
+   <dfn export>custom element reactions stack</dfn>, which is initially empty.
+   The <dfn export>current element queue</dfn> is the <a>element queue</a>
+    at the top of the <a>custom element reactions stack</a>. Each item in the stack is an
+    <dfn export>element queue</dfn>, which is initially empty as well.
+    Each item in an <a>element queue</a> is an element.
+    (The elements are not necessarily <a>custom</a> yet, since this queue is used for <a>upgrades</a> as well.)
+
+   Each <a>custom element reactions stack</a> has an associated
+   <dfn export>backup element queue</dfn>, which is an initially empty
+    <a>element queue</a>. Elements are pushed onto the <a>backup element queue</a>
+     during operations that affect the DOM without going through an API decorated with
+     [{{CEReactions}}], or through the parser's <a>create an element for the token</a> algorithm.
+     An example of this is a user-initiated editing operation which modifies the descendants or attributes of an
+      <a>editable</a> element. To prevent reentrancy when processing the <a>backup element queue</a>,
+      each <a>custom element reactions stack</a> also has a
+      <dfn export>processing the backup element queue</dfn> flag, initially unset.</p>
+
+   <p>All elements have an associated <dfn export>custom element reaction queue</dfn>, initially empty.
+    Each item in the <a>custom element reaction queue</a> is of one of two types:</p>
+
+   <ul>
+     <li>
+       <p>An <dfn export>upgrade reaction</dfn>, which <a>upgrades</a> the custom element and contains a
+        <a>custom element definition</a>; or</p>
+     </li>
+
+     <li>
+       <p>A <dfn export>callback reaction</dfn>, which will call a <a>lifecycle callback</a>,
+        and contains a {{Function!!callback}} as well as a list of arguments.</p>
+     </li>
+   </ul>
+
+   <p>This is all summarised in the following schematic diagram:</p>
+
+   <p><img src="custom-element-reactions.svg" alt="@@A custom element reactions stack consists of a stack of element queues. Zooming in on a particular queue, we see that it contains a number of elements (in our example, &lt;x-a&gt;, then &lt;x-b&gt;, then &lt;x-c&gt;). Any particular element in the queue then has a custom element reaction queue. Zooming in on the custom element reaction queue, we see that it contains a variety of queued-up reactions (in our example, upgrade, then attribute changed, then another attribute changed, then connected)." style="width: 80%; max-width: 580px;"></p>
+
+   <p>To <dfn export>enqueue an element on the appropriate element queue</dfn>, given an element <var>element</var>,
+    run the following steps:</p>
+
+   <ol>
+     <li>
+       <p>If the <a>custom element reactions stack</a> is empty, then:</p>
+
+       <ol>
+         <li>
+           <p>Add <var>element</var> to the <a>backup element queue</a>.</p>
+         </li>
+
+         <li>
+           <p>If the <a>processing the backup element queue</a> flag is set, abort this algorithm.</p>
+         </li>
+
+         <li>
+           <p>Set the <a>processing the backup element queue</a> flag.</p>
+         </li>
+
+         <li>
+           <p><a>Queue a microtask</a> to perform the following steps:</p>
+
+           <ol>
+             <li>
+               <p><a>Invoke custom element reactions</a> in the <a>backup element queue</a>.</p>
+             </li>
+
+             <li>
+               <p>Unset the <a>processing the backup element queue</a> flag.</p>
+             </li>
+           </ol>
+         </li>
+       </ol>
+     </li>
+
+     <li>
+       <p>Otherwise, add <var>element</var> to the <a>current element queue</a>.</p>
+     </li>
+   </ol>
+
+   <p>To <dfn export>enqueue a custom element callback reaction</dfn>, given a <a>custom element</a> <var>element</var>,
+    a callback name <var>callbackName</var>, and a list of arguments <var>args</var>, run the following steps:</p>
+
+   <ol>
+     <li>
+       <p>Let <var>definition</var> be <var>element</var>'s <a>custom element definition</a>.</p>
+     </li>
+
+     <li>
+       <p>Let <var>callback</var> be the value of the entry in <var>definition</var>'s
+       <a>lifecycle callbacks</a> with key <var>callbackName</var>.</p>
+     </li>
+
+     <li>
+       <p>If <var>callback</var> is null, then abort these steps.</p>
+     </li>
+
+     <li>
+       <p>If <var>callbackName</var> is "<code>attributeChangedCallback</code>", then:</p>
+
+       <ol>
+         <li>
+           <p>Let <var>attributeName</var> be the first element of <var>args</var>.</p>
+         </li>
+
+         <li>
+           <p>If <var>definition</var>'s <a>observed attributes</a> does not contain <var>attributeName</var>,
+            then abort these steps.</p>
+         </li>
+       </ol>
+     </li>
+
+     <li>
+       <p>Add a new <a>callback reaction</a> to <var>element</var>'s <a>custom element reaction queue</a>,
+        with callback function <var>callback</var> and arguments <var>args</var>.</p>
+     </li>
+
+     <li>
+       <p><a>Enqueue an element on the appropriate element queue</a> given <var>element</var>.</p>
+     </li>
+   </ol>
+
+   <p>To <dfn export>enqueue a custom element upgrade reaction</dfn>, given an element <var>element</var>
+   and <a>custom element definition</a> <var>definition</var>, run the following steps:</p>
+
+   <ol>
+     <li>
+       <p>Add a new <a>upgrade reaction</a> to <var>element</var>'s <a>custom element reaction queue</a>,
+       with <a>custom element definition</a> <var>definition</var>.</p>
+     </li>
+
+     <li>
+       <p><a>Enqueue an element on the appropriate element queue</a> given <var>element</var>.</p>
+     </li>
+   </ol>
+
+   <p>To <dfn export>invoke custom element reactions</dfn> in an <a>element queue</a> <var>queue</var>, run the following steps:</p>
+
+   <ol>
+     <li>
+       <p>For each <a>custom element</a> <var>element</var> in <var>queue</var>:</p>
+
+       <ol>
+         <li>
+           <p>Let <var>reactions</var> be <var>element</var>'s <a>custom element reaction queue</a>.</p>
+         </li>
+
+         <li>
+           <p>Repeat until <var>reactions</var> is empty:</p>
+
+           <ol>
+             <li>
+               <p>Remove the first element of <var>reactions</var>, and let <var>reaction</var> be that element.
+                Switch on <var>reaction</var>'s type:</p>
+
+               <dl class="switch">
+                 <dt>
+                   <a>upgrade reaction</a>
+                 </dt>
+
+                 <dd>
+                   <a>Upgrade</a> <var>element</var> using <var>reaction</var>'s <a>custom element definition</a>.
+                 </dd>
+
+                 <dt>
+                   <a>callback reaction</a>
+                 </dt>
+
+                 <dd>
+                   <a href="https://heycam.github.io/webidl/#es-invoking-callback-functions">Invoke</a> <var>reaction</var>'s callback function with <var>reaction</var>'s arguments, and with <var>element</var> as the <a href="https://heycam.github.io/webidl/#dfn-callback-this-value">callback this value</a>.
+                 </dd>
+               </dl>
+
+               <p>If this throws any exception, then <a>report the exception</a>.</p>
+             </li>
+           </ol>
+         </li>
+       </ol>
+     </li>
+   </ol>
+   <hr>
+
+   The <dfn export dfn-type="extended-attribute" lt="CEReactions"><code>[CEReactions]</code></dfn>
+   IDL <a>extended attribute</a> is to ensure <a>custom element reactions</a> are triggered appropriately.
+   It indicates that the relevant algorithm is to be supplemented with additional steps
+   to appropriately track and invoke <a>custom element reactions</a>.
+
+   The [{{CEReactions}}] extended attribute must take no arguments,
+   and must not appear on anything other than an operation, attribute, setter, or deleter.
+   Additionally, it must not appear on {{readonly}} attributes,
+   unless the readonly attribute is also annotated with [PutForwards].
+
+   Operations, attributes, setters, or deleters annotated with the [{{CEReactions}}]
+   extended attribute must run the following steps
+   surrounding the main algorithm specified for the operation, setter, deleter, or for the attribute's setter:
+
+   <dl>
+     <dt>Before executing the algorithm's steps</dt>
+
+     <dd>
+       Push a new <a>element queue</a> onto the <a>custom element reactions stack</a>.
+     </dd>
+
+     <dt>After executing the algorithm's steps</dt>
+
+     <dd>
+       Pop the <a>element queue</a> from the <a>custom element reactions stack</a>, and
+       <a>invoke custom element reactions</a> in that queue.
+     </dd>
+   </dl>
+
+   <div class="note">
+     The intent behind this extended attribute is somewhat subtle.
+     One way of accomplishing its goals would be to say that every operation, attribute, setter,
+     and deleter on the platform should have these steps inserted,
+     and to allow implementers to optimize away unnecessary cases
+     (where no DOM mutation is possible that could cause <a>custom element reactions</a> to occur).</p>
+
+     However, this could lead to non-interoperable implementations if implementations do not invoke these steps
+     in some cases. Explicitly annotating all relevant IDL constructs helps ensure interoperable behavior, by identifying all cases where these steps are necessary.
+   </div>
+
+   Any nonstandard APIs introduced by the user agent that could modify the DOM in such a way as to
+   <a>enqueue a custom element callback reaction</a> or <a>enqueue a custom element upgrade reaction</a>,
+    for example by modifying any attributes or child elements, must also be decorated with the [{{CEReactions}}] attribute.</p>
+
+   <div class="note">
+     <p>As of the time of this writing, the following nonstandard or not-yet-standardized APIs are known to fall into this category:</p>
+
+     <ul>
+       <li>
+         <p>{{HTMLElement}}'s <code>outerText</code> IDL attribute</p>
+       </li>
+
+       <li>
+         <p>{{HTMLInputElement}}'s <code>webkitdirectory</code> and <code>incremental</code> IDL attributes</p>
+       </li>
+
+       <li>
+         <p>{{HTMLLinkElement}}'s <code>disabled</code> and <code>scope</code> IDL attributes</p>
+       </li>
+
+       <li>
+         <p>{{ShadowRoot}}'s <code>innerHTML</code> IDL attribute</p>
+       </li>
+     </ul>
+   </div>
+
+ <h4 id="html-element-constructors">HTML: HTML element constructors</h4>
+
+  To support <a>custom elements</a>, all HTML elements have special constructor behavior.
+  The <dfn export dfn-type="extended-attribute" lt="HTMLConstructor"><code>[HTMLConstructor]</code></dfn>
+  IDL <a>extended attribute</a> indicates that the interface object for the given interface
+  will have a specific behavior, as defined in detail below.</p>
+
+  The [{{HTMLConstructor}}] extended attribute must take no arguments,
+  and must not appear on anything other than an interface. It must appear only once on an interface,
+  and the interface must not be annotated with the [{{Constructor!!extended-attribute}}] or [{{NoInterfaceObject}}]
+  extended attributes. (However, the interface may be annotated with [{{NamedConstructor}}];
+  there is no conflict there.) It must not be used on a callback interface.</p>
+
+  <a>Interface objects</a> for interfaces annotated with the [{{HTMLConstructor}}] extended attribute
+   must run the following steps as the function body behavior for both \[[Call]] and \[[Construct]]
+   invocations of the corresponding JavaScript function object.
+
+   When invoked with \[[Call]], <code>newTarget</code> is undefined, and the algorithm will throw.
+   When invoked with \[[Construct]], the \[[Construct]] <code>newTarget</code> parameter provides the <var>NewTarget</var> value.</p>
+
+ <ol>
+   <li>
+     <p>Let <var>registry</var> be the <a>current global object</a>'s {{CustomElementRegistry}} object.</p>
+   </li>
+
+   <li>
+     <p>If <var>NewTarget</var> is equal to the <a>active function object</a>, then throw a {{TypeError}} and abort these steps.</p>
+
+     <div class="example no-backref">
+       <p>This can occur when a custom element is defined using an <a>element interface</a> as its constructor:</p>
+       <pre>
+customElements.define("bad-1", HTMLButtonElement);
+new HTMLButtonElement();          // (1)
+document.createElement("bad-1");  // (2)
+</pre>
+
+      In this case, during the execution of {{HTMLButtonElement}} (either explicitly, as in (1),
+      or implicitly, as in (2)), both the <a>active function object</a> and NewTarget are {{HTMLButtonElement}}.
+      If this check was not present, it would be possible to create an instance of {{HTMLButtonElement}}
+      whose local name was <code>bad-1</code>.</p>
+     </div>
+   </li>
+
+   <li>
+     <p>Let <var>definition</var> be the entry in <var>registry</var> with <a>constructor</a> equal to NewTarget.
+      If there is no such definition, then throw a <code><a href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror">TypeError</a></code> and abort these steps.</p>
+
+     <p class="note">Since there can be no entry in <var>registry</var> whose <a>constructor</a>
+     is undefined, this step also prevents HTML element constructors from being called as functions
+     (since in that case NewTarget will be undefined).</p>
+   </li>
+
+   <li>
+     <p>If <var>definition</var>'s <a>local name</a> is equal to <var>definition</var>'s <a for="customElements">name</a>
+     (i.e., <var>definition</var> is for an <a >autonomous custom element</a>), then:</p>
+
+     <ol>
+       <li>
+         <p>If the <a>active function object</a> is not {{HTMLElement}}, then throw a {{TypeError}} and abort these steps.</p>
+
+         <div class="example no-backref">
+           <p>This can occur when a custom element is defined to not extend any local names, but inherits from a non-{{HTMLElement}} class:</p>
+           <pre>
+customElements.define("bad-2", class Bad2 extends HTMLParagraphElement {});
+</pre>
+
+          In this case, during the (implicit) <code>super()</code> call that occurs
+          when constructing an instance of <code>Bad2</code>, the <a>active function object</a> is
+          {{HTMLParagraphElement}}, not {{HTMLElement}}.</p>
+         </div>
+       </li>
+     </ol>
+   </li>
+
+   <li>
+     <p>Otherwise (i.e., if <var>definition</var> is for a <a>customized built-in element</a>):</p>
+
+     <ol>
+       <li>
+         <p>Let <var>valid local names</var> be the list of local names for elements defined in this specification
+         or in <a>other applicable specifications</a> that use the <a>active function object</a>
+         as their <a>element interface</a>.</p>
+       </li>
+
+       <li>
+         <p>If <var>valid local names</var> does not contain <var>definition</var>'s <a>local name</a>,
+         then throw a {{TypeError}} and abort these steps.</p>
+
+         <div class="example no-backref">
+           <p>This can occur when a custom element is defined to extend a given local name but inherits from the wrong class:</p>
+           <pre>
+customElements.define("bad-3", class Bad3 extends HTMLQuoteElement {}, { extends: "p" });
+</pre>
+
+           <p>In this case, during the (implicit) <code>super()</code>
+           call that occurs when constructing an instance of <code>Bad3</code>, <var>valid local names</var>
+           is the list containing <{q}> and <{blockquote}>, but <var>definition</var>'s <a>local name</a>
+           is <{p}>, which is not in that list.</p>
+         </div>
+       </li>
+     </ol>
+   </li>
+
+   <li>
+     <p>Let <var>prototype</var> be <var>definition</var>'s <a>prototype</a>.</p>
+   </li>
+
+   <li>
+     <p>If <var>definition</var>'s <a>construction stack</a> is empty, then:</p>
+
+     <ol>
+       <li>
+         <p>Let <var>element</var> be a new element that implements the interface to which the
+          <a>active function object</a> corresponds, with no attributes, namespace set to the
+          <a>HTML namespace</a>, local name set to <var>definition</var>'s <a>local name</a>, and
+          <a>node document</a> set to the <a>current global object</a>'s <a>associated <code>Document</code></a>.</p>
+       </li>
+
+       <li>
+         <p>Perform <var>element</var>.[[\SetPrototypeOf]](<var>prototype</var>). Rethrow any exceptions.</p>
+       </li>
+
+       <li>
+         <p>Set <var>element</var>'s <a>custom element state</a> to "<code>custom</code>".</p>
+       </li>
+
+       <li>
+         <p>Set <var>element</var>'s <a>custom element definition</a> to <var>definition</var>.</p>
+       </li>
+
+       <li>
+         <p>Return <var>element</var>.</p>
+       </li>
+     </ol>
+
+     <p class="note">This occurs when author script constructs a new custom element directly, e.g. via <code>new MyCustomElement()</code>.</p>
+   </li>
+
+   <li>
+     <p>Let <var>element</var> be the last entry in <var>definition</var>'s <a>construction stack</a>.</p>
+   </li>
+
+   <li>
+     <p>If <var>element</var> is an <a>already constructed marker</a>, then throw an
+      "{{InvalidStateError}}" {{DOMException}} and abort these steps.</p>
+
+     <div class="example">
+       This can occur when the author code inside the <a>custom element constructor</a>
+       non-conformantly creates another instance of the class being constructed,
+       before calling <code>super()</code>:</p>
+       <pre>
+let doSillyThing = false;
+
+class DontDoThis extends HTMLElement {
+constructor() {
+ if (doSillyThing) {
+   doSillyThing = false;
+   new DontDoThis();
+   // Now the construction stack will contain an <i>already constructed</i> marker.
+ }
+
+ // This will then fail with an "InvalidStateError" DOMException:
+ super();
+}
+}
+</pre>
+     </div>
+
+     <div class="example">
+       This can also occur when author code inside the <a>custom element constructor</a>
+       non-conformantly calls <code>super()</code> twice, since per the JavaScript specification,
+       this actually executes the superclass constructor (i.e. this algorithm) twice,
+       before throwing an error:</p>
+       <xmp class="bad">
+class DontDoThisEither extends HTMLElement {
+constructor() {
+ super();
+
+ // This will throw, but not until it has already called into the HTMLElement constructor
+ super();
+}
+}
+</xmp>
+     </div>
+   </li>
+
+   <li>
+     <p>Perform <var>element</var>.[[\SetPrototypeOf]](<var>prototype</var>). Rethrow any exceptions.</p>
+   </li>
+
+   <li>
+     <p>Replace the last entry in <var>definition</var>'s <a>construction stack</a> with an
+     <a>already constructed marker</a>.</p>
+   </li>
+
+   <li>
+     <p>Return <var>element</var>.</p>
+
+     <p class="note">This step is normally reached when <a>upgrading</a> a custom element;
+      the existing element is returned, so that the <code>super()</code> call inside the
+      <a>custom element constructor</a> assigns that existing element to <b>this</b>.</p>
+   </li>
+ </ol>
+ <hr>
+
+  In addition to the constructor behavior implied by [{{HTMLConstructor}}],
+  some elements also have <a>named constructors</a>
+   (which are really factory functions with a modified <code>prototype</code> property).</p>
+
+ <div class="example">
+   <p>Named constructors for HTML elements can also be used in an <code>extends</code>
+    clause when defining a <a>custom element constructor</a>:</p>
+   <xmp>
+class AutoEmbiggenedImage extends Image {
+constructor(width, height) {
+ super(width * 10, height * 10);
+}
+}
+
+customElements.define("auto-embiggened", AutoEmbiggenedImage, { extends: "img" });
+
+const image = new AutoEmbiggenedImage(15, 20);
+console.assert(image.width === 150);
+console.assert(image.height === 200);
+ </xmp>
+ <!-- end CEinsert @@ -->
+
 <h4 id="element-definitions">Element definitions</h4>
 
   Each element in this specification has a definition that includes the following information:
@@ -1142,7 +2121,7 @@
 
   As a general rule, elements whose content model allows any [=flow content=] or
   [=phrasing content=] should have at least one node in its <a lt="element content">contents</a> that is
-  <dfn id="palpable-content-2">palpable content</dfn> and that does not have the <{global/hidden}>
+  <dfn id="palpable-content-2" lt="palpable content|palpable">palpable content</dfn> and that does not have the <{global/hidden}>
   attribute specified.
 
   <p class="note">[=Palpable content=] makes an element non-empty by providing either some
@@ -1458,19 +2437,24 @@
 
   <ul class="brief">
     * <{global/accesskey}>
+    * Attributes whose name begins with [=global aria-* attributes|aria-*=]
     * <{global/class}>
     * <{global/contenteditable}>
     * <{global/dir}>
+    * Attributes whose name begins with [=custom data attribute|data-=]
     * <{global/draggable}>
     * <{global/hidden}>
     * <{global/id}>
+    * <{global/is}>
     * <{global/lang}>
     * <{global/nonce}>
+    * <{aria/role}>
     * <{global/spellcheck}>
     * <{global/style}>
     * <{global/tabindex}>
     * <{global/title}>
     * <{global/translate}>
+    * <{xmlns/xmlns}>
   </ul>
 
   These attributes are only defined by this specification as attributes for [=HTML elements=]. When
@@ -1496,18 +2480,11 @@
   </div>
 
   <hr>
+  When specified on [=HTML elements=], the <dfn element-attr for="global"><code>class</code></dfn>
+  attribute's value must be a [=set of space-separated tokens=]
+  representing the various classes that the element belongs to.
 
-  The DOM specification defines additional user agent requirements for the
-  <dfn element-attr for="global"><code>class</code></dfn>,
-  <dfn element-attr for="global"><code>id</code></dfn>, and
-  <dfn element-attr for="global"><code>slot</code></dfn> attributes for any element in any
-  namespace. [[DOM]]
-
-  The <{global/class}>, <{global/id}>, and <{global/slot}> attributes may be specified on all
-  [=HTML elements=].
-
-  When specified on [=HTML elements=], the <{global/class}> attribute must have a value that is a
-  [=set of space-separated tokens=] representing the various classes that the element belongs to.
+  The DOM specification defines additional user agent requirements for this attribute. [[DOM41]]
 
   <div class="note">
     Assigning classes to an element affects class matching in selectors in CSS, the
@@ -1518,9 +2495,11 @@
     rather than values that describe the desired presentation of the content.
   </div>
 
-  When specified on [=HTML elements=], the <{global/id}> attribute value must be unique amongst all
-  the [=IDs=] in the element's [=tree=] and must contain at least one character. The value must not
-  contain any [=space characters=].
+  When specified on [=HTML elements=], the <dfn element-attr for="global"><code>id</code></dfn>
+  attribute value must be unique amongst all the [=IDs=] in the element's [=tree=]
+  and must contain at least one character. The value must not contain any [=space characters=].
+
+  The DOM specification defines additional user agent requirements for this  attribute. [[DOM41]]
 
   <div class="note">
     The <{global/id}> attribute specifies its element's [=id|unique identifier (ID)=].
@@ -1536,8 +2515,16 @@
   Identifiers are opaque strings. Particular meanings should not be derived from the value of the
   <{global/id}> attribute.
 
-  There are no conformance requirements for the <{global/slot}> attribute specific to
-  [=HTML elements=].
+  When specified on an [=HTML element=] the <dfn element-attr for="global"><code>is</code></dfn>
+  attribute identifies the element as a <a>customized built-in element</a>. Its value must be a
+  <a>valid custom element name</a>.
+
+  Changing the value of the <{global/is}> attribute after the [=create an element|element is created=]
+  does not change an element's behaviour.
+
+  There are no conformance requirements for the <dfn element-attr for="global"><code>slot</code></dfn>
+  attribute specific to [=HTML elements=]. The DOM specification defines requirements for this
+  attribute. [[DOM41]]
 
   <hr />
 
