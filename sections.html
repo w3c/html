@@ -1180,7 +1180,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version fbf1456a756299b3ff6d248d0857ec87f2e68cd7" name="generator">
   <link href="https://www.w3.org/TR/html53/" rel="canonical">
-  <meta content="2a10df50bcfec6908fcafe68d0c31048c5543583" name="document-revision">
+  <meta content="c35fc237a74e592dc4c269f9af9e46a7a468f81d" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -2529,17 +2529,24 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
     compliant user agents.</p>
      </div>
      <h5 class="heading settled" data-level="4.3.9.1" id="creating-an-outline"><span class="secno">4.3.9.1. </span><span class="content">Creating an outline</span><a class="self-link" href="sections.html#creating-an-outline"></a></h5>
-     <p class="warning"> There are currently no known native implementations of the outline algorithm in graphical browsers or
-    assistive technology user agents, although the algorithm is implemented in other software such
-    as conformance checkers and browser extensions. Therefore the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑤">outline</a> algorithm
-  cannot be relied upon to convey document structure to users. Authors should use heading <a data-link-type="dfn" href="sections.html#rank" id="ref-for-rank⑤">rank</a> (<code>h1</code>-<code>h6</code>) to convey document structure. </p>
-     <p><em>This section is non-normative</em></p>
-      This section defines an algorithm for creating an outline for a <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②③">sectioning content</a> element or a <a data-link-type="dfn" href="sections.html#sectioning-roots" id="ref-for-sectioning-roots⑦">sectioning root</a> element. It is defined in terms of a walk over the nodes
-    of a DOM tree, in <a data-link-type="dfn" href="infrastructure.html#tree-order" id="ref-for-tree-order②④">tree order</a>, with each node being visited when it is <i>entered</i> and
-    when it is <i>exited</i> during the walk. Each time a node is visited, it can be seen as
-    triggering an <i>enter</i> or <i>exit</i> event. 
-     <div class="example" id="example-c6cc876a">
-      <a class="self-link" href="sections.html#example-c6cc876a"></a> The following pseudocode fragment: 
+     <p class="warning"> There are currently no known native implementations of the outline algorithm in graphical
+    browsers or assistive technology user agents, although the algorithm is implemented in other
+    software such as conformance checkers and browser extensions. Additionally, there is an <a u00031005u00022="" github.com="" href="https://github.com/whatwg/html/pull/3499'>alternate outline algorithm proposal</a>
+    being developed, as well as proposals to modify the existing algorithm
+    (See <a href=" html="" httpsu0003a="" pull="" w3c="">W3C HTML issue #1005</a> and <a href="https://github.com/w3c/html/issues/830">W3C HTML issue #830</a>).
+    Any implementation and usage of these different proposals will be tracked, and may result
+    in significant future changes to the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑤">outline</a> algorithm. </p>
+     <p>Therefore, the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑥">outline</a> algorithm cannot be relied upon to convey document structure
+    to users. Authors should use heading <a data-link-type="dfn" href="sections.html#rank" id="ref-for-rank⑤">rank</a> (<code>h1</code>-<code>h6</code>) to
+    convey document structure.</p>
+     <p></p>
+     <p> <em>This section is non-normative</em> </p>
+     <p>This section defines an algorithm for creating an outline for a <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②③">sectioning content</a> element or a <a data-link-type="dfn" href="sections.html#sectioning-roots" id="ref-for-sectioning-roots⑦">sectioning root</a> element. It is defined in terms of a walk over the nodes
+  of a DOM tree, in <a data-link-type="dfn" href="infrastructure.html#tree-order" id="ref-for-tree-order②④">tree order</a>, with each node being visited when it is <i>entered</i> and
+  when it is <i>exited</i> during the walk. Each time a node is visited, it can be seen as
+  triggering an <i>enter</i> or <i>exit</i> event.</p>
+     <div class="example" id="example-c75b32fb">
+      <a class="self-link" href="sections.html#example-c75b32fb"></a> The following pseudocode fragment: 
 <pre>visitNode(node)
   onEnter(node)
   child = node.firstChild
@@ -2548,18 +2555,19 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
     child = child.nextSibling
   onExit(node)
 </pre>
-      <p>...exemplifies how to recursively traverse the node tree and when to trigger the <i>enter</i> and <i>exit</i> events. See the <a href="sections.html#javascript-tree-walk-example">JavaScript example</a> for a possible, non-recursive JavaScript implementation.</p>
+      <p>...exemplifies how to recursively traverse the node tree and when to trigger the <i>enter</i> and <i>exit</i> events.
+      See the <a href="sections.html#javascript-tree-walk-example">JavaScript example</a> for a possible,
+      non-recursive JavaScript implementation.</p>
      </div>
-     <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="outline">outline</dfn> for a <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②④">sectioning content</a> element or a <a data-link-type="dfn" href="sections.html#sectioning-roots" id="ref-for-sectioning-roots⑧">sectioning root</a> element
-  consists of a list of one or more potentially nested <a data-link-type="dfn" href="sections.html#section" id="ref-for-section">sections</a>. The element for which an <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑥">outline</a> is created is said to be <dfn data-dfn-type="dfn" data-noexport="" id="the-outlines-owner">the outline’s owner<a class="self-link" href="sections.html#the-outlines-owner"></a></dfn>.</p>
+     <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="outline">outline</dfn> for a <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②④">sectioning content</a> element or a <a data-link-type="dfn" href="sections.html#sectioning-roots" id="ref-for-sectioning-roots⑧">sectioning root</a> element consists of a list of one or more potentially nested <a data-link-type="dfn" href="sections.html#section" id="ref-for-section">sections</a>. The element for
+  which an <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑦">outline</a> is created is said to be <dfn data-dfn-type="dfn" data-noexport="" id="the-outlines-owner">the outline’s owner<a class="self-link" href="sections.html#the-outlines-owner"></a></dfn>.</p>
      <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="section">section</dfn> is a container that corresponds to some nodes in the original DOM tree. Each
   section can have one heading associated with it, and can contain any number of further nested
-  subsections. The algorithm for the outline also associates each node in the DOM
-  tree with a particular section and potentially a heading. (The sections in the outline
-  aren’t <a data-link-type="element" href="sections.html#elementdef-section" id="ref-for-elementdef-section①⑥">section</a> elements, though some may correspond to such elements — they are
+  subsections. The algorithm for the outline also associates each node in the DOM tree with a
+  particular section and potentially a heading. (The sections in the outline aren’t <a data-link-type="element" href="sections.html#elementdef-section" id="ref-for-elementdef-section①⑥">section</a> elements, though some may correspond to such elements — they are
   merely conceptual sections.)</p>
-     <div class="example" id="example-9c480483">
-      <a class="self-link" href="sections.html#example-9c480483"></a> The following markup fragment: 
+     <div class="example" id="example-1d0d9f3a">
+      <a class="self-link" href="sections.html#example-1d0d9f3a"></a> The following markup fragment: 
 <pre class="highlight"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>A<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>B<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
@@ -2573,8 +2581,8 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
     entire document):</p>
       <ol>
        <li data-md="">
-        <p>Section created for <code>body</code> node. Associated with heading "A". Also associated with
-paragraph "B". Nested sections:</p>
+        <p>Section created for <code>body</code> node. Associated with heading "A". Also associated
+with paragraph "B". Nested sections:</p>
         <ol>
          <li data-md="">
           <p>Section implied for first <code>h2</code> element. Associated with heading "C". Also
@@ -2586,10 +2594,10 @@ associated with paragraph "F". No nested sections.</p>
       </li></ol>
      </div>
      <p>The algorithm that must be followed during a walk of a DOM subtree rooted at a <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②⑤">sectioning content</a> element or a <a data-link-type="dfn" href="sections.html#sectioning-roots" id="ref-for-sectioning-roots⑨">sectioning root</a> element to determine that
-    element’s <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑦">outline</a> is as follows:</p>
+    element’s <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑧">outline</a> is as follows:</p>
      <ol>
       <li data-md="">
-       <p>Let <var>current outline owner</var> be null. (It holds the element whose <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑧">outline</a> is
+       <p>Let <var>current outline owner</var> be null. (It holds the element whose <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑨">outline</a> is
 being created.)</p>
       </li><li data-md="">
        <p>Let <var>current section</var> be null. (It holds a pointer to a <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①">section</a>, so that
@@ -2632,7 +2640,7 @@ let that be the heading for the <var>current section</var>.</p>
           </li><li data-md="">
            <p>Associate <var>current outline owner</var> with <var>current section</var>.</p>
           </li><li data-md="">
-           <p>Let there be a new <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline⑨">outline</a> for the new <var>current outline owner</var>,
+           <p>Let there be a new <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⓪">outline</a> for the new <var>current outline owner</var>,
 initialized with just the new <var>current section</var> as the only <a data-link-type="dfn" href="sections.html#section" id="ref-for-section③">section</a> in the outline.</p>
          </li></ol>
         </dd><dt>When exiting a <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②⑧">sectioning content</a> element, if the stack is not empty
@@ -2646,11 +2654,11 @@ that be the heading for the <var>current section</var>.</p>
            <p>Pop the top element from the stack, and let the <var>current outline owner</var> be
 that element.</p>
           </li><li data-md="">
-           <p>Let <var>current section</var> be the last section in the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⓪">outline</a> of the <var>current outline owner</var> element.</p>
+           <p>Let <var>current section</var> be the last section in the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①①">outline</a> of the <var>current outline owner</var> element.</p>
           </li><li data-md="">
-           <p>Append the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①①">outline</a> of the <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②⑨">sectioning content</a> element being exited to
+           <p>Append the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①②">outline</a> of the <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2②⑨">sectioning content</a> element being exited to
 the <var>current section</var>. (This does not change which section is the last
-section in the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①②">outline</a>.)</p>
+section in the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①③">outline</a>.)</p>
          </li></ol>
         </dd><dt>When entering a <a data-link-type="dfn" href="sections.html#sectioning-roots" id="ref-for-sectioning-roots①①">sectioning root</a> element
         </dt><dd>
@@ -2665,7 +2673,7 @@ section in the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-
           </li><li data-md="">
            <p>Let <var>current section</var> be a newly created <a data-link-type="dfn" href="sections.html#section" id="ref-for-section④">section</a> for the <var>current outline owner</var> element.</p>
           </li><li data-md="">
-           <p>Let there be a new <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①③">outline</a> for the new <var>current outline owner</var>,
+           <p>Let there be a new <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①④">outline</a> for the new <var>current outline owner</var>,
 initialized with just the new <var>current section</var> as the only <a data-link-type="dfn" href="sections.html#section" id="ref-for-section⑤">section</a> in the outline.</p>
          </li></ol>
         </dd><dt>When exiting a <a data-link-type="dfn" href="sections.html#sectioning-roots" id="ref-for-sectioning-roots①②">sectioning root</a> element, if the stack is not empty
@@ -2693,10 +2701,10 @@ that element.</p>
         </dt><dd>
           If the <var>current section</var> has no heading, let the element being entered be the
     heading for the <var>current section</var>. 
-         <p>Otherwise, if the heading of the last section of the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①④">outline</a> of the <var>current outline owner</var> is an implied heading, or if the heading being
+         <p>Otherwise, if the heading of the last section of the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑤">outline</a> of the <var>current outline owner</var> is an implied heading, or if the heading being
     entered has a <a data-link-type="dfn" href="sections.html#rank" id="ref-for-rank⑥">rank</a> equal to or higher than the heading of the last section
-    of the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑤">outline</a> of the <var>current outline owner</var>, then
-    create a new <a data-link-type="dfn" href="sections.html#section" id="ref-for-section⑥">section</a> and append it to the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑥">outline</a> of the <var>current outline owner</var> element, so that this new section is the new last
+    of the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑥">outline</a> of the <var>current outline owner</var>, then
+    create a new <a data-link-type="dfn" href="sections.html#section" id="ref-for-section⑥">section</a> and append it to the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑦">outline</a> of the <var>current outline owner</var> element, so that this new section is the new last
     section of that outline. Let <var>current section</var> be that new section. Let the
     element being entered be the new heading for the <var>current section</var>.</p>
          <p>Otherwise, run these substeps:</p>
@@ -2708,7 +2716,7 @@ that element.</p>
 which section is the last section in the outline.) Let <var>current section</var> be
 this new section. Let the element being entered be the new heading for the <var>current section</var>. Abort these substeps.</p>
           </li><li data-md="">
-           <p>Let <var>new candidate section</var> be the <a data-link-type="dfn" href="sections.html#section" id="ref-for-section⑧">section</a> that contains <var>candidate section</var> in the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑦">outline</a> of <var>current outline owner</var>.</p>
+           <p>Let <var>new candidate section</var> be the <a data-link-type="dfn" href="sections.html#section" id="ref-for-section⑧">section</a> that contains <var>candidate section</var> in the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑧">outline</a> of <var>current outline owner</var>.</p>
           </li><li data-md="">
            <p>Let <var>candidate section</var> be <var>new candidate section</var>.</p>
           </li><li data-md="">
@@ -2732,15 +2740,15 @@ associated, if any.</p>
      </li></ol>
      <p>The tree of sections created by the algorithm above, or a proper subset thereof, must be used
     when generating document outlines, for example when generating tables of contents.</p>
-     <p>The outline created for <a href="sections.html#the-body-element">the <code>body</code> element</a> of a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/dom/#document" id="ref-for-document①①④">Document</a></code> is the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑧">outline</a> of the entire document.</p>
+     <p>The outline created for <a href="sections.html#the-body-element">the <code>body</code> element</a> of a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/dom/#document" id="ref-for-document①①④">Document</a></code> is the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑨">outline</a> of the entire document.</p>
      <p>When creating an interactive table of contents, entries should jump the user to the relevant <a data-link-type="dfn" href="dom.html#sectioning-content-2" id="ref-for-sectioning-content-2③②">sectioning content</a> element, if the <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①③">section</a> was created for a real element in the
     original document, or to the relevant <a data-link-type="dfn" href="dom.html#heading-content-2" id="ref-for-heading-content-2⑥">heading content</a> element, if the <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①④">section</a> in
     the tree was generated for a heading in the above process.</p>
      <p class="note" role="note"> Selecting the first <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①⑤">section</a> of the document therefore always takes the user to the top
       of the document, regardless of where the first heading in the <code>body</code> is to be
       found. </p>
-     <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="outline-depth">outline depth</dfn> of a <a data-link-type="dfn" href="dom.html#heading-content-2" id="ref-for-heading-content-2⑦">heading content</a> element associated with a <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①⑥">section</a> <var>section</var> is the number of <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①⑦">sections</a> that are ancestors of <var>section</var> in the outermost <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline①⑨">outline</a> that <var>section</var> finds itself in when
-    the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline②⓪">outlines</a> of its <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/dom/#document" id="ref-for-document①①⑤">Document</a></code>'s elements are created, plus 1. The <a data-link-type="dfn" href="sections.html#outline-depth" id="ref-for-outline-depth">outline depth</a> of a <a data-link-type="dfn" href="dom.html#heading-content-2" id="ref-for-heading-content-2⑧">heading content</a> element not associated with a <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①⑧">section</a> is 1.</p>
+     <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="outline-depth">outline depth</dfn> of a <a data-link-type="dfn" href="dom.html#heading-content-2" id="ref-for-heading-content-2⑦">heading content</a> element associated with a <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①⑥">section</a> <var>section</var> is the number of <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①⑦">sections</a> that are ancestors of <var>section</var> in the outermost <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline②⓪">outline</a> that <var>section</var> finds itself in when
+    the <a data-link-type="dfn" href="sections.html#outline" id="ref-for-outline②①">outlines</a> of its <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/dom/#document" id="ref-for-document①①⑤">Document</a></code>'s elements are created, plus 1. The <a data-link-type="dfn" href="sections.html#outline-depth" id="ref-for-outline-depth">outline depth</a> of a <a data-link-type="dfn" href="dom.html#heading-content-2" id="ref-for-heading-content-2⑧">heading content</a> element not associated with a <a data-link-type="dfn" href="sections.html#section" id="ref-for-section①⑧">section</a> is 1.</p>
      <p>User agents should provide default headings for sections that do not have explicit section
     headings.</p>
      <div class="example" id="example-1f147945">
@@ -9736,9 +9744,9 @@ and the HTML 5.3 First Public Working Draft</a>
     </li><li><a href="dom.html#ref-for-outline①">3.2.8.2.3. Sectioning content</a> <a href="dom.html#ref-for-outline②">(2)</a>
     </li><li><a href="sections.html#ref-for-outline③">4.3.3. The section element</a>
     </li><li><a href="sections.html#ref-for-outline④">4.3.7. The header element</a>
-    </li><li><a href="sections.html#ref-for-outline⑤">4.3.9.1. Creating an outline</a> <a href="sections.html#ref-for-outline⑥">(2)</a> <a href="sections.html#ref-for-outline⑦">(3)</a> <a href="sections.html#ref-for-outline⑧">(4)</a> <a href="sections.html#ref-for-outline⑨">(5)</a> <a href="sections.html#ref-for-outline①⓪">(6)</a> <a href="sections.html#ref-for-outline①①">(7)</a> <a href="sections.html#ref-for-outline①②">(8)</a> <a href="sections.html#ref-for-outline①③">(9)</a> <a href="sections.html#ref-for-outline①④">(10)</a> <a href="sections.html#ref-for-outline①⑤">(11)</a> <a href="sections.html#ref-for-outline①⑥">(12)</a> <a href="sections.html#ref-for-outline①⑦">(13)</a> <a href="sections.html#ref-for-outline①⑧">(14)</a> <a href="sections.html#ref-for-outline①⑨">(15)</a> <a href="sections.html#ref-for-outline②⓪">(16)</a>
-    </li><li><a href="grouping-content.html#ref-for-outline②①">4.4.3. The hr element</a>
-    </li><li><a href="grouping-content.html#ref-for-outline②②">4.4.14. The main element</a>
+    </li><li><a href="sections.html#ref-for-outline⑤">4.3.9.1. Creating an outline</a> <a href="sections.html#ref-for-outline⑥">(2)</a> <a href="sections.html#ref-for-outline⑦">(3)</a> <a href="sections.html#ref-for-outline⑧">(4)</a> <a href="sections.html#ref-for-outline⑨">(5)</a> <a href="sections.html#ref-for-outline①⓪">(6)</a> <a href="sections.html#ref-for-outline①①">(7)</a> <a href="sections.html#ref-for-outline①②">(8)</a> <a href="sections.html#ref-for-outline①③">(9)</a> <a href="sections.html#ref-for-outline①④">(10)</a> <a href="sections.html#ref-for-outline①⑤">(11)</a> <a href="sections.html#ref-for-outline①⑥">(12)</a> <a href="sections.html#ref-for-outline①⑦">(13)</a> <a href="sections.html#ref-for-outline①⑧">(14)</a> <a href="sections.html#ref-for-outline①⑨">(15)</a> <a href="sections.html#ref-for-outline②⓪">(16)</a> <a href="sections.html#ref-for-outline②①">(17)</a>
+    </li><li><a href="grouping-content.html#ref-for-outline②②">4.4.3. The hr element</a>
+    </li><li><a href="grouping-content.html#ref-for-outline②③">4.4.14. The main element</a>
    </li></ul>
   </aside>
   <aside class="dfn-panel" data-for="section">
