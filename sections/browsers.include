@@ -1002,6 +1002,7 @@
     attribute DOMString name;
     [PutForwards=href, Unforgeable] readonly attribute Location location;
     readonly attribute History history;
+    readonly attribute CustomElementRegistry customElements;
     [Replaceable] readonly attribute BarProp locationbar;
     [Replaceable] readonly attribute BarProp menubar;
     [Replaceable] readonly attribute BarProp personalbar;
@@ -1072,7 +1073,7 @@
 
     <dd>
 
-    Returns the <code>Window</code> object of the <a>active document</a>.
+    Returns the {{Window}} object of the <a>active document</a>.
 
     </dd>
 
@@ -1095,6 +1096,9 @@
   The <dfn attribute for="Document"><code>defaultView</code></dfn> IDL attribute of the {{Document}}
   interface must return the {{Document}}'s <a>browsing context</a>'s {{WindowProxy}} object, if
   there is one, or null otherwise.
+
+  The <dfn attribute for="Window"><code>customElements</code></dfn> attribute returns the
+  {{CustomElementRegistry}} associated with that {{Window}} object.
 
   <hr />
 
@@ -2008,12 +2012,12 @@
     do the same thing) to access each other. (Can't be set in sandboxed <{iframe}>s.)
     </dd>
   </dl>
-  
-  A string <var>hostSuffixString</var> 
+
+  A string <var>hostSuffixString</var>
   <dfn data-lt="is a registrable domain suffix of or is equal to|
-  is not a registrable domain suffix of and is not equal to">is a registrable domain suffix of, or is equal to</dfn> a 
+  is not a registrable domain suffix of and is not equal to">is a registrable domain suffix of, or is equal to</dfn> a
   <a data-lt="origin host">host</a> <var>originalHost</var> if the following algorithm returns <code>true</code>:
-  
+
   1. If <var>hostSuffixString</var> is the empty string, then return <code>false</code>.
   1. Let <var>host</var> be the result of <span data-x="host parser">parsing</span> <var>hostSuffixString</var>.
   1. If <var>host</var> is failure, then return <code>false</code>.
@@ -2047,7 +2051,7 @@
   1. If this {{Document}} object's <a>active sandboxing flag set</a> has its
       <a>sandboxed <code>document.domain</code> browsing context flag</a> set, then throw a
       "{{SecurityError}}" {{DOMException}}.
-  1. Let <var>effectiveDomain</var> be this {{Document}}'s [=concept/origin=]'s 
+  1. Let <var>effectiveDomain</var> be this {{Document}}'s [=concept/origin=]'s
       <a>effective domain</a>.
   1. If <var>effectiveDomain</var> is null, then throw a "{{SecurityError}}" {{DOMException}}.
   1. If the given value <span data-x="is a registrable domain suffix of or is equal to">is not
@@ -2422,7 +2426,7 @@
   <a>StructuredDeserialize</a>) serialized state.</p>
 
   Pages can <a method for="History" lt="pushState()">add</a> <a>serialized state</a> to the
-  session history. These are then <a>deserialized</a> and 
+  session history. These are then <a>deserialized</a> and
   <a attribute for="WindowEventHandlers" lt="onpopstate">returned to the script</a> when the
   user (or script) goes back in the history, thus enabling authors to use the
   "navigation" metaphor even in one-page applications.

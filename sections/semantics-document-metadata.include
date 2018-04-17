@@ -352,7 +352,7 @@
     <dd><code>sizes</code> — Sizes of the icons (for <{link/rel}>="<code>icon</code>")</dd>
     <dd><code>as</code> — Destination for a preload request (for <{link/rel}>="<code>preload</code>")</dd>
     <dd>
-      Also, the <{link/title}> attribute has special semantics on this element:  Title of the
+      Also, the <{link/title}> attribute has special semantics on this element: Title of the
       link; alternative style sheet set name.
     </dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -392,16 +392,18 @@
   The <dfn element-attr for="link"><code>crossorigin</code></dfn> attribute is a
   <a>CORS settings attribute</a>. It is intended for use with <a>external resource links</a>.
 
-  The types of link indicated (the relationships) are given by the value of the
-  <dfn element-attr for="link"><code>rel</code></dfn> attribute, which, if present, must have a
-  value that is a <a>set of space-separated tokens</a>. The <a>allowed keywords and their
-  meanings</a> are defined in a later section. If the <{link/rel}> attribute is absent, has no
-  keywords, or if none of the keywords used are allowed according to the definitions in this
-  specification, then the element does not create any links.
+  Along with the <{link/href}> attribute, a <{link}> element must have a <{link/rel}> attribute
+  with a value that is a <a>set of space-separated tokens</a> (keywords).
+
+  These keywords identify the relationships the types of indicated links have to the document.
+  The <a>allowed keywords and their meanings</a> are defined in a later section. If the
+  <{link/rel}> attribute is absent, has no keywords, or if none of the keywords used are allowed
+  according to the definitions in this specification, then the <{link}> element does not create
+  any links.
 
   <{link/rel}>'s [=supported tokens=] are the keywords defined in [=HTML link types=] which are
-  allowed on <{link}> elements, impact the processing model, and are supported by the user agent.
-  The possible [=supported tokens=] are
+  allowed to be used with <{link}> elements, impact the processing model, and are supported by
+  the user agent. The possible [=supported tokens=] are
   <{link/alternate}>,
   <code>dns-prefetch</code>,
   <{link/icon}>,
@@ -414,14 +416,12 @@
   <{link/search}>,
   <code data-x="rel-serviceworker">serviceworker</code>, and
   <{link/stylesheet}>.
-  <{link/rel}>'s <a>supported tokens</a> must only include the tokens from this list that the user
-  agent implements the processing model for.
-
-  A <{link}> element must have a <{link/rel}> attribute.
+  A <{link/rel}>'s [=supported tokens=] must only include the tokens (keywords) from this list
+  that the user agent implements the processing model for.
 
   If a <{link}> element has a <{link/rel}> attribute that contains only keywords that are
   <a>body-ok</a>, then the element is said to be <dfn>allowed in the body</dfn>. This means
-  that the element can be used where <a>phrasing content</a> is expected.
+  that the <code>link</code> element can be used where <a>phrasing content</a> is expected.
 
   Two categories of links can be created using the <{link}> element:
   <a>Links to external resources</a> and <a>hyperlinks</a>. The <a>link types</a> section defines
@@ -434,8 +434,8 @@
   <p class="note">
     Each link created for a <{link}> element is handled separately. For instance, if there
     are two <{link}> elements with <code>rel="stylesheet"</code>, they each count as a
-    separate external resource, and each is affected by its own attributes independently. Similarly,
-    if a single <{link}> element has a <{link/rel}> attribute with the value
+    separate external resource, and each is affected by its own attributes independently.
+    Similarly, if a single <{link}> element has a <{link/rel}> attribute with the value
     <code>next stylesheet</code>, it creates both a <a>hyperlink</a> (for the <code>next</code>
     keyword) and an <a>external resource link</a> (for the <code>stylesheet</code> keyword), and
     they are affected by other attributes (such as <code>media</code> or <{global/title}>)
@@ -466,12 +466,13 @@
   The <dfn element-attr for="link"><code>media</code></dfn> attribute says which media the resource
   applies to. The value must be a <a>valid media query list</a>.
 
-  The <dfn element-attr for="link"><code>integrity</code></dfn> attribute represents the <a>integrity metadata</a>
-  for requests which this element is responsible for. The value is text. The attribute must not be specified on 
-  <{link}> elements that do not have a <{link/rel}> attribute that contains the <{link/stylesheet}> keyword. [[!SRI]]
+  The <dfn element-attr for="link"><code>integrity</code></dfn> attribute represents the
+  <a>integrity metadata</a> for requests which this element is responsible for. The value is text.
+  The attribute must not be specified on <{link}> elements that do not have a <{link/rel}>
+  attribute that contains the <{link/stylesheet}> keyword. [[!SRI]]
 
-  The <dfn element-attr for="link"><code>hreflang</code></dfn> attribute on the <{link}> element has
-  the same semantics as the {{HTMLLinkElement/hreflang}} attribute on the <{a}> element.
+  The <dfn element-attr for="link"><code>hreflang</code></dfn> attribute on the <{link}> element
+  has the same semantics as the {{HTMLLinkElement/hreflang}} attribute on the <{a}> element.
 
   The <dfn element-attr for="link"><code>type</code></dfn> attribute gives the <a>MIME type</a> of
   the linked resource. It is purely advisory. The value must be a <a>valid mime type</a>.
@@ -519,8 +520,11 @@
 
   The <dfn element-attr for="link"><code>as</code></dfn> attribute specifies the <a>potential destination</a> for a preload request for the resource given by the <code>href</code> attribute. It is an [=enumerated attribute=]. Each <a>potential destination</a> is a keyword for this attribute, mapping to a state of the same name. The attribute must be specified on <{link}> elements that have a <{link/rel}> attribute that contains the <{link/preload}> keyword, but must not be specified on <{link}> elements which do not. The processing model for how the <{link/as}> attribute is used is given in the steps to <a>obtain the resource</a>.
 
-  <p class="note">The attribute does not have a [=missing value default=] or [=invalid value default=], meaning that invalid or missing values for the attribute map to no state. This is accounted for in the processing
-  model.</p>
+  <p class="note">
+    The attribute does not have a [=missing value default=] or [=invalid value default=], meaning
+    that invalid or missing values for the attribute map to no state. This is accounted for in the
+    processing model.
+  </p>
 
   <hr>
 
@@ -691,7 +695,7 @@
 
   The <a>task source</a> for these <a>tasks</a> is the <a>DOM manipulation task source</a>.
 
-  Unless otherwise specified for a given <{link/rel}> keyword, the element must 
+  Unless otherwise specified for a given <{link/rel}> keyword, the element must
   <a>delay the load event</a> of the element's <a>node document</a> until all the
   attempts to obtain the resource and its <a>critical subresources</a> are complete. (Resources
   that the user agent has not yet attempted to obtain, e.g., because it is waiting for the resource
@@ -1414,12 +1418,12 @@
 
   A <dfn>character encoding declaration</dfn> is a mechanism by which the <a>character encoding</a>
   used to store or transmit a document is specified.
-  
+
   The only acceptable character encoding declaration for the modern web is <a>UTF-8</a>.
-  
+
   This must be identified by the <a>character encoding</a> label's value being an
   <a>ASCII case-insensitive</a> match for the string "<code>utf-8</code>".
-  
+
   Regardless of whether a character encoding declaration is present or not, the actual character
   encoding used to encode the document must be <a>UTF-8</a>. [[!ENCODING]]
 
