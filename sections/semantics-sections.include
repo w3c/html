@@ -1470,18 +1470,27 @@
 <h5 id="creating-an-outline">Creating an outline</h5>
 
   <p class="warning">
-    There are currently no known native implementations of the outline algorithm in graphical browsers or
-    assistive technology user agents, although the algorithm is implemented in other software such
-    as conformance checkers and browser extensions. Therefore the <a>outline</a> algorithm
-  cannot be relied upon to convey document structure to users. Authors should use heading <a>rank</a>
-    (<code>h1</code>-<code>h6</code>) to convey document structure.
+    There are currently no known native implementations of the outline algorithm in graphical
+    browsers or assistive technology user agents, although the algorithm is implemented in other
+    software such as conformance checkers and browser extensions. Additionally, there is an
+    [alternate outline algorithm proposal](https://github.com/whatwg/html/pull/3499)
+    being developed. Any implementation and usage of this different algorithm will be
+    tracked, and may result in significant future changes to the <a>outline</a> algorithm.
+
+    Therefore, the <a>outline</a> algorithm cannot be relied upon to convey document structure
+    to users. Authors should use heading <a>rank</a> (<code>h1</code>-<code>h6</code>) to
+    convey document structure.
   </p>
-<p><em>This section is non-normative</em></p>
-    This section defines an algorithm for creating an outline for a <a>sectioning content</a>
-    element or a <a>sectioning root</a> element. It is defined in terms of a walk over the nodes
-    of a DOM tree, in <a>tree order</a>, with each node being visited when it is <i>entered</i> and
-    when it is <i>exited</i> during the walk. Each time a node is visited, it can be seen as
-    triggering an <i>enter</i> or <i>exit</i> event.
+
+  <p>
+    <em>This section is non-normative</em>
+  </p>
+
+  This section defines an algorithm for creating an outline for a <a>sectioning content</a>
+  element or a <a>sectioning root</a> element. It is defined in terms of a walk over the nodes
+  of a DOM tree, in <a>tree order</a>, with each node being visited when it is <i>entered</i> and
+  when it is <i>exited</i> during the walk. Each time a node is visited, it can be seen as
+  triggering an <i>enter</i> or <i>exit</i> event.
 
     <div class="example">
       The following pseudocode fragment:
@@ -1497,19 +1506,20 @@
       </pre>
 
       ...exemplifies how to recursively traverse the node tree and when to trigger the <i>enter</i>
-      and <i>exit</i> events. See the <a href="#javascript-tree-walk-example">JavaScript example</a>
-      for a possible, non-recursive JavaScript implementation.
+      and <i>exit</i> events.
+      See the <a href="#javascript-tree-walk-example">JavaScript example</a> for a possible,
+      non-recursive JavaScript implementation.
     </div>
 
-  The <dfn>outline</dfn> for a <a>sectioning content</a> element or a <a>sectioning root</a> element
-  consists of a list of one or more potentially nested <a>sections</a>. The element for which an
-  <a>outline</a> is created is said to be <dfn>the outline's owner</dfn>.
+  The <dfn>outline</dfn> for a <a>sectioning content</a> element or a <a>sectioning root</a>
+  element consists of a list of one or more potentially nested <a>sections</a>. The element for
+  which an <a>outline</a> is created is said to be <dfn>the outline's owner</dfn>.
 
   A <dfn>section</dfn> is a container that corresponds to some nodes in the original DOM tree. Each
   section can have one heading associated with it, and can contain any number of further nested
-  subsections. The algorithm for the outline also associates each node in the DOM
-  tree with a particular section and potentially a heading. (The sections in the outline
-  aren't <a element>section</a> elements, though some may correspond to such elements — they are
+  subsections. The algorithm for the outline also associates each node in the DOM tree with a
+  particular section and potentially a heading. (The sections in the outline aren't
+  <a element>section</a> elements, though some may correspond to such elements — they are
   merely conceptual sections.)
 
   <div class="example">
@@ -1529,8 +1539,8 @@
     ...results in the following outline being created for the <code>body</code> node (and thus the
     entire document):
 
-    1. Section created for <code>body</code> node. Associated with heading "A". Also associated with
-        paragraph "B". Nested sections:
+    1. Section created for <code>body</code> node. Associated with heading "A". Also associated
+        with paragraph "B". Nested sections:
         1. Section implied for first <code>h2</code> element. Associated with heading "C". Also
             associated with paragraph "D". No nested sections.
         2. Section implied for second <code>h2</code> element. Associated with heading "E". Also
