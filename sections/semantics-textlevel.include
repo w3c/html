@@ -148,7 +148,7 @@
             exception.
         2. Abort these steps without following the hyperlink.
     3. If the target of the <code>click</code> event is an <{img}> element with an
-        <code>ismap</code> attribute specified, then server-side image map processing must be
+        <{img/ismap}> attribute specified, then server-side image map processing must be
         performed, as follows:
         1. If the <code>click</code> event was a real pointing-device-triggered <code>click</code>
             event on the <{img}> element, then let |x| be the distance in CSS
@@ -174,6 +174,7 @@
     The IDL attributes <dfn attribute for="HTMLAnchorElement"><code>download</code></dfn>,
     <dfn attribute for="HTMLAnchorElement"><code>target</code></dfn>,
     <dfn attribute for="HTMLAnchorElement"><code>rel</code></dfn>,
+    <dfn attribute for="HTMLAnchorElement"><code>rev</code></dfn>,
     <dfn attribute for="HTMLAnchorElement"><code>hreflang</code></dfn>, and
     <dfn attribute for="HTMLAnchorElement"><code>type</code></dfn>, must <a>reflect</a> the
     respective content attributes of the same name.
@@ -2921,7 +2922,6 @@
     This element <a href="#bidireq">has rendering requirements involving the bidirectional algorithm</a>.
   </p>
 
-
   <div class="example">
     This element is especially useful when embedding user-generated content with an unknown
     directionality.
@@ -2943,11 +2943,37 @@
       <img src="images/sample-bdi.png" />
       <figcaption>When using the <{bdi}> element, the username acts as expected.</figcaption>
     </figure>
+  </div>
+
+  <div class="example">
+    The <{bdi}> element is a shorthand for <{span/dir}> with a value of <code>auto</code>, so the <code>dir</code> attribute can be applied to another element to achieve the same result.
+
+    For example, the <{b}> element may be used to draw attention to part of the content:
 
     <figure>
       <img src="images/sample-not-bdi.png" />
       <figcaption>If the <{bdi}> element were to be replaced by a <{b}> element, the username would confuse the bidirectional algorithm and the third bullet would end up saying "User 3 :", followed by the Arabic name (right-to-left), followed by "posts" and a period.</figcaption>
     </figure>
+
+    In this case the <{bdi}> and <{b}> elements could both be used, but where there is an existing element available, the shortest way to achieve the same result is to apply the <code>dir</code> attribute directly to the <b> element:
+
+    <xmp highlight="html">
+      <ul>
+        <li>User <b dir="auto">jcranmer</b>: 12 posts.</li>
+        <li>User <b dir="auto">hober</b>: 5 posts.</li>
+        <li>User <b dir="auto">إيان</b>: 3 posts.</li>
+      </ul>
+    </xmp>
+
+    When there is no existing element available, the <{bdi}> element can be used to achieve the same effect.
+
+    <xmp highlight="html">
+      <ul>
+        <li>User <bdi>jcranmer</bdi>: 12 posts.</li>
+        <li>User <bdi>hober</bdi>: 5 posts.</li>
+        <li>User <bdi>إيان</bdi>: 3 posts.</li>
+      </ul>
+    </xmp>
 
   </div>
 
@@ -2978,7 +3004,7 @@
   </dl>
 
   The <{bdo}> element <a>represents</a> explicit text directionality formatting
-  control for its children. It allows authors to override the Unicode bidirectional algorithm by
+  control for its children. It allows authors to override the Unicode bidirectional algorithm while
   explicitly specifying a direction override. [[!BIDI]]
 
   Authors must specify the <{global/dir}> attribute on this element, with the
@@ -2989,29 +3015,26 @@
     This element <a href="#bidireq">has rendering requirements involving the bidirectional algorithm</a>.
   </p>
 
-  <div class="example">
-      This example shows how the <{bdo}> element can be used to alter directionality formatting:
-
-      <xmp highlight="html">
-        <bdi><bdo dir="rtl">English is a left-to-right language.</bdo></bdi>
-      </xmp>
-
-      <bdi><bdo dir="rtl">English is a left-to-right language.</bdo></bdi>
-
-      This effect is achieved by applying the <code>rtl</code> attribute to the <{bdo}> element.
-  </div>
+  <p class="note">
+    The effect of using the <{bdo}> element is to <em>completely disable</em> the bidirectional algorithm. This means that characters within the <{bdo}> element will be displayed exactly as stored in memory and in the direction specified.
+    This is different than the <{bdi}> element, where the characters will be re-ordered and re-arranged according to the directional algorithm. Use the <{bdo}> element only if you specifically want to disable the bidirectional algorithm completely for that text.
+  </p>
 
   <div class="example">
-      If character encoding isn't <a href="https://w3c.github.io/html/infrastructure.html#encoding-terminology">appropriately defined</a>, the characters of <abbr>RTL</abbr> languages
-      may appear in reverse order. For example:
+  The following example shows the difference in rendering between the <{bdi}> and <{bdo}> element.
+    <xmp highlight="html">
+    <bdi dir="rtl">שלום Majima! מה שלומך היום?</bdi>
+    <bdo dir="rtl">שלום Majima! מה שלומך היום?</bdo>
+    <bdo dir="ltr">שלום Majima! מה שלומך היום?</bdo>
+    </xmp>
 
-      <bdi><bdo dir="ltr">עֶזרָה</bdo></bdi>
+    <bdi dir="rtl">שלום Majima! מה שלומך היום?</bdi><br>
+    <bdo dir="rtl">שלום Majima! מה שלומך היום?</bdo><br>
+    <bdo dir="ltr">שלום Majima! מה שלומך היום?</bdo>
 
-      <xmp highlight="html">
-        <bdi><bdo dir="ltr">עֶזרָה</bdo></bdi>
-      </xmp>
+    In this example, you can see the latin characters in the <{bdi}> element being rendered from left-to-right, whereas the rest of the text being rendered right-to-left. This is because the bidirectional algorithm recognizes latin characters and automatically applies a left-to-right rendering for just those characters.
 
-      In this example, Hebrew characters have been reversed from their normal right to left order.
+    In the <{bdo}> text, the bidirectional algorithm is disabled. So the text will be rendered character by character in the direction specified, in a sequential order corresponding to that of the characters in memory.
   </div>
 
 <h4 id="the-span-element">The <dfn element><code>span</code></dfn> element</h4>
