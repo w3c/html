@@ -2350,4 +2350,72 @@
 
   Some of these requirements are checked during [=create an element|element creation=],
   and failing to follow them will result in a custom element that cannot be instantiated by the parser or DOM APIs.</p>
+
+  <h4 id="sec-the-slot-element">The <code>slot</code> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd><a>Flow content</a>.</dd>
+    <dd><a>Phrasing content</a>.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>Where <a>phrasing content</a> is expected.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd><a>Transparent</a></dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>Neither tag is omissible</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dd><{slot/name}> - the name of the slot created.</dd>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd>
+      <a href="#allowed-aria-roles-states-and-properties">Any role value</a>.
+    </dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
+    <dd>Any <code>aria-*</code> attributes</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl">
+      [Exposed=Window, HTMLConstructor]
+interface HTMLSlotElement : HTMLElement {
+[CEReactions] attribute DOMString name;
+sequence<Node> assignedNodes(optional AssignedNodesOptions options);
+sequence<Element> assignedElements(optional AssignedNodesOptions options);
+};
+
+dictionary AssignedNodesOptions {
+boolean flatten = false;
+};
+      </pre>
+    </dd>
+    <dt>
+      DPub Roles:
+    </dt>
+    <dd>
+      Any
+    </dd>
+  </dl>
+
+  The <{slot}> element creates a named <a>slot</a> within a <a>shadow tree</a>.
+  If it has an <a>assigned node</a> it <a>represents</a> that, if not it <a>represents</a> its contents.
+
+  The <dfn element-attr for="slot">name</dfn> attribute's value is a string.
+  It <a>represents</a> the name of the <a>slot</a> created in a shadow tree.
+
+  The {{slot/name}} IDL attribute must <a>reflect</a> the <{slot/name}> content attribute.
+
+  <dl class="domintro">
+  <dt><var>slot</var> . <code>name</code></dt>
+  <dd>Get or set the slot's name.</dd>
+  <dt><var>slot</var> . <code>assignedNodes()</code></dt>
+  <dd>Returns the slot's <a>assigned nodes</a>.</dd>
+  <dt><var>slot</var> . <code>assignedNodes({{ flatten: true}})</code></dt>
+  <dd>Returns the slot's <a>assigned nodes</a>, including those of any <{slot}> elements that are descendants, calculated recursively. If there are not <a>assigned nodes</a> it returns the elements children.</dd>
+  <dt><var>slot</var> . <code>assignedElements()</code></dt>
+  <dd>Returns the slot's <a>assigned nodes</a> that are <a>Elements</a>.</dd>
+  <dt><var>slot</var> . <code>assignedElements({{ flatten: true}})</code></dt>
+  <dd>Returns the slot's <a>assigned nodes</a> that are <a>Elements</a>, including those of any <{slot}> elements that are descendants, calculated recursively. If there are not <a>assigned nodes</a> it returns the elements children.</dd>
+  </dl>
+
+
+
 </section>
