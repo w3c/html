@@ -2376,15 +2376,15 @@
     <dd>
       <pre class="idl" data-highlight="webidl">
       [Exposed=Window, HTMLConstructor]
-interface HTMLSlotElement : HTMLElement {
-[CEReactions] attribute DOMString name;
-sequence<Node> assignedNodes(optional AssignedNodesOptions options);
-sequence<Element> assignedElements(optional AssignedNodesOptions options);
-};
+        interface HTMLSlotElement : HTMLElement {
+          [CEReactions] attribute DOMString name;
+          sequence<Node> assignedNodes(optional AssignedNodesOptions options);
+          sequence<Element> assignedElements(optional AssignedNodesOptions options);
+        };
 
-dictionary AssignedNodesOptions {
-boolean flatten = false;
-};
+        dictionary AssignedNodesOptions {
+          boolean flatten = false;
+        };
       </pre>
     </dd>
     <dt>
@@ -2408,14 +2408,35 @@ boolean flatten = false;
   <dd>Get or set the slot's name.</dd>
   <dt><var>slot</var> . <code>assignedNodes()</code></dt>
   <dd>Returns the slot's <a>assigned nodes</a>.</dd>
-  <dt><var>slot</var> . <code>assignedNodes({{ flatten: true}})</code></dt>
+  <dt><var>slot</var> . <code>assignedNodes({ flatten: true})</code></dt>
   <dd>Returns the slot's <a>assigned nodes</a>, including those of any <{slot}> elements that are descendants, calculated recursively. If there are not <a>assigned nodes</a> it returns the elements children.</dd>
   <dt><var>slot</var> . <code>assignedElements()</code></dt>
   <dd>Returns the slot's <a>assigned nodes</a> that are <a>Elements</a>.</dd>
-  <dt><var>slot</var> . <code>assignedElements({{ flatten: true}})</code></dt>
-  <dd>Returns the slot's <a>assigned nodes</a> that are <a>Elements</a>, including those of any <{slot}> elements that are descendants, calculated recursively. If there are not <a>assigned nodes</a> it returns the elements children.</dd>
+  <dt><var>slot</var> . <code>assignedElements({ flatten: true})</code></dt>
+  <dd>Returns only the <a>Elements</a> that would be returned by
+    <code>assignedNodes({ flatten: true})</code>.</dd>
   </dl>
 
+  The <dfn method for="slot"><code>assignedNodes()</code></dfn>, when invoked on an element <var>element</var>,
+  and given <code>options</code> <var>options</var>, must run the following algorithm:
 
+  <ol>
+    <li>If the <code>flatten</code> member of <var>options</var> is <code>false</code>,
+      return the element's <a>assigned nodes</a>.</li>
+    <li>otherwise, return the result of <a>finding flattened slottables</a> for <var>element</var>.</li>
+  </ol>
+
+  The <dfn method for="slot"><code>assignedElements()</code></dfn>, when invoked on an element <var>element</var>,
+  and given <code>options</code> <var>options</var>, must run the following algorithm:
+
+  <ol>
+    <li>Let <var>result</var> be empty.</li>
+    <li>If the <code>flatten</code> member of <var>options</var> is <code>false</code>,
+      set <var>result</var> to the element's <a>assigned nodes</a>.</li>
+    <li>otherwise, set <var>result</var> to the result of <a>finding flattened slottables</a>
+     for <var>element</var>.</li>
+    <li>Remove all <a>nodes</a> from <var>result</var> that are not <a>elements</a>.</li>
+    <li>Return <var>result</var>.</li>
+  </ol>
 
 </section>
