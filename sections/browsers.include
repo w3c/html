@@ -573,32 +573,32 @@
 
   <hr />
 
-  <dfn>The rules for choosing a browsing context given a browsing context name</dfn> are as
-  follows. The rules assume that they are being applied in the context of a <a>browsing
-  context</a>, as part of the execution of a <a>task</a>.
+  <dfn>The rules for choosing a browsing context</dfn> as part of the execution of a task,
+  from within a given browsing context <var>context</var>, for a <a>browsing context name</a> <var>name</var>,
+  are as follows:
 
   <ol>
 
-    <li>If the given browsing context name is the empty string or <code>_self</code>, then
+    <li>If <var>name</var> is the empty string or <code>_self</code>, then
     the chosen browsing context must be the current one.</li>
 
-    <li>If the given browsing context name is <code>_parent</code>, then the chosen
+    <li>If <var>name</var> is <code>_parent</code>, then the chosen
     browsing context must be the <a><em>parent</em> browsing context</a> of the current one,
     unless there isn't one, in which case the chosen browsing context must be the current browsing
     context.</li>
 
-    <li>If the given browsing context name is <code>_top</code>, then the chosen browsing
+    <li>If <var>name</var> is <code>_top</code>, then the chosen browsing
     context must be the <a>top-level browsing context</a> of the current one, if there is one,
     or else the current browsing context.</li>
 
-    <li>If the given browsing context name is not <code>_blank</code> and there exists a
-    browsing context whose <a lt="browsing context name">name</a> is the same as the given
-    browsing context name, and the current browsing context is familiar with that
-    browsing context, and the user agent determines that the two browsing contexts are related
-    enough that it is ok if they reach each other, then that browsing context must be the chosen
+    <li>If <var>name</var> is not <code>_blank</code> and there exists a
+    browsing context whose <a lt="browsing context name">name</a> is the same as <var>name</var>,
+    within the <a>unit of related browsing contexts</a>, then that browsing context must be the chosen
     one. If there are multiple matching browsing contexts, the user agent should select one in some
     arbitrary consistent manner, such as the most recently opened, most recently focused, or more
     closely related.</li>
+
+    <p class="warning">This non-deterministic approach is likely to change in a future version of HTML.</p>
 
     <li>
     Otherwise, a new browsing context is being requested, and what happens depends on the user
@@ -1215,7 +1215,7 @@
     </li>
 
     <li>If <var>target browsing context</var> was just created, either as part of <a>the rules
-    for choosing a browsing context given a browsing context name</a> or due to the user
+    for choosing a browsing context</a> given a browsing context name or due to the user
     indicating a preference for navigating a new <a>top-level browsing context</a>, then let
     <var>new</var> be true. Otherwise, let it be false.</li>
 
@@ -2330,8 +2330,8 @@
 
   Every <a>top-level browsing context</a> has a <dfn>popup sandboxing flag set</dfn>, which
   is a <a>sandboxing flag set</a>. When a <a>browsing context</a> is created, its
-  <a>popup sandboxing flag set</a> must be empty. It is populated by <a>the rules for
-  choosing a browsing context given a browsing context name</a>.
+  <a>popup sandboxing flag set</a> must be empty. It is populated by
+  <a>the rules for choosing a browsing context</a>.
 
   Every <a>nested browsing context</a> has an <dfn><code>iframe</code> sandboxing flag
   set</dfn>, which is a <a>sandboxing flag set</a>. Which flags in a
