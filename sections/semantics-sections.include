@@ -1623,7 +1623,8 @@
                 <var>current outline owner</var> onto the stack.
             2. Let <var>current outline owner</var> be the element that is being entered.
             3. Let <var>current outline owner</var>'s <i>parent section</i> be
-                <var>current section</var>.
+                <var>current section</var>. (This will associate <var>current outline owner</var>
+                with <var>current section</var>.)
             4. Let <var>current section</var> be a newly created <a>section</a> for the
                 <var>current outline owner</var> element.
             5. Let there be a new <a>outline</a> for the new <var>current outline owner</var>,
@@ -1659,17 +1660,20 @@
 
           <dt>When entering a <a>heading content</a> element</dt>
           <dd>
-            If the <var>current section</var> has no heading, let the element being entered be the
-            heading for the <var>current section</var>.
+            If the <var>current section</var> has no heading:
+            1. Let the element being entered be the heading for the <var>current section</var>. 
+            2. Associate the element being entered with <var>current section</var>.
 
             Otherwise, if the heading of the last section of the <a>outline</a> of the
             <var>current outline owner</var> is an implied heading, or if the heading being
             entered has a <a>rank</a> equal to or higher than the heading of the last section
-            of the <a>outline</a> of the <var>current outline owner</var>, then
-            create a new <a>section</a> and append it to the <a>outline</a> of the
-            <var>current outline owner</var> element, so that this new section is the new last
-            section of that outline. Let <var>current section</var> be that new section. Let the
-            element being entered be the new heading for the <var>current section</var>.
+            of the <a>outline</a> of the <var>current outline owner</var>:
+            1. Create a new <a>section</a> and append it to the <a>outline</a> of the
+                <var>current outline owner</var> element, so that this new section is the new last
+                section of that outline.
+            2. Let <var>current section</var> be that new section.
+            3. Let the element being entered be the new heading for the <var>current section</var>.
+            4. Associate the element being entered with <var>current section</var>.
 
             Otherwise, run these substeps:
             1. Let <var>candidate section</var> be <var>current section</var>.
@@ -1678,12 +1682,13 @@
                 <a>section</a>, and append it to <var>candidate section</var>. (This does not change
                 which section is the last section in the outline.) Let <var>current section</var> be
                 this new section. Let the element being entered be the new heading for the
+                <var>current section</var>. Associate the element being entered with
                 <var>current section</var>. Abort these substeps.
             3. Let <var>new candidate section</var> be the <a>section</a> that contains
                 <var>candidate section</var> in the <a>outline</a> of
                 <var>current outline owner</var>.
             4. Let <var>candidate section</var> be <var>new candidate section</var>.
-            5. Return to the step labeled <i>heading loop</i>.
+            5. Return to the step labeled <i>Heading loop</i>.
 
             Push the element being entered onto the stack. (This causes the algorithm to skip any
             descendants of the element.)
@@ -1698,13 +1703,11 @@
           <dd>Do nothing.</dd>
         </dl>
 
-        In addition, whenever the walk exits a node, after doing the steps above, if the node is not
-        associated with a <a>section</a> yet, <dfn lt="associate section">associate the node with the <a>section</a></dfn>
-        <var>current section</var>.
+        In addition, whenever the walk exits an element or a non-element node, after doing the steps
+        above, if the node is not associated with a <a>section</a> yet,
+        <dfn lt="associate section">associate the node with the <a>section</a></dfn> <var>current section</var>.
 
-    5. Associate all non-element nodes that are in the subtree for which an outline is being created
-        with the <a>section</a> with which their parent element is associated.
-    6. Associate all nodes in the subtree with the heading of the <a>section</a> with which they are
+    5. Associate all nodes in the subtree with the heading of the <a>section</a> with which they are
         associated, if any.
 
     The tree of sections created by the algorithm above, or a proper subset thereof, must be used
