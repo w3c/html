@@ -7,7 +7,7 @@
   This source produces Chapter 6: Loading Web pages
   https://w3c.github.io/html/browsers.html
 
-  It covers Window and WindowProxy objects,
+  It covers documment, Window and WindowProxy objects,
   concepts including Origin, Browsing Context, Navigating between pages
     (and when it is allowed), the effect of sandboxing on navigating, and the like.
 
@@ -100,24 +100,26 @@
 
          <p class="note">The internal slot value is updated when navigations occur.</p>
       * Let <var>realm execution context</var> be the created <a>JavaScript execution context</a>.
-  2. Set the new <a>browsing context</a>'s associated {{WindowProxy}} to <var>windowProxy</var>.
-  3. Let <var>document</var> be a new {{Document}}, whose [=url/URL=] is
+  1. Set the new <a>browsing context</a>'s associated {{WindowProxy}} to <var>windowProxy</var>.
+  1. Let <var>document</var> be a new {{Document}}, whose [=url/URL=] is
       <a scheme>about:blank</a>, which is marked as being an <a>HTML document</a>, whose
       <a>character encoding</a> is UTF-8, and which is both [=ready for post-load tasks=] and
       <a>completely loaded</a> immediately.
-  4. Set the [=concept/origin=] of <var>document</var>:
+  1. Set the [=concept/origin=] of <var>document</var>:
       * If the new <a>browsing context</a> has a <a>creator browsing context</a>, then the
          [=concept/origin=] of <var>document</var> is the <a>creator origin</a>.
       * Otherwise, the [=concept/origin=] of <var>document</var> is a unique
          <a>opaque origin</a> assigned when the new <a>browsing context</a> is created.
-  5. If the new <a>browsing context</a> has a <a>creator browsing context</a>, then set
-      <var>document</var>'s <a>referrer</a> to the <a>creator URL</a>.
-  6. Ensure that <var>document</var> has a single child <{html}> node, which itself has two empty
+  1. If the new <a>browsing context</a> has a <a>creator browsing context</a>, then set
+             <var>document</var>'s <a>referrer</a> to the <a>creator URL</a>.
+  1. If the new <a>browsing context</a> has a <a>creator browsing context</a>, then set
+                 <var>document</var>'s <a>referrer policy</a> to the <a>creator referrer policy</a>.
+  1. Ensure that <var>document</var> has a single child <{html}> node, which itself has two empty
       child nodes: a <{head}> element, and a <{body}> element.
-  7. <a>Implement the sandboxing</a> for <var>document</var>.
-  8. Add <var>document</var> to the new <a>browsing context</a>'s <a>session history</a>.
-  9. Set <var>window</var>'s associated {{Document}} to <var>document</var>.
-  10. <a>Set up a browsing context environment settings object</a> with
+  1. <a>Implement the sandboxing</a> for <var>document</var>.
+  1. Add <var>document</var> to the new <a>browsing context</a>'s <a>session history</a>.
+  1. Set <var>window</var>'s associated {{Document}} to <var>document</var>.
+  1. <a>Set up a browsing context environment settings object</a> with
        <var>realm execution context</var>.
 
 <h4 id="sec-nested-browsing-contexts"><dfn lt="nested browsing contexts|nested browsing context">Nested browsing contexts</dfn></h4>
@@ -981,7 +983,7 @@
       2. If <var>setter</var> is undefined, return false.
       3. Perform <a>Call</a>(<var>setter</var>, <var>Receiver</var>, «V»).
       4. Return true.
-  4. Return false.
+  4. Throw a {{SecurityError}} {{DOMException}}.
 
 <h5 id="crossoriginownpropertykeys-algorithm"><dfn>CrossOriginOwnPropertyKeys</dfn> ( <var>O</var> )</h5>
 
@@ -1042,6 +1044,8 @@
 
     unsigned long requestAnimationFrame(FrameRequestCallback callback);
     void cancelAnimationFrame(unsigned long handle);
+
+    void postMessage(any message, USVString targetOrigin, optional sequence&lt;object&gt; transfer = []);
     };
     Window implements GlobalEventHandlers;
     Window implements WindowEventHandlers;
@@ -1431,7 +1435,8 @@
     have a <code>name</code> content attribute whose value is <var>name</var>, or</li>
 
     <li><a>HTML elements</a> that have an <{global/id}> content attribute
-    whose value is <var>name</var>.</li>
+    whose value is <var>name</var> and are <a>in a document tree</a> with the <a>active document</a>
+    as their <a>root</a>.</li>
 
   </ul>
 
@@ -1684,7 +1689,7 @@
 
 <h6 id="windowproxy-setprototypeof-algorithm">[[<dfn lt="windowproxy setprototypeof">SetPrototypeOf</dfn>]] ( V )</h6>
 
-  1. Return false.
+  1. Return ! <a>SetImmutablePrototype</a>(<b>this</b>,<var>V</var>).
 
 <h6 id="windowproxy-isextensible-algorithm">[[<dfn lt="windowproxy isextensible">IsExtensible</dfn>]] ( )</h6>
 
@@ -1737,7 +1742,7 @@
       <a>OrdinaryDefineOwnProperty</a>(<var>W</var>, <var>P</var>, <var>Desc</var>).
 
       <p class="note">See above about how this violates JavaScript's internal method invariants.</p>
-  4. Return false.
+  4. Throw a "{{SecurityError}}" {{DOMException}}.
 
 <h6 id="windowproxy-get-algorithm">[[<dfn lt="windowproxy get">Get</dfn>]] ( <var>P</var>, <var>Receiver</var> )</h6>
 
@@ -1762,7 +1767,7 @@
       <em>this</em>.
   3. If <a>IsPlatformObjectSameOrigin</a>(<var>W</var>) is true, then return
       <a>OrdinaryDelete</a>(<var>W</var>, <var>P</var>).
-  4. Return false.
+  4. Throw a "{{SecurityError}}" {{DOMException}}.
 
 <h6 id="windowproxy-ownpropertykeys-algorithm">[[<dfn lt="windowproxy ownpropertykeys">OwnPropertyKeys</dfn>]] ( )</h6>
 
@@ -2223,6 +2228,14 @@
 
     </dd>
 
+    <dt>The <dfn>sandboxed orientation lock browsing context flag</dfn></dt>
+
+    <dd>
+
+    This flag blocks the ability to lock screen orientation. [[!SCREEN-ORIENTATION]]
+
+    </dd>
+
     <dt>The <dfn>sandboxed presentation browsing context flag</dfn></dt>
 
     <dd>
@@ -2319,7 +2332,10 @@
       </p>
 
       <p class="warning">There is only one known native implementation of the <code>allow-presentation</code> token (Chrome/Blink). Therefore this feature should not be relied upon until it becomes interoperable.</p>
-  </li>
+      </li>
+
+      <li>The <a>sandboxed orientation lock browsing context flag</a>, unless <var>tokens</var>
+      contains the <dfn><code>allow-orientation-lock</code></dfn> keyword.</li>
     </ul>
 
     </li>
