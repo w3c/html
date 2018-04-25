@@ -794,14 +794,55 @@
   <a>reflect</a> the content attribute of the same name. The value must be
   <a>limited to only non-negative numbers greater than zero</a>.
 
+  <div class="example">
+    The following example shows how a <{colgroup}> consisting of three <{col}> elements can
+    utilize CSS to help visually format the columns of a <{table}>.
+
+    <xmp highlight="html">
+      <table style="width: 100%;">
+        <colgroup style="background: #ccc;">
+          <col style="background: #ddd; width: 30%;">
+          <col style="background: #eee; width: 50%;">
+          <col style="width: 20%;">
+        </colgroup>
+        <tbody>
+          <tr>
+            <td>...</td>
+            <td>...</td>
+            <td>...</td>
+          </tr>
+          <!-- ... -->
+        </tbody>
+      </table>
+    </xmp>
+
+    The next example shows how a <{colgroup}> with no child <{col}> elements can use
+    the <{colgroup/span}> attribute. The applied CSS will render the first two columns with
+    a background color, and set their width to 25%, leaving the last column with no background
+    color, and taking up the remaining width of the <{table}>.
+
+    <xmp highlight="html">
+      <table style="width: 100%;">
+        <colgroup style="background: #eee; width: 25%;" span="2"></colgroup>
+        <tbody>
+          <tr>
+            <td>...</td>
+            <td>...</td>
+            <td>...</td>
+          </tr>
+          <!-- ... -->
+        </tbody>
+      </table>
+    </xmp>
+  </div>
+
 <h4 id="the-col-element">The <dfn element><code>col</code></dfn> element</h4>
 
   <dl class="element">
     <dt><a>Categories</a>:</dt>
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <{colgroup}> element that doesn't have
-    a <code>span</code> attribute.</dd>
+    <dd>As a child of a <{colgroup}> element that doesn't have a <code>span</code> attribute.</dd>
     <dt><a>Content model</a>:</dt>
     <dd><a>Nothing</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
@@ -815,24 +856,27 @@
     <dd>None</dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
-    {{HTMLTableColElement}}, same as for <{colgroup}> elements. This interface defines one member,
-    {{HTMLTableColElement/span}}.
+      {{HTMLTableColElement}}, same as for <{colgroup}> elements.
+      This interface defines one member, {{HTMLTableColElement/span}}.
     </dd>
   </dl>
 
-  If a <{col}> element has a parent and that is a <{colgroup}> element that
-  itself has a parent that is a <{table}> element, then the <{col}> element
-  <a>represents</a> one or more <a>columns</a> in the <a>column group</a> represented by that <{colgroup}>.
+  If a <{col}> element has a parent and that is a <{colgroup}> element that itself has a parent
+  that is a <{table}> element, then the <{col}> element <a>represents</a> one or more
+  <a>columns</a> in the <a>column group</a> represented by that <{colgroup}>.
 
   The element may have a <dfn element-attr for="col"><code>span</code></dfn> content attribute
   specified, whose value must be a <a>valid non-negative integer</a> greater than zero.
 
-  The <{col}> element and its <code>span</code> attribute take
-  part in the <a>table model</a>.
+  The <{col}> element and its <code>span</code> attribute take part in the <a>table model</a>.
 
-  The {{HTMLTableColElement/span}} IDL attribute must <a>reflect</a>
-  the content attribute of the same name. The value must be <a>limited to only non-negative
-  numbers greater than zero</a>.
+  The {{HTMLTableColElement/span}} IDL attribute must <a>reflect</a> the content attribute of the
+  same name. The value must be <a>limited to only non-negative numbers greater than zero</a>.
+
+  <p class="note">
+    For examples of the <{col}> element, refer to the examples within the <{colgroup}> section,
+    and the section for <a href="#examples">table examples</a>.
+  </p>
 
 <h4 id="the-tbody-element">The <dfn element><code>tbody</code></dfn> element</h4>
 
@@ -890,6 +934,12 @@
 
   The <{tbody}> element takes part in the <a>table model</a>.
 
+  <p class="note">
+    For examples of the <{tbody}> element, refer to the <{table}> examples within
+    <a href="#sec-techniques-for-describing-tables">techniques for describing tables</a>, and
+    the section for <a href="#examples">table examples</a>.
+  </p>
+
   <dl class="domintro">
 
     <dt><var>tbody</var> . <code>rows</code></dt>
@@ -906,8 +956,7 @@
     the argument, and returns the <{tr}>.
 
     The position is relative to the rows in the table section. The index -1, which is the
-    default if the argument is omitted, is equivalent to inserting at the end of the table
-    section.
+    default if the argument is omitted, is equivalent to inserting at the end of the table section.
 
     If the given position is less than -1 or greater than the number of rows, throws an
     {{IndexSizeError}} exception.
@@ -965,18 +1014,18 @@
     <dt><a>Categories</a>:</dt>
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <{table}> element, after any
-    <{caption}>, and <code>colgroup</code>
-    elements and before any <{tbody}>, <{tfoot}>, and
-    <{tr}> elements, but only if there are no other
-    <{thead}> elements that are children of the
-    <{table}> element.</dd>
+    <dd>
+      As a child of a <{table}> element, after any <{caption}>, and <code>colgroup</code>
+      elements and before any <{tbody}>, <{tfoot}>, and <{tr}> elements, but only if there
+      are no other <{thead}> elements that are children of the <{table}> element.
+    </dd>
     <dt><a>Content model</a>:</dt>
     <dd>Zero or more <code>tr</code> and <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
-    <dd>A <{thead}> element's <a>end tag</a> may be omitted if
-  the <{thead}> element is immediately followed by a <code>tbody</code> or
-  <{tfoot}> element.</dd>
+    <dd>
+      A <{thead}> element's <a>end tag</a> may be omitted if the <{thead}> element is immediately
+      followed by a <code>tbody</code> or <{tfoot}> element.
+    </dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -987,8 +1036,10 @@
     </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.</dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>{{HTMLTableSectionElement}}, as defined for <{tbody}> elements.</dd>
   </dl>
@@ -1001,7 +1052,7 @@
 
   <div class="example">
     This example shows a <{thead}> element being used. Notice the use of the
-    <code>th</code> element to provide headers in the <{thead}> element:
+    <{th}> element to provide headers in the <code>thead</code> element:
 
     <xmp highlight="html">
       <table border="1">
@@ -1039,11 +1090,11 @@
     <dt><a>Categories</a>:</dt>
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
-    <dd>As a child of a <{table}> element, after any
-    <{caption}>, <{colgroup}>, <{thead}>,
-    <{tbody}>, and <{tr}> elements, but only if there
-    are no other <{tfoot}> elements that are children of the
-    <{table}> element.</dd>
+    <dd>
+      As a child of a <{table}> element, after any <{caption}>, <{colgroup}>, <{thead}>,
+      <{tbody}>, and <{tr}> elements, but only if there are no other <{tfoot}> elements that
+      are children of the <{table}> element.
+    </dd>
     <dt><a>Content model</a>:</dt>
     <dd>Zero or more <code>tr</code> and <a>script-supporting elements</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
@@ -1074,6 +1125,46 @@
   a parent and it is a <{table}>.
 
   The <{tfoot}> element takes part in the <a>table model</a>.
+
+  <div class="example">
+    The following example uses a <{tfoot}> to indicate a summary of the total monthly spending,
+    earnings, and holdings.
+
+    <pre highlight="html">
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th scope="col"&gt;Month&lt;/th&gt;
+            &lt;th scope="col"&gt;Spending&lt;/th&gt;
+            &lt;th scope="col"&gt;Earnings&lt;/th&gt;
+            &lt;th scope="col"&gt;Holdings&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          &lt;tr&gt;
+            &lt;th scope="row"&gt;January&lt;/th&gt;
+            &lt;td&gt;$800&lt;/td&gt;
+            &lt;td&gt;$700&lt;/td&gt;
+            &lt;td&gt;-$100&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;th scope="row"&gt;February&lt;/th&gt;
+            &lt;td&gt;$900&lt;/td&gt;
+            &lt;td&gt;$935&lt;/td&gt;
+            &lt;td&gt;+$35&lt;/td&gt;
+          &lt;/tr&gt;
+        &lt;/tbody&gt;
+        <mark>&lt;tfoot&gt;
+          &lt;tr&gt;
+            &lt;th scope="row"&gt;Totals&lt;/th&gt;
+            &lt;td&gt;$1,700&lt;/td&gt;
+            &lt;td&gt;$1,635&lt;/td&gt;
+            &lt;td&gt;-$65&lt;/td&gt;
+          &lt;/tr&gt;
+        &lt;/tfoot&gt;</mark>
+      &lt;/table&gt;
+    </pre>
+  </div>
 
 <h4 id="the-tr-element">The <dfn element><code>tr</code></dfn> element</h4>
 
@@ -1616,8 +1707,8 @@
   columns are implied.
 
   A <dfn lt="row group|row groups">row group</dfn> is a set of <a>rows</a> anchored at a slot (0, <var>group<sub>y</sub></var>) with a particular <var>height</var> such that the row group
-  covers all the slots with coordinates (<var>x</var>, <var>y</var>) where 0&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>x<sub>width</sub></var> and <var>group<sub>y</sub></var>&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>group<sub>y</sub></var>+<var>height</var>. Row groups correspond to
-  <{tbody}>, <{thead}>, and <{tfoot}> elements. Not every row is necessarily in a row group.
+  covers all the slots with coordinates (<var>x</var>, <var>y</var>) where 0&nbsp;≤&nbsp;<var>x</var>&nbsp;&lt;&nbsp;<var>x<sub>width</sub></var> and <var>group<sub>y</sub></var>&nbsp;≤&nbsp;<var>y</var>&nbsp;&lt;&nbsp;<var>group<sub>y</sub></var>+<var>height</var>. Row groups correspond
+  to <{tbody}>, <{thead}>, and <{tfoot}> elements. Not every row is necessarily in a row group.
 
   A <dfn lt="column group|column groups|group">column group</dfn> is a set of <a>columns</a>
   anchored at a slot (<var>group<sub>x</sub></var>, 0) with a particular <var>width</var> such
@@ -1626,7 +1717,8 @@
   Column groups correspond to <{colgroup}> elements. Not every column is necessarily in a column
   group.
 
-  <a>Row groups</a> cannot overlap each other. Similarly, <a>column groups</a> cannot overlap each other.
+  <a>Row groups</a> cannot overlap each other. Similarly, <a>column groups</a> cannot overlap
+  each other.
 
   A <a>cell</a> cannot cover slots that are from two or more <a>row groups</a>.
   However, it is possible for a cell to be in multiple <a>column groups</a>. All the slots that
@@ -1768,14 +1860,14 @@
 
           <li>
 
-          <i>Columns</i>: If the <var>current column</var> <{col}> element has
-          a <code>span</code> attribute, then parse its value using the
-          <a>rules for parsing non-negative integers</a>.
+          <i>Columns</i>: If the <var>current column</var> <{col}> element has a <code>span</code>
+          attribute, then parse its value using the <a>rules for parsing non-negative integers</a>.
 
-          If the result of parsing the value is not an error or zero, then let <var>span</var> be that value.
+          If the result of parsing the value is not an error or zero, then let <var>span</var>
+          be that value.
 
-          Otherwise, if the <{col}> element has no <code>span</code> attribute, or if trying to parse the attribute's value
-          resulted in an error or zero, then let <var>span</var> be 1.
+          Otherwise, if the <{col}> element has no <code>span</code> attribute, or if trying to
+          parse the attribute's value resulted in an error or zero, then let <var>span</var> be 1.
 
           </li>
 
@@ -1787,18 +1879,16 @@
 
           <li>
 
-          Let the last <var>span</var> <a>columns</a> in
-          <var>the table</var> correspond to the <var>current column</var>
-          <{col}> element.
+          Let the last <var>span</var> <a>columns</a> in <var>the table</var> correspond to the
+          <var>current column</var> <{col}> element.
 
           </li>
 
           <li>
 
-          If <var>current column</var> is not the last <{col}> element child of
-          the <{colgroup}> element, then let the <var>current column</var> be the
-          next <{col}> element child of the <{colgroup}> element, and return to
-          the step labeled <i>columns</i>.
+          If <var>current column</var> is not the last <{col}> element child of the <{colgroup}>
+          element, then let the <var>current column</var> be the next <{col}> element child of the
+          <{colgroup}> element, and return to the step labeled <i>columns</i>.
 
           </li>
 
@@ -1822,13 +1912,14 @@
 
           <li>
 
-          If the <{colgroup}> element has a <code>span</code> attribute, then parse its value using the <a>rules for parsing non-negative
-          integers</a>.
+          If the <{colgroup}> element has a <code>span</code> attribute, then parse its value
+          using the <a>rules for parsing non-negative integers</a>.
 
           If the result of parsing the value is not an error or zero, then let <var>span</var> be that value.
 
-          Otherwise, if the <{colgroup}> element has no <code>span</code> attribute, or if trying to parse the attribute's
-          value resulted in an error or zero, then let <var>span</var> be 1.
+          Otherwise, if the <{colgroup}> element has no <code>span</code> attribute, or if trying
+          to parse the attribute's value resulted in an error or zero, then let <var>span</var>
+          be 1.
 
           </li>
 
@@ -1840,9 +1931,10 @@
 
           <li>
 
-          Let the last <var>span</var> <a>columns</a> in
-          <var>the table</var> form a new <a>column
-          group</a>, anchored at the slot (<var>x<sub>width</sub></var>-<var>span</var>, 0), with width <var>span</var>, corresponding to the <{colgroup}> element.
+          Let the last <var>span</var> <a>columns</a> in <var>the table</var> form a new
+          <a>column group</a>, anchored at the slot
+          (<var>x<sub>width</sub></var>-<var>span</var>, 0), with width <var>span</var>,
+          corresponding to the <{colgroup}> element.
 
           </li>
 
@@ -1856,15 +1948,14 @@
 
       <li>
 
-      <a>Advance</a> the <var>current element</var>
-      to the next child of the <{table}>.
+      <a>Advance</a> the <var>current element</var> to the next child of the <{table}>.
 
       </li>
 
       <li>
 
-      While the <var>current element</var> is not one of the following elements, <a>advance</a> the <var>current element</var> to the
-      next child of the <code>table</code>:
+      While the <var>current element</var> is not one of the following elements, <a>advance</a>
+      the <var>current element</var> to the next child of the <code>table</code>:
 
       <ul class="brief">
         <li><{colgroup}></li>
@@ -1878,8 +1969,8 @@
 
       <li>
 
-      If the <var>current element</var> is a <{colgroup}> element, jump to the
-      step labeled <i>column groups</i> above.
+      If the <var>current element</var> is a <{colgroup}> element, jump to the step labeled
+      <i>column groups</i> above.
 
       </li>
 
@@ -1902,8 +1993,7 @@
     <li>
 
     <i>Rows</i>: While the <var>current element</var> is not one of the following
-    elements, <a>advance</a> the <var>current
-    element</var> to the next child of the <{table}>:
+    elements, <a>advance</a> the <var>current element</var> to the next child of the <{table}>:
 
     <ul class="brief">
       <li><{thead}></li>
@@ -1914,7 +2004,8 @@
 
     </li>
 
-    Run the <a>algorithm for processing row groups</a> for the first <{thead}> child of the <{table}>.
+    Run the <a>algorithm for processing row groups</a> for the first <{thead}> child of
+    the <{table}>.
 
     <li>
 
@@ -1942,21 +2033,25 @@
     <ol>
       <li>
 
-       let <var>table header</var> be the current element;</li>
+       let <var>table header</var> be the current element;
+
+       </li>
       <li>
 
         <a>advance</a> the <var>current element</var> to the next child of the <{table}>, and </li>
       <li>
 
-        return to the step labeled <i>rows</i>.</li></ol>
+        return to the step labeled <i>rows</i>.
+
+      </li></ol>
 
     </li>
 
     <li>
 
-    If the <var>current element</var> is a <{tr}> then run the <a>algorithm
-    for processing rows</a>, <a>advance</a> the <var>current element</var> to the next child
-    of the <{table}>, and return to the step labeled <i>rows</i>.
+    If the <var>current element</var> is a <{tr}> then run the
+    <a>algorithm for processing rows</a>, <a>advance</a> the <var>current element</var> to the
+    next child of the <{table}>, and return to the step labeled <i>rows</i>.
 
     </li>
 
@@ -1968,8 +2063,7 @@
 
     <li>
 
-    The <var>current element</var> is either a <code>thead</code>, <{tfoot}>, or a
-    <{tbody}>.
+    The <var>current element</var> is either a <code>thead</code>, <{tfoot}>, or a <{tbody}>.
 
     Run the <a>algorithm for processing row groups</a>.
 
@@ -1977,8 +2071,7 @@
 
     <li>
 
-    <a>Advance</a> the <var>current element</var> to
-    the next child of the <{table}>.
+    <a>Advance</a> the <var>current element</var> to the next child of the <{table}>.
 
     </li>
 
@@ -2504,7 +2597,8 @@
 
       <dt>If <var>current cell</var> is a data cell and <var>in header block</var> is true</dt>
 
-      <dd>Set <var>in header block</var> to false. Add all the cells in <var>headers from current header block</var> to the <var>opaque headers</var>
+      <dd>Set <var>in header block</var> to false. Add all the cells in
+      <var>headers from current header block</var> to the <var>opaque headers</var>
       list, and empty the <var>headers from current header block</var> list.
 
     </dd></dl>

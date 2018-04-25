@@ -53,20 +53,21 @@
     <dd>Where <a>phrasing content</a> is expected.</dd>
     <dd>Where <a>script-supporting elements</a> are expected.</dd>
     <dt><a>Content model</a>:</dt>
-    <dd>If there is no <code>src</code>
-    attribute, depends on the value of the <code>type</code> attribute, but must match
-    <a>script content restrictions</a>.</dd>
-    <dd>If there <em>is</em> a <code>src</code>
-    attribute, the element must be either empty or contain only
-    <a>script documentation</a> that also matches <a>script
-    content restrictions</a>.</dd>
+    <dd>
+      If there is no <{script/src}> attribute, depends on the value of the
+      <{script/type}> attribute, but must match <a>script content restrictions</a>.
+    </dd>
+    <dd>
+      If there <em>is</em> a <{script/src}> attribute, the element must be either empty or
+      contain only <a>script documentation</a> that also matches
+      <a>script content restrictions</a>.
+    </dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
     <dd><{script/src}> - Address of the resource</dd>
     <dd><{script/type}> - Type of embedded resource</dd>
-    <dd><{script/charset}> - Character encoding of the external script resource</dd>
     <dd><{script/async}> - Execute script <a>in parallel</a></dd>
     <dd><{script/defer}> - Defer script execution</dd>
     <dd><{script/crossorigin}> - How the element handles crossorigin requests</dd>
@@ -93,17 +94,16 @@
   </dl>
 
   The <{script}> element allows authors to include dynamic script and data blocks in
-  their documents. The element does not <a>represent</a> content for the
-  user.
+  their documents. The element does not <a>represent</a> content for the user.
 
   The <dfn element-attr for="script"><code>type</code></dfn> attribute allows customization of the
   type of script represented:
 
-  * Omitting the attribute, or setting it to a <a>JavaScript MIME type</a>, means that the script is
-     a <a>classic script</a>, to be interpreted according to the JavaScript <a for="ecma">Script</a>
-     top-level production. Classic scripts are affected by the <{script/charset}>, <{script/async}>,
-     and <{script/defer}> attributes. Authors should omit the attribute, instead of redundantly
-     giving a <a>JavaScript MIME type</a>.
+  * Omitting the attribute, or setting it to a <a>JavaScript MIME type</a>, means that the script
+     is a <a>classic script</a>, to be interpreted according to the JavaScript
+     <a for="ecma">Script</a> top-level production. Classic scripts are affected by the
+     <{script/charset}>, <{script/async}>, and <{script/defer}> attributes. Authors should omit
+     the attribute, instead of redundantly giving a <a>JavaScript MIME type</a>.
   * Setting the attribute to an <a>ASCII case-insensitive</a> match for the string
      "<code>module</code>" means that the script is a <a>module script</a>, to be interpreted
      according to the JavaScript <a>Module</a> top-level production. Module scripts are
@@ -114,12 +114,14 @@
      Authors must use a <a>valid MIME type</a> that is not a <a>JavaScript MIME type</a> to denote
      <a>data blocks</a>.
 
-  <p class="note">The requirement that <a>data blocks</a> must be denoted using a
-  <a>valid MIME type</a> is in place to avoid potential future collisions. If this specification
-  ever adds additional types of [=concept/script=], they will be triggered by setting the
-  <{script/type}> attribute to something which is not a MIME type, like how the "<code>module</code>"
-  value denotes <a>module scripts</a>. By using a valid MIME type now, you ensure that your data block
-  will not ever be reinterpreted as a different script type, even in future user agents.</p>
+  <p class="note">
+    The requirement that <a>data blocks</a> must be denoted using a <a>valid MIME type</a> is in
+    place to avoid potential future collisions. If this specification ever adds additional types
+    of [=concept/script=], they will be triggered by setting the <{script/type}> attribute to
+    something which is not a MIME type, like how the "<code>module</code>" value denotes
+    <a>module scripts</a>. By using a valid MIME type now, you ensure that your data block
+    will not ever be reinterpreted as a different script type, even in future user agents.
+  </p>
 
   <a>Classic scripts</a> and <a>module scripts</a> may either be embedded inline or may be imported
   from an external file using the <dfn element-attr for="script"><code>src</code></dfn> attribute,
@@ -131,10 +133,10 @@
   respectively. [[ECMA-262]]
 
   When used to include <a>data blocks</a>, the data must be embedded inline, the format of the data
-  must be given using the <{script/type}> attribute, and the contents of the <{script}> element must
-  conform to the requirements defined for the format used. The <{script/src}>, <{script/charset}>,
-  <{script/async}>, <{script/defer}>, <{script/crossorigin}>, and <{script/integrity}> attributes must
-  not be specified.
+  must be given using the <{script/type}> attribute, and the contents of the <{script}> element
+  must conform to the requirements defined for the format used. The <{script/src}>,
+  <{script/charset}>, <{script/async}>, <{script/defer}>, <{script/crossorigin}>, and
+  <{script/integrity}> attributes must not be specified.
 
   The <dfn element-attr for="script"><code>async</code></dfn> and
   <dfn element-attr for="script"><code>defer</code></dfn> attributes are <a>boolean attributes</a>
@@ -143,19 +145,19 @@
   <a>Classic scripts</a> may specify either or both of <{script/defer}> and <{script/async}>;
   <a>module scripts</a> may specify <{script/async}>.
 
-  There are several possible modes that can be selected using these attributes, and depending on the
-  script's <{script/type}>.
+  There are several possible modes that can be selected using these attributes, and depending
+  on the script's <{script/type}>.
 
-  If a <{script/defer}> attribute is present, then a classic script will be fetched <a>in parallel</a>
-  to parsing, and only evaluated when parsing is complete. The attribute has no effect on module scripts
-  or data blocks.
+  If a <{script/defer}> attribute is present, then a classic script will be fetched
+  <a>in parallel</a> to parsing, and only evaluated when parsing is complete. The attribute has
+  no effect on module scripts or data blocks.
 
   If the <{script/async}> attribute is present, then a classic or module script will be fetched
   <a>in parallel</a> to parsing. A module script will be evaluated as soon as it is available,
   (potentially before parsing completes), as will a classic script unless a <{script/defer}> attribute is present.
 
-  If neither attribute is present, the script is fetched and evaluated immediately, blocking parsing until these are
-  both complete.
+  If neither attribute is present, the script is fetched and evaluated immediately, blocking
+  parsing until these are both complete.
 
   <!--This is summarized in the following schematic diagram:
 
@@ -212,7 +214,6 @@
   set, the IDL attribute must <a>reflect</a> the <{script/async}> content attribute.
 
   <dl class="domintro">
-
     <dt><var>script</var> . {{HTMLScriptElement/text}} [ = <var>value</var> ]</dt>
     <dd>Returns the <a>child text content</a> of the element.
 
@@ -224,14 +225,15 @@
   <a>child text content</a> of the <{script}> element. On setting, it must act the same way as the
   {{Node/textContent}} IDL attribute.
 
-  <p class="note">When inserted using the {{Document/write()|document.write()}}
-  method, <{script}> elements execute (typically blocking further script execution or HTML parsing),
-  but when inserted using <code>innerHTML</code> and <code>outerHTML</code> attributes, they do not
-  execute at all.</p>
+  <p class="note">
+    When inserted using the {{Document/write()|document.write()}} method, <{script}> elements
+    execute (typically blocking further script execution or HTML parsing), but when inserted using
+    <code>innerHTML</code> and <code>outerHTML</code> attributes, they do not execute at all.
+  </p>
 
   <div class="example">
-    In this example, two <{script}> elements are used. One embeds an external <a>classic script</a>,
-    and the other includes some data as a <a>data block</a>.
+    In this example, two <{script}> elements are used. One embeds an external
+    <a>classic script</a>, and the other includes some data as a <a>data block</a>.
 
     <xmp highlight="html">
       <script src="game-engine.js"></script>
@@ -305,8 +307,8 @@
 
   <div class="example">
     The following sample shows how a <{script}> element can be used to write an inline
-    <a>module script</a> that performs a number of substitutions on the document's text, in order to
-    make for a more interesting reading experience (e.g. on a news site): [[XKCD-1288]]
+    <a>module script</a> that performs a number of substitutions on the document's text, in order
+    to make for a more interesting reading experience (e.g. on a news site): [[XKCD-1288]]
 
     <xmp highlight="html">
       <script type="module">
@@ -2094,17 +2096,17 @@
   <dt>
     <a>Allowed ARIA role attribute values</a>:
   </dt>
-
   <dd>
-    Any
+    <a href="#allowed-aria-roles-states-and-properties">Any role value</a>
   </dd>
 
   <dt>
     <a>Allowed ARIA state and property attributes</a>:
   </dt>
-
+  <dd><a>Global aria-* attributes</a></dd>
   <dd>
-    Any
+    Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the allowed roles</a>.
   </dd>
 
   <dt>
@@ -2118,35 +2120,38 @@
 
  <h5 id="customized-built-in-elements">Customized built-in elements</h5>
 
-  A <dfn export>customized built-in element</dfn> is a <a>custom element</a> that extends an existing element.
+  A <dfn export>customized built-in element</dfn> is a <a>custom element</a> that extends an
+  existing element.
   A customized built-in element's <a>local name</a> is the name of the element it extends.
   Its <a for="customElements">name</a> is called the <dfn export>is value</dfn>: the value of
   the <{global/is}> attribute when it is used in HTML.
 
-  <div class="example">For example a <{button}> has pre-defined interaction behaviour,
-      a <{tr}> already participates in the <a>table model</a>,
-      and a <{input/checkbox}> has defined behaviour and participates in form submission.
+  <div class="example">
+    For example a <{button}> has pre-defined interaction behaviour, a <{tr}> already participates
+    in the <a>table model</a>, and a <{input/checkbox}> has defined behaviour and participates in
+    form submission.
 
-      Since only existing table elements take part in the <a>table model</a>,
-      with other elements moved outside the <{table}>, creating a custom element that is part of a <{table}>
-      can only be done by customizing a built-in table element.
+    Since only existing table elements take part in the <a>table model</a>, with other elements
+    moved outside the <{table}>, creating a custom element that is part of a <{table}> can only
+    be done by customizing a built-in table element.
   </div>
 
-  A <a href="#customized-built-in-element">customized built-in element</a> inherits the semantics of the element that it extends.</p>
+  A <a href="#customized-built-in-element">customized built-in element</a> inherits the semantics of the element that it extends.
 
-  A <a>customized built-in element</a> has the same requirements for attributes as the element it extends.
-  To add custom attribute-based behavior, use [=custom data attributes|data-*=] attributes.</p>
+  A <a>customized built-in element</a> has the same requirements for attributes as the element
+  it extends.
+  To add custom attribute-based behavior, use [=custom data attributes|data-*=] attributes.
 
-  <p class="note">A <a>customized built-in element</a>'s <a>is value</a>
-   is saved on the element when it is [=create an element|created=].
-  This means changing the value of the <{global/is}> attribute after the element is
-  [=create an element|created=] does not change the element's behaviour.</p>
+  <p class="note">
+    A <a>customized built-in element</a>'s <a>is value</a> is saved on the element when it is
+    [=create an element|created=]. This means changing the value of the <{global/is}> attribute
+    after the element is [=create an element|created=] does not change the element's behaviour.
+  </p>
 
 <h4 id="requirement-for-all-custom-elements">Requirements for all custom elements</h4>
 
-  A <dfn export>valid custom element name</dfn> is a sequence of characters
-  <var>name</var> that matches the <a>PotentialCustomElementName</a> production,
-  and is not one of the following:</p>
+  A <dfn export>valid custom element name</dfn> is a sequence of characters  <var>name</var> that
+  matches the <a>PotentialCustomElementName</a> production, and is not one of the following:
 
     <ul class="brief">
       <li><code>annotation-xml</code></li>
@@ -2159,20 +2164,24 @@
       <li><code>missing-glyph</code></li>
     </ul>
 
-    <p class="note">These are all hyphen-containing element names from the <a>applicable specifications</a>: <cite>SVG</cite> and <cite>MathML</cite>. [[SVG11]] [[MATHML]]</p>
+    <p class="note">
+      These are all hyphen-containing element names from the <a>applicable specifications</a>:
+      <cite>SVG</cite> and <cite>MathML</cite>. [[SVG11]] [[MATHML]]
+    </p>
   </li>
 </ul>
 
   The <dfn export><code>PotentialCustomElementName</code></dfn> production is as follows:
-<dl>
-  <dt><a>PotentialCustomElementName</a> ::=</code></dt>
 
-  <dd><code>[a-z] (<a>PCENChar</a>)* '-' (<a>PCENChar</a>)*</code></dd>
+  <dl>
+    <dt><a>PotentialCustomElementName</a> ::=</code></dt>
 
-  <dt><code><dfn>PCENChar</dfn> ::=</code></dt>
+    <dd><code>[a-z] (<a>PCENChar</a>)* '-' (<a>PCENChar</a>)*</code></dd>
 
-  <dd><code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></dd>
-</dl>
+    <dt><code><dfn>PCENChar</dfn> ::=</code></dt>
+
+    <dd><code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></dd>
+  </dl>
 
 <p>This uses the <a>EBNF notation</a> from the <cite>XML</cite> specification. [[!XML]]</p>
 
@@ -2341,4 +2350,95 @@
 
   Some of these requirements are checked during [=create an element|element creation=],
   and failing to follow them will result in a custom element that cannot be instantiated by the parser or DOM APIs.</p>
+
+  <h4 id="sec-the-slot-element">The <code>slot</code> element</h4>
+
+  <dl class="element">
+    <dt><a>Categories</a>:</dt>
+    <dd><a>Flow content</a>.</dd>
+    <dd><a>Phrasing content</a>.</dd>
+    <dt><a>Contexts in which this element can be used</a>:</dt>
+    <dd>Where <a>phrasing content</a> is expected.</dd>
+    <dt><a>Content model</a>:</dt>
+    <dd><a>Transparent</a></dd>
+    <dt><a>Tag omission in text/html</a>:</dt>
+    <dd>Neither tag is omissible</dd>
+    <dt><a>Content attributes</a>:</dt>
+    <dd><a>Global attributes</a></dd>
+    <dd><{slot/name}> - the name of the slot created.</dd>
+    <dt>[=Allowed ARIA role attribute values=]:</dt>
+    <dd>
+      <a href="#allowed-aria-roles-states-and-properties">Any role value</a>.
+    </dd>
+    <dt>[=Allowed ARIA state and property attributes=]:</dt>
+    <dd>Any <code>aria-*</code> attributes
+    <a href="#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.</dd>
+    <dt><a>DOM interface</a>:</dt>
+    <dd>
+      <pre class="idl" data-highlight="webidl">
+      [Exposed=Window, HTMLConstructor]
+        interface HTMLSlotElement : HTMLElement {
+          [CEReactions] attribute DOMString name;
+          sequence&lt;Node&gt; assignedNodes(optional AssignedNodesOptions options);
+          sequence&lt;Element&gt; assignedElements(optional AssignedNodesOptions options);
+        };
+
+        dictionary AssignedNodesOptions {
+          boolean flatten = false;
+        };
+      </pre>
+    </dd>
+    <dt>
+      DPub Roles:
+    </dt>
+    <dd>
+      Any
+    </dd>
+  </dl>
+
+  The <{slot}> element creates a named <a>slot</a> within a <a>shadow tree</a>.
+  If it has an <a>assigned node</a> it <a>represents</a> that, if not it <a>represents</a> its contents.
+
+  The <dfn element-attr for="slot">name</dfn> attribute's value is a string.
+  It <a>represents</a> the name of the <a>slot</a> created in a shadow tree.
+
+  The {{slot/name}} IDL attribute must <a>reflect</a> the <{slot/name}> content attribute.
+
+  <dl class="domintro">
+  <dt><var>slot</var> . <code>name</code></dt>
+  <dd>Get or set the slot's name.</dd>
+  <dt><var>slot</var> . <code>assignedNodes()</code></dt>
+  <dd>Returns the slot's <a>assigned nodes</a>.</dd>
+  <dt><var>slot</var> . <code>assignedNodes({ flatten: true})</code></dt>
+  <dd>Returns the slot's <a>assigned nodes</a>, including those of any <{slot}> elements that are descendants, calculated recursively. If there are not <a>assigned nodes</a> it returns the elements children.</dd>
+  <dt><var>slot</var> . <code>assignedElements()</code></dt>
+  <dd>Returns the slot's <a>assigned nodes</a> that are <a>Elements</a>.</dd>
+  <dt><var>slot</var> . <code>assignedElements({ flatten: true})</code></dt>
+  <dd>Returns only the <a>Elements</a> that would be returned by
+    <code>assignedNodes({ flatten: true})</code>.</dd>
+  </dl>
+
+  The <dfn method for="slot"><code>assignedNodes()</code></dfn>, when invoked on an element <var>element</var>,
+  and given <code>options</code> <var>options</var>, must run the following algorithm:
+
+  <ol>
+    <li>If the <code>flatten</code> member of <var>options</var> is <code>false</code>,
+      return the element's <a>assigned nodes</a>.</li>
+    <li>otherwise, return the result of
+    [=find flattened slotables|finding flattened slottables=] for <var>element</var>.</li>
+  </ol>
+
+  The <dfn method for="slot"><code>assignedElements()</code></dfn>, when invoked on an element <var>element</var>,
+  and given <code>options</code> <var>options</var>, must run the following algorithm:
+
+  <ol>
+    <li>Let <var>result</var> be empty.</li>
+    <li>If the <code>flatten</code> member of <var>options</var> is <code>false</code>,
+      set <var>result</var> to the element's <a>assigned nodes</a>.</li>
+    <li>otherwise, set <var>result</var> to the result of
+     [=find flattened slotables|finding flattened slottables=] for <var>element</var>.</li>
+    <li>Remove all <a>nodes</a> from <var>result</var> that are not <a>elements</a>.</li>
+    <li>Return <var>result</var>.</li>
+  </ol>
+
 </section>
