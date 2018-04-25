@@ -1180,7 +1180,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version fbf1456a756299b3ff6d248d0857ec87f2e68cd7" name="generator">
   <link href="https://www.w3.org/TR/html53/" rel="canonical">
-  <meta content="1a43bb2790087dadd26f9b5812b98b65b6737065" name="document-revision">
+  <meta content="78dad381a7d2b4e216e369cd5440917603b74192" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1471,13 +1471,15 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   how this interacts with HTML.</p>
     <p>An <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="xml-parser">XML parser</dfn>, for the purposes of this specification, is a construct that follows
   the rules given in the XML specification to map a string of bytes or characters into a <code>Document</code> object.</p>
-    <p class="note" role="note"> At the time of writing, no such rules actually exist. </p>
-    <p>An <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser①⑨">XML parser</a> is either associated with a <code>Document</code> object when it is
+    <p>To create DOM nodes representing elements an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser①⑨">XML parser</a> must use the <a data-link-type="dfn" href="syntax.html#create-an-element-for-the-token" id="ref-for-create-an-element-for-the-token⑦">create an element for a token</a> algorithm,
+  or some equivalent that operates on appropriate XML datastructures,
+  to ensure the proper <a data-link-type="dfn" href="https://www.w3.org/TR/dom41/#concept-element-interface" id="ref-for-concept-element-interface④">element interfaces</a> are created and that <a data-link-type="dfn" href="semantics-scripting.html#custom-element" id="ref-for-custom-element①③">custom elements</a> are set up correctly.</p>
+    <p>An <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⓪">XML parser</a> is either associated with a <code>Document</code> object when it is
   created, or creates one implicitly.</p>
     <p>This <code>Document</code> must then be populated with DOM nodes that represent the tree
   structure of the input passed to the parser, as defined by the XML specification, the Namespaces
   in XML specification, and the DOM specification. DOM mutation events must not fire for the
-  operations that the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⓪">XML parser</a> performs on the <code>Document</code>’s tree, but the
+  operations that the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②①">XML parser</a> performs on the <code>Document</code>’s tree, but the
   user agent must act as if elements and attributes were individually appended and set respectively
   so as to trigger rules in this specification regarding what happens when an element is inserted
   into a document or has its attributes set, and the DOM specification’s requirements regarding
@@ -1511,7 +1513,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   requiring any network access for handling external subsets. <a data-link-type="biblio" href="references.html#biblio-xml">[XML]</a> </p>
     <p>XML parsers can be invoked with <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="XML scripting support disabled|XML scripting support enabled" data-noexport="" id="xml-scripting-support-disabled">XML scripting support enabled or disabled</dfn>. Except where otherwise specified, XML parsers are
   invoked with <a data-link-type="dfn" href="xhtml.html#xml-scripting-support-disabled" id="ref-for-xml-scripting-support-disabled">XML scripting support enabled</a>.</p>
-    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②①">XML parser</a> with <a data-link-type="dfn" href="xhtml.html#xml-scripting-support-disabled" id="ref-for-xml-scripting-support-disabled①">XML scripting support enabled</a> creates a <code><a data-link-type="element" href="semantics-scripting.html#elementdef-script" id="ref-for-elementdef-script①④⑥">script</a></code> element, it
+    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②②">XML parser</a> with <a data-link-type="dfn" href="xhtml.html#xml-scripting-support-disabled" id="ref-for-xml-scripting-support-disabled①">XML scripting support enabled</a> creates a <code><a data-link-type="element" href="semantics-scripting.html#elementdef-script" id="ref-for-elementdef-script①④⑥">script</a></code> element, it
   must be marked as being "<a data-link-type="dfn" href="semantics-scripting.html#parser-inserted" id="ref-for-parser-inserted①⑥">parser-inserted</a>" and its "<a data-link-type="dfn" href="semantics-scripting.html#non-blocking" id="ref-for-non-blocking①⓪">non-blocking</a>" flag
   must be unset. If the parser was originally created for the <a data-link-type="dfn" href="xhtml.html#xml-fragment-parsing-algorithm" id="ref-for-xml-fragment-parsing-algorithm">XML fragment parsing
   algorithm</a>, then the element must be marked as "<a data-link-type="dfn" href="semantics-scripting.html#already-started" id="ref-for-already-started⑥">already started</a>" also. When the
@@ -1520,28 +1522,28 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   causes there to be a <a data-link-type="dfn" href="semantics-scripting.html#pending-parsing-blocking-script" id="ref-for-pending-parsing-blocking-script⑨">pending parsing-blocking script</a>, then the user agent must run
   the following steps:</p>
     <ol>
-     <li>Block this instance of the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②②">XML parser</a>, such that the <a data-link-type="dfn" href="webappapis.html#event-loop" id="ref-for-event-loop⑧⑨">event loop</a> will not run <a data-link-type="dfn" href="webappapis.html#tasks" id="ref-for-tasks①②②">tasks</a> that invoke it.
+     <li>Block this instance of the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②③">XML parser</a>, such that the <a data-link-type="dfn" href="webappapis.html#event-loop" id="ref-for-event-loop⑧⑨">event loop</a> will not run <a data-link-type="dfn" href="webappapis.html#tasks" id="ref-for-tasks①②②">tasks</a> that invoke it.
      </li><li><a data-link-type="dfn" href="webappapis.html#spinning-the-event-loop" id="ref-for-spinning-the-event-loop⑨">Spin the event loop</a> until the parser’s <code>Document</code> <a data-link-type="dfn" href="document-metadata.html#has-no-style-sheet-that-is-blocking-scripts" id="ref-for-has-no-style-sheet-that-is-blocking-scripts②">has no
     style sheet that is blocking scripts</a> and the <a data-link-type="dfn" href="semantics-scripting.html#pending-parsing-blocking-script" id="ref-for-pending-parsing-blocking-script①⓪">pending parsing-blocking
     script</a>’s "<a data-link-type="dfn" href="semantics-scripting.html#ready-to-be-parser-executed" id="ref-for-ready-to-be-parser-executed⑥">ready to be parser-executed</a>" flag is set.
-     </li><li>Unblock this instance of the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②③">XML parser</a>, such that <a data-link-type="dfn" href="webappapis.html#tasks" id="ref-for-tasks①②③">tasks</a> that invoke it can again be run.
+     </li><li>Unblock this instance of the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②④">XML parser</a>, such that <a data-link-type="dfn" href="webappapis.html#tasks" id="ref-for-tasks①②③">tasks</a> that invoke it can again be run.
      </li><li><a data-link-type="dfn" href="semantics-scripting.html#execute-a-script-block" id="ref-for-execute-a-script-block⑤">Execute</a> the <a data-link-type="dfn" href="semantics-scripting.html#pending-parsing-blocking-script" id="ref-for-pending-parsing-blocking-script①①">pending parsing-blocking
     script</a>.
      </li><li>There is no longer a <a data-link-type="dfn" href="semantics-scripting.html#pending-parsing-blocking-script" id="ref-for-pending-parsing-blocking-script①②">pending parsing-blocking script</a>.
     </li></ol>
     <p class="note" role="note"> Since the <code class="idl"><a data-link-type="idl" href="webappapis.html#dom-document-write" id="ref-for-dom-document-write②⑤">document.write()</a></code> API is not available for <a data-link-type="dfn" href="infrastructure.html#xml-document" id="ref-for-xml-document②⑤">XML documents</a>,
-    much of the complexity in the <a data-link-type="dfn" href="syntax.html#html-parser" id="ref-for-html-parser⑤②">HTML parser</a> is not needed in the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②④">XML parser</a>. </p>
-    <p class="note" role="note"> When the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑤">XML parser</a> has <a data-link-type="dfn" href="xhtml.html#xml-scripting-support-disabled" id="ref-for-xml-scripting-support-disabled②">XML scripting support disabled</a>, none of this happens. </p>
-    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑥">XML parser</a> would append a node to a <code><a data-link-type="element" href="semantics-scripting.html#elementdef-template" id="ref-for-elementdef-template⑦④">template</a></code> element, it must instead append it to the <code><a data-link-type="element" href="semantics-scripting.html#elementdef-template" id="ref-for-elementdef-template⑦⑤">template</a></code> element’s <a data-link-type="dfn" href="semantics-scripting.html#template-contents" id="ref-for-template-contents②②">template contents</a> (a <code>DocumentFragment</code> node).</p>
+    much of the complexity in the <a data-link-type="dfn" href="syntax.html#html-parser" id="ref-for-html-parser⑤②">HTML parser</a> is not needed in the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑤">XML parser</a>. </p>
+    <p class="note" role="note"> When the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑥">XML parser</a> has <a data-link-type="dfn" href="xhtml.html#xml-scripting-support-disabled" id="ref-for-xml-scripting-support-disabled②">XML scripting support disabled</a>, none of this happens. </p>
+    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑦">XML parser</a> would append a node to a <code><a data-link-type="element" href="semantics-scripting.html#elementdef-template" id="ref-for-elementdef-template⑦④">template</a></code> element, it must instead append it to the <code><a data-link-type="element" href="semantics-scripting.html#elementdef-template" id="ref-for-elementdef-template⑦⑤">template</a></code> element’s <a data-link-type="dfn" href="semantics-scripting.html#template-contents" id="ref-for-template-contents②②">template contents</a> (a <code>DocumentFragment</code> node).</p>
     <p class="note" role="note"> This is a <a data-link-type="dfn" href="introduction.html#willful-violation" id="ref-for-willful-violation⑥">willful violation</a> of the XML specification; unfortunately, XML is not
     formally extensible in the manner that is needed for <code>template</code> processing. <a data-link-type="biblio" href="references.html#biblio-xml">[XML]</a> </p>
-    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑦">XML parser</a> creates a <code>Node</code> object, its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①③③">node document</a> must be set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①③④">node document</a> of
+    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑧">XML parser</a> creates a <code>Node</code> object, its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①③③">node document</a> must be set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①③④">node document</a> of
   the node into which the newly created node is to be inserted.</p>
     <p>Certain algorithms in this specification <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="feed the parser|spoon-feed the parser" data-noexport="" id="feed-the-parser">spoon-feed the
-  parser</dfn> characters one string at a time. In such cases, the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑧">XML parser</a> must act
+  parser</dfn> characters one string at a time. In such cases, the <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑨">XML parser</a> must act
   as it would have if faced with a single string consisting of the concatenation of all those
   characters.</p>
-    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser②⑨">XML parser</a> reaches the end of its input, it must <a data-link-type="dfn" href="syntax.html#stop-parsing" id="ref-for-stop-parsing①⑥">stop parsing</a>, following the same rules as the <a data-link-type="dfn" href="syntax.html#html-parser" id="ref-for-html-parser⑤③">HTML parser</a>. An <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser③⓪">XML
+    <p>When an <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser③⓪">XML parser</a> reaches the end of its input, it must <a data-link-type="dfn" href="syntax.html#stop-parsing" id="ref-for-stop-parsing①⑥">stop parsing</a>, following the same rules as the <a data-link-type="dfn" href="syntax.html#html-parser" id="ref-for-html-parser⑤③">HTML parser</a>. An <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser③①">XML
   parser</a> can also be <a data-link-type="dfn" href="browsers.html#abort-the-document" id="ref-for-abort-the-document①⓪">aborted</a>, which must again be done in
   the same way as for an <a data-link-type="dfn" href="syntax.html#html-parser" id="ref-for-html-parser⑤④">HTML parser</a>.</p>
     <p>For the purposes of conformance checkers, if a resource is determined to be in <a href="xhtml.html#xhtml">the XHTML syntax</a>, then it is an <a data-link-type="dfn" href="infrastructure.html#xml-document" id="ref-for-xml-document②⑥">XML document</a>.</p>
@@ -1603,7 +1605,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   context element <var>context</var>, the algorithm is as
   follows:</p>
     <ol>
-     <li>Create a new <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser③①">XML parser</a>.
+     <li>Create a new <a data-link-type="dfn" href="xhtml.html#xml-parser" id="ref-for-xml-parser③②">XML parser</a>.
      </li><li>
        <a data-link-type="dfn" href="xhtml.html#feed-the-parser" id="ref-for-feed-the-parser">Feed the parser</a> just created the string corresponding to the start tag of the <var>context</var> element, declaring all the namespace prefixes that are in scope on that
       element in the DOM, as well as declaring the default namespace (if any) that is in scope on
@@ -20471,7 +20473,8 @@ and the HTML 5.3 First Public Working Draft</a>
     </li><li><a href="semantics-scripting.html#ref-for-custom-element①⓪">4.12.5.1. Autonomous custom elements</a>
     </li><li><a href="semantics-scripting.html#ref-for-custom-element①①">4.12.5.2. Customized built-in elements</a>
     </li><li><a href="semantics-scripting.html#ref-for-custom-element①②">4.12.6. Requirements for all custom elements</a>
-    </li><li><a href="changes.html#ref-for-custom-element①③">Changes since the HTML 5.3 Second Public Working Draft</a>
+    </li><li><a href="xhtml.html#ref-for-custom-element①③">9.2. Parsing XML documents</a>
+    </li><li><a href="changes.html#ref-for-custom-element①④">Changes since the HTML 5.3 Second Public Working Draft</a>
    </li></ul>
   </aside>
   <aside class="dfn-panel" data-for="custom-element-constructor">
@@ -27811,6 +27814,7 @@ and the HTML 5.3 First Public Working Draft</a>
     </li><li><a href="syntax.html#ref-for-create-an-element-for-the-token③">8.2.5.4.2. The "before html" insertion mode</a>
     </li><li><a href="syntax.html#ref-for-create-an-element-for-the-token④">8.2.5.4.4. The "in head" insertion mode</a>
     </li><li><a href="syntax.html#ref-for-create-an-element-for-the-token⑤">8.2.5.4.7. The "in body" insertion mode</a> <a href="syntax.html#ref-for-create-an-element-for-the-token⑥">(2)</a>
+    </li><li><a href="xhtml.html#ref-for-create-an-element-for-the-token⑦">9.2. Parsing XML documents</a>
    </li></ul>
   </aside>
   <aside class="dfn-panel" data-for="insert-a-foreign-element">
@@ -28372,9 +28376,9 @@ and the HTML 5.3 First Public Working Draft</a>
     </li><li><a href="semantics-scripting.html#ref-for-xml-parser①⑥">4.12.3.1. Interaction of template elements with XSLT and XPath</a>
     </li><li><a href="browsers.html#ref-for-xml-parser①⑦">6.7.3. Page load processing model for XML files</a>
     </li><li><a href="webappapis.html#ref-for-xml-parser①⑧">7.4. Dynamic markup insertion</a>
-    </li><li><a href="xhtml.html#ref-for-xml-parser①⑨">9.2. Parsing XML documents</a> <a href="xhtml.html#ref-for-xml-parser②⓪">(2)</a> <a href="xhtml.html#ref-for-xml-parser②①">(3)</a> <a href="xhtml.html#ref-for-xml-parser②②">(4)</a> <a href="xhtml.html#ref-for-xml-parser②③">(5)</a> <a href="xhtml.html#ref-for-xml-parser②④">(6)</a> <a href="xhtml.html#ref-for-xml-parser②⑤">(7)</a> <a href="xhtml.html#ref-for-xml-parser②⑥">(8)</a> <a href="xhtml.html#ref-for-xml-parser②⑦">(9)</a> <a href="xhtml.html#ref-for-xml-parser②⑧">(10)</a> <a href="xhtml.html#ref-for-xml-parser②⑨">(11)</a> <a href="xhtml.html#ref-for-xml-parser③⓪">(12)</a>
-    </li><li><a href="xhtml.html#ref-for-xml-parser③①">9.4. Parsing XML fragments</a>
-    </li><li><a href="obsolete.html#ref-for-xml-parser③②">11.3.1. The applet element</a>
+    </li><li><a href="xhtml.html#ref-for-xml-parser①⑨">9.2. Parsing XML documents</a> <a href="xhtml.html#ref-for-xml-parser②⓪">(2)</a> <a href="xhtml.html#ref-for-xml-parser②①">(3)</a> <a href="xhtml.html#ref-for-xml-parser②②">(4)</a> <a href="xhtml.html#ref-for-xml-parser②③">(5)</a> <a href="xhtml.html#ref-for-xml-parser②④">(6)</a> <a href="xhtml.html#ref-for-xml-parser②⑤">(7)</a> <a href="xhtml.html#ref-for-xml-parser②⑥">(8)</a> <a href="xhtml.html#ref-for-xml-parser②⑦">(9)</a> <a href="xhtml.html#ref-for-xml-parser②⑧">(10)</a> <a href="xhtml.html#ref-for-xml-parser②⑨">(11)</a> <a href="xhtml.html#ref-for-xml-parser③⓪">(12)</a> <a href="xhtml.html#ref-for-xml-parser③①">(13)</a>
+    </li><li><a href="xhtml.html#ref-for-xml-parser③②">9.4. Parsing XML fragments</a>
+    </li><li><a href="obsolete.html#ref-for-xml-parser③③">11.3.1. The applet element</a>
    </li></ul>
   </aside>
   <aside class="dfn-panel" data-for="xml-scripting-support-disabled">
