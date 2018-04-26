@@ -15,7 +15,7 @@ Proposals for new elements are best discussed on the [WICG Discourse](https://di
 To make **substantive** contributions, changes that clarify or update conformance requirements, you must either participate in the W3C [Web Platform Working Group](https://www.w3.org/WebPlatform/WG/) or make a [non-member patent licensing commitment](https://www.w3.org/2004/01/pp-impl/83482/nmlc). 
 This is because the W3C Patent Policy depends on granting licenses for the [essential claims](https://www.w3.org/Consortium/Patent-Policy-20040205/#def-essential) needed to implement the spec. A list of [previous substantive contributions](https://github.com/w3c/html/pulls?q=is%3Apr+sort%3Aupdated-desc+is%3Aclosed+label%3Asubstantive) can be found on the issue tracker.
 
-If your contribution includes the work of others, please see [Contributing Documentation](https://github.com/w3c/html/blob/master/docs/contributing-documentation.md for further guidance).
+If your contribution includes the work of others, please see [Contributing Documentation](https://github.com/w3c/html/blob/master/docs/contributing-documentation.md) for further guidance.
 
 ## Tests
 
