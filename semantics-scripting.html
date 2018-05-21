@@ -1180,7 +1180,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version fbf1456a756299b3ff6d248d0857ec87f2e68cd7" name="generator">
   <link href="https://www.w3.org/TR/html53/" rel="canonical">
-  <meta content="d7475319a9828da3bd1b0613ff0250311a4cc699" name="document-revision">
+  <meta content="951d8e07aac243984fec37ef7535aad49073af0c" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -2227,8 +2227,8 @@ tag-end       =/ %x003E ; U+003E GREATER-THAN SIGN (&gt;)
 </pre>
      <p>When a <code><a data-link-type="element" href="semantics-scripting.html#elementdef-script" id="ref-for-elementdef-script⑨⑦">script</a></code> element contains <a data-link-type="dfn" href="semantics-scripting.html#script-documentation" id="ref-for-script-documentation①">script documentation</a>, there are further restrictions on
   the contents of the element, as described in the section below.</p>
-     <div class="example" id="example-47f7b3ee">
-      <a class="self-link" href="semantics-scripting.html#example-47f7b3ee"></a> The following script illustrates this issue. Suppose you have a script that contains a string,
+     <div class="example" id="example-ac8ca819">
+      <a class="self-link" href="semantics-scripting.html#example-ac8ca819"></a> The following script illustrates this issue. Suppose you have a script that contains a string,
     as in: 
 <pre class="highlight"><span class="kd">var</span> example <span class="o">=</span> <span class="s1">'Consider this string: &lt;!-- &lt;script&gt;'</span><span class="p">;</span>
 console<span class="p">.</span>log<span class="p">(</span>example<span class="p">);</span>
@@ -2241,11 +2241,10 @@ console<span class="p">.</span>log<span class="p">(</span>example<span class="p"
 <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>;
 </pre>
       <p>The bigger problem, though, and the reason why it would violate those restrictions, is that
-    actually the script would get parsed weirdly: <em>the script block above is not terminated</em>.
-    That is, what looks like a "<code>&amp;lt;/script&amp;gt;</code>" end tag in this snippet is actually still part of
-    the <code><a data-link-type="element" href="semantics-scripting.html#elementdef-script" id="ref-for-elementdef-script⑨⑨">script</a></code> block. The script doesn’t execute (since it’s not terminated); if it somehow were
-    to execute, as it might if the markup looked as follows, it would fail because the script is not
-    valid JavaScript:</p>
+    actually the script would get parsed weirdly: <em>the script block above is not terminated</em>. That is, what looks like a
+    "<code>&lt;/script&gt;</code>" end tag in this snippet is actually still part of the <code><a data-link-type="element" href="semantics-scripting.html#elementdef-script" id="ref-for-elementdef-script⑨⑨">script</a></code> block. The  script doesn’t execute (since it’s not terminated); if it somehow were to execute,
+    as it might  if the markup looked as follows, it would fail because the script is not valid
+    JavaScript:</p>
 <pre class="highlight"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
   <span class="kd">var</span> example <span class="o">=</span> <span class="s1">'Consider this string: &lt;!-- &lt;script&gt;'</span><span class="p">;</span>
   console<span class="p">.</span>log<span class="p">(</span>example<span class="p">);</span>
@@ -2255,8 +2254,9 @@ console<span class="p">.</span>log<span class="p">(</span>example<span class="p"
   <span class="p">...</span> <span class="c1">// this is the same script block still...</span>
 <span class="c1"></span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </pre>
-      <p>What is going on here is that for legacy reasons, "<code>&amp;lt;!--</code>" and "<code>&amp;lt;script</code>" strings in <code><a data-link-type="element" href="semantics-scripting.html#elementdef-script" id="ref-for-elementdef-script①⓪⓪">script</a></code> elements in HTML need to be balanced in order for the parser to consider closing the
-    block.</p>
+      <p>What is going on here is that for legacy reasons, "<code>&lt;!--</code>" and
+    "<code>&lt;script</code>" strings in <code><a data-link-type="element" href="semantics-scripting.html#elementdef-script" id="ref-for-elementdef-script①⓪⓪">script</a></code> elements in HTML need to be balanced in
+    order for the parser to consider closing the block.</p>
       <p>By escaping the problematic strings as mentioned at the top of this section, the problem is
     avoided entirely:</p>
 <pre class="highlight"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
@@ -2282,7 +2282,7 @@ console<span class="p">.</span>log<span class="p">(</span>example<span class="p"
 <span class="k">if</span> <span class="p">(</span>script <span class="o">&gt;</span> player<span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
 </pre>
       <p>Doing this also avoids a different pitfall as well: for related historical reasons, the string
-    "<code>&amp;lt;!--</code>" in <a data-link-type="dfn" href="webappapis.html#classic-script" id="ref-for-classic-script①⓪">classic scripts</a> is actually treated as a line comment start, just like
+    "<code>&lt;!--</code>" in <a data-link-type="dfn" href="webappapis.html#classic-script" id="ref-for-classic-script①⓪">classic scripts</a> is actually treated as a line comment start, just like
     "<code>//</code>".</p>
      </div>
      <h5 class="heading settled" data-level="4.12.1.4" id="inline-documentation-for-external-scripts"><span class="secno">4.12.1.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="script documentation" data-noexport="" id="script-documentation">Inline documentation for external scripts</dfn></span><a class="self-link" href="semantics-scripting.html#inline-documentation-for-external-scripts"></a></h5>
@@ -3147,7 +3147,7 @@ not-slash     = %x0000-002E / %x0030-10FFFF
       </dd><dt><a data-link-type="dfn" href="dom.html#allowed-aria-role-attribute-values" id="ref-for-allowed-aria-role-attribute-values①②⑥">Allowed ARIA role attribute values</a>:
       </dt><dd> <a href="dom.html#allowed-aria-roles-states-and-properties">Any role value</a>. 
       </dd><dt><a data-link-type="dfn" href="dom.html#allowed-aria-state-and-property-attributes" id="ref-for-allowed-aria-state-and-property-attributes①②⑥">Allowed ARIA state and property attributes</a>:
-      </dt><dd>Any <code>aria-*</code> attributes <a href="dom.html#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>.
+      </dt><dd> Any <code>aria-*</code> attributes <a href="dom.html#allowed-aria-roles-states-and-properties">applicable to the default or allowed roles</a>. 
       </dd><dt><a data-link-type="dfn" href="dom.html#dom-interface" id="ref-for-dom-interface①⓪⑥">DOM interface</a>:
       </dt><dd>
 <pre class="idl highlight def" data-highlight="webidl">[<a class="nv idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①">Exposed</a>=<span class="n">Window</span>, <a class="nv idl-code" data-link-type="extended-attribute" href="dom.html#extendedattrdef-htmlconstructor" id="ref-for-extendedattrdef-htmlconstructor⑤">HTMLConstructor</a>]
