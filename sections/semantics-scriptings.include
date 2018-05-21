@@ -27,7 +27,6 @@
   <div class="example">
     For example, instead of using script to show or hide a section to show more details, the
     <{details}> element could be used.
-
   </div>
 
   Authors are also encouraged to make their applications degrade gracefully in the absence of
@@ -37,7 +36,6 @@
     For example, if an author provides a link in a table header to dynamically resort the table,
     the link could also be made to function without scripts by requesting the sorted table from the
     server.
-
   </div>
 
 <h4 id="the-script-element">The <dfn element><code>script</code></dfn> element</h4>
@@ -170,13 +168,14 @@
 
   <p class="note">
     The exact processing details for these attributes are, for mostly historical
-  reasons, somewhat non-trivial, involving a number of aspects of HTML. The implementation
-  requirements are therefore by necessity scattered throughout the specification. The algorithms
-  below (in this section) describe the core of this processing, but these algorithms reference and
-  are referenced by the parsing rules for <{script}> [=start tag|start=] and
-  [=end tag|end=] tags in HTML, <a>in foreign content</a>, and in XML, the rules for the
-  {{Document/write()|document.write()}} method, the handling of
-  <a for="concept">scripting</a>, etc.</p>
+    reasons, somewhat non-trivial, involving a number of aspects of HTML. The implementation
+    requirements are therefore by necessity scattered throughout the specification. The algorithms
+    below (in this section) describe the core of this processing, but these algorithms reference
+    and are referenced by the parsing rules for <{script}> [=start tag|start=] and
+    [=end tag|end=] tags in HTML, <a>in foreign content</a>, and in XML, the rules for the
+    {{Document/write()|document.write()}} method, the handling of
+    <a for="concept">scripting</a>, etc.
+  </p>
 
   The <{script/defer}> attribute may be specified even if the <{script/async}> attribute is
   specified, to cause legacy Web browsers that only support <{script/defer}> (and not
@@ -369,10 +368,10 @@
   attribute added, the element's "[=non-blocking=]" flag must be unset.
 
   The fourth is a flag indicating whether or not the script block is
-  "<dfn>ready to be parser-executed</dfn>". Initially, <{script}> elements must have this flag unset
-  (script blocks, when created, are not "ready to be parser-executed"). This flag is used only for
-  elements that are also "[=parser-inserted=]", to let the parser know when to execute the
-  script.
+  "<dfn>ready to be parser-executed</dfn>". Initially, <{script}> elements must have this flag
+  unset (script blocks, when created, are not "ready to be parser-executed"). This flag is used
+  only for elements that are also "[=parser-inserted=]", to let the parser know when to execute
+  the script.
 
   The fifth is <dfn>the script's type</dfn>, which is either "<code>classic</code>" or
   "<code>module</code>". It is determined when the script is <a>prepared</a>, based on the
@@ -413,15 +412,20 @@
       <var>was-parser-inserted</var> to true and unset the element's "[=parser-inserted=]" flag.
       Otherwise, set <var>was-parser-inserted</var> to false.
 
-      <p class="note">This is done so that if parser-inserted <{script}> elements fail to run when
-      the parser tries to run them, e.g., because they are empty or specify an unsupported
-      scripting language, another script can later mutate them and cause them to run again.</p>
+      <p class="note">
+        This is done so that if parser-inserted <{script}> elements fail to run when the parser
+        tries to run them, e.g., because they are empty or specify an unsupported scripting
+        language, another script can later mutate them and cause them to run again.
+      </p>
   3. If <var>was-parser-inserted</var> is true and the element does not have an <{script/async}>
       attribute, then set the element's "[=non-blocking=]" flag to true.
 
-      <p class="note">This is done so that if a parser-inserted <{script}> element fails to run when
-      the parser tries to run it, but it is later executed after a script dynamically updates it, it
-      will execute in a non-blocking fashion even if the <{script/async}> attribute isn't set.</p>
+      <p class="note">
+        This is done so that if a parser-inserted <{script}> element fails to run when
+        the parser tries to run it, but it is later executed after a script dynamically
+        updates it, it will execute in a non-blocking fashion even if the <{script/async}>
+        attribute isn't set.
+      </p>
   4. If the element has no <{script/src}> attribute, and its child nodes, if any, consist only of
       comment nodes and empty {{Text}} nodes, then abort these steps at this point. The script is
       not executed.
@@ -444,10 +448,13 @@
 
       Otherwise, the element has a non-empty <{script/language}> attribute; let
       <var>the script block's type string</var> for this <{script}> element be the
-      concatenation of the string "<code>text/</code>" followed by the value of the <{script/language}> attribute.
+      concatenation of the string "<code>text/</code>" followed by the value of the
+      <{script/language}> attribute.
 
-      <p class="note">The <{script/language}> attribute is never conforming, and is always ignored
-      if there is a <{script/type}> attribute present.</p>
+      <p class="note">
+        The <{script/language}> attribute is never conforming, and is always ignored
+        if there is a <{script/type}> attribute present.
+      </p>
 
       Determine <a>the script's type</a> as follows:
 
@@ -769,13 +776,16 @@
   The <dfn>pending parsing-blocking script</dfn> of a {{Document}} is used by the {{Document}}'s
   parser(s).
 
-  <p class="note">If a <{script}> element that blocks a parser gets moved to another {{Document}}
-  before it would normally have stopped blocking that parser, it nonetheless continues blocking that
-  parser until the condition that causes it to be blocking the parser no longer applies (e.g., if
-  the script is a <a>pending parsing-blocking script</a> because there was
-  <a>a style sheet that is blocking scripts</a> when it was parsed, but then the script is moved to
-  another {{Document}} before the style sheet loads, the script still blocks the parser until the
-  style sheets are all loaded, at which time the script executes and the parser is unblocked).</p>
+  <p class="note">
+    If a <{script}> element that blocks a parser gets moved to another {{Document}} before it
+    would normally have stopped blocking that parser, it nonetheless continues blocking that
+    parser until the condition that causes it to be blocking the parser no longer applies
+    (e.g., if the script is a <a>pending parsing-blocking script</a> because there was
+    <a>a style sheet that is blocking scripts</a> when it was parsed, but then the script is
+    moved to another {{Document}} before the style sheet loads, the script still blocks the
+    parser until the style sheets are all loaded, at which time the script executes and the
+    parser is unblocked).
+  </p>
 
   When the user agent is required to <dfn lt="execute a script block|execute|execute the script block">execute a script block</dfn>, it must run the following steps:
 
@@ -823,23 +833,23 @@
   following and refers to JavaScript: [[!ECMA-262]]
 
   <ul class="brief">
-    <li><code>application/ecmascript</code>
-    </li><li><code>application/javascript</code>
-    </li><li><code>application/x-ecmascript</code>
-    </li><li><code>application/x-javascript</code>
-    </li><li><code>text/ecmascript</code>
-    </li><li><code>text/javascript</code>
-    </li><li><code>text/javascript1.0</code>
-    </li><li><code>text/javascript1.1</code>
-    </li><li><code>text/javascript1.2</code>
-    </li><li><code>text/javascript1.3</code>
-    </li><li><code>text/javascript1.4</code>
-    </li><li><code>text/javascript1.5</code>
-    </li><li><code>text/jscript</code>
-    </li><li><code>text/livescript</code>
-    </li><li><code>text/x-ecmascript</code>
-    </li><li><code>text/x-javascript</code>
-  </li></ul>
+    <li><code>application/ecmascript</code></li>
+    <li><code>application/javascript</code></li>
+    <li><code>application/x-ecmascript</code></li>
+    <li><code>application/x-javascript</code></li>
+    <li><code>text/ecmascript</code></li>
+    <li><code>text/javascript</code></li>
+    <li><code>text/javascript1.0</code></li>
+    <li><code>text/javascript1.1</code></li>
+    <li><code>text/javascript1.2</code></li>
+    <li><code>text/javascript1.3</code></li>
+    <li><code>text/javascript1.4</code></li>
+    <li><code>text/javascript1.5</code></li>
+    <li><code>text/jscript</code></li>
+    <li><code>text/livescript</code></li>
+    <li><code>text/x-ecmascript</code></li>
+    <li><code>text/x-javascript</code></li>
+  </ul>
 
   User agents must recognize all <a>JavaScript MIME types</a>.
 
@@ -856,25 +866,32 @@
   * `application/octet-stream`
   * `application/xml`
 
-  <p class="note">These types are explicitly listed here because they are poorly-defined types that
-  are nonetheless likely to be used as formats for data blocks, and it would be problematic if they
-  were suddenly to be interpreted as script by a user agent.</p>
+  <p class="note">
+    These types are explicitly listed here because they are poorly-defined types that
+    are nonetheless likely to be used as formats for data blocks, and it would be problematic
+    if they were suddenly to be interpreted as script by a user agent.
+  </p>
 
   When examining types to determine if they represent supported languages, user agents must not
   ignore MIME parameters. Types are to be compared including all parameters.
 
-  <p class="note">For example, types that include the <code>charset</code> parameter will not be
-  recognized as referencing any of the scripting languages listed above.</p>
+  <p class="note">
+    For example, types that include the <code>charset</code> parameter will not be
+    recognized as referencing any of the scripting languages listed above.
+  </p>
 
 <h5 id="restrictions-for-contents-of-script-elements"><dfn lt="script content restrictions">Restrictions for contents of <{script}> elements</dfn></h5>
 
-  <p class="note">The easiest and safest way to avoid the rather strange restrictions described in
-  this section is to always escape "`&lt;!--`" as "`&lt;\!--`", "`&lt;script`" as "`&lt;\script`",
-  and "`&lt;/script`" as "`&lt;\/script`" when these sequences appear in literals in scripts (e.g.,
-  in strings, regular expressions, or comments), and to avoid writing code that uses such constructs
-  in expressions. Doing so avoids the pitfalls that the restrictions in this section are prone to
-  triggering: namely, that, for historical reasons, parsing of <{script}> blocks in HTML is a
-  strange and exotic practice that acts unintuitively in the face of these sequences.</p>
+  <p class="note">
+    The easiest and safest way to avoid the rather strange restrictions described in
+    this section is to always escape "`&lt;!--`" as "`&lt;\!--`", "`&lt;script`" as
+    "`&lt;\script`", and "`&lt;/script`" as "`&lt;\/script`" when these sequences appear in
+    literals in scripts (e.g., in strings, regular expressions, or comments), and to avoid writing
+    code that uses such constructs in expressions. Doing so avoids the pitfalls that the
+    restrictions in this section are prone to triggering: namely, that, for historical reasons,
+    parsing of <{script}> blocks in HTML is a strange and exotic practice that acts unintuitively
+    in the face of these sequences.
+  </p>
 
   The {{Node/textContent}} of a <{script}> element must match the <code>script</code> production in
   the following ABNF, the character set for which is Unicode. [[!ABNF]]
@@ -1021,7 +1038,8 @@
                     ; a Unicode character other than U+002F SOLIDUS (/)
   </pre>
 
-  <p class="note">This corresponds to putting the contents of the element in JavaScript comments.
+  <p class="note">
+    This corresponds to putting the contents of the element in JavaScript comments.
   </p>
 
   <p class="note">
@@ -1140,17 +1158,21 @@
               <var>s</var>. (This, as a side-effect, causes the <{noscript}> element to be removed
               from the document.) [[!DOM-PARSING]]
 
-  <p class="note">All these contortions are required because, for historical reasons, the
-  <{noscript}> element is handled differently by the <a>HTML parser</a> based on whether
-  [=scripting flag|scripting was enabled or not=] when the parser was invoked.</p>
+  <p class="note">
+    All these contortions are required because, for historical reasons, the
+    <{noscript}> element is handled differently by the <a>HTML parser</a> based on
+    whether [=scripting flag|scripting was enabled or not=] when the parser was invoked.
+  </p>
 
   The <{noscript}> element must not be used in <a>XML documents</a>.
 
-  <p class="note">The <{noscript}> element is only effective in
-  <a href="#syntax">the HTML syntax</a>, it has no effect in <a href="#xhtml">the XHTML syntax</a>.
-  This is because the way it works is by essentially "turning off" the parser when scripts are
-  enabled, so that the contents of the element are treated as pure text and not as real elements.
-  XML does not define a mechanism by which to do this.</p>
+  <p class="note">
+    The <{noscript}> element is only effective in <a href="#syntax">the HTML syntax</a>, it has no
+    effect in <a href="#xhtml">the XHTML syntax</a>. This is because the way it works is by
+    essentially "turning off" the parser when scripts are enabled, so that the contents of the
+    element are treated as pure text and not as real elements. XML does not define a mechanism
+    by which to do this.
+  </p>
 
   The <{noscript}> element has no other requirements. In particular, children of the <{noscript}>
   element are not exempt from [[#forms-form-submission]], scripting, and so forth, even when
@@ -1265,10 +1287,11 @@
   <p>The <a>template contents</a> of a <{template}> element <a
   href="#template-syntax">are not children of the element itself</a>.</p>
 
-  <p class="note">It is also possible, as a result of DOM manipulation,
-  for a <{template}> element to contain {{Text}} nodes and element nodes;
-  however, having any is a violation of the <{template}> element's content model,
-  since its content model is defined as <a>Nothing</a>.</p>
+  <p class="note">
+    It is also possible, as a result of DOM manipulation, for a <{template}> element to contain
+    {{Text}} nodes and element nodes; however, having any is a violation of the <{template}>
+    element's content model, since its content model is defined as <a>Nothing</a>.
+  </p>
 
   <div class="example" id="template-example">
 
@@ -1368,13 +1391,13 @@
     </ol>
 
     <p class="note">
-    Each <code>Document</code> not created by this algorithm thus gets a single
-    <code>Document</code> to act as its proxy for owning the <a>template contents</a> of all
-    its <{template}> elements, so that they aren't in a <a>browsing context</a> and
-    thus remain inert (e.g., scripts do not run). Meanwhile, <{template}> elements inside
-    <code>Document</code> objects that <em>are</em> created by this algorithm just reuse the same
-    <code>Document</code> owner for their contents.
-  </p>
+      Each <code>Document</code> not created by this algorithm thus gets a single
+      <code>Document</code> to act as its proxy for owning the <a>template contents</a> of all
+      its <{template}> elements, so that they aren't in a <a>browsing context</a> and
+      thus remain inert (e.g., scripts do not run). Meanwhile, <{template}> elements inside
+      <code>Document</code> objects that <em>are</em> created by this algorithm just reuse the same
+      <code>Document</code> owner for their contents.
+    </p>
 
     </li>
 
@@ -1393,8 +1416,10 @@
     Let <var>doc</var> be <var>node</var>'s <a>node document</a>'s
     <a>appropriate template contents owner document</a>.
 
-    <p class="note"><var>node</var>'s <a>node document</a> is the <code>Document</code> object
-    that <var>node</var> was just adopted <em>into</em>.</p>
+    <p class="note">
+      <var>node</var>'s <a>node document</a> is the <code>Document</code> object
+      that <var>node</var> was just adopted <em>into</em>.
+    </p>
 
     </li>
 
@@ -1603,8 +1628,7 @@
   The <a>rules for parsing non-negative integers</a> must be used to obtain their
   numeric values. If an attribute is missing, or if parsing its value returns an error, then the
   default value must be used instead. The <code>width</code>
-  attribute defaults to 300, and the <code>height</code> attribute
-  defaults to 150.
+  attribute defaults to 300, and the <code>height</code> attribute defaults to 150.
 
   The <a>intrinsic dimensions</a> of the <{canvas}> element when it
   <a>represents</a> <a>embedded content</a> are equal to the dimensions of the
@@ -1615,7 +1639,7 @@
 
   <p class="note">
     A <{canvas}> element can be sized arbitrarily by a style sheet, its
-  bitmap is then subject to the 'object-fit' CSS property. [[!CSS3-IMAGES]]
+    bitmap is then subject to the 'object-fit' CSS property. [[!CSS3-IMAGES]]
   </p>
 
 
@@ -1623,10 +1647,10 @@
 
   The bitmaps of <{canvas}> elements, the bitmaps of <code>ImageBitmap</code> objects,
   as well as some of the bitmaps of rendering contexts, such as those described in the section on
-  the <code>CanvasRenderingContext2D</code> object below, have an <dfn for="canvas">origin-clean</dfn> flag, which can be set to true or false.
+  the <code>CanvasRenderingContext2D</code> object below, have an
+  <dfn for="canvas">origin-clean</dfn> flag, which can be set to true or false.
   Initially, when the <{canvas}> element or <code>ImageBitmap</code> object is created,
-  its bitmap's <a>origin-clean</a> flag must be set to
-  true.
+  its bitmap's <a>origin-clean</a> flag must be set to true.
 
   A <code>canvas</code> bitmap can also have a hit region list, as described in the
   <code>CanvasRenderingContext2D</code> section below.
@@ -1806,12 +1830,12 @@
 
   <small>* Vendors may define experimental contexts using the syntax <code><var>vendorname</var>-<var>context</var></code>, for example, <code>moz-3d</code>.</small>
 
-  <small>† For example, the "<code>webgl</code>" value in the case of a user agent having exhausted the
-  graphics hardware's abilities and having no software fallback implementation.</small>
+  <small>† For example, the "<code>webgl</code>" value in the case of a user agent having
+  exhausted the graphics hardware's abilities and having no software fallback
+  implementation.</small>
 
-  <small>‡ The second (and subsequent) argument(s) to the method, if
-  any, are ignored in all cases except this one. See the WebGL specification for
-  details.</small>
+  <small>‡ The second (and subsequent) argument(s) to the method, if any, are ignored in all cases
+  except this one. See the WebGL specification for details.</small>
 
   <hr />
 
@@ -1830,8 +1854,7 @@
 
     <dd>
 
-    Returns a <a scheme lt="data:"><code>data:</code> URL</a> for the image in the
-    canvas.
+    Returns a <a scheme lt="data:"><code>data:</code> URL</a> for the image in the canvas.
 
     The first argument, if provided, controls the type of the image to be returned (e.g., PNG or
     JPEG). The default is <code>image/png</code>; that type is also used if the given type
@@ -1868,28 +1891,31 @@
   <ol>
 
     <li>If the <{canvas}> element's bitmap's <a>origin-clean</a> flag is set to false, throw a
-    "{{SecurityError}}" {{DOMException}} and abort these steps.
+    "{{SecurityError}}" {{DOMException}} and abort these steps.</li>
 
-    </li><li>If the <{canvas}> element's bitmap has no pixels (i.e., either its horizontal
+    <li>If the <{canvas}> element's bitmap has no pixels (i.e., either its horizontal
     dimension or its vertical dimension is zero) then return the string "<code>data:,</code>" and abort these steps. (This is the shortest <a scheme lt="data:"><code>data:</code> URL</a>; it represents the empty string in a <code>text/plain</code> resource.)</li>
 
-    <li>Let <var>file</var> be <a>a serialization of the <code>canvas</code> element's bitmap as a file</a>, using the method's
-    arguments (if any) as the <var>arguments</var>.</li>
+    <li>
+      Let <var>file</var> be
+      <a>a serialization of the <code>canvas</code> element's bitmap as a file</a>,
+      using the method's arguments (if any) as the <var>arguments</var>.
+    </li>
 
     <li>Return a <a scheme lt="data:"><code>data:</code> URL</a> representing
-    <var>file</var>. [[!RFC2397]]
+    <var>file</var>. [[!RFC2397]]</li>
 
-  </li></ol>
+  </ol>
 
-  The <dfn method for="HTMLCanvasElement" title="toBlob(_callback, type, arguments)">toBlob(BlobCallback _callback, optional DOMString type, any... arguments)</dfn> method must run the following
-  steps:
+  The <dfn method for="HTMLCanvasElement" title="toBlob(_callback, type, arguments)">toBlob(BlobCallback _callback, optional DOMString type, any... arguments)</dfn>
+  method must run the following steps:
 
   <ol>
 
     <li>If the <{canvas}> element's bitmap's <a>origin-clean</a> flag is set to false, throw a
-    "{{SecurityError}}" {{DOMException}} and abort these steps.
+    "{{SecurityError}}" {{DOMException}} and abort these steps.</li>
 
-    </li><li>Let <var>callback</var> be the first argument.</li>
+    <li>Let <var>callback</var> be the first argument.</li>
 
     <li>Let <var>arguments</var> be the second and subsequent arguments to the method, if
     any.</li>
@@ -1906,9 +1932,11 @@
 
     <li>Return, but continue running these steps <a>in parallel</a>.</li>
 
-    <li><a>Queue a task</a> to invoke the <code>BlobCallback</code> <var>callback</var> with
-    <var>result</var> as its argument. The <a>task source</a> for this task is the <dfn>canvas
-    blob serialization task source</dfn>.</li>
+    <li>
+      <a>Queue a task</a> to invoke the <code>BlobCallback</code> <var>callback</var> with
+      <var>result</var> as its argument. The <a>task source</a> for this task is the
+      <dfn>canvas blob serialization task source</dfn>.
+    </li>
 
   </ol>
 
@@ -1920,16 +1948,18 @@
 
     <li>When rendering the actual canvas bitmap to the output device.</li>
 
-    <li>When images which contain their own gamma correction and color space information are
-    rendered onto a bitmap which has an existing color space. The image must be converted to
-    to the the bitmap's color space. (e.g., using the 2D Context's <code>drawImage()</code>
-    method with a <code>HTMLImageElement</code> object).</li>
+    <li>
+      When images which contain their own gamma correction and color space information are
+      rendered onto a bitmap which has an existing color space. The image must be converted to
+      to the the bitmap's color space. (e.g., using the 2D Context's <code>drawImage()</code>
+      method with a <code>HTMLImageElement</code> object).
+    </li>
 
   </ul>
 
   <p class="note">
     Thus, in the 2D context, colors used to draw shapes onto the canvas will exactly
-  match colors obtained through the <code>getImageData()</code> method.
+    match colors obtained through the <code>getImageData()</code> method.
   </p>
 
   The <code>toDataURL()</code> method must not include color space
@@ -1943,20 +1973,20 @@
   The gamma correction and color space information of images must be handled in such a way that
   an image rendered directly using an <{img}> element would use the same colors as one
   painted on a <{canvas}> element that is then itself rendered. Furthermore, the rendering
-  of images that have no color correction information (such as those returned by the <code>toDataURL()</code> method) must be rendered with no color
-  correction.
+  of images that have no color correction information (such as those returned by the
+  <code>toDataURL()</code> method) must be rendered with no color correction.
 
   <p class="note">
     Thus, in the 2D context, calling the <code>drawImage()</code> method to render the output of the <code>toDataURL()</code> method to the canvas, given the appropriate
-  dimensions, has no visible effect.
+    dimensions, has no visible effect.
   </p>
 
 <h5 id="serializing-bitmaps-to-a-file">Serializing bitmaps to a file</h5>
 
-  When a user agent is to create <dfn lt="a serialization of the canvas element's bitmap as a file|a serialization of the bitmap as a file">a serialization of the bitmap as a file</dfn>, optionally
-  with some given <var>arguments</var>, and optionally with a <var>native</var> flag set, it must
-  create an image file in the format given by the first value of <var>arguments</var>, or, if there
-  are no <var>arguments</var>, in the PNG format. [[!PNG]]
+  When a user agent is to create <dfn lt="a serialization of the canvas element's bitmap as a file|a serialization of the bitmap as a file">a serialization of the bitmap as a file</dfn>,
+  optionally with some given <var>arguments</var>, and optionally with a <var>native</var> flag
+  set, it must create an image file in the format given by the first value of
+  <var>arguments</var>, or, if there are no <var>arguments</var>, in the PNG format. [[!PNG]]
 
   If the <var>native</var> flag is set, or if the bitmap has one pixel per coordinate space unit,
   then the image file must have the same pixel data (before compression, if applicable) as the
@@ -1968,14 +1998,16 @@
   pixel per coordinate space unit, and if the file format used supports encoding resolution
   metadata, the resolution must be given as 96dpi (one image pixel per CSS pixel).
 
-  If <var>arguments</var> is not empty, the first value must be interpreted as a <a>MIME type</a> giving the format to use. If the type has any parameters, it
-  must be treated as not supported.
+  If <var>arguments</var> is not empty, the first value must be interpreted as a <a>MIME type</a>
+  giving the format to use. If the type has any parameters, it must be treated as not supported.
 
-  <p class="example">For example, the value "<code>image/png</code>" would mean to generate a PNG
-  image, the value "<code>image/jpeg</code>" would mean to generate a JPEG image, and the value
-  "<code>image/svg+xml</code>" would mean to generate an SVG image (which would require that the
-  user agent track how the bitmap was generated, an unlikely, though potentially awesome,
-  feature).</p>
+  <p class="example">
+    For example, the value "<code>image/png</code>" would mean to generate a PNG
+    image, the value "<code>image/jpeg</code>" would mean to generate a JPEG image, and the value
+    "<code>image/svg+xml</code>" would mean to generate an SVG image (which would require that the
+    user agent track how the bitmap was generated, an unlikely, though potentially awesome,
+    feature).
+  </p>
 
   User agents must support PNG ("<code>image/png</code>"). User agents may support other types.
   If the user agent does not support the requested type, it must create the file using the PNG
@@ -1986,24 +2018,31 @@
   For image types that do not support an alpha channel, the serialized image must be the bitmap
   image composited onto a solid black background using the source-over operator.
 
-  If the first argument in <var>arguments</var> gives a type corresponding to one of the
-  types given in the first column of the following table, and the user agent supports that type,
-  then the subsequent arguments, if any, must be treated as described in the second cell of that
-  row.
+  If the first argument in <var>arguments</var> gives a type corresponding to one of the types
+  given in the first column of the following table, and the user agent supports that type, then
+  the subsequent arguments, if any, must be treated as described in the second cell of that row.
 
   <table id="canvas-serialization-arguments">
     <caption>Arguments for serialization methods</caption>
     <thead>
-    <tr> <th> Type </th><th> Other arguments </th><th> Reference
-    </th></tr></thead><tbody>
-    <tr>
-      <td> <code>image/jpeg</code>
-      </td><td> The second argument, if it is a number in the range 0.0 to 1.0
-      inclusive, must be treated as the desired quality level.
-      If it is not a number or is outside that range, the user agent must use its
-      default value, as if the argument had been omitted.
-      </td><td> [[!JPEG]]
-  </td></tr></tbody></table>
+      <tr>
+        <th> Type </th>
+        <th> Other arguments </th>
+        <th> Reference </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      <td> <code>image/jpeg</code> </td>
+      <td>
+        The second argument, if it is a number in the range 0.0 to 1.0 inclusive, must be treated
+        as the desired quality level. If it is not a number or is outside that range, the user
+        agent must use its default value, as if the argument had been omitted.
+      </td>
+      <td> [[!JPEG]] </td>
+      </tr>
+    </tbody>
+  </table>
 
   For the purposes of these rules, an argument is considered to be a number if it is converted to
   an IDL double value by the rules for handling arguments of type <code>any</code> in the
@@ -2021,16 +2060,17 @@
   access information (e.g., read pixels) from images from another origin (one that isn't the same).
 
   To mitigate this, bitmaps used with <{canvas}> elements and <code>ImageBitmap</code>
-  objects are defined to have a flag indicating whether they are <a>origin-clean</a>. All bitmaps start with their <a>origin-clean</a> set to true. The flag is set to
+  objects are defined to have a flag indicating whether they are <a>origin-clean</a>.
+  All bitmaps start with their <a>origin-clean</a> set to true. The flag is set to
   false when cross-origin images or fonts are used.
 
   The <code>toDataURL()</code>, <code>toBlob()</code>, and <code>getImageData()</code> methods check the flag and will
   throw a "{{SecurityError}}" {{DOMException}} rather than leak cross-origin data.
 
-  The value of the <a>origin-clean</a> flag is
-  propagated from a source <{canvas}> element's bitmap to a new <code>ImageBitmap</code>
-  object by <code>createImageBitmap()</code>. Conversely, a
-  destination <{canvas}> element's bitmap will have its <a>origin-clean</a> flags set to false by <code>drawImage</code> if the source image is an
+  The value of the <a>origin-clean</a> flag is propagated from a source <{canvas}> element's
+  bitmap to a new <code>ImageBitmap</code> object by <code>createImageBitmap()</code>.
+  Conversely, a destination <{canvas}> element's bitmap will have its <a>origin-clean</a> flags
+  set to false by <code>drawImage</code> if the source image is an
   <code>ImageBitmap</code> object whose bitmap has its <a>origin-clean</a> flag set to false.
 
   The flag can be reset in certain situations; for example, when a
@@ -2039,12 +2079,16 @@
 
 <h4 id="custom-elements-core-concepts">Custom Elements</h4>
 
-  A <dfn export>custom element</dfn> is an element whose {{constructor}} and <code>prototype</code> are defined by the author.
-  The author-supplied constructor function is called the <dfn export>custom element constructor</dfn>.
+  A <dfn export>custom element</dfn> is an element whose {{constructor}} and
+  <code>prototype</code> are defined by the author.
+  The author-supplied constructor function is called the
+  <dfn export>custom element constructor</dfn>.
   Custom elements have the <a>custom element state</a> "<code>custom</code>".
 
-  <p class="note">For the elements whose semantics are described in this specification, or in
-  <a>other applicable specifications</a>, {{constructor}} and <a>prototype</a> are defined by the user agent.</p>
+  <p class="note">
+    For the elements whose semantics are described in this specification, or in
+    <a>other applicable specifications</a>, {{constructor}} and <a>prototype</a> are defined by the user agent.
+  </p>
 
   There are two types of custom elements:
   : <a>autonomous custom Elements</a>
@@ -2116,7 +2160,8 @@
   <dd>Supplied by the element's author (inherits from {{HTMLElement}})</dd>
 </dl>
 
-  An <a>autonomous custom element</a>'s meaning is defined by its author. It <a>represents</a> its children.
+  An <a>autonomous custom element</a>'s meaning is defined by its author.
+  It <a>represents</a> its children.
 
  <h5 id="customized-built-in-elements">Customized built-in elements</h5>
 
@@ -2136,7 +2181,8 @@
     be done by customizing a built-in table element.
   </div>
 
-  A <a href="#customized-built-in-element">customized built-in element</a> inherits the semantics of the element that it extends.
+  A <a href="#customized-built-in-element">customized built-in element</a> inherits the semantics
+  of the element that it extends.
 
   A <a>customized built-in element</a> has the same requirements for attributes as the element
   it extends.
@@ -2150,7 +2196,7 @@
 
 <h4 id="requirement-for-all-custom-elements">Requirements for all custom elements</h4>
 
-  A <dfn export>valid custom element name</dfn> is a sequence of characters  <var>name</var> that
+  A <dfn export>valid custom element name</dfn> is a sequence of characters <var>name</var> that
   matches the <a>PotentialCustomElementName</a> production, and is not one of the following:
 
     <ul class="brief">
@@ -2180,7 +2226,9 @@
 
     <dt><code><dfn>PCENChar</dfn> ::=</code></dt>
 
-    <dd><code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code></dd>
+    <dd>
+      <code>"-" | "." | [0-9] | "_" | [a-z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]</code>
+    </dd>
   </dl>
 
 <p>This uses the <a>EBNF notation</a> from the <cite>XML</cite> specification. [[!XML]]</p>
