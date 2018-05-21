@@ -2351,7 +2351,7 @@
     </li>
 
     <li>
-      Return null.</p>
+      Return null.
     </li>
   </ol>
 
@@ -2409,7 +2409,7 @@
   and failing to follow them will result in a custom element that cannot be instantiated
   by the parser or DOM APIs.
 
-<h4 id="sec-the-slot-element">The <code>slot</code> element</h4>
+<h4 id="sec-the-slot-element">The <dfn element><code>slot</code></dfn> element</h4>
 
   <dl class="element">
     <dt><a>Categories</a>:</dt>
@@ -2456,13 +2456,86 @@
     </dd>
   </dl>
 
-  The <{slot}> element creates a named <a>slot</a> within a <a>shadow tree</a>.
-  If it has an <a>assigned node</a> it <a>represents</a> that, if not it <a>represents</a> its contents.
+  The <{slot}> element creates a named <a>slot</a> within a <a>shadow tree</a>. If it has an
+  <a>assigned node</a> it <a>represents</a> that, if not it <a>represents</a> its contents.
 
   The <dfn element-attr for="slot">name</dfn> attribute's value is a string.
   It <a>represents</a> the name of the <a>slot</a> created in a shadow tree.
 
   The {{slot/name}} IDL attribute must <a>reflect</a> the <{slot/name}> content attribute.
+
+  <div class="example">
+    The following example shows how the <{slot}> element may be used in constructing a reusable
+    markup pattern for user profile cards. Each named slot (<code>slot</code> elements are named
+    by the value of their <{slot/name}> attribute) serve as placeholders that authors can fill
+    with markup fragments, to be defined later. In situations where a browser doesn't support
+    the <code>slot</code> element, or content wasn't defined, fallback content can be nested
+    within a <code>slot</code>.
+
+    <xmp highlight="html">
+      <template id="profile-card">
+        <div class="card">
+          <slot name="user-name">
+            <p>No user name available.</p>
+          </slot>
+          <slot name="user-email">
+            <p>No email provided.</p>
+          </slot>
+          <!-- an anonymous slot -->
+          <slot>
+            <p>No details provided.</p>
+          </slot>
+        </div>
+      </template>
+    </xmp>
+
+    The following custom element includes content that will be inserted into a user profile card.
+    The markup wrapped in an HTML tags with <{global/slot}> attributes, will be inserted into a
+    <{slot}> elements with a matching <{slot/name}> attribute value. In this example, the
+    <{div}> without a <{global/slot}> attribute will be inserted into the anonymous <{slot}>
+    element (the <code>slot</code> without a <{slot/name}> attribute).
+
+    <pre highlight="html">
+      &lt;user-card>
+        &lt;h2 <mark>slot="user-name"</mark>>Violet Ann&lt;/h2>
+
+        &lt;div>
+          &lt;p>Enjoys:&lt;/p>
+          &lt;ul>
+            &lt;li>Reading&lt;/li>
+            &lt;li>Sketching&lt;/li>
+            &lt;li>Cycling&lt;/li>
+          &lt;/ul>
+        &lt;/div>
+
+        &lt;-- notice no defined user-email -->
+      &lt;/user-card>
+    </pre>
+
+    After the browser runs the following JavaScript to define the custom element, the content
+    defined within the custom element <code>user-card</code> will be inserted into the appropriate
+    <{slot}> elements defined within the <{template}>.
+
+    <xmp highlight="html">
+      <script>
+        customElements.define('user-card', class extends HTMLElement {
+          constructor() {
+            super();
+            const template = document.getElementById('profile-card').content;
+            const shadowRoot = this.attachShadow({mode: 'open'});
+            shadowRoot.appendChild(template.cloneNode(true));
+          }
+        });
+      </script>
+    </xmp>
+
+    Where content was not indicated for a <{slot}>, the fallback content will instead render.
+    With some visual styling provided by CSS, the rendered content of this example could
+    look like this:
+
+    <img src="./images/rendered-custom-element.jpg" alt="Rendered user-card custom element where the user's name and details are rendered as specified, but as no email was specified, the fallback content from the slot with name='user-email' is rendered.">
+
+  </div>
 
   <dl class="domintro">
   <dt><var>slot</var> . <code>name</code></dt>
