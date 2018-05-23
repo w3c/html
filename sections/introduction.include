@@ -1148,29 +1148,61 @@
       lead to confusion. Where these have equivalent alternatives without this problem, the
       confusing combinations are disallowed.
 
-      <p class="example">
-        For example, <{div}> elements are rendered as <a>block boxes</a>, and <{span}> elements
-        as <a>inline boxes</a>. Putting a <a>block box</a> in an inline box is unnecessarily
+      <div class="example">
+        For example, <{div}> elements are rendered as <a>block boxes</a>, and <{span}> elements as
+        <a>inline boxes</a>. Putting a <a>block box</a> in an inline box is unnecessarily
         confusing; since either nesting just <{div}> elements, or nesting just <{span}> elements,
         or nesting <{span}> elements inside <{div}> elements all serve the same purpose as nesting
         a <{div}> element in a <{span}> element, but only the latter involves a <a>block box</a>
         in an <a>inline box</a>, the latter combination is disallowed.
-      </p>
 
-      <p class="example">
+        <p class="note">
+          Some <a>transparent</a> elements, such as <{a}>, <{del}>, and <{ins}>, are
+          <a>inline box</a> elements, but allow for nesting of <a>block box</a> elements.
+        </p>
+
+        <xmp highlight="html">
+          <a href="https://example.com">
+            <h2>An interesting news story</h2>
+            <p>You're going to want to read this...</p>
+          </a>
+
+          <ins>
+            <p>My new paragraph.</p>
+          </ins>
+
+          <del>
+            <ul>
+              <li>My old list.</li>
+            </ul>
+          </del>
+        </xmp>
+
+        The above shows how <{a}>, <{ins}>, and <{del}> elements may contain <a>block box</a>
+        elements. For additional examples and information, review these elements and other
+        <a>transparent</a> elements.
+      </div>
+
+      <div class="example">
         Another example would be the way <a>interactive content</a> cannot be nested. For example,
         a <{button}> element cannot contain a descendant <{textarea}> element. This is because the
         default behavior of nesting interactive elements would be highly confusing to users.
         Rather than nesting these elements, they could instead be styled with CSS to be visually
         placed side by side.
-      </p>
 
-      <p class="note">
-        An exception to disallowing <a>block box</a> within <a>inline box</a> rendered elements
-        would be elements that are described as <a>transparent</a> in their content models.
-        <a>Transparent</a> elements, such as <{a}>, <{del}>, and <{ins}>, are <a>inline box</a>
-        rendered elements, but allow for <a>block box</a> elements as child elements.
-      </p>
+        <xmp highlight="html">
+          <!-- Invalid -->
+          <button type="submit">
+            <textarea>Confused?</textarea>
+          </button>
+
+          <!-- Valid -->
+          <textarea>Type Here</textarea>
+          <button type="submit">
+            Submit Here
+          </button>
+        </xmp>
+      </div>
 
   : Errors that indicate a likely misunderstanding of the specification
   :: Sometimes, something is disallowed because allowing it would likely cause author confusion.
