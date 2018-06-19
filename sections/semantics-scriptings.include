@@ -2465,12 +2465,8 @@
   The {{slot/name}} IDL attribute must <a>reflect</a> the <{slot/name}> content attribute.
 
   <div class="example">
-    The following example shows how the <{slot}> element can be used when marking up a
-    <{template}> for user profile cards. Each named slot (<code>slot</code> elements are named
-    by the value of their <{slot/name}> attribute) serve as placeholders that authors can fill
-    with markup fragments, to be defined later. In situations where a browser doesn't support
-    the <code>slot</code> element, or content wasn't defined, fallback content can be nested
-    within a <code>slot</code>.
+    The following example uses the <{slot}> element with a <{template}> for user profile cards.
+    Two <{slot}>s are named, using the <{slot/name}> attribute, the other is unnamed, or anonymous.
 
     <xmp highlight="html">
       <template id="profile-card">
@@ -2489,11 +2485,12 @@
       </template>
     </xmp>
 
-    The following custom element includes content that will be inserted into a user profile card.
-    The markup wrapped in an HTML tags with <{global/slot}> attributes, will be inserted into a
-    <{slot}> elements with a matching <{slot/name}> attribute value. In this example, the
-    <{div}> without a <{global/slot}> attribute will be inserted into the anonymous <{slot}>
-    element (the <code>slot</code> without a <{slot/name}> attribute).
+    When using a custom element based on that <{template}>, the slots can be replaced with a defined HTML fragment.
+    If a child element of the custom element has a <{global/slot}> attribute, that element will replace the slot
+    whose <{slot/name}> matches it. An element without a <{global/slot}> attribute will be inserted into the anonymous 
+    <{slot}> element. If the browser doesn't support the <code>slot</code> element, 
+    or a custom element doesn't define replacement content for a slot, the content of that <code>slot</code> in the <{template}> will be used.
+
 
     <pre highlight="html">
       &lt;user-card>
@@ -2516,9 +2513,7 @@
     defined within the custom element <code>user-card</code> will be inserted into the appropriate
     <{slot}> elements defined within the <{template}>.
 
-    For instances where content was not indicated for a <{slot}>, the fallback content will
-    render. With some visual styling provided by CSS, the rendered content of this example could
-    look like this:
+    With some CSS styling the example could be rendered like this:
 
     <img src="./images/rendered-custom-element.jpg" alt="Rendered user-card custom element where the user's name and details are rendered as specified, but as no email was specified, the fallback content from the slot with name='user-email' is rendered.">
 
