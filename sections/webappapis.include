@@ -3243,7 +3243,7 @@
   The <dfn attribute for="Window"><code>navigator</code></dfn> attribute of the
   {{Window}} interface must return an instance of the <code>Navigator</code> interface,
   which represents the identity and state of the user agent (the client), and allows Web pages to
-  register themselves as potential protocol and content handlers:
+  register themselves as potential protocol handlers:
 
   <pre class="idl" data-highlight="webidl">
     interface Navigator {
@@ -3439,39 +3439,29 @@
   To avoid introducing any more fingerprinting vectors, user agents should use the same list for
   the APIs defined in this function as for the HTTP <a http-header><code>Accept-Language</code></a> header.
 
-<h5 id="custom-scheme-and-content-handlers-the-registerprotocolhandler-and-registercontenthandler-methods">Custom scheme and content handlers: the <code>registerProtocolHandler()</code> and <code>registerContentHandler()</code> methods</h5>
+<h5 id="custom-scheme-and-content-handlers-the-registerprotocolhandler-method">Custom scheme handlers: the <code>registerProtocolHandler()</code> method</h5>
 
   <pre class="idl" data-highlight="webidl">
     [NoInterfaceObject]
     interface NavigatorContentUtils {
-      // content handler registration
       void registerProtocolHandler(DOMString scheme, DOMString url, DOMString title);
-      void registerContentHandler(DOMString mimeType, DOMString url, DOMString title);
-      DOMString isProtocolHandlerRegistered(DOMString scheme, DOMString url);
-      DOMString isContentHandlerRegistered(DOMString mimeType, DOMString url);
       void unregisterProtocolHandler(DOMString scheme, DOMString url);
-      void unregisterContentHandler(DOMString mimeType, DOMString url);
     };
   </pre>
 
   The <dfn lt="a registered handler"></dfn><dfn method for="NavigatorContentUtils" title="registerProtocolHandler(scheme, url, title)">registerProtocolHandler(DOMString scheme, DOMString url, DOMString title)</dfn> method
   allows Web sites to register themselves as possible handlers for particular schemes. For example,
-  an online telephone messaging service could register itself as a handler of the <code>sms:</code> scheme, so that if the user clicks on such a link, he is given the
-  opportunity to use that Web site. Analogously, the <dfn method for="NavigatorContentUtils" title="registerContentHandler(mimeType, url, title)">registerContentHandler(DOMString mimeType, DOMString url, DOMString title)</dfn> method allows
-  Web sites to register themselves as possible handlers for content in a particular <a>MIME
-  type</a>. For example, the same online telephone messaging service could register itself as a
-  handler for <code>text/vcard</code> files, so that if the user has no native application capable
-  of handling vCards, his Web browser can instead suggest he use that site to view contact
-  information stored on vCards that he opens. [[!RFC5724]] [[!RFC6350]]
+  an online telephone messaging service could register itself as a handler of the <code>sms:</code>
+  scheme, so that if the user clicks on such a link, the user is given the opportunity to use that
+  Web site. [[!RFC5724]]]
 
   <dl class="domintro">
 
     <dt><var>window</var> . <code>navigator</code> . <code>registerProtocolHandler</code>(<var>scheme</var>, <var>url</var>, <var>title</var>)</dt>
-    <dt><var>window</var> . <code>navigator</code> . <code>registerContentHandler</code>(<var>mimeType</var>, <var>url</var>, <var>title</var>)</dt>
 
     <dd>
 
-    Registers a handler for the given scheme or content type, at the given URL, with the given
+    Registers a handler for the given scheme, at the given URL, with the given
     title.
 
     The string "<code>%s</code>" in the URL is used as a placeholder for where to put
@@ -3488,7 +3478,7 @@
   </dl>
 
   User agents may, within the constraints described in this section, do whatever they like when
-  the methods are called. A user agent could, for instance, prompt the user and offer the user the
+  the method is called. A user agent could, for instance, prompt the user and offer the user the
   opportunity to add the site to a shortlist of handlers, or make the handlers his default, or
   cancel the request. user agents could provide such a UI through modal UI or through a non-modal transient
   notification interface. user agents could also simply silently collect the information, providing it only
@@ -3498,14 +3488,14 @@
   declined such registrations) so that the user is not repeatedly prompted with the same
   request.
 
-  The arguments to the methods have the following meanings and corresponding implementation
+  The arguments to the method has the following meanings and corresponding implementation
   requirements. The requirements that involve throwing exceptions must be processed in the order
   given below, stopping at the first exception thrown. (So the exceptions for the first argument
   take precedence over the exceptions for the second argument.)
 
   <dl>
 
-    <dt><var>scheme</var> (<code>registerProtocolHandler()</code> only)</dt>
+    <dt><var>scheme</var></dt>
 
     <dd>
 
@@ -3563,59 +3553,6 @@
 
     </dd>
 
-    <dt><var>mimeType</var> (<code>registerContentHandler()</code> only)</dt>
-
-    <dd>
-
-    A <a>MIME type</a>, such as <code>model/vnd.flatland.3dml</code> or <code>application/vnd.google-earth.kml+xml</code>. The <a>MIME type</a> must be
-    compared in an <a>ASCII case-insensitive</a> manner by user agents for the purposes of
-    comparing with MIME types of documents that they consider against the list of registered
-    handlers.
-
-    User agents must compare the given values only to the MIME type/subtype parts of content
-    types, not to the complete type including parameters. Thus, if <var>mimeType</var>
-    values passed to this method include characters such as commas or white space, or include MIME
-    parameters, then the handler being registered will never be used.
-
-    <p class="note">
-  The type is compared to the <a>MIME type</a> used by the user agent
-    <em>after</em> the sniffing algorithms have been applied.
-  </p>
-
-    If the <code>registerContentHandler()</code>
-    method is invoked with a <a>MIME type</a> that is in the <a>type blocklist</a> or
-    that the user agent has deemed a privileged type, the user agent must throw a
-    "{{SecurityError}}" {{DOMException}}.
-
-    The following <a>MIME types</a> are in the <dfn>type blocklist</dfn>:
-
-    <ul class="brief">
-
-      <li><code>application/x-www-form-urlencoded</code></li>
-      <li><code>application/xhtml+xml</code></li>
-      <li><code>application/xml</code></li>
-      <li><code>image/gif</code></li>
-      <li><code>image/jpeg</code></li>
-      <li><code>image/png</code></li>
-      <li><code>image/svg+xml</code></li>
-      <li><code>multipart/x-mixed-replace</code></li>
-      <li><code>text/css</code></li>
-      <li><code>[[#text-html|text/html]]</code></li>
-      <li><code>text/ping</code></li>
-      <li><code>text/plain</code></li>
-      <li><code>text/vtt</code></li>
-      <li><code>text/xml</code></li>
-      <li>All types that the user agent supports displaying natively in a <a>browsing context</a> during <a>navigation</a>, except for <code>application/rss+xml</code> and <code>application/atom+xml</code></li>
-
-    </ul>
-
-    <p class="note">
-  This list can be changed. If there are MIME types that should be added, please
-    send feedback.
-  </p>
-
-    </dd>
-
     <dt><var>url</var></dt>
 
     <dd>
@@ -3652,7 +3589,7 @@
     literal string "<code>%s</code>" in the <var>url</var> argument with an
     escaped version of the <a>absolute URL</a> of the content in question (as defined below),
     then <a>parse</a> the resulting URL, relative to the <a>API
-    base URL</a> specified by the <a>entry settings object</a> at the time the <code>registerContentHandler()</code> or <code>registerProtocolHandler()</code> methods were
+    base URL</a> specified by the <a>entry settings object</a> at the time the <code>registerProtocolHandler()</code> method was
     invoked, and then <a>navigate</a> an appropriate <a>browsing
     context</a> to the resulting URL.
 
@@ -3664,23 +3601,23 @@
       If the user had visited a site at <code>https://example.com/</code> that made the
       following call:
 
-      <pre highlight="javascript">navigator.registerContentHandler('application/x-soup', 'soup?url=%s', 'SoupWeb™')</pre>
+      <pre highlight="javascript">navigator.registerProtocolHandler('web+soup', 'soup?url=%s', 'SoupWeb™')</pre>
 
       ...and then, much later, while visiting <code>https://www.example.net/</code>,
       clicked on a link such as:
 
       <xmp highlight="html">
-        <a href="chickenkïwi.soup">Download our Chicken Kïwi soup!</a>
+        <a href="web+soup:chickenkïwi.soup">Download our Chicken Kïwi soup!</a>
       </xmp>
 
       ...then, assuming this <code>chickenkïwi.soup</code> file was served with the
       <a>MIME type</a> <code>application/x-soup</code>, the user agent might navigate to the
       following URL:
 
-      <pre>https://example.com/soup?url=https://www.example.net/chickenk%C3%AFwi.soup</pre>
+      <pre>https://example.com/soup?url=web+soup:chickenk%C3%AFwi.soup</pre>
 
-      This site could then fetch the <code>chickenkïwi.soup</code> file and do
-      whatever it is that it does with soup (synthesize it and ship it to the user, or whatever).
+      This site could do whatever it is that it does with soup (synthesize it and ship it to
+      the user, or whatever).
     </div>
 
     </dd>
@@ -3696,146 +3633,25 @@
 
   </dl>
 
-  This section does not define how the pages registered by these methods are used, beyond the
+  This section does not define how the pages registered by this method is used, beyond the
   requirements on how to process the <var>url</var> value (see above). To some extent, the
   <a>processing model for navigating across documents</a> defines some cases
-  where these methods are relevant, but in general user agents may use this information wherever they would
+  where this method is relevant, but in general user agents may use this information wherever they would
   otherwise consider handing content to native plugins or helper applications.
-
-  user agents must not use registered content handlers to handle content that was returned as part of a
-  non-GET transaction (or rather, as part of any non-idempotent transaction), as the remote site
-  would not be able to fetch the same data.
 
   <hr />
 
-  In addition to the registration methods, there are also methods for determining if particular
-  handlers have been registered, and for unregistering handlers.
+  In addition to the registration methods, there is also a method for unregistering a handler.
 
   <dl class="domintro">
 
-    <dt><var>state</var> = <var>window</var> . <code>navigator</code> . <code>isProtocolHandlerRegistered</code>(<var>scheme</var>, <var>url</var>)</dt>
-    <dt><var>state</var> = <var>window</var> . <code>navigator</code> . <code>isContentHandlerRegistered</code>(<var>mimeType</var>, <var>url</var>)</dt>
-
-    <dd>
-
-    Returns one of the following strings describing the state of the handler given by the
-    arguments:
-
-    <dl>
-
-      <dt><code>new</code>
-
-      <dd>Indicates that no attempt has been made to register the given handler (or that the handler
-      has been unregistered). It would be appropriate to promote the availability of the handler or
-      to just automatically register the handler.
-
-      <dt><code>registered</code>
-
-      <dd>Indicates that the given handler has been registered or that the site is blocked from
-      registering the handler. Trying to register the handler again would have no effect.
-
-      <dt><code>declined</code>
-
-      <dd>Indicates that the given handler has been offered but was rejected. Trying to register the
-      handler again may prompt the user again.
-
-    </dl>
-
-    </dd>
-
     <dt><var>window</var> . <code>navigator</code> . <code>unregisterProtocolHandler</code>(<var>scheme</var>, <var>url</var>)</dt>
-    <dt><var>window</var> . <code>navigator</code> . <code>unregisterContentHandler</code>(<var>mimeType</var>, <var>url</var>)</dt>
 
     <dd>
 
     Unregisters the handler given by the arguments.
 
     </dd>
-
-  </dl>
-
-  The <dfn method for="NavigatorContentUtils" title="isProtocolHandlerRegistered(scheme, url)">isProtocolHandlerRegistered(DOMString scheme, DOMString url)</dfn>
-  method must return the <a>handler state string</a> that most closely describes the current
-  state of the handler described by the two arguments to the method, where the first argument gives
-  the scheme and the second gives the string used to build the [=url/URL=] of the page that
-  will handle the requests.
-
-  The first argument must be compared to the schemes for which custom protocol handlers are
-  registered in an <a>ASCII case-insensitive</a> manner to find the relevant handlers.
-
-  The second argument must be preprocessed as described below, and if that is successful, must
-  then be matched against the <a>proto-URLs</a> of the relevant handlers to
-  find the described handler.
-
-  <hr />
-
-  The <dfn method for="NavigatorContentUtils" title="isContentHandlerRegistered(mimeType, url)">isContentHandlerRegistered(DOMString mimeType, DOMString url)</dfn>
-  method must return the <a>handler state string</a> that most closely describes the current
-  state of the handler described by the two arguments to the method, where the first argument gives
-  the <a>MIME type</a> and the second gives the string used to build the [=url/URL=] of
-  the page that will handle the requests.
-
-  The first argument must be compared to the <a>MIME types</a> for which
-  custom content handlers are registered in an <a>ASCII case-insensitive</a> manner to find
-  the relevant handlers.
-
-  The second argument must be preprocessed as described below, and if that is successful, must
-  then be matched against the <a>proto-URLs</a> of the relevant handlers to
-  find the described handler.
-
-  <hr />
-
-  The <dfn>handler state strings</dfn> are the following strings.
-  Each string describes several situations, as given by the following list.
-
-  <dl>
-
-    <dt><code>new</code>
-
-    <dd>The described handler has never been registered for the given scheme or type.
-
-    <dd>The described handler was once registered for the given scheme or type, but the site has
-    since unregistered it. If the handler were to be reregistered, the user would be notified
-    accordingly.
-
-    <dd>The described handler was once registered for the given scheme or type, but the site has
-    since unregistered it, but the user has indicated that the site is to be blocked from registering
-    the type again, so the user agent would ignore further registration attempts.
-
-    <dt><code>registered</code>
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user has not yet been notified, and the user agent would ignore further registration attempts.
-    (Maybe the user agent batches registration requests to display them when the user requests to be
-    notified about them, and the user has not yet requested that the user agent notify it of the
-    previous registration attempt.)
-
-    <dd>The described handler is registered for the given scheme or type (maybe, or maybe not, as the
-    default handler).
-
-    <dd>The described handler is permanently blocked from being (re)registered. (Maybe the user
-    marked the registration attempt as spam, or blocked the site for other reasons.)
-
-    <dt><code>declined</code>
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user has not yet been notified; however, the user might be notified if another registration
-    attempt were to be made. (Maybe the last registration attempt was made while the page was in the
-    background and the user closed the page without looking at it, and the user agent requires
-    confirmation for this registration attempt.)
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user has not yet responded.
-
-    <dd>An attempt was made to register the described handler for the given scheme or type, but the
-    user declined the offer. The user has not indicated that the handler is to be permanently
-    blocked, however, so another attempt to register the described handler might result in the user
-    being prompted again.
-
-    <dd>The described handler was once registered for the given scheme or type, but the user has
-    since removed it. The user has not indicated that the handler is to be permanently blocked,
-    however, so another attempt to register the described handler might result in the user being
-    prompted again.
 
   </dl>
 
@@ -3848,21 +3664,6 @@
 
   The first argument must be compared to the schemes for which custom protocol handlers are
   registered in an <a>ASCII case-insensitive</a> manner to find the relevant handlers.
-
-  The second argument must be preprocessed as described below, and if that is successful, must
-  then be matched against the <a>proto-URLs</a> of the relevant handlers to
-  find the described handler.
-
-  <hr />
-
-  The <dfn method for="NavigatorContentUtils" title="unregisterContentHandler(mimeType, url)">unregisterContentHandler(DOMString mimeType, DOMString url)</dfn>
-  method must unregister the handler described by the two arguments to the method, where the first
-  argument gives the <a>MIME type</a> and the second gives the string used to build the
-  [=url/URL=] of the page that will handle the requests.
-
-  The first argument must be compared to the <a>MIME types</a> for which
-  custom content handlers are registered in an <a>ASCII case-insensitive</a> manner to find
-  the relevant handlers.
 
   The second argument must be preprocessed as described below, and if that is successful, must
   then be matched against the <a>proto-URLs</a> of the relevant handlers to
@@ -3898,14 +3699,14 @@
       <strong>Registration spamming.</strong> User agents should consider the possibility that a site
       will attempt to register a large number of handlers, possibly from multiple domains (e.g., by
       redirecting through a series of pages each on a different domain, and each registering a handler
-      for <code>video/mpeg</code> — analogous practices abusing other Web browser features have
+      for <code>web+spam:</code> — analogous practices abusing other Web browser features have
       been used by pornography Web sites for many years). User agents should gracefully handle such
       hostile attempts, protecting the user.
 
       <strong>Misleading titles.</strong> User agents should not rely wholly on the <var>title</var>
       argument to the methods when presenting the registered handlers to the user, since sites could
       easily lie. For example, a site <code>hostile.example.net</code> could claim that it was
-      registering the "Cuddly Bear Happy Content Handler". User agents should therefore use the
+      registering the "Cuddly Bear Happy Scheme Handler". User agents should therefore use the
       handler's domain in any UI along with any title.
 
       <strong>Hostile handler metadata.</strong> User agents should protect against typical attacks
@@ -3918,11 +3719,10 @@
 
       <ol>
 
-        <li>The user registers a third-party content handler as the default handler for a content
-        type.</li>
+        <li>The user registers a third-party scheme handler as the default handler for a given scheme.</li>
 
         <li>The user then browses his corporate Intranet site and accesses a document that uses that
-        content type.</li>
+        scheme.</li>
 
         <li>The user agent contacts the third party and hands the third party the URL to the Intranet
         content.</li>
@@ -3933,10 +3733,10 @@
       contain confidential information. For example, the URL could be <code>https://www.corp.example.com/upcoming-aquisitions/the-sample-company.egf</code>, which
       might tell the third party that Example Corporation is intending to merge with The Sample Company.
       Implementors might wish to consider allowing administrators to disable this feature for certain
-      subdomains, content types, or schemes.
+      subdomains or schemes.
 
       <strong>Leaking secure URLs.</strong> User agents should not send HTTPS URLs to third-party
-      sites registered as content handlers without the user's informed consent, for the same reason that
+      sites registered as scheme handlers without the user's informed consent, for the same reason that
       user agents sometimes avoid sending <a http-header><code>Referer</code></a> (sic) HTTP
       headers from secure sites to third-party sites.
 
@@ -3958,41 +3758,6 @@
       data. User agents are therefore strongly urged to treat registrations in the same manner as
       cookies: clearing cookies for a site should also clear all registrations for that site, and
       disabling cookies for a site should also disable registrations.
-
-<h6 id="sample-user-interface">Sample user interface</h6>
-
-  <em>This section is non-normative.</em>
-
-  A simple implementation of this feature for a desktop Web browser might work as follows.
-
-  The <code>registerContentHandler()</code> method
-  could display a modal dialog box:
-
-  <img src="images/sample-content-handler-registration.png" width="534" height="374" alt="The modal dialog box could have the title 'Content Handler Registration', and could say 'This Web page: Kittens at work https://kittens.example.org/ ...would like permission to handle files of type: application/x-meowmeow using the following Web-based application: Kittens-at-work displayer https://kittens.example.org/?show=%s Do you trust the administrators of the &quot;kittens.example.org&quot; domain?' with two buttons, 'Trust kittens.example.org' and 'Cancel'." />
-
-  In this dialog box, "Kittens at work" is the title of the page that invoked the method,
-  "https://kittens.example.org/" is the URL of that page, "application/x-meowmeow" is the string that
-  was passed to the <code>registerContentHandler()</code> method as its first
-  argument (<var>mimeType</var>), "https://kittens.example.org/?show=%s" was the second
-  argument (<var>url</var>), and "Kittens-at-work displayer" was the third argument (<var>title</var>).
-
-  If the user clicks the Cancel button, then nothing further happens. If the user clicks the
-  "Trust" button, then the handler is remembered.
-
-  When the user then attempts to fetch a URL that uses the "application/x-meowmeow" <a>MIME
-  type</a>, then it might display a dialog as follows:
-
-  <img src="images/sample-content-handler.png" width="577" height="428" alt="The dialog box could have the title 'Unknown File Type' and could say 'You have attempted to access:' followed by a URL, followed by a prompt such as 'How would you like FerretBrowser to handle this resource?' with three radio buttons, one saying 'Contact the FerretBrowser plugin registry to see if there is an official way to handle this resource.', one saying 'Pass this URL to a local application' with an application selector, and one saying 'Pass this URL to the &quot;Kittens-at-work displayer&quot; application at &quot;kittens.example.org&quot;', with a checkbox labeled 'Always do this for resources using the &quot;application/x-meowmeow&quot; type in future.', and with two buttons, 'Ok' and 'Cancel'." />
-
-  In this dialog, the third option is the one that was primed by the site registering itself
-  earlier.
-
-  If the user does select that option, then the browser, in accordance with the requirements
-  described in the previous two sections, will redirect the user to
-  "https://kittens.example.org/?show=data%3Aapplication/x-meowmeow;base64,S2l0dGVucyBhcmUgdGhlIGN1dGVzdCE%253D".
-
-  The <code>registerProtocolHandler()</code> method
-  would work equivalently, but for schemes instead of unknown content types.
 
 <h5 id="cookies">Cookies</h5>
 
