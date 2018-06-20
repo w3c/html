@@ -13,7 +13,6 @@
 
   Examples include:
   - appcache
-  - applet
   - keygen
   - marquee
   - Plugins
@@ -98,9 +97,6 @@
 <h3 id="non-conforming-features">Non-conforming features</h3>
 
   Elements in the following list are entirely obsolete, and must not be used by authors:
-
-  : <code>applet</code>
-  :: Use <{embed}> or <{object}> instead.
 
   : <dfn element><code>acronym</code></dfn>
   :: Use <{abbr}> instead.
@@ -280,10 +276,10 @@
   : <dfn element-attr for="td"><code>scope</code></dfn> on <{td}> elements
   :: Use <{th}> elements for heading cells.
 
-  : <dfn element-attr for="data"><code>datasrc</code></dfn> on <{a}>, <{applet}>, <{button}>,
+  : <dfn element-attr for="data"><code>datasrc</code></dfn> on <{a}>, <{button}>,
       <{div}>, <{frame}>, <{iframe}>, <{img}>, <{input}>, <{label}>, <{legend}>, <{marquee}>,
       <{object}>, <{option}>, <{select}>, <{a}>, <{table}>, and <{textarea}> elements
-  : <dfn element-attr for="data"><code>datafld</code></dfn> on <{a}>, <{applet}>, <{button}>,
+  : <dfn element-attr for="data"><code>datafld</code></dfn> on <{a}>, <{button}>,
       <{div}>, <{fieldset}>, <{frame}>, <{iframe}>, <{img}>, <{input}>, <{label}>, <{legend}>,
       <{marquee}>, <{object}>, <{param}>, <{select}>, <{a}>, and <{textarea}> elements
   : <dfn element-attr for="data"><code>dataformatas</code></dfn> on <{button}>, <{div}>,
@@ -392,83 +388,6 @@
   :: Use CSS instead.
 
 <h3 id="requirements-for-implementations">Requirements for implementations</h3>
-
-  <h4 id="the-applet-element">The <dfn element><code>applet</code></dfn> element</h4>
-
-  <p class="critical">
-    This feature is in the process of being removed from the Web platform. (This is a long process
-    that takes many years.) Using the <{applet}> element at this time is highly discouraged.
-  </p>
-
-  The <{applet}> element is a Java-specific variant of the <{embed}> element.
-  The <{applet}> element is now obsoleted so that all extension frameworks (Java, .NET,
-  Flash, etc) are handled in a consistent manner.
-
-  When the element matches any of the following conditions, it [=represents=] its contents:
-
-  * The element is still in the [=stack of open elements=] of an [=HTML parser=] or [=XML parser=].
-  * The element is not <a>in a <code>document</code></a>.
-  * The element's [=node document=] is not [=fully active=].
-  * The element's [=node document=]'s [=active sandboxing flag set=] has its
-    [=sandboxed plugins browsing context flag=] set.
-  * The element has an ancestor [=media element=].
-  * The element has an ancestor <{object}> element that is <em>not</em> showing its
-    [=fallback content=].
-  * No Java Language runtime [=plugin=] is available.
-  * A Java runtime [=plugin=] is available but it is disabled.
-  * The <a for="/">Should element be blocked <i lang="la">a priori</i> by Content Security Policy?</a>
-    algorithm returns "Blocked" when executed on the element. [[!CSP3]]
-
-  Otherwise, the user agent should instantiate a Java Language runtime [=plugin=], and should
-  pass the names and values of all the attributes on the element, in the order they were added to
-  the element, with the attributes added by the parser being ordered in source order, and then a
-  parameter named "PARAM" whose value is null, and then all the names and values of
-  [=parameters=] given by <{param}> elements that are children of the
-  <{applet}> element, in [=tree order=], to the [=plugin=] used. If the [=plugin=]
-  supports a scriptable interface, the <code>HTMLAppletElement</code> object representing the
-  element should expose that interface. The <{applet}> element [=represents=] the [=plugin=].
-
-  <p class="note">
-    The <{applet}> element is unaffected by the CSS 'display' property. The Java Language runtime
-    is instantiated even if the element is hidden with a 'display:none' CSS style.
-  </p>
-
-  The <{applet}> element must implement the <code>HTMLAppletElement</code> interface.
-
-  <pre class="idl" data-highlight="webidl">
-    // Note: intentionally not [HTMLConstructor]
-    interface HTMLAppletElement : HTMLElement {
-      attribute DOMString align;
-      attribute DOMString alt;
-      attribute DOMString archive;
-      attribute DOMString code;
-      attribute USVString codeBase;
-      attribute DOMString height;
-      attribute unsigned long hspace;
-      attribute DOMString name;
-      attribute USVString _object; // the underscore is not part of the identifier
-      attribute unsigned long vspace;
-      attribute DOMString width;
-    };
-  </pre>
-
-  The <dfn attribute for="HTMLAppletElement"><code>align</code></dfn>,
-  <dfn attribute for="HTMLAppletElement"><code>alt</code></dfn>,
-  <dfn attribute for="HTMLAppletElement"><code>archive</code></dfn>,
-  <dfn attribute for="HTMLAppletElement"><code>code</code></dfn>,
-  <dfn attribute for="HTMLAppletElement"><code>height</code></dfn>,
-  <dfn attribute for="HTMLAppletElement"><code>hspace</code></dfn>,
-  <dfn attribute for="HTMLAppletElement"><code>name</code></dfn>,
-  <dfn attribute for="HTMLAppletElement" lt="object|_object"><code>object</code></dfn>,
-  <dfn attribute for="HTMLAppletElement"><code>vspace</code></dfn>, and
-  <dfn attribute for="HTMLAppletElement"><code>width</code></dfn> IDL attributes must [=reflect=]
-  the respective content attributes of the same name. For the purposes of reflection, the <{applet}>
-  element's {{HTMLAppletElement/_object|object}} content attribute is defined as containing a
-  [=url/URL=].
-
-  The <dfn attribute for="HTMLAppletElement"><code>codeBase</code></dfn> IDL attribute must
-  [=reflect=] the <code>codebase</code> content attribute, which for the purposes of reflection
-  is defined as containing a [=url/URL=].
 
 <h4 id="the-marquee-element">The <dfn element><code>marquee</code></dfn> element</h4>
 
@@ -1577,7 +1496,8 @@
   <{a/name}> attributes.
 
   The <dfn attribute for="Document"><code>applets</code></dfn> attribute must return an
-  {{HTMLCollection}} rooted at the {{Document}} node, whose filter matches only <{applet}> elements.
+  {{HTMLCollection}} rooted at the {{Document}} node, whose filter matches nothing. (This exists
+  for historical reasons.)
 
   The <dfn method for="Document"><code>clear()</code></dfn>,
   <dfn method for="Document"><code>captureEvents()</code></dfn>, and
