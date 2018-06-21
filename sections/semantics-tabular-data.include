@@ -142,7 +142,9 @@
     </thead>
     <tbody>
       <tr>
-        <td>The use of the <code>role</code> attribute with the value <code>presentation</code></td>
+        <td>
+          The use of the <code>role</code> attribute with the value <code>presentation</code>
+        </td>
         <td>Probably a layout table</td>
       </tr>
       <tr>
@@ -150,8 +152,10 @@
         <td>Probably a layout table</td>
       </tr>
       <tr>
-        <td>The use of the non-conforming <code>cellspacing</code> and <code>cellpadding</code>
-        attributes with the value 0</td>
+        <td>
+          The use of the non-conforming <code>cellspacing</code> and <code>cellpadding</code>
+          attributes with the value 0
+        </td>
         <td>Probably a layout table</td>
       </tr>
     </tbody>
@@ -176,8 +180,10 @@
     <tbody>
       <tr>
         <td>The use of the non-conforming <code>summary</code> attribute</td>
-        <td>Not a good indicator (both layout and non-layout tables have historically been
-        given this attribute)</td>
+        <td>
+          Not a good indicator (both layout and non-layout tables have historically been
+          given this attribute)
+        </td>
       </tr>
     </tbody>
   </table>
@@ -1342,8 +1348,8 @@
     <dd><a>Flow content</a> but with no <{main}> element descendant.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
     <dd>
-      A <{td}> element's <a>end tag</a> may be omitted if the <{td}> element is immediately
-      followed by a <code>td</code> or <{th}> element, or if there is no more content in the
+      A <{td}> element's <a>end tag</a> may be omitted if the element is immediately followed by
+      another <code>td</code> element or <{th}> element, or if there is no more content in the
       parent element.
     </dd>
     <dt><a>Content attributes</a>:</dt>
@@ -1376,15 +1382,20 @@
   The <{td}> element and its <code>colspan</code>, <code>rowspan</code>, and <code>headers</code>
   attributes take part in the <a>table model</a>.
 
-  User agents, especially in non-visual environments or where displaying the table as a 2D grid
-  is impractical, may give the user context for the cell when rendering the contents of a cell;
-  for instance, giving its position in the <a>table model</a>, or listing the cell's header cells
-  (as determined by the <a>algorithm for assigning header cells</a>). When a cell's header
-  cells are being listed, user agents may use the value of <code>abbr</code> attributes on
-  those header cells, if any, instead of the contents of the header cells themselves.
+  User agents, especially in environments where displaying the table as a 2D grid is impractical,
+  (e.g. in speech output), sometimes add information about a cell when rendering its contents;
+  for instance, giving its position in the <a>table model</a>, or listing its header cells
+  as determined by the <a>algorithm for assigning header cells</a>.
 
-  <p class="note">
-    For examples of the <{td}> element, refer to the <{table}> examples within
+  When referring to a cell's header cells are being listed, user agents may use the value of <{th/abbr}>
+  to present to the user through a voice interface, instead of the full contents of the header cells themselves.
+  A cell's header cells are determined by the algorithm for
+  <a href="#forming-relationships-between-data-cells-and-header-cells">Forming relationships between data cells and header cells</a>
+  or can be explicitly defined using the <{td/headers}> attribute.
+
+<p class="note">
+    For examples of the <{td}> element and its <a>content attributes</a>, refer to the
+    <{table}> examples within
     [[#sec-techniques-for-describing-tables|techniques for describing tables]], and
     the section for <a href="#examples">table examples</a>.
   </p>
@@ -2663,7 +2674,10 @@
 
   <em>This section is non-normative.</em>
 
-  The following shows how an one might mark up the bottom part of table 45 of the
+  The following examples showcase different <{table}> markup patterns, and how they could appear in
+  browsers with some styling provided by CSS.
+
+  This first example shows how an one might mark up the bottom part of table 45 of the
   <cite>Smithsonian physical tables, Volume 71</cite>:
 
   <xmp highlight="html">
@@ -2713,7 +2727,7 @@
     </table>
   </xmp>
 
-  This table could look like this:
+  This example produces the following table in a browser:
 
   <table>
     <caption>
@@ -2808,7 +2822,7 @@
     </table>
   </xmp>
 
-  This table could look like this:
+  This example produces the following table in a browser:
 
   <table class="apple-table-examples e1">
     <thead>
@@ -2905,7 +2919,7 @@
     </table>
   </xmp>
 
-  This table could look like this:
+  This example produces the following table in a browser:
 
   <table class="apple-table-examples e2">
     <colgroup>
@@ -2952,6 +2966,79 @@
         <td> 12.6% </td>
       </tr>
     </tbody>
+  </table>
+
+  <hr>
+
+  The following shows how one might mark up a coffee order that includes the team,
+  types of coffee, how many cups, and if sugar is needed to fulfill the order:
+
+  <xmp highlight="html">
+    <table>
+      <caption>
+        Daily coffee order for team meetings
+      </caption>
+      <thead>
+        <tr>
+          <th id="t1">Team</th>
+          <th id="t3" abbr="Types" colspan="2">Types of Coffee</th>
+          <th id="t2" colspan="2">Cups</th>
+          <th id="t4">Sugar Packets?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td headers="t1">Design</td>
+          <td headers="t3" id="c1">House Blend</td>
+          <td headers="t3" id="c2">French Roast</td>
+          <td headers="t2 c1">8</td>
+          <td headers="t2 c2">3</td>
+          <td headers="t4">Yes</td>
+        </tr>
+        <tr>
+          <td headers="t1">Development</td>
+          <td headers="t3" id="c3">Cold Brew</td>
+          <td headers="t3" id="c4">Espresso</td>
+          <td headers="t2 c3">6</td>
+          <td headers="t2 c4">5</td>
+          <td headers="t4">No</td>
+        </tr>
+      <tbody>
+    </table>
+  </xmp>
+
+  This example produces the following table in a browser:
+
+  <table style="width: 100%">
+    <caption>
+      Daily coffee order for team meetings
+    </caption>
+    <thead>
+      <tr>
+        <th id="t1">Team</th>
+        <th id="t3" abbr="Types" colspan="2">Types of Coffee</th>
+        <th id="t2" colspan="2">Cups</th>
+        <th id="t4">Sugar Packets?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td headers="t1">Design</td>
+        <td headers="t3" id="c1">House Blend</td>
+        <td headers="t3" id="c2">French Roast</td>
+        <td headers="t2 c1">8</td>
+        <td headers="t2 c2">3</td>
+        <td headers="t4">Yes</td>
+      </tr>
+      <tr>
+        <td headers="t1">Development</td>
+        <td headers="t3" id="c3">Cold Brew</td>
+        <td headers="t3" id="c4">Espresso</td>
+        <td headers="t2 c3">6</td>
+        <td headers="t2 c4">5</td>
+        <td headers="t4">No</td>
+      </tr>
+    <tbody>
   </table>
 
 </section>
