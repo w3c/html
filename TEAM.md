@@ -48,7 +48,7 @@ The following subsections contain instructions for merging. They assume the Bash
 1. `git push`
 
 1. Close the pull request by following these steps in the web interface:
-  1. Let `hash` be the the commit hash.
+  1. Let `hash` be the commit hash.
   1. Navigate to the pull request.
   1. Add a comment that say "Merged as `hash`." and click the "Close pull request" button to post that
 comment.

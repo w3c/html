@@ -764,23 +764,22 @@
 
   </ol>
 
-  The <a>task source</a> for the tasks mentioned above is the <a>DOM manipulation task
-  source</a>.
+  The <a>task source</a> for the tasks mentioned above is the <a>DOM manipulation task source</a>.
 
 <h4 id="downloading-resources">Downloading resources</h4>
 
   In some cases, resources are intended for later use rather than immediate viewing. To indicate
   that a resource is intended to be downloaded for use later, rather than immediately used, the
-  <code>download</code> attribute can be specified on the
-  <{a}> or <{area}> element that creates the <a>hyperlink</a> to that
-  resource.
+  <{links/download}> attribute can be specified on the <{a}> or <{area}> element that creates
+  the <a>hyperlink</a> to that resource.
 
   The attribute can furthermore be given a value, to specify the file name that user agents are
-  to use when storing the resource in a file system. This value can be overridden by the <a http-header><code>Content-Disposition</code></a> HTTP header's filename parameters.
+  to use when storing the resource in a file system. This value can be overridden by the
+  <a http-header><code>Content-Disposition</code></a> HTTP header's filename parameters.
   [[!RFC6266]]
 
-  In cross-origin situations, the <code>download</code>
-  attribute has to be combined with the <a http-header><code>Content-Disposition</code></a> HTTP header, specifically with the
+  In cross-origin situations, the <{links/download}> attribute has to be combined with the
+  <a http-header><code>Content-Disposition</code></a> HTTP header, specifically with the
   <code>attachment</code> disposition type, to avoid the user being warned of possibly
   nefarious activity. (This is to protect users from being made to download sensitive personal or
   confidential information without their full understanding.)
@@ -793,16 +792,18 @@
 
   <ol>
 
-    <li><a>Parse</a> the [=url/URL=] given by
-    <var>subject</var>'s <{links/href}> attribute, relative to
-    <var>subject</var>.</li>
+    <li>
+      <a>Parse</a> the [=url/URL=] given by <var>subject</var>'s <{links/href}> attribute,
+      relative to <var>subject</var>.
+    </li>
 
     <li>If <a>parsing</a> the [=url/URL=] fails, the user agent
     may report the error to the user in a user-agent-specific manner, may
     <a>navigate</a> to an error page to report the error, or may
     ignore the error and do nothing. In either case, the user agent must abort these steps.
+    </li>
 
-    </li><li>Otherwise, let <var>URL</var> be the <a>resulting URL string</a>.</li>
+    <li>Otherwise, let <var>URL</var> be the <a>resulting URL string</a>.</li>
 
     <li>If there is a <var>hyperlink suffix</var>, append it to <var>URL</var>.</li>
 
@@ -816,14 +817,15 @@
 
   When a user agent is to handle a resource obtained from a fetch <dfn>as a download</dfn>, it
   should provide the user with a way to save the resource for later use, if a resource is
-  successfully obtained; or otherwise should report any problems downloading the file to the
-  user.
+  successfully obtained; or otherwise should report any problems downloading the file to the user.
 
   If the user agent needs a file name for a resource being handled <a>as a download</a>, it
   should select one using the following algorithm.
 
-  <p class="warning">This algorithm is intended to mitigate security dangers involved in downloading
-  files from untrusted sites, and user agents are strongly urged to follow it.</p>
+  <p class="warning">
+    This algorithm is intended to mitigate security dangers involved in downloading
+    files from untrusted sites, and user agents are strongly urged to follow it.
+  </p>
 
   <ol>
 
@@ -839,63 +841,64 @@
     <a>navigate</a> action resulting in the download was initiated, if any.</li>
 
     <li>Let <var>resource origin</var> be the [=concept/origin=] of the URL of the
-    resource being downloaded, unless that URL's [=url/scheme=]
-    component is <code>data</code>, in which case let <var>resource origin</var> be
+    resource being downloaded, unless that URL's [=url/scheme=] component is <code>data</code>,
+    in which case let <var>resource origin</var> be
     the same as the <var>interface origin</var>, if any.</li>
 
     <li>If there is no <var>interface origin</var>, then let <var>trusted
-    operation</var> be true. Otherwise, let <var>trusted operation</var> be true if <var>resource origin</var> is the <a>same origin</a> as <var>interface
-    origin</var>, and false otherwise.</li>
+    operation</var> be true. Otherwise, let <var>trusted operation</var> be true if
+    <var>resource origin</var> is the <a>same origin</a> as <var>interface origin</var>,
+    and false otherwise.</li>
 
     <li>If <var>trusted operation</var> is true and the resource has a <a http-header><code>Content-Disposition</code></a> header and that header includes file
     name information, then let <var>filename</var> have the value specified by the header,
     and jump to the step labeled <i>sanitize</i> below. [[!RFC6266]]</li>
 
-    <li>If the download was not initiated from a <a>hyperlink</a> created by an
-    <{a}> or <{area}> element, or if the element of the <a>hyperlink</a> from
-    which it was initiated did not have a <code>download</code>
-    attribute when the download was initiated, or if there was such an attribute but its value when
-    the download was initiated was the empty string, then jump to the step labeled <i>no proposed
-    file name</i>.</li>
+    <li>If the download was not initiated from a <a>hyperlink</a> created by an <{a}> or <{area}>
+    element, or if the element of the <a>hyperlink</a> from which it was initiated did not have a
+    <{links/download}> attribute when the download was initiated, or if there was such an
+    attribute but its value when the download was initiated was the empty string, then jump to
+    the step labeled <i>no proposed file name</i>.</li>
 
-    <li>Let <var>proposed filename</var> have the value of the <code>download</code> attribute of the element of the
-    <a>hyperlink</a> that initiated the download at the time the download was
+    <li>Let <var>proposed filename</var> have the value of the <{links/download}> attribute of the
+    element of the <a>hyperlink</a> that initiated the download at the time the download was
     initiated.</li>
 
-    <li>If <var>trusted operation</var> is true, let <var>filename</var> have
-    the value of <var>proposed filename</var>, and jump to the step labeled <i>sanitize</i>
-    below.</li>
+    <li>If <var>trusted operation</var> is true, let <var>filename</var> have the value of
+    <var>proposed filename</var>, and jump to the step labeled <i>sanitize</i> below.</li>
 
-    <li>If the resource has a <a http-header><code>Content-Disposition</code></a>
-    header and that header specifies the <code>attachment</code> disposition type, let <var>filename</var> have the value of <var>proposed filename</var>, and jump to the
-    step labeled <i>sanitize</i> below. [[!RFC6266]]</li>
+    <li>If the resource has a <a http-header><code>Content-Disposition</code></a> header and that
+    header specifies the <code>attachment</code> disposition type, let <var>filename</var> have
+    the value of <var>proposed filename</var>, and jump to the step labeled <i>sanitize</i>
+    below. [[!RFC6266]]</li>
 
     <li><i>No proposed file name</i>: If <var>trusted operation</var> is true, or if the
-    user indicated a preference for having the resource in question downloaded, let <var>filename</var> have a value derived from the [=url/URL=] of the resource in a
+    user indicated a preference for having the resource in question downloaded, let
+    <var>filename</var> have a value derived from the [=url/URL=] of the resource in a
     user-agent-defined manner, and jump to the step labeled <i>sanitize</i> below.</li>
 
     <li>
+      Act in a user-agent-defined manner to safeguard the user from a potentially hostile
+      cross-origin download. If the download is not to be aborted, then let <var>filename</var> be
+      set to the user's preferred file name or to a file name selected by the user agent, and jump
+      to the step labeled <i>sanitize</i> below.
 
-    Act in a user-agent-defined manner to safeguard the user from a potentially hostile
-    cross-origin download. If the download is not to be aborted, then let <var>filename</var> be set to the user's preferred file name or to a file name selected by
-    the user agent, and jump to the step labeled <i>sanitize</i> below.
+      <div class="warning">
+        If the algorithm reaches this step, then a download was begun from a different origin than
+        the resource being downloaded, and the origin did not mark the file as suitable for
+        downloading, and the download was not initiated by the user. This could be because a
+        <{links/download}> attribute was used to trigger the download, or because the resource in
+        question is not of a type that the user agent supports.
 
-    <div class="warning">
+        This could be dangerous, because, for instance, a hostile server could be trying to get a
+        user to unknowingly download private information and then re-upload it to the hostile
+        server, by tricking the user into thinking the data is from the hostile server.
 
-      If the algorithm reaches this step, then a download was begun from a different origin than
-      the resource being downloaded, and the origin did not mark the file as suitable for
-      downloading, and the download was not initiated by the user. This could be because a <code>download</code> attribute was used to trigger the download, or
-      because the resource in question is not of a type that the user agent supports.
+        Thus, it is in the user's interests that the user be somehow notified that the resource in
+        question comes from quite a different source, and to prevent confusion, any suggested file
+        name from the potentially hostile <var>interface origin</var> should be ignored.
 
-      This could be dangerous, because, for instance, a hostile server could be trying to get a
-      user to unknowingly download private information and then re-upload it to the hostile server,
-      by tricking the user into thinking the data is from the hostile server.
-
-      Thus, it is in the user's interests that the user be somehow notified that the resource in
-      question comes from quite a different source, and to prevent confusion, any suggested file name
-      from the potentially hostile <var>interface origin</var> should be ignored.
-
-    </div>
+      </div>
 
     </li>
 
@@ -907,42 +910,45 @@
 
     Adjust <var>filename</var> to be suitable for the local file system.
 
-    <p class="example">For example, this could involve removing characters that are not legal in
-    file names, or trimming leading and trailing white space.</p>
+    <p class="example">
+      For example, this could involve removing characters that are not legal in
+      file names, or trimming leading and trailing white space.
+    </p>
 
     </li>
 
-    <li>If the platform conventions do not in any way use <a>extensions</a> to determine the types of file on the file system,
-    then return <var>filename</var> as the file name and abort these steps.</li>
+    <li>If the platform conventions do not in any way use <a>extensions</a> to determine the types
+    of file on the file system, then return <var>filename</var> as the file name and abort these steps.</li>
 
-    <li>Let <var>claimed type</var> be the type given by the resource's <a>Content-Type metadata</a>, if any is known. Let <var>named
-    type</var> be the type given by <var>filename</var>'s <a>extension</a>, if any is known. For the purposes of this step, a
+    <li>Let <var>claimed type</var> be the type given by the resource's
+    <a>Content-Type metadata</a>, if any is known. Let <var>named type</var> be the type given by
+    <var>filename</var>'s <a>extension</a>, if any is known. For the purposes of this step, a
     <i>type</i> is a mapping of a <a>MIME type</a> to an <a>extension</a>.</li>
 
     <li>If <var>named type</var> is consistent with the user's preferences (e.g., because
-    the value of <var>filename</var> was determined by prompting the user), then return <var>filename</var> as the file name and abort these steps.</li>
+    the value of <var>filename</var> was determined by prompting the user), then return
+    <var>filename</var> as the file name and abort these steps.</li>
 
-    <li>If <var>claimed type</var> and <var>named type</var> are the same type
-    (i.e., the type given by the resource's <a>Content-Type metadata</a> is
-    consistent with the type given by <var>filename</var>'s <a>extension</a>), then return <var>filename</var> as the file
+    <li>If <var>claimed type</var> and <var>named type</var> are the same type (i.e., the type
+    given by the resource's <a>Content-Type metadata</a> is consistent with the type given by
+    <var>filename</var>'s <a>extension</a>), then return <var>filename</var> as the file
     name and abort these steps.</li>
 
     <li>
 
-    If the <var>claimed type</var> is known, then alter <var>filename</var> to
-    add an <a>extension</a> corresponding to <var>claimed
-    type</var>.
+    If the <var>claimed type</var> is known, then alter <var>filename</var> to add an
+    <a>extension</a> corresponding to <var>claimed type</var>.
 
     Otherwise, if <var>named type</var> is known to be potentially dangerous (e.g., it
     will be treated by the platform conventions as a native executable, shell script, HTML
-    application, or executable-macro-capable document) then optionally alter <var>filename</var> to add a known-safe <a>extension</a>
-    (e.g., "<code>.txt</code>").
+    application, or executable-macro-capable document) then optionally alter <var>filename</var>
+    to add a known-safe <a>extension</a> (e.g., "<code>.txt</code>").
 
     <p class="note">
-    This last step would make it impossible to download executables, which might not
-    be desirable. As always, implementors are forced to balance security and usability in this
-    matter.
-  </p>
+      This last step would make it impossible to download executables, which might not be
+      desirable. As always, implementors are forced to balance security and usability in
+      this matter.
+    </p>
 
     </li>
 
@@ -957,7 +963,7 @@
   the file, and from that the manner in which the file is to be opened or executed.
 
   User agents should ignore any directory or path information provided by the resource itself,
-  its [=url/URL=], and any <code>download</code> attribute, in
+  its [=url/URL=], and any <{links/download}> attribute, in
   deciding where to store the resulting file in the user's file system.
 
 <h5 id="sec-hyperlink-auditing"><dfn>Hyperlink auditing</dfn></h5>
@@ -972,8 +978,9 @@
   * Optionally, return
     (for example the user agent may ignore any or all ping URLs in accordance with the user's express preferences).
   * Let <var>request</var> be a new <a>request</a>, whose <a for="/">URL</a> is <var>ping URL</var>, <a for="/">method</a> is post, <a for="request">body</a> is ping,
-    <a>client</a> is the <a>environment settings object</a> of the <a>document</a> containing the <a>hyperlink</a>, <a>destination</a> is the empty string, <a>credentials mode</a> is include, <a for>referrer</a> is "no-referrer",
-    and whose <a>use-URL-credentials flag</a> is set.
+    <a>client</a> is the <a>environment settings object</a> of the <a>document</a> containing the
+    <a>hyperlink</a>, <a>destination</a> is the empty string, <a>credentials mode</a> is include,
+    <a for>referrer</a> is "no-referrer", and whose <a>use-URL-credentials flag</a> is set.
   * Let <var>target URL</var> be the <a>resulting URL string</a> obtained from <a>parsing</a> the value of the element's
     <{links/href}> attribute, and then:
 
@@ -984,7 +991,7 @@
     <dd><var>request</var> must include a <a>ping-from</a> header with the <a for="/">URL</a> of the document containing the hyperlink as its value,
      and a <a>ping-to</a> HTTP header with the <var>target URL</var> as its value.</dd>
     <dt>Otherwise</dt>
-    <dd><var>request</var> must must include a <a>ping-to</a> HTTP header with <var>target URL</var> as its value.
+    <dd><var>request</var> must include a <a>ping-to</a> HTTP header with <var>target URL</var> as its value.
     Note: <var>request</var> does not include a <a>ping-from</a> header.</dd>
     </dl>
 
@@ -1009,25 +1016,26 @@
   </div>
 
   <div class="note">
-  The <{links/ping}> attribute is redundant with pre-existing technologies like HTTP redirects and JavaScript,
-  in allowing web pages to track which off-site links are most popular, or allowing advertisers to track click-through rates.
+    The <{links/ping}> attribute is redundant with pre-existing technologies like HTTP redirects
+    and JavaScript, in allowing web pages to track which off-site links are most popular, or
+    allowing advertisers to track click-through rates.
 
-  However, the <{links/ping}> attribute provides these advantages over those alternatives:
+    However, the <{links/ping}> attribute provides these advantages over those alternatives:
 
-  * It allows the user to see the unobscured final target URL.
-  * It allows the user agent to inform the user about out-of-band notifications.
-  * It allows the user to disable notifications without losing the underlying functionality.
-  * It allows the user agent to optimize the use of available bandwidth, so the target page loads faster.
+    * It allows the user to see the unobscured final target URL.
+    * It allows the user agent to inform the user about out-of-band notifications.
+    * It allows the user to disable notifications without losing the underlying functionality.
+    * It allows the user agent to optimize the use of available bandwidth, so the target page loads faster.
 
-  So while it is possible to track users without this feature, authors are encouraged to use the <{links/ping}> attribute,
-  so the user agent can make the experience more transparent.
+    So while it is possible to track users without this feature, authors are encouraged to use
+    the <{links/ping}> attribute, so the user agent can make the experience more transparent.
   </div>
 
 <h4 id="sec-link-types"><dfn lt="allowed keywords and their meanings|link types|link type|html link types">Link types</dfn></h4>
 
   The following table summarizes the link types that are defined by this specification, by their
-  corresponding keywords. This table is non-normative; the actual definitions for the link types are
-  given in the next few sections.
+  corresponding keywords. This table is non-normative; the actual definitions for the link types
+  are given in the next few sections.
 
   In this section, the term <i>referenced document</i> refers to the resource identified by the
   element representing the link, and the term <i>current document</i> refers to the resource within
@@ -1050,11 +1058,11 @@
 
   Keywords that are <dfn>body-ok</dfn> affect whether <{link}> elements are
   <a>allowed in the body</a>. The <a>body-ok</a> keywords defined by this specification are
-    <code>dns-prefetch</code>,
-    <code>preconnect</code>,
-    <code>prefetch</code>,
-    <code>preload</code>,
-    <code>prerender</code>, and
+    <{link/dns-prefetch}>,
+    <{link/preconnect}>,
+    <{link/prefetch}>,
+    <{link/preload}>,
+    <{link/prerender}>, and
     <{link/stylesheet}>.
 
   <a>Other applicable specifications</a> may define <span>body-ok</span> keywords.
@@ -1276,8 +1284,10 @@
         <link rel="alternate stylesheet" href="wide.css" title="Wide screen">
       </xmp>
 
-      <p class="note">How the user can select the alternate style sheets will depend on
-      the browser. Not all browsers offer a user interface for selecting style sheets.</p>
+      <p class="note">
+        How the user can select the alternate style sheets will depend on the browser. Not all
+        browsers offer a user interface for selecting style sheets.
+      </p>
     </div>
 
     </dd>
@@ -1322,16 +1332,19 @@
     The keyword creates a <a>hyperlink</a> referencing an alternate representation of the
     current document.
 
-    The nature of the referenced document is given by the <code>hreflang</code>, and <code>type</code> attributes.
+    The nature of the referenced document is given by the <code>hreflang</code>,
+    and <code>type</code> attributes.
 
-    If the <{link/alternate}> keyword is used with the <code>hreflang</code> attribute, and that attribute's value differs
-    from the <a>document element</a>'s <a>language</a>, it indicates that the referenced
-    document is a translation.
+    If the <{link/alternate}> keyword is used with the <code>hreflang</code> attribute, and that
+    attribute's value differs from the <a>document element</a>'s <a>language</a>, it indicates
+    that the referenced document is a translation.
 
-    If the <{link/alternate}> keyword is used with the <code>type</code> attribute, it indicates that the referenced document is
-    a reformulation of the current document in the specified format.
+    If the <{link/alternate}> keyword is used with the <code>type</code> attribute, it indicates
+    that the referenced document is a reformulation of the current document in the specified
+    format.
 
-    The <code>hreflang</code> and <code>type</code> attributes can be combined when specified with the <{link/alternate}> keyword.
+    The <code>hreflang</code> and <code>type</code> attributes can be combined when specified
+    with the <{link/alternate}> keyword.
 
     <div class="example">
       The following example shows how you can specify versions of the page that use alternative
@@ -1359,24 +1372,24 @@
 
 <h5 id="link-type-author">Link type "<dfn element-state for="link"><code>author</code></dfn>"</h5>
 
-  The <{link/author}> keyword may be used with <{link}>,
-  <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
+  The <{link/author}> keyword may be used with <{link}>, <{a}>, and <{area}> elements.
+  This keyword creates a <a>hyperlink</a>.
 
-  For <{a}> and <{area}> elements, the <{link/author}>
-  keyword indicates that the referenced document provides further information about the author of
-  the nearest <{article}> element ancestor of the element defining the hyperlink, if there
-  is one, or of the page as a whole, otherwise.
+  For <{a}> and <{area}> elements, the <{link/author}> keyword indicates that the referenced
+  document provides further information about the author of the nearest <{article}> element
+  ancestor of the element defining the hyperlink, if there is one, or of the page as a whole,
+  otherwise.
 
-  For <{link}> elements, the <{link/author}> keyword indicates
-  that the referenced document provides further information about the author for the page as a
-  whole.
+  For <{link}> elements, the <{link/author}> keyword indicates that the referenced document
+  provides further information about the author for the page as a whole.
 
   <p class="note">
     The "referenced document" can be, and often is, a <code>mailto:</code> URL giving the e-mail address of the author. [[RFC6068]]
   </p>
 
-  <strong>Synonyms</strong>: For historical reasons, user agents must also treat
-  <{link}>, <{a}>, and <{area}> elements that have a <{links/rev}> attribute with the value "<code>made</code>" as having the <{link/author}> keyword specified as a link relationship.
+  <strong>Synonyms</strong>: For historical reasons, user agents must also treat <{link}>, <{a}>,
+  and <{area}> elements that have a <{links/rev}> attribute with the value "<code>made</code>" as
+  having the <{link/author}> keyword specified as a link relationship.
 
 <h5 id="link-type-bookmark">Link type "<dfn element-state for="link"><code>bookmark</code></dfn>"</h5>
 
@@ -1430,17 +1443,19 @@ See [[resource-hints]] for full definition.
 
 <h5 id="link-type-external">Link type "<dfn element-state for="link"><code>external</code></dfn>"</h5>
 
-  The <{link/external}> keyword may be used with <{a}>, and <{area}> elements.
-   This keyword creates a <a>hyperlink</a>. The <{link/external}> keyword indicates that the referenced document is not part of the same site as the current document. It is informational, and requires no specific browser behaviour.
+  The <{link/external}> keyword may be used with <{a}>, and <{area}> elements. This keyword
+  creates a <a>hyperlink</a>. The <{link/external}> keyword indicates that the referenced document
+  is not part of the same site as the current document. It is informational, and requires no
+  specific browser behaviour.
 
 <h5 id="link-type-help">Link type "<dfn element-state for="link"><code>help</code></dfn>"</h5>
 
-  The <{link/help}> keyword may be used with <{link}>,
-  <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
+  The <{link/help}> keyword may be used with <{link}>, <{a}>, and <{area}> elements.
+  This keyword creates a <a>hyperlink</a>.
 
-  For <{a}> and <{area}> elements, the <{link/help}>
-  keyword indicates that the referenced document provides further help information for the parent of
-  the element defining the hyperlink, and its children.
+  For <{a}> and <{area}> elements, the <{link/help}> keyword indicates that the referenced
+  document provides further help information for the parent of the element defining the
+  <a>hyperlink</a>, and its children.
 
   <div class="example">
     In the following example, the form control has associated context-sensitive help. The user
@@ -1448,9 +1463,11 @@ See [[resource-hints]] for full definition.
     presses the "Help" or "F1" key.
 
     <xmp highlight="html">
-      <p>
-        <label> Topic: <input name="topic"> <a href="help/topic.html" rel="help">(Help)</a></label>
-      </p>
+      <label>
+        Topic:
+        <input name="topic">
+        <a href="help/topic.html" rel="help">(Help)</a>
+      </label>
     </xmp>
 
   </div>
@@ -1468,34 +1485,36 @@ See [[resource-hints]] for full definition.
   The specified resource is an icon representing the page or site, and should be used by the user
   agent when representing the page in the user interface.
 
-  Icons could be auditory icons, visual icons, or other kinds of icons. If
-  multiple icons are provided, the user agent must select the most appropriate icon according to the
-  <code>type</code>, <code>media</code>, and <code>sizes</code> attributes. If there are multiple equally appropriate icons,
-  user agents must use the last one declared in <a>tree order</a> at the time that the user
-  agent collected the list of icons. If the user agent tries to use an icon but that icon is
-  determined, upon closer examination, to in fact be inappropriate (e.g., because it uses an
-  unsupported format), then the user agent must try the next-most-appropriate icon as determined by
-  the attributes.
+  Icons could be auditory icons, visual icons, or other kinds of icons. If multiple icons are
+  provided, the user agent must select the most appropriate icon according to the
+  <code>type</code>, <code>media</code>, and <code>sizes</code> attributes. If there are multiple
+  equally appropriate icons, user agents must use the last one declared in <a>tree order</a> at
+  the time that the user agent collected the list of icons. If the user agent tries to use an icon
+  but that icon is determined, upon closer examination, to in fact be inappropriate (e.g., because
+  it uses an unsupported format), then the user agent must try the next-most-appropriate icon as
+  determined by the attributes.
 
   <p class="note">
     User agents are not required to update icons when the list of icons changes, but
-  are encouraged to do so.
+    are encouraged to do so.
   </p>
 
-  There is no default type for resources given by the <{link/icon}> keyword.
-  However, for the purposes of <a>determining the type of the resource</a>, user agents must expect the resource to be an image.
+  There is no default type for resources given by the <{link/icon}> keyword. However, for the
+  purposes of <a>determining the type of the resource</a>, user agents must expect the resource
+  to be an image.
 
   The <{link/sizes}> keyword represent icon sizes in raw pixels (as opposed to CSS pixels).
 
   <p class="note">
-    An icon that is 50 CSS pixels wide intended for displays with a device pixel
-  density of two device pixels per CSS pixel (2x, 192dpi) would have a width of 100 raw pixels. This
-  feature does not support indicating that a different resource is to be used for small
-  high-resolution icons vs large low-resolution icons (e.g., 50×50 2x vs 100×100 1x).
+    An icon that is 50 CSS pixels wide intended for displays with a device pixel density of two
+    device pixels per CSS pixel (2x, 192dpi) would have a width of 100 raw pixels. This feature
+    does not support indicating that a different resource is to be used for small high-resolution
+    icons vs large low-resolution icons (e.g., 50×50 2x vs 100×100 1x).
   </p>
 
-  To parse and process the attribute's value, the user agent must first <a lt="split a string on spaces">split the attribute's value on spaces</a>, and must then parse each resulting
-  keyword to determine what it represents.
+  To parse and process the attribute's value, the user agent must first
+  <a lt="split a string on spaces">split the attribute's value on spaces</a>, and must then parse
+  each resulting keyword to determine what it represents.
 
   The <dfn attr-value for="link/sizes"><code>any</code></dfn> keyword represents that the
   resource contains a scalable icon, e.g., as provided by an SVG image.
@@ -1521,20 +1540,19 @@ See [[resource-hints]] for full definition.
     <li>Apply the <a>rules for parsing non-negative integers</a> to <var>width
     string</var> to obtain <var>width</var>.</li>
 
-    <li>Apply the <a>rules for parsing non-negative integers</a> to <var>height
-    string</var> to obtain <var>height</var>.</li>
+    <li>Apply the <a>rules for parsing non-negative integers</a> to <var>height string</var>
+    to obtain <var>height</var>.</li>
 
-    <li>The keyword represents that the resource contains a bitmap icon with a width of <var>width</var> device pixels and a height of <var>height</var> device
-    pixels.</li>
+    <li>The keyword represents that the resource contains a bitmap icon with a width of
+    <var>width</var> device pixels and a height of <var>height</var> device pixels.</li>
 
   </ul>
 
   The keywords specified on the <code>sizes</code> attribute must not
   represent icon sizes that are not actually available in the linked resource.
 
-  In the absence of a <code>link</code> with the <{link/icon}> keyword, for
-  {{Document}} objects obtained over HTTP or HTTPS, user agents may instead run these
-  steps <a>in parallel</a>:
+  In the absence of a <code>link</code> with the <{link/icon}> keyword, for {{Document}} objects
+  obtained over HTTP or HTTPS, user agents may instead run these steps <a>in parallel</a>:
 
   <ol>
     <li>Let <var>request</var> be a new <a>request</a> whose
@@ -1557,9 +1575,9 @@ See [[resource-hints]] for full definition.
 
     <xmp highlight="html">
       <!DOCTYPE html>
-      <html>
+      <html lang="en">
         <head>
-          <title>Example</title>
+          <title>Example App</title>
           <link rel="icon" href="favicon.png" sizes="16x16" type="image/png" >
           <link rel="icon" href="windows.ico" sizes="32x32 48x48" type="image/vnd.microsoft.icon">
           <link rel="icon" href="mac.icns"    sizes="128x128 512x512 8192x8192 32768x32768">
@@ -1571,10 +1589,10 @@ See [[resource-hints]] for full definition.
 
   </div>
 
-  For historical reasons, the <{link/icon}> keyword may be preceded by the
-  keyword "<code>shortcut</code>". If the "<code>shortcut</code>" keyword is
-  present, the <{link/rel}> attribute's entire value must be an
-  <a>ASCII case-insensitive</a> match for the string "<code>shortcut&nbsp;icon</code>" (with a single U+0020 SPACE character between the tokens and
+  For historical reasons, the <{link/icon}> keyword may be preceded by the keyword
+  "<code>shortcut</code>". If the "<code>shortcut</code>" keyword is present, the <{link/rel}>
+  attribute's entire value must be an <a>ASCII case-insensitive</a> match for the string
+  "<code>shortcut&nbsp;icon</code>" (with a single U+0020 SPACE character between the tokens and
   no other [=space characters=]).
 
 <h5 id="link-type-license">Link type "<dfn element-state for="link"><code>license</code></dfn>"</h5>
@@ -1582,18 +1600,16 @@ See [[resource-hints]] for full definition.
   The <{link/license}> keyword may be used with <{link}>,
   <{a}>, and <{area}> elements. This keyword creates a <a>hyperlink</a>.
 
-  The <{link/license}> keyword indicates that the referenced document
-  provides the copyright license terms under which the main content of the current document is
-  provided.
+  The <{link/license}> keyword indicates that the referenced document provides the copyright
+  license terms under which the main content of the current document is provided.
 
-  This specification defines the main content of a document and content that
-  is not deemed to be part of that main content via the <{main}> element.
-  The distinction should be made clear to the user.
+  This specification defines the main content of a document and content that is not deemed to be
+  part of that main content via the <{main}> element. The distinction should be made clear to
+  the user.
 
   <div class="example">
-    Consider a photo sharing site. A page on that site might
-    describe and show a photograph, and the page might be marked up as
-    follows:
+    Consider a photo sharing site. A page on that site might describe and show a photograph,
+    and the page might be marked up as follows:
 
     <xmp highlight="html">
       ...
@@ -1611,15 +1627,13 @@ See [[resource-hints]] for full definition.
       ...
     </xmp>
 
-    In this case the <{link/license}>
-    applies to just the photo (the main content of the document), not
-    the whole document. In particular not the design of the page
-    itself, which is covered by the copyright given at the bottom of
-    the document. This should be made clear in the text referencing the licensing
-    link and could also be made clearer in the styling
-    (e.g., making the license link prominently positioned near the
-    photograph, while having the page copyright in small text at
-    the foot of the page, or adding a border to the <{main}> element.)
+    In this case the <{link/license}> applies to just the photo (the primary content of the
+    document), not document as a whole, nor the design of the page itself, which is
+    covered by the copyright given at the bottom of the document, within the <{footer}>.
+    This should be made clear in the text referencing the licensing link, and could also be made
+    clearer in the styling (e.g., making the license link prominently positioned near the
+    photograph, while having the page copyright in small text at the foot of the page, or adding
+    a border to the <{main}> element.)
 
   </div>
 
@@ -1628,14 +1642,13 @@ See [[resource-hints]] for full definition.
 
 <h5 id="link-type-nofollow">Link type "<dfn element-state for="link"><code>nofollow</code></dfn>"</h5>
 
-  The <{link/nofollow}> keyword may be used with <{a}> and
-  <{area}> elements. This keyword does not create a <a>hyperlink</a>, but <a>annotates</a> any other hyperlinks created by the element (the
-  implied hyperlink, if no other keywords create one).
+  The <{link/nofollow}> keyword may be used with <{a}> and <{area}> elements. This keyword does
+  not create a <a>hyperlink</a>, but <a>annotates</a> any other hyperlinks created by the element
+  (the implied hyperlink, if no other keywords create one).
 
-  The <{link/nofollow}> keyword indicates that the link is not endorsed
-  by the original author or publisher of the page, or that the link to the referenced document was
-  included primarily because of a commercial relationship between people affiliated with the two
-  pages.
+  The <{link/nofollow}> keyword indicates that the link is not endorsed by the original author or
+  publisher of the page, or that the link to the referenced document was included primarily
+  because of a commercial relationship between people affiliated with the two pages.
 
 <h5 id="link-type-noopener">Link type "<dfn element-state for="link"><code>noopener</code></dfn>"</h5>
 
@@ -1643,30 +1656,37 @@ See [[resource-hints]] for full definition.
   not create a [=hyperlink=], but [=annotates=] any other hyperlinks created by the element (the
   implied hyperlink, if no other keywords create one).
 
-  The keyword indicates that any newly created [=browsing context=] which results from following the
-  [=hyperlink=] will have [=disowned its opener=], which means that its
+  The keyword indicates that any newly created [=browsing context=] which results from following
+  the [=hyperlink=] will have [=disowned its opener=], which means that its
   {{Window/opener|window.opener}} property will be `null`.
 
   <h5 id="link-type-noreferrer">Link type "<dfn element-state for="link"><code>noreferrer</code></dfn>"</h5>
 
-  The <{link/noreferrer}> keyword may be used with <{a}> and
-  <{area}> elements. This keyword does not create a <a>hyperlink</a>, but <a>annotates</a> any other hyperlinks created by the element (the
-  implied hyperlink, if no other keywords create one).
+  The <{link/noreferrer}> keyword may be used with <{a}> and <{area}> elements. This keyword does
+  not create a <a>hyperlink</a>, but <a>annotates</a> any other hyperlinks created by the element
+  (the implied hyperlink, if no other keywords create one).
 
   It indicates that no referrer information is to be leaked when following the link.
 
-  If a user agent follows a link defined by an <{a}> or <{area}> element that
-  has the <{link/noreferrer}> keyword, the user agent must set their
+  If a user agent follows a link defined by an <{a}> or <{area}> element that has the
+  <{link/noreferrer}> keyword, the user agent must set their
   <a>request</a>'s <a>referrer</a> to "<code>no-referrer</code>".
 
-  <p class="note">For historical reasons, the <{link/noreferrer}> keyword implies the behavior
-    associated with the <{link/noopener}> keyword when present on a hyperlink that
-    [=creating a new browsing context|creates=] a new [=browsing context=].<br>
-    That is:<br>
-    <code highlight="html">&lt;a href="..." rel="noreferrer" target="_blank"></code><br>
-    has the same behavior as:<br>
-    <code highlight="html">&lt;a href="..." rel="noreferrer noopener" target="_blank"></code><br>
-  </p>
+  <div class="note">
+    For historical reasons, the <{link/noreferrer}> keyword implies the behavior associated with
+    the <{link/noopener}> keyword when present on a hyperlink that
+    [=creating a new browsing context|creates=] a new [=browsing context=].
+
+    For example, the following two hyperlinks behave the same:
+
+    <div class="example">
+      <xmp highlight="html">
+        <a href="..." rel="noreferrer" target="_blank">...</a>
+
+        <a href="..." rel="noreferrer noopener" target="_blank">...</a>
+      </xmp>
+    </div>
+  </div>
 
 <h5 id="link-type-preconnect">Link type "<dfn element-state for="link"><code>preconnect</code></dfn>"</h5>
 
