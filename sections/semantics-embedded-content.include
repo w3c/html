@@ -502,7 +502,10 @@
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>As a child of a <{picture}> element, before the <{img}> element.</dd>
-    <dd>As a child of a <a>media element</a>, before any <a>flow content</a> or <{track}> elements.</dd>
+    <dd>
+      As a child of a <a>media element</a> that doesn't have a <{source/src}> attribute,
+      and before any <a>flow content</a> or <{track}> elements.
+    </dd>
     <dt><a>Content model</a>:</dt>
     <dd><a>Nothing</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
@@ -511,8 +514,10 @@
     <dd><a>Global attributes</a></dd>
     <dd><code>src</code> - Address of the resource</dd>
     <dd><code>type</code> - Type of embedded resource</dd>
-    <dd><code>srcset</code> - Images to use in different situations (e.g., high-resolution displays,
-    small monitors, etc)</dd>
+    <dd>
+      <code>srcset</code> - Images to use in different situations (e.g., high-resolution displays,
+      small monitors, etc)
+    </dd>
     <dd><code>sizes</code> - Image sizes between breakpoints</dd>
     <dd><code>media</code> - Applicable media</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -534,8 +539,8 @@
   </dl>
 
   The <{source}> element allows authors to specify multiple alternative <a>source sets</a> for
-  <{img}> elements or multiple alternative <a>media resources</a> for <a>media elements</a>. It does
-  not <a>represent</a> anything on its own.
+  <{img}> elements or multiple alternative <a>media resources</a> for <a>media elements</a>. It
+  does not <a>represent</a> anything on its own.
 
   The <dfn element-attr for="source"><code>type</code></dfn> attribute may be present. If present,
   the value must be a <a>valid MIME type</a>.
@@ -545,106 +550,107 @@
 
   <dl class="switch">
     <dt><{source}> element's parent is a <{picture}> element</dt>
-    <dd>The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be
-    present, and must consist of one or more <a>image candidate strings</a>, each separated from the
-    next by a U+002C COMMA character (,). If an <a>image candidate string</a> contains no
-    descriptors and no [=space characters=] after the URL, the following
-    <a>image candidate string</a>, if there is one, must begin with one or more
-    [=space characters=].
+    <dd>
+      The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be
+      present, and must consist of one or more <a>image candidate strings</a>, each separated from
+      the next by a U+002C COMMA character (,). If an <a>image candidate string</a> contains no
+      descriptors and no [=space characters=] after the URL, the following
+      <a>image candidate string</a>, if there is one, must begin with one or more
+      [=space characters=].
 
-    If the <{source/srcset}> attribute has any <a>image candidate strings</a> using a
-    <a>width descriptor</a>, the
-    <dfn element-attr for="source"><code>sizes</code></dfn> content attribute must also be present,
-    and the value must be a <a>valid source size list</a>.
+      If the <{source/srcset}> attribute has any <a>image candidate strings</a> using a
+      <a>width descriptor</a>, the <dfn element-attr for="source"><code>sizes</code></dfn> content
+      attribute must also be present, and the value must be a <a>valid source size list</a>.
 
-    The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be present.
-    If present, the value must contain a <a>valid media query list</a>.
+      The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be
+      present. If present, the value must contain a <a>valid media query list</a>.
 
-    The <{source/type}> gives the type of the images in the <a>source set</a>, to allow the user
-    agent to skip to the next <{source}> element if it does not support the given type.
+      The <{source/type}> gives the type of the images in the <a>source set</a>, to allow the user
+      agent to skip to the next <{source}> element if it does not support the given type.
 
-    <p class="note">
-      If the <{source/type}> attribute is <em>not</em> specified, the user agent will not select a
-      different <{source}> element if it finds that it does not support the image format after
-      fetching it.
-    </p>
+      <p class="note">
+        If the <{source/type}> attribute is <em>not</em> specified, the user agent will not select
+        a different <{source}> element if it finds that it does not support the image format after
+        fetching it.
+      </p>
 
-    When a <{source}> element has a following sibling <{source}> element or <{img}> element with a
-    <code>srcset</code> attribute specified, it must have at least one of the following:
+      When a <{source}> element has a following sibling <{source}> element or <{img}> element with
+      a <code>srcset</code> attribute specified, it must have at least one of the following:
 
-    * A <{source/media}> attribute specified with a value that, after
-        <a>stripping leading and trailing white space</a>, is not the empty string and is not an
-        <a>ASCII case-insensitive</a> match for the string "<code>all</code>".
-    * A <{source/type}> attribute specified.
+      * A <{source/media}> attribute specified with a value that, after
+          <a>stripping leading and trailing white space</a>, is not the empty string and is not an
+          <a>ASCII case-insensitive</a> match for the string "<code>all</code>".
+      * A <{source/type}> attribute specified.
 
-    The <code>src</code> attribute must not be present.
+      The <code>src</code> attribute must not be present.
     </dd>
+
     <dt><{source}> element's parent is a <a>media element</a></dt>
-    <dd>The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
-    <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
-    by spaces</a>. This attribute must be present.
+    <dd>
+      The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
+      <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
+      by spaces</a>. This attribute must be present.
 
-    <p class="note">
-      Dynamically modifying a <{source}> element and its attribute when the
-    element is already inserted in a <code>video</code> or <{audio}> element will have no
-    effect. To change what is playing, just use the <code>src</code> attribute
-    on the <a>media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
-    resources. Generally, manipulating <{source}> elements manually after the document has
-    been parsed is an unnecessarily complicated approach.
-    </p>
+      <p class="note">
+        Dynamically modifying a <{source}> element and its attribute when the element is already
+        inserted in a <{video}> or <{audio}> element will have no effect. To change what
+        is playing, just use the <code>src</code> attribute on the <a>media element</a> directly,
+        possibly making use of the <code>canPlayType()</code> method to pick from amongst available
+        resources. Generally, manipulating <{source}> elements manually after the document has
+        been parsed is an unnecessarily complicated approach.
+      </p>
 
-    The <{source/type}> content attribute gives the type of the
-    <a>media resource</a>, to help the user agent determine if it can play this <a>media
-    resource</a> before fetching it. If specified, its value must be a <a>valid MIME
-    type</a>. The <code>codecs</code> parameter, which certain MIME types define, might be
-    necessary to specify exactly how the resource is encoded. [[!RFC6381]]
+      The <{source/type}> content attribute gives the type of the <a>media resource</a>, to help
+      the user agent determine if it can play this <a>media resource</a> before fetching it. If
+      specified, its value must be a <a>valid MIME type</a>. The <code>codecs</code> parameter,
+      which certain MIME types define, might be necessary to specify exactly how the resource
+      is encoded. [[!RFC6381]]
 
-    <div class="example">
-      The following list shows some examples of how to use the <code>codecs=</code> MIME
-      parameter in the <{source/type}> attribute.
+      <div class="example">
+        The following list shows some examples of how to use the <code>codecs=</code> MIME
+        parameter in the <{source/type}> attribute.
 
-      : H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></xmp>
+        : H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></xmp>
 
-      : H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'></xmp>
+        : H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'></xmp>
 
-      : H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'></xmp>
+        : H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'></xmp>
 
-      : H.264 "High" profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'></xmp>
+        : H.264 "High" profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'></xmp>
 
-      : MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'></xmp>
+        : MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'></xmp>
 
-      : MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'></xmp>
+        : MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'></xmp>
 
-      : MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container
-      :: <xmp highlight="html"><source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'></xmp>
+        : MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container
+        :: <xmp highlight="html"><source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'></xmp>
 
-      : Theora video and Vorbis audio in Ogg container
-      :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'></xmp>
+        : Theora video and Vorbis audio in Ogg container
+        :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'></xmp>
 
-      : Theora video and Speex audio in Ogg container
-      :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, speex"'></xmp>
+        : Theora video and Speex audio in Ogg container
+        :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, speex"'></xmp>
 
-      : Vorbis audio alone in Ogg container
-      :: <xmp highlight="html"><source src='audio.ogg' type='audio/ogg; codecs=vorbis'></xmp>
+        : Vorbis audio alone in Ogg container
+        :: <xmp highlight="html"><source src='audio.ogg' type='audio/ogg; codecs=vorbis'></xmp>
 
-      : Speex audio alone in Ogg container
-      :: <xmp highlight="html"><source src='audio.spx' type='audio/ogg; codecs=speex'></xmp>
+        : Speex audio alone in Ogg container
+        :: <xmp highlight="html"><source src='audio.spx' type='audio/ogg; codecs=speex'></xmp>
 
-      : FLAC audio alone in Ogg container
-      :: <xmp highlight="html"><source src='audio.oga' type='audio/ogg; codecs=flac'></xmp>
+        : FLAC audio alone in Ogg container
+        :: <xmp highlight="html"><source src='audio.oga' type='audio/ogg; codecs=flac'></xmp>
 
-      : Dirac video and Vorbis audio in Ogg container
-      :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'></xmp>
+        : Dirac video and Vorbis audio in Ogg container
+        :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'></xmp>
+      </div>
 
-    </div>
-
-    The <{source/srcset}>, <{source/sizes}>, and <{source/media}> attributes must not be present.
+      The <{source/srcset}>, <{source/sizes}>, and <{source/media}> attributes must not be present.
     </dd>
   </dl>
 
@@ -5824,12 +5830,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   pixels. If the element's <code>readyState</code> attribute is <code>HAVE_NOTHING</code>,
   then the attributes must return 0.
 
-  Whenever the <a for='video'>intrinsic width</a>
-  or <a for='video'>intrinsic height</a> of the video changes
-  (including, for example, because the selected video
-  track was changed), if the element's <code>readyState</code>
-  attribute is not <code>HAVE_NOTHING</code>, the user agent must
-  <a>queue a task</a> to <a>fire a simple event</a> named <code>resize</code> at the <a>media element</a>.
+  Whenever the <a for='video'>intrinsic width</a> or <a for='video'>intrinsic height</a> of the
+  video changes (including, for example, because the selected video track was changed), if the
+  element's <code>readyState</code> attribute is not <code>HAVE_NOTHING</code>, the user agent must
+  <a>queue a task</a> to <a>fire a simple event</a> named <code>resize</code> at the
+  <a>media element</a>.
 
   The <{video}> element supports <a>dimension attributes</a>.
 
@@ -5847,12 +5852,14 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   The <a for="css">intrinsic width</a> of a <{video}> element's playback area is the
   <a for="css">intrinsic width</a> of the <a>poster frame</a>, if that is available and the
-  element currently <a>represents</a> its poster frame; otherwise, it is the <a for="video">intrinsic width</a> of the video resource, if that is
+  element currently <a>represents</a> its poster frame; otherwise, it is the
+  <a for="video">intrinsic width</a> of the video resource, if that is
   available; otherwise the <a for="css">intrinsic width</a> is missing.
 
   The <a for="css">intrinsic height</a> of a <{video}> element's playback area is the
   <a for="css">intrinsic height</a> of the <a>poster frame</a>, if that is available and the
-  element currently <a>represents</a> its poster frame; otherwise it is the <a for="video">intrinsic height</a> of the video resource, if that is
+  element currently <a>represents</a> its poster frame; otherwise it is the
+  <a for="video">intrinsic height</a> of the video resource, if that is
   available; otherwise the <a for="css">intrinsic height</a> is missing.
 
   The <a>default object size</a> is a width of 300 CSS pixels and a height of 150 CSS
@@ -5868,8 +5875,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   (e.g., fullscreen or in an independent resizable window). Captions, subtitles or other additional
   visual tracks should remain available and visible when enabled. As for the other user interface
   features, controls to enable this should not interfere with the page's normal rendering unless
-  the user agent is exposing a user interface. As for the other user interface features, controls to
-  enable this should not interfere with the page's normal rendering unless the user agent is
+  the user agent is exposing a user interface. As for the other user interface features, controls
+  to enable this should not interfere with the page's normal rendering unless the user agent is
   <a>exposing a user interface</a>. In such an independent context, however, user agents may make
   full user interfaces visible e.g., play, pause, seeking, and volume controls even if the
   <{mediaelements/controls}> attribute is absent.
@@ -5884,8 +5891,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <a>reflect</a> the <{video/poster}> content attribute.
 
   <div class="example">
-    This example shows how different video files can be offered to the browser. If the browser does not support a specific codec,
-    it can play one of the alternative files offered.
+    This example shows how different video files can be offered to the browser. If the browser
+    does not support a specific codec, it can play one of the alternative files offered.
 
     This example also shows the <{video/controls}>, and <{media/preload}> attributes.
 
@@ -5893,7 +5900,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
       <video controls preload="metadata">
         <source type="video/webm" src="example.webm">
         <source type="video/mp4" src="example.mp4">
-        <a href="example.webm">Download the video file.</a>
+        <a href="example.webm" download>Download the video file.</a>
       </video>
     </xmp>
   </div>
@@ -5925,7 +5932,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
         }
       </script>
       <p><video src="example.webm" autoplay controls onerror="failed(event)"></video></p>
-      <p><a href="example.webm">Download the video file</a>.</p>
+      <p><a href="example.webm" download>Download the video file</a>.</p>
     </xmp>
 
   </div>
@@ -6091,11 +6098,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd>No <a>end tag</a></dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>kind</code> - The type of text track</dd>
-    <dd><code>src</code> - Address of the resource</dd>
+    <dd><{track/kind}> - The type of text track</dd>
+    <dd><{track/src}> - Address of the resource</dd>
     <dd><code>srclang</code> - Language of the text track</dd>
     <dd><code>label</code> - User-visible label</dd>
-    <dd><code>default</code> - Enable the track if no other <a>text track</a> is more suitable</dd>
+    <dd><{track/default}> - Enable the track if no other <a>text track</a> is more suitable</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
