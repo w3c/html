@@ -502,7 +502,10 @@
     <dd>None.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>As a child of a <{picture}> element, before the <{img}> element.</dd>
-    <dd>As a child of a <a>media element</a>, before any <a>flow content</a> or <{track}> elements.</dd>
+    <dd>
+      As a child of a <a>media element</a> that doesn't have a <{source/src}> attribute,
+      and before any <a>flow content</a> or <{track}> elements.
+    </dd>
     <dt><a>Content model</a>:</dt>
     <dd><a>Nothing</a>.</dd>
     <dt><a>Tag omission in text/html</a>:</dt>
@@ -511,8 +514,10 @@
     <dd><a>Global attributes</a></dd>
     <dd><code>src</code> - Address of the resource</dd>
     <dd><code>type</code> - Type of embedded resource</dd>
-    <dd><code>srcset</code> - Images to use in different situations (e.g., high-resolution displays,
-    small monitors, etc)</dd>
+    <dd>
+      <code>srcset</code> - Images to use in different situations (e.g., high-resolution displays,
+      small monitors, etc)
+    </dd>
     <dd><code>sizes</code> - Image sizes between breakpoints</dd>
     <dd><code>media</code> - Applicable media</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -534,8 +539,8 @@
   </dl>
 
   The <{source}> element allows authors to specify multiple alternative <a>source sets</a> for
-  <{img}> elements or multiple alternative <a>media resources</a> for <a>media elements</a>. It does
-  not <a>represent</a> anything on its own.
+  <{img}> elements or multiple alternative <a>media resources</a> for <a>media elements</a>. It
+  does not <a>represent</a> anything on its own.
 
   The <dfn element-attr for="source"><code>type</code></dfn> attribute may be present. If present,
   the value must be a <a>valid MIME type</a>.
@@ -545,106 +550,107 @@
 
   <dl class="switch">
     <dt><{source}> element's parent is a <{picture}> element</dt>
-    <dd>The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be
-    present, and must consist of one or more <a>image candidate strings</a>, each separated from the
-    next by a U+002C COMMA character (,). If an <a>image candidate string</a> contains no
-    descriptors and no [=space characters=] after the URL, the following
-    <a>image candidate string</a>, if there is one, must begin with one or more
-    [=space characters=].
+    <dd>
+      The <dfn element-attr for="source"><code>srcset</code></dfn> content attribute must be
+      present, and must consist of one or more <a>image candidate strings</a>, each separated from
+      the next by a U+002C COMMA character (,). If an <a>image candidate string</a> contains no
+      descriptors and no [=space characters=] after the URL, the following
+      <a>image candidate string</a>, if there is one, must begin with one or more
+      [=space characters=].
 
-    If the <{source/srcset}> attribute has any <a>image candidate strings</a> using a
-    <a>width descriptor</a>, the
-    <dfn element-attr for="source"><code>sizes</code></dfn> content attribute must also be present,
-    and the value must be a <a>valid source size list</a>.
+      If the <{source/srcset}> attribute has any <a>image candidate strings</a> using a
+      <a>width descriptor</a>, the <dfn element-attr for="source"><code>sizes</code></dfn> content
+      attribute must also be present, and the value must be a <a>valid source size list</a>.
 
-    The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be present.
-    If present, the value must contain a <a>valid media query list</a>.
+      The <dfn element-attr for="source"><code>media</code></dfn> content attribute may also be
+      present. If present, the value must contain a <a>valid media query list</a>.
 
-    The <{source/type}> gives the type of the images in the <a>source set</a>, to allow the user
-    agent to skip to the next <{source}> element if it does not support the given type.
+      The <{source/type}> gives the type of the images in the <a>source set</a>, to allow the user
+      agent to skip to the next <{source}> element if it does not support the given type.
 
-    <p class="note">
-      If the <{source/type}> attribute is <em>not</em> specified, the user agent will not select a
-      different <{source}> element if it finds that it does not support the image format after
-      fetching it.
-    </p>
+      <p class="note">
+        If the <{source/type}> attribute is <em>not</em> specified, the user agent will not select
+        a different <{source}> element if it finds that it does not support the image format after
+        fetching it.
+      </p>
 
-    When a <{source}> element has a following sibling <{source}> element or <{img}> element with a
-    <code>srcset</code> attribute specified, it must have at least one of the following:
+      When a <{source}> element has a following sibling <{source}> element or <{img}> element with
+      a <code>srcset</code> attribute specified, it must have at least one of the following:
 
-    * A <{source/media}> attribute specified with a value that, after
-        <a>stripping leading and trailing white space</a>, is not the empty string and is not an
-        <a>ASCII case-insensitive</a> match for the string "<code>all</code>".
-    * A <{source/type}> attribute specified.
+      * A <{source/media}> attribute specified with a value that, after
+          <a>stripping leading and trailing white space</a>, is not the empty string and is not an
+          <a>ASCII case-insensitive</a> match for the string "<code>all</code>".
+      * A <{source/type}> attribute specified.
 
-    The <code>src</code> attribute must not be present.
+      The <code>src</code> attribute must not be present.
     </dd>
+
     <dt><{source}> element's parent is a <a>media element</a></dt>
-    <dd>The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
-    <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
-    by spaces</a>. This attribute must be present.
+    <dd>
+      The <dfn element-attr for="source"><code>src</code></dfn> attribute gives the address of the
+      <a>media resource</a>. The value must be a <a>valid non-empty URL potentially surrounded
+      by spaces</a>. This attribute must be present.
 
-    <p class="note">
-      Dynamically modifying a <{source}> element and its attribute when the
-    element is already inserted in a <code>video</code> or <{audio}> element will have no
-    effect. To change what is playing, just use the <code>src</code> attribute
-    on the <a>media element</a> directly, possibly making use of the <code>canPlayType()</code> method to pick from amongst available
-    resources. Generally, manipulating <{source}> elements manually after the document has
-    been parsed is an unnecessarily complicated approach.
-    </p>
+      <p class="note">
+        Dynamically modifying a <{source}> element and its attribute when the element is already
+        inserted in a <{video}> or <{audio}> element will have no effect. To change what
+        is playing, just use the <code>src</code> attribute on the <a>media element</a> directly,
+        possibly making use of the <code>canPlayType()</code> method to pick from amongst available
+        resources. Generally, manipulating <{source}> elements manually after the document has
+        been parsed is an unnecessarily complicated approach.
+      </p>
 
-    The <{source/type}> content attribute gives the type of the
-    <a>media resource</a>, to help the user agent determine if it can play this <a>media
-    resource</a> before fetching it. If specified, its value must be a <a>valid MIME
-    type</a>. The <code>codecs</code> parameter, which certain MIME types define, might be
-    necessary to specify exactly how the resource is encoded. [[!RFC6381]]
+      The <{source/type}> content attribute gives the type of the <a>media resource</a>, to help
+      the user agent determine if it can play this <a>media resource</a> before fetching it. If
+      specified, its value must be a <a>valid MIME type</a>. The <code>codecs</code> parameter,
+      which certain MIME types define, might be necessary to specify exactly how the resource
+      is encoded. [[!RFC6381]]
 
-    <div class="example">
-      The following list shows some examples of how to use the <code>codecs=</code> MIME
-      parameter in the <{source/type}> attribute.
+      <div class="example">
+        The following list shows some examples of how to use the <code>codecs=</code> MIME
+        parameter in the <{source/type}> attribute.
 
-      : H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></xmp>
+        : H.264 Constrained baseline profile video (main and extended video compatible) level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></xmp>
 
-      : H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'></xmp>
+        : H.264 Extended profile video (baseline-compatible) level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.58A01E, mp4a.40.2"'></xmp>
 
-      : H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'></xmp>
+        : H.264 Main profile video level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.4D401E, mp4a.40.2"'></xmp>
 
-      : H.264 "High" profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'></xmp>
+        : H.264 "High" profile video (incompatible with main, baseline, or extended profiles) level 3 and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="avc1.64001E, mp4a.40.2"'></xmp>
 
-      : MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'></xmp>
+        : MPEG-4 Visual Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.8, mp4a.40.2"'></xmp>
 
-      : MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
-      :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'></xmp>
+        : MPEG-4 Advanced Simple Profile Level 0 video and Low-Complexity AAC audio in MP4 container
+        :: <xmp highlight="html"><source src='video.mp4' type='video/mp4; codecs="mp4v.20.240, mp4a.40.2"'></xmp>
 
-      : MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container
-      :: <xmp highlight="html"><source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'></xmp>
+        : MPEG-4 Visual Simple Profile Level 0 video and AMR audio in 3GPP container
+        :: <xmp highlight="html"><source src='video.3gp' type='video/3gpp; codecs="mp4v.20.8, samr"'></xmp>
 
-      : Theora video and Vorbis audio in Ogg container
-      :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'></xmp>
+        : Theora video and Vorbis audio in Ogg container
+        :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, vorbis"'></xmp>
 
-      : Theora video and Speex audio in Ogg container
-      :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, speex"'></xmp>
+        : Theora video and Speex audio in Ogg container
+        :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="theora, speex"'></xmp>
 
-      : Vorbis audio alone in Ogg container
-      :: <xmp highlight="html"><source src='audio.ogg' type='audio/ogg; codecs=vorbis'></xmp>
+        : Vorbis audio alone in Ogg container
+        :: <xmp highlight="html"><source src='audio.ogg' type='audio/ogg; codecs=vorbis'></xmp>
 
-      : Speex audio alone in Ogg container
-      :: <xmp highlight="html"><source src='audio.spx' type='audio/ogg; codecs=speex'></xmp>
+        : Speex audio alone in Ogg container
+        :: <xmp highlight="html"><source src='audio.spx' type='audio/ogg; codecs=speex'></xmp>
 
-      : FLAC audio alone in Ogg container
-      :: <xmp highlight="html"><source src='audio.oga' type='audio/ogg; codecs=flac'></xmp>
+        : FLAC audio alone in Ogg container
+        :: <xmp highlight="html"><source src='audio.oga' type='audio/ogg; codecs=flac'></xmp>
 
-      : Dirac video and Vorbis audio in Ogg container
-      :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'></xmp>
+        : Dirac video and Vorbis audio in Ogg container
+        :: <xmp highlight="html"><source src='video.ogv' type='video/ogg; codecs="dirac, vorbis"'></xmp>
+      </div>
 
-    </div>
-
-    The <{source/srcset}>, <{source/sizes}>, and <{source/media}> attributes must not be present.
+      The <{source/srcset}>, <{source/sizes}>, and <{source/media}> attributes must not be present.
     </dd>
   </dl>
 
@@ -5824,12 +5830,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   pixels. If the element's <code>readyState</code> attribute is <code>HAVE_NOTHING</code>,
   then the attributes must return 0.
 
-  Whenever the <a for='video'>intrinsic width</a>
-  or <a for='video'>intrinsic height</a> of the video changes
-  (including, for example, because the selected video
-  track was changed), if the element's <code>readyState</code>
-  attribute is not <code>HAVE_NOTHING</code>, the user agent must
-  <a>queue a task</a> to <a>fire a simple event</a> named <code>resize</code> at the <a>media element</a>.
+  Whenever the <a for='video'>intrinsic width</a> or <a for='video'>intrinsic height</a> of the
+  video changes (including, for example, because the selected video track was changed), if the
+  element's <code>readyState</code> attribute is not <code>HAVE_NOTHING</code>, the user agent must
+  <a>queue a task</a> to <a>fire a simple event</a> named <code>resize</code> at the
+  <a>media element</a>.
 
   The <{video}> element supports <a>dimension attributes</a>.
 
@@ -5847,12 +5852,14 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   The <a for="css">intrinsic width</a> of a <{video}> element's playback area is the
   <a for="css">intrinsic width</a> of the <a>poster frame</a>, if that is available and the
-  element currently <a>represents</a> its poster frame; otherwise, it is the <a for="video">intrinsic width</a> of the video resource, if that is
+  element currently <a>represents</a> its poster frame; otherwise, it is the
+  <a for="video">intrinsic width</a> of the video resource, if that is
   available; otherwise the <a for="css">intrinsic width</a> is missing.
 
   The <a for="css">intrinsic height</a> of a <{video}> element's playback area is the
   <a for="css">intrinsic height</a> of the <a>poster frame</a>, if that is available and the
-  element currently <a>represents</a> its poster frame; otherwise it is the <a for="video">intrinsic height</a> of the video resource, if that is
+  element currently <a>represents</a> its poster frame; otherwise it is the
+  <a for="video">intrinsic height</a> of the video resource, if that is
   available; otherwise the <a for="css">intrinsic height</a> is missing.
 
   The <a>default object size</a> is a width of 300 CSS pixels and a height of 150 CSS
@@ -5868,8 +5875,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   (e.g., fullscreen or in an independent resizable window). Captions, subtitles or other additional
   visual tracks should remain available and visible when enabled. As for the other user interface
   features, controls to enable this should not interfere with the page's normal rendering unless
-  the user agent is exposing a user interface. As for the other user interface features, controls to
-  enable this should not interfere with the page's normal rendering unless the user agent is
+  the user agent is exposing a user interface. As for the other user interface features, controls
+  to enable this should not interfere with the page's normal rendering unless the user agent is
   <a>exposing a user interface</a>. In such an independent context, however, user agents may make
   full user interfaces visible e.g., play, pause, seeking, and volume controls even if the
   <{mediaelements/controls}> attribute is absent.
@@ -5884,8 +5891,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <a>reflect</a> the <{video/poster}> content attribute.
 
   <div class="example">
-    This example shows how different video files can be offered to the browser. If the browser does not support a specific codec,
-    it can play one of the alternative files offered.
+    This example shows how different video files can be offered to the browser. If the browser
+    does not support a specific codec, it can play one of the alternative files offered.
 
     This example also shows the <{video/controls}>, and <{media/preload}> attributes.
 
@@ -5893,7 +5900,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
       <video controls preload="metadata">
         <source type="video/webm" src="example.webm">
         <source type="video/mp4" src="example.mp4">
-        <a href="example.webm">Download the video file.</a>
+        <a href="example.webm" download>Download the video file.</a>
       </video>
     </xmp>
   </div>
@@ -5925,7 +5932,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
         }
       </script>
       <p><video src="example.webm" autoplay controls onerror="failed(event)"></video></p>
-      <p><a href="example.webm">Download the video file</a>.</p>
+      <p><a href="example.webm" download>Download the video file</a>.</p>
     </xmp>
 
   </div>
@@ -5978,8 +5985,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     </dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
     <dd><a>Global aria-* attributes</a></dd>
-    <dd>Any <code>aria-*</code> attributes
-    <a href="#allowed-aria-roles-states-and-properties">applicable to the <code>application</code> role</a>.</dd>
+    <dd>
+      Any <code>aria-*</code> attributes
+      <a href="#allowed-aria-roles-states-and-properties">applicable to the <code>application</code> role</a>.
+    </dd>
     <dt><a>DOM interface</a>:</dt>
     <dd>
     <pre class="idl" data-highlight="webidl">
@@ -6046,7 +6055,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   </dl>
 
   <div id="audio">
-
     A constructor is provided for creating <code>HTMLAudioElement</code> objects (in addition to
     the factory methods from DOM such as <code>createElement()</code>):
     <dfn constructor for="HTMLAudioElement"><code>Audio(<var>src</var>)</code></dfn>.
@@ -6059,7 +6067,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     The element's <a>node document</a> must be the <a>active document</a> of the
     <a>browsing context</a> of the <code>Window</code> object on which the interface object
     of the invoked constructor is found.
-
   </div>
 
   <div class="example">
@@ -6091,11 +6098,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd>No <a>end tag</a></dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>kind</code> - The type of text track</dd>
-    <dd><code>src</code> - Address of the resource</dd>
+    <dd><{track/kind}> - The type of text track</dd>
+    <dd><{track/src}> - Address of the resource</dd>
     <dd><code>srclang</code> - Language of the text track</dd>
     <dd><code>label</code> - User-visible label</dd>
-    <dd><code>default</code> - Enable the track if no other <a>text track</a> is more suitable</dd>
+    <dd><{track/default}> - Enable the track if no other <a>text track</a> is more suitable</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
     <dd>None</dd>
     <dt>[=Allowed ARIA state and property attributes=]:</dt>
@@ -6423,29 +6430,24 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <code>audioTracks</code> attribute when the <a>event loop</a> last reached step 1.
 
   <p class="note">
-    Both <code>audio</code> and <{video}> elements can be used for both audio and video. The main
-    difference between the two is simply that the <{audio}> element has no playback area for
-    visual content (such as video or captions), whereas the <code>video</code> element does.
+    Both <{audio}> and <{video}> elements can be used for both audio and video. The main
+    difference between the two is simply that the <code>audio</code> element has no playback area
+    for visual content (such as video or captions), whereas the <code>video</code> element does.
   </p>
 
   Except where otherwise explicitly specified, the <a>task source</a> for all the tasks
-  <a>queued</a> in this section and its subsections is the <dfn>media
-  element event task source</dfn> of the <a>media element</a> in question.
+  <a>queued</a> in this section and its subsections is the
+  <dfn>media element event task source</dfn> of the <a>media element</a> in question.
 
 <h5 id="error-codes">Error codes</h5>
 
   <dl class="domintro">
-
     <dt><var>media</var> . <code>error</code></dt>
-
     <dd>
+      Returns a <code>MediaError</code> object representing the current error state of the element.
 
-    Returns a <code>MediaError</code> object representing the current error state of the element.
-
-    Returns null if there is no error.
-
+      Returns null if there is no error.
     </dd>
-
   </dl>
 
   All <a>media elements</a> have an associated error status, which records the last error the
@@ -6465,15 +6467,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   </pre>
 
   <dl class="domintro">
-
     <dt><var>media</var> . <code>error</code> . <code>code</code></dt>
-
     <dd>
-
-    Returns the current error's error code, from the list below.
-
+      Returns the current error's error code, from the list below.
     </dd>
-
   </dl>
 
   The <dfn attribute for="MediaError"><code>code</code></dfn> attribute of a
@@ -6592,16 +6589,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   </p>
 
   <dl class="domintro">
-
     <dt><var>media</var> . <code>canPlayType</code>(<var>type</var>)</dt>
-
     <dd>
-
-    Returns the empty string (a negative response), "maybe", or "probably" based on how confident
-    the user agent is that it can play media resources of the given type.
-
+      Returns the empty string (a negative response), "maybe", or "probably" based on how confident
+      the user agent is that it can play media resources of the given type.
     </dd>
-
   </dl>
 
   The <dfn method for="HTMLMediaElement"><code>canPlayType(<var>type</var>)</code></dfn> method
@@ -6643,7 +6635,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
         }
       </script>
     </xmp>
-
   </div>
 
   <p class="note">
@@ -6685,16 +6676,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 <h5 id="loading-the-media-resource">Loading the media resource</h5>
 
   <dl class="domintro">
-
     <dt><var>media</var> . <code>load</code>()</dt>
-
     <dd>
-
-    Causes the element to reset and start selecting and loading a new <a>media resource</a>
-    from scratch.
-
+      Causes the element to reset and start selecting and loading a new <a>media resource</a>
+      from scratch.
     </dd>
-
   </dl>
 
   All <a>media elements</a> have an <dfn>autoplaying flag</dfn>, which must begin in the true
@@ -6751,12 +6737,12 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
       <li>
 
-      Set the <a>current playback position</a> to 0.
+        Set the <a>current playback position</a> to 0.
 
-      Set the <a>official playback position</a> to 0.
+        Set the <a>official playback position</a> to 0.
 
-      If this changed the <a>official playback position</a>, then <a>queue a task</a>
-      to <a>fire a simple event</a> named <code>timeupdate</code> at the <a>media element</a>.
+        If this changed the <a>official playback position</a>, then <a>queue a task</a>
+        to <a>fire a simple event</a> named <code>timeupdate</code> at the <a>media element</a>.
 
       </li>
 
@@ -7291,9 +7277,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
         <li>The user agent should cancel the fetching process.</li>
 
-        <li>Abort this subalgorithm, returning to the <a>resource selection algorithm</a>.
+        <li>Abort this subalgorithm, returning to the <a>resource selection algorithm</a>.</li>
 
-      </li></ol>
+      </ol>
 
       </dd>
 
@@ -7313,11 +7299,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
         <li>
 
-        If either the <a>media resource</a> or the address of the <var>current
-        media resource</var> indicate a particular set of audio tracks to enable, or if the user
-        agent has information that would facilitate the selection of specific audio tracks to
-        improve the user's experience, then: if this audio track is one of the ones to enable, then
-        set <var>enable</var> to <i>true</i>, otherwise, set <var>enable</var>
+        If either the <a>media resource</a> or the address of the
+        <var>current media resource</var> indicate a particular set of audio tracks to enable,
+        or if the user agent has information that would facilitate the selection of specific audio
+        tracks to improve the user's experience, then: if this audio track is one of the ones to
+        enable, then set <var>enable</var> to <i>true</i>, otherwise, set <var>enable</var>
         to <i>false</i>.
 
         <p class="example">
@@ -7408,10 +7394,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
         <li>
 
-        Update the <a>timeline offset</a> to the date and time that corresponds to the zero
-        time in the <a>media timeline</a> established in the previous step, if any. If no
-        explicit time and date is given by the <a>media resource</a>, the <a>timeline
-        offset</a> must be set to Not-a-Number (NaN).
+        Update the <a>timeline offset</a> to the date and time that corresponds to the zero time
+        in the <a>media timeline</a> established in the previous step, if any. If no explicit time
+        and date is given by the <a>media resource</a>, the <a>timeline offset</a> must be set to
+        Not-a-Number (NaN).
 
         </li>
 
@@ -7420,9 +7406,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
         <li>
 
-        Update the <code>duration</code> attribute with the time of
-        the last frame of the resource, if known, on the <a>media timeline</a> established
-        above. If it is not known (e.g., a stream that is in principle infinite), update the <code>duration</code> attribute to the value positive Infinity.
+        Update the <code>duration</code> attribute with the time of the last frame of the
+        resource, if known, on the <a>media timeline</a> established above. If it is not known
+        (e.g., a stream that is in principle infinite), update the <code>duration</code> attribute
+        to the value positive Infinity.
 
         <p class="note">
           The user agent will <a>queue a task</a> to <a>fire a simple event</a> named
@@ -7465,8 +7452,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
         <li>
 
-        If either the <a>media resource</a> or the address of the <var>current
-        media resource</var> indicate a particular start time, then set the
+        If either the <a>media resource</a> or the address of the
+        <var>current media resource</var> indicate a particular start time, then set the
         <var>initial playback position</var> to that time and, if <var>jumped</var> is still
         false, <a>seek</a> to that time and let <var>jumped</var> be true.
 
@@ -7608,12 +7595,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
         <li>
 
-        If the <a>media element</a>'s <code>readyState</code>
-        attribute has a value equal to <code>HAVE_NOTHING</code>, set
-        the element's <code>networkState</code> attribute to the
-        <code>NETWORK_EMPTY</code> value, set the element's
-        <a>show poster flag</a> to true, and <a>fire a simple event</a>
-        named <a event for="media">emptied</a> at the element.
+        If the <a>media element</a>'s <code>readyState</code> attribute has a value equal to
+        <code>HAVE_NOTHING</code>, set the element's <code>networkState</code> attribute to the
+        <code>NETWORK_EMPTY</code> value, set the element's <a>show poster flag</a> to true, and
+        <a>fire a simple event</a> named <a event for="media">emptied</a> at the element.
 
         Otherwise, set the element's <code>networkState</code>
         attribute to the <code>NETWORK_IDLE</code> value.
@@ -7946,16 +7931,17 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <a>fire a simple event</a> named <code>timeupdate</code> at the element.
 
   <p class="note">
-    Because of the above requirement and the requirement in the <a>resource fetch algorithm</a> that kicks in
+    Because of the above requirement and the requirement in the <a>resource fetch algorithm</a>
+    that kicks in
     <a href="#getting-media-metadata">when the metadata of the clip becomes known</a>,
     the <a>current playback position</a> can never be less than the
     <a>earliest possible position</a>.
   </p>
 
-  If at any time the user agent learns that an audio or video track has ended and all <a>media
-  data</a> relating to that track corresponds to parts of the <a>media timeline</a> that
-  are <em>before</em> the <a>earliest possible position</a>, the user agent may <a>queue a
-  task</a> to first remove the track from the <code>audioTracks</code>
+  If at any time the user agent learns that an audio or video track has ended and all
+  <a>media data</a> relating to that track corresponds to parts of the <a>media timeline</a> that
+  are <em>before</em> the <a>earliest possible position</a>, the user agent may
+  <a>queue a task</a> to first remove the track from the <code>audioTracks</code>
   attribute's <code>AudioTrackList</code> object or the <code>videoTracks</code> attribute's
   {{VideoTrackList}} object as appropriate and then <a>fire</a> a <a>trusted</a> event with the
   name <code>removetrack</code>, that does not bubble and is not cancelable, and that
@@ -7975,14 +7961,16 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   to or greater than <code>HAVE_METADATA</code>, even if doing so requires fetching multiple
   parts of the resource.
 
-  <p id='durationChange'>When the length of the <a>media resource</a> changes to a known value
-  (e.g., from being unknown to known, or from a previously established length to a new length) the
-  user agent must <a>queue a task</a> to <a>fire a simple event</a> named
-  <a event for="media">durationchange</a> at the <a>media element</a>. (The
-  event is not fired when the duration is reset as part of loading a new media resource.) If the
-  duration is changed such that the <a>current playback position</a> ends up being greater
-  than the time of the end of the <a>media resource</a>, then the user agent must also
-  <a>seek</a> to the time of the end of the <a>media resource</a>.
+  <p id="durationChange">
+    When the length of the <a>media resource</a> changes to a known value (e.g., from being
+    unknown to known, or from a previously established length to a new length) the user agent must
+    <a>queue a task</a> to <a>fire a simple event</a> named
+    <a event for="media">durationchange</a> at the <a>media element</a>. (The event is not fired
+    when the duration is reset as part of loading a new media resource.) If the duration is
+    changed such that the <a>current playback position</a> ends up being greater than the time of
+    the end of the <a>media resource</a>, then the user agent must also
+    <a>seek</a> to the time of the end of the <a>media resource</a>.
+  </p>
 
   <p class="example">
     If an "infinite" stream ends for some reason, then the duration would change from positive
@@ -8211,8 +8199,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
         video to play, so as to allow the user to override the behavior if so desired.
       </p>
 
-      In any case, the user agent must finally <a>queue a task</a> to
-      <a>fire a simple event</a> named <code>canplaythrough</code> at the element.
+      In any case, the user agent must finally <a>queue a task</a> to <a>fire a simple event</a>
+      named <code>canplaythrough</code> at the element.
 
       </dd>
 
@@ -8345,16 +8333,16 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <p class="note">
     A <code>waiting</code> DOM event can be <a>fired</a> as a result of an element that is
-  <a>potentially playing</a> stopping playback due to its <code>readyState</code> attribute changing to a value lower than <code>HAVE_FUTURE_DATA</code>.
+    <a>potentially playing</a> stopping playback due to its <code>readyState</code> attribute
+    changing to a value lower than <code>HAVE_FUTURE_DATA</code>.
   </p>
 
-  A <a>media element</a> is said to have <dfn lt="playback has ended|ended playback|playback ended">ended playback</dfn> when:
+  A <a>media element</a> is said to have
+  <dfn lt="playback has ended|ended playback|playback ended">ended playback</dfn> when:
 
   <ul>
 
-    <li>The element's <code>readyState</code> attribute is <code>HAVE_METADATA</code> or greater, and
-
-    </li><li>
+    <li>The element's <code>readyState</code> attribute is <code>HAVE_METADATA</code> or greater, and</li><li>
 
     Either:
 
@@ -8389,9 +8377,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <a>ended playback</a> and the <a>direction of playback</a> was forwards, and false otherwise.
 
   A <a>media element</a> is said to have <dfn>stopped due to errors</dfn> when the
-  element's <code>readyState</code> attribute is <code>HAVE_METADATA</code> or greater, and the user agent <a href="#non-fatal-media-error">encounters a non-fatal error</a> during the processing of the
-  <a>media data</a>, and due to that error, is not able to play the content at the
-  <a>current playback position</a>.
+  element's <code>readyState</code> attribute is <code>HAVE_METADATA</code> or greater, and the
+  user agent <a href="#non-fatal-media-error">encounters a non-fatal error</a> during the
+  processing of the <a>media data</a>, and due to that error, is not able to play the content at
+  the <a>current playback position</a>.
 
   A <a>media element</a> is said to have <dfn>paused for user interaction</dfn> when its
   {{HTMLMediaElement/paused}} attribute is false, the {{HTMLMediaElement/readyState}} attribute is
@@ -8428,14 +8417,15 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <ol>
 
-    <li>If the <a>media element</a> has a <code>loop</code>
-    attribute specified, then <a>seek</a> to the <a>earliest possible position</a> of the
-    <a>media resource</a> and abort these steps.</li>
+    <li>If the <a>media element</a> has a <code>loop</code> attribute specified, then
+    <a>seek</a> to the <a>earliest possible position</a> of the <a>media resource</a> and abort
+    these steps.</li>
 
     <li>As defined above, the {{HTMLMediaElement/ended}} IDL attribute starts
     returning true once the <a>event loop</a> returns to step 1.</li>
 
-    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the <a>media element</a>.</li>
+    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the
+    <a>media element</a>.</li>
 
     <li><a>Queue a task</a> that, if the <a>media element</a> has still <a>ended playback</a>, and
     the <a>direction of playback</a> is still forwards, and {{HTMLMediaElement/paused}} is false,
@@ -8443,60 +8433,65 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <code>pause</code> at the <a>media element</a>, [=take pending play promises=] and
     [=reject pending play promises=] with the result and an {{AbortError}} {{DOMException}}.</li>
 
-    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>ended</code> at the <a>media element</a>.</li>
+    <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>ended</code> at the
+    <a>media element</a>.</li>
 
   </ol>
 
-  When the <a>current playback position</a> reaches the <a>earliest possible
-  position</a> of the <a>media resource</a> when the <a>direction of playback</a> is
-  backwards, then the user agent must only <a>queue a task</a> to <a>fire a simple
-  event</a> named <code>timeupdate</code> at the element.
+  When the <a>current playback position</a> reaches the <a>earliest possible position</a> of the
+  <a>media resource</a> when the <a>direction of playback</a> is backwards, then the user agent
+  must only <a>queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at
+  the element.
 
   <p class="note">
-    The word "reaches" here does not imply that the <a>current playback
-  position</a> needs to have changed during normal playback; it could be via <a>seeking</a>, for instance.
+    The word "reaches" here does not imply that the <a>current playback position</a> needs to have
+    changed during normal playback; it could be via <a>seeking</a>, for instance.
   </p>
 
   <hr />
 
-  The <dfn element-attr for="media"><code>remote</code></dfn> attribute
-  MUST return the <a>RemotePlayback object</a> associated with the <a lt="media elements">media element</a>.
+  The <dfn element-attr for="media"><code>remote</code></dfn> attribute MUST return the
+  <a>RemotePlayback object</a> associated with the <a lt="media elements">media element</a>.
 
-  The <dfn element-attr for="media"><code>disableRemotePlayback</code></dfn> attribute is a <a>boolean
-  attribute</a>. When present, the user agent MUST NOT play the <a lt="media elements">media element</a> remotely or present any UI to do so.
+  The <dfn element-attr for="media"><code>disableRemotePlayback</code></dfn> attribute is a
+  <a>boolean attribute</a>. When present, the user agent MUST NOT play the
+  <a lt="media elements">media element</a> remotely or present any UI to do so.
 
-  When the <{media/disableRemotePlayback}> attribute is added to the <a
-  lt="media elements">media element</a>, the user agent MUST run the steps to <a>disable remote playback</a>.
+  When the <{media/disableRemotePlayback}> attribute is added to the
+  <a lt="media elements">media element</a>, the user agent MUST run the steps to
+  <a>disable remote playback</a>.
 
-  A corresponding <dfn attribute for="HTMLMediaElement"><code>
-  disableRemotePlayback</code></dfn> IDL attribute which reflects the
-  value of each element’s <{media/disableRemotePlayback}> content
-  attribute is added to the {{HTMLMediaElement}} interface. The
-  {{HTMLMediaElement/disableRemotePlayback}} IDL attribute MUST <a>reflect</a> the content attribute of the same name.
+  A corresponding  <dfn attribute for="HTMLMediaElement"><code>disableRemotePlayback</code></dfn>
+  IDL attribute  which reflects the value of each element’s <{media/disableRemotePlayback}> content
+  attribute is added to the {{HTMLMediaElement}} interface.
+  The {{HTMLMediaElement/disableRemotePlayback}} IDL attribute MUST <a>reflect</a> the content
+  attribute of the same name.
 
   <hr />
 
   The <dfn attribute for="HTMLMediaElement"><code>defaultPlaybackRate</code></dfn> attribute
   gives the desired speed at which the <a>media resource</a> is to play, as a multiple of its
-  intrinsic speed. The attribute is mutable: on getting it must return the last value it was set to,
-  or 1.0 if it hasn't yet been set; on setting the attribute must be set to the new value.
+  intrinsic speed. The attribute is mutable: on getting it must return the last value it was set
+  to, or 1.0 if it hasn't yet been set; on setting the attribute must be set to the new value.
 
-  <p class="note">The {{HTMLMediaElement/defaultPlaybackRate}} is used by the user agent when it
-  <a>exposes a user interface to the user</a>.</p>
+  <p class="note">
+    The {{HTMLMediaElement/defaultPlaybackRate}} is used by the user agent when it
+    <a>exposes a user interface to the user</a>.
+  </p>
 
   The <dfn attribute for="HTMLMediaElement"><code>playbackRate</code></dfn> attribute gives the
   <a>effective playback rate</a> which is the speed at which the <a>media resource</a> plays, as a
   multiple of its intrinsic speed. If it is not equal to the
-  {{HTMLMediaElement/defaultPlaybackRate}}, then the implication is that the user is using a feature
-  such as fast forward or slow motion playback. The attribute is mutable: on getting it must return
-  the last value it was set to, or 1.0 if it hasn't yet been set; on setting the attribute must be
-  set to the new value, and the playback will change speed (if the element is
+  {{HTMLMediaElement/defaultPlaybackRate}}, then the implication is that the user is using a
+  feature such as fast forward or slow motion playback. The attribute is mutable: on getting it
+  must return the last value it was set to, or 1.0 if it hasn't yet been set; on setting the
+  attribute must be set to the new value, and the playback will change speed (if the element is
   <a>potentially playing</a>).
 
   When the {{HTMLMediaElement/defaultPlaybackRate}} or {{HTMLMediaElement/playbackRate}} attributes
   change value (either by being set by script or by being changed directly by the user agent, e.g.,
-  in response to user control) the user agent must <a>queue a task</a> to <a>fire a simple event</a>
-  named <code>ratechange</code> at the <a>media element</a>.
+  in response to user control) the user agent must <a>queue a task</a> to
+  <a>fire a simple event</a> named <code>ratechange</code> at the <a>media element</a>.
 
   <hr />
 
@@ -8508,9 +8503,11 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <hr />
 
-  Each [=media element=] has a <dfn>list of pending play promises</dfn>, which must be initially empty.
+  Each [=media element=] has a <dfn>list of pending play promises</dfn>, which must be initially
+  empty.
 
-  To <dfn>take pending play promises</dfn> for a <a>media element</a>, the user agent must run the following steps:
+  To <dfn>take pending play promises</dfn> for a <a>media element</a>, the user agent must run
+  the following steps:
 
   <ol>
     <li>Let <var>promise</var>s be an empty list of promises.</li>
@@ -8550,22 +8547,25 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <a>media element</a> is invoked, the user agent must run the following steps.
 
   <ol>
+    <li>
+      If the [=media element=] is not allowed to play, return a promise rejected
+      with a "{{NotAllowedError}}" {{DOMException}}.
 
-    <li>If the [=media element=] is not allowed to play, return a promise rejected
-    with a "{{NotAllowedError}}" {{DOMException}}.
-
-    <p class="note">For example, a user agent could require user interaction in order to start
-    playback. This specification does not require any particular behavior.</p>
+      <p class="note">
+        For example, a user agent could require user interaction in order to start
+        playback. This specification does not require any particular behavior.
+      </p>
     </li>
 
-    <li>If the [=media element=]'s {{HTMLMediaElement/error}} attribute is not null and its
-    {{MediaError/code}} is {{MEDIA_ERR_SRC_NOT_SUPPORTED}}, return a promise rejected
-    with a "{{NotSupportedError}}" DOMException.
+    <li>
+      If the [=media element=]'s {{HTMLMediaElement/error}} attribute is not null and its
+      {{MediaError/code}} is {{MEDIA_ERR_SRC_NOT_SUPPORTED}}, return a promise rejected
+      with a "{{NotSupportedError}}" DOMException.
 
-    <p class="note">
-    This means that the <a>dedicated media source failure steps</a> have run. Playback is not possible
-    until the media element load algorithm clears the error attribute.
-    </p>
+      <p class="note">
+        This means that the <a>dedicated media source failure steps</a> have run. Playback is not
+        possible until the media element load algorithm clears the error attribute.
+      </p>
     </li>
 
     <li>Let <var>promise</var> be a new promise and append <var>promise</var> to the
@@ -8576,18 +8576,19 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <a>resource selection algorithm</a>.</li>
 
     <li>
+      If the <a>playback has ended</a> and the <a>direction of playback</a> is forwards,
+      <a>seek</a>  to the <a>earliest possible position</a> of the <a>media resource</a>.
 
-    If the <a>playback has ended</a> and the <a>direction of playback</a> is forwards, <a>seek</a> to the <a>earliest possible
-    position</a> of the <a>media resource</a>.
+      <p class="note">
+        This will cause the user agent to <a>queue a task</a> to <a>fire a simple event</a> named
+        <code>timeupdate</code> at the <a>media element</a>.
+      </p>
+    </li>
 
-    <p class="note">
-    This will cause the user agent to <a>queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the <a>media element</a>.
-  </p>
+    <li>
 
-    </li><li>
-
-    If the <a>media element</a>'s {{HTMLMediaElement/paused}} attribute is true, run the following
-    substeps:
+      If the <a>media element</a>'s {{HTMLMediaElement/paused}} attribute is true, run the
+      following substeps:
 
     <ol>
 
@@ -8614,14 +8615,15 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     </li>
 
-    <li>Otherwise, if the [=media element=]'s {{HTMLMediaElement/readyState}} attribute has the value
-    {{HAVE_FUTURE_DATA}} or {{HAVE_ENOUGH_DATA}}, <a>take pending play promises</a> and <a>queue a task</a>
-    to <a>resolve pending play promises</a> with the result.
+    <li>
+      Otherwise, if the [=media element=]'s {{HTMLMediaElement/readyState}} attribute has the value
+      {{HAVE_FUTURE_DATA}} or {{HAVE_ENOUGH_DATA}}, <a>take pending play promises</a> and
+      <a>queue a task</a> to <a>resolve pending play promises</a> with the result.
 
-    <p class="note">
-    The media element is already playing. However, it's possible that promise will be
-    rejected before the queued task is run.
-    </p>
+      <p class="note">
+        The media element is already playing. However, it's possible that promise will be
+        rejected before the queued task is run.
+      </p>
     </li>
 
     <li>Set the <a>media element</a>'s <a>autoplaying flag</a> to false.</li>
@@ -8632,13 +8634,14 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <hr />
 
-  When the <dfn method for="HTMLMediaElement"><code>pause()</code></dfn> method is invoked, and when
-  the user agent is required to pause the <a>media element</a>, the user agent must run the
+  When the <dfn method for="HTMLMediaElement"><code>pause()</code></dfn> method is invoked, and
+  when the user agent is required to pause the <a>media element</a>, the user agent must run the
   following steps:
 
   <ol>
 
-    <li>If the <a>media element</a>'s <code>networkState</code> attribute has the value <code>NETWORK_EMPTY</code>, invoke the <a>media element</a>'s
+    <li>If the <a>media element</a>'s <code>networkState</code> attribute has the value
+    <code>NETWORK_EMPTY</code>, invoke the <a>media element</a>'s
     <a>resource selection algorithm</a>.</li>
 
     <li>Run the <a>internal pause steps</a> for the <a>media element</a>.</li>
@@ -8658,16 +8661,13 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
       <li>Change the value of {{HTMLMediaElement/paused}} to true.</li>
 
-      <li><a>Queue a task</a> to <a>fire a simple
-      event</a> named <code>timeupdate</code> at the
-      element.</li>
+      <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at
+      the element.</li>
 
-      <li><a>Queue a task</a> to <a>fire a simple
-      event</a> named <code>pause</code>
+      <li><a>Queue a task</a> to <a>fire a simple event</a> named <code>pause</code>
       at the element.</li>
 
-      <li>Set the <a>official playback position</a> to the <a>current playback
-      position</a>.</li>
+      <li>Set the <a>official playback position</a> to the <a>current playback position</a>.</li>
 
     </ol>
 
@@ -8682,67 +8682,67 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   If the <a>effective playback rate</a> is positive or zero, then the <dfn>direction of
   playback</dfn> is forwards. Otherwise, it is backwards.
 
-  When a <a>media element</a> is <a>potentially playing</a> and
-  its {{Document}} is a <a>fully active</a> {{Document}}, its <a>current
-  playback position</a> must increase monotonically at <a>effective playback rate</a> units
-  of media time per unit time of the <a>media timeline</a>'s clock. (This specification always
-  refers to this as an <i>increase</i>, but that increase could actually be a <em>de</em>crease if
-  the <a>effective playback rate</a> is negative.)
+  When a <a>media element</a> is <a>potentially playing</a> and its {{Document}} is a
+  <a>fully active</a> {{Document}}, its <a>current playback position</a> must increase
+  monotonically at <a>effective playback rate</a> units of media time per unit time of the
+  <a>media timeline</a>'s clock. (This specification always refers to this as an <i>increase</i>,
+  but that increase could actually be a <em>de</em>crease if the <a>effective playback rate</a>
+  is negative.)
 
-  <p class="note">The <a>effective playback rate</a> can be 0.0, in which case the
-  <a>current playback position</a> doesn't move, despite playback not being paused
-  ({{HTMLMediaElement/paused}} doesn't become true, and the <code>pause</code> event doesn't fire).
+  <p class="note">
+    The <a>effective playback rate</a> can be 0.0, in which case the
+    <a>current playback position</a> doesn't move, despite playback not being paused
+    ({{HTMLMediaElement/paused}} doesn't become true, and the <code>pause</code> event
+    doesn't fire).
   </p>
 
   <p class="note">
-    This specification doesn't define how the user agent achieves the appropriate
-  playback rate — depending on the protocol and media available, it is plausible that the user
-  agent could negotiate with the server to have the server provide the media data at the appropriate
-  rate, so that (except for the period between when the rate is changed and when the server updates
-  the stream's playback rate) the client doesn't actually have to drop or interpolate any
-  frames.
+    This specification doesn't define how the user agent achieves the appropriate playback rate —
+    depending on the protocol and media available, it is plausible that the user agent could
+    negotiate with the server to have the server provide the media data at the appropriate rate,
+    so that (except for the period between when the rate is changed and when the server updates
+    the stream's playback rate) the client doesn't actually have to drop or interpolate any frames.
   </p>
 
-  Any time the user agent <a>provides a stable state</a>,
-  the <a>official playback position</a> must be set to the <a>current playback
-  position</a>.
+  Any time the user agent <a>provides a stable state</a>, the <a>official playback position</a>
+  must be set to the <a>current playback position</a>.
 
   While the <a>direction of playback</a> is backwards, any corresponding audio must be
-  <a>muted</a>. While the <a>effective playback rate</a> is
-  so low or so high that the user agent cannot play audio usefully, the corresponding audio must
-  also be <a>muted</a>. If the <a>effective playback
-  rate</a> is not 1.0, the user agent may apply pitch adjustments to the audio as necessary to
-  render it faithfully.
+  <a>muted</a>. While the <a>effective playback rate</a> is so low or so high that the user agent
+  cannot play audio usefully, the corresponding audio must also be <a>muted</a>. If the
+  <a>effective playback rate</a> is not 1.0, the user agent may apply pitch adjustments to the
+  audio as necessary to render it faithfully.
 
-  <a>Media elements</a> that are <a>potentially playing</a>
-  while not <a>in a <code>Document</code></a> must not play any video, but should play any
-  audio component. Media elements must not stop playing just because all references to them have
-  been removed; only once a media element is in a state where no further audio could ever be played
-  by that element may the element be garbage collected.
+  <a>Media elements</a> that are <a>potentially playing</a> while not
+  <a>in a <code>Document</code></a> must not play any video, but should play any audio component.
+  Media elements must not stop playing just because all references to them have been removed; only
+  once a media element is in a state where no further audio could ever be played by that element
+  may the element be garbage collected.
 
   <p class="note">
     It is possible for an element to which no explicit references exist to play audio, even if such
-    an element is not still actively playing: for instance, a
-    <a>media element</a> whose <a>media resource</a> has no audio tracks
-    could eventually play audio again if it had an event listener that changes the
-    <a>media resource</a>.
+    an element is not still actively playing: for instance, a <a>media element</a> whose
+    <a>media resource</a> has no audio tracks could eventually play audio again if it had an
+    event listener that changes the <a>media resource</a>.
   </p>
 
   <hr />
 
   Each <a>media element</a> has a <dfn>list of newly introduced cues</dfn>, which must be
-  initially empty. Whenever a <a>text track cue</a> is added to the <a>list of cues</a> of a <a>text track</a> that is in the <a>list of text
-  tracks</a> for a <a>media element</a>, that <a>cue</a> must
-  be added to the <a>media element</a>'s <a>list of newly introduced cues</a>. Whenever
-  a <a>text track</a> is added to the <a>list of text tracks</a> for a <a>media element</a>, all of the <a>cues</a> in that <a>text
-  track</a>'s <a>list of cues</a> must be added to the
-  <a>media element</a>'s <a>list of newly introduced cues</a>. When a <a>media element</a>'s <a>list of newly introduced cues</a> has new cues added while the
+  initially empty. Whenever a <a>text track cue</a> is added to the <a>list of cues</a> of a
+  <a>text track</a> that is in the <a>list of text tracks</a> for a <a>media element</a>, that
+  <a>cue</a> must be added to the <a>media element</a>'s <a>list of newly introduced cues</a>.
+  Whenever a <a>text track</a> is added to the <a>list of text tracks</a> for a
+  <a>media element</a>, all of the <a>cues</a> in that <a>text track</a>'s <a>list of cues</a>
+  must be added to the <a>media element</a>'s <a>list of newly introduced cues</a>. When a
+  <a>media element</a>'s <a>list of newly introduced cues</a> has new cues added while the
   <a>media element</a>'s <a>show poster flag</a> is not set, then the user agent must
   run the <i>time marches on</i> steps.
 
-  When a <a>text track cue</a> is removed from the <a>list of cues</a> of a <a>text track</a> that is in the <a>list of text
-  tracks</a> for a <a>media element</a>, and whenever a <a>text track</a> is removed
-  from the <a>list of text tracks</a> of a <a>media element</a>, if the <a>media element</a>'s <a>show poster flag</a> is not set, then the user agent must run the
+  When a <a>text track cue</a> is removed from the <a>list of cues</a> of a <a>text track</a>
+  that is in the <a>list of text tracks</a> for a <a>media element</a>, and whenever a
+  <a>text track</a> is removed from the <a>list of text tracks</a> of a <a>media element</a>, if
+  the <a>media element</a>'s <a>show poster flag</a> is not set, then the user agent must run the
   <i>time marches on</i> steps.
 
   When the <a>current playback position</a> of a <a>media element</a> changes (e.g.,
@@ -8757,70 +8757,77 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <ol>
 
-    <li>Let <var>current cues</var> be a list of <a>cues</a>, initialized to contain all the <a>cues</a> of all
-    the <a mode for="track">hidden</a> or <a mode for="track">showing</a> <a>text tracks</a> of the <a>media element</a> (not the disabled ones) whose <a>start times</a> are less than or equal to the <a>current
-    playback position</a> and whose <a>end times</a> are
-    greater than the <a>current playback position</a>.</li>
+    <li>Let <var>current cues</var> be a list of <a>cues</a>, initialized to contain all the
+    <a>cues</a> of all the <a mode for="track">hidden</a> or <a mode for="track">showing</a>
+    <a>text tracks</a> of the <a>media element</a> (not the disabled ones) whose
+    <a>start times</a> are less than or equal to the <a>current playback position</a> and whose
+    <a>end times</a> are greater than the <a>current playback position</a>.</li>
 
-    <li>Let <var>other cues</var> be a list of <a>cues</a>,
-    initialized to contain all the <a>cues</a> of <a mode for="track">hidden</a> and <a mode for="track">showing</a> <a>text tracks</a> of the <a>media element</a> that are not present in <var>current cues</var>.</li>
+    <li>Let <var>other cues</var> be a list of <a>cues</a>, initialized to contain all the
+    <a>cues</a> of <a mode for="track">hidden</a> and <a mode for="track">showing</a>
+    <a>text tracks</a> of the <a>media element</a> that are not present in
+    <var>current cues</var>.</li>
 
     <li>Let <var>last time</var> be the <a>current playback position</a> at the
     time this algorithm was last run for this <a>media element</a>, if this is not the first
     time it has run.</li>
 
     <li>If the <a>current playback position</a> has, since the last time this algorithm was
-    run, only changed through its usual monotonic increase during normal playback, then let <var>missed cues</var> be the list of <a>cues</a> in <var>other cues</var> whose <a>start times</a> are
-    greater than or equal to <var>last time</var> and whose <a>end times</a> are less than or equal to the <a>current playback position</a>.
+    run, only changed through its usual monotonic increase during normal playback, then let
+    <var>missed cues</var> be the list of <a>cues</a> in <var>other cues</var> whose
+    <a>start times</a> are greater than or equal to <var>last time</var> and whose
+    <a>end times</a> are less than or equal to the <a>current playback position</a>.
     Otherwise, let <var>missed cues</var> be an empty list.</li>
 
     <li>Remove all the <a>cues</a> in <var>missed cues</var>
     that are also in the <a>media element</a>'s <a>list of newly introduced cues</a>, and
     then empty the element's <a>list of newly introduced cues</a>.</li>
 
-    <li>If the time was reached through the usual monotonic increase of the <a>current playback
-    position</a> during normal playback, and if the user agent has not fired a <code>timeupdate</code> event at the element in the past 15 to 250ms and
-    is not still running event handlers for such an event, then the user agent must <a>queue a
-    task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the element. (In the other cases, such as
-    explicit seeks, relevant events get fired as part of the overall process of changing the
-    <a>current playback position</a>.)
+    <li>If the time was reached through the usual monotonic increase of the
+    <a>current playback position</a> during normal playback, and if the user agent has not fired
+    a <code>timeupdate</code> event at the element in the past 15 to 250ms and
+    is not still running event handlers for such an event, then the user agent must
+    <a>queue a task</a> to <a>fire a simple event</a> named <code>timeupdate</code> at the
+    element. (In the other cases, such as explicit seeks, relevant events get fired as part of
+    the overall process of changing the <a>current playback position</a>.)
 
     <p class="note">
-    The event thus is not to be fired faster than about 66Hz or slower than 4Hz
-    (assuming the event handlers don't take longer than 250ms to run). User agents are encouraged to
-    vary the frequency of the event based on the system load and the average cost of processing the
-    event each time, so that the UI updates are not any more frequent than the user agent can
-    comfortably handle while decoding the video.
+      The event thus is not to be fired faster than about 66Hz or slower than 4Hz
+      (assuming the event handlers don't take longer than 250ms to run). User agents are
+      encouraged to vary the frequency of the event based on the system load and the average cost
+      of processing the event each time, so that the UI updates are not any more frequent than the
+      user agent can comfortably handle while decoding the video.
   </li>
 
-    <li>If all of the <a>cues</a> in <var>current cues</var>
-    have their <a>text track cue active flag</a> set, none of the <a>cues</a> in <var>other cues</var> have their <a>text track cue active
-    flag</a> set, and <var>missed cues</var> is empty, then abort these steps.</li>
+    <li>If all of the <a>cues</a> in <var>current cues</var> have their
+    <a>text track cue active flag</a> set, none of the <a>cues</a> in <var>other cues</var> have
+    their <a>text track cue active flag</a> set, and <var>missed cues</var> is empty, then abort
+    these steps.</li>
 
     <li>
 
-    If the time was reached through the usual monotonic increase of the <a>current playback
-    position</a> during normal playback, and there are <a>cues</a>
+    If the time was reached through the usual monotonic increase of the
+    <a>current playback position</a> during normal playback, and there are <a>cues</a>
     in <var>other cues</var> that have their <a>text track cue pause-on-exit flag</a>
-    set and that either have their <a>text track cue active flag</a> set or are also in <var>missed cues</var>, then <a>immediately</a> <a state for="useragent">pause</a> the
+    set and that either have their <a>text track cue active flag</a> set or are also in
+    <var>missed cues</var>, then <a>immediately</a> <a state for="useragent">pause</a> the
     <a>media element</a>.
 
     <p class="note">
-    In the other cases, such as explicit seeks, playback is not paused by going past
-    the end time of a <a>cue</a>, even if that <a>cue</a> has its <a>text track cue pause-on-exit flag</a> set.
-  </p>
+      In the other cases, such as explicit seeks, playback is not paused by going past
+      the end time of a <a>cue</a>, even if that <a>cue</a> has its
+      <a>text track cue pause-on-exit flag</a> set.
+    </p>
 
     </li>
 
     <li>
 
-    Let <var>events</var> be a list of <a>tasks</a>,
-    initially empty. Each <a>task</a> in this list will be associated
-    with a <a>text track</a>, a <a>text track cue</a>, and a time, which are used to
-    sort the list before the <a>tasks</a> are queued.
+    Let <var>events</var> be a list of <a>tasks</a>, initially empty. Each <a>task</a> in this
+    list will be associated with a <a>text track</a>, a <a>text track cue</a>, and a time, which
+    are used to sort the list before the <a>tasks</a> are queued.
 
-    Let <var>affected tracks</var> be a list of <a>text
-    tracks</a>, initially empty.
+    Let <var>affected tracks</var> be a list of <a>text tracks</a>, initially empty.
 
     When the steps below say to <dfn>prepare an event</dfn> named <var>event</var> for a
     <a>text track cue</a> <var>target</var> with a time <var>time</var>, the
@@ -8828,14 +8835,15 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <ol>
 
-      <li>Let <var>track</var> be the <a>text track</a> with which the <a>text
-      track cue</a> <var>target</var> is associated.</li>
+      <li>Let <var>track</var> be the <a>text track</a> with which the <a>text track cue</a>
+      <var>target</var> is associated.</li>
 
-      <li>Create a <a>task</a> to <a>fire a simple event</a>
-      named <var>event</var> at <var>target</var>.</li>
+      <li>Create a <a>task</a> to <a>fire a simple event</a> named <var>event</var> at
+      <var>target</var>.</li>
 
-      <li>Add the newly created <a>task</a> to <var>events</var>, associated with the time <var>time</var>, the <a>text
-      track</a> <var>track</var>, and the <a>text track cue</a> <var>target</var>.</li>
+      <li>Add the newly created <a>task</a> to <var>events</var>, associated with the time
+      <var>time</var>, the <a>text track</a> <var>track</var>, and the <a>text track cue</a>
+      <var>target</var>.</li>
 
       <li>Add <var>track</var> to <var>affected tracks</var>.</li>
 
@@ -8843,53 +8851,52 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     </li>
 
-    <li>For each <a>text track cue</a> in <var>missed
-    cues</var>, <a>prepare an event</a> named <code>enter</code> for the
-    <code>TextTrackCue</code> object with the <a>text track cue start time</a>.</li>
+    <li>For each <a>text track cue</a> in <var>missed cues</var>, <a>prepare an event</a> named
+    <code>enter</code> for the <code>TextTrackCue</code> object with the
+    <a>text track cue start time</a>.</li>
 
-    <li>For each <a>text track cue</a> in <var>other
-    cues</var> that either has its <a>text track cue active flag</a> set or is in <var>missed cues</var>, <a>prepare an event</a> named <code>exit</code> for the <code>TextTrackCue</code> object with the later of the
+    <li>For each <a>text track cue</a> in <var>other cues</var> that either has its
+    <a>text track cue active flag</a> set or is in <var>missed cues</var>, <a>prepare an event</a>
+    named <code>exit</code> for the <code>TextTrackCue</code> object with the later of the
     <a>text track cue end time</a> and the <a>text track cue start time</a>.</li>
 
-    <li>For each <a>text track cue</a> in <var>current
-    cues</var> that does not have its <a>text track cue active flag</a> set, <a>prepare an
-    event</a> named <code>enter</code> for the <code>TextTrackCue</code>
-    object with the <a>text track cue start time</a>.</li>
+    <li>For each <a>text track cue</a> in <var>current cues</var> that does not have its
+    <a>text track cue active flag</a> set, <a>prepare an event</a> named <code>enter</code>
+    for the <code>TextTrackCue</code> object with the <a>text track cue start time</a>.</li>
 
     <li>
 
-    Sort the <a>tasks</a> in <var>events</var> in ascending
-    time order (<a>tasks</a> with earlier times first).
+    Sort the <a>tasks</a> in <var>events</var> in ascending time order (<a>tasks</a> with
+    earlier times first).
 
-    Further sort <a>tasks</a> in <var>events</var> that have
-    the same time by the relative <a>text track cue order</a> of the <a>text track cues</a> associated with these <a>tasks</a>.
+    Further sort <a>tasks</a> in <var>events</var> that have the same time by the relative
+    <a>text track cue order</a> of the <a>text track cues</a> associated with these <a>tasks</a>.
 
-    Finally, sort <a>tasks</a> in <var>events</var> that have
-    the same time and same <a>text track cue order</a> by placing <a>tasks</a> that fire <code>enter</code> events before
+    Finally, sort <a>tasks</a> in <var>events</var> that have the same time and same
+    <a>text track cue order</a> by placing <a>tasks</a> that fire <code>enter</code> events before
     those that fire <code>exit</code> events.
 
     </li>
 
-    <li><a lt="queue a task">Queue</a> each <a>task</a> in
-    <var>events</var>, in list order.</li>
+    <li><a lt="queue a task">Queue</a> each <a>task</a> in <var>events</var>, in list order.</li>
 
-    <li>Sort <var>affected tracks</var> in the same order as the <a>text tracks</a> appear in the <a>media element</a>'s <a>list of text
-    tracks</a>, and remove duplicates.
+    <li>Sort <var>affected tracks</var> in the same order as the <a>text tracks</a> appear in the
+    <a>media element</a>'s <a>list of text tracks</a>, and remove duplicates.</li>
 
-    </li><li>For each <a>text track</a> in <var>affected tracks</var>, in the list
-    order, <a>queue a task</a> to <a>fire a simple event</a> named <code>cuechange</code> at the {{TextTrack}} object, and, if the
-    <a>text track</a> has a corresponding <{track}> element, to then <a>fire a
-    simple event</a> named <code>cuechange</code> at the
-    <{track}> element as well.</li>
+    <li>For each <a>text track</a> in <var>affected tracks</var>, in the list order,
+    <a>queue a task</a> to <a>fire a simple event</a> named <code>cuechange</code> at the
+    {{TextTrack}} object, and, if the <a>text track</a> has a corresponding <{track}> element,
+    to then <a>fire a simple event</a> named <code>cuechange</code> at the <{track}> element
+    as well.</li>
 
-    <li>Set the <a>text track cue active flag</a> of all the <a>cues</a> in the <var>current cues</var>, and unset the <a>text track cue
-    active flag</a> of all the <a>cues</a> in the <var>other
-    cues</var>.</li>
+    <li>Set the <a>text track cue active flag</a> of all the <a>cues</a> in the
+    <var>current cues</var>, and unset the <a>text track cue active flag</a> of all the
+    <a>cues</a> in the <var>other cues</var>.</li>
 
-    <li>Run the <a>rules for updating the text track rendering</a> of each of the <a>text tracks</a>
-    in <var>affected tracks</var> that are <a mode for="track">showing</a>, providing the <a>text track</a>'s
-    <a>text track language</a> as the fallback language if it is not the empty string. For example,
-    for <a>text tracks</a> based on WebVTT, the
+    <li>Run the <a>rules for updating the text track rendering</a> of each of the
+    <a>text tracks</a> in <var>affected tracks</var> that are <a mode for="track">showing</a>,
+    providing the <a>text track</a>'s <a>text track language</a> as the fallback language if it
+    is not the empty string. For example, for <a>text tracks</a> based on WebVTT, the
     <a>rules for updating the display of WebVTT text tracks</a>. [[WEBVTT]]</li>
 
   </ol>
@@ -8899,20 +8906,19 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   merely if it is associated with the <a>text track</a>.
 
   <p class="note">
-    If the <a>media element</a>'s <a>node document</a> stops being a
-  <a>fully active</a> document, then the playback will stop
-  until the document is active again.
+    If the <a>media element</a>'s <a>node document</a> stops being a <a>fully active</a> document,
+    then the playback will stop until the document is active again.
   </p>
 
-  When a <a>media element</a> is <a>removed
-  from a <code>Document</code></a>, the user agent must run the following steps:
+  When a <a>media element</a> is <a>removed from a <code>Document</code></a>, the user agent must
+  run the following steps:
 
   <ol>
 
-    <li><a>Await a stable state</a>, allowing the <a>task</a> that removed the <a>media element</a> from the
-    {{Document}} to continue. The <a>synchronous section</a> consists of all the
-    remaining steps of this algorithm. (Steps in the <a>synchronous section</a> are marked with
-    ⌛.)</li>
+    <li><a>Await a stable state</a>, allowing the <a>task</a> that removed the
+    <a>media element</a> from the {{Document}} to continue. The <a>synchronous section</a>
+    consists of all the remaining steps of this algorithm. (Steps in the
+    <a>synchronous section</a> are marked with ⌛.)</li>
 
     <li>⌛ If the <a>media element</a> is <a>in a <code>Document</code></a>,
     abort these steps.</li>
@@ -8955,13 +8961,15 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   </dl>
 
-  The <dfn attribute for="HTMLMediaElement"><code>seeking</code></dfn> attribute must initially have the
-  value false.
+  The <dfn attribute for="HTMLMediaElement"><code>seeking</code></dfn> attribute must initially
+  have the value false.
 
-  The <dfn method for="HTMLMediaElement" title="fastSeek(time)">fastSeek(double time)</dfn> method must <a>seek</a> to the time given by the method's argument, with the
+  The <dfn method for="HTMLMediaElement" title="fastSeek(time)">fastSeek(double time)</dfn> method
+  must <a>seek</a> to the time given by the method's argument, with the
   <i>approximate-for-speed</i> flag set.
 
-  When the user agent is required to <dfn>seek</dfn> to a particular <var>new playback position</var> in the <a>media resource</a>, optionally with the
+  When the user agent is required to <dfn>seek</dfn> to a particular
+  <var>new playback position</var> in the <a>media resource</a>, optionally with the
   <i>approximate-for-speed</i> flag set, it means that the user agent must run the following steps.
   This algorithm interacts closely with the <a>event loop</a> mechanism; in particular, it has
   a <a>synchronous section</a> (which is triggered as part of the <a>event loop</a>
@@ -8981,9 +8989,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <li>Set the <code>seeking</code> IDL attribute to true.</li>
 
     <li>If the seek was in response to a DOM method call or setting of an IDL attribute, then
-    continue the script. The remainder of these steps must be run <a>in parallel</a>. With the exception
-    of the steps marked with ⌛, they could be aborted at any time by another instance of this
-    algorithm being invoked.</li>
+    continue the script. The remainder of these steps must be run <a>in parallel</a>. With the
+    exception of the steps marked with ⌛, they could be aborted at any time by another instance
+    of this algorithm being invoked.</li>
 
     <li>If the <var>new playback position</var> is later than the end of the <a>media
     resource</a>, then let it be the end of the <a>media resource</a> instead.</li>
@@ -8993,9 +9001,13 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <li>If the (possibly now changed) <var>new playback position</var> is not in one of
     the ranges given in the <code>seekable</code> attribute, then let it
-    be the position in one of the ranges given in the <code>seekable</code> attribute that is the nearest to the <var>new
-    playback position</var>. If two positions both satisfy that constraint (i.e., the <var>new playback position</var> is exactly in the middle between two ranges in the <code>seekable</code> attribute) then use the position that is closest to
-    the <a>current playback position</a>. If there are no ranges given in the <code>seekable</code> attribute then set the <code>seeking</code> IDL attribute to false and abort these steps.</li>
+    be the position in one of the ranges given in the <code>seekable</code> attribute that is the
+    nearest to the <var>new playback position</var>. If two positions both satisfy that constraint
+    (i.e., the <var>new playback position</var> is exactly in the middle between two ranges in the
+    <code>seekable</code> attribute) then use the position that is closest to
+    the <a>current playback position</a>. If there are no ranges given in the
+    <code>seekable</code> attribute then set the <code>seeking</code> IDL attribute to false
+    and abort these steps.</li>
 
     <li>
 
@@ -9007,9 +9019,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     this step is after <a>current playback position</a>, then the adjusted <var>new
     playback position</var> must also be after the <a>current playback position</a>.
 
-    <p class="example">For example, the user agent could snap to a nearby key frame, so that it
-    doesn't have to spend time decoding then discarding intermediate frames before resuming
-    playback.</p>
+    <p class="example">
+      For example, the user agent could snap to a nearby key frame, so that it doesn't have to
+      spend time decoding then discarding intermediate frames before resuming playback.
+    </p>
 
     </li>
 
@@ -9017,27 +9030,28 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <li>
 
-    Set the <a>current playback position</a> to the <var>new playback
-    position</var>.
+    Set the <a>current playback position</a> to the <var>new playback position</var>.
 
     <p class="note">
-    If the <a>media element</a> was <a>potentially playing</a>
-    immediately before it started seeking, but seeking caused its <code>readyState</code> attribute to change to a value lower than <code>HAVE_FUTURE_DATA</code>, then a <code>waiting</code> event will be
-    <a>fired</a> at the element.
-  </p>
+      If the <a>media element</a> was <a>potentially playing</a> immediately before it started
+      seeking, but seeking caused its <code>readyState</code> attribute to change to a value lower
+      than <code>HAVE_FUTURE_DATA</code>, then a <code>waiting</code> event will be
+      <a>fired</a> at the element.
+    </p>
 
     <p class="note">
-    This step sets the <a>current playback position</a>, and thus can
-    immediately trigger other conditions, such as the rules regarding when playback "reaches the end of the <a>media resource</a>" (part of the logic that
-    handles looping), even before the user agent is actually able to render the media data for that
-    position (as determined in the next step).
-  </p>
+      This step sets the <a>current playback position</a>, and thus can immediately trigger other
+      conditions, such as the rules regarding when playback "reaches the end of the
+      <a>media resource</a>" (part of the logic that handles looping), even before the user
+      agent is actually able to render the media data for that position (as determined in the
+      next step).
+    </p>
 
     <p class="note">
-    The <code>currentTime</code> attribute returns
-    the <a>official playback position</a>, not the <a>current playback position</a>, and
-    therefore gets updated before script execution, separate from this algorithm.
-  </p>
+      The <code>currentTime</code> attribute returns the <a>official playback position</a>, not
+      the <a>current playback position</a>, and therefore gets updated before script execution,
+      separate from this algorithm.
+    </p>
 
     </li>
 
@@ -9051,8 +9065,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     the remaining steps of this algorithm. (Steps in the <a>synchronous section</a> are marked
     with ⌛.)</li>
 
-    <li>⌛ Set the <code>seeking</code> IDL attribute to
-    false.</li>
+    <li>⌛ Set the <code>seeking</code> IDL attribute to false.</li>
 
     <li>⌛ Run the <a>time marches on</a> steps.</li>
 
@@ -9071,36 +9084,39 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   attribute is evaluated.
 
   <p class="note">
-    If the user agent can seek to anywhere in the <a>media resource</a>, e.g.,
-  because it is a simple movie file and the user agent and the server support HTTP Range requests,
-  then the attribute would return an object with one range, whose start is the time of the first
-  frame (the <a>earliest possible position</a>, typically zero), and whose end is the
-  time of the last frame.
+    If the user agent can seek to anywhere in the <a>media resource</a>, e.g., because it is a
+    simple movie file and the user agent and the server support HTTP Range requests, then the
+    attribute would return an object with one range, whose start is the time of the first
+    frame (the <a>earliest possible position</a>, typically zero), and whose end is the
+    time of the last frame.
   </p>
 
   <p class="note">
-    The range might be continuously changing, e.g., if the user agent is buffering a
-  sliding window on an infinite stream. This is the behavior seen with DVRs viewing live TV, for
-  instance.
+    The range might be continuously changing, e.g., if the user agent is buffering a sliding
+    window on an infinite stream. This is the behavior seen with DVRs viewing live TV,
+    for instance.
   </p>
 
   User agents should adopt a very liberal and optimistic view of what is seekable. User
   agents should also buffer recent content where possible to enable seeking to be fast.
 
-  <p class="example">For instance, consider a large video file served on an HTTP server without
-  support for HTTP Range requests. A browser <em>could</em> implement this by only buffering the
-  current frame and data obtained for subsequent frames, never allow seeking, except for seeking to
-  the very start by restarting the playback. However, this would be a poor implementation. A high
-  quality implementation would buffer the last few minutes of content (or more, if sufficient
-  storage space is available), allowing the user to jump back and rewatch something surprising
-  without any latency, and would in addition allow arbitrary seeking by reloading the file from the
-  start if necessary, which would be slower but still more convenient than having to literally
-  restart the video and watch it all the way through just to get to an earlier unbuffered spot.</p>
+  <p class="example">
+    For instance, consider a large video file served on an HTTP server without support for
+    HTTP Range requests. A browser <em>could</em> implement this by only buffering the current
+    frame and data obtained for subsequent frames, never allow seeking, except for seeking to
+    the very start by restarting the playback. However, this would be a poor implementation. A high
+    quality implementation would buffer the last few minutes of content (or more, if sufficient
+    storage space is available), allowing the user to jump back and rewatch something surprising
+    without any latency, and would in addition allow arbitrary seeking by reloading the file from
+    the start if necessary, which would be slower but still more convenient than having to
+    literally restart the video and watch it all the way through just to get to an earlier
+    unbuffered spot.
+  </p>
 
-  <a>Media resources</a> might be internally scripted or
-  interactive. Thus, a <a>media element</a> could play in a non-linear fashion. If this
-  happens, the user agent must act as if the algorithm for <a>seeking</a> was used whenever the <a>current playback position</a>
-  changes in a discontinuous fashion (so that the relevant events fire).
+  <a>Media resources</a> might be internally scripted or interactive. Thus, a <a>media element</a>
+  could play in a non-linear fashion. If this happens, the user agent must act as if the algorithm
+  for <a>seeking</a> was used whenever the <a>current playback position</a> changes in a
+  discontinuous fashion (so that the relevant events fire).
 
 <h5 id="media-resources-with-multiple-media-tracks">Media resources with multiple media tracks</h5>
 
@@ -9132,28 +9148,26 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   </dl>
 
   The <dfn attribute for="HTMLMediaElement"><code>audioTracks</code></dfn> attribute of a
-  <a>media element</a> must return a <a>live</a> <code>AudioTrackList</code> object
-  representing the audio tracks available in the <a>media element</a>'s <a>media
-  resource</a>.
+  <a>media element</a> must return a <a>live</a> <code>AudioTrackList</code> object representing
+  the audio tracks available in the <a>media element</a>'s <a>media resource</a>.
 
   The <dfn attribute for="HTMLMediaElement"><code>videoTracks</code></dfn> attribute of a
-  <a>media element</a> must return a <a>live</a> {{VideoTrackList}} object
-  representing the video tracks available in the <a>media element</a>'s <a>media
-  resource</a>.
+  <a>media element</a> must return a <a>live</a> {{VideoTrackList}} object representing the video
+  tracks available in the <a>media element</a>'s <a>media resource</a>.
 
   <p class="note">
-    There are only ever one <code>AudioTrackList</code> object and one
-  {{VideoTrackList}} object per <a>media element</a>, even if another <a>media
-  resource</a> is loaded into the element: the objects are reused. (The <code>AudioTrack</code>
-  and <code>VideoTrack</code> objects are not, though.)
+    There are only ever one <code>AudioTrackList</code> object and one {{VideoTrackList}} object
+    per <a>media element</a>, even if another <a>media resource</a> is loaded into the element:
+    the objects are reused. (The <code>AudioTrack</code> and <code>VideoTrack</code> objects
+    are not, though.)
   </p>
 
   <div class="example">
-    In this example, a script defines a function that takes a URL to a video and a reference to an
-    element where the video is to be placed. That function then tries to load the video, and, once it
-    is loaded, checks to see if there is a sign-language track available. If there is, it also
-    displays that track. Both tracks are just placed in the given container; it's assumed that styles
-    have been applied to make this work in a pretty way!
+    In this example, a script defines a function that takes the URL of a video, and a reference to
+    an element where the video is to be placed. The function then tries to load the video, and,
+    once it is loaded, checks to see if there is a sign-language track available. If there is, it
+    also displays that track. Both tracks are placed in the given container; it's assumed that
+    styles have been applied to appropriately display the video and sign-language track!.
 
     <xmp highlight="html">
       <script>
@@ -9343,25 +9357,26 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   of the list.
 
   <p class="note">
-    Each track in one of these objects thus has an index; the first has the index
-  0, and each subsequent track is numbered one higher than the previous one. If a <a>media
-  resource</a> dynamically adds or removes audio or video tracks, then the indices of the tracks
-  will change dynamically. If the <a>media resource</a> changes entirely, then all the
-  previous tracks will be removed and replaced with new tracks.
+    Each track in one of these objects thus has an index; the first has the index 0, and each
+    subsequent track is numbered one higher than the previous one. If a <a>media resource</a>
+    dynamically adds or removes audio or video tracks, then the indices of the tracks will change
+    dynamically. If the <a>media resource</a> changes entirely, then all the previous tracks will
+    be removed and replaced with new tracks.
   </p>
 
   The <dfn attribute for="AudioTrackList" lt="length"><code>AudioTrackList.length</code></dfn> and
   <dfn attribute for="VideoTrackList" lt="length"><code>VideoTrackList.length</code></dfn>
   attributes must return the number of tracks represented by their objects at the time of getting.
 
-  The <a>supported property indices</a> of <code>AudioTrackList</code> and
-  {{VideoTrackList}} objects at any instant are the numbers from zero to the number of
-  tracks represented by the respective object minus one, if any tracks are represented. If an
-  <code>AudioTrackList</code> or {{VideoTrackList}} object represents no tracks, it has no
-  <a>supported property indices</a>.
+  The <a>supported property indices</a> of <code>AudioTrackList</code> and {{VideoTrackList}}
+  objects at any instant are the numbers from zero to the number of tracks represented by the
+  respective object minus one, if any tracks are represented. If an <code>AudioTrackList</code>
+  or {{VideoTrackList}} object represents no tracks, it has no <a>supported property indices</a>.
 
-  To <a>determine the value of an indexed property</a> for a given index <var>index</var> in an <code>AudioTrackList</code> or {{VideoTrackList}} object <var>list</var>, the user agent must return the <code>AudioTrack</code> or
-  <code>VideoTrack</code> object that represents the <var>index</var>th track in <var>list</var>.
+  To <a>determine the value of an indexed property</a> for a given index <var>index</var> in an
+  <code>AudioTrackList</code> or {{VideoTrackList}} object <var>list</var>, the user agent must
+  return the <code>AudioTrack</code> or <code>VideoTrack</code> object that represents the
+  <var>index</var>th track in <var>list</var>.
 
   The
   <dfn method for="AudioTrackList" lt="getTrackById()|getTrackById(id)"><code>AudioTrackList.getTrackById(<var>id</var>)</code></dfn>
@@ -9379,9 +9394,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   objects, those aspects do not change.
 
   In addition, <code>AudioTrack</code> objects can each be enabled or disabled; this is the audio
-  track's <i>enabled state</i>. When an <code>AudioTrack</code> is created, its <i>enabled state</i>
-  must be set to false (disabled). The <a>resource fetch
-  algorithm</a> can override this.
+  track's <i>enabled state</i>. When an <code>AudioTrack</code> is created, its
+  <i>enabled state</i> must be set to false (disabled). The <a>resource fetch algorithm</a>
+  can override this.
 
   Similarly, a single <code>VideoTrack</code> object per {{VideoTrackList}} object can
   be selected, this is the video track's <i>selection state</i>. When a <code>VideoTrack</code> is
@@ -9391,12 +9406,13 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <dfn attribute for="VideoTrack" lt="id"><code>VideoTrack.id</code></dfn> attributes must return
   the identifier of the track, if it has one, or the empty string otherwise. If the
   <a>media resource</a> is in a format that supports the <cite>Media Fragments URI</cite> fragment
-  identifier syntax, the identifier returned for a particular track must be the same identifier that
-  would enable the track if used as the name of a track in the track dimension of such a fragment
-  identifier. [[!MEDIA-FRAGS]] [[INBANDTRACKS]]
+  identifier syntax, the identifier returned for a particular track must be the same identifier
+  that would enable the track if used as the name of a track in the track dimension of such a
+  fragment identifier. [[!MEDIA-FRAGS]] [[INBANDTRACKS]]
 
-  <p class="example">For example, in Ogg files, this would be the Name header field of the track.
-  [[!OGGSKELETON]]</p>
+  <p class="example">
+    For example, in Ogg files, this would be the Name header field of the track. [[!OGGSKELETON]]
+  </p>
 
   The <dfn attribute for="AudioTrack" lt="kind"><code>AudioTrack.kind</code></dfn> and
   <dfn attribute for="VideoTrack" lt="kind"><code>VideoTrack.kind</code></dfn> attributes must
@@ -9407,19 +9423,22 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   as determined by the metadata included in the track in the <a>media resource</a>. The cell
   in the third column of a row says what the category given in the cell in the first column of that
   row applies to; a category is only appropriate for an audio track if it applies to audio tracks,
-  and a category is only appropriate for video tracks if it applies to video tracks. Categories must
-  only be returned for <code>AudioTrack</code> objects if they are appropriate for audio, and must
-  only be returned for <code>VideoTrack</code> objects if they are appropriate for video.
+  and a category is only appropriate for video tracks if it applies to video tracks. Categories
+  must only be returned for <code>AudioTrack</code> objects if they are appropriate for audio,
+  and must only be returned for <code>VideoTrack</code> objects if they are appropriate for video.
 
   <table id="dom-TrackList-getKind-categories">
-    <caption>Return values for <code>AudioTrack.kind</code> and <code>VideoTrack.kind</code></caption>
+    <caption>
+      Return values for <code>AudioTrack.kind</code> and <code>VideoTrack.kind</code>
+    </caption>
     <thead>
-    <tr>
-      <th>Category
-      </th><th>Definition
-      </th><th>Applies to...</th>
-    </tr></thead><tbody>
-
+      <tr>
+        <th>Category </th>
+        <th>Definition </th>
+        <th>Applies to...</th>
+      </tr>
+    </thead>
+    <tbody>
     <tr>
       <td>"<dfn attr-value for="commonTrack/kind"><code>alternative</code></dfn>"
       </td><td>A possible alternative to the main track, e.g., a different take of a song (audio), or a different angle (video).
@@ -9468,9 +9487,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     </td></tr><tr>
       <td>"" (empty string)
       </td><td>No explicit kind, or the kind given by the track's metadata is not recognized by the user agent.
-      </td><td>Audio and video.
-
-  </td></tr></tbody></table>
+      </td><td>Audio and video.</td>
+    </tr></tbody>
+  </table>
 
   The <dfn attribute for="AudioTrack" lt="label"><code>AudioTrack.label</code></dfn> and
   <dfn attribute for="VideoTrack" lt="label"><code>VideoTrack.label</code></dfn> attributes must
@@ -9480,9 +9499,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <dfn attribute for="VideoTrack" lt="language"><code>VideoTrack.language</code></dfn> attributes
   must return the BCP 47 language tag of the language of the track, if it has one, or the empty
   string otherwise. If the user agent is not able to express that language as a BCP 47 language tag
-  (for example because the language information in the <a>media resource</a>'s format is a free-form
-  string without a defined interpretation), then the method must return the empty string, as if the
-  track had no language.
+  (for example because the language information in the <a>media resource</a>'s format is a
+  free-form string without a defined interpretation), then the method must return the empty
+  string, as if the track had no language.
 
   Source attribute values for id, kind, label and language of multitrack audio and video tracks as
   described for the relevant <a>media resource</a> format. [[INBANDTRACKS]]
@@ -9493,9 +9512,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   longer in an {{AudioTrackList}} object, then the track being enabled or disabled has no
   effect beyond changing the value of the attribute on the {{AudioTrack}} object.)
 
-  Whenever an audio track in an <code>AudioTrackList</code> that was
-  disabled is enabled, and whenever one that was enabled is disabled, the user agent must
-  <a>queue a task</a> to <a>fire a simple event</a> named <code>change</code> at the <code>AudioTrackList</code> object.
+  Whenever an audio track in an <code>AudioTrackList</code> that was disabled is enabled, and
+  whenever one that was enabled is disabled, the user agent must <a>queue a task</a> to
+  <a>fire a simple event</a> named <code>change</code> at the <code>AudioTrackList</code> object.
 
   An audio track that has no data for a particular position on the <a>media timeline</a>,
   or that does not exist at that position, must be interpreted as being silent at that point on the
@@ -9515,12 +9534,12 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   being selected or unselected has no effect beyond changing the value of the attribute on the
   {{VideoTrack}} object.)
 
-  Whenever a track in a <code>VideoTrackList</code> that was previously
-  not selected is selected, and whenever the selected track in a <code>VideoTrackList</code> is
-  unselected without a new track being selected in its stead, the user agent must <a>queue a task</a> to <a>fire a simple
-  event</a> named <code>change</code> at the
-  {{VideoTrackList}} object. This <a>task</a> must be <a>queued</a> before the <a>task</a> that fires
-  the <code>resize</code> event, if any.
+  Whenever a track in a <code>VideoTrackList</code> that was previously not selected is selected,
+  and whenever the selected track in a <code>VideoTrackList</code> is unselected without a new
+  track being selected in its stead, the user agent must <a>queue a task</a> to
+  <a>fire a simple event</a> named <code>change</code> at the {{VideoTrackList}} object.
+  This <a>task</a> must be <a>queued</a> before the <a>task</a> that fires the
+  <code>resize</code> event, if any.
 
   A video track that has no data for a particular position on the <a>media timeline</a>
   must be interpreted as being fully transparent black at that point on the timeline, with the same
@@ -9528,52 +9547,68 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   that track, the same dimensions as the first frame for that track. A track that does not exist at
   all at the current position must be treated as if it existed but had no data.
 
-  <p class="example">For instance, if a video has a track that is only introduced after one hour of
-  playback, and the user selects that track then goes back to the start, then the user agent will
-  act as if that track started at the start of the <a>media resource</a> but was simply
-  transparent until one hour in.</p>
+  <p class="example">
+    For instance, if a video has a track that is only introduced after one hour of playback, and
+    the user selects that track then goes back to the start, then the user agent will act as if
+    that track started at the start of the <a>media resource</a> but was simply transparent
+    until one hour in.
+  </p>
 
   <hr />
 
-  The following are the <a>event handlers</a> (and their corresponding <a>event handler event types</a>)
-  that must be supported, as <a>event handler IDL attributes</a>,
+  The following are the <a>event handlers</a> (and their corresponding
+  <a>event handler event types</a>) that must be supported, as <a>event handler IDL attributes</a>,
   by all objects implementing the <code>AudioTrackList</code> and <code>VideoTrackList</code>
   interfaces:
 
   <table>
-    <thead><tr><th><a>Event handler</a> </th><th><a>Event handler event type</a></th></tr></thead>
+    <thead>
+      <tr>
+        <th><a>Event handler</a></th>
+        <th><a>Event handler event type</a></th>
+      </tr>
+    </thead>
     <tbody>
-     <tr><td><dfn attribute for="AudioTrackList,VideoTrackList"><code>onchange</code></dfn> </td><td> <code>change</code></td></tr>
-     <tr><td><dfn attribute for="AudioTrackList,VideoTrackList"><code>onaddtrack</code></dfn> </td><td> <code>addtrack</code></td></tr>
-     <tr><td><dfn attribute for="AudioTrackList,VideoTrackList"><code>onremovetrack</code></dfn> </td><td> <code>removetrack</code></td></tr>
+      <tr>
+        <td><dfn attribute for="AudioTrackList,VideoTrackList"><code>onchange</code></dfn> </td>
+        <td><code>change</code></td>
+      </tr>
+      <tr>
+        <td><dfn attribute for="AudioTrackList,VideoTrackList"><code>onaddtrack</code></dfn> </td>
+        <td><code>addtrack</code></td>
+      </tr>
+      <tr>
+        <td><dfn attribute for="AudioTrackList,VideoTrackList"><code>onremovetrack</code></dfn> </td>
+        <td> <code>removetrack</code></td>
+      </tr>
     </tbody>
   </table>
 
 <h6 id="selecting-specific-audio-and-video-tracks-declaratively">Selecting specific audio and video tracks declaratively</h6>
 
-  The <code>audioTracks</code> and <code>videoTracks</code> attributes allow scripts to select which track
-  should play, but it is also possible to select specific tracks declaratively, by specifying
-  particular tracks in the <a for="url">fragment</a> of the [=url/URL=] of the <a>media
-  resource</a>. The format of the <a for="url">fragment</a> depends on the <a>MIME type</a> of
-  the <a>media resource</a>. [[!RFC2046]] [[!URL]]
+  The <code>audioTracks</code> and <code>videoTracks</code> attributes allow scripts to select
+  which track should play, but it is also possible to select specific tracks declaratively, by
+  specifying particular tracks in the <a for="url">fragment</a> of the [=url/URL=] of the
+  <a>media resource</a>. The format of the <a for="url">fragment</a> depends on the
+  <a>MIME type</a> of the <a>media resource</a>. [[!RFC2046]] [[!URL]]
 
   <div class="example">
-    In this example, a video that uses a format that supports the <cite>media fragments syntax</cite>
-    is embedded in such a way that the alternative angles labeled
-    "Alternative" are enabled instead of the default video track. [[!MEDIA-FRAGS]]
+    In this example, a video that uses a format that supports the
+    <cite>media fragments syntax</cite> is embedded in such a way that the alternative angles
+    labeled "Alternative" are enabled instead of the default video track. [[!MEDIA-FRAGS]]
 
     <xmp highlight="html">
       <video src="myvideo#track=Alternative"></video>
     </xmp>
-
   </div>
 
 <h5 id="timed-text-tracks">Timed text tracks</h5>
 
 <h6 id="text-track-model">Text track model</h6>
 
-  A <a>media element</a> can have a group of associated <dfn>text
-  tracks</dfn>, known as the <a>media element</a>'s <dfn>list of text tracks</dfn>. The <a>text tracks</a> are sorted as follows:
+  A <a>media element</a> can have a group of associated <dfn>text tracks</dfn>, known as the
+  <a>media element</a>'s <dfn>list of text tracks</dfn>. The <a>text tracks</a> are sorted
+  as follows:
 
   <ol class="brief">
 
@@ -9602,12 +9637,12 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     The possible strings are:
 
     <ul class="brief">
-      <li><dfn kind for="track"><code>subtitles</code></dfn>
-      </li><li><dfn kind for="track"><code>captions</code></dfn>
-      </li><li><dfn kind for="track"><code>descriptions</code></dfn>
-      </li><li><dfn kind for="track"><code>chapters</code></dfn>
-      </li><li><dfn kind for="track"><code>metadata</code></dfn>
-    </li></ul>
+      <li><dfn kind for="track"><code>subtitles</code></dfn></li>
+      <li><dfn kind for="track"><code>captions</code></dfn></li>
+      <li><dfn kind for="track"><code>descriptions</code></dfn></li>
+      <li><dfn kind for="track"><code>chapters</code></dfn></li>
+      <li><dfn kind for="track"><code>metadata</code></dfn></li>
+    </ul>
 
     The <a>kind of track</a> can change dynamically, in the case of
     a <a>text track</a> corresponding to a <{track}> element.
@@ -9625,8 +9660,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     When a <a>text track label</a> is the empty string, the user agent should automatically
     generate an appropriate label from the text track's other properties (e.g., the kind of text
-    track and the text track's language) for use in its user interface. This automatically-generated
-    label is not exposed in the API.
+    track and the text track's language) for use in its user interface.
+    This automatically-generated label is not exposed in the API.
 
     </dd>
 
@@ -9644,9 +9679,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     might be added or removed from the stream, and as each one is added, the user agent could bind
     them to dedicated script modules using the value of this attribute.</p>
 
-    Other than for in-band metadata text tracks, the <a>in-band metadata track dispatch type</a> is the empty string. How this
-    value is populated for different media formats is described in <a>steps to expose a
-    media-resource-specific text track</a>.
+    Other than for in-band metadata text tracks, the <a>in-band metadata track dispatch type</a>
+    is the empty string. How this value is populated for different media formats is described in
+    <a>steps to expose a media-resource-specific text track</a>.
 
     </dd>
 
@@ -9749,11 +9784,12 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
       Indicates that the text track is active. If no attempt has yet been made to obtain the
       track's cues, the user agent will perform such an attempt momentarily. The user agent is
       maintaining a list of which cues are active, and events are being fired accordingly. In
-      addition, for text tracks whose <a>kind</a> is <code>subtitles</code> or <code>captions</code>, the cues are being overlaid on the video
-      as appropriate; for text tracks whose <a>kind</a> is <code>descriptions</code>, the user agent is making the
-      cues available to the user in a non-visual fashion; and for text tracks whose <a>kind</a> is <code>chapters</code>, the user agent is making available to
-      the user a mechanism by which the user can navigate to any point in the <a>media
-      resource</a> by selecting a cue.
+      addition, for text tracks whose <a>kind</a> is <code>subtitles</code> or
+      <code>captions</code>, the cues are being overlaid on the video as appropriate; for text
+      tracks whose <a>kind</a> is <code>descriptions</code>, the user agent is making the
+      cues available to the user in a non-visual fashion; and for text tracks whose <a>kind</a>
+      is <code>chapters</code>, the user agent is making available to the user a mechanism by
+      which the user can navigate to any point in the <a>media resource</a> by selecting a cue.
 
       </dd>
 
@@ -9765,13 +9801,13 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     </dt><dd>
 
-    A list of <a>text track cues</a>, along with <dfn>rules for
-    updating the text track rendering</dfn>. For example, for <a>WebVTT</a>, the <a>rules
-    for updating the display of WebVTT text tracks</a>. [[WEBVTT]]
+    A list of <a>text track cues</a>, along with
+    <dfn>rules for updating the text track rendering</dfn>. For example, for <a>WebVTT</a>,
+    the <a>rules for updating the display of WebVTT text tracks</a>. [[WEBVTT]]
 
-    The <a>list of cues of a text track</a> can change
-    dynamically, either because the <a>text track</a> has <a state for="track">not yet been loaded</a> or is still <a state for="track">loading</a>,
-    or due to DOM manipulation.
+    The <a>list of cues of a text track</a> can change dynamically, either because the
+    <a>text track</a> has <a state for="track">not yet been loaded</a> or is still
+    <a state for="track">loading</a>, or due to DOM manipulation.
 
     </dd>
 
@@ -9796,33 +9832,34 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   in.
 
   Whenever a <a>text track</a>'s <a>text track readiness state</a> changes to either
-  <a state for="track">loaded</a> or <a state for="track">failed to load</a>, the user agent must remove it from any <a>list of pending text tracks</a> that
-  it is in.
+  <a state for="track">loaded</a> or <a state for="track">failed to load</a>, the user agent
+  must remove it from any <a>list of pending text tracks</a> that it is in.
 
-  When a <a>media element</a> is created by an <a>HTML parser</a> or <a>XML
-  parser</a>, the user agent must set the element's <a>blocked-on-parser</a> flag to true.
-  When a <a>media element</a> is popped off the <a>stack of open elements</a> of an
-  <a>HTML parser</a> or <a>XML parser</a>, the user agent must <a>honor user
-  preferences for automatic text track selection</a>, <a>populate the list of pending text
-  tracks</a>, and set the element's <a>blocked-on-parser</a> flag to false.
+  When a <a>media element</a> is created by an <a>HTML parser</a> or <a>XML parser</a>, the user
+  agent must set the element's <a>blocked-on-parser</a> flag to true. When a <a>media element</a>
+  is popped off the <a>stack of open elements</a> of an <a>HTML parser</a> or <a>XML parser</a>,
+  the user agent must <a>honor user preferences for automatic text track selection</a>,
+  <a>populate the list of pending text tracks</a>, and set the element's
+  <a>blocked-on-parser</a> flag to false.
 
-  The <a>text tracks</a> of a <a>media element</a> are <dfn lt="the text tracks are ready|ready">ready</dfn> when both the element's <a>list of pending text
-  tracks</a> is empty and the element's <a>blocked-on-parser</a> flag is false.
+  The <a>text tracks</a> of a <a>media element</a> are
+  <dfn lt="the text tracks are ready|ready">ready</dfn> when both the element's
+  <a>list of pending text tracks</a> is empty and the element's <a>blocked-on-parser</a>
+  flag is false.
 
   Each <a>media element</a> has a <dfn>pending text track change notification flag</dfn>,
   which must initially be unset.
 
-  Whenever a <a>text track</a> that is in a <a>media element</a>'s <a>list of text
-  tracks</a> has its <a>text track mode</a> change value, the user agent must run the
-  following steps for the <a>media element</a>:
+  Whenever a <a>text track</a> that is in a <a>media element</a>'s <a>list of text tracks</a>
+  has its <a>text track mode</a> change value, the user agent must run the following steps for
+  the <a>media element</a>:
 
   <ol>
 
-    <li>If the <a>media element</a>'s <a>pending text track change notification
-    flag</a> is set, abort these steps.</li>
+    <li>If the <a>media element</a>'s <a>pending text track change notification flag</a> is set,
+    abort these steps.</li>
 
-    <li>Set the <a>media element</a>'s <a>pending text track change notification
-    flag</a>.</li>
+    <li>Set the <a>media element</a>'s <a>pending text track change notification flag</a>.</li>
 
     <li>
 
@@ -9830,12 +9867,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <ol>
 
-      <li>Unset the <a>media element</a>'s <a>pending text track change notification
-      flag</a>.</li>
+      <li>Unset the <a>media element</a>'s <a>pending text track change notification flag</a>.</li>
 
-      <li><a>Fire a simple event</a> named <code>change</code> at
-      the <a>media element</a>'s <code>textTracks</code>
-      attribute's {{TextTrackList}} object.</li>
+      <li><a>Fire a simple event</a> named <code>change</code> at the <a>media element</a>'s
+      <code>textTracks</code> attribute's {{TextTrackList}} object.</li>
 
     </ol>
 
@@ -9846,14 +9881,14 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   </ol>
 
-  The <a>task source</a> for the <a>tasks</a> listed in this
-  section is the <a>DOM manipulation task source</a>.
+  The <a>task source</a> for the <a>tasks</a> listed in this section is the
+  <a>DOM manipulation task source</a>.
 
   <hr />
 
-  A <dfn lt="cue|cues|text track cue">text track cue</dfn> is the unit of time-sensitive data in a <a>text track</a>,
-  corresponding for instance for subtitles and captions to the text that appears at a particular
-  time and disappears at another time.
+  A <dfn lt="cue|cues|text track cue">text track cue</dfn> is the unit of time-sensitive data in a
+  <a>text track</a>, corresponding for instance for subtitles and captions to the text that
+  appears at a particular time and disappears at another time.
 
   Each <a>text track cue</a> consists of:
 
@@ -9897,9 +9932,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   </dl>
 
   <p class="note">
-    The <a>text track cue start time</a> and <a>text track cue end
-  time</a> can be negative. (The <a>current playback position</a> can never be negative,
-  though, so cues entirely before time zero cannot be active.)
+    The <a>text track cue start time</a> and <a>text track cue end time</a> can be negative.
+    (The <a>current playback position</a> can never be negative, though, so cues entirely before
+    time zero cannot be active.)
   </p>
 
   Each <a>text track cue</a> has a corresponding <code>TextTrackCue</code> object (or more
@@ -9907,11 +9942,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   cues use the <code>VTTCue</code> interface). A <a>text track cue</a>'s in-memory
   representation can be dynamically changed through this <code>TextTrackCue</code> API. [[WEBVTT]]
 
-  A <a>text track cue</a> is associated with <a>rules for updating the text track
-  rendering</a>, as defined by the specification for the specific kind of <a>text track
-  cue</a>. These rules are used specifically when the object representing the cue is added to a
-  {{TextTrack}} object using the <code>addCue()</code>
-  method.
+  A <a>text track cue</a> is associated with <a>rules for updating the text track rendering</a>,
+  as defined by the specification for the specific kind of <a>text track cue</a>. These rules are
+  used specifically when the object representing the cue is added to a {{TextTrack}} object using
+  the <code>addCue()</code> method.
 
   In addition, each <a>text track cue</a> has two pieces of dynamic information:
 
@@ -9925,12 +9959,14 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     The user agent must immediately unset this flag whenever the <a>text track cue</a> is
     removed from its <a>text track</a>'s <a>text track list of cues</a>; whenever the
-    <a>text track</a> itself is removed from its <a>media element</a>'s <a>list of
-    text tracks</a> or has its <a>text track mode</a> changed to disabled; and whenever the <a>media element</a>'s <code>readyState</code> is changed back to <code>HAVE_NOTHING</code>. When the flag is unset in this way for one
-    or more cues in <a>text tracks</a> that were <a mode for="track">showing</a> prior to the relevant incident, the user agent must, after having unset
-    the flag for all the affected cues, apply the <a>rules for updating the text track
-    rendering</a> of those <a>text tracks</a>. For example, for <a>text tracks</a> based on <a>WebVTT</a>, the <a>rules for updating
-    the display of WebVTT text tracks</a>. [[WEBVTT]] </dd>
+    <a>text track</a> itself is removed from its <a>media element</a>'s <a>list of text tracks</a>
+    or has its <a>text track mode</a> changed to disabled; and whenever the <a>media element</a>'s
+    <code>readyState</code> is changed back to <code>HAVE_NOTHING</code>. When the flag is unset
+    in this way for one or more cues in <a>text tracks</a> that were
+    <a mode for="track">showing</a> prior to the relevant incident, the user agent must, after
+    having unset the flag for all the affected cues, apply the <a>rules for updating the text track
+    rendering</a> of those <a>text tracks</a>. For example, for <a>text tracks</a> based on
+    <a>WebVTT</a>, the <a>rules for updating the display of WebVTT text tracks</a>. [[WEBVTT]] </dd>
 
     <dt>The <dfn lt="text track cue display state|display state">display state</dfn>
     </dt><dd>
@@ -9943,16 +9979,16 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   </dl>
 
-  The <a>text track cues</a> of a <a>media element</a>'s
-  <a>text tracks</a> are ordered relative to each other in the <dfn>text
-  track cue order</dfn>, which is determined as follows: first group the <a>cues</a> by their <a>text track</a>, with the groups being sorted in the same order
-  as their <a>text tracks</a> appear in the <a>media element</a>'s
-  <a>list of text tracks</a>; then, within each group, <a>cues</a> must be sorted by their <a>start
-  time</a>, earliest first; then, any <a>cues</a> with the same
-  <a>start time</a> must be sorted by their <a>end time</a>, latest first; and finally, any <a>cues</a> with identical <a>end
-  times</a> must be sorted in the order they were last added to their respective <a>text track
-  list of cues</a>, oldest first (so e.g., for cues from a WebVTT file, that would initially be
-  the order in which the cues were listed in the file). [[WEBVTT]]
+  The <a>text track cues</a> of a <a>media element</a>'s <a>text tracks</a> are ordered relative
+  to each other in the <dfn>text track cue order</dfn>, which is determined as follows: first
+  group the <a>cues</a> by their <a>text track</a>, with the groups being sorted in the same order
+  as their <a>text tracks</a> appear in the <a>media element</a>'s <a>list of text tracks</a>;
+  then, within each group, <a>cues</a> must be sorted by their <a>start time</a>, earliest first;
+  then, any <a>cues</a> with the same <a>start time</a> must be sorted by their <a>end time</a>,
+  latest first; and finally, any <a>cues</a> with identical <a>end times</a> must be sorted in the
+  order they were last added to their respective <a>text track list of cues</a>, oldest first (so
+  e.g., for cues from a WebVTT file, that would initially be the order in which the cues were
+  listed in the file). [[WEBVTT]]
 
 <h6 id="sourcing-inband-text-tracks">Sourcing in-band text tracks</h6>
 
@@ -9971,20 +10007,20 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   <ol>
 
     <li>Associate the relevant data with a new <a>text track</a> and its corresponding new
-    {{TextTrack}} object. The <a>text track</a> is a <a>media-resource-specific
-    text track</a>.</li>
+    {{TextTrack}} object. The <a>text track</a> is a <a>media-resource-specific text track</a>.
+    </li>
 
-    <li>Set the new <a>text track</a>'s <a>kind</a>, <a data-lt="label of a track">label</a>, and <a>language</a>
-    based on the semantics of the relevant data, as defined for the relevant format [[INBANDTRACKS]]. If there is no label in that data, then the <a data-lt="label of a track">label</a> must be set to the empty string.</li>
+    <li>Set the new <a>text track</a>'s <a>kind</a>, <a data-lt="label of a track">label</a>, and
+    <a>language</a> based on the semantics of the relevant data, as defined for the relevant
+    format [[INBANDTRACKS]]. If there is no label in that data, then the
+    <a data-lt="label of a track">label</a> must be set to the empty string.</li>
 
     <li>Associate the <a>text track list of cues</a> with the <a>rules for updating the
-    text track rendering</a> appropriate for the format in question.
+    text track rendering</a> appropriate for the format in question.</li>
 
-    </li><li>
-
-    If the new <a>text track</a>'s <a>kind</a> is <code>metadata</code>, then set the <a>text track in-band
-    metadata track dispatch type</a> as follows, based on the type of the <a>media
-    resource</a>:
+    <li>If the new <a>text track</a>'s <a>kind</a> is <code>metadata</code>, then set the
+    <a>text track in-band metadata track dispatch type</a> as follows, based on the type of the
+    <a>media resource</a>:
 
     <dl class="switch">
 
@@ -10001,7 +10037,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
       <dt>If the <a>media resource</a> is an MPEG-2 file</dt>
 
       <dd>Let <var>stream type</var> be the value of the "stream_type" field describing the
-      text track's type in the file's program map section, interpreted as an 8-bit unsigned integer.
+      text track's type in the file's program map section, interpreted as an 8-bit unsigned
+      integer.
       Let <var>length</var> be the value of the "ES_info_length" field for the track in the
       same part of the program map section, interpreted as an integer as defined by the MPEG-2
       specification. Let <var>descriptor bytes</var> be the <var>length</var> bytes
@@ -10042,8 +10079,9 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
       <dt>If the <a>media resource</a> is a DASH media resource</dt>
 
-      <dd>The <a>text track in-band metadata track dispatch type</a> must be set to the concatenation
-      of the "AdaptationSet" element attributes and all child Role descriptors. [[!MPEGDASH]]
+      <dd>The <a>text track in-band metadata track dispatch type</a> must be set to the
+      concatenation of the "AdaptationSet" element attributes and all child Role descriptors.
+      [[!MPEGDASH]]
 
       </dd>
 
@@ -10051,103 +10089,107 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     </li>
 
-    <li>Populate the new <a>text track</a>'s <a>list of
-    cues</a> with the cues parsed so far, following the <a>guidelines for exposing
-    cues</a>, and begin updating it dynamically as necessary.</li>
+    <li>Populate the new <a>text track</a>'s <a>list of cues</a> with the cues parsed so far,
+    following the <a>guidelines for exposing cues</a>, and begin updating it dynamically as
+    necessary.</li>
 
-    <li>Set the new <a>text track</a>'s <a>readiness
-    state</a> to <a state for="track">loaded</a>.</li>
+    <li>Set the new <a>text track</a>'s <a>readiness state</a> to
+    <a state for="track">loaded</a>.</li>
 
     <li>Set the new <a>text track</a>'s mode to the
     mode consistent with the user's preferences and the requirements of the relevant specification
     for the data.
 
     <p class="note">
-    For instance, if there are no other active subtitles, and this is a forced
-    subtitle track (a subtitle track giving subtitles in the audio track's primary language, but
-    only for audio that is actually in another language), then those subtitles might be activated
-    here.
-  </p>
+      For instance, if there are no other active subtitles, and this is a forced subtitle track
+      (a subtitle track giving subtitles in the audio track's primary language, but only for audio
+      that is actually in another language), then those subtitles might be activated here.
+    </p>
 
     </li>
 
     <li>Add the new <a>text track</a> to the <a>media element</a>'s <a>list of text
     tracks</a>.</li>
 
-    <li><a>Fire</a> a <a>trusted</a> event with the name <code>addtrack</code>, that does not bubble and is not cancelable, and that uses
-    the {{TrackEvent}} interface, with the <code>track</code>
-    attribute initialized to the <a>text track</a>'s {{TextTrack}} object, at the
-    <a>media element</a>'s <code>textTracks</code> attribute's
+    <li><a>Fire</a> a <a>trusted</a> event with the name <code>addtrack</code>, that does not
+    bubble and is not cancelable, and that uses the {{TrackEvent}} interface, with the
+    <code>track</code> attribute initialized to the <a>text track</a>'s {{TextTrack}} object,
+    at the <a>media element</a>'s <code>textTracks</code> attribute's
     {{TextTrackList}} object.</li>
 
   </ol>
 
 <h6 id="sourcing-outofband-text-tracks">Sourcing out-of-band text tracks</h6>
 
-  When a <{track}> element is created, it must be associated with a new <a>text
-  track</a> (with its value set as defined below) and its corresponding new
-  {{TextTrack}} object.
+  When a <{track}> element is created, it must be associated with a new <a>text track</a> (with
+  its value set as defined below) and its corresponding new {{TextTrack}} object.
 
-  The <a>text track kind</a> is determined from the state of the element's <code>kind</code> attribute according to the following table; for a state given
-  in a cell of the first column, the <a>kind</a> is the string given
-  in the second column:
+  The <a>text track kind</a> is determined from the state of the element's <code>kind</code>
+  attribute according to the following table; for a state given in a cell of the first column,
+  the <a>kind</a> is the string given in the second column:
 
   <table>
     <thead>
     <tr>
-      <th>State
-      </th><th>String
-    </th></tr></thead><tbody>
+      <th>State</th>
+      <th>String</th>
+    </tr>
+    </thead>
+    <tbody>
     <tr>
-      <td><a state for="track">Subtitles</a>
-      </td><td><code>subtitles</code>
-    </td></tr><tr>
-      <td><a state for="track">Captions</a>
-      </td><td><code>captions</code>
-    </td></tr><tr>
-      <td><a state for="track">Descriptions</a>
-      </td><td><code>descriptions</code>
-    </td></tr><tr>
-      <td><a state for="track">Chapters</a>
-      </td><td><code>chapters</code>
-    </td></tr><tr>
-      <td><a state for="track">Metadata</a>
-      </td><td><code>metadata</code>
-  </td></tr></tbody></table>
+      <td><a state for="track">Subtitles</a></td>
+      <td><code>subtitles</code></td>
+    </tr><tr>
+      <td><a state for="track">Captions</a></td>
+      <td><code>captions</code></td>
+    </tr><tr>
+      <td><a state for="track">Descriptions</a></td>
+      <td><code>descriptions</code></td>
+    </tr><tr>
+      <td><a state for="track">Chapters</a></td>
+      <td><code>chapters</code></td>
+    </tr><tr>
+      <td><a state for="track">Metadata</a></td>
+      <td><code>metadata</code></td>
+    </tr>
+    </tbody>
+  </table>
 
   The <a>text track label</a> is the element's <a>track label</a>.
 
   The <a>text track language</a> is the element's <a>track language</a>, if any, or
   the empty string otherwise.
 
-  As the <code>kind</code>, <code>label</code>,
-  and <code>srclang</code> attributes are set, changed, or removed, the
-  <a>text track</a> must update accordingly, as per the definitions above.
+  As the <code>kind</code>, <code>label</code>, and <code>srclang</code> attributes are set,
+  changed, or removed, the <a>text track</a> must update accordingly, as per the definitions above.
 
   <p class="note">
     Changes to the <a>track URL</a> are handled in the algorithm below.
   </p>
 
-  The <a>text track readiness state</a> is initially <a state for="track">not loaded</a>, and the <a>text track mode</a> is initially disabled.
+  The <a>text track readiness state</a> is initially <a state for="track">not loaded</a>, and the
+  <a>text track mode</a> is initially disabled.
 
   The <a>text track list of cues</a> is initially empty. It is dynamically modified when
   the referenced file is parsed. Associated with the list are the <a>rules for updating the text
   track rendering</a> appropriate for the format in question; for <a>WebVTT</a>, this is
   the <a>rules for updating the display of WebVTT text tracks</a>. [[WEBVTT]]
 
-  When a <{track}> element's parent element changes and the new parent is a <a>media element</a>, then the user agent must add the <{track}> element's corresponding
-  <a>text track</a> to the <a>media element</a>'s <a>list of text tracks</a>, and
-  then <a>queue a task</a> to <a>fire</a> a <a>trusted</a> event with the name <code>addtrack</code>, that does not bubble and is not cancelable, and that uses
-  the {{TrackEvent}} interface, with the <code>track</code>
+  When a <{track}> element's parent element changes and the new parent is a <a>media element</a>,
+  then the user agent must add the <{track}> element's corresponding <a>text track</a> to the
+  <a>media element</a>'s <a>list of text tracks</a>, and then <a>queue a task</a> to <a>fire</a>
+  a <a>trusted</a> event with the name <code>addtrack</code>, that does not bubble and is not
+  cancelable, and that uses the {{TrackEvent}} interface, with the <code>track</code>
   attribute initialized to the <a>text track</a>'s {{TextTrack}} object, at the
-  <a>media element</a>'s <code>textTracks</code> attribute's
-  {{TextTrackList}} object.
+  <a>media element</a>'s <code>textTracks</code> attribute's {{TextTrackList}} object.
 
-  When a <{track}> element's parent element changes and the old parent was a <a>media element</a>, then the user agent must remove the <{track}> element's corresponding
-  <a>text track</a> from the <a>media element</a>'s <a>list of text tracks</a>,
-  and then <a>queue a task</a> to <a>fire</a> a <a>trusted</a> event with the name <code>removetrack</code>, that does not bubble and is not cancelable, and that
-  uses the {{TrackEvent}} interface, with the <code>track</code> attribute initialized to the <a>text track</a>'s
-  {{TextTrack}} object, at the <a>media element</a>'s <code>textTracks</code> attribute's {{TextTrackList}} object.
+  When a <{track}> element's parent element changes and the old parent was a <a>media element</a>,
+  then the user agent must remove the <{track}> element's corresponding <a>text track</a> from the
+  <a>media element</a>'s <a>list of text tracks</a>, and then <a>queue a task</a> to <a>fire</a> a
+  <a>trusted</a> event with the name <code>removetrack</code>, that does not bubble and is not
+  cancelable, and that uses the {{TrackEvent}} interface, with the <code>track</code> attribute
+  initialized to the <a>text track</a>'s {{TextTrack}} object, at the <a>media element</a>'s
+  <code>textTracks</code> attribute's {{TextTrackList}} object.
 
   <hr />
 
@@ -10162,29 +10204,30 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <li>If the element's <a>did-perform-automatic-track-selection</a> flag is true, abort
     these steps.</li>
 
-    <li><a>Honor user preferences for automatic text track selection</a> for this
-    element.</li>
+    <li><a>Honor user preferences for automatic text track selection</a> for this element.</li>
 
   </ol>
 
-  When the user agent is required to <dfn>honor user preferences for automatic text track
-  selection</dfn> for a <a>media element</a>, the user agent must run the following steps:
+  When the user agent is required to
+  <dfn>honor user preferences for automatic text track selection</dfn> for a <a>media element</a>,
+  the user agent must run the following steps:
 
   <ol>
 
-    <li><a>Perform automatic text track selection</a> for <code>subtitles</code> and <code>captions</code>.</li>
+    <li><a>Perform automatic text track selection</a> for <code>subtitles</code> and
+    <code>captions</code>.</li>
 
     <li><a>Perform automatic text track selection</a> for <code>descriptions</code>.</li>
 
     <li><a>Perform automatic text track selection</a> for <code>chapters</code>.</li>
 
-    <li>If there are any <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a> whose <a>text track kind</a> is <code>metadata</code> that correspond to <code>track</code>
-    elements with a <code>default</code> attribute set whose <a>text
-    track mode</a> is set to disabled, then set the
-    <a>text track mode</a> of all such tracks to <a mode for="track">hidden</a></li>
+    <li>If there are any <a>text tracks</a> in the <a>media element</a>'s
+    <a>list of text tracks</a> whose <a>text track kind</a> is <code>metadata</code> that
+    correspond to <code>track</code> elements with a <code>default</code> attribute set whose
+    <a>text track mode</a> is set to disabled, then set the <a>text track mode</a> of all such
+    tracks to <a mode for="track">hidden</a></li>
 
-    <li>Set the element's <a>did-perform-automatic-track-selection</a> flag to
-    true.</li>
+    <li>Set the element's <a>did-perform-automatic-track-selection</a> flag to true.</li>
 
   </ol>
 
@@ -10193,38 +10236,39 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <ol>
 
-    <li>Let <var>candidates</var> be a list consisting of the <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a>
-    whose <a>text track kind</a> is one of the kinds that were passed to the algorithm, if any,
-    in the order given in the <a>list of text tracks</a>.</li>
+    <li>Let <var>candidates</var> be a list consisting of the <a>text tracks</a> in the
+    <a>media element</a>'s <a>list of text tracks</a> whose <a>text track kind</a> is one of the
+    kinds that were passed to the algorithm, if any, in the order given in the
+    <a>list of text tracks</a>.</li>
 
     <li>If <var>candidates</var> is empty, then abort these steps.</li>
 
     <li>If any of the <a>text tracks</a> in <var>candidates</var> have a <a>text track mode</a> set to <a mode for="track">showing</a>, abort these steps.</li>
 
-    <li>
-
-    If the user has expressed an interest in having a track from <var>candidates</var>
+    <li>If the user has expressed an interest in having a track from <var>candidates</var>
     enabled based on its <a>text track kind</a>, <a>text track language</a>, and
-    <a>text track label</a>, then set its <a>text track mode</a> to <a mode for="track">showing</a>.
+    <a>text track label</a>, then set its <a>text track mode</a> to
+    <a mode for="track">showing</a>.
 
     <p class="note">
-    For example, the user could have set a browser preference to the effect of "I
-    want French captions whenever possible", or "If there is a subtitle track with "Commentary" in
-    the title, enable it", or "If there are audio description tracks available, enable one, ideally
-    in Swiss German, but failing that in Standard Swiss German or Standard German".
-  </p>
+      For example, the user could have set a browser preference to the effect of "I want French
+      captions whenever possible", or "If there is a subtitle track with "Commentary" in
+      the title, enable it", or "If there are audio description tracks available, enable one,
+      ideally in Swiss German, but failing that in Standard Swiss German or Standard German".
+    </p>
 
-    Otherwise, if there are any <a>text tracks</a> in <var>candidates</var> that correspond to <{track}> elements with a <code>default</code> attribute set whose <a>text track mode</a> is
-    set to disabled, then set the <a>text track
-    mode</a> of the first such track to <a mode for="track">showing</a>.
-
+    Otherwise, if there are any <a>text tracks</a> in <var>candidates</var> that correspond to
+    <{track}> elements with a <code>default</code> attribute set whose <a>text track mode</a> is
+    set to disabled, then set the <a>text track mode</a> of the first such track to
+    <a mode for="track">showing</a>.
     </li>
 
   </ol>
 
   When a <a>text track</a> corresponding to a <{track}> element experiences any of
-  the following circumstances, the user agent must <a>start the <code>track</code> processing
-  model</a> for that <a>text track</a> and its <{track}> element:
+  the following circumstances, the user agent must
+  <a>start the <code>track</code> processing model</a> for that <a>text track</a> and its
+  <{track}> element:
 
   <ul>
 
@@ -10232,7 +10276,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     <li>The <a>text track</a> has its <a>text track mode</a> changed.</li>
 
-    <li>The <{track}> element's parent element changes and the new parent is a <a>media element</a>.</li>
+    <li>The <{track}> element's parent element changes and the new parent is a
+    <a>media element</a>.</li>
 
   </ul>
 
@@ -10244,33 +10289,32 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <ol>
 
-    <li>If another occurrence of this algorithm is already running for this <a>text
-    track</a> and its <{track}> element, abort these steps, letting that other algorithm
-    take care of this element.</li>
+    <li>If another occurrence of this algorithm is already running for this <a>text track</a> and
+    its <{track}> element, abort these steps, letting that other algorithm take care of this
+    element.</li>
 
-    <li>If the <a>text track</a>'s <a>text track mode</a> is not set to one of <a mode for="track">hidden</a> or <a mode for="track">showing</a>, abort
-    these steps.</li>
+    <li>If the <a>text track</a>'s <a>text track mode</a> is not set to one of
+    <a mode for="track">hidden</a> or <a mode for="track">showing</a>, abort these steps.</li>
 
-    <li>If the <a>text track</a>'s <{track}> element does not have a <a>media element</a> as a parent, abort these steps.</li>
+    <li>If the <a>text track</a>'s <{track}> element does not have a <a>media element</a> as a
+    parent, abort these steps.</li>
 
-    <li>Run the remainder of these steps <a>in parallel</a>, allowing whatever caused these steps to
-    run to continue.</li>
+    <li>Run the remainder of these steps <a>in parallel</a>, allowing whatever caused these steps
+    to run to continue.</li>
 
-    <li><i>Top</i>: <a>Await a stable state</a>. The <a>synchronous section</a>
-    consists of the following steps. (The steps in the <a>synchronous section</a> are marked
-    with ⌛.)</li>
+    <li><i>Top</i>: <a>Await a stable state</a>. The <a>synchronous section</a> consists of the
+    following steps. (The steps in the <a>synchronous section</a> are marked with ⌛.)</li>
 
     <li>⌛ Set the <a>text track readiness state</a> to <a state for="track">loading</a>.</li>
 
-    <li>⌛ Let <var>URL</var> be the <a>track URL</a> of the
-    <{track}> element.</li>
+    <li>⌛ Let <var>URL</var> be the <a>track URL</a> of the <{track}> element.</li>
 
     <li>⌛ If the <{track}> element's parent is a <a>media element</a> then
-    let <var>corsAttributeState</var> be the state of the parent <a>media element</a>'s <code>crossorigin</code> content attribute. Otherwise, let
+    let <var>corsAttributeState</var> be the state of the parent <a>media element</a>'s
+    <code>crossorigin</code> content attribute. Otherwise, let
     <var>corsAttributeState</var> be <a state for="cors">No CORS</a>.</li>
 
-    <li>End the <a>synchronous section</a>, continuing the remaining steps
-    <a>in parallel</a>.</li>
+    <li>End the <a>synchronous section</a>, continuing the remaining steps <a>in parallel</a>.</li>
 
     <li>
 
@@ -10281,60 +10325,66 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
       <var>URL</var>, <var>corsAttributeState</var>, and with the <i>same-origin fallback flag</i>
       set.</li>
 
-      <li>Set <var>request</var>'s <a>client</a> to the
-      <{track}> element's <a>node document</a>'s <code>Window</code> object's
-      <a>environment settings object</a> and <a for="request">type</a> to
-      "<code>track</code>".</li>
+      <li>Set <var>request</var>'s <a>client</a> to the <{track}> element's <a>node document</a>'s
+      <code>Window</code> object's <a>environment settings object</a> and
+      <a for="request">type</a> to "<code>track</code>".</li>
 
       <li><a>Fetch</a> <var>request</var>.</li>
     </ol>
 
-    The <a>tasks</a> <a>queued</a> by the
-    <a>fetching algorithm</a> on the <a>networking task source</a> to
-    process the data as it is being fetched must determine the  type of the resource. If the
-     type of the resource is not a supported text track format, the load will fail, as
-    described below. Otherwise, the resource's data must be passed to the appropriate parser (e.g.,
-    the <a>WebVTT parser</a>) as it is received, with the <a>text track list of cues</a> being used for
-    that parser's output. [[WEBVTT]]
+    The <a>tasks</a> <a>queued</a> by the <a>fetching algorithm</a> on the
+    <a>networking task source</a> to process the data as it is being fetched must determine the
+    type of the resource. If the type of the resource is not a supported text track format, the
+    load will fail, as described below. Otherwise, the resource's data must be passed to the
+    appropriate parser (e.g., the <a>WebVTT parser</a>) as it is received, with the
+    <a>text track list of cues</a> being used for that parser's output. [[WEBVTT]]
 
     <p class="note">
-    The appropriate parser will incrementally update the <a>text track list of
-    cues</a> during these <a>networking task
-    source</a> <a>tasks</a>, as each such task is
-    run with whatever data has been received from the network).
-  </p>
+      The appropriate parser will incrementally update the <a>text track list of cues</a> during
+      these <a>networking task source</a> <a>tasks</a>, as each such task is run with whatever
+      data has been received from the network).
+    </p>
 
-    <p class="critical">This specification does not currently say whether or how to check the MIME
-    types of text tracks, or whether or how to perform file type sniffing using the actual file
-    data. Implementors differ in their intentions on this matter and it is therefore unclear what
-    the right solution is. In the absence of any requirement here, the HTTP specification's strict
-    requirement to follow the Content-Type header prevails ("Content-Type specifies the media type
-    of the underlying data." ... "If and only if the media type is not given by a Content-Type
-    field, the recipient MAY attempt to guess the media type via inspection of its content
-    and/or the name extension(s) of the URI used to identify the resource.").</p>
+    <p class="critical">
+      This specification does not currently say whether or how to check the MIME types of text
+      tracks, or whether or how to perform file type sniffing using the actual file data.
+      Implementors differ in their intentions on this matter and it is therefore unclear what
+      the right solution is. In the absence of any requirement here, the HTTP specification's
+      strict requirement to follow the Content-Type header prevails ("Content-Type specifies the
+      media type of the underlying data." ... "If and only if the media type is not given by a
+      Content-Type field, the recipient MAY attempt to guess the media type via inspection of its
+      content and/or the name extension(s) of the URI used to identify the resource.").
+    </p>
 
-    If the <a>fetching algorithm</a> fails for any reason (network error,
-    the server returns an error code, a cross-origin check fails, etc), or if <var>URL</var> is the empty string, then <a>queue a task</a> to first change the
-    <a>text track readiness state</a> to <a state for="track">failed to load</a> and then <a>fire a simple event</a> named <code>error</code> at the <{track}> element. This <a>task</a> must use the <a>DOM manipulation task source</a>.
+    If the <a>fetching algorithm</a> fails for any reason (network error, the server returns an
+    error code, a cross-origin check fails, etc), or if <var>URL</var> is the empty string, then
+    <a>queue a task</a> to first change the <a>text track readiness state</a> to
+    <a state for="track">failed to load</a> and then <a>fire a simple event</a> named
+    <code>error</code> at the <{track}> element. This <a>task</a> must use the
+    <a>DOM manipulation task source</a>.
 
-    If the <a>fetching algorithm</a> does not fail, but the
-    type of the resource is not a supported text track format, or the file was not successfully
-    processed (e.g., the format in question is an XML format and the file contained a well-formedness
-    error that the XML specification requires be detected and reported to the application), then the
-    <a>task</a> that is <a>queued</a> by the
-    <a>networking task source</a> in which the aforementioned problem is found must change the
-    <a>text track readiness state</a> to <a state for="track">failed to load</a> and <a>fire a simple event</a> named <code>error</code>
+    If the <a>fetching algorithm</a> does not fail, but the type of the resource is not a
+    supported text track format, or the file was not successfully processed (e.g., the format in
+    question is an XML format and the file contained a well-formedness error that the XML
+    specification requires be detected and reported to the application), then the <a>task</a> that
+    is <a>queued</a> by the <a>networking task source</a> in which the aforementioned problem is
+    found must change the <a>text track readiness state</a> to
+    <a state for="track">failed to load</a> and <a>fire a simple event</a> named <code>error</code>
     at the <{track}> element.
 
-    If the <a>fetching algorithm</a> does not fail, and the file was
-    successfully processed, then the final <a>task</a> that is <a>queued</a> by the <a>networking task source</a>, after it has
-    finished parsing the data, must change the <a>text track readiness state</a> to <a state for="track">loaded</a>, and <a>fire a simple event</a> named <code>load</code> at the <{track}> element.
+    If the <a>fetching algorithm</a> does not fail, and the file was successfully processed, then
+    the final <a>task</a> that is <a>queued</a> by the <a>networking task source</a>, after it has
+    finished parsing the data, must change the <a>text track readiness state</a> to
+    <a state for="track">loaded</a>, and <a>fire a simple event</a> named <code>load</code> at the
+    <{track}> element.
 
     If, while fetching is ongoing, either:
 
     <ul>
 
-      <li>the <a>track URL</a> changes so that it is no longer equal to <var>URL</var>, while the <a>text track mode</a> is set to <a mode for="track">hidden</a> or <a mode for="track">showing</a>; or</li>
+      <li>the <a>track URL</a> changes so that it is no longer equal to <var>URL</var>, while the
+      <a>text track mode</a> is set to <a mode for="track">hidden</a> or
+      <a mode for="track">showing</a>; or</li>
 
       <li>the <a>text track mode</a> changes to <a mode for="track">hidden</a>
       or <a mode for="track">showing</a>, while the <a>track URL</a> is not
@@ -10342,48 +10392,50 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
     </ul>
 
-    ...then the user agent must abort <a>fetching</a>, discarding
-    any pending <a>tasks</a> generated by that algorithm (and
-    in particular, not adding any cues to the <a>text track list of cues</a> after the moment
-    the URL changed), and then <a>queue a task</a> that first changes the <a>text track
-    readiness state</a> to <a state for="track">failed to load</a> and
-    then <a>fires a simple event</a> named <code>error</code> at the <{track}> element. This <a>task</a> must use the <a>DOM manipulation task source</a>.
+    ...then the user agent must abort <a>fetching</a>, discarding any pending <a>tasks</a>
+    generated by that algorithm (and in particular, not adding any cues to the
+    <a>text track list of cues</a> after the moment the URL changed), and then <a>queue a task</a>
+    that first changes the <a>text track readiness state</a> to
+    <a state for="track">failed to load</a> and then <a>fires a simple event</a> named
+    <code>error</code> at the <{track}> element. This <a>task</a> must use the
+    <a>DOM manipulation task source</a>.
 
     </li>
 
-    <li>Wait until the <a>text track readiness state</a> is no longer set to <a state for="track">loading</a>.</li>
+    <li>Wait until the <a>text track readiness state</a> is no longer set to
+    <a state for="track">loading</a>.</li>
 
     <li>Wait until the <a>track URL</a> is no longer equal to <var>URL</var>, at
-    the same time as the <a>text track mode</a> is set to <a mode for="track">hidden</a> or <a mode for="track">showing</a>.</li>
+    the same time as the <a>text track mode</a> is set to <a mode for="track">hidden</a> or
+    <a mode for="track">showing</a>.</li>
 
     <li>Jump to the step labeled <i>top</i>.</li>
 
   </ol>
 
-  Whenever a <{track}> element has its <code>src</code> attribute
-  set, changed, or removed, the user agent must <a>immediately</a> empty the element's <a>text
-  track</a>'s <a>text track list of cues</a>. (This also causes the algorithm above to stop
-  adding cues from the resource being obtained using the previously given URL, if any.)
+  Whenever a <{track}> element has its <code>src</code> attribute set, changed, or removed, the
+  user agent must <a>immediately</a> empty the element's <a>text track</a>'s <a>text track list of
+  cues</a>. (This also causes the algorithm above to stop adding cues from the resource being
+  obtained using the previously given URL, if any.)
 
 <h6 id="guidelines-for-exposing-cues-in-various-formats-as-text-track-cues"><dfn>Guidelines for exposing cues</dfn> in various formats as <a>text track cues</a></h6>
 
   How a specific format's text track cues are to be interpreted for the purposes of processing by
-  an HTML user agent is defined by that format [[INBANDTRACKS]]. In the
-  absence of such a specification, this section provides some constraints within which implementations can
+  an HTML user agent is defined by that format [[INBANDTRACKS]]. In the absence of such a
+  specification, this section provides some constraints within which implementations can
   attempt to consistently expose such formats.
 
   To support the <a>text track</a> model of HTML, each unit of timed data is converted to a
   <a>text track cue</a>. Where the mapping of the format's features to the aspects of a
   <a>text track cue</a> as defined in this specification are not defined, implementations must
-  ensure that the mapping is consistent with the definitions of the aspects of a <a>text track
-  cue</a> as defined above, as well as with the following constraints:
+  ensure that the mapping is consistent with the definitions of the aspects of a
+  <a>text track cue</a> as defined above, as well as with the following constraints:
 
   <dl>
 
     <dt>The <a>text track cue identifier</a>
     </dt><dd>
-    Should be set to the empty string if the format has no obvious analog to a per-cue
-    identifier.
+    Should be set to the empty string if the format has no obvious analog to a per-cue identifier.
     </dd>
 
     <dt>The <a>text track cue pause-on-exit flag</a>
@@ -10393,8 +10445,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   </dl>
 
-    For <a>media-resource-specific text tracks</a>
-    of <a>kind</a> <code>metadata</code>,
+    For <a>media-resource-specific text tracks</a> of <a>kind</a> <code>metadata</code>,
     <a>text track cues</a> are exposed using the <code>DataCue</code> object
     unless there is a more appropriate <code>TextTrackCue</code> interface available.
     For example, if the <a>media-resource-specific text track</a> format is <a>WebVTT</a>,
@@ -10436,16 +10487,16 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   </dl>
 
-  A {{TextTrackList}} object represents a dynamically updating list of <a>text tracks</a> in a given order.
+  A {{TextTrackList}} object represents a dynamically updating list of <a>text tracks</a> in
+  a given order.
 
-  The <dfn attribute for="HTMLMediaElement">textTracks</dfn> attribute of <a>media elements</a> must
-  return a {{TextTrackList}} object representing the {{TextTrack}} objects of the <a>text tracks</a>
-  in the <a>media element</a>'s <a>list of text tracks</a>, in the same order as in the
-  <a>list of text tracks</a>.
+  The <dfn attribute for="HTMLMediaElement">textTracks</dfn> attribute of <a>media elements</a>
+  must return a {{TextTrackList}} object representing the {{TextTrack}} objects of the
+  <a>text tracks</a> in the <a>media element</a>'s <a>list of text tracks</a>, in the same order
+  as in the <a>list of text tracks</a>.
 
-  The <dfn attribute for="TextTrackList">length</dfn> attribute of a
-  {{TextTrackList}} object must return the number of <a>text tracks</a>
-  in the list represented by the {{TextTrackList}} object.
+  The <dfn attribute for="TextTrackList">length</dfn> attribute of a {{TextTrackList}} object must
+  return the number of <a>text tracks</a> in the list represented by the {{TextTrackList}} object.
 
   The <a>supported property indices</a> of a {{TextTrackList}} object at any
   instant are the numbers from zero to the number of <a>text tracks</a> in

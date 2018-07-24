@@ -26,8 +26,10 @@
   A <dfn lt="browsing context|browsing contexts">browsing context</dfn> is an environment in which
   {{Document}} objects are presented to the user.
 
-  <p class="note">A tab or window in a Web browser typically contains a <a>browsing context</a>, as
-  does an <{iframe}> or <{frame}>s in a <{frameset}>.</p>
+  <p class="note">
+    A tab or window in a Web browser typically contains a <a>browsing context</a>, as
+    does an <{iframe}> or <{frame}>s in a <{frameset}>.
+  </p>
 
   A <a>browsing context</a> has a corresponding {{WindowProxy}} object.
 
@@ -1837,19 +1839,22 @@
         set or the {{Document}} was generated from a <a scheme lt="data:"><code>data:</code> URL</a></dt>
         <dd>A unique <a>opaque origin</a> is assigned when the {{Document}} is created.</dd>
 
-        <dt>If the {{Document}}'s [=url/URL=]'s [=url/scheme=] is a
-        <a>network scheme</a></dt>
-        <dd>A copy of the {{Document}}'s [=url/URL=]'s <a for="url">origin</a> assigned
-        when the {{Document}} is created.
+        <dt>If the {{Document}}'s [=url/URL=]'s [=url/scheme=] is a <a>network scheme</a></dt>
+        <dd>
+          A copy of the {{Document}}'s [=url/URL=]'s <a for="url">origin</a> assigned
+          when the {{Document}} is created.
 
-        <p class="note">The {{Document/open()|document.open()}} method can change the {{Document}}'s
-        [=url/URL=] to "<code>about:blank</code>". Therefore the
-        [=concept/origin=] is assigned when the {{Document}} is created.</p>
+          <p class="note">
+            The {{Document/open()|document.open(type, replace)}} method can change the
+            {{Document}}'s [=url/URL=] to "<code>about:blank</code>". Therefore the
+            [=concept/origin=] is assigned  when the {{Document}} is created.
+          </p>
         </dd>
 
         <dt>If the {{Document}} is the initial "<code>about:blank</code>" document</dt>
-        <dd><a lt="create a new browsing context">The one it was assigned when its browsing context
-        was created</a>.</dd>
+        <dd>
+          <a lt="create a new browsing context">The one it was assigned when its browsing context was created</a>.
+        </dd>
 
         <dt>If the {{Document}} is a non-initial "<code>about:blank</code>" document</dt>
 
@@ -1860,20 +1865,26 @@
 
         <dt>If the {{Document}} was created as part of the processing for
         <a><code>javascript:</code> URLs</a></dt>
-        <dd>The [=concept/origin=] of the <a>active document</a> of the
-        <a>browsing context</a> being navigated when the <a>navigate</a> algorithm was invoked.</dd>
+        <dd>
+          The [=concept/origin=] of the <a>active document</a> of the
+          <a>browsing context</a> being navigated when the <a>navigate</a> algorithm was invoked.
+        </dd>
 
-        <dt>If the {{Document}} is
-        <a>an `iframe` `srcdoc` document</a></dt>
-        <dd>The [=concept/origin=] of the {{Document}}'s <a>browsing context</a>'s
-        <a>browsing context container</a>'s <a>node document</a>.</dd>
+        <dt>If the {{Document}} is <a>an `iframe` `srcdoc` document</a></dt>
+        <dd>
+          The [=concept/origin=] of the {{Document}}'s <a>browsing context</a>'s
+          <a>browsing context container</a>'s <a>node document</a>.
+        </dd>
 
-        <dt>If the {{Document}} was obtained in some other manner (e.g., a
-        {{Document}} created using the {{DOMImplementation/createDocument()}} API, etc)</dt>
-        <dd>The default behavior as defined in the DOM specification applies. [[!DOM]].
+        <dt>If the {{Document}} was obtained in some other manner (e.g., a {{Document}} created
+        using the {{DOMImplementation/createDocument()}} API, etc)</dt>
+        <dd>
+          The default behavior as defined in the DOM specification applies. [[!DOM]].
 
-        <p class="note">The [=concept/origin=] is a unique <a>opaque origin</a> assigned
-        when the {{Document}} is created.</p>
+          <p class="note">
+            The [=concept/origin=] is a unique <a>opaque origin</a> assigned
+            when the {{Document}} is created.
+          </p>
         </dd>
       </dl>
   : For images of <{img}> elements
@@ -1892,8 +1903,8 @@
         <dd>A unique <a>opaque origin</a> assigned when the <a>media data</a> is fetched.</dd>
 
         <dt>If the <a>media data</a> is <a>CORS-same-origin</a></dt>
-        <dd>The <a lt="media elements">media element</a>'s <a>node document</a>'s
-        [=concept/origin=].
+        <dd>
+          The <a lt="media elements">media element</a>'s <a>node document</a>'s [=concept/origin=].
         </dd>
       </dl>
   : For fonts
@@ -1923,12 +1934,14 @@
       <a lt="origin port">port</a>.
   5. Return the <a>ASCII serialization of an origin</a>, given <var>unicodeOrigin</var>.
 
-      <p class="note">The name <a>ASCII serialization of an origin</a> is misleading, as it merely
-      serialises an origin, which are all ASCII by default due to the <a>URL parser</a>.</p>
+      <p class="note">
+        The name <a>ASCII serialization of an origin</a> is misleading, as it merely
+        serialises an origin, which are all ASCII by default due to the <a>URL parser</a>.
+      </p>
 
   <div class="example">
-  The <a>Unicode serialization</a> of ("<code>https</code>", "<code>xn--maraa-rta.example</code>",
-  null, null) is "<code>https://maraña.example</code>".
+    The <a>Unicode serialization</a> of ("<code>https</code>",
+    "<code>xn--maraa-rta.example</code>", null, null) is "<code>https://maraña.example</code>".
   </div>
 
   The <dfn>ASCII serialization of an origin</dfn> is the string obtained by applying the
@@ -1937,8 +1950,8 @@
   1. If <var>origin</var> is an <a>opaque origin</a>, then return "<code>null</code>".
   2. Otherwise, let <var>result</var> be <var>origin</var>'s <a lt="origin scheme">scheme</a>.
   3. Append "<code>://</code>" to <var>result</var>.
-  4. Append <var>origin</var>'s <a lt="origin host">host</a>, <a lt="host serializer">serialized</a>, to
-      <var>result</var>.
+  4. Append <var>origin</var>'s <a lt="origin host">host</a>,
+      <a lt="host serializer">serialized</a>, to <var>result</var>.
   5. If <var>origin</var>'s <a lt="origin port">port</a> is non-null, append a
       U+003A COLON character (:), and <var>origin</var>'s <a lt="origin port">port</a>,
       <a>serialized</a>, to <var>result</var>.
@@ -1966,55 +1979,56 @@
   3. Return false.
 
   <div class="example">
-  The following table shows how <var>A</var> and <var>B</var> are related:
+    The following table shows how <var>A</var> and <var>B</var> are related:
 
-  <table>
-    <thead>
-      <tr>
-        <th>A
-        <th>B
-        <th><a>same origin</a>
-        <th><a>same origin-domain</a>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>("<code>https</code>", "<code>example.org</code>", null, null)
-        <td>("<code>https</code>", "<code>example.org</code>", null, null)
-        <td>✅
-        <td>✅
-      </tr>
-      <tr>
-        <td>("<code>https</code>", "<code>example.org</code>", 314, "<code>example.org</code>")
-        <td>("<code>https</code>", "<code>example.org</code>", 420, "<code>example.org</code>")
-        <td>❌
-        <td>✅
-      </tr>
-      <tr>
-        <td>("<code>https</code>", "<code>example.org</code>", null, null)
-        <td>("<code>https</code>", "<code>example.org</code>", null, "<code>example.org</code>")
-        <td>✅
-        <td>❌
-      </tr>
-      <tr>
-        <td>("<code>https</code>", "<code>example.org</code>", null, "<code>example.org</code>")
-        <td>("http", "<code>example.org</code>", null, "<code>example.org</code>")
-        <td>❌
-        <td>❌
-      </tr>
-    </tbody>
-  </table>
+    <table>
+      <thead>
+        <tr>
+          <th>A
+          <th>B
+          <th><a>same origin</a>
+          <th><a>same origin-domain</a>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>("<code>https</code>", "<code>example.org</code>", null, null)
+          <td>("<code>https</code>", "<code>example.org</code>", null, null)
+          <td>✅
+          <td>✅
+        </tr>
+        <tr>
+          <td>("<code>https</code>", "<code>example.org</code>", 314, "<code>example.org</code>")
+          <td>("<code>https</code>", "<code>example.org</code>", 420, "<code>example.org</code>")
+          <td>❌
+          <td>✅
+        </tr>
+        <tr>
+          <td>("<code>https</code>", "<code>example.org</code>", null, null)
+          <td>("<code>https</code>", "<code>example.org</code>", null, "<code>example.org</code>")
+          <td>✅
+          <td>❌
+        </tr>
+        <tr>
+          <td>("<code>https</code>", "<code>example.org</code>", null, "<code>example.org</code>")
+          <td>("http", "<code>example.org</code>", null, "<code>example.org</code>")
+          <td>❌
+          <td>❌
+        </tr>
+      </tbody>
+    </table>
   </div>
 
 <h4 id="relaxing-the-same-origin-restriction">Relaxing the same-origin restriction</h4>
 
   <dl class="domintro">
     <dt><var>document</var> . {{Document/domain}} [ = <var>domain</var> ]</dt>
-    <dd>Returns the current domain used for security checks.
+    <dd>
+      Returns the current domain used for security checks.
 
-    Can be set to a value that removes subdomains, to change the [=concept/origin=]'s
-    <a lt="origin domain">domain</a> to allow pages on other subdomains of the same domain (if they
-    do the same thing) to access each other. (Can't be set in sandboxed <{iframe}>s.)
+      Can be set to a value that removes subdomains, to change the [=concept/origin=]'s
+      <a lt="origin domain">domain</a> to allow pages on other subdomains of the same domain
+      (if they do the same thing) to access each other. (Can't be set in sandboxed <{iframe}>s.)
     </dd>
   </dl>
 
@@ -2029,12 +2043,14 @@
   1. If <var>host</var> is <em>not</em> <span data-x="host equals">equal</span> to <var>originalHost</var>,
       run these substeps:
     1. If <var>host</var> or <var>originalHost</var> is not a <a data-lt="origin domain">domain</a>, return <code>false</code>.
-         <p class="note">I.e exclude IPv4 and IPv6 addresses as <a data-lt="origin host">hosts</a>.</p>
+         <p class="note">
+            I.e exclude IPv4 and IPv6 addresses as <a data-lt="origin host">hosts</a>.
+         </p>
     1. If <var>host</var>, prefixed by a U+002E FULL STOP (.), does not exactly match the end of <var>originalHost</var>,
         return <code>false</code>.
     1. If <var>host</var> matches a suffix in the Public Suffix List, or, if <var>host</var>,
-        prefixed by a U+002E FULL STOP (.), matches the end of a suffix in the Public Suffix List [[!PSL]],
-        return <code>false</code>.
+        prefixed by a U+002E FULL STOP (.), matches the end of a suffix in the Public Suffix List
+        [[!PSL]], return <code>false</code>.
          <p>Suffixes must be compared after applying the <span>host parser</span> algorithm.</p>
   1. Return <code>true</code>.
 
@@ -2042,8 +2058,8 @@
   The <dfn attribute for="Document"><code>domain</code></dfn> attribute's getter must run these
   steps:
 
-  1. If this {{Document}} object does not have a <a>browsing context</a>, then return the empty
-      string.
+  1. If this {{Document}} object does not have a <a>browsing context</a>,
+      then return the empty string.
   2. Let <var>effectiveDomain</var> be this {{Document}}'s [=concept/origin=]'s
       <a>effective domain</a>.
   3. If <var>effectiveDomain</var> is <code>null</code> return the empty string.
@@ -2062,17 +2078,22 @@
   1. If the given value <span data-x="is a registrable domain suffix of or is equal to">is not
       a registrable domain suffix of and is not equal to</span> <var>effectiveDomain</var>
       throw a "{{SecurityError}}" {{DOMException}}.
-  1. Set <var>origin</var>'s <a lt="origin domain">domain</a> to the result of <a data-lt="host parser">parsing</a>
-      the given value.</p>.
+  1. Set <var>origin</var>'s <a lt="origin domain">domain</a> to the result of
+      <a data-lt="host parser">parsing</a>
+      the given value.
 
-  <p class="note">The {{Document/domain|document.domain}} attribute is used to enable pages on
-  different hosts of a domain to access each others' DOMs.</p>
+  <p class="note">
+    The {{Document/domain|document.domain}} attribute is used to enable pages on
+    different hosts of a domain to access each others' DOMs.
+  </p>
 
-  <p class="warning">Do not use the {{Document/domain|document.domain}} attribute when using shared
-  hosting. If an untrusted third party is able to host an HTTP server at the same IP address but on
-  a different port, then the same-origin protection that normally protects two different sites on
-  the same host will fail, as the ports are ignored when comparing origins after the
-  {{Document/domain|document.domain}} attribute has been used.</p>
+  <p class="warning">
+    Do not use the {{Document/domain|document.domain}} attribute when using shared hosting.
+    If an untrusted third party is able to host an HTTP server at the same IP address but on
+    a different port, then the same-origin protection that normally protects two different sites
+    on the same host will fail, as the ports are ignored when comparing origins after the
+    {{Document/domain|document.domain}} attribute has been used.
+  </p>
 
 <h3 id="sandboxing">Sandboxing</h3>
 
@@ -2104,9 +2125,8 @@
 
     <dd>
 
-    This flag <a>prevents content from creating new auxiliary browsing
-    contexts</a>, e.g., using the <code>target</code> attribute, the
-    <code>window.open()</code> method.
+    This flag <a>prevents content from creating new auxiliary browsing contexts</a>,
+    e.g., using the <code>target</code> attribute, the <code>window.open()</code> method.
 
     </dd>
 
@@ -2114,14 +2134,14 @@
 
     <dd>
 
-    This flag <a lt="navigated">prevents content from navigating their top-level
-    browsing context</a> and <a method for="Window" lt="close()">prevents content from closing their
-    top-level browsing context</a>.
+    This flag
+    <a lt="navigated">prevents content from navigating their top-level browsing context</a> and
+    <a method for="Window" lt="close()">prevents content from closing their top-level browsing context</a>.
 
-    When the <a>sandboxed top-level navigation browsing context flag</a> is <em>not</em>
-    set, content can navigate its <a>top-level browsing context</a>, but other <a>browsing contexts</a> are still protected by the <a>sandboxed
-    navigation browsing context flag</a> and possibly the <a>sandboxed auxiliary navigation
-    browsing context flag</a>.
+    When the <a>sandboxed top-level navigation browsing context flag</a> is <em>not</em> set,
+    content can navigate its <a>top-level browsing context</a>, but other <a>browsing contexts</a>
+    are still protected by the <a>sandboxed navigation browsing context flag</a> and possibly the
+    <a>sandboxed auxiliary navigation browsing context flag</a>.
 
     </dd>
 
@@ -2129,9 +2149,10 @@
 
     <dd>
 
-    This flag prevents content from instantiating <a>plugins</a>, whether
-    using <span>the <{embed}> element</span>, <span>the <{object}> element</span>, or through <a>navigation</a> of a <a>nested browsing context</a>, unless
-    those <a>plugins</a> can be <a>secured</a>.
+    This flag prevents content from instantiating <a>plugins</a>, whether using
+    <span>the <{embed}> element</span>, <span>the <{object}> element</span>, or through
+    <a>navigation</a> of a <a>nested browsing context</a>, unless those <a>plugins</a>
+    can be <a>secured</a>.
 
     </dd>
 
@@ -2176,7 +2197,9 @@
 
     <dd>
 
-    This flag blocks features that trigger automatically, such as <a element-attr for="media" lt="autoplay">automatically playing a video</a> or <a element-attr for="formelements" lt="autofocus">automatically focusing a form control</a>.
+    This flag blocks features that trigger automatically, such as
+    <a element-attr for="media" lt="autoplay">automatically playing a video</a>
+    or <a element-attr for="formelements" lt="autofocus">automatically focusing a form control</a>.
 
     </dd>
 
@@ -2184,8 +2207,8 @@
 
     <dd>
 
-    This flag prevents URL schemes that use storage areas from being able to access the origin's
-    data.
+    This flag prevents URL schemes that use storage areas from being able to
+    access the origin's data.
 
     </dd>
 
@@ -2215,8 +2238,7 @@
 
     <dd>
 
-    This flag prevents content from using any of the following features to produce modal
-    dialogs:
+    This flag prevents content from using any of the following features to produce modal dialogs:
 
     <ul>
       <li><code>window.alert()</code></li>
@@ -2246,7 +2268,9 @@
 
   </dl>
 
-  When the user agent is to <dfn lt="parse the sandboxing directive|parse a sandboxing directive">parse a sandboxing directive</dfn>, given a string <var>input</var>, a <a>sandboxing flag set</a> <var>output</var>, and
+  When the user agent is to
+  <dfn lt="parse the sandboxing directive|parse a sandboxing directive">parse a sandboxing directive</dfn>,
+  given a string <var>input</var>, a <a>sandboxing flag set</a> <var>output</var>, and
   optionally an <var>allow fullscreen flag</var>, it must run the following steps:
 
   <ol>
@@ -2264,22 +2288,21 @@
 
       <li>The <a>sandboxed navigation browsing context flag</a>.</li>
 
-      <li>The <a>sandboxed auxiliary navigation browsing context flag</a>, unless <var>tokens</var> contains the <dfn><code>allow-popups</code></dfn> keyword.</li>
+      <li>The <a>sandboxed auxiliary navigation browsing context flag</a>, unless
+      <var>tokens</var> contains the <dfn><code>allow-popups</code></dfn> keyword.</li>
 
-      <li>The <a>sandboxed top-level navigation browsing context flag</a>, unless <var>tokens</var> contains the <dfn><code>allow-top-navigation</code></dfn>
-      keyword.</li>
+      <li>The <a>sandboxed top-level navigation browsing context flag</a>, unless
+      <var>tokens</var> contains the <dfn><code>allow-top-navigation</code></dfn> keyword.</li>
 
       <li>The <a>sandboxed plugins browsing context flag</a>.</li>
 
       <li>
 
-      The <a>sandboxed origin browsing context flag</a>, unless the <var>tokens</var> contains the <dfn><code>allow-same-origin</code></dfn>
-      keyword.
+      The <a>sandboxed origin browsing context flag</a>, unless the <var>tokens</var>
+      contains the <dfn><code>allow-same-origin</code></dfn> keyword.
 
       <div class="note">
-
-        The <code>allow-same-origin</code> keyword
-        is intended for two cases.
+        The <code>allow-same-origin</code> keyword is intended for two cases.
 
         First, it can be used to allow content from the same site to be sandboxed to disable
         scripting, while still allowing access to the DOM of the sandboxed content.
@@ -2287,51 +2310,56 @@
         Second, it can be used to embed content from a third-party site, sandboxed to prevent that
         site from opening pop-up windows, etc, without preventing the embedded page from
         communicating back to its originating site, using the database APIs to store data, etc.
-
       </div>
 
       </li>
 
       <li>The <a>sandboxed forms browsing context flag</a>, unless <var>tokens</var> contains the <dfn><code>allow-forms</code></dfn> keyword.</li>
 
-      <li>The <a>sandboxed pointer lock browsing context flag</a>, unless <var>tokens</var> contains the <dfn><code>allow-pointer-lock</code></dfn>
-      keyword.</li>
+      <li>The <a>sandboxed pointer lock browsing context flag</a>, unless <var>tokens</var> contains
+      the <dfn><code>allow-pointer-lock</code></dfn> keyword.</li>
 
-      <li>The <a>sandboxed scripts browsing context flag</a>, unless <var>tokens</var> contains the <dfn><code>allow-scripts</code></dfn> keyword.</li>
+      <li>The <a>sandboxed scripts browsing context flag</a>, unless <var>tokens</var> contains
+      the <dfn><code>allow-scripts</code></dfn> keyword.</li>
 
       <li>
 
-      The <a>sandboxed automatic features browsing context flag</a>, unless <var>tokens</var> contains the <code>allow-scripts</code> keyword (defined above).
+      The <a>sandboxed automatic features browsing context flag</a>, unless <var>tokens</var>
+      contains the <code>allow-scripts</code> keyword (defined above).
 
       <p class="note">
-  This flag is relaxed by the same keyword as scripts, because when scripts are
-      enabled these features are trivially possible anyway, and it would be unfortunate to force
-      authors to use script to do them when sandboxed rather than allowing them to use the
-      declarative features.
-  </p>
+        This flag is relaxed by the same keyword as scripts, because when scripts are enabled
+        these features are trivially possible anyway, and it would be unfortunate to force authors
+        to use script to do them, when sandboxed, rather than allowing them to use the declarative
+        features.
+      </p>
 
       </li>
 
       <li>The <a>sandboxed storage area URLs flag</a>.</li>
 
-      <li>The <a>sandboxed fullscreen browsing context flag</a>, unless the <var>allow fullscreen flag</var> was passed to the <a>parse a sandboxing
-      directive</a> flag.</li>
+      <li>The <a>sandboxed fullscreen browsing context flag</a>, unless the
+      <var>allow fullscreen flag</var> was passed to the
+      <a>parse a sandboxing directive</a> flag.</li>
 
-      <li>The <a>sandboxed <code>document.domain</code> browsing
-      context flag</a>.</li>
+      <li>The <a>sandboxed <code>document.domain</code> browsing context flag</a>.</li>
 
       <li>The <a>sandbox propagates to auxiliary browsing contexts flag</a>, unless
       <var>tokens</var> contains the <dfn><code>allow-popups-to-escape-sandbox</code></dfn>
       keyword.</li>
 
-      <li>The <a>sandboxed modals flag</a>, unless <var>tokens</var> contains the <dfn><code>allow-modals</code></dfn> keyword.</li>
+      <li>The <a>sandboxed modals flag</a>, unless <var>tokens</var> contains the
+      <dfn><code>allow-modals</code></dfn> keyword.</li>
 
       <li>
-      <p>The <a>sandboxed presentation browsing context flag</a>, unless <var>tokens</var>
-      contains the <dfn><code>allow-presentation</code></dfn> keyword.
-      </p>
+        The <a>sandboxed presentation browsing context flag</a>, unless <var>tokens</var> contains
+        the <dfn><code>allow-presentation</code></dfn> keyword.
 
-      <p class="warning">There is only one known native implementation of the <code>allow-presentation</code> token (Chrome/Blink). Therefore this feature should not be relied upon until it becomes interoperable.</p>
+        <p class="warning">
+          There is only one known native implementation of the <code>allow-presentation</code>
+          token (Chrome/Blink). Therefore this feature should not be relied upon until it becomes
+          interoperable.
+        </p>
       </li>
 
       <li>The <a>sandboxed orientation lock browsing context flag</a>, unless <var>tokens</var>
@@ -2349,15 +2377,15 @@
   <a>popup sandboxing flag set</a> must be empty. It is populated by
   <a>the rules for choosing a browsing context</a>.
 
-  Every <a>nested browsing context</a> has an <dfn><code>iframe</code> sandboxing flag
-  set</dfn>, which is a <a>sandboxing flag set</a>. Which flags in a
-  <a>nested browsing context</a>'s <a><code>iframe</code> sandboxing flag set</a> are set at any
-  particular time is determined by the <{iframe}> element's <{iframe/sandbox}> attribute.
+  Every <a>nested browsing context</a> has an <dfn><code>iframe</code> sandboxing flag set</dfn>,
+  which is a <a>sandboxing flag set</a>. Which flags in a <a>nested browsing context</a>'s
+  <a><code>iframe</code> sandboxing flag set</a> are set at any particular time is determined
+  by the <{iframe}> element's <{iframe/sandbox}> attribute.
 
   Every {{Document}} has an <dfn>active sandboxing flag set</dfn>, which is a
-  <a>sandboxing flag set</a>. When the {{Document}} is created, its <a>active
-  sandboxing flag set</a> must be empty. It is populated by the <a>navigation
-  algorithm</a>.
+  <a>sandboxing flag set</a>. When the {{Document}} is created, its
+  <a>active sandboxing flag set</a> must be empty. It is populated by the
+  <a>navigation algorithm</a>.
 
   Every resource that is obtained by the <a>navigation algorithm</a> has a
   <dfn>forced sandboxing flag set</dfn>, which is a <a>sandboxing flag set</a>. A resource by
@@ -2365,31 +2393,31 @@
   can define that certain flags are set.
 
   <p class="note">
-  In particular, the <a>forced sandboxing flag set</a> is used by the Content
-  Security Policy specification. [[!CSP3]]
+    In particular, the <a>forced sandboxing flag set</a> is used by the
+    Content Security Policy specification. [[!CSP3]]
   </p>
 
   <hr />
 
-  When a user agent is to <dfn>implement the sandboxing</dfn> for a {{Document}}, it
-  must populate {{Document}}'s <a>active sandboxing flag set</a> with the union of
-  the flags that are present in the following <a>sandboxing flag
-  sets</a> at the time the {{Document}} object is created:
+  When a user agent is to <dfn>implement the sandboxing</dfn> for a {{Document}}, it must populate
+  {{Document}}'s <a>active sandboxing flag set</a> with the union of the flags that are present in
+  the following <a>sandboxing flag sets</a> at the time the {{Document}} object is created:
 
   <ul>
 
-    <li>If the {{Document}}'s <a>browsing context</a> is a <a>top-level browsing
-    context</a>, then: the flags set on the <a>browsing context</a>'s <a>popup sandboxing
-    flag set</a>.</li>
+    <li>If the {{Document}}'s <a>browsing context</a> is a <a>top-level browsing context</a>,
+    then: the flags set on the <a>browsing context</a>'s <a>popup sandboxing flag set</a>.</li>
 
-    <li>If the {{Document}}'s <a>browsing context</a> is a <a>nested browsing context</a>, then: the flags set on the <a>browsing context</a>'s
-    <a><code>iframe</code> sandboxing flag set</a>.</li>
+    <li>If the {{Document}}'s <a>browsing context</a> is a <a>nested browsing context</a>, then:
+    the flags set on the <a>browsing context</a>'s <a><code>iframe</code> sandboxing flag set</a>.
+    </li>
 
-    <li>If the {{Document}}'s <a>browsing context</a> is a <a>nested browsing context</a>, then: the flags set on the <a>browsing context</a>'s <a>parent browsing
-    context</a>'s <a>active document</a>'s <a>active sandboxing flag set</a>.</li>
+    <li>If the {{Document}}'s <a>browsing context</a> is a <a>nested browsing context</a>, then:
+    the flags set on the <a>browsing context</a>'s <a>parent browsing context</a>'s
+    <a>active document</a>'s <a>active sandboxing flag set</a>.</li>
 
-    <li>The flags set on the {{Document}}'s resource's <a>forced sandboxing flag
-    set</a>, if it has one.</li>
+    <li>The flags set on the {{Document}}'s resource's <a>forced sandboxing flag set</a>,
+    if it has one.</li>
 
   </ul>
 
@@ -2397,27 +2425,27 @@
 
 <h4 id="the-session-history-of-browsing-contexts">The session history of browsing contexts</h4>
 
-  The sequence of {{Document}}s in a <a>browsing context</a> is its <dfn>session
-  history</dfn>. Each <a>browsing context</a>, including <a>nested browsing contexts</a>, has a distinct session history. A <a>browsing
-  context</a>'s session history consists of a flat list of <a>session history entries</a>. Each <dfn>session history entry</dfn> consists, at a
-  minimum, of a [=url/URL=], and each entry may in addition have a <a>serialized state</a>, a
-  title, a {{Document}} object, form data, a <a>scroll restoration mode</a>, a scroll
-  position, and other information associated with it.
+  The sequence of {{Document}}s in a <a>browsing context</a> is its <dfn>session history</dfn>.
+  Each <a>browsing context</a>, including <a>nested browsing contexts</a>, has a distinct
+  session history. A <a>browsing context</a>'s session history consists of a flat list of
+  <a>session history entries</a>. Each <dfn>session history entry</dfn> consists, at a minimum,
+  of a [=url/URL=], and each entry may in addition have a <a>serialized state</a>, a title,
+  a {{Document}} object, form data, a <a>scroll restoration mode</a>, a scroll position,
+  and other information associated with it.
 
   <p class="note">
-  Each entry, when first created, has a {{Document}}. However, when a
-  {{Document}} is not <a lt="fully active">active</a>, it's possible for it to be
-  <a>discarded</a> to free resources. The [=url/URL=] and
-  other data in a <a>session history entry</a> is then used to bring a new
-  {{Document}} into being to take the place of the original, should the user agent find
-  itself having to reactivate that {{Document}}.
+    Each entry, when first created, has a {{Document}}. However, when a {{Document}} is not
+    <a lt="fully active">active</a>, it's possible for it to be <a>discarded</a> to free resources.
+    The [=url/URL=] and other data in a <a>session history entry</a> is then used to bring a new
+    {{Document}} into being to take the place of the original, should the user agent find
+    itself having to reactivate that {{Document}}.
   </p>
 
   <p class="note">
-  Titles associated with <a>session history
-  entries</a> need not have any relation with the current <{title}> of the
-  {{Document}}. The title of a <a>session history entry</a> is intended to explain
-  the state of the document at that point, so that the user can navigate the document's history.
+    Titles associated with <a>session history entries</a> need not have any relation with the
+    current <{title}> of the {{Document}}. The title of a <a>session history entry</a> is intended
+    to explain the state of the document at that point, so that the user can navigate the
+    document's history.
   </p>
 
   URLs without associated <a>serialized state</a> are added to the
@@ -2425,21 +2453,23 @@
 
   <hr />
 
-  Each {{Document}} object in a <a>browsing context</a>'s <a>session
-  history</a> is associated with a unique <code>History</code> object which must all model the
-  same underlying <a>session history</a>.
+  Each {{Document}} object in a <a>browsing context</a>'s <a>session history</a> is associated
+  with a unique <code>History</code> object which must all model the same underlying
+  <a>session history</a>.
 
-    The <dfn attribute for="Window"><code>history</code></dfn> attribute of the <code>Window</code> interface must return
-    the object implementing the <code>History</code> interface for that {{Window}}
-    object's newest {{Document}}.
+  The <dfn attribute for="Window"><code>history</code></dfn> attribute of the <code>Window</code>
+  interface must return the object implementing the <code>History</code>  interface for that
+  {{Window}} object's newest {{Document}}.
 
   <hr />
 
-  <p id="state-object"><dfn>Serialized state</dfn> is a serialization (via
-  <a>StructuredSerializeForStorage</a>) of an object representing a user interface state. We
-  sometimes informally refer to "state objects", which are the objects representing user interface
-  state supplied by the author, or alternately the objects created by deserializing (via
-  <a>StructuredDeserialize</a>) serialized state.</p>
+  <p id="state-object">
+    <dfn>Serialized state</dfn> is a serialization (via <a>StructuredSerializeForStorage</a>)
+    of an object representing a user interface state. We sometimes informally refer to
+    "state objects", which are the objects representing user interface state supplied by the
+    author, or alternately the objects created by deserializing (via
+    <a>StructuredDeserialize</a>) serialized state.
+  </p>
 
   Pages can <a method for="History" lt="pushState()">add</a> <a>serialized state</a> to the
   session history. These are then <a>deserialized</a> and
@@ -2457,9 +2487,9 @@
     reconstructed if a new {{Document}} were opened.
 
     An example of the latter would be something like keeping track of the precise coordinate from
-    which a pop-up <code>div</code> was made to animate, so that if the user goes back, it can be
-    made to animate to the same location. Or alternatively, it could be used to keep a pointer into a
-    cache of data that would be fetched from the server based on the information in the
+    which a pop-up <{div}> was made to animate, so that if the user goes back, it can be
+    made to animate to the same location. Or alternatively, it could be used to keep a pointer into
+    a cache of data that would be fetched from the server based on the information in the
     [=url/URL=], so that when going back and forward, the information doesn't have to be fetched
     again.
   </div>
@@ -2481,53 +2511,53 @@
   This specification does not specify what kind of state can be stored.
 
   <p class="example">
-  For example, some user agents might want to persist the scroll position, or the
-  values of form controls.
+    For example, some user agents might want to persist the scroll position, or the
+    values of form controls.
   </p>
 
   <p class="note">
-  User agents that persist the value of form controls are encouraged to also persist
-  their directionality (the value of the element's <code>dir</code> attribute).
-  This prevents values from being displayed incorrectly after a history traversal when the user had
-  originally entered the values with an explicit, non-default directionality.
+    User agents that persist the value of form controls are encouraged to also persist their
+    directionality (the value of the element's <{global/dir}> attribute).
+    This prevents values from being displayed incorrectly after a history traversal when the user
+    had originally entered the values with an explicit, non-default directionality.
   </p>
 
   An entry's <dfn>scroll restoration mode</dfn> indicates whether the user agent should restore the
   persisted scroll position (if any) when traversing to it. The scroll restoration
-  mode may be one of the following:</p>
+  mode may be one of the following:
 
   <dl>
-   <dt>"<dfn value for="scrollRestorationMode"><code>auto</code></dfn>"</dt>
-   <dd>The user agent is responsible for restoring the scroll position upon navigation.</dd>
-   <dt>"<dfn value for="scrollRestorationMode"><code>manual</code></dfn>"</dt>
-   <dd>The page is responsible for restoring the scroll position and the user agent does not
-   attempt to do so automatically</dd>
+    <dt>"<dfn value for="scrollRestorationMode"><code>auto</code></dfn>"</dt>
+    <dd>The user agent is responsible for restoring the scroll position upon navigation.</dd>
+    <dt>"<dfn value for="scrollRestorationMode"><code>manual</code></dfn>"</dt>
+    <dd>
+      The page is responsible for restoring the scroll position and the user agent does not
+      attempt to do so automatically
+    </dd>
   </dl>
 
-  <p>If unspecified, the <a>scroll restoration mode</a> of a new entry must be set to
-  "<code>auto</code>".</p>
+  If unspecified, the <a>scroll restoration mode</a> of a new entry must
+  be set to "<code>auto</code>".
 
   Entries that consist of <a>serialized state</a> share the same
   {{Document}} as the entry for the page that was active when they were added.
 
-  Contiguous entries that differ just by <a for="url">fragment</a> also share the same
-  {{Document}}.
+  Contiguous entries that differ just by <a for="url">fragment</a> also share the same {{Document}}.
 
   <p class="note">
-  All entries that share the same {{Document}} (and that are therefore
-  merely different states of one particular document) are contiguous by definition.
+    All entries that share the same {{Document}} (and that are therefore
+    merely different states of one particular document) are contiguous by definition.
   </p>
 
-  Each {{Document}} in a <a>browsing context</a> can also have a <dfn>latest
-  entry</dfn>. This is the entry for that {{Document}} to which the <a>browsing
-  context</a>'s <a>session history</a> was most recently traversed. When a
-  {{Document}} is created, it initially has no <a>latest entry</a>.
+  Each {{Document}} in a <a>browsing context</a> can also have a <dfn>latest entry</dfn>. This is
+  the entry for that {{Document}} to which the <a>browsing context</a>'s <a>session history</a>
+  was most recently traversed. When a {{Document}} is created, it initially has no
+  <a>latest entry</a>.
 
-  User agents may <a>discard</a> the {{Document}}
-  objects of entries other than the <a>current entry</a> that are not referenced from any
-  script, reloading the pages afresh when the user or script navigates back to such pages. This
-  specification does not specify when user agents should discard {{Document}} objects and
-  when they should cache them.
+  User agents may <a>discard</a> the {{Document}} objects of entries other than the
+  <a>current entry</a> that are not referenced from any script, reloading the pages afresh when
+  the user or script navigates back to such pages. This specification does not specify when
+  user agents should discard {{Document}} objects and when they should cache them.
 
   Entries that have had their {{Document}} objects discarded must, for the purposes of
   the algorithms given below, act as if they had not. When the user or script navigates back or
@@ -2563,14 +2593,14 @@
 
     </dd>
 
-   <dt><var>window</var> . <code>history</code> . <code>scrollRestoration</code> [ = <var>value</var> ]</dt>
+    <dt><var>window</var> . <code>history</code> . <code>scrollRestoration</code> [ = <var>value</var> ]</dt>
 
-   <dd>
+    <dd>
+    Returns the <a>scroll restoration mode</a> of the current entry in the <a>session history</a>.
 
-    <p>Returns the <a>scroll restoration mode</a> of the current entry in the <a>session history</a>.</p>
-
-    <p>Can be set, to change the <a>scroll restoration mode</a> of the current entry in the <a>session history</a>.</p>
-   </dd>
+    Can be set, to change the <a>scroll restoration mode</a> of the current entry in the
+    <a>session history</a>.
+    </dd>
 
     <dt><var>window</var> . <code>history</code> . <code>state</code></dt>
 
@@ -2633,42 +2663,42 @@
   </dl>
 
   The <dfn>joint session history</dfn> of a <a>top-level browsing context</a> is the union
-  of all the <a>session histories</a> of all <a>browsing contexts</a> of all the <a>fully active</a> {{Document}}
-  objects that share that <a>top-level browsing context</a>, with all the entries that are
-  <a>current entries</a> in their respective <a>session histories</a> removed except for the <a>current entry of the joint session
-  history</a>.
+  of all the <a>session histories</a> of all <a>browsing contexts</a> of all the <a>fully active</a>
+  {{Document}} objects that share that <a>top-level browsing context</a>, with all the entries that
+  are <a>current entries</a> in their respective <a>session histories</a> removed except for the
+  <a>current entry of the joint session history</a>.
 
   The <dfn>current entry of the joint session history</dfn> is the entry that most recently
   became a <a>current entry</a> in its <a>session history</a>.
 
   Entries in the <a>joint session history</a> are ordered chronologically by the time they
-  were added to their respective <a>session histories</a>. Each entry
-  has an index; the earliest entry has index 0, and the subsequent entries are numbered with
-  consecutively increasing integers (1, 2, 3, etc).
+  were added to their respective <a>session histories</a>. Each entry has an index; the earliest
+  entry has index 0, and the subsequent entries are numbered with consecutively increasing
+  integers (1, 2, 3, etc).
 
   <p class="note">
-  Since each {{Document}} in a <a>browsing context</a> might have a
-  different <a>event loop</a>, the actual state of the <a>joint session history</a> can
-  be somewhat nebulous. For example, two sibling <{iframe}> elements could both <a>traverse</a> from one unique origin to another at the same time,
-  so their precise order might not be well-defined; similarly, since they might only find out about
-  each other later, they might disagree about the length of the <a>joint session
-  history</a>.
+    Since each {{Document}} in a <a>browsing context</a> might have a different <a>event loop</a>,
+    the actual state of the <a>joint session history</a> can be somewhat nebulous. For example,
+    two sibling <{iframe}> elements could both <a>traverse</a> from one unique origin to another
+    at the same time, so their precise order might not be well-defined; similarly, since they
+    might only find out about each other later, they might disagree about the length of the
+    <a>joint session history</a>.
   </p>
 
-  The <dfn attribute for="History"><code>length</code></dfn> attribute of the
-  <code>History</code> interface, on getting, must return the number of entries in the
-  <a>top-level browsing context</a>'s <a>joint session history</a>. If this
-  <code>History</code> object is associated with a {{Document}} that is not
-  <a>fully active</a>, getting must instead throw a "{{SecurityError}}" {{DOMException}}.
+  The <dfn attribute for="History"><code>length</code></dfn> attribute of the <code>History</code>
+  interface, on getting, must return the number of entries in the
+  <a>top-level browsing context</a>'s <a>joint session history</a>. If this <code>History</code>
+  object is associated with a {{Document}} that is not <a>fully active</a>, getting must instead
+  throw a "{{SecurityError}}" {{DOMException}}.
 
   The actual entries are not accessible from script.
 
-  <p>The <dfn attribute for="History"><code>scrollRestoration</code></dfn> attribute
-  of the History interface, on getting, must return the <a>scroll restoration mode</a> of the
-  current entry in the <a>session history</a>. On setting, the <a>scroll restoration mode</a> of the current entry in the <a>session history</a> must be set to the new
-  value. If this <code>History</code> object is associated with a {{Document}} that is
-  not <a>fully active</a>, both getting and setting must instead throw a
-  "{{SecurityError}}" {{DOMException}}.</p>
+  The <dfn attribute for="History"><code>scrollRestoration</code></dfn> attribute of the
+  History interface, on getting, must return the <a>scroll restoration mode</a> of the current
+  entry in the <a>session history</a>. On setting, the <a>scroll restoration mode</a> of the
+  current entry in the <a>session history</a> must be set to the new value. If this
+  <code>History</code> object is associated with a {{Document}} that is not <a>fully active</a>,
+  both getting and setting must instead throw a "{{SecurityError}}" {{DOMException}}.
 
   The <dfn attribute for="History"><code>state</code></dfn> attribute of the
   <code>History</code> interface, on getting, must return the last value it was set to by the user
@@ -2705,13 +2735,13 @@
 
   <ol>
 
-    <li>Wait until this <a>top-level browsing context</a>'s <a>session history traversal
-    queue</a> is not empty.</li>
+    <li>Wait until this <a>top-level browsing context</a>'s
+    <a>session history traversal queue</a> is not empty.</li>
 
-    <li>Pull the first <a>task</a> from this <a>top-level browsing
-    context</a>'s <a>session history traversal queue</a>, and execute it.</li>
+    <li>Pull the first <a>task</a> from this <a>top-level browsing context</a>'s
+    <a>session history traversal queue</a>, and execute it.</li>
 
-    <li>Return to the first step of this algorithm.
+    <li>Return to the first step of this algorithm.</li>
 
   </ol>
 
@@ -2723,18 +2753,19 @@
 
   <hr />
 
-  To <dfn lt="explicitly going back or forwards in the session history|traverse the history by a delta">traverse the history by a delta</dfn> <var>delta</var>, the user agent must
-  append a <a>task</a> to this <a>top-level browsing context</a>'s
-  <a>session history traversal queue</a>, the <a>task</a>
-  consisting of running the following steps:
+  To <dfn lt="explicitly going back or forwards in the session history|traverse the history by a delta">traverse the history by a delta</dfn>
+  <var>delta</var>, the user agent must append a <a>task</a> to this
+  <a>top-level browsing context</a>'s <a>session history traversal queue</a>,
+  the <a>task</a> consisting of running the following steps:
 
   <ol>
 
-    <li>If the index of the <a>current entry of the joint session history</a> plus <var>delta</var> is less than zero or greater than or equal to the number of items in the
+    <li>If the index of the <a>current entry of the joint session history</a> plus <var>delta</var>
+    is less than zero or greater than or equal to the number of items in the
     <a>joint session history</a>, then abort these steps.
 
-    <li>Let <var>specified entry</var> be the entry in the <a>joint session
-    history</a> whose index is the sum of <var>delta</var> and the index of the
+    <li>Let <var>specified entry</var> be the entry in the <a>joint session history</a> whose
+    index is the sum of <var>delta</var> and the index of the
     <a>current entry of the joint session history</a>.</li>
 
     <li>Let <var>specified browsing context</var> be the <a>browsing context</a> of
@@ -2746,31 +2777,29 @@
     <li>
 
     <a>Queue a task</a> that consists of running the following substeps. The relevant
-    <a>event loop</a> is that of the <var>specified browsing context</var>'s
-    <a>active document</a>. The <a>task source</a> for the queued task is the
-    <a>history traversal task source</a>.
+    <a>event loop</a> is that of the <var>specified browsing context</var>'s <a>active document</a>.
+    The <a>task source</a> for the queued task is the <a>history traversal task source</a>.
 
     <ol>
 
       <li>If there is an ongoing attempt to navigate <var>specified browsing context</var>
-      that has not yet <a>matured</a> (i.e., it has not passed the
-      point of making its {{Document}} the <a>active document</a>), then cancel that
-      attempt to navigate the <a>browsing context</a>.</li>
+      that has not yet <a>matured</a> (i.e., it has not passed the point of making its {{Document}}
+      the <a>active document</a>), then cancel that attempt to navigate the <a>browsing context</a>.
+      </li>
 
       <li>
 
-      If the <var>specified browsing context</var>'s <a>active document</a> is not
-      the same {{Document}} as the {{Document}} of the <var>specified
-      entry</var>, then run these substeps:
+      If the <var>specified browsing context</var>'s <a>active document</a> is not the same
+      {{Document}} as the {{Document}} of the <var>specified entry</var>, then run these substeps:
 
       <ol>
 
-        <li><a>Prompt to unload</a> the <a>active document</a> of the <var>specified browsing context</var>. If the user
+        <li><a>Prompt to unload</a> the <a>active document</a> of the
+        <var>specified browsing context</var>. If the user
         <a>refused to allow the document to be unloaded</a>, then abort these steps.</li>
 
-        <li><a>Unload</a> the <a>active document</a> of the
-        <var>specified browsing context</var> with the <var>recycle</var> parameter
-        set to false.</li>
+        <li><a>Unload</a> the <a>active document</a> of the <var>specified browsing context</var>
+        with the <var>recycle</var> parameter set to false.</li>
 
       </ol>
 
@@ -2791,10 +2820,11 @@
 
   <hr />
 
-  The <dfn method for="History" title="pushState(data, title, url)">pushState(any data, DOMString title, optional DOMString? url = null)</dfn> method adds a state object entry to
-  the history.
+  The <dfn method for="History" title="pushState(data, title, url)">pushState(any data, DOMString
+  title, optional DOMString? url = null)</dfn> method adds a state object entry to the history.
 
-  The <dfn method for="History" title="replaceState(data, title, url)">replaceState(any data, DOMString title, optional DOMString? url = null)</dfn> method updates the state object,
+  The <dfn method for="History" title="replaceState(data, title, url)">replaceState(any data,
+  DOMString title, optional DOMString? url = null)</dfn> method updates the state object,
   title, and optionally the [=url/URL=] of the <a>current entry</a> in the history.
 
   When either of these methods is invoked, the user agent must run the following steps:
@@ -2863,8 +2893,9 @@
   13. Let the <a>latest entry</a> of the {{Document}} of the <a>current entry</a> be the
        <a>current entry</a>.
 
-  <p class="note">The <var>title</var> is purely advisory. User agents might use the title in the
-  user interface.</p>
+  <p class="note">
+    The <var>title</var> is purely advisory. User agents might use the title in the user interface.
+  </p>
 
   User agents may limit the number of state objects added to the session history per page. If a
   page hits the user agent-defined limit, user agents must remove the entry immediately after the
@@ -2928,9 +2959,9 @@
     for the same experience. Furthermore, contrary to the experience the user would have with just a
     na&iuml;ve script-based approach, bookmarking and navigating the session history still work.
 
-    In the example above, the <var>data</var> argument to the <code>pushState()</code> method is the same information as would be sent
-    to the server, but in a more convenient form, so that the script doesn't have to parse the URL
-    each time the user navigates.
+    In the example above, the <var>data</var> argument to the <code>pushState()</code> method is
+    the same information as would be sent to the server, but in a more convenient form, so that the
+    script doesn't have to parse the URL each time the user navigates.
   </div>
 
   <div class="example">
@@ -2974,9 +3005,10 @@
 
   <div class="example">
     Most applications want to use the same <a>scroll restoration mode</a> value for all of
-    their history entries. To achieve this they should set the <code>scrollRestoration</code> attribute as soon as possible
-    (e.g., in the first <code>script</code> element in the document's <{head}> element) to
-    ensure that any entry added to the history session gets the desired scroll restoration mode.
+    their history entries. To achieve this they should set the <code>scrollRestoration</code>
+    attribute as soon as possible (e.g., in the first <{script}> element in the
+    document's <{head}> element) to ensure that any entry added to the history session gets the
+    desired scroll restoration mode.
 
     <xmp highlight="html">
       <head>
@@ -3043,9 +3075,10 @@
   <dl class="domintro">
     <dt><var>document</var> . {{Document/location}} [ = <var>value</var> ]</dt>
     <dt><var>window</var> . {{Window/location}} [ = <var>value</var> ]</dt>
-    <dd>Returns a {{Location}} object with the current page's location.
+    <dd>
+      Returns a {{Location}} object with the current page's location.
 
-    Can be set, to navigate to another page.
+      Can be set, to navigate to another page.
     </dd>
   </dl>
 
@@ -3056,9 +3089,9 @@
   The <dfn attribute for="Window"><code>location</code></dfn> attribute of the {{Window}} interface
   must return the {{Location}} object for that {{Window}} object.
 
-  {{Location}} objects provide a representation of the [=url/URL=] of the
-  <a>active document</a> of their {{Document}}'s <a>browsing context</a>, and allow the
-  <a>current entry</a> of the <a>browsing context</a>'s session history to be changed, by adding or
+  {{Location}} objects provide a representation of the [=url/URL=] of the <a>active document</a>
+  of their {{Document}}'s <a>browsing context</a>, and allow the <a>current entry</a> of the
+  <a>browsing context</a>'s session history to be changed, by adding or
   replacing entries in the {{Window/history}} object.
 
   <pre class="idl" data-highlight="webidl">
@@ -3228,8 +3261,10 @@
   2. Return the <a>Unicode serialization</a> of this {{Location}} object's [=url/URL=]'s
       [=concept/origin=].
 
-  <p class="note">It returns the Unicode rather than the ASCII serialization for compatibility with
-  <code>MessageEvent</code>.</p>
+  <p class="note">
+    It returns the Unicode rather than the ASCII serialization for compatibility with
+    <code>MessageEvent</code>.
+  </p>
 
   The <dfn attribute for="Location"><code>protocol</code></dfn> attribute's getter must run these
   steps:
@@ -3256,8 +3291,7 @@
       "<code>https</code>", terminate these steps.
   6. <a><code>Location</code>-object-setter navigate</a> to <var>copyURL</var>.
 
-  The <dfn attribute for="Location"><code>host</code></dfn> attribute's getter must run these
-  steps:
+  The <dfn attribute for="Location"><code>host</code></dfn> attribute's getter must run these steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
       [=concept/origin=] is not <a>same origin-domain</a> with the
@@ -3420,7 +3454,8 @@
 
   <hr />
 
-  When the <dfn method for="Location" lt="assign()|assign(url)"><code>assign(<var>url</var>)</code></dfn>
+  When the
+  <dfn method for="Location" lt="assign()|assign(url)"><code>assign(<var>url</var>)</code></dfn>
   method is invoked, the user agent must run the following steps:
 
   1. If this {{Location}} object's <a>relevant <code>Document</code></a>'s
@@ -3431,7 +3466,8 @@
       throw a "{{SyntaxError}}" {{DOMException}}.
   3. <a><code>Location</code>-object navigate</a> to the <a>resulting URL record</a>.
 
-  When the <dfn method for="Location" lt="replace()|replace(url)"><code>replace(<var>url</var>)</code></dfn>
+  When the
+  <dfn method for="Location" lt="replace()|replace(url)"><code>replace(<var>url</var>)</code></dfn>
   method is invoked, the user agent must run the following steps:
 
   1. <a>Parse</a> <var>url</var>, relative to the <a>entry settings object</a>. If that failed,
@@ -3439,7 +3475,9 @@
   2. <a><code>Location</code>-object navigate</a> to the <a>resulting URL record</a> with the
       <var>replacement flag</var> set.
 
-  <p class="note">The {{Location/replace()}} method intentionally has no security check.</p>
+  <p class="note">
+    The {{Location/replace()}} method intentionally has no security check.
+  </p>
 
   When the <dfn method for="Location"><code>reload()</code></dfn> method is invoked, the user agent
   must run the appropriate steps from the following list:
@@ -3472,7 +3510,8 @@
   </dl>
 
   When a user requests that the <a>active document</a> of a <a>browsing context</a>
-  be reloaded through a user interface element, the user agent should <a>navigate</a> the <a>browsing context</a> to the same resource as that
+  be reloaded through a user interface element, the user agent should <a>navigate</a> the 
+  <a>browsing context</a> to the same resource as that
   {{Document}}, with <a>replacement enabled</a>. In the case of non-idempotent
   methods (e.g., <a>HTTP POST</a>), the user agent should prompt the user to confirm the operation first,
   since otherwise transactions (e.g., purchases or database modifications) could be repeated. User
@@ -3564,27 +3603,28 @@
 
 <h4 id="navigating-across-documents">Navigating across documents</h4>
 
-  Certain actions cause the <a>browsing context</a> to <i>navigate</i> to
-  a new resource. A user agent may provide various ways for the user to explicitly cause a browsing
+  Certain actions cause the <a>browsing context</a> to <i>navigate</i> to a new resource.
+  A user agent may provide various ways for the user to explicitly cause a browsing
   context to navigate, in addition to those defined in this specification.
 
   <p class="example">
-  For example, <a>following a hyperlink</a>,
-  [[#forms-form-submission]], and the <code>window.open()</code> and <code>location.assign()</code> methods can all cause a browsing context to
-  navigate.
+    For example, <a>following a hyperlink</a>, [[#forms-form-submission]], and the
+    <code>window.open()</code> and <code>location.assign()</code> methods can all cause a
+    browsing context to navigate.
   </p>
 
   <p class="note">
-  A <i>resource</i> has a URL, but that might not be the only information necessary
-  to identify it. For example, a <a>form submission</a> that uses <a>HTTP POST</a> would also have the HTTP method
-  and payload. Similarly, <a>an `iframe` `srcdoc` document</a> needs to know the data it is to use.
+    A <i>resource</i> has a URL, but that might not be the only information necessary
+    to identify it. For example, a <a>form submission</a> that uses <a>HTTP POST</a> would also have the HTTP method
+    and payload. Similarly, <a>an `iframe` `srcdoc` document</a> needs to know the data it is to use.
   </p>
 
   Navigation always involves <dfn>source browsing context</dfn>, which is the browsing context which
   was responsible for starting the navigation.
 
-  When a browsing context is <dfn lt="navigated|navigate|navigation|navigating|navigation algorithm|navigating a browsing context|processing model for navigating across documents">navigated</dfn> to a new resource, the user
-  agent must run the following steps:
+  When a browsing context is
+  <dfn lt="navigated|navigate|navigation|navigating|navigation algorithm|navigating a browsing context|processing model for navigating across documents">navigated</dfn>
+  to a new resource, the user agent must run the following steps:
 
   <ol>
 
@@ -3596,18 +3636,17 @@
     If these steps are aborted here, the user agent may instead offer to open the new resource in
     a new <a>top-level browsing context</a> or in the <a>top-level browsing context</a>
     of the <a>source browsing context</a>, at the user's option, in which case the user agent
-    must <a>navigate</a> that designated <a>top-level
-    browsing context</a> to the new resource as if the user had requested it independently.
+    must <a>navigate</a> that designated <a>top-level browsing context</a> to the new resource as
+    if the user had requested it independently.
 
     <p class="note">
-  Doing so, however, can be dangerous, as it means that the user is overriding the
-    author's explicit request to sandbox the content.
-  </p>
+      Doing so, however, can be dangerous, as it means that the user is overriding the
+      author's explicit request to sandbox the content.
+    </p>
 
     If the <a>navigate</a> algorithm was invoked optionally with an
-    <dfn>exceptions enabled flag</dfn>, and it
-    is aborted on this step, then in addition to aborting this algorithm, the user agent must also
-    throw a "{{SecurityError}}" {{DOMException}}.
+    <dfn>exceptions enabled flag</dfn>, and it is aborted on this step, then in addition to
+    aborting this algorithm, the user agent must also throw a "{{SecurityError}}" {{DOMException}}.
 
     </li>
 
@@ -3634,74 +3673,75 @@
     Let <var>gone async</var> be false.
 
     <p class="note">
-  The <i>handle redirects</i> step later in
-    this algorithm can in certain cases jump back to <a>the step labeled <var>Fragments</var></a>. Since, between those two steps,
-    this algorithm goes from operating immediately in the context of the calling <a>task</a> to operating <a>in parallel</a> independent of the <a>event loop</a>, some of the intervening steps need to be able to handle both being run as part of a <a>task</a> and
-    running <a>in parallel</a>. The <var>gone async</var> flag is thus used to make these steps
-    aware of which mode they are operating in.
-  </p>
+      The <i>handle redirects</i> step later in this algorithm can in certain cases jump back to
+      <a>the step labeled <var>Fragments</var></a>. Since, between those two steps, this algorithm
+      goes from operating immediately in the context of the calling <a>task</a> to operating
+      <a>in parallel</a> independent of the <a>event loop</a>, some of the intervening steps need
+      to be able to handle both being run as part of a <a>task</a> and running <a>in parallel</a>.
+      The <var>gone async</var> flag is thus used to make these steps aware of which mode they are
+      operating in.
+    </p>
 
     </li>
 
     <li><dfn lt="the step labeled fragments"><var>Fragments</var></dfn>: If this is not a
     <dfn>reload-triggered navigation</dfn>: apply the <a>URL parser</a> algorithm to the
-    <a>absolute URL</a> of the new resource and the [=Document/URL=] of the <a>active document</a> of the <a>browsing context</a>
-    being navigated; if all the components of the resulting <a>parsed
-    URLs</a>, ignoring any <a for="url">fragment</a> components, are
+    <a>absolute URL</a> of the new resource and the [=Document/URL=] of the <a>active document</a>
+    of the <a>browsing context</a> being navigated; if all the components of the resulting
+    <a>parsed URLs</a>, ignoring any <a for="url">fragment</a> components, are
     identical, and the new resource is to be fetched using <code>GET</code>, and the
-    <a>URL record</a> of the new resource has a <a for="url">fragment</a> component that is not null (even if it is empty),
-    then <a lt="navigate fragment">navigate to that fragment</a> and abort these
-    steps.</li>
+    <a>URL record</a> of the new resource has a <a for="url">fragment</a> component that is not
+    null (even if it is empty), then <a lt="navigate fragment">navigate to that fragment</a>
+    and abort these steps.</li>
 
-    <li>If <var>gone async</var> is false, cancel any preexisting but not yet <a>mature</a> attempt to navigate the <a>browsing
-    context</a>, including canceling any instances of the <a>fetch</a> algorithm started by those attempts. If one of those attempts
-    has already created and initialized a new {{Document}} object, <a>abort</a> that
-    {{Document}} also. (Navigation attempts that have <a>matured</a> already have session history entries, and are
-    therefore handled during the <a>update the session history with the new page</a> algorithm,
-    later.)</li>
+    <li>If <var>gone async</var> is false, cancel any preexisting but not yet <a>mature</a> attempt
+    to navigate the <a>browsing context</a>, including canceling any instances of the <a>fetch</a>
+    algorithm started by those attempts. If one of those attempts has already created and
+    initialized a new {{Document}} object, <a>abort</a> that {{Document}} also. (Navigation
+    attempts that have <a>matured</a> already have session history entries, and are therefore
+    handled during the <a>update the session history with the new page</a> algorithm, later.)</li>
 
     <li>If the new resource is to be handled using a mechanism that does not affect the browsing
-    context, e.g., ignoring the navigation request altogether because the specified scheme is not one
-    of the supported protocols, then abort these steps and <a>proceed with that mechanism instead</a>.</li>
+    context, e.g., ignoring the navigation request altogether because the specified scheme is not
+    one of the supported protocols, then abort these steps and
+    <a>proceed with that mechanism instead</a>.</li>
 
     <li>
 
-    If <var>gone async</var> is false, <a>prompt
-    to unload</a> the {{Document}} object. If the user <a>refused to allow the
-    document to be unloaded</a>, then abort these steps.
+    If <var>gone async</var> is false, <a>prompt to unload</a> the {{Document}} object.
+    If the user <a>refused to allow the document to be unloaded</a>, then abort these steps.
 
-    If this instance of the <a>navigation</a> algorithm gets canceled
-    while this step is running, the <a>prompt to unload a document</a> algorithm must
-    nonetheless be run to completion.
+    If this instance of the <a>navigation</a> algorithm gets canceled while this step is running,
+    the <a>prompt to unload a document</a> algorithm must nonetheless be run to completion.
 
     </li>
 
-    <li>If <var>gone async</var> is false, <a>abort</a>
-    the <a>active document</a> of the <a>browsing context</a>.</li>
+    <li>If <var>gone async</var> is false, <a>abort</a> the <a>active document</a> of the
+    <a>browsing context</a>.</li>
 
     <li>
 
     If the new resource is to be handled by displaying some sort of inline content, e.g., an error
     message because the specified scheme is not one of the supported protocols, or an inline prompt
-    to allow the user to select <a>a registered
-    handler</a> for the given scheme, then <a>display the inline
-    content</a> and abort these steps.
+    to allow the user to select <a>a registered handler</a> for the given scheme, then
+    <a>display the inline content</a> and abort these steps.
 
     <p class="note">
-    In the case of a registered handler being used, the algorithm will be reinvoked
-    with a new URL to handle the request.
+      In the case of a registered handler being used, the algorithm will be reinvoked
+      with a new URL to handle the request.
     </p>
 
     </li>
 
     <li>
 
-    If the <a>browsing context</a> being navigated is a <a>nested browsing context</a>, then put it in the <a>delaying <code>load</code> events
-    mode</a>.
+    If the <a>browsing context</a> being navigated is a <a>nested browsing context</a>,
+    then put it in the <a>delaying <code>load</code> events mode</a>.
 
-    The user agent must take this <a>nested browsing context</a> out of the <a>delaying
-    <code>load</code> events mode</a> when this <a>navigation</a> algorithm later matures, or when it terminates (whether due to having
-    run all the steps, or being canceled, or being aborted), whichever happens first.
+    The user agent must take this <a>nested browsing context</a> out of the
+    <a>delaying <code>load</code> events mode</a> when this <a>navigation</a> algorithm later
+    matures, or when it terminates (whether due to having run all the steps, or being canceled,
+    or being aborted), whichever happens first.
 
     </li>
 
@@ -3768,15 +3808,15 @@
            When it comes time to <a>set the document's address</a> in the
            <a>navigation algorithm</a>, use <var>address</var> as the <a>override URL</a>.
 
-      The <a>task source</a> for this <a>task</a> is the
-      <a>DOM manipulation task source</a>.
+      The <a>task source</a> for this <a>task</a> is the <a>DOM manipulation task source</a>.
 
       <div class="example">
-        So for example a <a><code>javascript:</code> URL</a> in
-        an <{links/href}> attribute of an <{a}> element
-        would only be evaluated when the link was followed, while such a URL in the <code>src</code> attribute of an <{iframe}> element would be
-        evaluated in the context of the <code>iframe</code>'s own <a>nested browsing context</a> when the <code>iframe</code> is being set up; once evaluated, its return value
-        (if it was not void) would replace that <a>browsing context</a>'s {{Document}}, thus also
+        So for example a <a><code>javascript:</code> URL</a> in an <{links/href}> attribute of
+        an <{a}> element would only be evaluated when the link was followed, while such a URL in
+        the <{iframe/src}> attribute of an <{iframe}> element would be evaluated in the context
+        of the <code>iframe</code>'s own <a>nested browsing context</a> when the
+        <code>iframe</code> is being set up; once evaluated, its return value (if it was not void)
+        would replace that <a>browsing context</a>'s {{Document}}, thus also
         changing the <code>Window</code> object of that <a>browsing context</a>.
       </div>
 
@@ -3789,20 +3829,20 @@
       <ol>
         <li>Let <var>request</var> be the new resource.</li>
 
-        <li>If <var>request</var> is a URL, set <var>request</var> to a new <a>request</a> whose [=url/URL=]
-        is <var>request</var>.</li>
+        <li>If <var>request</var> is a URL, set <var>request</var> to a new
+        <a>request</a> whose [=url/URL=] is <var>request</var>.</li>
 
         <li>Set <var>request</var>'s <a>client</a> to the
         <a>source browsing context</a>'s <a>active document</a>'s <code>Window</code>
         object's <a>environment settings object</a>, <a>target browsing context</a> to the
         <a>browsing context</a> being navigated, <a>destination</a> to "<code>document</code>",
-        mode to "<code>navigate</code>", <a>credentials mode</a> to "<code>include</code>", <a>use-URL-credentials flag</a>, and <a>redirect mode</a> to "<code>manual</code>".</li>
+        mode to "<code>navigate</code>", <a>credentials mode</a> to "<code>include</code>", 
+        <a>use-URL-credentials flag</a>, and <a>redirect mode</a> to "<code>manual</code>".</li>
 
         <li>Set <var>request</var>'s <a>omit-<code>Origin</code>-header flag</a>.
 
-        <li>If <var>request</var>'s <a for="request">method</a> is not
-        <code>GET</code>, or, if the <a>navigation algorithm</a>
-        was invoked as a result of the <a>form submission
+        <li>If <var>request</var>'s <a for="request">method</a> is not <code>GET</code>, or,
+        if the <a>navigation algorithm</a> was invoked as a result of the <a>form submission
         algorithm</a>, then if there is an [=concept/origin=] of the <a>active document</a>
         of the <a>source browsing context</a>, unset <var>request</var>'s
         <a>omit-<code>Origin</code>-header flag</a>.</li>
@@ -3833,24 +3873,26 @@
     <li>Let <var>gone async</var> be true.</li>
 
     <li>Wait for one or more bytes to be available or for the user agent to establish that the
-    resource in question is empty. During this time, the user agent may allow the user to cancel this
-    navigation attempt or start other navigation attempts.</li>
+    resource in question is empty. During this time, the user agent may allow the user to cancel
+    this navigation attempt or start other navigation attempts.</li>
 
     <li>
 
     <i>Handle redirects</i>: If fetching the resource results in a redirect, and either the
     [=url/URL=] of the target of the redirect has the <a>same origin</a> as the original
     resource, or the resource is being obtained using the POST method or a safe method (in HTTP
-    terms), return to <a>the step labeled <var>Fragments</var></a> with the new resource, except that if the [=url/URL=] of the target of
-    the redirect does not have a <a for="url">fragment</a> and the [=url/URL=] of the resource that
-    led to the redirect does, then the <a for="url">fragment</a> of the resource that led to the redirect
-    must be propagated to the [=url/URL=] of the target of the redirect.
+    terms), return to <a>the step labeled <var>Fragments</var></a> with the new resource, except
+    that if the [=url/URL=] of the target of the redirect does not have a <a for="url">fragment</a>
+    and the [=url/URL=] of the resource that led to the redirect does, then the
+    <a for="url">fragment</a> of the resource that led to the redirect must be propagated to the
+    [=url/URL=] of the target of the redirect.
 
     <p class="example">
-  So for instance, if the original URL was "<code>https://example.com/#!sample</code>" and "<code>https://example.com/</code>" is
-    found to redirect to "<code>https://example.com/</code>", the URL of the new resource
-    will be "<code>https://example.com/#!sample</code>".
-  </p>
+      So for instance, if the original URL was "<code>https://example.com/#!sample</code>"
+      and "<code>https://example.com/</code>" is found to redirect to
+      "<code>https://example.com/</code>", the URL of the new resource will be
+      "<code>https://example.com/#!sample</code>".
+    </p>
 
     Otherwise, if fetching the resource results in a redirect but the [=url/URL=] of the
     target of the redirect does not have the <a>same origin</a> as the original resource and
@@ -3863,23 +3905,21 @@
     <li>
 
     <i>Resource handling</i>: If the resource's out-of-band metadata (e.g., HTTP headers), not
-    counting any <a>type information</a> (such as the Content-Type HTTP
-    header), requires some sort of processing that will not affect the browsing context, then
-    perform that processing and abort these steps.
+    counting any <a>type information</a> (such as the Content-Type HTTP header), requires some
+    sort of processing that will not affect the browsing context, then perform that processing
+    and abort these steps.
 
     <div class="note">
       Such processing might be triggered by, amongst other things, the following:
       <ul class="brief">
-      <li>HTTP status codes (e.g., 204 No Content or 205 Reset Content)</li>
-      <li>Network errors (e.g., the network interface being unavailable)</li>
-      <li>Cryptographic protocol failures (e.g., an incorrect TLS certificate)</li>
-
+        <li>HTTP status codes (e.g., 204 No Content or 205 Reset Content)</li>
+        <li>Network errors (e.g., the network interface being unavailable)</li>
+        <li>Cryptographic protocol failures (e.g., an incorrect TLS certificate)</li>
       </ul>
     </div>
 
-    Responses with HTTP <a http-header><code>Content-Disposition</code></a>
-    headers specifying the <code>attachment</code> disposition type must be handled
-    <a>as a download</a>.
+    Responses with HTTP <a http-header><code>Content-Disposition</code></a> headers specifying
+    the <code>attachment</code> disposition type must be handled <a>as a download</a>.
 
     HTTP 401 responses that do not include a challenge recognized by the user agent must be
     processed as if they had no challenge, e.g., rendering the entity body as if the response had
@@ -3896,10 +3936,10 @@
 
     <li>Let <var>type</var> be the computed type of the resource.</li>
 
-    <li>If the user agent has been configured to process resources of the given <var>type</var> using some mechanism other than rendering the content in a <a>browsing
-    context</a>, then skip this step. Otherwise, if the <var>type</var> is one of the
-    following types, jump to the appropriate entry in the following list, and process the resource as
-    described there:
+    <li>If the user agent has been configured to process resources of the given <var>type</var>
+    using some mechanism other than rendering the content in a <a>browsing context</a>, then skip
+    this step. Otherwise, if the <var>type</var> is one of the following types, jump to the
+    appropriate entry in the following list, and process the resource as described there:
 
     <dl class="switch">
 
@@ -3907,14 +3947,13 @@
       <dd>Follow the steps given in the <a>HTML document</a> section,
       and then, once they have completed, abort this <a>navigate</a> algorithm.</dd>
 
-      <dt>an <a>XML MIME type</a> that is not an <a>explicitly supported XML
-      type</a></dt>
+      <dt>an <a>XML MIME type</a> that is not an
+      <a>explicitly supported XML type</a></dt>
 
-      <dd>Follow the steps given in the <a>XML document</a> section. If
-      that section determines that the content is <em>not</em> to be displayed as a generic XML
-      document, then proceed to the next step in this overall set of steps. Otherwise, once the steps
-      given in the <a>XML document</a> section have completed, abort this
-      <a>navigate</a> algorithm.</dd>
+      <dd>Follow the steps given in the <a>XML document</a> section. If that section determines
+      that the content is <em>not</em> to be displayed as a generic XML document, then proceed to
+      the next step in this overall set of steps. Otherwise, once the steps given in the
+      <a>XML document</a> section have completed, abort this <a>navigate</a> algorithm.</dd>
 
       <dt>a <a>JavaScript MIME type</a></dt>
       <dt>a <a>JSON MIME type</a> that is not an <a>explicitly supported JSON type</a></dt>
@@ -3932,8 +3971,8 @@
       <dd>Follow the steps given in the <a>media</a> section, and then,
       once they have completed, abort this <a>navigate</a> algorithm.</dd>
 
-      <dt>A type that will use an external application to render the content in the <a>browsing
-      context</a></dt>
+      <dt>A type that will use an external application to render the content in the
+      <a>browsing context</a></dt>
       <dd>Follow the steps given in the <a>plugin</a> section, and then,
       once they have completed, abort this <a>navigate</a> algorithm.</dd>
 
@@ -3946,27 +3985,25 @@
     would be said to explicitly support the <code>application/atom+xml</code> MIME type), or one for
     which the user agent has a dedicated handler.
 
-    The term <dfn>JSON MIME type</dfn> is used to refer to the <a>MIME
-    types</a> <code>application/json</code>, <code>text/json</code>, and any <a>MIME
-    type</a> whose subtype ends with the five characters "<code>+json</code>".
+    The term <dfn>JSON MIME type</dfn> is used to refer to the <a>MIME types</a>
+    <code>application/json</code>, <code>text/json</code>, and any <a>MIME type</a> whose
+    subtype ends with the five characters "<code>+json</code>".
 
     An <dfn>explicitly supported JSON type</dfn> is one for which the user agent is configured to
-    use an external application to render the content (either a <a>plugin</a> rendering
-    directly in the <a>browsing context</a>, or a separate application), or one for which the
-    user agent has dedicated processing rules, or one for which the user agent has a dedicated
-    handler.
+    use an external application to render the content (either a <a>plugin</a> rendering directly
+    in the <a>browsing context</a>, or a separate application), or one for which the user agent
+    has dedicated processing rules, or one for which the user agent has a dedicated handler.
 
-    <dfn lt="set the document's address|setting the document's address">Setting the document's address</dfn>: If there is no
-    <dfn>override URL</dfn>, then any {{Document}} created by these steps must have its
-    [=Document/URL=] set to the [=url/URL=] that was
-    originally to be fetched, ignoring any other data that was used to obtain the resource. However,
-    if there <em>is</em> an <a>override URL</a>, then any {{Document}} created by
-    these steps must have its [=Document/URL=] set to that
-    [=url/URL=] instead.
+    <dfn lt="set the document's address|setting the document's address">Setting the document's address</dfn>:
+    If there is no <dfn>override URL</dfn>, then any {{Document}} created by these steps must
+    have its [=Document/URL=] set to the [=url/URL=] that was originally to be fetched, ignoring
+    any other data that was used to obtain the resource. However, if there <em>is</em> an
+    <a>override URL</a>, then any {{Document}} created by these steps must have its
+    [=Document/URL=] set to that [=url/URL=] instead.
 
     <p class="note">
-    An <a>override URL</a> is set when <a>dereferencing a <code>javascript:</code> URL</a> and when
-    performing <a>an overridden reload</a>.
+      An <a>override URL</a> is set when <a>dereferencing a <code>javascript:</code> URL</a>
+      and when performing <a>an overridden reload</a>.
     </p>
 
   <dfn>Initializing a new <code>Document</code> object</dfn>: when a {{Document}} is created as part
@@ -4015,7 +4052,7 @@
       <a>sandboxed fullscreen browsing context flag</a> set, then skip this step.
 
       If the {{Document}}'s <a>browsing context</a> has a <a>browsing context container</a> and
-      either it is not an <{iframe}> element, or it does not have the <code>allowfullscreen</code>
+      either it is not an <{iframe}> element, or it does not have the <{iframe/allowfullscreen}>
       attribute specified, or its {{Document}} does not have the <a>fullscreen enabled flag</a> set,
       then also skip this step.
 
@@ -4025,28 +4062,31 @@
 
     <li>
 
-    <i>Non-document content</i>: If, given <var>type</var>, the new resource is to be
-    handled by displaying some sort of inline content, e.g., a native rendering of the content, an
-    error message because the specified type is not supported, or an inline prompt to allow the user
-    to select <a>a registered handler</a> for
-    the given type, then <a>display the inline content</a>, and
-    then abort these steps.
+    <i>Non-document content</i>: If, given <var>type</var>, the new resource is to be handled by
+    displaying some sort of inline content, e.g., a native rendering of the content, an error
+    message because the specified type is not supported, or an inline prompt to allow the user
+    to select <a>a registered handler</a> for the given type, then
+    <a>display the inline content</a>, and then abort these steps.
 
     <p class="note">
-    In the case of a registered handler being used, the algorithm will be reinvoked
-    with a new URL to handle the request.
+      In the case of a registered handler being used, the algorithm will be reinvoked
+      with a new URL to handle the request.
     </p>
 
     </li>
 
-    <li>Otherwise, the document's <var>type</var> is such that the resource will not
-    affect the browsing context, e.g., because the resource is to be handed to an external application
-    or because it is an unknown type that will be processed <a>as a download</a>. <a>Process the resource appropriately</a>.
+    <li>Otherwise, the document's <var>type</var> is such that the resource will not affect the
+    browsing context, e.g., because the resource is to be handed to an external application or
+    because it is an unknown type that will be processed <a>as a download</a>.
+    <a>Process the resource appropriately</a>.
 
   </ol>
 
-  When a resource is handled by <dfn lt="proceed with that mechanism instead|passing its URL or data to an external software package|process the resource appropriately">passing its URL or data to an external software package</dfn> separate from the user agent (e.g., handing a <code>mailto:</code> URL to a mail client, or a Word document to a word
-  processor), user agents should attempt to mitigate the risk that this is an attempt to exploit the
+  When a resource is handled by <dfn lt="proceed with that mechanism instead|passing its URL or
+  data to an external software package|process the resource appropriately">passing its URL or data
+  to an external software package</dfn> separate from the user agent (e.g., handing a
+  <code>mailto:</code> URL to a mail client, or a Word document to a word processor),
+  user agents should attempt to mitigate the risk that this is an attempt to exploit the
   target software, e.g., by prompting the user to confirm that the <a>source browsing
   context</a>'s <a>active document</a>'s [=concept/origin=] is to be allowed to invoke the
   specified software. In particular, if the <a>navigate</a> algorithm, when it was invoked,
@@ -4054,16 +4094,17 @@
   software package without prior user confirmation.
 
   <p class="example">
-  For example, there could be a vulnerability in the target software's URL
-  handler which a hostile page would attempt to exploit by tricking a user into clicking a link.
+    For example, there could be a vulnerability in the target software's URL
+    handler which a hostile page would attempt to exploit by tricking a user into clicking a link.
   </p>
 
   <hr />
 
   Some of the sections below, to which the above algorithm defers in certain cases, require the
-  user agent to <dfn lt="updating the session history with the new page|update the session history with the new page">update the session history with the new page</dfn>. When a user agent is
-  required to do this, it must <a>queue a task</a> (associated with the {{Document}}
-  object of the <a>current entry</a>, not the new one) to run the following steps:
+  user agent to <dfn lt="updating the session history with the new page|update the
+  session history with the new page">update the session history with the new page</dfn>.
+  When a user agent is required to do this, it must <a>queue a task</a> (associated with
+  the {{Document}} object of the <a>current entry</a>, not the new one) to run the following steps:
 
   <ol>
 
@@ -4072,11 +4113,12 @@
     <a>Unload</a> the {{Document}} object of the
     <a>current entry</a>, with the <var>recycle</var> parameter set to false.
 
-    If this instance of the <a>navigation</a> algorithm is canceled while
-    this step is running the <a>unload a document</a> algorithm, then the <a>unload a
-    document</a> algorithm must be allowed to run to completion, but this instance of the <a>navigation</a> algorithm must not run beyond this step. (In particular, for
-    instance, the cancelation of this algorithm does not abort any event dispatch or script
-    execution occurring as part of unloading the document or its descendants.)
+    If this instance of the <a>navigation</a> algorithm is canceled while this step is running
+    the <a>unload a document</a> algorithm, then the <a>unload a document</a> algorithm must
+    be allowed to run to completion, but this instance of the <a>navigation</a> algorithm must
+    not run beyond this step. (In particular, for instance, the cancelation of this algorithm
+    does not abort any event dispatch or script execution occurring as part of unloading the
+    document or its descendants.)
 
     </li>
 
@@ -4098,11 +4140,10 @@
       </ol>
 
       <p class="note">
-  This can only happen if the entry being updated is not the <a>current
-      entry</a>, and can never happen with <a>replacement enabled</a>. (It happens when the
-      user tried to traverse to a session history entry that no longer had a {{Document}}
-      object.)
-  </p>
+        This can only happen if the entry being updated is not the <a>current entry</a>, and can
+        never happen with <a>replacement enabled</a>. (It happens when the user tried to traverse
+        to a session history entry that no longer had a {{Document}} object.)
+      </p>
 
       </dd>
 
@@ -4114,20 +4155,19 @@
 
         <li>
 
-        Remove all the entries in the <a>browsing context</a>'s <a>session
-        history</a> after the <a>current entry</a>. If the <a>current entry</a> is
-        the last entry in the session history, then no entries are removed.
+        Remove all the entries in the <a>browsing context</a>'s <a>session history</a> after the
+        <a>current entry</a>. If the <a>current entry</a> is the last entry in the session history,
+        then no entries are removed.
 
         <p class="note">
-  This <a>doesn't necessarily have to affect</a> the
-        user agent's user interface.
-  </p>
+          This <a>doesn't necessarily have to affect</a> the user agent's user interface.
+        </p>
 
         </li>
 
         <li>Append a new entry at the end of the <code>History</code> object representing the new
-        resource and its {{Document}} object, related state, and the default <a>scroll
-       restoration mode</a> of "<code>auto</code>".</li>
+        resource and its {{Document}} object, related state, and the default
+        <a>scroll restoration mode</a> of "<code>auto</code>".</li>
 
         <li><a>Traverse the history</a> to the new entry. If the navigation was initiated
         with <a>replacement enabled</a>, then the traversal must itself be initiated with
@@ -4145,62 +4185,65 @@
 
     <li>The <a>navigation algorithm</a> has now <dfn>matured</dfn>.</li>
 
-    <li><var><a for="url">fragment</a> loop</var>: <a>Spin the event loop</a> for a user-agent-defined
-    amount of time, as desired by the user agent implementor. (This is intended to allow the user
-    agent to optimize the user experience in the face of performance concerns.)</li>
+    <li><var><a for="url">fragment</a> loop</var>: <a>Spin the event loop</a> for a
+    user-agent-defined amount of time, as desired by the user agent implementor.
+    (This is intended to allow the user agent to optimize the user experience in the face of
+    performance concerns.)</li>
 
-    <li>If the {{Document}} object has no parser, or its parser has [=stop parsing|stopped parsing=], or the user agent has reason to believe the user is no longer
+    <li>If the {{Document}} object has no parser, or its parser has
+    [=stop parsing|stopped parsing=], or the user agent has reason to believe the user is no longer
     interested in scrolling to the <a for="url">fragment</a>, then abort these steps.</li>
 
-    <li><a>Scroll to the fragment</a> given in the document's [=Document/URL=]. If this fails to find <a>an
-    indicated part of the document</a>, then return to the <var><a for="url">fragment</a> loop</var>
-    step.</li>
+    <li><a>Scroll to the fragment</a> given in the document's [=Document/URL=]. If this fails to
+    find <a>an indicated part of the document</a>, then return to the
+    <var><a for="url">fragment</a> loop</var> step.</li>
 
   </ol>
 
-  The <a>task source</a> for this <a>task</a> is the
-  <a>networking task source</a>.
+  The <a>task source</a> for this <a>task</a> is the <a>networking task source</a>.
 
 <h4 id="page-load-processing-model-for-html-files">Page load processing model for HTML files</h4>
 
   When an HTML document is to be loaded in a <a>browsing context</a>, the user agent must
-  <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to "<code>[[#text-html|text/html]]</code>",
-  initialize the {{Document}} object, and finally create an <a>HTML
-  parser</a> and associate it with the {{Document}}. Each <a>task</a> that the <a>networking task source</a> places on the
-  <a>task queue</a> while fetching runs must then fill the parser's <a>input byte
-  stream</a> with the fetched bytes and cause the <a>HTML parser</a> to perform the
+  <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>,
+  set its <a>content type</a> to "<code>[[#text-html|text/html]]</code>", initialize the
+  {{Document}} object, and finally create an <a>HTML parser</a> and associate it with the
+  {{Document}}. Each <a>task</a> that the <a>networking task source</a> places on the
+  <a>task queue</a> while fetching runs must then fill the parser's <a>input byte stream</a>
+  with the fetched bytes and cause the <a>HTML parser</a> to perform the
   appropriate processing of the input stream.
 
   <p class="note">
-  The <a>input byte stream</a> converts bytes into characters for use in the
-  [[#tokenization|tokenizer]]. This process relies, in part, on character encoding
-  information found in the real <a>Content-Type metadata</a> of the
-  resource; the "computed type" is not used for this purpose.
+    The <a>input byte stream</a> converts bytes into characters for use in the
+    [[#tokenization|tokenizer]]. This process relies, in part, on character encoding
+    information found in the real <a>Content-Type metadata</a> of the
+    resource; the "computed type" is not used for this purpose.
   </p>
 
   When no more bytes are available, the user agent must <a>queue a task</a> for the parser
-  to process the implied EOF character, which eventually causes a <code>load</code> event to be fired.
+  to process the implied EOF character, which eventually causes a <code>load</code> event
+  to be fired.
 
   After creating the {{Document}} object, but before any script execution, certainly
-  before the parser <a lt="stop parsing">stops</a>, the user agent must <a>update the
-  session history with the new page</a>.
+  before the  parser <a lt="stop parsing">stops</a>, the user agent must
+  <a>update the session history with the new page</a>.
 
   The <a>task source</a> for the two tasks mentioned in this section must be the
   <a>networking task source</a>.
 
 <h4 id="page-load-processing-model-for-xml-files">Page load processing model for XML files</h4>
 
-  When faced with displaying an XML file inline, user agents must follow the requirements defined
-  in the XML and Namespaces in XML recommendations, RFC 7303, DOM, and other relevant specifications
-  to create a {{Document}} object and a corresponding <a>XML parser</a>. [[!XML]] [[!XML-NAMES]] [[!RFC7303]] [[!DOM]]
+  When faced with displaying an XML file inline, user agents must follow the requirements
+  defined in the XML and Namespaces in XML recommendations, RFC 7303, DOM, and other
+  relevant specifications to create a {{Document}} object and a corresponding
+  <a>XML parser</a>. [[!XML]] [[!XML-NAMES]] [[!RFC7303]] [[!DOM]]
 
   <p class="note">
-  At the time of writing, the XML specification community had not actually yet
-  specified how XML and the DOM interact.
+    At the time of writing, the XML specification community had not actually yet
+    specified how XML and the DOM interact.
   </p>
 
-  After the {{Document}} is created, the user agent must initialize the
-  {{Document}} object.
+  After the {{Document}} is created, the user agent must initialize the {{Document}} object.
 
   The actual HTTP headers and other metadata, not the headers as mutated or implied by the
   algorithms given in this specification, are the ones that must be used when determining the
@@ -4210,22 +4253,23 @@
 
   User agents may examine the namespace of the root {{Element}} node of this
   {{Document}} object to perform namespace-based dispatch to alternative processing tools,
-  e.g., determining that the content is actually a syndication feed and passing it to a feed handler.
-  If such processing is to take place, abort the steps in this section, and jump to the next step (labeled <i>non-document content</i>) in the
-  <a>navigate</a> steps above.
+  e.g., determining that the content is actually a syndication feed and passing it to a
+  feed handler. If such processing is to take place, abort the steps in this section, and
+  jump to the next step (labeled <i>non-document content</i>) in the <a>navigate</a> steps above.
 
-  Otherwise, then, with the newly created {{Document}}, the user agent must <a>update
-  the session history with the new page</a>. User agents may do this before the complete document
-  has been parsed (thus achieving <i>incremental rendering</i>), and must do this before any scripts
-  are to be executed.
+  Otherwise, then, with the newly created {{Document}}, the user agent must
+  <a>update the session history with the new page</a>. User agents may do this before the
+  complete document has been parsed (thus achieving <i>incremental rendering</i>), and must do
+  this before any scripts are to be executed.
 
   Error messages from the parse process (e.g., XML namespace well-formedness errors) may be
   reported inline by mutating the {{Document}}.
 
 <h4 id="page-load-processing-model-for-text-files"><dfn lt="plain text file">Page load processing model for text files</dfn></h4>
 
-  When a plain text document is to be loaded in a <a>browsing context</a>, the user agent
-  must <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to the <a>computed MIME type</a> of the
+  When a plain text document is to be loaded in a <a>browsing context</a>, the user agent must
+  <a>queue a task</a> to create a {{Document}} object, mark it as being an <a>HTML document</a>,
+  set its <a>content type</a> to the <a>computed MIME type</a> of the
   resource (<var>type</var> in the <a>navigate</a> algorithm), initialize the
   {{Document}} object, create an <a>HTML parser</a>, associate it with the
   {{Document}}, act as if the tokenizer had emitted a start tag token with the tag name
@@ -4243,7 +4287,8 @@
   decode the document.
 
   When no more bytes are available, the user agent must <a>queue a task</a> for the parser
-  to process the implied EOF character, which eventually causes a <code>load</code> event to be fired.
+  to process the implied EOF character, which eventually causes a <code>load</code> event
+  to be fired.
 
   After creating the {{Document}} object, but potentially before the page has finished
   parsing, the user agent must <a>update the session history with the new page</a>.
@@ -4252,9 +4297,9 @@
   to link to a style sheet, provide a script, give the document a <{title}>, etc.
 
   <p class="note">
-  In particular, if the user agent supports the <code>Format=Flowed</code>
-  feature of RFC3676 then the user agent would need to apply extra styling to cause the text to
-  wrap correctly and to handle the quoting feature. [[RFC3676]]
+    In particular, if the user agent supports the <code>Format=Flowed</code>
+    feature of RFC3676 then the user agent would need to apply extra styling to
+    cause the text to wrap correctly and to handle the quoting feature. [[RFC3676]]
   </p>
 
   The <a>task source</a> for the two tasks mentioned in this section must be the
@@ -4270,26 +4315,27 @@
   <a>navigate</a> algorithm, starting from the <i>resource handling</i> step, using the new
   body part as the resource being navigated, with <a>replacement enabled</a> if a previous
   body part from the same resource resulted in a {{Document}} object being created and
-  <a>initialized</a>, and otherwise using the same
-  setup as the <a>navigate</a> attempt that caused this section to be invoked in the first
-  place.
+  <a>initialized</a>, and otherwise using the same setup as the <a>navigate</a> attempt that
+  caused this section to be invoked in the first place.
 
   For the purposes of algorithms processing these body parts as if they were complete stand-alone
   resources, the user agent must act as if there were no more bytes for those resources whenever the
   boundary following the body part is reached.
 
   <p class="note">
-  Thus, <code>load</code> events (and for that matter <code>unload</code> events) do fire for each body part loaded.
+    Thus, <code>load</code> events (and for that matter <code>unload</code> events)
+    do fire for each body part loaded.
   </p>
 
 <h4 id="page-load-processing-model-for-media">Page load processing model for media</h4>
 
   When an image, video, or audio resource is to be loaded in a <a>browsing context</a>, the
-  user agent should create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content
-  type</a> to the <a>computed MIME type</a> of the resource (<var>type</var> in the
-  <a>navigate</a> algorithm), initialize the {{Document}} object, append
+  user agent should create a {{Document}} object, mark it as being an <a>HTML document</a>,
+  set its <a>content type</a> to the <a>computed MIME type</a> of the resource (<var>type</var>
+  in the <a>navigate</a> algorithm), initialize the {{Document}} object, append
   an <{html}> element to the {{Document}}, append a <{head}> element and
-  a <{body}> element to the <{html}> element, append an element <var>host element</var> for the media, as described below, to the <{body}> element,
+  a <{body}> element to the <{html}> element, append an element <var>host element</var>
+  for the media, as described below, to the <{body}> element,
   and set the appropriate attribute of the element <var>host element</var>, as described
   below, to the address of the image, video, or audio resource.
 
@@ -4299,18 +4345,23 @@
 
   <table>
     <thead>
-    <tr> <th> Type of media
-          <th> Element for the media
-          <th> Appropriate attribute
-    <tr> <td> Image
-          <td> <code>img</code>
-          <td> <code>src</code>
-    <tr> <td> Video
-          <td> <code>video</code>
-          <td> <code>src</code>
-    <tr> <td> Audio
-          <td> <code>audio</code>
-          <td> <code>src</code>
+    <tr>
+      <th> Type of media
+      <th> Element for the media
+      <th> Appropriate attribute
+    <tbody>
+    <tr>
+      <td> Image
+      <td> <code>img</code>
+      <td> <code>src</code>
+    <tr>
+      <td> Video
+      <td> <code>video</code>
+      <td> <code>src</code>
+    <tr>
+      <td> Audio
+      <td> <code>audio</code>
+      <td> <code>src</code>
   </table>
 
   Then, the user agent must act as if it had [=stop parsing|stopped parsing=].
@@ -4318,27 +4369,26 @@
   After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
-  User agents may add content to the <{head}> element of the {{Document}}, or
-  attributes to the element <var>host element</var>, e.g., to link to a style sheet, provide a script, give the document a <{title}>, make the media
-  <a element-attr for="media">autoplay</a>, etc.
+  User agents may add content to the <{head}> element of the {{Document}}, or attributes to the
+  element <var>host element</var>, e.g., to link to a style sheet, provide a script, give the
+  document a <{title}>, make the media <a element-attr for="media">autoplay</a>, etc.
 
 <h4 id="page-load-processing-model-for-content-that-uses-plugins">Page load processing model for content that uses plugins</h4>
 
   When a resource that requires an external resource to be rendered is to be loaded in a
   <a>browsing context</a>, the user agent should create a {{Document}} object, mark
   it as being an <a>HTML document</a> and mark it as being a
-  <dfn>plugin document</dfn>, set its <a>content
-  type</a> to the <a>computed MIME type</a> of the resource (<var>type</var> in the
-  <a>navigate</a> algorithm), initialize the {{Document}} object, append
-  an <{html}> element to the {{Document}}, append a <{head}> element and
-  a <{body}> element to the <{html}> element, append an <code>embed</code> to the
-  <{body}> element, and set the <code>src</code> attribute of the
-  <{embed}> element to the address of the resource.
+  <dfn>plugin document</dfn>, set its <a>content type</a> to the <a>computed MIME type</a>
+  of the resource (<var>type</var> in the <a>navigate</a> algorithm), initialize the
+  {{Document}} object, append an <{html}> element to the {{Document}}, append a <{head}>
+  element and a <{body}> element to the <{html}> element, append an <{embed}> to the
+  <{body}> element, and set the <{embed/src}> attribute of the <code>embed</code> element
+  to the address of the resource.
 
   <p class="note">
-  The term <a>plugin document</a> is used by
-  <cite>Content Security Policy</cite> as part of the mechanism that ensures <code>iframe</code>s
-  can't be used to evade <code>plugin-types</code> directives. [[!CSP3]]
+    The term <a>plugin document</a> is used by <cite>Content Security Policy</cite> as part of the
+    mechanism that ensures <{iframe}>s can't be used to evade <code>plugin-types</code>
+    directives. [[!CSP3]]
   </p>
 
   Then, the user agent must act as if it had [=stop parsing|stopped parsing=].
@@ -4346,31 +4396,31 @@
   After creating the <code>Document</code> object, but potentially before the page has finished
   fully loading, the user agent must <a>update the session history with the new page</a>.
 
-  User agents may add content to the <{head}> element of the {{Document}}, or
-  attributes to the <{embed}> element, e.g., to link to a style sheet,
-  to give the document a <{title}>, etc.
+  User agents may add content to the <{head}> element of the {{Document}}, or attributes to the
+  <{embed}> element, e.g., to link to a style sheet, to give the document a <{title}>, etc.
 
   <p class="note">
-  If the {{Document}}'s <a>active sandboxing
-  flag set</a> has its <a>sandboxed plugins browsing context flag</a> set, the synthesized
-  <{embed}> element will fail to render the content if
-  the relevant <a>plugin</a> cannot be <a>secured</a>.
+    If the {{Document}}'s <a>active sandboxing flag set</a> has its
+    <a>sandboxed plugins browsing context flag</a> set, the synthesized <{embed}> element will
+    fail to render the content if the relevant <a>plugin</a> cannot be <a>secured</a>.
   </p>
 
 <h4 id="page-load-processing-model-for-inline-content-that-doesnt-have-a-dom"><dfn lt="display the inline content">Page load processing model for inline content that doesn't have a DOM</dfn></h4>
 
   When the user agent is to display a user agent page inline in a <a>browsing context</a>,
-  the user agent should create a {{Document}} object, mark it as being an <a>HTML document</a>, set its <a>content type</a> to "<code>[[#text-html|text/html]]</code>",
+  the user agent should create a {{Document}} object, mark it as being an <a>HTML document</a>,
+  set its <a>content type</a> to "<code>[[#text-html|text/html]]</code>",
   initialize the {{Document}} object, and then either associate that
   {{Document}} with a custom rendering that is not rendered using the normal
   {{Document}} rendering rules, or mutate that {{Document}} until it represents
   the content the user agent wants to render.
 
-  Once the page has been set up, the user agent must act as if it had [=stop parsing|stopped parsing=].
+  Once the page has been set up, the user agent
+  must act as if it had [=stop parsing|stopped parsing=].
 
-  After creating the <code>Document</code> object, but potentially before the page has been
-  completely set up, the user agent must <a>update the session history with the new
-  page</a>.
+  After creating the <code>Document</code> object, but potentially before
+  the page has been completely set up, the user agent must
+  <a>update the session history with the new page</a>.
 
 <h4 id="navigating-to-a-fragment-identifier">Navigating to a <dfn lt="navigate fragment">fragment</dfn></h4>
 
@@ -4386,9 +4436,8 @@
     session history, then no entries are removed.
 
     <p class="note">
-  This <a>doesn't necessarily have to affect</a> the user
-    agent's user interface.
-  </p>
+      This <a>doesn't necessarily have to affect</a> the user agent's user interface.
+    </p>
 
     </li>
 
@@ -4397,19 +4446,20 @@
     <a>top-level browsing context</a>'s <a>document family</a>.</li>
 
     <li>Append a new entry at the end of the <code>History</code> object representing the new
-    resource and its {{Document}} object, related state, and current history scroll restoration preference. Its [=url/URL=] must be set to the address to which the user
-   agent was <a>navigating</a>. The title must be left unset.</li>
+    resource and its {{Document}} object, related state, and current history scroll
+    restoration preference. Its [=url/URL=] must be set to the address to which the user
+    agent was <a>navigating</a>. The title must be left unset.</li>
 
-    <li><a>Traverse the history</a> to the new entry, with the <i>non-blocking events</i> flag
-    set. This will <a>scroll to the fragment</a> given in what is now the document's [=Document/URL=].</li>
+    <li><a>Traverse the history</a> to the new entry, with the <i>non-blocking events</i>
+    flag set. This will <a>scroll to the fragment</a> given in what is now the document's
+    [=Document/URL=].</li>
 
   </ol>
 
   <p class="note">
-  If the scrolling fails because the relevant <a>ID</a> has
-  not yet been parsed, then the original <a>navigation</a> algorithm will
-  take care of the scrolling instead, as the last few steps of its <a>update the session history
-  with the new page</a> algorithm.
+    If the scrolling fails because the relevant <a>ID</a> has not yet been parsed, then the
+    original <a>navigation</a> algorithm will take care of the scrolling instead, as the last
+    few steps of its <a>update the session history with the new page</a> algorithm.
   </p>
 
   <hr />
@@ -4419,59 +4469,63 @@
   either change the scrolling position of the document using the following algorithm, or perform
   some other action such that <a>the indicated part of the document</a> is brought to the
   user's attention. If there is no indicated part, or if the indicated part is not <a>being
-  rendered</a>, then the user agent must do nothing. The aforementioned algorithm is as
-  follows:
+  rendered</a>, then the user agent must do nothing. The aforementioned algorithm is as follows:
 
   <ol>
 
-    <li>Let <var>target</var> be <a>the indicated part of the
-    document</a>, as defined below.</li>
+    <li>Let <var>target</var> be <a>the indicated part of the document</a>, as defined below.</li>
 
-    <li>If <var>target</var> is the top of the document, then <a spec="cssom-view">scroll to the beginning of the document</a> for the {{Document}}, and abort these steps. [[!CSSOM-VIEW]]</li>
+    <li>If <var>target</var> is the top of the document, then
+    <a spec="cssom-view">scroll to the beginning of the document</a> for the {{Document}},
+    and abort these steps. [[!CSSOM-VIEW]]</li>
 
-    <li>Use the <a spec="cssom-view">scroll an element into view</a> algorithm to scroll <var>target</var> into view, with the <var>align to top flag</var> set. [[!CSSOM-VIEW]]</li>
+    <li>Use the <a spec="cssom-view">scroll an element into view</a> algorithm to scroll
+    <var>target</var> into view, with the <var>align to top flag</var> set. [[!CSSOM-VIEW]]</li>
 
     <li>Run the <a>focusing steps</a> for that element, with the {{Document}}'s
     <a>viewport</a> as the <i>fallback target</i>.</li>
 
-    <li>Move the <a>sequential focus navigation starting point</a> to
-    <var>target</var>.
+    <li>Move the <a>sequential focus navigation starting point</a> to <var>target</var>.</li>
 
   </ol>
 
-  <dfn lt="an indicated part of the document|the indicated part of the document|indicated part of the document">The indicated part of the document</dfn> is the one that the <a for="url">fragment</a>, if any,
-  identifies. The semantics of the <a for="url">fragment</a> in terms of mapping it to a specific DOM Node
-  is defined by the specification that defines the <a>MIME type</a> used by the
-  {{Document}} (for example, the processing of <a for="url">fragment</a> for <a>XML MIME types</a> is the responsibility of RFC7303). [[!RFC7303]]
+  <dfn lt="an indicated part of the document|the indicated part of the document|indicated part of the document">The indicated part of the document</dfn>
+  is the one that the <a for="url">fragment</a>, if any, identifies. The semantics of the
+  <a for="url">fragment</a> in terms of mapping it to a specific DOM Node is defined by the
+  specification that defines the <a>MIME type</a> used by the {{Document}} (for example, the
+  processing of <a for="url">fragment</a> for <a>XML MIME types</a> is the responsibility of
+  RFC7303). [[!RFC7303]]
 
   For HTML documents (and <a>HTML MIME types</a>), the following
   processing model must be followed to determine what <a>the indicated part of the document</a> is.
 
   <ol>
 
-    <li>Apply the <a>URL parser</a> algorithm to the [=url/URL=], and let <var>fragid</var> be the <a for="url">fragment</a> component of the
-    <a>resulting URL record</a>.</li>
+    <li>Apply the <a>URL parser</a> algorithm to the [=url/URL=], and let <var>fragid</var> be
+    the <a for="url">fragment</a> component of the <a>resulting URL record</a>.</li>
 
-    <li>If <var>fragid</var> is the empty string, then <a>the indicated part of the
-    document</a> is the top of the document; stop the algorithm here.</li>
+    <li>If <var>fragid</var> is the empty string, then <a>the indicated part of the document</a>
+    is the top of the document; stop the algorithm here.</li>
 
     <li>Let <var>fragid bytes</var> be the result of percent decoding <var>fragid</var>.</li>
 
     <li>Let <var>decoded fragid</var> be the result of running
-    <a>UTF-8 decode without BOM or fail</a> on <var>fragid bytes</var>. If <var>decoded fragid</var>
-    is failure, jump to the step labeled no <var>decoded fragid</var>.</li>
+    <a>UTF-8 decode without BOM or fail</a> on <var>fragid bytes</var>.
+    If <var>decoded fragid</var> is failure, jump to the step labeled no
+    <var>decoded fragid</var>.</li>
 
-    <li>If there is an element in the DOM that has an <a>ID</a> exactly
-    equal to <var>decoded fragid</var>, then the first such element in <a>tree order</a> is
+    <li>If there is an element in the DOM that has an <a>ID</a> exactly equal to
+    <var>decoded fragid</var>, then the first such element in <a>tree order</a> is
     <a>the indicated part of the document</a>; stop the algorithm here.</li>
 
-    <li><i>No decoded fragid</i>: If there is an <{a}> element in the DOM that has a <code>name</code> attribute whose value is exactly equal to <var>fragid</var> (<em>not</em> <var>decoded fragid</var>), then the first such
-    element in <a>tree order</a> is <a>the indicated part of the document</a>; stop the algorithm
-    here.</li>
+    <li><i>No decoded fragid</i>: If there is an <{a}> element in the DOM that has a
+    <{a/name}> attribute whose value is exactly equal to <var>fragid</var>
+    (<em>not</em> <var>decoded fragid</var>), then the first such element in <a>tree order</a>
+    is <a>the indicated part of the document</a>; stop the algorithm here.</li>
 
-    <li>If <var>fragid</var> is an <a>ASCII case-insensitive</a> match for the
-    string <code>top</code>, then <a>the indicated part of the document</a> is the top
-    of the document; stop the algorithm here.</li>
+    <li>If <var>fragid</var> is an <a>ASCII case-insensitive</a> match for the string
+    <code>top</code>, then <a>the indicated part of the document</a> is the top of the document;
+    stop the algorithm here.</li>
 
     <li>Otherwise, there is no <a>indicated part of the document</a>.</li>
 
@@ -4481,52 +4535,53 @@
   <dfn>target element</dfn> is <a>the indicated part of the document</a>, if that is an element;
   otherwise there is no <a>target element</a>. [[!SELECTORS4]]
 
-  The <a>task source</a> for the task mentioned in this section must be the <a>DOM
-  manipulation task source</a>.
+  The <a>task source</a> for the task mentioned in this section must be the
+  <a>DOM manipulation task source</a>.
 
 
 <h4 id="history-traversal">History traversal</h4>
 
-  When a user agent is required to <dfn lt="traverse the history|history traversal|session history traversal|traversing the history">traverse the history</dfn> to a <var>specified
-  entry</var>, optionally with <a>replacement enabled</a>, and optionally with the
-  <i>non-blocking events</i> flag set, the user agent must act as follows.
+  When a user agent is required to <dfn lt="traverse the history|history traversal|session history traversal|traversing the history">traverse the history</dfn>
+  to a <var>specified entry</var>, optionally with <a>replacement enabled</a>, and optionally
+  with the <i>non-blocking events</i> flag set, the user agent must act as follows.
 
   <p class="note">
-  This algorithm is not just invoked when <a>explicitly going back or forwards in the session history</a> — it is also invoked
-  in other situations, for example when <a>navigating a browsing context</a>,
-  as part of <a>updating the session history
-  with the new page</a>.
+    This algorithm is not just invoked when
+    <a>explicitly going back or forwards in the session history</a> — it is also invoked in other
+    situations, for example when <a>navigating a browsing context</a>, as part of
+    <a>updating the session history with the new page</a>.
   </p>
 
   <ol>
 
     <li>
 
-    If there is no longer a {{Document}} object for the entry in question,
-    <a>navigate</a> the <a>browsing
-    context</a> to the resource for that entry to perform an <a>entry update</a> of that
-    entry, and abort these steps. The "<a>navigate</a>" algorithm reinvokes this "traverse"
-    algorithm to complete the traversal, at which point there <em>is</em> a {{Document}}
-    object and so this step gets skipped. The navigation must be done using the same <a>source
-    browsing context</a> as was used the first time this entry was created. (This can never
-    happen with <a>replacement enabled</a>.)
+    If there is no longer a {{Document}} object for the entry in question, <a>navigate</a>
+    the <a>browsing context</a> to the resource for that entry to perform an <a>entry update</a>
+    of that entry, and abort these steps.
+    The "<a>navigate</a>" algorithm reinvokes this "traverse" algorithm to complete the traversal,
+    at which point there <em>is</em> a {{Document}} object and so this step gets skipped.
+    The navigation must be done using the same <a>source browsing context</a> as was used the
+    first time this entry was created. (This can never happen with <a>replacement enabled</a>.)
 
     <p class="note">
-  If the resource was obtained using a non-idempotent action, for example a POST
-    <a>form submission</a>, or if the resource is no longer available, for example because the computer is
-    now offline and the page wasn't cached, navigating to it again might not be possible. In this
-    case, the navigation will result in a different page than previously; for example, it might be
-    an error message explaining the problem or offering to resubmit the form.
+      If the resource was obtained using a non-idempotent action, for example a POST
+      <a>form submission</a>, or if the resource is no longer available, for example because
+      the computer is now offline and the page wasn't cached, navigating to it again might not
+      be possible. In this case, the navigation will result in a different page than previously;
+      for example, it might be an error message explaining the problem or offering to resubmit
+      the form.
   </p>
 
     </li>
 
-    <li>If the <a>current entry</a>'s title was not set by the <code>pushState()</code> or <code>replaceState()</code> methods, then set its title to the value
+    <li>If the <a>current entry</a>'s title was not set by the <code>pushState()</code> or
+    <code>replaceState()</code> methods, then set its title to the value
     returned by the <code>document.title</code> IDL attribute.</li>
 
-    <li>If appropriate, update the <a>current entry</a> in the <a>browsing
-    context</a>'s {{Document}} object's <code>History</code> object to reflect any state
-    that the user agent wishes to persist. The entry is then said to be <a>an entry with persisted
+    <li>If appropriate, update the <a>current entry</a> in the <a>browsing context</a>'s
+    {{Document}} object's <code>History</code> object to reflect any state that the user agent
+    wishes to persist. The entry is then said to be <a>an entry with persisted
     user state</a>.</li>
 
     <li>If the <var>specified entry</var> has a different {{Document}} object
@@ -4534,34 +4589,33 @@
 
     <ol>
 
-      <li>Remove any <a>tasks</a> queued by the <a>history traversal
-      task source</a> that are associated with any {{Document}} objects in the
-      <a>top-level browsing context</a>'s <a>document family</a>.</li>
+      <li>Remove any <a>tasks</a> queued by the <a>history traversal task source</a> that are
+      associated with any {{Document}} objects in the <a>top-level browsing context</a>'s
+      <a>document family</a>.</li>
 
       <li>
 
-      If the [=concept/origin=] of the {{Document}} of the <var>specified entry</var> is not the same as
-      the [=concept/origin=] of the {{Document}} of the <a>current entry</a>, then run the
+      If the [=concept/origin=] of the {{Document}} of the <var>specified entry</var> is not the
+      same as the [=concept/origin=] of the {{Document}} of the <a>current entry</a>, then run the
       following sub-sub-steps:
 
       <ol>
 
         <li>The current <a>browsing context name</a> must be stored with all the entries in
-        the history that are associated with {{Document}} objects with the <a>same
-        origin</a> as the <a>active document</a> <em>and</em> that are contiguous with the
+        the history that are associated with {{Document}} objects with the <a>same origin</a>
+        as the <a>active document</a> <em>and</em> that are contiguous with the
         <a>current entry</a>.</li>
 
-        <li><dfn lt="gets reset"></dfn>If the browsing context is a <a>top-level browsing context</a>,
-        but not an <a>auxiliary browsing context</a>, then the browsing context's
-        <a>browsing context name</a> must be unset.</li>
+        <li><dfn lt="gets reset"></dfn>If the browsing context is a
+        <a>top-level browsing context</a>, but not an <a>auxiliary browsing context</a>,
+        then the browsing context's <a>browsing context name</a> must be unset.</li>
 
       </ol>
 
       </li>
 
       <li>Make the <var>specified entry</var>'s
-      {{Document}} object the <a>active document</a> of the <a>browsing
-      context</a>.</li>
+      {{Document}} object the <a>active document</a> of the <a>browsing context</a>.</li>
 
       <li>
 
@@ -4573,23 +4627,22 @@
         <li>Set the browsing context's <a>browsing context name</a> to the name stored with
         the specified entry.</li>
 
-        <li>Clear any <a>browsing context names</a> stored
-        with all entries in the history that are associated with {{Document}} objects with
-        the <a>same origin</a> as the new <a>active document</a> and that are contiguous
-        with the specified entry.</li>
+        <li>Clear any <a>browsing context names</a> stored with all entries in the history that are
+        associated with {{Document}} objects with the <a>same origin</a> as the
+        new <a>active document</a> and that are contiguous with the specified entry.</li>
 
       </ol>
 
       </li>
 
-      <li>If the <var>specified entry</var>'s
-      {{Document}} has any form controls whose <a>autofill field name</a> is "<code>off</code>", invoke the <dfn lt="values are reset"></dfn> <a>reset algorithm</a> of each of those elements.</li>
+      <li>If the <var>specified entry</var>'s {{Document}} has any form controls whose
+      <a>autofill field name</a> is "<code>off</code>", invoke the
+      <dfn lt="values are reset"></dfn> <a>reset algorithm</a> of each of those elements.</li>
 
       <li>
 
-      If the <a>current document readiness</a> of the <var>specified entry</var>'s
-      {{Document}} is "<code>complete</code>", <a>queue a task</a> to run
-      the following sub-sub-steps:
+      If the <a>current document readiness</a> of the <var>specified entry</var>'s {{Document}}
+      is "<code>complete</code>", <a>queue a task</a> to run the following sub-sub-steps:
 
       <ol>
 
@@ -4604,15 +4657,16 @@
         are defined by [=other applicable specifications=].
 
         <p class="note">
-  This is specifically intended for use by the Page Visibility specification. [[PAGE-VISIBILITY]]
-  </p>
+          This is specifically intended for use by the Page Visibility specification.
+          [[PAGE-VISIBILITY]]
+        </p>
 
         </li>
 
-        <li><a>Fire</a> a <a>trusted</a> event with the name <code>pageshow</code> at the <code>Window</code> object of that
-        {{Document}}, with <i>target override</i> set to the {{Document}}
-        object,
-        using the <code>PageTransitionEvent</code> interface, with the {{PageTransitionEvent/persisted}} attribute initialized to true.
+        <li><a>Fire</a> a <a>trusted</a> event with the name <code>pageshow</code> at the
+        <code>Window</code> object of that {{Document}}, with <i>target override</i> set to the
+        {{Document}} object, using the <code>PageTransitionEvent</code> interface, with the
+        {{PageTransitionEvent/persisted}} attribute initialized to true.
         This event must not bubble, must not be cancelable, and has no default action.</li>
 
       </ol>
@@ -4623,18 +4677,18 @@
 
     </li>
 
-    <li>Set the document's [=Document/URL=] to the URL of the <var>specified
-    entry</var>.</li>
+    <li>Set the document's [=Document/URL=] to the URL of the <var>specified entry</var>.</li>
 
     <li>If the <var>specified entry</var> has a URL whose <a for="url">fragment</a> differs
     from that of the <a>current entry</a>'s when compared in a <a>case-sensitive</a>
-    manner, and the two share the same {{Document}} object, then let <var>hash
-    changed</var> be true, and let <var>old URL</var> be the URL of the <a>current
-    entry</a> and <var>new URL</var> be the URL of the <var>specified
-    entry</var>. Otherwise, let <var>hash changed</var> be false.</li>
+    manner, and the two share the same {{Document}} object, then let <var>hash changed</var>
+    be true, and let <var>old URL</var> be the URL of the <a>current entry</a> and
+    <var>new URL</var> be the URL of the <var>specified entry</var>. Otherwise,
+    let <var>hash changed</var> be false.</li>
 
-    <li>If the traversal was initiated with <dfn lt="replacement must be enabled|replacement enabled">replacement enabled</dfn>, remove the entry
-    immediately before the <var>specified entry</var> in the session history.</li>
+    <li>If the traversal was initiated with
+    <dfn lt="replacement must be enabled|replacement enabled">replacement enabled</dfn>,
+    remove the entry immediately before the <var>specified entry</var> in the session history.</li>
 
     <li>If the <var>specified entry</var> is not <a>an entry with persisted user state</a>, but its
     URL has a <a for="url">fragment</a>, <a>scroll to the fragment</a>.</li>
@@ -4645,15 +4699,18 @@
     <li>Let <var>targetRealm</var> be the <a>current Realm Record</a>.</li>
 
     <li>If the entry is a <a>serialized state</a> entry, let <var>state</var> be
-    <a>StructuredDeserialize</a>(<var>entry</var>'s <span>serialized state</span>, <var>targetRealm</var>).
-    If this throws an exception, ignore the exception and  let <var>state</var> be
-    null.</li>
+    <a>StructuredDeserialize</a>(<var>entry</var>'s <span>serialized state</span>,
+    <var>targetRealm</var>). If this throws an exception, ignore the exception and
+    let <var>state</var> be null.</li>
 
     <li>Set <code>history.state</code> to <var>state</var>.</li>
 
-    <li>Let <var>state changed</var> be true if the {{Document}} of the <var>specified entry</var> has a <a>latest entry</a>, and that entry is not the <var>specified entry</var>; otherwise let it be false.
+    <li>Let <var>state changed</var> be true if the {{Document}} of the <var>specified entry</var>
+    has a <a>latest entry</a>, and that entry is not the <var>specified entry</var>;
+    otherwise let it be false.
 
-    <li>Let the <a>latest entry</a> of the {{Document}} of the <var>specified entry</var> be the <var>specified entry</var>.</li>
+    <li>Let the <a>latest entry</a> of the {{Document}} of the <var>specified entry</var>
+    be the <var>specified entry</var>.</li>
 
     <li>
 
@@ -4666,15 +4723,15 @@
       <li>If <var>state changed</var> is true, <a>fire</a> a <a>trusted</a>
       event with the name <code>popstate</code> at the <code>Window</code>
       object of the {{Document}}, using the <code>PopStateEvent</code> interface, with the
-      <code>state</code> attribute initialized to the value of <var>state</var>. This event must bubble but not be cancelable and has no default
-      action.</li>
+      <code>state</code> attribute initialized to the value of <var>state</var>.
+      This event must bubble but not be cancelable and has no default action.</li>
 
       <li>If <var>hash changed</var> is true, then <a>fire</a> a <a>trusted</a>
       event with the name <code>hashchange</code> at the <a>browsing
       context</a>'s {{Window}} object, using the {{HashChangeEvent}} interface,
-      with the <code>oldURL</code> attribute initialized to <var>old URL</var> and the <code>newURL</code> attribute
-      initialized to <var>new URL</var>. This event must bubble but not be cancelable and
-      has no default action.</li>
+      with the <code>oldURL</code> attribute initialized to <var>old URL</var> and the
+      <code>newURL</code> attribute initialized to <var>new URL</var>. This event must
+      bubble but not be cancelable and has no default action.</li>
 
     </ol>
 
@@ -4684,8 +4741,7 @@
 
   </ol>
 
-  The <a>task source</a> for the tasks mentioned above is the <a>DOM manipulation task
-  source</a>.
+  The <a>task source</a> for the tasks mentioned above is the <a>DOM manipulation task source</a>.
 
   <h5 id="persisted-user-state-restoration">Persisted user state restoration</h5>
 
@@ -4705,11 +4761,12 @@
 
   </ol>
 
-  <p class="note">This can even include updating the <code>dir</code> attribute
-  of <{textarea}> elements or <{input}> elements whose <code>type</code> attribute
-  is in either the <{input/Text}> state or the
-  <{input/Search}> state, if the persisted state includes the
-  directionality of user input in such controls.</p>
+  <p class="note">
+    This can even include updating the <{global/dir}> attribute of <{textarea}> elements or
+    <{input}> elements whose <{input/type}> attribute is in either the <{input/Text}> state
+    or the <{input/Search}> state, if the persisted state includes the directionality of user
+    input in such controls.
+  </p>
 
 <h5 id="the-popstateevent-interface">The <code>PopStateEvent</code> interface</h5>
 
@@ -4758,8 +4815,7 @@
   <dl class="domintro">
     <dt><var>event</var> . <code>oldURL</code></dt>
     <dd>
-      Returns the [=url/URL=] of the <a>session history entry</a> that was previously
-      current.
+      Returns the [=url/URL=] of the <a>session history entry</a> that was previously current.
     </dd>
     <dt><var>event</var> . <code>newURL</code></dt>
     <dd>
@@ -4818,39 +4874,36 @@
 
 <h4 id="unloading-documents">Unloading documents</h4>
 
-  A {{Document}} has a <dfn><i>salvageable</i></dfn> state, which must initially be
-  true, a <dfn>fired unload</dfn> flag, which must initially be false, and a <dfn>page showing</dfn>
+  A {{Document}} has a <dfn><i>salvageable</i></dfn> state, which must initially be true, a
+  <dfn>fired unload</dfn> flag, which must initially be false, and a <dfn>page showing</dfn>
   flag, which must initially be false. The <a>page showing</a> flag is used to ensure that
-  scripts receive <code>pageshow</code> and <code>pagehide</code> events in a consistent manner (e.g., that they never
-  receive two <code>pagehide</code> events in a row without an intervening
+  scripts receive <code>pageshow</code> and <code>pagehide</code> events in a consistent manner
+  (e.g., that they never receive two <code>pagehide</code> events in a row without an intervening
   <code>pageshow</code>, or vice versa).
 
-  <a>Event loops</a> have a <dfn>termination nesting level</dfn> counter, which must initially be
-  zero.
+  <a>Event loops</a> have a <dfn>termination nesting level</dfn> counter,
+  which must initially be zero.
 
   When a user agent is to
-  <dfn lt="prompt to unload|prompt to unload a document">prompt to unload a document</dfn>, it must
-  run the following steps.
+  <dfn lt="prompt to unload|prompt to unload a document">prompt to unload a document</dfn>,
+  it must run the following steps.
 
   <ol>
 
-    <li>Increase the <a>event loop</a>'s <a>termination nesting level</a> by
-    one.</li>
+    <li>Increase the <a>event loop</a>'s <a>termination nesting level</a> by one.</li>
 
-    <li>Increase the {{Document}}'s <a>ignore-opens-during-unload counter</a> by
-    one.</li>
+    <li>Increase the {{Document}}'s <a>ignore-opens-during-unload counter</a> by one.</li>
 
-    <li>Let <var>event</var> be a new <a>trusted</a>
-    <code>BeforeUnloadEvent</code> event object with the name <code>beforeunload</code>, which does not bubble but is cancelable.</li>
+    <li>Let <var>event</var> be a new <a>trusted</a> <code>BeforeUnloadEvent</code> event object
+    with the name <code>beforeunload</code>, which does not bubble but is cancelable.</li>
 
-    <li><i>Dispatch</i>: <a>Dispatch</a> <var>event</var> at the {{Document}}'s <code>Window</code> object.</li>
+    <li><i>Dispatch</i>: <a>Dispatch</a> <var>event</var> at the
+    {{Document}}'s <code>Window</code> object.</li>
 
-    <li>Decrease the <a>event loop</a>'s <a>termination nesting level</a> by
-    one.</li>
+    <li>Decrease the <a>event loop</a>'s <a>termination nesting level</a> by one.</li>
 
     <li>If any event listeners were triggered by the earlier <i>dispatch</i> step, then set the
-    {{Document}}'s <i>salvageable</i> state to
-    false.</li>
+    {{Document}}'s <i>salvageable</i> state to false.</li>
 
     <li>
 
@@ -4873,8 +4926,8 @@
     algorithm (i.e., through the steps below that invoke this algorithm for all descendant browsing
     contexts), then jump to the step labeled <i>end</i>.</li>
 
-    <li>Let <var>descendants</var> be the <a>list of the descendant browsing
-    contexts</a> of the {{Document}}.</li>
+    <li>Let <var>descendants</var> be the <a>list of the descendant browsing contexts</a>
+    of the {{Document}}.</li>
 
     <li>
 
@@ -4883,48 +4936,48 @@
 
     <ol>
 
-      <li><a>Prompt to unload</a> the <a>active document</a> of the <a>browsing context</a> <var>b</var>. If the user
-      <a>refused to allow the document to be unloaded</a>, then the user implicitly also <a>refused to allow <em>this</em> document to be unloaded</a>; jump to the step labeled <i>end</i>.
+      <li><a>Prompt to unload</a> the <a>active document</a> of the <a>browsing context</a>
+      <var>b</var>. If the user <a>refused to allow the document to be unloaded</a>, then the user
+      implicitly also <a>refused to allow <em>this</em> document to be unloaded</a>;
+      jump to the step labeled <i>end</i>.
 
-      <li>If the <i>salvageable</i> state of the <a>active
-      document</a> of the <a>browsing context</a> <var>b</var> is false, then set
-      the <i>salvageable</i> state of <em>this</em> document to
-      false also.</li>
+      <li>If the <i>salvageable</i> state of the <a>active document</a> of the
+      <a>browsing context</a> <var>b</var> is false, then set the <i>salvageable</i> state of
+      <em>this</em> document to false also.</li>
 
     </ol>
 
     </li>
 
-    <li><i>End</i>: Decrease the {{Document}}'s <a>ignore-opens-during-unload
-    counter</a> by one.</li>
+    <li><i>End</i>: Decrease the {{Document}}'s
+    <a>ignore-opens-during-unload counter</a> by one.</li>
 
   </ol>
 
-  When a user agent is to <dfn lt="unloaded|unload|unload a document|being unloaded">unload a document</dfn>, it must run the following steps. These
-  steps are passed an argument, <var>recycle</var>, which is either true or false,
-  indicating whether the {{Document}} object is going to be re-used. (This is set by the
-  <code>document.open()</code> method.)
+  When a user agent is to
+  <dfn lt="unloaded|unload|unload a document|being unloaded">unload a document</dfn>,
+  it must run the following steps. These steps are passed an argument, <var>recycle</var>,
+  which is either true or false, indicating whether the {{Document}} object is going to be re-used.
+  (This is set by the <code>document.open()</code> method.)
 
   <ol>
 
-    <li>Increase the <a>event loop</a>'s <a>termination nesting level</a> by
-    one.</li>
+    <li>Increase the <a>event loop</a>'s <a>termination nesting level</a> by one.</li>
 
-    <li>Increase the {{Document}}'s <a>ignore-opens-during-unload counter</a> by
-    one.</li>
+    <li>Increase the {{Document}}'s <a>ignore-opens-during-unload counter</a> by one.</li>
 
     <li>If the {{Document}}'s <a>page showing</a> flag is false, then jump to the
-    step labeled <i>unload event</i> below (i.e., skip firing the <code>pagehide</code> event and don't rerun the <a>unloading document
-    visibility change steps</a>).</li>
+    step labeled <i>unload event</i> below (i.e., skip firing the <code>pagehide</code> event
+    and don't rerun the <a>unloading document visibility change steps</a>).</li>
 
     <li>Set the {{Document}}'s <a>page showing</a> flag to false.</li>
 
-    <li><a>Fire</a> a <a>trusted</a> event with the name <code>pagehide</code> at the <code>Window</code> object of the
-    {{Document}}, with <i>target override</i> set to the {{Document}}
-    object, using the <code>PageTransitionEvent</code> interface,
+    <li><a>Fire</a> a <a>trusted</a> event with the name <code>pagehide</code> at the
+    <code>Window</code> object of the {{Document}}, with <i>target override</i> set to the
+    {{Document}} object, using the <code>PageTransitionEvent</code> interface,
     with the {{PageTransitionEvent/persisted}} attribute initialized
-    to true if the {{Document}} object's <i>salvageable</i> state is true, and false otherwise. This
-    event must not bubble, must not be cancelable, and has no default action.</li>
+    to true if the {{Document}} object's <i>salvageable</i> state is true, and false otherwise.
+    This event must not bubble, must not be cancelable, and has no default action.</li>
 
     <li>
 
@@ -4932,8 +4985,9 @@
     are defined by [=other applicable specifications=].
 
     <p class="note">
-  This is specifically intended for use by the Page Visibility specification. [[PAGE-VISIBILITY]]
-  </p>
+      This is specifically intended for use by the Page Visibility specification.
+      [[PAGE-VISIBILITY]]
+    </p>
 
     </li>
 
@@ -4942,8 +4996,7 @@
     {{Document}}'s <code>Window</code> object, with <i>target override</i> set to the
     {{Document}} object.</li>
 
-    <li>Decrease the <a>event loop</a>'s <a>termination nesting level</a> by
-    one.</li>
+    <li>Decrease the <a>event loop</a>'s <a>termination nesting level</a> by one.</li>
 
     <li>If any event listeners were triggered by the earlier <i>unload event</i> step, then set
     the {{Document}} object's <i>salvageable</i> state
@@ -4953,37 +5006,36 @@
     defined by this specification and [=other applicable specifications=].</li>
 
     <li>If this algorithm was invoked by another instance of the "unload a document" algorithm
-    (i.e., by the steps below that invoke this algorithm for all descendant browsing contexts), then
-    jump to the step labeled <i>end</i>.</li>
+    (i.e., by the steps below that invoke this algorithm for all descendant browsing contexts),
+    then jump to the step labeled <i>end</i>.</li>
 
-    <li>Let <var>descendants</var> be the <a>list of the descendant browsing
-    contexts</a> of the {{Document}}.</li>
+    <li>Let <var>descendants</var> be the <a>list of the descendant browsing contexts</a>
+    of the {{Document}}.</li>
 
     <li>
 
-    If <var>descendants</var> is not an empty list, then for each <a>browsing context</a> <var>b</var> in <var>descendants</var> run the following
-    substeps:
+    If <var>descendants</var> is not an empty list, then for each <a>browsing context</a>
+    <var>b</var> in <var>descendants</var> run the following substeps:
 
     <ol>
 
-      <li><a>Unload</a> the <a>active document</a> of the
-      <a>browsing context</a> <var>b</var> with the <var>recycle</var>
-      parameter set to false.</li>
+      <li><a>Unload</a> the <a>active document</a> of the <a>browsing context</a> <var>b</var>
+      with the <var>recycle</var> parameter set to false.</li>
 
-      <li>If the <i>salvageable</i> state of the <a>active
-      document</a> of the <a>browsing context</a> <var>b</var> is false, then set
-      the <i>salvageable</i> state of <em>this</em> document to
-      false also.</li>
+      <li>If the <i>salvageable</i> state of the <a>active document</a> of the
+      <a>browsing context</a> <var>b</var> is false, then set the <i>salvageable</i>
+      state of <em>this</em> document to false as well.</li>
 
     </ol>
 
     </li>
 
     <li>If both the {{Document}}'s <i>salvageable</i> state and <var>recycle</var> are
-    false, then the {{Document}}'s <a>browsing context</a> must <a>discard the <code>Document</code></a>.</li>
+    false, then the {{Document}}'s <a>browsing context</a> must
+    <a>discard the <code>Document</code></a>.</li>
 
-    <li><i>End</i>: Decrease the {{Document}}'s <a>ignore-opens-during-unload
-    counter</a> by one.</li>
+    <li><i>End</i>: Decrease the {{Document}}'s
+    <a>ignore-opens-during-unload counter</a> by one.</li>
 
   </ol>
 
@@ -4994,21 +5046,20 @@
 
     <li>
 
-    Make disappear any <code>WebSocket</code> objects that were created by the <code>WebSocket()</code> constructor from the
-    {{Document}}'s <code>Window</code> object.
+    Make disappear any <code>WebSocket</code> objects that were created by the
+    <code>WebSocket()</code> constructor from the {{Document}}'s <code>Window</code> object.
 
-    If this affected any <code>WebSocket</code> objects, then set {{Document}}'s <i>salvageable</i> state to false.
+    If this affected any <code>WebSocket</code> objects, then set {{Document}}'s
+    <i>salvageable</i> state to false.
 
     </li>
 
-    <li>If the {{Document}}'s <i>salvageable</i>
-    state is false, forcibly close any
+    <li>If the {{Document}}'s <i>salvageable</i> state is false, forcibly close any
     <code>EventSource</code> objects that whose constructor was invoked from the
     {{Document}}'s <code>Window</code> object.</li>
 
-    <li>If the {{Document}}'s <i>salvageable</i>
-    state is false, empty the {{Document}}'s <code>Window</code>'s <a>list of active
-    timers</a>.</li>
+    <li>If the {{Document}}'s <i>salvageable</i> state is false, empty the
+    {{Document}}'s <code>Window</code>'s <a>list of active timers</a>.</li>
 
   </ol>
 
@@ -5035,7 +5086,7 @@
   </dl>
 
   <p class="note">
-  There are no <code>BeforeUnloadEvent</code>-specific initialization methods.
+    There are no <code>BeforeUnloadEvent</code>-specific initialization methods.
   </p>
 
   The <dfn attribute for="BeforeUnloadEvent"><code>returnValue</code></dfn> attribute
@@ -5045,32 +5096,32 @@
 
 <h4 id="aborting-a-document-load">Aborting a document load</h4>
 
-  If a {{Document}} is <dfn lt="abort the document|aborted|aborting a document|abort a document">aborted</dfn>, the user agent must
-  run the following steps:
+  If a {{Document}} is
+  <dfn lt="abort the document|aborted|aborting a document|abort a document">aborted</dfn>,
+  the user agent must run the following steps:
 
   <ol>
 
-    <li><a>Abort</a> the <a>active
-    documents</a> of every <a>child browsing context</a>. If this results in any of those
-    {{Document}} objects having their <i>salvageable</i> state set to false, then set this
-    {{Document}}'s <i>salvageable</i> state to false
-    also.</li>
+    <li><a>Abort</a> the <a>active documents</a> of every <a>child browsing context</a>.
+    If this results in any of those {{Document}} objects having their <i>salvageable</i>
+    state set to false, then set this {{Document}}'s <i>salvageable</i> state to false also.</li>
 
-    <li>Cancel any instances of the <a>fetch</a> algorithm in the
-    context of this {{Document}}, discarding any <a>tasks</a>
-    <a>queued</a> for them, and discarding any further data received from
-    the network for them. If this resulted in any instances of the <a>fetch</a> algorithm being canceled or any <a>queued</a> <a>tasks</a> or any network data getting
+    <li>Cancel any instances of the <a>fetch</a> algorithm in the context of this {{Document}},
+    discarding any <a>tasks</a> <a>queued</a> for them, and discarding any further data received
+    from the network for them. If this resulted in any instances of the <a>fetch</a> algorithm
+    being canceled or any <a>queued</a> <a>tasks</a> or any network data getting
     discarded, then set the {{Document}}'s <i>salvageable</i> state to false.</li>
 
-    <li>If the {{Document}} has an <a>active parser</a>, then <a>abort that parser</a> and set the {{Document}}'s <i>salvageable</i> state to false.</li>
+    <li>If the {{Document}} has an <a>active parser</a>, then <a>abort that parser</a>
+    and set the {{Document}}'s <i>salvageable</i> state to false.</li>
 
   </ol>
 
-  User agents may allow users to explicitly invoke the <a>abort a
-  document</a> algorithm for a {{Document}}. If the user does so, then, if that
-  {{Document}} is an <a>active document</a>, the user agent should <a>queue a
-  task</a> to <a>fire a simple event</a> named <code>abort</code> at
-  that {{Document}}'s <code>Window</code> object before invoking the <a>abort</a> algorithm.
+  User agents may allow users to explicitly invoke the <a>abort a document</a> algorithm for a
+  {{Document}}. If the user does so, then, if that {{Document}} is an <a>active document</a>,
+  the user agent should <a>queue a task</a> to <a>fire a simple event</a> named
+  <code>abort</code> at that {{Document}}'s <code>Window</code> object before invoking the
+  <a>abort</a> algorithm.
 
 <h4 id="browser-state">Browser state</h4>
 
@@ -5090,33 +5141,34 @@
     Returns false if the user agent is definitely offline (disconnected from the network).
     Returns true if the user agent might be online.
 
-    The events <code>online</code> and <code>offline</code> are fired when the value of this attribute changes.
+    The events <code>online</code> and <code>offline</code> are fired when the value of
+    this attribute changes.
 
     </dd>
 
   </dl>
 
-  The <dfn attribute for="NavigatorOnLine" lt="onLine|navigator.onLine"><code>navigator.onLine</code></dfn> attribute must return
-  false if the user agent will not contact the network when the user follows links or when a script
-  requests a remote page (or knows that such an attempt would fail), and must return true
-  otherwise.
+  The <dfn attribute for="NavigatorOnLine" lt="onLine|navigator.onLine"><code>navigator.onLine</code></dfn>
+  attribute must return false if the user agent will not contact the network when the user
+  follows links or when a script requests a remote page (or knows that such an attempt would fail),
+  and must return true otherwise.
 
-  When the value that would be returned by the <code>navigator.onLine</code> attribute of a <code>Window</code> or
-  <code>WorkerGlobalScope</code> changes from true to false, the user agent must <a>queue a
-  task</a> to <a>fire a simple event</a> named <code>offline</code>
+  When the value that would be returned by the <code>navigator.onLine</code> attribute of a
+  <code>Window</code> or <code>WorkerGlobalScope</code> changes from true to false,
+  the user agent must <a>queue a task</a> to <a>fire a simple event</a> named <code>offline</code>
   at the <code>Window</code> or <code>WorkerGlobalScope</code> object.
 
-  On the other hand, when the value that would be returned by the <code>navigator.onLine</code> attribute of a <code>Window</code> or
-  <code>WorkerGlobalScope</code> changes from false to true, the user agent must <a>queue a
-  task</a> to <a>fire a simple event</a> named <code>online</code> at
+  On the other hand, when the value that would be returned by the
+  <code>navigator.onLine</code> attribute of a <code>Window</code> or
+  <code>WorkerGlobalScope</code> changes from false to true, the user agent must
+  <a>queue a task</a> to <a>fire a simple event</a> named <code>online</code> at
   the <code>Window</code> or <code>WorkerGlobalScope</code> object.
 
-  The <a>task source</a> for these <a>tasks</a> is the
-  <a>networking task source</a>.
+  The <a>task source</a> for these <a>tasks</a> is the <a>networking task source</a>.
 
   <p class="note">
-  This attribute is inherently unreliable. A computer can be connected to a network
-  without having Internet access.
+    This attribute is inherently unreliable. A computer can be connected to a network
+    without having Internet access.
   </p>
 
   <div class="example">
@@ -5124,7 +5176,7 @@
 
     <xmp highlight="html">
       <!DOCTYPE html>
-      <html>
+      <html lang="en">
         <head>
           <title>Online status</title>
           <script>
@@ -5135,7 +5187,10 @@
         </head>
 
         <body onload="updateIndicator()" ononline="updateIndicator()" onoffline="updateIndicator()">
-          <p>The network is: <span>(state unknown)</p>
+          <p>
+            The network is:
+            <span id="indicator">(state unknown)</span>.
+          </p>
         </body>
       </html>
     </xmp>
