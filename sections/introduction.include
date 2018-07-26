@@ -393,42 +393,31 @@
 
   Some features of HTML trade user convenience for a measure of user privacy.
 
-  In general, due to the Internet's architecture, a user can be distinguished from another by the
-  user's IP address. IP addresses do not perfectly match to a user; as a user moves from device to
-  device, or from network to network, their IP address will change; similarly, NAT routing, proxy
-  servers, and shared computers enable packets that appear to all come from a single IP address to
-  actually map to multiple users. Technologies such as onion routing can be used to further
-  anonymize requests so that requests from a single user at one node on the Internet appear to come
-  from many disparate parts of the network.
+  Various mechanisms can be used to identify a particular user. Cookies, for example,
+  are designed specifically to enable this. Cookies are widely used to help users,
+  for example logging into a site automatically, or storing customisation preferences
+  so the site is more accessible to the user.
 
-  However, the IP address used for a user's requests is not the only mechanism by which a user's
-  requests could be related to each other. Cookies, for example, are designed specifically to
-  enable this, and are the basis of most of the Web's session features that enable you to log into
-  a site with which you have an account.
+  There are other mechanisms that are more subtle. Collecting enough information means
+  an individual user's browser's "digital fingerprint" can be computed,
+  identifying the user without their knowledge or consent.
 
-  There are other mechanisms that are more subtle. Certain characteristics of a user's system can
-  be used to distinguish groups of users from each other; by collecting enough such information,
-  an individual user's browser's "digital fingerprint" can be computed, which can be as good, if
-  not better, than an IP address in ascertaining which requests are from the same user.
+  This "fingerprinting", can be used for both positive and malevolent purposes.
+  An example of a reasonably benign purpose would be determining whether a particular user
+  prefers larger text, and automatically providing larger fonts in subsequent
+  visits to participating sites.
 
-  Grouping requests in this manner, especially across multiple sites, can be used for both benign
-  (and even arguably positive) purposes, as well as for malevolent purposes. An example of a
-  reasonably benign purpose would be determining whether a particular person seems to prefer sites
-  with dog illustrations as opposed to sites with cat illustrations (based on how often they visit
-  the sites in question) and then automatically using the preferred illustrations on subsequent
-  visits to participating sites. Malevolent purposes, however, could include governments combining
-  information such as the person's home address (determined from the addresses they use when
-  getting driving directions on one site) with their apparent political affiliations (determined
-  by examining the forum sites that they participate in) to determine whether the person should be
-  prevented from voting in an election.
+  Other uses could include combining information such as the person's home address
+  (determined from the addresses they use when getting driving directions on one site)
+  with their apparent political affiliations (determined by examining forum sites they visit)
+  to prevent them from voting in an election, or examining the sites they visit,
+  drawing conclusions about health issues they may suffer,
+  and targeting them with advertising for products that misleadingly claim to solve such issues.
 
-  Since the malevolent purposes can be remarkably evil, user agent implementors are encouraged to
-  consider how to provide their users with tools to minimize leaking information that could be used
-  to fingerprint a user.
+  Since the consequences can be very significant, user agent implementors are encouraged to
+  consider how to help users minimize leaking information unknowingly.
 
-  Unfortunately, as the first paragraph in this section implies, sometimes there is great benefit
-  to be derived from exposing the very information that can also be used for fingerprinting
-  purposes, so it's not as easy as simply blocking all possible leaks. For instance, the ability to
+  This is not as easy as simply blocking all possible leaks. For instance, the ability to
   log into a site to post under a specific identity requires that the user's requests be
   identifiable as all being from the same user. More subtly, though, information such as how wide
   text is, which is necessary for many effects that involve drawing text onto a canvas (e.g., any
@@ -440,14 +429,18 @@
   <dfn id="fingerprinting-vector" lt="for privacy">used to fingerprint the user</dfn> are marked as
   this paragraph is. <a class="fingerprint" href="#fingerprinting-vector"><img height="21" src="images/fingerprint.png" width="15" alt="(This is a fingerprinting vector.)" /></a>
 
-  Other features in the platform can be used for the same purpose, though, including, though not
+  Other features in the platform can be used identify users, including but not
   limited to:
 
   * The exact list of which features a user agents supports.
   * The maximum allowed stack depth for recursion in script.
   * Features that describe the user's environment, like Media Queries and the {{Screen}}
     object. [[!MEDIAQ]] [[!CSSOM-VIEW]]
+  * Features that can be used to identify a user in a physical location, e.g. by playing
+    audio through their device, which can be picked up by an external sensor.
   * The user's time zone.
+
+  Note that features which identify a user's location have potentially catastrophic consequences.
 
 <h3 id="a-quick-introduction-to-html">A quick introduction to HTML</h3>
 
@@ -475,9 +468,9 @@
   </xmp>
 
   HTML documents consist of a tree of elements and text. Each element is denoted in the source by
-  a <a>start tag</a>, such as "<{body}>", and an <a>end tag</a>, such as "<{body|/body}>".
-  (Certain start tags and end tags can in certain cases be <a>omitted</a> and are implied by
-  other tags.)
+  a <a>start tag</a>, such as "<{body}>", and an <a>end tag</a>, such as
+  "<{body|/body}>". (Certain start tags and end tags can in certain cases be <a>omitted</a>
+  and are implied by other tags.)
 
   Tags have to be nested such that elements are all completely within each other, without
   overlapping:
@@ -680,8 +673,8 @@
   strongly encouraged to study the matter in more detail. However, this section attempts to provide
   a quick introduction to some common pitfalls in HTML application development.
 
-  The security model of the Web is based on the concept of "origins", and correspondingly many of
-  the potential attacks on the Web involve cross-origin actions. [[!ORIGIN]]
+  One fundamental pillar of the security model that protects Web users is the concept of
+  "origins". Many potential attacks on the Web involve cross-origin actions. [[!ORIGIN]]
 
   : Not validating user input
   : Cross-site scripting (XSS)
@@ -765,6 +758,15 @@
       To avoid this, sites that do not expect to be used in frames are encouraged to only enable
       their interface if they detect that they are not in a frame (e.g., by comparing the
       {{window}} object to the value of the {{Window/top}} attribute).
+
+  A different method of compromising the user's security involves interacting with their
+  physical environment. For example, the <{audio}> element could be used to play audio
+  that interacts with a user's speech enabled devices.
+
+  This could be done in such a way that the user is unaware that it is happening, as in the
+  <a>dolphin attack</a>. Alternatively, malicious content might target users suspected to have
+  a limited hearing range or to be relying on an audio interface such as a screen reader,
+  as determined by <a>fingerprinting</a> users.
 
 <h4 id="common-pitfalls-to-avoid-when-using-the-scripting-apis">
   Common pitfalls to avoid when using the scripting APIs
@@ -1047,7 +1049,8 @@
         <xmp class="bad" highlight="html"><a href="?art&copy">Art and Copy</a></xmp>
 
         To avoid this problem, all named character references are required to end with a
-        semicolon. Uses of named character references without a semicolon are flagged as errors.
+        semicolon. Uses of named character references without a semicolon are flagged as
+        errors.
 
         The correct way to express the above cases are as follows:
 
@@ -1068,9 +1071,8 @@
       user agents, and are therefore marked as non-conforming to help authors avoid them.
 
       <p class="example">
-        For example, this is why the U+0060 GRAVE ACCENT character (&#x60;) is not allowed in
-        unquoted attributes. In certain legacy user agents, it is sometimes treated as a
-        quote character.
+        For example, this is why the U+0060 GRAVE ACCENT character (&#x60;) is not allowed in unquoted
+        attributes. In certain legacy user agents, it is sometimes treated as a quote character.
       </p>
 
       <p class="example">
@@ -1105,8 +1107,9 @@
       defined in this specification.
 
       <p class="example">
-        For example, if the author typed <code>&lt;capton></code> instead of <{caption}>, this
-        would be flagged as an error and the author could correct the typo immediately.
+        For example, if the author typed <code>&lt;capton></code> instead of
+        <{caption}>, this would be flagged as an error and the author could correct
+        the typo immediately.
       </p>
   : Errors that could interfere with new syntax in the future
   :: In order to allow the language syntax to be extended in the future, certain otherwise
@@ -1359,16 +1362,16 @@
   : <cite>Web Content Accessibility Guidelines (WCAG) 2.1</cite> [[WCAG21]]
   :: <blockquote>
         Web Content Accessibility Guidelines (WCAG) 2.1 covers a wide range of recommendations for
-        making Web content more accessible. Following these guidelines will make content more accessible 
+        making Web content more accessible. Following these guidelines will make content more accessible
         to a wider range of people with disabilities, including blindness and low vision, deafness
-        and hearing loss, limited movement, speech disabilities, photosensitivity, and combinations of 
+        and hearing loss, limited movement, speech disabilities, photosensitivity, and combinations of
         these, and some accommodation for learning disabilities and cognitive limitations; but will not
         address every user need for people with these disabilities. These guidelines address accessibility
         of web content on desktops, laptops, tablets, and mobile devices. Following these guidelines will
         also often make Web content more usable to users in general.
 
-        WCAG 2.1 extends Web Content Accessibility Guidelines 2.0 [[WCAG20]], which was published as a 
-        W3C Recommendation December 2008. Content that conforms to WCAG 2.1 also conforms to WCAG 2.0, and 
+        WCAG 2.1 extends Web Content Accessibility Guidelines 2.0 [[WCAG20]], which was published as a
+        W3C Recommendation December 2008. Content that conforms to WCAG 2.1 also conforms to WCAG 2.0, and
         therefore to policies that reference WCAG 2.0.
       </blockquote>
 
