@@ -985,173 +985,306 @@
     <dd>Uses {{HTMLElement}}.</dd>
   </dl>
 
-  The <{ruby}> element allows one or more spans of phrasing content to be marked with ruby
-  annotations. Ruby annotations are short runs of text presented alongside base text, primarily
-  used in East Asian typography as a guide for pronunciation or to include other annotations. In
-  Japanese, this form of typography is also known as <i>furigana</i>. Ruby text can appear on either
-  side, and sometimes both sides, of the base text, and it is possible to control its position using
-  CSS. A more complete introduction to ruby can be found in the <cite>Use Cases &amp; Exploratory
-  Approaches for Ruby Markup</cite> document as well as in <cite>CSS Ruby</cite>.
-  [[RUBY-UC]] [[CSS3-RUBY]]
+  The <{ruby}> element allows content to be marked with ruby annotations.
+  <dfn>Ruby annotations</dfn> are short runs of text presented alongside base text.
+  Their primary modern use is in East Asian typography, for example as a guide for pronunciation
+  of Kanji characters in japanese which can have several possible pronunciations.
+  Ruby annotations are typically rendered above and / or below horizontal basse text,
+  or on either or both sides of vertical base text.
+  Some control of ruby rendering, including positioning, is provided by CSS.
 
-  The content model of <{ruby}> elements consists of one or more of the following sequences:
+  <div class="example">
+    A very simple example of <{ruby}>:
 
-  1. One or more <a>phrasing content</a> nodes or <{rb}> elements.
-  2. One or more <code>rt</code> or <{rtc}> elements, each of which either immediately
-      preceded or followed by an <{rp}> elements.
+    <xmp highlight="html"><ruby><rb>base</rb><rt>annotation</rt></ruby></xmp>
 
-  The <{ruby}>, <{rb}>, <{rtc}>, and <{rt}> elements can be used
-  for a variety of kinds of annotations, including in particular (though by no means limited to)
-  those described below. For more details on Japanese Ruby in particular, and how to render Ruby for
-  Japanese, see <cite>Requirements for Japanese Text Layout</cite>. [[!JLREQ]] The <code>rp</code>
-  element can be used as fallback content when ruby rendering is not supported.
+    is rendered by your browser as follows: <ruby><rb>base</rb><rt>annotation</rt></ruby>
 
-  : Mono-ruby for individual base characters
-  :: Annotations (the ruby text) are associated individually with each ideographic character (the
-      base text). In Japanese this is typically hiragana or katakana characters used to provide
-      readings of kanji characters.
+    A typical rendering of that code is shown in the following image:
+    <img src="images/sample-ruby-annotation.png" alt="the text 'annotation' is rendered in
+    a smaller font above the text 'base'">
+  </div>
+
+  <p class="note"> A more complete introduction to ruby can be found in
+  <cite>Use Cases &amp; Exploratory Approaches for Ruby Markup</cite> [[RUBY-UC]].
+  Further information on ruby layout in CSS is available in <cite>CSS Ruby</cite> [[CSS3-RUBY]].
+  For more details on Japanese Ruby in particular, and how to render Ruby for Japanese,
+  see <cite>Requirements for Japanese Text Layout</cite> [[!JLREQ]].
+  </p>
+
+  The content model of the <{ruby}> element consists of one or more of the following sequences:
+
+  1. 1. Zero or more <a>phrasing content</a> nodes, which together form a <a>ruby base</a> followed by
+     1. Zero or more <{rb}> elements, each of which forms a <a>ruby base</a>.
+     The set of ruby bases together form the <a>ruby base container</a>. It is followed by
+  1. One or more <a>ruby text containers</a>, each consisting of
+    1. An optional <{rp}> element, followed by
+    1. * An <{rtc}> element that contains zero or more <{rt}> elements, or
+       * A sequence of one or more <{rt}> elements.
+    1. An optional <{rp}> element.
+
+  The <{ruby}>, <{rb}>, <{rtc}>, and <{rt}> elements can be used for any kind of annotations.
+  The <{rp}> element can be used to provide fallback content
+  that is presented if ruby rendering is not supported.
+
+  Ruby can be used for individual characters, or for a longer text phrase, or even an inline image.
+  In HTML, ruby annotations can be defined for an individual block, or associated in groups,
+  similar to the way HTML tables are formed from rows.
+
+  The following example shows several annotations, each corresponding to one base character,
+  included in a sentence in Japanese. This usage is sometimes known as "mono-ruby".
 
       <div class="example">
-        <xmp highlight="html"><ruby>base<rt>annotation</ruby></xmp>
+        <xmp highlight="html" lang="ja">
+          <ruby><rb>日</rb><rt>に</rt></ruby>
+          <ruby><rb>本</rb><rt>ほん</rt></ruby>
+          <ruby><rb>語</rb><rt>ご</rt></ruby>
+          で
+          <ruby><rb>書</rb><rt>か</rt></ruby>
+          いた
+          <ruby><rb>作</rb><rt>さく</rt></ruby>
+          <ruby><rb>文</rb><rt>ぶん</rt></ruby>
+          です。
+        </xmp>
+
+        This is rendered by your browser as follows:
+
+        <p lang="ja"><ruby><rb>日</rb><rt>に</rt></ruby><ruby><rb>本</rb><rt>ほん</rt></ruby>
+        <ruby><rb>語</rb><rt>ご</rt></ruby>で<ruby><rb>書</rb><rt>か</rt></ruby> いた
+        <ruby><rb>作</rb><rt>さく</rt></ruby><ruby><rb>文</rb><rt>ぶん</rt></ruby>です。</p>
+
+        Whether the annotations are one or multiple characters long,
+        they are expected to appear above the base which they annotate,
+        in a way that makes it clear which annotation text corresponds to which base text.
+
+        The following image shows a typical expected rendering:
+
+        <img src="images/composition.png" width="390" height="87" alt="A Japanese sentence.
+        each 'kanji' character is annotated with one or more 'hiragana' phonetic characters." />
+
+        For a japanese reader with a very limited knowledge of kanji characters,
+        such as a small child, or person beginning to learn to read japanese, the annotations
+        provide a guide to the correct pronunciation of each annotated character.
+
       </div>
 
-      When no <{rb}> element is used, the base is implied, as above. But you can also make
-      it explicit. This can be useful notably for styling, or when consecutive bases are to be
-      treated as a group, as in the jukugo ruby example further down.
+      <div class="note">
+      Many ruby annotation tags can be ommitted. Most commonly, the <strong>first</strong> <{rb}>
+      tag, and all <code>&lt;/rb></code> and <code>&lt;/rt</code> closing tags are left out.
 
-      <div class="example">
-        <xmp highlight="html"><ruby><rb>base<rt>annotation</ruby></xmp>
+      In addition, a sequence of bases and annotations can be included in the same <{ruby}> tag.
+
+      This means the previous example can be simplified as follows:
+
+            <div class="example">
+              <xmp highlight="html" lang="ja">
+                <ruby>日<rt>に
+                  <rb>本<rt>ほん
+                  <rb>語<rt>ご</ruby>
+                で
+                <ruby>書<rt>か</ruby>
+                いた
+                <ruby>作<rt>さく
+                  <rb>文<rt>ぶん</ruby>
+                です。
+              </xmp>
+            </div>
       </div>
 
-      In the following example, notice how each annotation corresponds to a single base character.
+  A sequence of bases and annotations as above can also be written with a sequence of bases
+  followed by one or more sequences of annotations, similar to the way HTML tables
+  associate header cells with data cells. The example above could also be written as follows:
 
       <div class="example">
-        <xmp highlight="html">
-          <ruby>日<rt>に</rt></ruby><ruby>本<rt>ほん</rt></ruby>
-          <ruby>語<rt>ご</rt></ruby>で<ruby>書<rt>か</rt></ruby> いた
-          <ruby>作<rt>さく</rt></ruby><ruby>文<rt>ぶん</rt></ruby>です。
+        <xmp highlight="html" lang="ja">
+          <ruby><rb>日<rb>本<rb>語<rt>に<rt>ほん<rt>ご</ruby>
+          で
+          <ruby><rb>書<rt>か</ruby>
+          いた
+          <ruby><rb>作<rb>文<rt>さく<rt>ぶん</ruby>
+          です。
         </xmp>
       </div>
 
-      Ruby text interspersed in regular text provides structure akin to the following image:
+  This approach keeps the base and the annotations together,
+  which is useful particularly for <a>inline ruby</a> presentation or <a>double sided ruby</a>.
 
-      <img src="images/composition.png" width="390" height="87" alt="An example of ruby text mixed up with regular text." />
+  <p class="warning">Note that at the time of writing Firefox is the only common browser
+  that implements <{rtc}>, and the ruby pairing algorithm.
+  The functionality can be polyfilled in Javascript by a web site.</p>
 
-      This example can also be written as follows, using one <{ruby}> element with two
-      segments of base text and two annotations (one for each) rather than two back-to-back
-      <{ruby}> elements each with one base text segment and annotation (as in the markup
-      above):
+  The process of <dfn>annotation pairing</dfn> associates <a>ruby annotations</a> with
+  <a>ruby bases</a> within <a>ruby segments</a>.
 
-      <div class="example">
-        <xmp highlight="html">
-          <ruby>日<rt>に</rt>本<rt>ほん</rt>語<rt>ご</rt></ruby>
-          で<ruby>書<rt>か</rt></ruby>
-          いた<ruby>作<rt>さく</rt>文<rt>ぶん</rt></ruby>です。
-        </xmp>
-      </div>
+  Within a <a>ruby segment</a>, each <a>ruby base</a> in the <a>ruby base container</a>
+  is paired with one <a>ruby text annotation</a> from each <a>ruby text container</a>, in order.
 
-    : Group ruby
-    :: Group ruby is often used where phonetic annotations don't map to discreet base characters, or
-        for semantic glosses that span the whole base text. For example, the word "today" is written
-        with the characters 今日, literally "this day". But it's pronounced きょう (kyou), which
-        can't be broken down into a "this" part and a "day" part. In typical rendering, you can't
-        split text that is annotated with group ruby; it has to wrap as a single unit onto the next
-        line. When a <a>ruby text annotation</a> maps to a base that is comprised of more than one
-        character, then that base is grouped.
+  If there are fewer <a>ruby text annotations</a> in a <a>ruby text container</a>
+  than in the associated <a>ruby base container</a>, the last annotation is associated with
+  all the subsequent <a>ruby bases</a>.
 
-        The following group ruby:
+  <div class="note">
+    This means that if there is a single annotation, it is associated with the entire
+    <a>ruby base container</a>, as in the following example:
 
-        <img src="images/group.png" width="78" height="88" alt="Group ruby example with きょう annotating 今日" />
+          <div class="example">
+            <xmp highlight="html" lang="ja">
+              <ruby><rb>日<rb>本<rb>語<rtc>にほんご</ruby>
+            </xmp>
+          </div>
+  </div>
 
-        Can be marked up as follows:
+  If there are no <a>ruby text annotations</a> in the <a>ruby text container</a>,
+  an anonymous empty one is assumed to exist.
 
-        <div class="example">
-          <xmp highlight="html"><ruby>今日<rt>きょう</ruby></xmp>
-        </div>
+  If there are fewer <a>ruby bases</a> than <a>ruby text annotations</a>, excess annotations are
+  associated with empty, anonymous bases inserted at the end of the <a>ruby base container</a>.
 
-    : Jukugo ruby
-    :: <em>Jukugo</em> refers to a Japanese compound noun, i.e., a word made up of more than one
-        kanji character. <em>Jukugo ruby</em> is a term that is used not to describe ruby
-        annotations over jukugo text, but rather to describe ruby with a behavior slightly
-        different from mono or group ruby. Jukugo ruby is similar to mono ruby, in that there is
-        a strong association between ruby text and individual base characters, but the ruby text
-        is typically rendered as grouped together over multiple ideographs when they are on the
-        same line.
+  <hr>
 
-        The distinction is captured in this example:
+  Within a ruby element, content is parcelled into a series of ruby segments.
+  Each <dfn>ruby segment</dfn> consists of a <a>ruby base container</a>, zero or more
+  <a>ruby text containers</a>, and <a>ignored ruby content</a>.
 
-        <img src="images/hokekyou.png" width="66" height="126" alt="Example of jukugo ruby" />
+  The <dfn>ruby base container</dfn> is a DOM range including all the ruby bases.
 
-        Which can be marked up as follows:
+  A <dfn>ruby base</dfn> is a DOM range containing phrasing content or an <{rb}> element.
 
-        <div class="example">
+  A <dfn>ruby text container</dfn> (also known as a <dfn>ruby annotation container</dfn>)
+  is a DOM range corresponding to either a sequence of <{rt}> elements or an <{rtc}> element
+  that make up the <a>ruby text annotations</a> for the container.
+
+  A <dfn>ruby text annotation</dfn> is a DOM range containing phrasing content corresponding
+  to the content of an <{rtc}> element, or to an <{rt}> element.
+
+  <dfn>Ignored ruby content</dfn> consists of <a>inter-element white space</a>, and <{rp}>
+  elements. It does not form part of the document's semantics.
+
+  <p class="note">The terms <a>ruby segment</a>, <a>ruby base</a>, <a>ruby text annotation</a>,
+    <a>ruby text container</a>, <a>ruby base container</a>, and <a>ruby annotation container</a>
+    have equivalents in <cite>CSS Ruby Module Level 3</cite>. [[CSS3-RUBY]]
+  </p>
+
+  <div class="example">
+    <dfn>Group ruby</dfn>
+
+    The word "today" in Japanese is written with the Kanji characters
+    <span lang="ja">今日</span>, which literally mean "this day".
+    But it is pronounced "kyou", written in hiragana as <span lang="ja">"きょう"</span>
+    a word which cannot be divided into parts meaning "this" and "day".
+
+    This can be marked up as follows:
+
+    <xmp highlight="html"><ruby lang="ja"><rb>今日<rt>きょう</ruby></xmp>
+
+    Which your browser renders as <ruby lang="ja"><rb>今日<rt>きょう</ruby>
+
+    Typical rendering is as shown in this image: <img src="images/group.png" width="78" height="88" alt="Group ruby example with きょう annotating 今日" />
+
+  </div>
+
+    Sometimes, for instance when the font size or line height are too small
+    for typical ruby presentation to be readable, it is better to present the ruby annotation
+    in parentheses after the text it annotates. This is known as <dfn>inline ruby</dfn>
+    (or "use of parentheses").
+
+    Inline ruby takes <a>annotation pairing</a> into account.
+
+  <div class="example">
+      In Japanese "Tokyo" is usually written with two kanji characters:
+      <span lang="ja">東京</span>. The first charater is pronounced "tou",
+      written in hiragana as <span lang="ja">とう</span>,
+      and the second "kyou", written <span lang="ja">きょう</span>.
+
+      In typical ruby rendering each base character should be annotated individually,
+      but the inline ruby presentation should be <span lang="ja">東京(とうきょう)</span>
+      not <span lang="ja">東(とう)京(きょう)</span>.
+
+      The markup for this is either of the following, which are equivalent because of
+      <a>annotation pairing</a>:
+
+      <xmp highlight="html"><ruby>東<rb>京<rt>とう<rt>きょう</ruby></xmp>
+      which your browser renders as <ruby>東<rb>京<rt>とう<rt>きょう</ruby>
+
+      OR
+
+      <xmp highlight="html"><ruby>東<rt>とう<rb>京<rt>きょう</ruby></xmp>
+      which your browser renders as <ruby>東<rt>とう<rb>京<rt>きょう</ruby>
+
+      Note that browsers that support ruby properly will render these the same,
+      and for presentation as <a>inline ruby</a> can automatically add appropriate parentheses.
+
+      In browsers that do not support ruby these may be rendered inappropriately,
+      for example <span lang="ja">東とう京きょう</span> (roughly equivalent to "ToTouKyoKyou").
+      The <{rp}> element can be used to support such browsers:
+
+      <xmp highlight="html"><ruby>東<rb>京<rp>(<rt>とう<rt>きょう<rp>)</ruby></xmp>
+
+    </div>
+
+  <div class="example">
+      It is possible to provide more than one annotation for the same base text,
+      using the <{rtc}> element. This is sometimes known as <dfn>double-sided ruby</dfn>,
+      but in principle as many annotations as appropriate are allowed.
+
+      In the following example, the Chinese word for San Francisco,
+      <span lang="zh">旧金山</span> which means "old gold mountain", is annotated
+      using pinyin to give the pronunciation, and with the common English name.
+
+      <xmp highlight="html">
+  <ruby lang="zh">
+    <rb>旧<rb>金<rb>山
+    <rt>jiù<rt>jīn<rt>shān
+    <rtc lang="en">San Francisco
+  </ruby>
+    </xmp>
+
+    This is rendered by your browser as follows:
+    <ruby lang="zh"><rb>旧<rb>金<rb>山<rt>jiù<rt>jīn<rt>shān<rtc lang="en">San Francisco</ruby>
+
+    CSS provides some ability to control positioning of ruby annotation containers [[CSS3-RUBY]].
+    A common rendering of the example may be as shown in the following image:
+
+    <img src="images/group-double.png" width="113" height="84" alt="'San Francisco'
+    written in Chinese, with a pinyin transliteration above, and the English text below
+    as annotations." />
+  </div>
+
+
+  <div class="note">
+    There is no way in HTML to request different layout techniques for <{ruby}>,
+    but there are different possibilities for presentation. User agents may render <{ruby}>
+    in different ways.
+
+    One alternative way to render multiple ruby annotations is called Jukugo ruby.
+    This can be used for Japanese compound words made up of more than one kanji character.
+    Jukugo ruby strongly associates annotation text and individual base characters,
+    but the annotations are grouped multiple bases on the same line,
+    so the sequence of annotations is spread over the sequence of bases,
+    instead of inserting space between the bases to show the association
+    between each annotation and its base. This can be seen in this example:
+
+    <img src="images/hokekyou.png" width="66" height="126" alt="Three kanji characters,
+      rendered vertically, in alternating colors.
+      The first two are annotated by one hiragana character on the right hand side of its base.
+      The annotations are about half the size, and aligned to the top of the base they annotate.
+      The third kanji is annotated by three hiragana characters. Its annotation is rendered
+      so the first hiragana character is aligned to the bottom of the preceding character.
+      The annotations correspond in colour to their respective bases." />
+
+    this example could be marked up as follows:
+
           <xmp highlight="html">
             <ruby>法<rb>華<rb>経<rt>ほ<rt>け<rt>きょう</ruby>
           </xmp>
-        </div>
 
-        In this example, each <{rt}> element is paired with its respective <code>rb</code>
-        element, the difference with an interleaved <code>rb</code>/<code>rt</code> approach being
-        that the sequences of both base text and ruby annotations are implicitly placed in common
-        containers so that the grouping information is captured.
+    For more details on <a>Jukugo Ruby rendering</a>, see Appendix F in the
+    <cite>Requirements for Japanese Text Layout</cite> and Use Case C: Jukugo ruby in the
+    <cite>Use Cases &amp; Exploratory Approaches for Ruby Markup</cite>. [[!JLREQ]]
+    [[RUBY-UC]]
+  </div>
 
-        <p class="note">
-          For more details on <a>Jukugo Ruby rendering</a>, see Appendix F in the
-          <cite>Requirements for Japanese Text Layout</cite> and Use Case C: Jukugo ruby in the
-          <cite>Use Cases &amp; Exploratory Approaches for Ruby Markup</cite>. [[!JLREQ]]
-          [[RUBY-UC]]
-        </p>
-
-    : Inline ruby
-    :: In some contexts, for instance when the font size or line height are too small for ruby to be
-        readable, it is desirable to inline the ruby annotation such that it appears in parentheses
-        after the text it annotates. This also provides a convenient fallback strategy for user
-        agents that do not support rendering ruby annotations.
-
-        Inlining takes grouping into account. For example, Tokyo is written with two kanji
-        characters, 東, which is pronounced とう, and 京, which is pronounced きょう. Each base
-        character should be annotated individually, but the fallback should be 東京(とうきょう) not
-        東(とう)京(きょう). This can be marked up as follows:
-
-        <div class="example">
-          <xmp highlight="html">
-            <ruby>東<rb>京<rt>とう<rt>きょう</ruby>
-          </xmp>
-        </div>
-
-        Note that the above markup will enable the usage of parentheses when inlining for browsers
-        that support ruby layout, but for those that don't it will fail to provide parenthetical
-        fallback. This is where the <{rp}> element is useful. It can be inserted into the
-        above example to provide the appropriate fallback when ruby layout is not supported:
-
-      <div class="example">
-        <xmp highlight="html">
-          <ruby>東<rb>京<rp>(<rt>とう<rt>きょう<rp>)</ruby>
-        </xmp>
-      </div>
-
-    : Text with both phonetic and semantic annotations (double-sided ruby)
-    :: Sometimes, ruby can be used to annotate a base twice.
-
-        In the following example, the Chinese word for San Francisco (旧金山, i.e., "old gold
-        mountain") is annotated both using pinyin to give the pronunciation, and with the original
-        English.
-
-        <img src="images/group-double.png" width="113" height="84" alt="San Francisco in Chinese, with both pinyin and the original English as annotations." />
-
-        Which is marked up as follows:
-
-        <div class="example">
-          <xmp highlight="html">
-            <ruby><rb>旧<rb>金<rb>山<rt>jiù<rt>jīn<rt>shān<rtc>San Francisco</ruby>
-          </xmp>
-        </div>
-
-          In this example, a single base run of three base characters is annotated with three pinyin
-          ruby text segments in a first (implicit) container, and an <{rtc}> element is
-          introduced in order to provide a second single <a>ruby text annotation</a> being the
-          city's English name.
-
+@@remove?
           We can also revisit our jukugo example above with 上手 ("skill") to show how it can be
           annotation in both kana and romaji phonetics while at the same time maintaining the
           pairing to bases and annotation grouping information.
@@ -1199,55 +1332,8 @@
 
   <hr>
 
-    Within a ruby element, content is parcelled into a series of ruby segments. Each
-    <dfn>ruby segment</dfn> is described by:
-
-      * Zero or more <dfn>ruby bases</dfn>, each of which is a DOM range that may contain phrasing
-          content or an <{rb}> element.
-      * A base range, that is a DOM range including all the bases. This is the
-          <dfn>ruby base container</dfn>.
-      * Zero or more <a>ruby text containers</a> which may correspond to explicit <code>rtc</code>
-          elements, or to sequences of <{rt}> elements implicitly recognized as contained
-          in an anonymous <a>ruby text container</a>.
-
-    Each <dfn>ruby text container</dfn> is described by zero or more
-    <dfn>ruby text annotations</dfn> each of which is a DOM range that may contain phrasing content
-    or an <{rt}> element, and an annotations range that is a range including all the
-    annotations for that container. A <a>ruby text container</a> is also known (primarily in a CSS
-    context) as a <dfn>ruby annotation container</dfn>.
-
-    Furthermore, a ruby element contains <dfn>ignored ruby content</dfn>. Ignored ruby content does
-    not form part of the document's semantics. It consists of some <a>inter-element white space</a>
-    and <{rp}> elements, the latter of which are used for legacy user agents that do not
-    support ruby at all.
-
-    The process of <dfn>annotation pairing</dfn> associates <a>ruby annotations</a> with
-    <a>ruby bases</a>. Within each <a>ruby segment</a>, each <a>ruby base</a> in the
-    <a>ruby base container</a> is paired with one <a>ruby text annotation</a> from the
-    <a>ruby text container</a>, in order. If there are not enough <a>ruby text annotations</a> in a
-    <a>ruby annotation container</a>, the last one is associated with any excess <a>ruby bases</a>.
-    (If there are not any in the <a>ruby annotation container</a>, an anonymous empty one is assumed
-    to exist.) If there are not enough <a>ruby bases</a>, any remaining <a>ruby text annotations</a>
-    are assumed to be associated with empty, anonymous bases inserted at the end of the
-    <a>ruby base container</a>.
-
-    Note that the terms <a>ruby segment</a>, <a>ruby base</a>, <a>ruby text annotation</a>,
-    <a>ruby text container</a>, <a>ruby base container</a>, and <a>ruby annotation container</a>
-    have their equivalents in <cite>CSS Ruby Module Level 3</cite>. [[CSS3-RUBY]]
-
-    Informally, the segmentation and categorization algorithm below performs a simple set of
-    tasks. First it processes adjacent <{rb}> elements, text nodes, and non-ruby
-    elements into a list of bases. Then it processes any number of <{rtc}> elements or
-    sequences of <{rt}> elements that are considered to automatically map to an
-    anonymous <a>ruby text container</a>. Put together these data items form a <a>ruby
-    segment</a> as detailed in the data model above. It will continue to produce such segments
-    until it reaches the end of the content of a given <{ruby}> element. The complexity
-    of the algorithm below compared to this informal description stems from the need to support
-    an author-friendly syntax and being mindful of inter-element white space.
-
-    At any particular time, the <dfn>segmentation and categorization of content of a
-    <code>ruby</code></dfn> element is the result that would be obtained from running the following
-    algorithm:
+    The following algorithm processes ruby, as described above. Its result is the
+    <dfn>segmentation and categorization of content of a <code>ruby</code></dfn>.
 
 <!-- Start cleanup here -->
 
@@ -1517,12 +1603,8 @@
     <dd>Uses {{HTMLElement}}.</dd>
   </dl>
 
-    The <{rb}> element marks the base text component of a ruby annotation. When it is
-    the child of a <{ruby}> element, it doesn't <a>represent</a> anything itself, but its parent <code>ruby</code>
-    element uses it as part of determining what <em>it</em> <a>represents</a>.
-
-    An <{rb}> element that is not a child of a <{ruby}> element <a>represents</a>
-    the same thing as its children.
+    The <{rb}> element identifies a <a>ruby base</a>, for a ruby annotation.
+    An <{rb}> element <a>represents</a> its children.
 
 <h4 id="the-rt-element">The <dfn element><code>rt</code></dfn> element</h4>
 
@@ -1551,14 +1633,8 @@
     <dd>Uses {{HTMLElement}}.</dd>
   </dl>
 
-  The <{rt}> element marks the ruby text component of a ruby annotation. When it is
-  the child of a <{ruby}> element or of an <{rtc}> element that is itself
-  the child of a <{ruby}> element, it doesn't <a>represent</a> anything itself, but its ancestor <code>ruby</code>
-  element uses it as part of determining what <em>it</em> <a>represents</a>.
-
-    An <{rt}> element that is not a child of a <{ruby}> element or of an
-    <{rtc}> element that is itself the child of a <{ruby}> element
-    <a>represents</a> the same thing as its children.
+  The <{rt}> element marks the ruby text component of a ruby annotation for a ruby base.
+  An <{rt}> element <a>represents</a> the same thing as its children.
 
 <h4 id="the-rtc-element">The <dfn element><code>rtc</code></dfn> element</h4>
 
@@ -1587,13 +1663,8 @@
     <dd>Uses {{HTMLElement}}.</dd>
   </dl>
 
-  The <{rtc}> element marks a <a>ruby text container</a> for ruby text components
-  in a ruby annotation. When it is the child of a <{ruby}> element it doesn't <a>represent</a> anything itself, but its parent <{ruby}> element
-  uses it as part of determining what <em>it</em> <a>represents</a>.
-
-
-      An <{rtc}> element that is not a child of a <{ruby}> element
-      <a>represents</a> the same thing as its children.
+  The <{rtc}> element identifies a <a>ruby text container</a>.
+  An <{rtc}> element <a>represents</a> its children.
 
       When an <{rtc}> element is processed as part of the segmentation and
       categorization of content for a <{ruby}> element, the following algorithm
@@ -1695,7 +1766,7 @@
   </dl>
 
     The <{rp}> element is used to provide fallback text to be shown by user agents that
-    don't support ruby annotations. One widespread convention is to provide parentheses around
+    don't support ruby annotations,. One widespread convention is to provide parentheses around
     the ruby text component of a ruby annotation.
 
     The contents of the <{rp}> elements are typically not displayed by user agents
@@ -1706,12 +1777,11 @@
     element whose parent element is not a <{ruby}> element <a>represents</a> its
     children.
 
-    The example shown previously, in which each ideograph in the text <span lang="ja">漢字</span> is annotated with its phonetic reading, could be expanded
-    to use <code>rp</code> so that in legacy user agents the readings are in parentheses (please
-    note that white space has been introduced into this example in order to make it more
-    readable):
-
     <div class="example">
+    The example shown previously, in which each ideograph in the text <span lang="ja">漢字</span>
+    is annotated with its phonetic reading, could be expanded to use <{rp}>
+    to make the ruby annotations appear in parentheses in user agents that do not support <{ruby}>:
+
       <xmp lang="ja" highlight="html">...
         <ruby>
           漢
@@ -1723,17 +1793,16 @@
         </ruby>
         ...
       </xmp>
-    </div>
 
     In conforming user agents the rendering would be as above, but in user agents that do not
     support ruby, the rendering would be:
 
-  <div class="example"><pre lang="ja">... 漢字 (かんじ) ...</pre></div>
+    <p lang="ja">... 漢字 (かんじ) ...</p>
 
     When there are multiple annotations for a segment, <{rp}> elements can also be
-    placed between the annotations. Here is another copy of an earlier contrived example showing
-    some symbols with names given in English and French using double-sided annotations, but this
-    time with <{rp}> elements as well:
+    placed between the annotations. Here is another version of an earlier example showing
+    some symbols with names given in English and French using double-sided annotations,
+    with <{rp}> elements added:
 
   <div class="example">
     <xmp highlight="html">
@@ -1743,16 +1812,18 @@
         ✶<rp>: </rp><rt>Star</rt><rp>, </rp><rtc><rt lang="fr">Étoile</rt></rtc><rp>.</rp>
       </ruby>
     </xmp>
-  </div>
 
-    This would make the example render as follows in non-ruby-capable user agents:
+    Your browser renders is as follows:
+          <ruby>
+            ♥<rp>: </rp><rt>Heart</rt><rp>, </rp><rtc><rt lang="fr">Cœur</rt></rtc><rp>.</rp>
+            ☘<rp>: </rp><rt>Shamrock</rt><rp>, </rp><rtc><rt lang="fr">Trèfle</rt></rtc><rp>.</rp>
+            ✶<rp>: </rp><rt>Star</rt><rp>, </rp><rtc><rt lang="fr">Étoile</rt></rtc><rp>.</rp>
+          </ruby>
 
-  <div class="example">
-    <pre highlight="html">
-      ♥: Heart, <span lang="fr">Cœur</span>.
-      ☘: Shamrock, <span lang="fr">Trèfle</span>.
+    In non-ruby-capable user agents it will render as follows:
+
+      ♥: Heart, <span lang="fr">Cœur</span>. ☘: Shamrock, <span lang="fr">Trèfle</span>.
       ✶: Star, <span lang="fr">Étoile</span>.
-    </pre>
   </div>
 
 <h4 id="the-data-element">The <dfn element><code>data</code></dfn> element</h4>
