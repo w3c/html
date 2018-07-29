@@ -1427,7 +1427,7 @@
       <code>meta</code>-based character encoding declaration per document.
 
   For legacy documents, the character encoding name given must be an <a>ASCII case-insensitive</a>
-  match for one of the <a lt="character encoding">labels</a> of the <a>character encoding</a> used 
+  match for one of the <a lt="character encoding">labels</a> of the <a>character encoding</a> used
   to serialize the file. [[!ENCODING]]
 
   Authoring tools must default to using <a>UTF-8</a> for newly-created documents. [[!ENCODING]]
@@ -1707,14 +1707,22 @@
   available to script once the <a>event loop</a> reaches its <i>update the rendering</i> step.
 
   A style sheet in the context of the {{Document}} of an <a>HTML parser</a> or <a>XML parser</a> is
-  said to be <dfn>a style sheet that is blocking scripts</dfn> if the element was created by that
-  {{Document}}'s parser, and the element is either a <{style}> element or a <{link}> element that
-  was an <a href="#link-type-stylesheet">external resource link</a> when the element was created by
-  the parser, and the element's style sheet was enabled when the element was created by the parser,
-  and the element's <a>style sheet ready</a> flag is not yet set, and, the last time the
-  <a>event loop</a> reached step 1, the element was in that {{Document}}, and the user
-  agent hasn't given up on that particular style sheet yet. A user agent may give up on a style
-  sheet at any time.
+  said to be <dfn>a style sheet that is blocking scripts</dfn> if the  the style sheet was added
+  by either
+
+    * a <{style}> element created by that {{Document}}'s parser, or
+    * a <{link}> element whose <{link/media}> attribute <a>matches the environment</a> that
+    was created by that {{Document}}'s parser as an
+    <a href="#link-type-stylesheet">external resource link</a>
+
+  and the following conditions are all true:
+
+  * the element's style sheet was enabled when the element was created by the parser,
+  * the element's <a>style sheet ready</a> flag is not yet set,
+  * the last time the <a>event loop</a> reached step 1, the element was in that {{Document}}, and
+  * the user agent hasn't given up on that particular style sheet yet.
+
+  A user agent may give up on a style sheet at any time.
 
   <p class="note">
     Giving up on a style sheet before the style sheet loads, if the style sheet eventually does
@@ -1727,13 +1735,14 @@
     of doing nothing while waiting for a slow network request to finish.
   </p>
 
-  A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if there is either
-  <a>a style sheet that is blocking scripts</a> in the context of that {{Document}}, or
-  if that {{Document}} is in a <a>browsing context</a> that has a
-  <a>parent browsing context</a>, and the <a>active document</a> of that
-  <a>parent browsing context</a> itself <a>has a style sheet that is blocking scripts</a>.
+  A {{Document}} <dfn lt="have a style sheet that is blocking scripts|has a style sheet that is blocking scripts">has a style sheet that is blocking scripts</dfn> if that {{Document}} either
 
-  A {{Document}} <dfn>has no style sheet that is blocking scripts</dfn> if it does not
-  <a>have a style sheet that is blocking scripts</a> as defined in the previous paragraph.
+  * has in its context <a>a style sheet that is blocking scripts</a>, or
+  * it is in a <a>browsing context</a> that has a <a>parent browsing context</a>,
+    and the <a>active document</a> of that <a>parent browsing context</a>
+    <a>has a style sheet that is blocking scripts</a>.
+
+  If neither of these conditions are true for a {{Document}} then it
+  <dfn>has no style sheet that is blocking scripts</dfn>.
 
 </section>
