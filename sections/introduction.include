@@ -685,7 +685,6 @@
 
   : Not validating user input
   : Cross-site scripting (XSS)
-  : SQL injection
   :: When accepting untrusted input, e.g., user-generated content such as text comments, values
       in URL parameters, messages from third-party sites, etc, it is imperative that the data
       be validated before use, and properly escaped when displayed. Failing to do this can
@@ -749,8 +748,8 @@
 
       This problem exists because HTML forms can be submitted to other origins.
 
-      Sites can prevent such attacks by populating forms with user-specific hidden tokens, or by
-      checking <code>Origin</code> headers on all requests.
+      Sites can prevent such attacks by populating forms with user-specific tokens that are
+      not predictable.
   : Clickjacking
   :: A page that provides users with an interface to perform actions that the user might not
       wish to perform needs to be designed so as to avoid the possibility that users can be
@@ -762,9 +761,10 @@
       the <{iframe}> under the mouse cursor just as the user is about to click, thus tricking the
       user into clicking the victim site's interface.
 
-      To avoid this, sites that do not expect to be used in frames are encouraged to only enable
-      their interface if they detect that they are not in a frame (e.g., by comparing the
-      {{window}} object to the value of the {{Window/top}} attribute).
+      To avoid this, sites that do not expect to be used in frames are encouraged to restrict
+      their usage within frames with a mechanism such as Content Security Policy's
+      <a>frame-ancestors directive</a> [[CSP3]], or the HTTP "<code>x-frame-options</code>" header
+      defined in [[rfc7034]].
 
 <h4 id="common-pitfalls-to-avoid-when-using-the-scripting-apis">
   Common pitfalls to avoid when using the scripting APIs
@@ -1359,16 +1359,16 @@
   : <cite>Web Content Accessibility Guidelines (WCAG) 2.1</cite> [[WCAG21]]
   :: <blockquote>
         Web Content Accessibility Guidelines (WCAG) 2.1 covers a wide range of recommendations for
-        making Web content more accessible. Following these guidelines will make content more accessible 
+        making Web content more accessible. Following these guidelines will make content more accessible
         to a wider range of people with disabilities, including blindness and low vision, deafness
-        and hearing loss, limited movement, speech disabilities, photosensitivity, and combinations of 
+        and hearing loss, limited movement, speech disabilities, photosensitivity, and combinations of
         these, and some accommodation for learning disabilities and cognitive limitations; but will not
         address every user need for people with these disabilities. These guidelines address accessibility
         of web content on desktops, laptops, tablets, and mobile devices. Following these guidelines will
         also often make Web content more usable to users in general.
 
-        WCAG 2.1 extends Web Content Accessibility Guidelines 2.0 [[WCAG20]], which was published as a 
-        W3C Recommendation December 2008. Content that conforms to WCAG 2.1 also conforms to WCAG 2.0, and 
+        WCAG 2.1 extends Web Content Accessibility Guidelines 2.0 [[WCAG20]], which was published as a
+        W3C Recommendation December 2008. Content that conforms to WCAG 2.1 also conforms to WCAG 2.0, and
         therefore to policies that reference WCAG 2.0.
       </blockquote>
 
