@@ -27,7 +27,7 @@
 
   Authors should not specify a <{img/border}> attribute on an <{img}> element. If the
   attribute is present, its value must be the string "<code>0</code>". CSS should be used instead.
-  
+
   Authors should not specify a <code>charset</code> attribute on a <{script}> element. If the
   attribute is present, its value must be an [=ASCII case-insensitive=] match for the string
   "<code>utf-8</code>". [[!ENCODING]]
@@ -112,6 +112,16 @@
   : <dfn element><code>noframes</code></dfn>
   :: Either use <{iframe}> and CSS instead, or use server-side includes to generate
       complete pages with the various invariant parts merged in.
+
+  : <code>hgroup</code>
+  :: To mark up subheadings, consider putting the subheading into a <{p}> element after
+       the <{h1}>—<{h6}> element containing the main heading, or putting the subheading
+       directly within the <code>h1</code>-<code>h6</code> element containing the
+       main heading, but separated from the main heading by punctuation and/or within,
+       for example, a <code>span class="subheading"</code> element with differentiated styling.
+
+       Headings and subheadings, alternative titles, or taglines can be grouped using
+       the <{header}> or <{div}> elements.
 
   : <dfn element><code>isindex</code></dfn>
   :: Use an explicit <{form}> and <{input/Text|text control}> combination instead.
@@ -1762,19 +1772,17 @@
 
   A <code>Plugin</code> object represents a <a>plugin</a>. It has
   several attributes to provide details about the plugin, and can be enumerated to obtain the list
-  of <a>MIME types</a> that it <a>explicitly
-  supports</a>.
+  of <a>MIME types</a> that it <a>explicitly supports</a>.
 
   The <code>Plugin</code> objects created by a user agent must not be
   <a>live</a>. The set of MIME types represented by the objects, and the values of the
   objects' attributes, must not change once an object is created, except when updated by the
-  <code>PluginArray</code> object's <code>refresh()</code>
-  method.
+  <code>PluginArray</code> object's <code>refresh()</code> method.
 
   The <dfn>reported MIME types</dfn> for a <code>Plugin</code> object are the
   <a>MIME types</a> <a>explicitly supported</a> by the corresponding
-  <a>plugin</a> when this object was last created or updated by <code>PluginArray.refresh()</code>, whichever happened most
-  recently.
+  <a>plugin</a> when this object was last created or updated by
+  <code>PluginArray.refresh()</code>, whichever happened most recently.
 
   The <a>supported property indices</a> of a <code>Plugin</code> object
   are the numbers from zero to the number of <a>reported MIME types</a>.
@@ -1798,20 +1806,18 @@
   </ol>
 
   <p class="note">
-  It is important <a>for
-  privacy</a> that the order of MIME types not leak additional information, e.g., the order in
-  which plugins were installed.
+    It is important <a>for privacy</a> that the order of MIME types not leak additional
+    information, e.g., the order in which plugins were installed.
   </p>
 
-  The <a spec="webidl">supported property names</a> of a <code>Plugin</code> object
-  are the values of the <code>type</code> attributes of the
-  <code>MimeType</code> objects representing the <a>reported MIME types</a>. The properties
-  exposed in this way must be <a>unenumerable</a>.
+  The <a spec="webidl">supported property names</a> of a <code>Plugin</code> object are the values
+  of the <code>type</code> attributes of the <code>MimeType</code> objects representing the
+  <a>reported MIME types</a>. The properties exposed in this way must be <a>unenumerable</a>.
 
-  The <dfn method for="Plugin" title="namedItem(name)">namedItem(DOMString name)</dfn> method of a <code>Plugin</code> object must return null if the argument is not one of the
+  The <dfn method for="Plugin" title="namedItem(name)">namedItem(DOMString name)</dfn> method of
+  a <code>Plugin</code> object must return null if the argument is not one of the
   object's <a spec="webidl">supported property names</a>, and otherwise must return the
-  <code>MimeType</code> object that has a <code>type</code> equal to the
-  method's argument.
+  <code>MimeType</code> object that has a <code>type</code> equal to the method's argument.
 
   The <dfn attribute for="Plugin"><code>name</code></dfn> attribute must return the
   <a>plugin</a>'s name.
@@ -1820,11 +1826,13 @@
   (or, in all likelihood, <a>plugin</a>-defined) strings. In each case, the same string must
   be returned each time, except that the strings returned may change when the <code>PluginArray.refresh()</code> method updates the object.
 
-  <p class="warning">If the values returned by the <code>description</code> or <code>filename</code> attributes vary between versions of a
-  <a>plugin</a>, they can be used both as a fingerprinting vector and, even more importantly,
-  as a trivial way to determine what security vulnerabilities a <a>plugin</a> (and thus a
-  browser) may have. It is thus highly recommended that the <code>description</code> attribute just return the same value as the
-  <code>name</code> attribute, and that the <code>filename</code> attribute return the empty string.
+  <p class="warning">
+    If the values returned by the <code>description</code> or <code>filename</code> attributes
+    vary between versions of a <a>plugin</a>, they can be used both as a fingerprinting vector
+    and, even more importantly, as a trivial way to determine what security vulnerabilities a
+    <a>plugin</a> (and thus a browser) may have. It is thus highly recommended that the
+    <code>description</code> attribute just return the same value as the <code>name</code>
+    attribute, and that the <code>filename</code> attribute return the empty string.
   </p>
 
 
@@ -1835,8 +1843,7 @@
 
   The <code>MimeType</code> objects created by a user agent must not be <a>live</a>. The
   values of the objects' attributes must not change once an object is created, except when updated
-  by the <code>PluginArray</code> object's <code>refresh()</code>
-  method.
+  by the <code>PluginArray</code> object's <code>refresh()</code> method.
 
   The <dfn attribute for="MimeType"><code>type</code></dfn> attribute must return the
   <a>valid MIME type with no parameters</a> describing the <a>MIME type</a>.
@@ -1846,17 +1853,20 @@
   user-agent-defined (or, in all likelihood, <a>plugin</a>-defined) strings. In each case, the
   same string must be returned each time, except that the strings returned may change when the <code>PluginArray.refresh()</code> method updates the object.
 
-  <p class="warning">If the values returned by the <code>description</code> or <code>suffixes</code> attributes vary between versions of a
-  <a>plugin</a>, they can be used both as a fingerprinting vector and, even more importantly,
-  as a trivial way to determine what security vulnerabilities a <a>plugin</a> (and thus a
-  browser) may have. It is thus highly recommended that the <code>description</code> attribute just return the same value as the
-  <code>type</code> attribute, and that the <code>suffixes</code> attribute return the empty string.
+  <p class="warning">
+    If the values returned by the <code>description</code> or <code>suffixes</code>
+    attributes vary between versions of a <a>plugin</a>, they can be used both as a
+    fingerprinting vector and, even more importantly, as a trivial way to determine what
+    security vulnerabilities a <a>plugin</a> (and thus a browser) may have. It is thus highly
+    recommended that the <code>description</code> attribute just return the same value as the
+    <code>type</code> attribute, and that the <code>suffixes</code> attribute return the
+    empty string.
   </p>
 
 
   <p class="note">
-  Commas in the <code>suffixes</code> attribute are
-  interpreted as separating subsequent filename extensions, as in "<code>htm,html</code>".
+    Commas in the <code>suffixes</code> attribute are interpreted as separating
+    subsequent filename extensions, as in "<code>htm,html</code>".
   </p>
 
   The <dfn attribute for="MimeType"><code>enabledPlugin</code></dfn> attribute must
