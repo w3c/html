@@ -2186,6 +2186,103 @@
   An <a>autonomous custom element</a>'s meaning is defined by its author.
   It <a>represents</a> its children.
 
+  <div class="example">
+    To illustrate how to create an <a>autonomous custom element</a>, the following example
+    will create the foundation for a custom heading element. The element will have two required
+    attributes (<code>level</code> and <code>text</code>) to pass in the heading level and text
+    for the heading. The permalink will be created based on the text of the heading.
+
+
+    Before an author can use a custom element in their markup, a class for the new element must be
+    declared by extending {{HTMLElement}} and defining the {{constructor}}. The class always
+    starts by calling <code>super()</code> so that the correct prototype chain will be
+    established.
+
+    <xmp highlight="javascript">
+      class permaHeading extends HTMLElement {
+        constructor() {
+          super();
+          // Element functionality will go here
+        }
+      }
+    </xmp>
+
+    All of the custom element's functionality will be written within the {{constructor}}. It's here
+    where the custom element's shadow DOM structure and styling may be defined and attached to
+    the custom element's <a>shadow root</a>.
+
+    The basic functionality for the custom element is defined in the following JavaScript. The
+    necessary elements for the custom element are created and styling is defined.
+
+    <xmp highlight="javascript">
+      class permaHeading extends HTMLElement {
+        constructor() {
+          super();
+          // Create a shadow root
+          var shadow = this.attachShadow({mode: 'open'});
+
+          // The custom element will need a heading level
+          // and heading text to be complete
+          var hLevel = this.getAttribute('level') || '1';
+          var hText = this.getAttribute('text') || '';
+          var hID = hText.replace(/\s+/g, '-').toLowerCase();
+
+          // Setup wrapping element
+          const wrapper = document.createElement('div');
+          wrapper.classList.add('ph');
+
+          // Setup the heading
+          const heading = document.createElement('h'+ hLevel);
+          heading.classList.add('ph__heading');
+          heading.id = hID;
+          heading.textContent = hText;
+
+          // Setup the link
+          const link = document.createElement('a');
+          link.classList.add('ph__link');
+          link.href = '#' + hID;
+          link.setAttribute('aria-label', 'Permalink for ' + hText);
+          link.textContent = '§';
+
+          // Add styling to the shadow DOM
+          var styles = document.createElement('style');
+          styles.textContent = '.ph {' +
+            'align-items: center;' +
+            'display: flex;' +
+          '}' +
+          '.ph__heading {' +
+            'padding: .25em;' +
+          '}' +
+          '.ph__link {' +
+            'color: #aaa;' +
+            'padding: .5em .75em;' +
+          '}' +
+          '.ph__link:hover, .ph__link:focus {' +
+            'background: #111;' +
+            'color: #fff;' +
+          '}';
+
+          // Attach the created elements to the shadow DOM
+          shadow.appendChild(styles);
+          shadow.appendChild(wrapper);
+          wrapper.appendChild(link);
+          wrapper.appendChild(heading);
+        }
+      }
+
+      // Define the new custom element
+      customElements.define('perma-heading', permaHeading);
+    </xmp>
+
+    After the custom element has been defined, an author would be able to use the custom element
+    in their markup like so:
+
+    <xmp highlight="html">
+      <perma-heading level="2" text="Beaches on the east coast"></perma-heading>
+    </xmp>
+  </div>
+
+
  <h5 id="customized-built-in-elements">Customized built-in elements</h5>
 
   A <dfn export>customized built-in element</dfn> is a <a>custom element</a> that extends an
