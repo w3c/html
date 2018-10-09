@@ -3951,16 +3951,22 @@
     <dd>Neither tag is omissible</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>src</code> - Address of the resource</dd>
+    <dd><{iframe/src}> - Address of the resource</dd>
     <dd><code>srcdoc</code> - A document to render in the <code>iframe</code></dd>
     <dd><{iframe/name}> - Name of <a>nested browsing context</a></dd>
     <dd><{iframe/sandbox}> - Security rules for nested content</dd>
-    <dd><code>allowfullscreen</code> - Whether to allow the <code>iframe</code>'s
-    contents to use <code>requestFullscreen()</code></dd>
-    <dd><{iframe/allowpaymentrequest}> - Whether the <code>iframe</code>'s
-    contents are allowed to use the <a><code>PaymentRequest</code></a> interface
-    to make payment requests</dd>
-    <dd><{iframe/allowusermedia}> - Whether to allow the <{iframe}>'s <a>browsing context</a> to use {{Element/getUserMedia()}}</dd>
+    <dd>
+      <code>allowfullscreen</code> - Whether to allow the <code>iframe</code>'s
+      contents to use <code>requestFullscreen()</code>
+    </dd>
+    <dd>
+      <{iframe/allowpaymentrequest}> - Whether the <code>iframe</code>'s contents are allowed
+      to use the <a><code>PaymentRequest</code></a> interface to make payment requests
+    </dd>
+    <dd>
+      <{iframe/allowusermedia}> - Whether to allow the <{iframe}>'s
+      <a>browsing context</a> to use {{Element/getUserMedia()}}
+    </dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
     <dd><code>referrerpolicy</code> - <a>Referrer policy</a> for <a>fetches</a> initiated by the element</dd>
@@ -4074,32 +4080,39 @@
 
   <p class="note">
     In <a href="#syntax">the HTML syntax</a>, authors need only remember to use U+0022
-  QUOTATION MARK characters (") to wrap the attribute contents and then to escape all U+0026
-  AMPERSAND (&amp;) and U+0022 QUOTATION MARK (") characters, and to specify the <{iframe/sandbox}> attribute, to ensure safe embedding of content.
+    QUOTATION MARK characters (") to wrap the attribute contents and then to escape all U+0026
+    AMPERSAND (&amp;) and U+0022 QUOTATION MARK (") characters, and to specify the
+    <{iframe/sandbox}> attribute, to ensure safe embedding of content.
   </p>
 
   <p class="note">
-    Due to restrictions of <a href="#xhtml">the XHTML syntax</a>, in XML the U+003C LESS-THAN
-  SIGN character (&lt;) needs to be escaped as well. In order to prevent <a>attribute-value normalization</a>, some of XML's
-  white space characters — specifically U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED
-  (LF), and U+000D CARRIAGE RETURN (CR) — also need to be escaped. [[!XML]]
+    Due to restrictions of <a href="#xhtml">the XHTML syntax</a>, in XML
+    the U+003C LESS-THAN SIGN character (&lt;) needs to be escaped as well.
+    In order to prevent <a>attribute-value normalization</a>, some of XML's
+    white space characters — specifically U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED
+    (LF), and U+000D CARRIAGE RETURN (CR) — also need to be escaped. [[!XML]]
   </p>
 
   <p class="note">
-    If the <code>src</code> attribute and the <code>srcdoc</code> attribute are both specified together, the <code>srcdoc</code> attribute takes priority. This allows authors to provide
-  a fallback [=url/URL=] for legacy user agents that do not support the <code>srcdoc</code> attribute.
+    If the <code>src</code> attribute and the <code>srcdoc</code> attribute are both specified
+    together, the <code>srcdoc</code> attribute takes priority. This allows authors to provide
+    a fallback [=url/URL=] for legacy user agents that do not support the
+    <code>srcdoc</code> attribute.
   </p>
 
   <hr />
 
-  When an <{iframe}> element is <a for="document">inserted into a document</a> that has a <a>browsing context</a>, the user agent must create a <a>nested browsing context</a>, and
+  When an <{iframe}> element is <a for="document">inserted into a document</a> that has a
+  <a>browsing context</a>, the user agent must create a <a>nested browsing context</a>, and
   then <a>process the <code>iframe</code> attributes</a> for the "first time".
 
-  When an <{iframe}> element is <a for="document">removed from a document</a>, the user agent must <a>discard</a> the <a>nested browsing context</a>, if any.
+  When an <{iframe}> element is <a for="document">removed from a document</a>, the user agent
+  must <a>discard</a> the <a>nested browsing context</a>, if any.
 
   <p class="note">
     This happens without any <code>unload</code> events firing
-  (the <a>nested browsing context</a> and its {{Document}} are <em><a>discarded</a></em>, not <em><a>unloaded</a></em>).
+    (the <a>nested browsing context</a> and its {{Document}} are <em><a>discarded</a></em>,
+    not <em><a>unloaded</a></em>).
   </p>
 
   Whenever an <{iframe}> element with a <a>nested browsing context</a> has its
@@ -4155,16 +4168,17 @@
   1: If the element has no <code data-x="attr-iframe-src">src</code> attribute specified, or its
       value is the empty string, let <var>url</var> be the [=url/URL=] "<code>about:blank</code>".
 
-      Otherwise, <a>parse</a> the value of the <code>src</code> attribute, relative to the element's
-      <a>node document</a>.
+      Otherwise, <a>parse</a> the value of the <code>src</code> attribute, relative to the
+      element's <a>node document</a>.
 
       If that is not successful, then let <var>url</var> be the [=url/URL=]
       "<code>about:blank</code>". Otherwise, let <var>url</var> be the <a>resulting URL record</a>.
   2. If there exists an <a>ancestor browsing context</a> whose <a>active document</a>'s
-      [=Document/URL=], ignoring <a for="url">fragments</a>, is equal to <var>url</var>, then abort these steps.
-  3. <p>Let <var>resource</var> be a new [=request=] whose <a for="request">url</a> is <var>URL</var> and whose
-      [=referrer policy=] is the current state of the
-      element's <code>referrerpolicy</code> content attribute.</p>
+      [=Document/URL=], ignoring <a for="url">fragments</a>, is equal to <var>url</var>,
+      then abort these steps.
+  3. Let <var>resource</var> be a new [=request=] whose <a for="request">url</a> is
+      <var>URL</var> and whose [=referrer policy=] is the current state of the
+      element's <code>referrerpolicy</code> content attribute.
   4. <a>Navigate</a> the element's <a>child browsing context</a> to <var>resource</var>.
 
   Furthermore, if the <a>active document</a> of the element's <a>child browsing context</a> before
@@ -4172,21 +4186,22 @@
   <a>navigation</a>, then the <a>navigation</a> must be completed with <a>replacement enabled</a>.
 
   Similarly, if the <a>child browsing context</a>'s <a>session history</a> contained only one
-  {{Document}} when the <a>process the <code>iframe</code> attributes</a> algorithm was invoked, and
-  that was the <code>about:blank</code> {{Document}} created when the <a>child browsing context</a>
-  was created, then any <a>navigation</a> required of the user agent in that algorithm must be
-  completed with <a>replacement enabled</a>.
+  {{Document}} when the <a>process the <code>iframe</code> attributes</a> algorithm was invoked,
+  and that was the <code>about:blank</code> {{Document}} created when the
+  <a>child browsing context</a> was created, then any <a>navigation</a> required of the
+  user agent in that algorithm must be completed with <a>replacement enabled</a>.
 
   When a {{Document}} in an <code>iframe</code> is marked as <a>completely loaded</a>, the user
   agent must run the <a>iframe load event steps</a>.
 
   <p class="note">
-    A <code>load</code> event is also fired at the <{iframe}> element when it is created if no other
-    data is loaded in it.
+    A <code>load</code> event is also fired at the <{iframe}> element when it is created if no
+    other data is loaded in it.
   </p>
 
-  Each {{Document}} has an <dfn>iframe load in progress</dfn> flag and a <dfn>mute iframe load</dfn>
-  flag. When a {{Document}} is created, these flags must be unset for that {{Document}}.
+  Each {{Document}} has an <dfn>iframe load in progress</dfn> flag and a
+  <dfn>mute iframe load</dfn> flag. When a {{Document}} is created, these flags must be unset
+  for that {{Document}}.
 
   The <dfn>iframe load event steps</dfn> are as follows:
 
@@ -4198,57 +4213,57 @@
     <li>If <var>child document</var> has its <a>mute iframe load</a> flag set,
     abort these steps.</li>
 
-    <li>Set <var>child document</var>'s <a>iframe load in progress</a>
-    flag.</li>
+    <li>Set <var>child document</var>'s <a>iframe load in progress</a> flag.</li>
 
-    <li><a>Fire a simple event</a> named <code>load</code> at the
-    <{iframe}> element.</li>
+    <li><a>Fire a simple event</a> named <code>load</code> at the <{iframe}> element.</li>
 
-    <li>Unset <var>child document</var>'s <a>iframe load in progress</a>
-    flag.</li>
+    <li>Unset <var>child document</var>'s <a>iframe load in progress</a> flag.</li>
 
   </ol>
 
-  <p class="warning">This, in conjunction with scripting, can be used to probe the URL space of the
-  local network's HTTP servers. User agents may implement <a>cross-origin</a>
-  access control policies that are stricter than those described above to mitigate this attack, but
-  unfortunately such policies are typically not compatible with existing Web content.</p>
+  <p class="warning">
+    This, in conjunction with scripting, can be used to probe the URL space of the
+    local network's HTTP servers. User agents may implement <a>cross-origin</a>
+    access control policies that are stricter than those described above to mitigate this attack,
+    but unfortunately such policies are typically not compatible with existing Web content.
+  </p>
 
   When the <code>iframe</code>'s <a>browsing context</a>'s <a>active document</a> is
-  not [=ready for post-load tasks=], and when anything in the <code>iframe</code> is <a>delaying the load event</a> of the <code>iframe</code>'s
+  not [=ready for post-load tasks=], and when anything in the <code>iframe</code> is
+  <a>delaying the load event</a> of the <code>iframe</code>'s
   <a>browsing context</a>'s <a>active document</a>, and when the <code>iframe</code>'s
-  <a>browsing context</a> is in the <a>delaying <code>load</code> events
-  mode</a>, the <code>iframe</code> must <a>delay the load event</a> of its document.
+  <a>browsing context</a> is in the <a>delaying <code>load</code> events mode</a>,
+  the <code>iframe</code> must <a>delay the load event</a> of its document.
 
   <p class="note">
-    If, during the handling of the <code>load</code> event, the
-  <a>browsing context</a> in the <code>iframe</code> is again <a>navigated</a>, that will further <a>delay the load event</a>.
+    If, during the handling of the <code>load</code> event, the <a>browsing context</a> in the
+    <code>iframe</code> is again <a>navigated</a>, that will further <a>delay the load event</a>.
   </p>
 
   <p class="note">
-    If, when the element is created, the <code>srcdoc</code> attribute is not set, and the <code>src</code> attribute is either also not set or set but its value cannot be
-  <a>parsed</a>, the browsing context will remain at the initial
-  <code>about:blank</code> page.
+    If, when the element is created, the <code>srcdoc</code> attribute is not set, and the
+    <code>src</code> attribute is either also not set or set but its value cannot be
+    <a>parsed</a>, the browsing context will remain at the initial <code>about:blank</code> page.
   </p>
 
   <p class="note">
-    If the user <a>navigates</a> away from this page, the
-  <code>iframe</code>'s corresponding <code>WindowProxy</code> object will proxy new
-  <code>Window</code> objects for new {{Document}} objects, but the <code>src</code> attribute will not change.
+    If the user <a>navigates</a> away from this page, the <code>iframe</code>'s corresponding
+    <code>WindowProxy</code> object will proxy new <code>Window</code> objects for new
+    {{Document}} objects, but the <code>src</code> attribute will not change.
   </p>
 
   <hr />
 
   The <dfn element-attr for="iframe"><code>name</code></dfn> attribute, if present, must be a
-  <a>valid browsing context name</a>. The given value is used to name the <a>nested browsing context</a>.
-  When the browsing context is created, if the attribute is present, the <a>browsing context name</a>
-  must be set to the value of this attribute;
+  <a>valid browsing context name</a>. The given value is used to name the
+  <a>nested browsing context</a>.
+  When the browsing context is created, if the attribute is present, the
+  <a>browsing context name</a> must be set to the value of this attribute;
   otherwise, the <a>browsing context name</a> must be set to the empty string.
 
-  Whenever the <code>name</code> attribute is set, the nested
-  <a>browsing context</a>'s <a lt="browsing context name">name</a> must be changed to
-  the new value. If the attribute is removed, the <a>browsing context name</a> must be set to
-  the empty string.
+  Whenever the <code>name</code> attribute is set, the nested <a>browsing context</a>'s
+  <a lt="browsing context name">name</a> must be changed to the new value. If the attribute
+  is removed, the <a>browsing context name</a> must be set to the empty string.
 
   <hr />
 
@@ -4257,15 +4272,15 @@
   must be an <a>unordered set of unique space-separated tokens</a> that are <a>ASCII
   case-insensitive</a>. The allowed values are <code>allow-forms</code>, <code>allow-pointer-lock</code>, <code>allow-popups</code>, <code>allow-presentation</code>, <code>allow-same-origin</code>, <code>allow-scripts</code>, and <code>allow-top-navigation</code>.
 
-  When the attribute is set, the content is treated as being from a unique
-  [=concept/origin=],
+  When the attribute is set, the content is treated as being from a unique [=concept/origin=],
   forms, scripts, and various potentially annoying APIs are disabled, links are prevented from
   targeting other <a>browsing contexts</a>, and plugins are secured.
   The <code>allow-same-origin</code> keyword causes
   the content to be treated as being from its real origin instead of forcing it into a unique
   origin; the <code>allow-top-navigation</code>
   keyword allows the content to <a>navigate</a> its <a>top-level browsing context</a>;
-  and the <code>allow-forms</code>, <code>allow-pointer-lock</code>, <code>allow-popups</code>, <code>allow-presentation</code> and <code>allow-scripts</code> keywords re-enable forms, the
+  and the <code>allow-forms</code>, <code>allow-pointer-lock</code>, <code>allow-popups</code>,
+  <code>allow-presentation</code> and <code>allow-scripts</code> keywords re-enable forms, the
   pointer lock API, popups, the presentation API, and scripts respectively. [[!POINTERLOCK]] [[!PRESENTATION-API]]
 
   <p class="warning">Setting both the <code>allow-scripts</code> and <code>allow-same-origin</code> keywords together when the
@@ -4313,21 +4328,22 @@
       <iframe title="Example iframe" sandbox src="https://usercontent.example.net/getusercontent.cgi?id=12345"></iframe>
     </xmp>
 
-    <p class="warning">It is important to use a separate domain so that if the attacker convinces the
-    user to visit that page directly, the page doesn't run in the context of the site's origin, which
-    would make the user vulnerable to any attack found in the page.</p>
+    <p class="warning">
+      It is important to use a separate domain so that if the attacker convinces the
+      user to visit that page directly, the page doesn't run in the context of the site's origin,
+      which would make the user vulnerable to any attack found in the page.
+    </p>
 
   </div>
 
   <div class="example">
     In this example, a gadget from another site is embedded. The gadget has scripting and forms
-    enabled, and the origin sandbox restrictions are lifted, allowing the gadget to communicate with
-    its originating server. The sandbox is still useful, however, as it disables plugins and popups,
-    thus reducing the risk of the user being exposed to malware and other annoyances.
+    enabled, and the origin sandbox restrictions are lifted, allowing the gadget to communicate
+    with its originating server. The sandbox is still useful, however, as it disables plugins
+    and popups, thus reducing the risk of the user being exposed to malware and other annoyances.
 
     <xmp highlight="html">
-      <iframe title="Maps" sandbox="allow-same-origin allow-forms allow-scripts"
-              src="https://maps.example.com/embedded.html"></iframe>;
+      <iframe title="Maps" sandbox="allow-same-origin allow-forms allow-scripts" src="https://maps.example.com/embedded.html"></iframe>;
     </xmp>
 
   </div>
@@ -4354,19 +4370,21 @@
     For this example, suppose all the files were served as <code>[[#text-html|text/html]]</code>.
 
     Page C in this scenario has all the sandboxing flags set. Scripts are disabled, because the
-    <code>iframe</code> in A has scripts disabled, and this overrides the <code>allow-scripts</code> keyword set on the
-    <code>iframe</code> in B. Forms are also disabled, because the inner <code>iframe</code> (in B)
-    does not have the <code>allow-forms</code> keyword
-    set.
+    <code>iframe</code> in A has scripts disabled, and this overrides the
+    <code>allow-scripts</code> keyword set on the <code>iframe</code> in B. Forms are also
+    disabled, because the inner <code>iframe</code> (in B) does not have the
+    <code>allow-forms</code> keyword set.
 
-    Suppose now that a script in A removes all the <{iframe/sandbox}> attributes in A  and B.
-    This would change nothing immediately. If the user clicked the link in C, loading page D into the
-    <code>iframe</code> in B, page D would now act as if the <code>iframe</code> in B had the <code>allow-same-origin</code> and <code>allow-forms</code> keywords set, because that was the
+    Suppose now that a script in A removes all the <{iframe/sandbox}> attributes in A and B.
+    This would change nothing immediately. If the user clicked the link in C, loading page D into
+    the <code>iframe</code> in B, page D would now act as if the <code>iframe</code> in B had the
+    <code>allow-same-origin</code> and <code>allow-forms</code> keywords set, because that was the
     state of the <a>nested browsing context</a> in the <code>iframe</code> in A when page B was
     loaded.
 
-    Generally speaking, dynamically removing or changing the <{iframe/sandbox}> attribute is ill-advised, because it can make it quite
-    hard to reason about what will be allowed and what will not.
+    Generally speaking, dynamically removing or changing the <{iframe/sandbox}> attribute is
+    ill-advised, because it can make it quite hard to reason about what will be allowed and
+    what will not.
 
   </div>
 
@@ -4374,7 +4392,8 @@
 
   The <dfn element-attr for="iframe"><code>allowfullscreen</code></dfn> attribute is a
   <a>boolean attribute</a>. When specified, it indicates that {{Document}} objects in
-  the <{iframe}> element's <a>browsing context</a> are to be <a>allowed to use</a> <code>requestFullscreen()</code> (if it's not blocked for other
+  the <{iframe}> element's <a>browsing context</a> are to be <a>allowed to use</a>
+  <code>requestFullscreen()</code> (if it's not blocked for other
   reasons, e.g., there is another ancestor <code>iframe</code> without this attribute set).
 
   <div class="example">
@@ -4383,7 +4402,7 @@
 
     <xmp highlight="html">
       <p>Check out my new video!</p>
-      <iframe title="Video" src="https://video.example.com/embed?id=123456" allowfullscreen></iframe>
+      <iframe title="My Video" src="https://video.example.com/embed?id=123456" allowfullscreen></iframe>
     </xmp>
 
   </div>
@@ -4398,8 +4417,8 @@
 
   The <dfn element-attr for="iframe"><code>allowusermedia</code></dfn> attribute
   is a <a>boolean attribute</a>. When specified, it indicates that {{Document}} objects
-  in the <{iframe}> element's <a>browsing context</a> are to be <a>allowed to
-  use</a> {{Element/getUserMedia()}} (if it's not blocked for other reasons, e.g. there
+  in the <{iframe}> element's <a>browsing context</a> are to be <a>allowed to use</a>
+  {{Element/getUserMedia()}} (if it's not blocked for other reasons, e.g. there
   is another ancestor <{iframe}> without this attribute set).
 
   To determine whether a {{Document}} object <var>document</var> is
@@ -4407,12 +4426,14 @@
   <var>allowattribute</var>, run these steps:
 
   <ol>
-    <li><p>If <var>document</var> has no <a>browsing context</a>, then return false.</p></li>
-    <li><p>If <var>document</var>'s <a>browsing context</a> is a <a>top-level browsing context</a>, then return true.</p></li>
-    <li><p>If <var>document</var>'s <a>browsing context</a> has a <a>browsing context container</a> that is an <{iframe}> element with an
-    <var>allowattribute</var> attribute specified, and whose <a>node document</a> is
-    <a>allowed to use</a> the feature indicated by <var>allowattribute</var>, then return true.</p></li>
-    <li><p>Return false.</p></li>
+    <li>If <var>document</var> has no <a>browsing context</a>, then return false.</li>
+    <li>If <var>document</var>'s <a>browsing context</a> is a <a>top-level browsing context</a>,
+    then return true.</li>
+    <li>If <var>document</var>'s <a>browsing context</a> has a <a>browsing context container</a>
+    that is an <{iframe}> element with an <var>allowattribute</var> attribute specified,
+    and whose <a>node document</a> is <a>allowed to use</a> the feature indicated by
+    <var>allowattribute</var>, then return true.</li>
+    <li>Return false.</li>
   </ol>
 
   <hr />
@@ -4424,9 +4445,10 @@
   create a nested <a>browsing context</a>, regardless of whether the specified initial
   contents are successfully used.
 
-  The <dfn element-attr for="iframe"><code>referrerpolicy</code></dfn> attribute is a <a>referrer policy attribute</a>.
-  Its purpose is to set the referrer policy used when <dfn>processing the <code>iframe</code> attributes</dfn>.
-  [[!REFERRERPOLICY]]
+  The <dfn element-attr for="iframe"><code>referrerpolicy</code></dfn> attribute is a
+  <a>referrer policy attribute</a>.
+  Its purpose is to set the referrer policy used when
+  <dfn>processing the <code>iframe</code> attributes</dfn>. [[!REFERRERPOLICY]]
 
   <hr />
 
@@ -4445,8 +4467,7 @@
   The <{iframe}> element must be empty in <a>XML documents</a>.
 
   <p class="note">
-    The <a>HTML parser</a> treats markup inside <{iframe}> elements as
-  text.
+    The <a>HTML parser</a> treats markup inside <{iframe}> elements as text.
   </p>
 
   <hr />
@@ -4843,7 +4864,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd><a>Flow content</a>.</dd>
     <dd><a>Phrasing content</a>.</dd>
     <dd><a>Embedded content</a>.</dd>
-    <dd><a lt="listed element">listed</a>, <a>submittable</a>, and <a>reassociateable</a> <a>form-associated element</a>.</dd>
     <dd><a>Palpable content</a>.</dd>
     <dt><a>Contexts in which this element can be used</a>:</dt>
     <dd>Where <a>embedded content</a> is expected.</dd>
@@ -4853,12 +4873,13 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     <dd>Neither tag is omissible.</dd>
     <dt><a>Content attributes</a>:</dt>
     <dd><a>Global attributes</a></dd>
-    <dd><code>data</code> - Address of the resource</dd>
-    <dd><code>type</code> - Type of embedded resource</dd>
-    <dd><code>typemustmatch</code> - Whether the <code>type</code>
-    attribute and the <a>Content-Type</a> value need to match for the resource to be used</dd>
+    <dd><{object/data}> - Address of the resource</dd>
+    <dd><{object/type}> - Type of embedded resource</dd>
+    <dd>
+      <{object/typemustmatch}> - Whether the <{object/type}>
+      attribute and the <a>Content-Type</a> value need to match for the resource to be used
+    </dd>
     <dd><{object/name}> - Name of <a>nested browsing context</a></dd>
-    <dd><code>form</code> - Associates the control with a <{form}> element</dd>
     <dd><code>width</code> - Horizontal dimension</dd>
     <dd><code>height</code> - Vertical dimension</dd>
     <dt>[=Allowed ARIA role attribute values=]:</dt>
@@ -4884,7 +4905,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
           attribute DOMString type;
           attribute boolean typeMustMatch;
           attribute DOMString name;
-          readonly attribute HTMLFormElement? form;
           attribute DOMString width;
           attribute DOMString height;
           readonly attribute Document? contentDocument;
@@ -4910,8 +4930,8 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   type of the resource, will either be treated as an image, as a <a>nested browsing context</a>, or as an external resource to be processed by a <a>plugin</a>.
 
   The <dfn element-attr for="object"><code>data</code></dfn> attribute, if present, specifies the
-  address of the resource. If present, the attribute must be a <a>valid non-empty URL potentially
-  surrounded by spaces</a>.
+  address of the resource. If present, the attribute must be a
+  <a>valid non-empty URL potentially surrounded by spaces</a>.
 
   <p class="warning">Authors who reference resources from other <a for="concept">origins</a>
   that they do not trust are urged to use the <code>typemustmatch</code> attribute defined below. Without that
@@ -5413,12 +5433,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   removed, if the <{object}> element has a <a>browsing context</a>, the
   <a>browsing context name</a> must be set to the empty string.
 
-  The <{object/form}> attribute is used to explicitly associate the
-  <{object}> element with its <a>form owner</a>.
-
-  <strong>Constraint validation</strong>: <{object}> elements are always <a>barred
-  from constraint validation</a>.
-
   The <{object}> element supports <a>dimension attributes</a>.
 
   The IDL attributes <dfn attribute for="HTMLObjectElement"><code>data</code></dfn>,
@@ -5437,13 +5451,6 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
   The <dfn attribute for="HTMLObjectElement"><code>contentWindow</code></dfn> IDL attribute must
   return the {{WindowProxy}} object of the <{object}> element's <a>nested browsing context</a>, if
   it has one; otherwise, it must return null.
-
-  The {{HTMLObjectElement/willValidate}}, {{HTMLObjectElement/validity}}, and
-  {{HTMLObjectElement/validationMessage}} attributes, and the
-  {{HTMLObjectElement/checkValidity()}}, {{HTMLObjectElement/reportValidity()}}, and
-  {{HTMLObjectElement/setCustomValidity()}} methods, are part of the
-  <a>constraint validation API</a>. The {{HTMLObjectElement/form}} IDL attribute is part
-  of the element's forms API.
 
   All <{object}> elements have a <dfn for="object">legacy caller operation</dfn>. If the
   <{object}> element has an instantiated <a>plugin</a> that supports a scriptable interface that
@@ -5675,6 +5682,10 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   The <{video}> element is a <a>media element</a> whose <a>media data</a> is ostensibly video
   data, possibly with associated audio data.
+
+  Because the <{video}> element is necessary to support accessibility for audio content,
+  user agents should support playback of the same set of audio formats and container formats
+  in the <{video}> element that they support for the <{audio}> element.
 
   The <code>src</code>, <code>preload</code>, <code>autoplay</code>, <code>loop</code>,
   <code>muted</code>, and <{video/controls}> attributes are the attributes common to all
@@ -6019,7 +6030,7 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
 
   <p class="note">
     In particular, this content is not intended to address accessibility concerns. To
-    make audio content accessible to the deaf or to those with other physical or cognitive
+    make audio content accessible to people with hearing, cognitive or other
     disabilities, a variety of features are available. If captions or a sign language video are
     available, the <{video}> element can be used instead of the <{audio}> element to
     play the audio, allowing users to enable the visual alternatives. Chapter titles can be
@@ -6084,6 +6095,19 @@ attribute's value is a type that a <a>plugin</a> supports, then the value of the
     </xmp>
   </div>
 
+  <div class="warning">
+  The audio element can cause content to play which implements the "Dolphin" attack [[Dolphin]],
+  using sound the user cannot hear to trigger interactive voice devices. Mitigations include
+  limiting the range of audio reproduction to that which the user can hear, and disabling
+  <{audio/autoplay}> functionality.
+  </div>
+
+  <div class="warning">
+  The audio element can be used to mimic parts of a voice interface such as a screen reader
+  or "voice assistant", in a phishing attack. Mitigation strategies include disabling
+  <{audio/autoplay}> functionality, or advising users not to use default audio voices
+  in order to decrease the likelihood of a successful mimic attack.
+  </div>
 
 <h4 id="the-track-element">The <dfn element><code>track</code></dfn> element</h4>
 
@@ -12179,6 +12203,7 @@ red:89
     <dd><code>download</code> - Whether to download the resource instead of navigating to it, and its file name if so</dd>
     <dd><code>href</code> - Address of the <a>hyperlink</a></dd>
     <dd><code>hreflang</code> -  Language of the linked resource</dd>
+    <dd><{area/ping}> — URLs of the resources that are interested in being notified</dd>
     <dd><{area/rel}> - Relationship of this document (or subsection/topic) to the destination resource</dd>
     <dd><code>shape</code> - The kind of shape to be created in an <a>image map</a></dd>
     <dd><code>target</code> - <a>browsing context</a> for <a>hyperlink</a> <a>navigation</a></dd>

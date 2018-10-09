@@ -150,7 +150,7 @@
   in user agents. At time of publication of this document, patches from the
   <a>WHATWG HTML specification</a> have been merged until January 12, 2016. The W3C HTML editors
   have also added patches that resulted from discussions and decisions made by the W3C Web Platform
-  WG as well a bug fixes from bugs not shared by the WHATWG.
+  WG as well as bug fixes from bugs not shared by the WHATWG.
 
   A separate document is published to document the differences between the HTML specified in this
   document and the language described in the HTML 4.01 specification. [[HTML5-DIFF]]
@@ -393,42 +393,31 @@
 
   Some features of HTML trade user convenience for a measure of user privacy.
 
-  In general, due to the Internet's architecture, a user can be distinguished from another by the
-  user's IP address. IP addresses do not perfectly match to a user; as a user moves from device to
-  device, or from network to network, their IP address will change; similarly, NAT routing, proxy
-  servers, and shared computers enable packets that appear to all come from a single IP address to
-  actually map to multiple users. Technologies such as onion routing can be used to further
-  anonymize requests so that requests from a single user at one node on the Internet appear to come
-  from many disparate parts of the network.
+  Various mechanisms can be used to identify a particular user. Cookies, for example,
+  are designed specifically to enable this. Cookies are widely used to help users,
+  for example logging into a site automatically, or storing customisation preferences
+  so the site is more accessible to the user.
 
-  However, the IP address used for a user's requests is not the only mechanism by which a user's
-  requests could be related to each other. Cookies, for example, are designed specifically to
-  enable this, and are the basis of most of the Web's session features that enable you to log into
-  a site with which you have an account.
+  There are other mechanisms that are more subtle. Collecting enough information means
+  an individual user's browser's "digital fingerprint" can be computed,
+  identifying the user without their knowledge or consent.
 
-  There are other mechanisms that are more subtle. Certain characteristics of a user's system can
-  be used to distinguish groups of users from each other; by collecting enough such information,
-  an individual user's browser's "digital fingerprint" can be computed, which can be as good, if
-  not better, than an IP address in ascertaining which requests are from the same user.
+  This "fingerprinting", can be used for both positive and malevolent purposes.
+  An example of a reasonably benign purpose would be determining whether a particular user
+  prefers larger text, and automatically providing larger fonts in subsequent
+  visits to participating sites.
 
-  Grouping requests in this manner, especially across multiple sites, can be used for both benign
-  (and even arguably positive) purposes, as well as for malevolent purposes. An example of a
-  reasonably benign purpose would be determining whether a particular person seems to prefer sites
-  with dog illustrations as opposed to sites with cat illustrations (based on how often they visit
-  the sites in question) and then automatically using the preferred illustrations on subsequent
-  visits to participating sites. Malevolent purposes, however, could include governments combining
-  information such as the person's home address (determined from the addresses they use when
-  getting driving directions on one site) with their apparent political affiliations (determined
-  by examining the forum sites that they participate in) to determine whether the person should be
-  prevented from voting in an election.
+  Other uses could include combining information such as the person's home address
+  (determined from the addresses they use when getting driving directions on one site)
+  with their apparent political affiliations (determined by examining forum sites they visit)
+  to prevent them from voting in an election, or examining the sites they visit,
+  drawing conclusions about health issues they may suffer,
+  and targeting them with advertising for products that misleadingly claim to solve such issues.
 
-  Since the malevolent purposes can be remarkably evil, user agent implementors are encouraged to
-  consider how to provide their users with tools to minimize leaking information that could be used
-  to fingerprint a user.
+  Since the consequences can be very significant, user agent implementors are encouraged to
+  consider how to help users minimize leaking information unknowingly.
 
-  Unfortunately, as the first paragraph in this section implies, sometimes there is great benefit
-  to be derived from exposing the very information that can also be used for fingerprinting
-  purposes, so it's not as easy as simply blocking all possible leaks. For instance, the ability to
+  This is not as easy as simply blocking all possible leaks. For instance, the ability to
   log into a site to post under a specific identity requires that the user's requests be
   identifiable as all being from the same user. More subtly, though, information such as how wide
   text is, which is necessary for many effects that involve drawing text onto a canvas (e.g., any
@@ -440,14 +429,18 @@
   <dfn id="fingerprinting-vector" lt="for privacy">used to fingerprint the user</dfn> are marked as
   this paragraph is. <a class="fingerprint" href="#fingerprinting-vector"><img height="21" src="images/fingerprint.png" width="15" alt="(This is a fingerprinting vector.)" /></a>
 
-  Other features in the platform can be used for the same purpose, though, including, though not
+  Other features in the platform can be used identify users, including but not
   limited to:
 
   * The exact list of which features a user agents supports.
   * The maximum allowed stack depth for recursion in script.
   * Features that describe the user's environment, like Media Queries and the {{Screen}}
     object. [[!MEDIAQ]] [[!CSSOM-VIEW]]
+  * Features that can be used to identify a user in a physical location, e.g. by playing
+    audio through their device, which can be picked up by an external sensor.
   * The user's time zone.
+
+  Note that features which identify a user's location have potentially catastrophic consequences.
 
 <h3 id="a-quick-introduction-to-html">A quick introduction to HTML</h3>
 
@@ -475,9 +468,9 @@
   </xmp>
 
   HTML documents consist of a tree of elements and text. Each element is denoted in the source by
-  a <a>start tag</a>, such as "<{body}>", and an <a>end tag</a>, such as "<{body|/body}>".
-  (Certain start tags and end tags can in certain cases be <a>omitted</a> and are implied by
-  other tags.)
+  a <a>start tag</a>, such as "<{body}>", and an <a>end tag</a>, such as
+  "<{body|/body}>". (Certain start tags and end tags can in certain cases be <a>omitted</a>
+  and are implied by other tags.)
 
   Tags have to be nested such that elements are all completely within each other, without
   overlapping:
@@ -680,12 +673,11 @@
   strongly encouraged to study the matter in more detail. However, this section attempts to provide
   a quick introduction to some common pitfalls in HTML application development.
 
-  The security model of the Web is based on the concept of "origins", and correspondingly many of
-  the potential attacks on the Web involve cross-origin actions. [[!ORIGIN]]
+  One fundamental pillar of the security model that protects Web users is the concept of
+  "origins". Many potential attacks on the Web involve cross-origin actions. [[!ORIGIN]]
 
   : Not validating user input
   : Cross-site scripting (XSS)
-  : SQL injection
   :: When accepting untrusted input, e.g., user-generated content such as text comments, values
       in URL parameters, messages from third-party sites, etc, it is imperative that the data
       be validated before use, and properly escaped when displayed. Failing to do this can
@@ -749,8 +741,8 @@
 
       This problem exists because HTML forms can be submitted to other origins.
 
-      Sites can prevent such attacks by populating forms with user-specific hidden tokens, or by
-      checking <code>Origin</code> headers on all requests.
+      Sites can prevent such attacks by populating forms with user-specific tokens that are
+      not predictable.
   : Clickjacking
   :: A page that provides users with an interface to perform actions that the user might not
       wish to perform needs to be designed so as to avoid the possibility that users can be
@@ -762,9 +754,19 @@
       the <{iframe}> under the mouse cursor just as the user is about to click, thus tricking the
       user into clicking the victim site's interface.
 
-      To avoid this, sites that do not expect to be used in frames are encouraged to only enable
-      their interface if they detect that they are not in a frame (e.g., by comparing the
-      {{window}} object to the value of the {{Window/top}} attribute).
+      To avoid this, sites that do not expect to be used in frames are encouraged to restrict
+      their usage within frames with a mechanism such as Content Security Policy's
+      <a>frame-ancestors directive</a> [[CSP3]], or the HTTP "<code>x-frame-options</code>" header
+      defined in [[rfc7034]].
+
+  A different method of compromising the user's security involves interacting with their
+  physical environment. For example, the <{audio}> element could be used to play audio
+  that interacts with a user's speech enabled devices.
+
+  This could be done in such a way that the user is unaware that it is happening, as in the
+  <a>dolphin attack</a>. Alternatively, malicious content might target users suspected to have
+  a limited hearing range or to be relying on an audio interface such as a screen reader,
+  as determined by <a>fingerprinting</a> users.
 
 <h4 id="common-pitfalls-to-avoid-when-using-the-scripting-apis">
   Common pitfalls to avoid when using the scripting APIs
@@ -1032,8 +1034,8 @@
         For example, the parsing of certain named character references in attributes happens even
         with the closing semicolon being omitted. It is safe to include an ampersand followed by
         letters that do not form a named character reference, but if the letters are changed to a
-        string that <em>does</em> form a named character reference, they will be interpreted as that
-        character instead.
+        string that <em>does</em> form a named character reference, they will be interpreted as
+        that character instead.
 
         In this fragment, the attribute's value is "<code>?bill&amp;ted</code>":
 
@@ -1068,9 +1070,9 @@
       user agents, and are therefore marked as non-conforming to help authors avoid them.
 
       <p class="example">
-        For example, this is why the U+0060 GRAVE ACCENT character (&#x60;) is not allowed in
-        unquoted attributes. In certain legacy user agents, it is sometimes treated as a
-        quote character.
+        For example, this is why the U+0060 GRAVE ACCENT character (&#x60;) is not allowed
+        in unquoted attributes. In certain legacy user agents, it is sometimes treated as
+        a quote character.
       </p>
 
       <p class="example">
@@ -1105,8 +1107,8 @@
       defined in this specification.
 
       <p class="example">
-        For example, if the author typed <code>&lt;capton></code> instead of <{caption}>, this
-        would be flagged as an error and the author could correct the typo immediately.
+        For example, if the author typed <code>&lt;capton></code> instead of <{caption}>,
+        this  would be flagged as an error and the author could correct the typo immediately.
       </p>
   : Errors that could interfere with new syntax in the future
   :: In order to allow the language syntax to be extended in the future, certain otherwise
@@ -1284,9 +1286,9 @@
       <p class="example">
         For example, a <{script}> element's <{script/src}> attribute causes the element's contents
         to be ignored. However, this isn't obvious, especially if the element's contents appear to
-        be executable script — which can lead to authors spending a lot of time trying to
-        debug the inline script without realizing that it is not executing. To reduce this problem,
-        this specification makes it non-conforming to have executable script in a <{script}> element
+        be executable script — which can lead to authors spending a lot of time trying to debug
+        the inline script without realizing that it is not executing. To reduce this problem, this
+        specification makes it non-conforming to have executable script in a <{script}> element
         when the <{script/src}> attribute is present. This means that authors who are validating
         their documents are less likely to waste time with this kind of mistake.
       </p>
@@ -1294,10 +1296,9 @@
   : Errors that involve areas that affect authors migrating to and from XHTML
   :: Some authors like to write files that can be interpreted as both XML and HTML with similar
       results. Though this practice is discouraged in general due to the myriad of subtle
-      complications involved (especially when involving scripting, styling, or any kind of automated
-      serialization), this specification has a few restrictions intended to at least somewhat
-      mitigate the difficulties. This makes it easier for authors to use this as a transitionary
-      step when migrating between HTML and XHTML.
+      complications involved (especially when involving scripting, styling, or any kind of
+      automated serialization), this specification has a few restrictions intended to at least somewhat mitigate the difficulties. This makes it easier for authors to use this as a
+      transitionary step when migrating between HTML and XHTML.
 
       <p class="example">
         For example, there are somewhat complicated rules surrounding the <{global/lang}> and
@@ -1359,17 +1360,19 @@
   : <cite>Web Content Accessibility Guidelines (WCAG) 2.1</cite> [[WCAG21]]
   :: <blockquote>
         Web Content Accessibility Guidelines (WCAG) 2.1 covers a wide range of recommendations for
-        making Web content more accessible. Following these guidelines will make content more accessible 
-        to a wider range of people with disabilities, including blindness and low vision, deafness
-        and hearing loss, limited movement, speech disabilities, photosensitivity, and combinations of 
-        these, and some accommodation for learning disabilities and cognitive limitations; but will not
-        address every user need for people with these disabilities. These guidelines address accessibility
-        of web content on desktops, laptops, tablets, and mobile devices. Following these guidelines will
-        also often make Web content more usable to users in general.
+        making Web content more accessible. Following these guidelines will make content more
+        accessible to a wider range of people with disabilities, including blindness and low
+        vision, deafness and hearing loss, limited movement, speech disabilities,
+        photosensitivity, and  combinations of these, and some accommodation for learning
+        disabilities and cognitive limitations; but will not address every user need for people
+        with these disabilities.
+        These guidelines address accessibility of web content on desktops, laptops, tablets, and
+        mobile devices. Following these guidelines will also often make Web content more usable
+        to users in general.
 
-        WCAG 2.1 extends Web Content Accessibility Guidelines 2.0 [[WCAG20]], which was published as a 
-        W3C Recommendation December 2008. Content that conforms to WCAG 2.1 also conforms to WCAG 2.0, and 
-        therefore to policies that reference WCAG 2.0.
+        WCAG 2.1 extends Web Content Accessibility Guidelines 2.0 [[WCAG20]], which was published
+        as a W3C Recommendation December 2008. Content that conforms to WCAG 2.1 also conforms to
+        WCAG 2.0, and therefore to policies that reference WCAG 2.0.
       </blockquote>
 
   : <cite>Authoring Tool Accessibility Guidelines (ATAG) 2.0</cite> [[ATAG20]]
@@ -1395,9 +1398,9 @@
   : <cite>HTML Accessibility APIs Mappings 1.0</cite> [[!html-aam-1.0]]
   :: <blockquote>
         Defines how user agents map HTML 5.1 elements and attributes to platform accessibility APIs.
-        Documenting these mappings promotes interoperable exposure of roles, states, properties, and
-        events implemented by accessibility APIs and helps to ensure that this information appears
-        in a manner consistent with author intent.
+        Documenting these mappings promotes interoperable exposure of roles, states, properties,
+        and events implemented by accessibility APIs and helps to ensure that this information
+        appears in a manner consistent with author intent.
       </blockquote>
 
 </section>
