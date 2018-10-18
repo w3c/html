@@ -16,7 +16,7 @@ This document contains information used by the editors maintaining the specifica
 
 6. Use your judgement before approving a change that might be considered controversial. In general, such changes often need a wider review from the working group and should not be merged before that happens. Of course, we can revert or amend changes if it is clear that they don't represent WG consensus so it is a judgement call.
 
-7. Note: the editors don't need to create pull requests for editorial changes. Editors may commit these changes directly to the repository. Editors should create pull requests for normative changes associated with a bug or issue. Editors may merge their own pull requests if they are expected to be uncontroversial. Again, use good judgement .
+7. Note: the editors don't need to create pull requests for editorial changes. Editors may commit these changes directly to the repository. Editors should create pull requests for normative changes associated with a bug or issue. Editors may merge their own pull requests if they are expected to be uncontroversial.
 
 ## Automatic build process
 
@@ -28,7 +28,7 @@ The build process uses an up-to-date version of the Bikeshed script but uses a c
 
 This spec does not use the green "Merge pull request" button. This ensures that each change is a single commit on the main `master` branch.
 
-The following subsections contain instructions for merging. They assume the Bash functions that follow them are present.
+The following sub-sections contain instructions for merging. They assume the Bash functions that follow them are present.
 
 ### Merging Pull Requests from Forks
 
@@ -54,7 +54,7 @@ The following subsections contain instructions for merging. They assume the Bash
 comment.
 
 ### Merging Pull Requests from Branches
-For pull requests coming from branches within this repository, use the same steps above except use `mypr` and there is no reason to use the web interface.
+For pull requests coming from branches within this repository, use the same steps except use `mypr` and there is no reason to use web interface.
 
 `git push` will _automatically_ close the pull request and mark it as merged, since the commits contained there were updated.
 
