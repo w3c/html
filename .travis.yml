@@ -2,9 +2,6 @@ language: python
 python:
 - '2.7'
 sudo: false
-branches:
-  only:
-  - master
 before_install:
 - nvm install stable
 install:
@@ -18,8 +15,17 @@ install:
 - bikeshed update
 # Use cached copy of bikeshed data files to give consistent builds
 #- cp -R .spec-data/* ./bikeshed/bikeshed/spec-data
-script: 'bikeshed spec && ./.multipage-split.sh && ./.deploy-output.sh'
+script: bikeshed spec
 env:
   global:
   - ENCRYPTION_LABEL: "de967aecadce"
   - COMMIT_AUTHOR_EMAIL: "plh+deploy@w3.org"
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    - ./.multipage-split.sh
+    - ./.deploy-output.sh
+  on:
+    branch: master
