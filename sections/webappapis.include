@@ -17,6 +17,7 @@
   - The Navigator object and its methods
   - ImageBitmap
   - Animation frames - requestAnimationFrame() etc
+  - Idle callbacks - requestIdleCallback() etc
 
 -->
 
@@ -1375,11 +1376,20 @@
       12. For each <a>fully active</a> {{Document}} in <var>docs</var>, update the rendering or user
            interface of that {{Document}} and its <a>browsing context</a> to reflect the current
            state.
-  8. If this is a {{Worker}} <a>event loop</a> (i.e., one running for a {{WorkerGlobalScope}}), but
+  8. If this <a>event loop</a> is a <a>browsing context</a>
+      <a>event loop</a> (as opposed to a {{Worker}} <a>event loop</a>), and
+      there are no <a>task</a>s on any of the <a>event loop</a>'s <a>task
+      queues</a>, and the <a>event loop</a>'s <a>microtask queue</a> is empty,
+      and the user agent does not believe that any of the <a>top-level browsing
+      context</a>s associated with this <a>event loop</a> would benifit from 
+      having their rendering updated at this time, then run the steps in 
+      the <a>start an idle period</a> algorithm, passing the {{Window}} 
+      associated with the <a>browsing context</a>.
+  9. If this is a {{Worker}} <a>event loop</a> (i.e., one running for a {{WorkerGlobalScope}}), but
       there are no <a>tasks</a> in the <a>event loop</a>'s <a>task queues</a> and the
       {{WorkerGlobalScope}} object's <a>closing</a> flag is true, then destroy the
       <a>event loop</a>, aborting these steps, resuming the <a>run a worker</a> steps.
-  9. Return to the first step of the <a>event loop</a>.
+  10. Return to the first step of the <a>event loop</a>.
 
   <hr />
 
